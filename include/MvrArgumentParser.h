@@ -11,6 +11,6 @@
 #define MVRARGUMENTPARSER_H
 
 #include "mvriaTypedefs.h"
-#include "MvrArgumentBuiler.h"
+#include "MvrArgumentBuilder.h"
 /// TODO
 #endif  // MVRARGUMENTPARSER_H
