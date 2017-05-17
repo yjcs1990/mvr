@@ -155,10 +155,10 @@ protected:
   static bool ourConfigAlsoPrint;
   static MVREXPORTGlobalRetFunctor<bool> ourConfigProcessFileCB;
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   static char ourAramConfigLogLevel[1024];
   static double ourAramConfigLogSize;
-  static MVREXPORTGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
+  static MvrGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
   static bool ourUseAramBehavior;
   static double ourAramLogSize;
   static std::string ourAramPrefix;
@@ -168,4 +168,5 @@ protected:
   
   static MVREXPORTFunctor1<const char *> *ourFunctor;
 };
+
 #endif  //MVRLOG_H
