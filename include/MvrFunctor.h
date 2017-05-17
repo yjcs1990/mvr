@@ -978,7 +978,6 @@ public:
   virtual void setP5(P5 p5) {myP5=p5;}
 
 protected:
-
   void (*myFunc)(P1, P2, P3, P4, P5);
   P1 myP1;
   P2 myP2;
@@ -987,7 +986,558 @@ protected:
   P5 myP5;
 };
 
-#endif // Omitting MvrGlobalFunctor from Swig
+#endif // Omitting MvrGlobalFunctor from SWIG
 
+//
+//
+//
+// MvrFunctors for global functions, C style function pointers with return
+// return values.
+//
+//
+//
+
+#ifndef SWIG
+
+/// Functor for a global function with return value
+/**
+   This is a class for global functions which return a value. This ties
+   a C style function pointer into the functor class hierarchy as a
+   convience. Code that has a reference to this class and treat it as
+   an MvrFunctor can use it like any other functor.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret>
+class MvrGlobalRetFunctor : public MvrRetFunctor<Ret>
+{
+public:
+  /// Constructor
+  MvrGlobalRetFunctor() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param func global function pointer
+  */
+  MvrGlobalRetFunctor(Ret (*func)(void)) : myFunc(func) {}
+
+  /// Destructor
+  virtual ~MvrGlobalRetFunctor() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (*myFunc)();}
+
+protected:
+  Ret (*myFunc)(void);
+};
+
+/// Functor for a global function with 1 parameter and return value
+/**
+   This is a class for global functions which take 1 parameter and return
+   a value. This ties a C style function pointer into the functor class
+   hierarchy as a convience. Code that has a reference to this class
+   and treat it as an MvrFunctor can use it like any other functor.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class P1>
+class MvrGlobalRetFunctor1 : public MvrRetFunctor1<Ret, P1>
+{
+public:
+  /// Constructor
+  MvrGlobalRetFunctor1() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param func global function pointer
+  */
+  MvrGlobalRetFunctor1(Ret (*func)(P1)) : myFunc(func), myP1() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+  */
+  MvrGlobalRetFunctor1(Ret (*func)(P1), P1 p1) : myFunc(func), myP1(p1) {}
+
+  /// Destructor
+  virtual ~MvrGlobalRetFunctor1() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (*myFunc)(myP1);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (*myFunc)(p1);}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+protected:
+  Ret (*myFunc)(P1);
+  P1 myP1;
+};
+
+/// Functor for a global function with 2 parameters and return value
+/**
+   This is a class for global functions which take 2 parameters and return
+   a value. This ties a C style function pointer into the functor class
+   hierarchy as a convience. Code that has a reference to this class
+   and treat it as an MvrFunctor can use it like any other functor.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class P1, class P2>
+class MvrGlobalRetFunctor2 : public MvrRetFunctor2<Ret, P1, P2>
+{
+public:
+  /// Constructor
+  MvrGlobalRetFunctor2() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param func global function pointer
+  */
+  MvrGlobalRetFunctor2(Ret (*func)(P1, P2)) : myFunc(func), myP1(), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+  */
+  MvrGlobalRetFunctor2(Ret (*func)(P1, P2), P1 p1) : myFunc(func), myP1(p1), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrGlobalRetFunctor2(Ret (*func)(P1, P2), P1 p1, P2 p2) : myFunc(func), myP1(p1), myP2(p2) {}
+
+  /// Destructor
+  virtual ~MvrGlobalRetFunctor2() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (*myFunc)(p1, myP2);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (*myFunc)(p1, p2);}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+protected:
+  Ret (*myFunc)(P1, P2);
+  P1 myP1;
+  P2 myP2;
+};
+
+/// Functor for a global function with 2 parameters and return value
+/**
+   This is a class for global functions which take 2 parameters and return
+   a value. This ties a C style function pointer into the functor class
+   hierarchy as a convience. Code that has a reference to this class
+   and treat it as an MvrFunctor can use it like any other functor.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class P1, class P2, class P3>
+class MvrGlobalRetFunctor3 : public MvrRetFunctor3<Ret, P1, P2, P3>
+{
+public:
+  /// Constructor
+  MvrGlobalRetFunctor3() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param func global function pointer
+  */
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3)) : myFunc(func), myP1(), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+  */
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1) : myFunc(func), myP1(p1), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1, P2 p2) : myFunc(func), myP1(p1), myP2(p2), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) : myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
+
+  /// Destructor
+  virtual ~MvrGlobalRetFunctor3() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2, myP3);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (*myFunc)(p1, myP2, myP3);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (*myFunc)(p1, p2, myP3);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3) {return (*myFunc)(p1, p2, p3);}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+  
+protected:
+  Ret (*myFunc)(P1, P2, P3);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+};
+
+/// Functor for a global function with 4 parameters and return value
+/**
+   This is a class for global functions which take 4 parameters and return
+   a value. This ties a C style function pointer into the functor class
+   hierarchy as a convience. Code that has a reference to this class
+   and treat it as an MvrFunctor can use it like any other functor.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class P1, class P2, class P3, class P4>
+class MvrGlobalRetFunctor4 : public MvrRetFunctor4<Ret, P1, P2, P3, P4>
+{
+public:
+  /// Constructor
+  MvrGlobalRetFunctor4() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param func global function pointer
+  */
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4)) : myFunc(func), myP1(), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+  */
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1) : myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2) : myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+ */
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) : myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
+
+	/// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+ */
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) : myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
+
+  /// Destructor
+  virtual ~MvrGlobalRetFunctor4() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2, myP3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (*myFunc)(p1, myP2, myP3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (*myFunc)(p1, p2, myP3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3) {return (*myFunc)(p1, p2, p3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+ */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3, P4 p4) {return (*myFunc)(p1, p2, p3, p4);}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+  
+  
+  /// Set the default fourth parameter
+  /**
+     @param p4 default fourth parameter
+  */
+  virtual void setP4(P4 p4) {myP4=p4;}
+
+protected:
+
+  Ret (*myFunc)(P1, P2, P3, P4);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+  P4 myP4;
+};
+
+/// Functor for a global function with 4 parameters and return value
+/**
+   This is a class for global functions which take 4 parameters and return
+   a value. This ties a C style function pointer into the functor class
+   hierarchy as a convience. Code that has a reference to this class
+   and treat it as an MvrFunctor can use it like any other functor.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class P1, class P2, class P3, class P4, class P5>
+class MvrGlobalRetFunctor5 : public MvrRetFunctor5<Ret, P1, P2, P3, P4, P5>
+{
+public:
+  /// Constructor
+  MvrGlobalRetFunctor5() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param func global function pointer
+  */
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5)) :
+    myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+  */
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1) :
+    myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+    myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+ */
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+    myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
+
+	/// Constructor - supply function pointer, default parameters
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+ */
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
+
+  /**
+     @param func global function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+     @param p5 default fifth parameter
+ */
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+    myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
+
+  /// Destructor
+  virtual ~MvrGlobalRetFunctor5() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2, myP3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (*myFunc)(p1, myP2, myP3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (*myFunc)(p1, p2, myP3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3) {return (*myFunc)(p1, p2, p3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+ */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3, P4 p4) {return (*myFunc)(p1, p2, p3, p4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+     @param p5 fifth parameter
+ */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) {return (*myFunc)(p1, p2, p3, p4, p5);}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+  
+  /// Set the default fourth parameter
+  /**
+     @param p4 default fourth parameter
+  */
+  virtual void setP4(P4 p4) {myP4=p4;}
+
+  /// Set the default fifth parameter
+  /**
+     @param p5 default fifth parameter
+  */
+  virtual void setP5(P5 p5) {myP5=p5;}
+
+protected:
+  Ret (*myFunc)(P1, P2, P3, P4, P5);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+  P4 myP4;
+  P5 myP5;
+};
+
+#endif // omitting MvrGlobalRetFunctor from SWIG
 
 #endif  // MVRFUNCTOR_H
