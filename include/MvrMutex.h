@@ -146,7 +146,7 @@ protected:
   MVREXPORT static unsigned int ourUnlockWarningMS;
   MvrTime *myLockStarted;
 
-  // Intialize lock timing state. Call in MvrMutex constructor.
+  // Initialize lock timing state. Call in MvrMutex constructor.
   void initLockTiming();
   // Destroy lock timing state. Call in destructor.
   void uninitLockTiming();
