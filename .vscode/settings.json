@@ -9,5 +9,12 @@
     "initializer_list": "cpp",
     "functional": "cpp",
     "type_traits": "cpp"
-  }
+  },
+  "line-counter.excludes": [
+        "**/.vscode/**",
+        "**/.idea/**",
+        "**/build/**",
+        "**/cmake-build-debug/**",
+        "**/lib/**"
+  ]
 }
