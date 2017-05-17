@@ -162,4 +162,18 @@ protected:
   static MvrFunctor *ourNonRecursiveDeadlockFunctor;
 };
 
+class MvrScopedLock {
+private:
+	MvrMutex& mtx;
+public:
+	MvrScopedLock(MvrMutex& m) : mtx(m) {
+		mtx.lock();
+	}
+	~MvrScopedLock() {
+		mtx.unlock();
+	}
+  void lock() { mtx.lock(); }
+  void unlock() { mtx.unlock(); }
+};
+
 #endif  // MVRMUTEX_H
