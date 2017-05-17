@@ -36,7 +36,7 @@
 //// Ubuntu
 ////
 
-#endif // Ununtu
+#endif // Ubuntu
 
 
 typedef std::map<int, std::string> MvrStrMap;
