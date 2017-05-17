@@ -31,30 +31,25 @@ class MvrArgumentParser
   MVREXPORT char *checkParameterArgument(const char *argument, 
 					bool returnFirst = false);
   /// Returns the word/argument after given argument 
-  MVREXPORT bool checkParameterArgumentString(const char *argument, 
-					     const char **dest, 
-					     bool *wasReallySet = NULL,
-					     bool returnFirst = false);
+  MVREXPORT bool checkParameterArgumentString(const char *argument, const char **dest, 
+					  bool *wasReallySet = NULL, mbool returnFirst = false);
   /// Returns the integer after given argument 
   MVREXPORT bool checkParameterArgumentInteger(const char *argument, int *dest,
-					      bool *wasReallySet = NULL, 
-					      bool returnFirst = false);
+					  bool *wasReallySet = NULL, bool returnFirst = false);
   /// Returns the word/argument after given argument 
   MVREXPORT bool checkParameterArgumentBool(const char *argument, bool *dest,
-					   bool *wasReallySet = NULL,
-					   bool returnFirst = false);
+					  bool *wasReallySet = NULL, bool returnFirst = false);
   /// Returns the floating point number after given argument 
   MVREXPORT bool checkParameterArgumentFloat(const char *argument, float *dest, 
-                bool *wasReallySet = NULL, bool returnFirst = false);
+            bool *wasReallySet = NULL, bool returnFirst = false);
   /// Returns the floating point number after given argument 
   MVREXPORT bool checkParameterArgumentDouble(const char *argument, double *dest, 
-                bool *wasReallySet = NULL, bool returnFirst = false);
+            bool *wasReallySet = NULL, bool returnFirst = false);
   /// Adds a string as a default argument
   MVREXPORT void addDefaultArgument(const char *argument, int position = -1);
   /// Adds a string as a default argument as is (without touching
   /// spaces or what not)
-  MVREXPORT void addDefaultArgumentAsIs(const char *argument, 
-				       int position = -1);
+  MVREXPORT void addDefaultArgumentAsIs(const char *argument, int position = -1);
   /// Adds args from default files and environmental variables
   MVREXPORT void loadDefaultArguments(int positon = 1);
   /// Checks for the help strings and warns about unparsed arguments
@@ -70,9 +65,6 @@ class MvrArgumentParser
     { return myBuilder; }
   /// Gets a specific argument
   MVREXPORT const char* getArg(size_t whichArg) const;
-
-
-
 
   /// Prints out the arguments left in this parser
   MVREXPORT void log(void) const;
@@ -99,31 +91,28 @@ class MvrArgumentParser
    *  @swigomit
    */
   MVREXPORT bool checkParameterArgumentStringVar(bool *wasReallySet, 
-						const char **dest, 
-						const char *argument, ...);
+						const char **dest, const char *argument, ...);
   /** @brief Returns the word/argument after given argument 
    *  @swigomit
    */
   MVREXPORT bool checkParameterArgumentBoolVar(bool *wasReallySet, bool *dest,
-					      const char *argument, ...);
+					  const char *argument, ...);
   /** @brief Returns the integer after given argument 
    *  @swigomit
    */
   MVREXPORT bool checkParameterArgumentIntegerVar(bool *wasReallySet, int *dest,
-						 const char *argument, ...);
+						const char *argument, ...);
   /** @brief Returns the float after given argument 
    *  @swigomit
    */
   MVREXPORT bool checkParameterArgumentFloatVar(bool *wasReallySet, 
-						float *dest,
-						 const char *argument, ...);
+						float *dest, const char *argument, ...);
   /** @brief Returns the double after given argument 
    *  @swigomit
    */
   MVREXPORT bool checkParameterArgumentDoubleVar(bool *wasReallySet, 
-						double *dest,
-						const char *argument, ...);
-#endif
+						double *dest, const char *argument, ...);
+#endif  // SWIG
 protected:
   static std::list<std::string> ourDefaultArgumentLocs;
   static std::list<bool> ourDefaultArgumentLocIsFile;
