@@ -11,7 +11,7 @@
 
 #include <string>
 #include "mvriaTypedefs.h"
-#include "MvrDeviceConnectio.h"
+#include "MvrDeviceConnection.h"
 
 
 #endif  // MVRSERIALCONNECTION_H
