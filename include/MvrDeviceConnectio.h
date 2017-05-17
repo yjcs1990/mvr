@@ -1,17 +1,16 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrSerialConnection.h
- > Description  : Utility for connecting to and communicating with devices through a serial port
+ > File Name    : MvrDeviceConnection.h
+ > Description  : Base class for device connections
  > Author       : Yu Jie
  > Create Time  : 2017年05月10日
- > Modify Time  : 2017年05月10日
+ > Modify Time  : 2017年05月17日
 ***************************************************************************************************/
-#ifndef MVRSERIALCONNECTION_H
-#define MVRSERIALCONNECTION_H
+#ifndef MVRDEVICECONNECTION_H
+#define MVRDEVICECONNECTION_H
 
 #include <string>
 #include "mvriaTypedefs.h"
-#include "MvrDeviceConnectio.h"
+#include "mvriaUtil.h"
 
-
-#endif  // MVRSERIALCONNECTION_H
+#endif  // MVRDEVICECONNECTION_H
