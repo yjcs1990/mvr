@@ -222,7 +222,6 @@ protected:
 };
 
 // ----------------------------------------------------------------------------
-
 /// Comparator that returns true if arg1's full string is less than arg2's.
 struct MvrArgumentBuilderCompareOp
 {
@@ -231,6 +230,5 @@ public:
   MVREXPORT bool operator() (MvrArgumentBuilder* arg1, MvrArgumentBuilder* arg2) const;
 
 }; // end struct MvrArgumentBuilderCompareOp
-
 
 #endif  // MVRARGUMENTBUILDER_H
