@@ -2296,7 +2296,6 @@ MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P
   */
   MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
-
 	
   /// Destructor
   virtual ~MvrFunctor5C() {}
@@ -2333,7 +2332,6 @@ MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P
      @param p4 fourth parameter
  */
   virtual void invoke(P1 p1, P2 p2, P3 p3, P4 p4) {(myObj->*myFunc)(p1, p2, p3, p4, myP5);}
-
 
   /// Invokes the functor
   /**
@@ -2389,7 +2387,6 @@ MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P
 
 
 protected:
-
   T *myObj;
   void (T::*myFunc)(P1, P2, P3, P4, P5);
   P1 myP1;
@@ -2397,6 +2394,889 @@ protected:
   P3 myP3;
   P4 myP4;
   P5 myP5;
+};
+
+//
+//
+//
+// MvrFunctors for member functions with return values
+//
+//
+//
+/// Functor for a member function with return value
+/**
+   This is a class for member functions which return a value. This class
+   contains the knowledge on how to call a member function on a particular
+   instance of a class. This class should be instantiated by code that
+   wishes to pass off a functor to another piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class T>
+class MvrRetFunctorC : public MvrRetFunctor<Ret>
+{
+public:
+  /// Constructor
+  MvrRetFunctorC() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctorC(T &obj, Ret (T::*func)(void)) : myObj(&obj), myFunc(func) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctorC(T *obj, Ret (T::*func)(void)) : myObj(obj), myFunc(func) {}
+
+  /// Destructor - supply function pointer
+  virtual ~MvrRetFunctorC() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (myObj->*myFunc)();}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+protected:
+  T *myObj;
+  Ret (T::*myFunc)(void);
+};
+
+/// Functor for a member function with return value and 1 parameter
+/**
+   This is a class for member functions which take 1 parameter and return
+   a value. This class contains the knowledge on how to call a member
+   function on a particular instance of a class. This class should be
+   instantiated by code that wishes to pass off a functor to another
+   piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class T, class P1>
+class MvrRetFunctor1C : public MvrRetFunctor1<Ret, P1>
+{
+public:
+  /// Constructor
+  MvrRetFunctor1C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor1C(T &obj, Ret (T::*func)(P1)) : myObj(&obj), myFunc(func), myP1() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor1C(T &obj, Ret (T::*func)(P1), P1 p1) : myObj(&obj), myFunc(func), myP1(p1) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor1C(T *obj, Ret (T::*func)(P1)) : myObj(obj), myFunc(func), myP1() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor1C(T *obj, Ret (T::*func)(P1), P1 p1) : myObj(obj), myFunc(func), myP1(p1) {}
+
+  /// Destructor
+  virtual ~MvrRetFunctor1C() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (myObj->*myFunc)(p1);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+protected:
+  T *myObj;
+  Ret (T::*myFunc)(P1);
+  P1 myP1;
+};
+
+/// Functor for a member function with return value and 2 parameters
+/**
+   This is a class for member functions which take 2 parameters and return
+   a value. This class contains the knowledge on how to call a member
+   function on a particular instance of a class. This class should be
+   instantiated by code that wishes to pass off a functor to another
+   piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class T, class P1, class P2>
+class MvrRetFunctor2C : public MvrRetFunctor2<Ret, P1, P2>
+{
+public:
+  /// Constructor
+  MvrRetFunctor2C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor2C(T &obj, Ret (T::*func)(P1, P2)) :
+    myObj(&obj), myFunc(func), myP1(), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor2C(T &obj, Ret (T::*func)(P1, P2), P1 p1) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor2C(T &obj, Ret (T::*func)(P1, P2), P1 p1, P2 p2) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor2C(T *obj, Ret (T::*func)(P1, P2)) :
+    myObj(obj), myFunc(func), myP1(), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor2C(T *obj, Ret (T::*func)(P1, P2), P1 p1) :
+    myObj(obj), myFunc(func), myP1(p1), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor2C(T *obj, Ret (T::*func)(P1, P2), P1 p1, P2 p2) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
+
+  /// Destructor
+  virtual ~MvrRetFunctor2C() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (myObj->*myFunc)(p1, myP2);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (myObj->*myFunc)(p1, p2);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+protected:
+  T *myObj;
+  Ret (T::*myFunc)(P1, P2);
+  P1 myP1;
+  P2 myP2;
+};
+
+/// Functor for a member function with return value and 3 parameters
+/**
+   This is a class for member functions which take 3 parameters and return
+   a value. This class contains the knowledge on how to call a member
+   function on a particular instance of a class. This class should be
+   instantiated by code that wishes to pass off a functor to another
+   piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class T, class P1, class P2, class P3>
+class MvrRetFunctor3C : public MvrRetFunctor3<Ret, P1, P2, P3>
+{
+public:
+  /// Constructor
+  MvrRetFunctor3C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3)) :
+    myObj(&obj), myFunc(func), myP1(), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3)) :
+    myObj(obj), myFunc(func), myP1(), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
+
+  /// Destructor
+  virtual ~MvrRetFunctor3C() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (myObj->*myFunc)(p1, myP2, myP3);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (myObj->*myFunc)(p1, p2, myP3);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3) 
+    {return (myObj->*myFunc)(p1, p2, p3);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj object to call function on
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj object to call function on
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+
+protected:
+  T *myObj;
+  Ret (T::*myFunc)(P1, P2, P3);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+};
+
+/// Functor for a member function with return value and 4 parameters
+/**
+   This is a class for member functions which take 4 parameters and return
+   a value. This class contains the knowledge on how to call a member
+   function on a particular instance of a class. This class should be
+   instantiated by code that wishes to pass off a functor to another
+   piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class T, class P1, class P2, class P3, class P4>
+class MvrRetFunctor4C : public MvrRetFunctor4<Ret, P1, P2, P3, P4>
+{
+public:
+
+  /// Constructor
+  MvrRetFunctor4C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4)) :
+    myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+  */
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
+
+
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4)) :
+    myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+ */
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
+
+  /// Destructor
+  virtual ~MvrRetFunctor4C() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (myObj->*myFunc)(p1, myP2, myP3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (myObj->*myFunc)(p1, p2, myP3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3) 
+    {return (myObj->*myFunc)(p1, p2, p3, myP4);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+ */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3, P4 p4) 
+    {return (myObj->*myFunc)(p1, p2, p3, p4);}
+
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+
+  /// Set the default fourth parameter
+  /**
+     @param p4 default fourth parameter
+  */
+  virtual void setP4(P4 p4) {myP4=p4;}
+
+protected:
+
+  T *myObj;
+  Ret (T::*myFunc)(P1, P2, P3, P4);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+  P4 myP4;
+};
+
+
+
+/// Functor for a member function with return value and 4 parameters
+/**
+   This is a class for member functions which take 4 parameters and return
+   a value. This class contains the knowledge on how to call a member
+   function on a particular instance of a class. This class should be
+   instantiated by code that wishes to pass off a functor to another
+   piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class Ret, class T, class P1, class P2, class P3, class P4, class P5>
+class MvrRetFunctor5C : public MvrRetFunctor5<Ret, P1, P2, P3, P4, P5>
+{
+public:
+
+  /// Constructor
+  MvrRetFunctor5C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5)) :
+    myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+  */
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
+
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+     @param p5 default fifth parameter
+  */
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
+
+
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5)) :
+    myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+ */
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
+
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+     @param p5 default fifth parameter
+ */
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
+
+  /// Destructor
+  virtual ~MvrRetFunctor5C() {}
+
+  /// Invokes the functor with return value
+  virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+  */
+  virtual Ret invokeR(P1 p1) {return (myObj->*myFunc)(p1, myP2, myP3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2) {return (myObj->*myFunc)(p1, p2, myP3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3) 
+    {return (myObj->*myFunc)(p1, p2, p3, myP4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+ */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3, P4 p4) 
+    {return (myObj->*myFunc)(p1, p2, p3, p4, myP5);}
+
+  /// Invokes the functor with return value
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+     @param p5 fifth parameter
+ */
+  virtual Ret invokeR(P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) 
+    {return (myObj->*myFunc)(p1, p2, p3, p4, p5);}
+
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+
+  /// Set the default fourth parameter
+  /**
+     @param p4 default fourth parameter
+  */
+  virtual void setP4(P4 p4) {myP4=p4;}
+
+  /// Set the default fifth parameter
+  /**
+     @param p5 default fifth parameter
+  */
+  virtual void setP5(P5 p5) {myP5=p5;}
+
+protected:
+
+  T *myObj;
+  Ret (T::*myFunc)(P1, P2, P3, P4, P5);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+  P4 myP4;
+  P4 myP5;
 };
 
 #endif  // MVRFUNCTOR_H
