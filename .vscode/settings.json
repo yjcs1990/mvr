@@ -2,6 +2,10 @@
   "files.associations": {
     "string": "cpp",
     "list": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "array": "cpp",
+    "hash_map": "cpp",
+    "slist": "cpp",
+    "initializer_list": "cpp"
   }
 }
