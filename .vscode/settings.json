@@ -7,6 +7,7 @@
     "hash_map": "cpp",
     "slist": "cpp",
     "initializer_list": "cpp",
-    "functional": "cpp"
+    "functional": "cpp",
+    "type_traits": "cpp"
   }
 }
