@@ -98,7 +98,7 @@ public:
   /// Set log level
   MVREXPORT static void setLogLevel(LogLevel level);
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   // Init for aram behavior
   /// @internal
   MVREXPORT static void aramInit(const char *prefix, MvrLog::LogLevel defaultLevel = MvrLog::Normal, 
@@ -130,7 +130,7 @@ public:
 
 protected:
   MVREXPORT static bool processFile(void);
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   MVREXPORT static bool aramProcessFile(void);
   MVREXPORT static void filledAramLog(void);
 #endif
