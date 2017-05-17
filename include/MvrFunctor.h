@@ -4153,4 +4153,13 @@ protected:
 };
 
 
+//
+//
+//
+// MvrFunctors for const member functions with return values
+//
+//
+//
+
+
 #endif  // MVRFUNCTOR_H
