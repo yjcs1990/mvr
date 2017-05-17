@@ -14,7 +14,9 @@
 #include <stdio.h>
 #endif  // WIN32
 #include <string>
-#include <mvriaTypedefs.h>
-#include <MvrMutex.h>
+#include "mvriaTypedefs.h"
+#include "MvrMutex.h"
+#include "MvrFunctor.h"
+
 /// TODO
 #endif  //MVRLOG_H
