@@ -6,3 +6,11 @@
  > Create Time  : 2017年05月10日
  > Modify Time  : 2017年05月10日
 ***************************************************************************************************/
+#ifndef MVRSERIALCONNECTION_H
+#define MVRSERIALCONNECTION_H
+
+#include <string>
+#include "mvriaTypedefs.h"
+#include "MvrDeviceConnection"
+
+#endif  // MVRSERIALCONNECTION_H
