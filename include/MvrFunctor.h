@@ -1540,4 +1540,863 @@ protected:
 
 #endif // omitting MvrGlobalRetFunctor from SWIG
 
+
+//
+//
+//
+// MvrFunctors for member functions
+//
+//
+//
+/// Functor for a member function
+/**
+   This is a class for member functions. This class contains the knowledge
+   on how to call a member function on a particular instance of a class.
+   This class should be instantiated by code that wishes to pass off a
+   functor to another piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class T>
+class MvrFunctorC : public MvrFunctor
+{
+public:
+  /// Constructor
+  MvrFunctorC() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctorC(T &obj, void (T::*func)(void)) : myObj(&obj), myFunc(func) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctorC(T *obj, void (T::*func)(void)) : myObj(obj), myFunc(func) {}
+
+  /// Destructor
+  virtual ~MvrFunctorC() {}
+
+  /// Invokes the functor
+  virtual void invoke(void) {(myObj->*myFunc)();}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+protected:
+  T *myObj;
+  void (T::*myFunc)(void);
+};
+
+
+/// Functor for a member function with 1 parameter
+/**
+   This is a class for member functions which take 1 parameter. This class
+   contains the knowledge on how to call a member function on a particular
+   instance of a class. This class should be instantiated by code that
+   wishes to pass off a functor to another piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class T, class P1>
+class MvrFunctor1C : public MvrFunctor1<P1>
+{
+public:
+
+  /// Constructor
+  MvrFunctor1C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor1C(T &obj, void (T::*func)(P1)) : myObj(&obj), myFunc(func), myP1() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor1C(T &obj, void (T::*func)(P1), P1 p1) : myObj(&obj), myFunc(func), myP1(p1) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor1C(T *obj, void (T::*func)(P1)) : myObj(obj), myFunc(func), myP1() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor1C(T *obj, void (T::*func)(P1), P1 p1) : myObj(obj), myFunc(func), myP1(p1) {}
+
+  /// Destructor
+  virtual ~MvrFunctor1C() {}
+
+  /// Invokes the functor
+  virtual void invoke(void) {(myObj->*myFunc)(myP1);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+  */
+  virtual void invoke(P1 p1) {(myObj->*myFunc)(p1);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+protected:
+  T *myObj;
+  void (T::*myFunc)(P1);
+  P1 myP1;
+};
+
+
+/// Functor for a member function with 2 parameters
+/**
+   This is a class for member functions which take 2 parameters. This class
+   contains the knowledge on how to call a member function on a particular
+   instance of a class. This class should be instantiated by code that
+   wishes to pass off a functor to another piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class T, class P1, class P2>
+class MvrFunctor2C : public MvrFunctor2<P1, P2>
+{
+public:
+  /// Constructor
+  MvrFunctor2C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor2C(T &obj, void (T::*func)(P1, P2)) : myObj(&obj), myFunc(func), myP1(), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor2C(T &obj, void (T::*func)(P1, P2), P1 p1) : myObj(&obj), myFunc(func), myP1(p1), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor2C(T &obj, void (T::*func)(P1, P2), P1 p1, P2 p2) : myObj(&obj), myFunc(func), myP1(p1), myP2(p2) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor2C(T *obj, void (T::*func)(P1, P2)) : myObj(obj), myFunc(func), myP1(), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor2C(T *obj, void (T::*func)(P1, P2), P1 p1) : myObj(obj), myFunc(func), myP1(p1), myP2() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor2C(T *obj, void (T::*func)(P1, P2), P1 p1, P2 p2) :  myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
+
+  /// Destructor
+  virtual ~MvrFunctor2C() {}
+
+  /// Invokes the functor
+  virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+  */
+  virtual void invoke(P1 p1) {(myObj->*myFunc)(p1, myP2);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual void invoke(P1 p1, P2 p2) {(myObj->*myFunc)(p1, p2);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+protected:
+  T *myObj;
+  void (T::*myFunc)(P1, P2);
+  P1 myP1;
+  P2 myP2;
+};
+
+/// Functor for a member function with 3 parameters
+/**
+   This is a class for member functions which take 3 parameters. This class
+   contains the knowledge on how to call a member function on a particular
+   instance of a class. This class should be instantiated by code that
+   wishes to pass off a functor to another piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class T, class P1, class P2, class P3>
+class MvrFunctor3C : public MvrFunctor3<P1, P2, P3>
+{
+public:
+  /// Constructor
+  MvrFunctor3C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3)) :
+    myObj(&obj), myFunc(func), myP1(), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3)) :
+    myObj(obj), myFunc(func), myP1(), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(), myP3() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3() {} 
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
+
+  /// Destructor
+  virtual ~MvrFunctor3C() {}
+
+  /// Invokes the functor
+  virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+  */
+  virtual void invoke(P1 p1) {(myObj->*myFunc)(p1, myP2, myP3);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual void invoke(P1 p1, P2 p2) {(myObj->*myFunc)(p1, p2, myP3);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual void invoke(P1 p1, P2 p2, P3 p3) {(myObj->*myFunc)(p1, p2, p3);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+
+protected:
+  T *myObj;
+  void (T::*myFunc)(P1, P2, P3);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+};
+
+/// Functor for a member function with 4 parameters
+/**
+   This is a class for member functions which take 4 parameters. This class
+   contains the knowledge on how to call a member function on a particular
+   instance of a class. This class should be instantiated by code that
+   wishes to pass off a functor to another piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class T, class P1, class P2, class P3, class P4>
+class MvrFunctor4C : public MvrFunctor4<P1, P2, P3, P4>
+{
+public:
+  /// Constructor
+  MvrFunctor4C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4)) :
+    myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+      @param p4 default fourth parameter
+ */
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4)) :
+    myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+  */
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
+
+  /// Destructor
+  virtual ~MvrFunctor4C() {}
+
+  /// Invokes the functor
+  virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3, myP4);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+  */
+  virtual void invoke(P1 p1) {(myObj->*myFunc)(p1, myP2, myP3, myP4);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual void invoke(P1 p1, P2 p2) {(myObj->*myFunc)(p1, p2, myP3, myP4);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual void invoke(P1 p1, P2 p2, P3 p3) {(myObj->*myFunc)(p1, p2, p3, myP4);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+ */
+  virtual void invoke(P1 p1, P2 p2, P3 p3, P4 p4) {(myObj->*myFunc)(p1, p2, p3, p4);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+
+  /// Set the default fourth parameter
+  /**
+     @param p4 default fourth parameter
+  */
+  virtual void setP4(P4 p4) {myP4=p4;}
+
+
+protected:
+  T *myObj;
+  void (T::*myFunc)(P1, P2, P3, P4);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+  P4 myP4;
+};
+
+/// Functor for a member function with 5 parameters
+/**
+   This is a class for member functions which take 5 parameters. This class
+   contains the knowledge on how to call a member function on a particular
+   instance of a class. This class should be instantiated by code that
+   wishes to pass off a functor to another piece of code.
+   
+   For an overall description of functors, see MvrFunctor.
+*/
+template<class T, class P1, class P2, class P3, class P4, class P5>
+class MvrFunctor5C : public MvrFunctor5<P1, P2, P3, P4, P5>
+{
+public:
+  /// Constructor
+  MvrFunctor5C() {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5)) :
+    myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+ */
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
+  
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+     @param p5 default fifth parameter
+ */
+MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
+
+  /// Constructor - supply function pointer
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+  */
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5)) :
+    myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+  */
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+  */
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+  */
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+  */
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
+
+  /// Constructor - supply function pointer, default parameters
+  /**
+     @param obj object to call function on
+     @param func member function pointer
+     @param p1 default first parameter
+     @param p2 default second parameter
+     @param p3 default third parameter
+     @param p4 default fourth parameter
+     @param p5 default fifth parameter
+  */
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+    myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
+
+	
+  /// Destructor
+  virtual ~MvrFunctor5C() {}
+
+  /// Invokes the functor
+  virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3, myP4, myP5);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+  */
+  virtual void invoke(P1 p1) {(myObj->*myFunc)(p1, myP2, myP3, myP4, myP5);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+  */
+  virtual void invoke(P1 p1, P2 p2) {(myObj->*myFunc)(p1, p2, myP3, myP4, myP5);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+  */
+  virtual void invoke(P1 p1, P2 p2, P3 p3) {(myObj->*myFunc)(p1, p2, p3, myP4, myP5);}
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+ */
+  virtual void invoke(P1 p1, P2 p2, P3 p3, P4 p4) {(myObj->*myFunc)(p1, p2, p3, p4, myP5);}
+
+
+  /// Invokes the functor
+  /**
+     @param p1 first parameter
+     @param p2 second parameter
+     @param p3 third parameter
+     @param p4 fourth parameter
+     @param p5 fifth parameter
+ */
+  virtual void invoke(P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) {(myObj->*myFunc)(p1, p2, p3, p4, p5);}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T *obj) {myObj=obj;}
+
+  /// Set the 'this' pointer
+  /**
+     @param obj the 'this' pointer
+  */
+  virtual void setThis(T &obj) {myObj=&obj;}
+
+  /// Set the default parameter
+  /**
+     @param p1 default first parameter
+  */
+  virtual void setP1(P1 p1) {myP1=p1;}
+
+  /// Set the default 2nd parameter
+  /**
+     @param p2 default second parameter
+  */
+  virtual void setP2(P2 p2) {myP2=p2;}
+
+  /// Set the default third parameter
+  /**
+     @param p3 default third parameter
+  */
+  virtual void setP3(P3 p3) {myP3=p3;}
+
+  /// Set the default fourth parameter
+  /**
+     @param p4 default fourth parameter
+  */
+  virtual void setP4(P4 p4) {myP4=p4;}
+
+  /// Set the default fifth parameter
+  /**
+     @param p5 default fifth parameter
+  */
+  virtual void setP5(P5 p5) {myP5=p5;}
+
+
+protected:
+
+  T *myObj;
+  void (T::*myFunc)(P1, P2, P3, P4, P5);
+  P1 myP1;
+  P2 myP2;
+  P3 myP3;
+  P4 myP4;
+  P5 myP5;
+};
+
 #endif  // MVRFUNCTOR_H
