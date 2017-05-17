@@ -35,5 +35,7 @@
 #endif // ifndef win32
 #include <time.h>
 #include "mvriaTypedefs.h"
-#include "ArLog.h"
+#include "MvrLog.h"
+#include "MvrFunctor.h"
+#include "MvrArgumentParser.h"
 #endif  // MVRIAUTIL_H
