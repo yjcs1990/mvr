@@ -12,8 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="14e537d0-88b1-4c26-ba77-bcaef6727e49" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBasePacket.h" afterPath="$PROJECT_DIR$/include/MvrBasePacket.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/mvriaTypedefs.h" afterPath="$PROJECT_DIR$/include/mvriaTypedefs.h" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -414,12 +413,12 @@
       <updated>1495012481412</updated>
       <workItem from="1495012482634" duration="285000" />
       <workItem from="1495074390222" duration="2624000" />
-      <workItem from="1495084227328" duration="318000" />
+      <workItem from="1495084227328" duration="489000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3227000" />
+    <option name="totallyTimeSpent" value="3398000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1169" y="569" width="1855" height="1056" extended-state="0" />
