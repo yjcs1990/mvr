@@ -15,6 +15,7 @@
 #include "MvrSerialConnection.h"
 #include "MvrTcpConnection.h"
 #include "MvrSimpleConnection.h"
+#include "MvrLogFileConnection.h"
 
 /// TODO
 #endif  // MVRIA_H
