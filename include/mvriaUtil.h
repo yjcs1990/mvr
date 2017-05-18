@@ -361,8 +361,6 @@ public:
 
 
   /** Interface to native platform localtime() function.
-   *  On Linux, this is equivalent to a call to localtime_r(@a timep, @a result) (which is threadsafe, including the returned pointer, since it uses a different time struct for each thread)
-   *  On Windows, this is equivalent to a call to localtime(@a timep, @a result). In addition, a static mutex is used to make it threadsafe.
    *
    *  @param timep Pointer to current time (Unix time_t; seconds since epoch) 
    *  @param result The result of calling platform localtime function is copied into this struct, so it must have been allocated.
@@ -1243,4 +1241,1217 @@ protected:
 #endif 
 }; // end class MvrTime
 
+/// A subclass of MvrPose that also stores a timestamp (MvrTime) 
+class MvrPoseWithTime : public MvrPose
+{
+public:
+  MvrPoseWithTime(double x = 0, double y = 0, double th = 0,
+	                MvrTime thisTime = MvrTime()) : MvrPose(x, y, th)
+  { myTime = thisTime; }
+  /// Copy Constructor
+  MvrPoseWithTime(const MvrPose &pose) : MvrPose(pose) {}
+  virtual ~MvrPoseWithTime() {}
+  void setTime(MvrTime newTime) { myTime = newTime; }
+  void setTimeToNow(void) { myTime.setToNow(); }
+  MvrTime getTime(void) const { return myTime; }
+protected:
+  MvrTime myTime;
+};
+
+/// A class for keeping track of if a complete revolution has been attained
+/**
+   This class can be used to keep track of if a complete revolution has been
+   done, it is used by doing doing a clearQuadrants when you want to stat
+   the revolution.  Then at each point doing an updateQuadrant with the current
+   heading of the robot.  When didAllQuadrants returns true, then all the 
+   quadrants have been done.
+  @ingroup UtilityClasses
+*/
+class MvrSectors
+{
+public:
+  /// Constructor
+  MvrSectors(int numSectors = 8) 
+  { 
+    mySectorSize = 360/numSectors;
+    mySectors = new int[numSectors]; 
+    myNumSectors = numSectors; 
+    clear();
+  }
+  /// Destructor
+  virtual ~MvrSectors() { delete mySectors; }
+  /// Clears all quadrants
+  void clear(void) 
+  {
+    int i;
+    for (i = 0; i < myNumSectors; i++)
+	    mySectors[i] = false;
+  }
+  /// Updates the appropriate quadrant for the given angle
+  void update(double angle)
+  {
+    int angleInt;
+    angleInt = MvrMath::roundInt(MvrMath::fixAngle(angle) + 180);
+    mySectors[angleInt / mySectorSize] = true;
+  }
+  /// Returns true if the all of the quadrants have been gone through
+  bool didAll(void) const
+  {
+    int i;
+    for (i = 0; i < myNumSectors; i++)
+	    if (mySectors[i] == false)
+	      return false;
+    return true;
+  }
+protected:
+  int *mySectors;
+  int myNumSectors;
+  int mySectorSize;
+};
+
+/// Represents geometry of a line in two-dimensional space.
+/**
+   Note this the theoretical line, i.e. it goes infinitely. 
+   For a line segment with endpoints, use MvrLineSegment.
+   @sa MvrLineSegment
+  @ingroup UtilityClasses
+**/
+class MvrLine
+{
+public:
+  ///// Empty constructor
+  MvrLine() {}
+  /// Constructor with parameters
+  MvrLine(double a, double b, double c) { newParameters(a, b, c); }
+  /// Constructor with endpoints
+  MvrLine(double x1, double y1, double x2, double y2) 
+  { newParametersFromEndpoints(x1, y1, x2, y2); }
+  /// Destructor
+  virtual ~MvrLine() {}
+  /// Sets the line parameters (make it not a segment)
+  void newParameters(double a, double b, double c) 
+  { myA = a; myB = b; myC = c; }
+  /// Sets the line parameters from endpoints, but makes it not a segment
+  void newParametersFromEndpoints(double x1, double y1, double x2, double y2)
+  { myA = y1 - y2; myB = x2 - x1; myC = (y2 *x1) - (x2 * y1); }
+  /// Gets the A line parameter
+  double getA(void) const { return myA; }
+  /// Gets the B line parameter
+  double getB(void) const { return myB; }
+  /// Gets the C line parameter
+  double getC(void) const { return myC; }
+  /// finds the intersection of this line with another line
+  /** 
+      @param line the line to check if it intersects with this line
+      @param pose if the lines intersect, the pose is set to the location
+      @return true if they intersect, false if they do not 
+  **/
+  bool intersects(const MvrLine *line, MvrPose *pose) const
+    {
+      double x, y;
+      double n;
+      n = (line->getB() * getA()) - (line->getA() * getB());
+      // if this is 0 the lines are parallel
+      if (fabs(n) < .0000000000001)
+      {
+	return false;
+      }
+      // they weren't parallel so see where the intersection is
+      x = ((line->getC() * getB()) - (line->getB() * getC())) / n;
+      y = ((getC() * line->getA()) - (getA() * line->getC())) / n;
+      pose->setPose(x, y);
+      return true;
+    }
+  /// Makes the given line perpendicular to this one through the given pose
+  void makeLinePerp(const MvrPose *pose, MvrLine *line) const
+  {
+    line->newParameters(getB(), -getA(), 
+	  (getA() * pose->getY()) - (getB() * pose->getX()));
+  }
+   /// Calculate the distance from the given point to (its projection on) this line segment
+  /**
+     @param pose the the pose to find the perp point of
+
+     @return if the pose does not intersect line it will return < 0
+     if the pose intersects the segment it will return the distance to
+     the intersection
+  **/
+  virtual double getPerpDist(const MvrPose &pose) const
+  {
+    MvrPose perpPose;
+    MvrLine perpLine;
+    makeLinePerp(&pose, &perpLine);
+    if (!intersects(&perpLine, &perpPose))
+	    return -1;
+    return (perpPose.findDistanceTo(pose));
+  }
+   /// Calculate the squared distance from the given point to (its projection on) this line segment
+  /**
+     @param pose the the pose to find the perp point of
+
+     @return if the pose does not intersect line it will return < 0
+     if the pose intersects the segment it will return the distance to
+     the intersection
+  **/
+  virtual double getPerpSquaredDist(const MvrPose &pose) const
+  {
+    MvrPose perpPose;
+    MvrLine perpLine;
+    makeLinePerp(&pose, &perpLine);
+    if (!intersects(&perpLine, &perpPose))
+    	return -1;
+    return (perpPose.squaredFindDistanceTo(pose));
+  }
+  /// Determine the intersection point between this line segment, and a perpendicular line passing through the given pose (i.e. projects the given pose onto this line segment.)
+  /**
+   * If there is no intersection, false is returned.
+     @param pose The X and Y components of this pose object indicate the point to project onto this line segment.
+     @param perpPoint The X and Y components of this pose object are set to indicate the intersection point
+     @return true if an intersection was found and perpPoint was modified, false otherwise.
+     @swigomit
+  **/
+  bool getPerpPoint(const MvrPose &pose, MvrPose *perpPoint) const
+  {
+    MvrLine perpLine;
+    makeLinePerp(&pose, &perpLine);
+    return intersects(&perpLine, perpPoint);
+  }
+
+  /// Equality operator
+  virtual bool operator==(const MvrLine &other) const
+  {
+    return ((fabs(myA - other.myA) <= MvrMath::epsilon()) &&
+            (fabs(myB - other.myB) <= MvrMath::epsilon()) &&
+            (fabs(myC - other.myC) <= MvrMath::epsilon()));
+  }
+  /// Inequality operator
+  virtual bool operator!=(const MvrLine &other) const
+  {
+    return ((fabs(myA - other.myA) > MvrMath::epsilon()) ||
+            (fabs(myB - other.myB) > MvrMath::epsilon()) ||
+            (fabs(myC - other.myC) > MvrMath::epsilon()));
+  }
+protected:
+  double myA, myB, myC;
+};
+
+/// Represents a line segment in two-dimensional space.
+/** The segment is defined by the coordinates of each endpoint. 
+  @ingroup UtilityClasses
+*/
+class MvrLineSegment
+{
+public:
+#ifndef SWIG
+  /** @swigomit */
+  MvrLineSegment() {}
+  /** @brief Constructor with endpoints
+   *  @swigomit
+   */
+  MvrLineSegment(double x1, double y1, double x2, double y2)
+  { newEndPoints(x1, y1, x2, y2); }
+#endif // SWIG
+  /// Constructor with endpoints as MvrPose objects. Only X and Y components of the poses will be used.
+  MvrLineSegment(MvrPose pose1, MvrPose pose2)
+  { newEndPoints(pose1.getX(), pose1.getY(), pose2.getX(), pose2.getY()); }
+  virtual ~MvrLineSegment() {}
+  /// Set new end points for this line segment
+  void newEndPoints(double x1, double y1, double x2, double y2)
+  {
+    myX1 = x1; myY1 = y1; myX2 = x2; myY2 = y2; 
+    myLine.newParametersFromEndpoints(myX1, myY1, myX2, myY2);
+  }
+  /// Set new end points for this line segment
+  void newEndPoints(const MvrPose& pt1, const MvrPose& pt2)
+  {
+    newEndPoints(pt1.getX(), pt1.getY(), pt2.getX(), pt2.getY());
+  }
+  /// Get the first endpoint (X1, Y1)
+  MvrPose getEndPoint1(void) const { return MvrPose(myX1, myY1); }
+  /// Get the second endpoint of (X2, Y2)
+  MvrPose getEndPoint2(void) const { return MvrPose(myX2, myY2); }
+  /// Determine where a line intersects this line segment
+  /**
+      @param line Line to check for intersection against this line segment.
+      @param pose if the lines intersect, the X and Y components of this pose are set to the point of intersection.
+      @return true if they intersect, false if they do not 
+   **/
+  bool intersects(const MvrLine *line, MvrPose *pose) const
+  {
+    MvrPose intersection;
+    // see if it intersects, then make sure its in the coords of this line
+    if (myLine.intersects(line, &intersection) && linePointIsInSegment(&intersection))
+    {
+      pose->setPose(intersection);
+      return true;
+    }
+    else
+	    return false;
+  }
+
+  /** @copydoc intersects(const MvrLine *line, MvrPose *pose) const */
+  bool intersects(MvrLineSegment *line, MvrPose *pose) const
+  {
+    MvrPose intersection;
+    // see if it intersects, then make sure its in the coords of this line
+    if (myLine.intersects(line->getLine(), &intersection) &&
+	  linePointIsInSegment(&intersection) && line->linePointIsInSegment(&intersection))
+    {
+	    pose->setPose(intersection);
+	    return true;
+    }
+    else
+	    return false;
+  }
+#ifndef SWIG
+  /// Determine the intersection point between this line segment, and a perpendicular line passing through the given pose (i.e. projects the given pose onto this line segment.)
+  /**
+   * If there is no intersection, false is returned.
+     @param pose The X and Y components of this pose object indicate the point to project onto this line segment.
+     @param perpPoint The X and Y components of this pose object are set to indicate the intersection point
+     @return true if an intersection was found and perpPoint was modified, false otherwise.
+     @swigomit
+  **/
+  bool getPerpPoint(const MvrPose &pose, MvrPose *perpPoint) const
+  {
+    MvrLine perpLine;
+    myLine.makeLinePerp(&pose, &perpLine);
+    return intersects(&perpLine, perpPoint);
+  }
+#endif
+  bool getPerpPoint(const MvrPose *pose, MvrPose *perpPoint) const
+    {
+      MvrLine perpLine;
+      myLine.makeLinePerp(pose, &perpLine);
+      return intersects(&perpLine, perpPoint);
+    }
+   /// Calculate the distance from the given point to (its projection on) this line segment
+  /**
+     @param pose the the pose to find the perp point of
+     @return if the pose does not intersect segment it will return < 0
+     if the pose intersects the segment it will return the distance to
+     the intersection
+  **/
+  virtual double getPerpDist(const MvrPose &pose) const
+  {
+    MvrPose perpPose;
+    MvrLine perpLine;
+    myLine.makeLinePerp(&pose, &perpLine);
+    if (!intersects(&perpLine, &perpPose))
+    	return -1;
+    return (perpPose.findDistanceTo(pose));
+  }
+  /// Calculate the squared distance from the given point to (its projection on) this line segment
+  /**
+     @param pose the the pose to find the perp point of
+
+     @return if the pose does not intersect segment it will return < 0
+     if the pose intersects the segment it will return the distance to
+     the intersection
+  **/
+  virtual double getPerpSquaredDist(const MvrPose &pose) const
+  {
+    MvrPose perpPose;
+    MvrLine perpLine;
+    myLine.makeLinePerp(&pose, &perpLine);
+    if (!intersects(&perpLine, &perpPose))
+	    return -1;
+    return (perpPose.squaredFindDistanceTo(pose));
+  }
+
+  /// Gets the distance from this line segment to a point.
+  /**
+   * If the point can be projected onto this line segment (i.e. a
+   * perpendicular line can be drawn through the point), then
+   * return that distance. Otherwise, return the distance to the closest
+   * endpoint.
+     @param pose the pointer of the pose to find the distance to
+  **/
+  double getDistToLine(const MvrPose &pose) const
+  {
+    MvrPose perpPose;
+    MvrLine perpLine;
+    myLine.makeLinePerp(&pose, &perpLine);
+    if (!intersects(&perpLine, &perpPose))
+    {
+	    return MvrUtil::findMin(
+	                   MvrMath::roundInt(getEndPoint1().findDistanceTo(pose)),
+	                   MvrMath::roundInt(getEndPoint2().findDistanceTo(pose)));
+    }
+    return (perpPose.findDistanceTo(pose));
+  }
+  
+  /// Determines the length of the line segment
+  double getLengthOf() const
+  {
+    return MvrMath::distanceBetween(myX1, myY1, myX2, myY2);
+  }
+
+  /// Determines the mid point of the line segment
+  MvrPose getMidPoint() const
+  {
+    return MvrPose(((myX1 + myX2) / 2.0), ((myY1 + myY2) / 2.0));
+  }
+
+
+  /// Gets the x coordinate of the first endpoint
+  double getX1(void) const { return myX1; }
+  /// Gets the y coordinate of the first endpoint
+  double getY1(void) const { return myY1; } 
+  /// Gets the x coordinate of the second endpoint
+  double getX2(void) const { return myX2; }
+  /// Gets the y coordinate of the second endpoint
+  double getY2(void) const { return myY2; }
+  /// Gets the A line parameter (see MvrLine)
+  double getA(void) const { return myLine.getA(); }
+  /// Gets the B line parameter (see MvrLine)
+  double getB(void) const { return myLine.getB(); }
+  /// Gets the C line parameter (see MvrLine)
+  double getC(void) const { return myLine.getC(); }
+
+  /// Internal function for seeing if a point on our line is within our segment
+  bool linePointIsInSegment(MvrPose *pose) const
+  {
+    bool isVertical = (MvrMath::fabs(myX1 - myX2) < MvrMath::epsilon());
+    bool isHorizontal = (MvrMath::fabs(myY1 - myY2) < MvrMath::epsilon());
+
+    if (!isVertical || !isHorizontal) 
+    {
+        return (((isVertical) || (pose->getX() >= myX1 && pose->getX() <= myX2) || 
+	              (pose->getX() <= myX1 && pose->getX() >= myX2)) && ((isHorizontal) || 
+	              (pose->getY() >= myY1 && pose->getY() <= myY2) || 
+	              (pose->getY() <= myY1 && pose->getY() >= myY2)));
+    }
+    else 
+    { // single point segment
+          return ((MvrMath::fabs(myX1 - pose->getX()) < MvrMath::epsilon()) &&
+                (MvrMath::fabs(myY1 - pose->getY()) < MvrMath::epsilon()));
+    } // end else single point segment
+  }
+
+  const MvrLine *getLine(void) const { return &myLine; }
+
+  /// Equality operator (for sets)
+  virtual bool operator==(const MvrLineSegment& other) const
+  {
+    return ((fabs(myX1 - other.myX1) < MvrMath::epsilon()) &&
+            (fabs(myY1 - other.myY1) < MvrMath::epsilon()) &&
+            (fabs(myX2 - other.myX2) < MvrMath::epsilon()) &&
+            (fabs(myY2 - other.myY2) < MvrMath::epsilon()));
+  }
+
+  virtual bool operator!=(const MvrLineSegment& other) const
+  {
+    return ((fabs(myX1 - other.myX1) > MvrMath::epsilon()) ||
+            (fabs(myY1 - other.myY1) > MvrMath::epsilon()) ||
+            (fabs(myX2 - other.myX2) > MvrMath::epsilon()) ||
+            (fabs(myY2 - other.myY2) > MvrMath::epsilon()));
+}
+
+  /// Less than operator (for sets)
+  virtual bool operator<(const MvrLineSegment& other) const
+  {
+    if (fabs(myX1 - other.myX1) > MvrMath::epsilon()) 
+    {
+      return myX1 < other.myX1;
+    }
+    else if (fabs(myY1 - other.myY1) > MvrMath::epsilon()) 
+    {
+      return myY1 < other.myY1;  
+    }
+    if (fabs(myX2 - other.myX2) > MvrMath::epsilon()) 
+    {
+      return myX2 < other.myX2;
+    }
+    else if (fabs(myY2 - other.myY2) > MvrMath::epsilon()) 
+    {
+      return myY2 < other.myY2;
+    }
+    // Otherwise... all coords are equal
+    return false;
+  }
+
+protected:
+  double myX1, myY1, myX2, myY2;
+  MvrLine myLine;
+};
+
+/**
+   @brief Use for computing a running average of a number of elements
+   @ingroup UtilityClasses
+*/
+class MvrRunningAverage
+{
+public:
+  /// Constructor, give it the number of elements to store to compute the average
+  MVREXPORT MvrRunningAverage(size_t numToAverage);
+  /// Destructor
+  MVREXPORT ~MvrRunningAverage();
+  /// Gets the average
+  MVREXPORT double getAverage(void) const;
+  /// Adds a value to the average. An old value is discarded if the number of elements to average has been reached.
+  MVREXPORT void add(double val);
+  /// Clears the average
+  MVREXPORT void clear(void);
+  /// Gets the number of elements
+  MVREXPORT size_t getNumToAverage(void) const;
+  /// Sets the number of elements
+  MVREXPORT void setNumToAverage(size_t numToAverage);
+  /// Sets if this is using a the root mean square average or just the normal average
+  MVREXPORT void setUseRootMeanSquare(bool useRootMeanSquare);
+  /// Gets if this is using a the root mean square average or just the normal average
+  MVREXPORT bool getUseRootMeanSquare(void);
+  /// Gets the number of values currently averaged so far
+  MVREXPORT size_t getCurrentNumAveraged(void);
+protected:
+  size_t myNumToAverage;
+  double myTotal;
+  size_t myNum;
+  bool myUseRootMeanSquare;
+  std::list<double> myVals;
+};
+
+/// This is a class for computing a root mean square average of a number of elements
+class MvrRootMeanSquareCalculator
+{
+public:
+  /// Constructor
+  MVREXPORT MvrRootMeanSquareCalculator();
+  /// Destructor
+  MVREXPORT ~MvrRootMeanSquareCalculator();
+  /// Gets the average
+  MVREXPORT double getRootMeanSquare (void) const;
+  /// Adds a number
+  MVREXPORT void add(int val);
+  /// Clears the average
+  MVREXPORT void clear(void);
+  /// Sets the name
+  MVREXPORT void setName(const char *name);
+  /// Gets the name
+  MVREXPORT const char *getName(void);  
+  /// Gets the num averaged
+  MVREXPORT size_t getCurrentNumAveraged(void);
+protected:
+  long long myTotal;
+  size_t myNum;
+  std::string myName;
+};
+
+
+//class MvrStrCaseCmpOp :  public std::binary_function <const std::string&, const std::string&, bool> 
+/// strcasecmp for sets
+/// @ingroup UtilityClasses
+struct MvrStrCaseCmpOp 
+{
+public:
+  bool operator() (const std::string &s1, const std::string &s2) const
+  {
+    return strcasecmp(s1.c_str(), s2.c_str()) < 0;
+  }
+};
+
+/// MvrPose less than comparison for sets
+/// @ingroup UtilityClasses
+struct MvrPoseCmpOp
+{
+public:
+  bool operator() (const MvrPose &pose1, const MvrPose &pose2) const
+  {
+    return (pose1 < pose2);
+  }
+};
+
+/// MvrLineSegment less than comparison for sets
+struct MvrLineSegmentCmpOp
+{
+public:
+  bool operator() (const MvrLineSegment &line1, 
+		               const MvrLineSegment &line2) const
+  {
+    return (line1 < line2);
+  }
+};
+
+
+#if !defined(WIN32) && !defined(SWIG)
+/** @brief Switch to running the program as a background daemon (i.e. fork) (Only available in Linux)
+  @swigomit
+  @notwindows
+  @ingroup UtilityClasses
+  @ingroup OptionalClasses
+ */
+class MvrDaemonizer
+{
+public:
+  /// Constructor that sets up for daemonizing if arg checking
+  MVREXPORT MvrDaemonizer(int *argc, char **argv, bool closeStdErrAndStdOut);
+  /// Destructor
+  MVREXPORT ~MvrDaemonizer();
+  /// Daemonizes if asked too by arguments
+  MVREXPORT bool daemonize(void);
+  /// Daemonizes always
+  MVREXPORT bool forceDaemonize(void);
+  /// Logs the options
+  MVREXPORT void logOptions(void) const;
+  /// Returns if we're daemonized or not
+  bool isDaemonized(void) { return myIsDaemonized; }
+protected:
+  MvrArgumentParser myParser;
+  bool myIsDaemonized;
+  bool myCloseStdErrAndStdOut;
+  MvrConstFunctorC<MvrDaemonizer> myLogOptionsCB;
+};
+#endif // !win32 && !swig
+
+/// Contains enumeration of four user-oriented priority levels (used primarily by MvrConfig)
+class MvrPriority
+{
+public:
+  enum Priority 
+  {
+    IMPORTANT, ///< Basic things that should be modified to suit 
+    BASIC = IMPORTANT,  ///< Basic things that should be modified to suit 
+    FIRST_PRIORITY = IMPORTANT,
+
+    NORMAL,    ///< Intermediate things that users may want to modify
+    INTERMEDIATE = NORMAL, ///< Intermediate things that users may want to modify
+
+    DETAILED, ///< Advanced items that probably shouldn't be modified
+    TRIVIAL = DETAILED, ///< Advanced items (alias for historic reasons)
+    ADVANCED = DETAILED, ///< Advanced items that probably shouldn't be modified
+
+    EXPERT,  ///< Items that should be modified only by expert users or developers
+    FACTORY, ///< Items that should be modified at the factory, often apply to a robot model
+
+    CALIBRATION, ///< Items that apply to a particular hardware instance
+
+    LAST_PRIORITY = CALIBRATION ///< Last value in the enumeration
+  };
+
+  enum {
+    PRIORITY_COUNT = LAST_PRIORITY + 1 ///< Number of priority values
+  };
+
+  /// Returns the displayable text string for the given priority
+  MVREXPORT static const char * getPriorityName(Priority priority);
+   
+  /// Returns the priority value that corresponds to the given displayable text string
+  /**
+   * @param text the char * to be converted to a priority value
+   * @param ok an optional bool * set to true if the text was successfully 
+   * converted; false if the text was not recognized as a priority
+  **/
+  MVREXPORT static Priority getPriorityFromName(const char *text,
+
+protected:
+  /// Whether the map of priorities to display text has been initialized
+  static bool ourStringsInited;
+  /// Map of priorities to displayable text
+  static std::map<Priority, std::string> ourPriorityNames;
+  /// Map of displayable text to priorities
+  static std::map<std::string, MvrPriority::Priority, MvrStrCaseCmpOp> ourNameToPriorityMap;
+  /// Display text used when a priority's displayable text has not been defined
+  static std::string ourUnknownPriorityName;
+};
+
+/// holds information about MvrStringInfo component strings (it's a helper class for other things)
+/**
+   This class holds information for about different strings that are available 
+ **/
+class MvrStringInfoHolder
+{
+public:
+  /// Constructor
+  MvrStringInfoHolder(const char *name, MvrTypes::UByte2 maxLength, MvrFunctor2<char *, MvrTypes::UByte2> *functor)
+  { myName = name; myMaxLength = maxLength; myFunctor = functor; }
+  /// Destructor
+  virtual ~MvrStringInfoHolder() {}
+  /// Gets the name of this piece of info
+  const char *getName(void) { return myName.c_str(); }
+  /// Gets the maximum length of this piece of info
+  MvrTypes::UByte2 getMaxLength(void) { return myMaxLength; }
+  /// Gets the function that will fill in this piece of info
+  MvrFunctor2<char *, MvrTypes::UByte2> *getFunctor(void) { return myFunctor; }
+protected:
+  std::string myName;
+  MvrTypes::UByte2 myMaxLength;
+  MvrFunctor2<char *, MvrTypes::UByte2> *myFunctor;
+};
+
+/// This class just holds some helper functions for the MvrStringInfoHolder 
+class MvrStringInfoHolderFunctions
+{
+public:
+  static void intWrapper(char * buffer, MvrTypes::UByte2 bufferLen, MvrRetFunctor<int> *functor, const char *format)
+  {
+    snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
+    buffer[bufferLen-1] = '\0'; 
+  }
+  static void doubleWrapper(char * buffer, MvrTypes::UByte2 bufferLen, MvrRetFunctor<double> *functor, const char *format)
+  {
+    snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
+    buffer[bufferLen-1] = '\0'; 
+  }
+  static void boolWrapper(char * buffer, MvrTypes::UByte2 bufferLen, MvrRetFunctor<bool> *functor, const char *format)
+  {
+    snprintf(buffer, bufferLen - 1, format, 
+	  MvrUtil::convertBool(functor->invokeR())); 
+    buffer[bufferLen-1] = '\0'; 
+  }
+  static void stringWrapper(char * buffer, MvrTypes::UByte2 bufferLen, MvrRetFunctor<const char *> *functor, const char *format)
+  {
+    snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
+    buffer[bufferLen-1] = '\0'; 
+  }
+
+  static void cppStringWrapper(char *buffer, MvrTypes::UByte2 bufferLen, MvrRetFunctor<std::string> *functor)
+  { 
+    snprintf(buffer, bufferLen - 1, "%s", functor->invokeR().c_str());
+    buffer[bufferLen-1] = '\0'; 
+  }
+
+  static void unsignedLongWrapper(char * buffer, MvrTypes::UByte2 bufferLen, MvrRetFunctor<unsigned long> *functor, const char *format)
+  {
+    snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
+    buffer[bufferLen-1] = '\0'; 
+  }
+  static void longWrapper(char * buffer, MvrTypes::UByte2 bufferLen, MvrRetFunctor<long> *functor, const char *format)
+  {
+    snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
+    buffer[bufferLen-1] = '\0'; 
+  }
+};
+
+
+/** @see MvrCallbackList */
+template<class GenericFunctor> 
+class MvrGenericCallbackList
+{
+public:
+  /// Constructor
+  MvrGenericCallbackList(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false)
+  {
+    myName = name;
+    mySingleShot = singleShot;
+    setLogLevel(logLevel);
+    std::string mutexName;
+    mutexName = "MvrGenericCallbackList::";
+    mutexName += name;
+    mutexName += "::myDataMutex";
+    myDataMutex.setLogName(mutexName.c_str());
+    myLogging = true;
+  }
+  /// Destructor
+  virtual ~MvrGenericCallbackList() {}
+  /// Adds a callback
+  void addCallback(GenericFunctor functor, int position = 50)
+  {
+    myDataMutex.lock();
+    myList.insert(std::pair<int, GenericFunctor>(-position,functor));
+    myDataMutex.unlock();
+  }
+  /// Removes a callback
+  void remCallback(GenericFunctor functor)
+  {
+    myDataMutex.lock();
+    typename std::multimap<int, GenericFunctor>::iterator it;
+    for (it = myList.begin(); it != myList.end(); it++)
+    {
+	    if ((*it).second == functor)
+	    {
+	      myList.erase(it);
+	      myDataMutex.unlock();
+	      remCallback(functor);
+	      return;
+	    }
+    }
+    myDataMutex.unlock();
+  }
+  /// Sets the name
+  void setName(const char *name)
+  {
+    myDataMutex.lock();
+    myName = name;
+    myDataMutex.unlock();
+  }
+#ifndef SWIG
+  /// Sets the name with formatting
+  void setNameVar(const char *name, ...)
+  {
+    char arg[2048];
+    va_list ptr;
+    va_start(ptr, name);
+    vsnprintf(arg, sizeof(arg), name, ptr);
+    arg[sizeof(arg) - 1] = '\0';
+    va_end(ptr);
+    return setName(arg);
+  }
+#endif
+  /// Sets the log level
+  void setLogLevel(MvrLog::LogLevel logLevel)
+  {
+    myDataMutex.lock();
+    myLogLevel = logLevel;
+    myDataMutex.unlock();
+  }
+  /// Sets if its single shot
+  void setSingleShot(bool singleShot)
+  {
+    myDataMutex.lock();
+    mySingleShot = singleShot;
+    myDataMutex.unlock();
+  }
+  /// Enable or disable logging when invoking the list. Logging is enabled by default at the log level given in the constructor.
+  void setLogging(bool on) 
+  {
+    myLogging = on;
+  }
+protected:
+  MvrMutex myDataMutex;
+  MvrLog::LogLevel myLogLevel;
+  std::string myName;
+  std::multimap<int, GenericFunctor> myList;
+  bool mySingleShot;
+  bool myLogging;
+};
+
+/** Stores a list of MvrFunctor objects together.
+    invoke() will invoke each of the MvrFunctor objects.
+    The functors added to the list must be pointers to the same MvrFunctor subclass.
+    Use MvrCallbackList for MvrFunctor objects with no arguments.
+    Use MvrCallbackList1 for MvrFunctor1 objects with 1 argument.
+    Use MvrCallbackList2 for MvrFunctor2 objects with 2 arguments.
+    Use MvrCallbackList3 for MvrFunctor3 objects with 3 arguments.
+    Use MvrCallbackListp for MvrFunctor4 objects with 4 arguments.
+**/
+class MvrCallbackList : public MvrGenericCallbackList<MvrFunctor *>
+{
+public:
+  /// Constructor
+  MvrCallbackList(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false) : 
+                  MvrGenericCallbackList<MvrFunctor *>(name, logLevel, singleShot) {}
+  /// Destructor
+  virtual ~MvrCallbackList() {}
+  /// Calls the callback list
+  void invoke(void)
+  {
+    myDataMutex.lock();  
+      
+    std::multimap<int, MvrFunctor *>::iterator it;
+    MvrFunctor *functor;
+      
+    if(myLogging)
+      MvrLog::log( myLogLevel,  "%s: Starting calls to %d functors", myName.c_str(), myList.size());
+      
+    for (it = myList.begin(); it != myList.end(); it++)
+    {
+	    functor = (*it).second;
+	    if (functor == NULL) 
+	      continue;
+	    if(myLogging)
+	    {
+	      if (functor->getName() != NULL && functor->getName()[0] != '\0')
+	        MvrLog::log(myLogLevel, "%s: Calling functor '%s' at %d", myName.c_str(), functor->getName(), -(*it).first);
+	      else
+	        MvrLog::log(myLogLevel, "%s: Calling unnamed functor at %d", myName.c_str(), -(*it).first);
+	    }
+	    functor->invoke();
+    }
+    if(myLogging)
+	    MvrLog::log(myLogLevel, "%s: Ended calls", myName.c_str());
+    if (mySingleShot)
+    {
+	    if(myLogging)
+	      MvrLog::log(myLogLevel, "%s: Clearing callbacks", myName.c_str());
+	    myList.clear();
+    }
+    myDataMutex.unlock();
+  }
+protected:
+};
+
+/** @copydoc MvrCallbackList */
+template<class P1>
+class MvrCallbackList1 : public MvrGenericCallbackList<MvrFunctor1<P1> *>
+{
+public:
+  /// Constructor
+  MvrCallbackList1(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false) : 
+                  MvrGenericCallbackList<MvrFunctor1<P1> *>(name, logLevel, singleShot) {}
+  /// Destructor
+  virtual ~MvrCallbackList1() {}
+  /// Calls the callback list
+  void invoke(P1 p1)
+  {
+    MvrGenericCallbackList<MvrFunctor1<P1> *>::myDataMutex.lock();
+      
+    typename std::multimap<int, MvrFunctor1<P1> *>::iterator it;
+    MvrFunctor1<P1> *functor;
+      
+    if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
+	    MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, 
+                  "%s: Starting calls to %d functors", 
+                  MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str(),
+                  MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.size());
+      
+    for (it = MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.begin(); 
+	       it != MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.end(); it++)
+    {
+      functor = (*it).second;
+      if (functor == NULL) 
+        continue;
+	    if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
+	    {
+        if (functor->getName() != NULL && functor->getName()[0] != '\0')
+          MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel,
+              "%s: Calling functor '%s' at %d",
+              MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str(), 
+              functor->getName(), -(*it).first);
+        else
+          MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, 
+              "%s: Calling unnamed functor at %d", 
+              MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str(), 
+              -(*it).first);
+      }
+	    functor->invoke(p1);
+    }
+    if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
+	    MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, "%s: Ended calls",
+                  MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str());
+    if (MvrGenericCallbackList<MvrFunctor1<P1> *>::mySingleShot)
+    {
+	    if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
+	      MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, "%s: Clearing callbacks", 
+		                MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str());
+	    MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.clear();
+    }
+    MvrGenericCallbackList<MvrFunctor1<P1> *>::myDataMutex.unlock();
+  }
+protected:
+};
+
+/** @copydoc MvrCallbackList */
+template<class P1, class P2>
+class MvrCallbackList2 : public MvrGenericCallbackList<MvrFunctor2<P1, P2> *>
+{
+public:
+  typedef MvrFunctor2<P1, P2> FunctorType;
+  typedef MvrGenericCallbackList<FunctorType*> Super;
+
+  MvrCallbackList2(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false) : 
+                  Super(name, logLevel, singleShot) {}
+
+  void invoke(P1 p1, P2 p2)
+  {
+    Super::myDataMutex.lock();
+      
+    typename std::multimap<int, FunctorType*>::iterator it;
+    FunctorType *functor;
+      
+    if(Super::myLogging)
+      MvrLog::log(Super::myLogLevel, "%s: Starting calls to %d functors", Super::myName.c_str(), Super::myList.size());
+      
+    for (it = Super::myList.begin(); it != Super::myList.end(); ++it)
+    {
+      functor = (*it).second;
+      if (functor == NULL) 
+        continue;
+      
+      if(Super::myLogging)
+      {
+        if (functor->getName() != NULL && functor->getName()[0] != '\0')
+          MvrLog::log(Super::myLogLevel, "%s: Calling functor '%s' at %d", Super::myName.c_str(), functor->getName(), -(*it).first);
+        else
+          MvrLog::log(Super::myLogLevel, "%s: Calling unnamed functor at %d", Super::myName.c_str(), -(*it).first);
+      }
+      functor->invoke(p1, p2);
+    }
+          
+    if(Super::myLogging)
+      MvrLog::log(Super::myLogLevel, "%s: Ended calls", Super::myName.c_str());
+          
+    if (Super::mySingleShot)
+    {
+      if(Super::myLogging)
+        MvrLog::log(Super::myLogLevel, "%s: Clearing callbacks", Super::myName.c_str()); Super::myList.clear();
+    }
+    Super::myDataMutex.unlock();
+  }
+};
+
+
+/** @copydoc MvrCallbackList */
+template<class P1, class P2, class P3>
+class MvrCallbackList3 : public MvrGenericCallbackList<MvrFunctor3<P1, P2, P3> *>
+{
+public:
+  typedef MvrFunctor3<P1, P2, P3> FunctorType;
+  typedef MvrGenericCallbackList<FunctorType*> Super;
+
+  MvrCallbackList3(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false) : 
+                  Super(name, logLevel, singleShot) {}
+
+  void invoke(P1 p1, P2 p2, P3 p3)
+  {
+    Super::myDataMutex.lock();
+      
+    typename std::multimap<int, FunctorType*>::iterator it;
+    FunctorType *functor;
+      
+    if(Super::myLogging)
+      MvrLog::log(Super::myLogLevel, "%s: Starting calls to %d functors", Super::myName.c_str(), Super::myList.size());
+      
+    for (it = Super::myList.begin(); it != Super::myList.end(); ++it)
+    {
+      functor = (*it).second;
+      if (functor == NULL) 
+        continue;
+      
+      if(Super::myLogging)
+      {
+        if (functor->getName() != NULL && functor->getName()[0] != '\0')
+          MvrLog::log(Super::myLogLevel, "%s: Calling functor '%s' at %d", Super::myName.c_str(), functor->getName(), -(*it).first);
+        else
+          MvrLog::log(Super::myLogLevel, "%s: Calling unnamed functor at %d", Super::myName.c_str(), -(*it).first);
+      }
+      functor->invoke(p1, p2, p3);
+    }
+          
+    if(Super::myLogging)
+      MvrLog::log(Super::myLogLevel, "%s: Ended calls", Super::myName.c_str());
+          
+    if (Super::mySingleShot)
+    {
+      if(Super::myLogging)
+        MvrLog::log(Super::myLogLevel, "%s: Clearing callbacks", Super::myName.c_str()); Super::myList.clear();
+    }
+    Super::myDataMutex.unlock();
+  }
+};
+
+
+/** @copydoc MvrCallbackList */
+template<class P1, class P2, class P3, class P4>
+class MvrCallbackList4 : public MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4>*>
+{
+public:
+  MvrCallbackList4(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false) : 
+                  MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>(name, logLevel, singleShot) {}
+  virtual ~MvrCallbackList4() {}
+  void invoke(P1 p1, P2 p2, P3 p3, P4 p4)
+  {
+    // references to members of parent class for clarity below
+    MvrMutex &mutex = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myDataMutex;
+    MvrLog::LogLevel &loglevel = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myLogLevel;
+    const char *name = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myName.c_str();
+	  std::multimap< int, MvrFunctor4<P1, P2, P3, P4>* > &list = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myList; 
+    bool &singleshot = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::mySingleShot;
+    bool &logging = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myLogging;
+      
+    mutex.lock();
+      
+    typename std::multimap<int, MvrFunctor4<P1, P2, P3, P4> *>::iterator it;
+    MvrFunctor4<P1, P2, P3, P4> *functor;
+      
+    if(logging)
+      MvrLog::log( loglevel,  "%s: Starting calls to %d functors", name, list.size());
+      
+    for (it = list.begin();  it != list.end(); ++it)
+    {
+      functor = (*it).second;
+      if (functor == NULL) 
+        continue;
+	
+      if(logging)
+      {
+        if (functor->getName() != NULL && functor->getName()[0] != '\0')
+          MvrLog::log(loglevel, "%s: Calling functor '%s' (0x%x) at %d", name, functor->getName(), functor, -(*it).first);
+        else
+          MvrLog::log(loglevel, "%s: Calling unnamed functor (0x%x) at %d", name, functor, -(*it).first);
+      }
+      functor->invoke(p1, p2, p3, p4);
+    }
+      
+    if(logging)
+      MvrLog::log(loglevel, "%s: Ended calls", name);
+      
+    if (singleshot)
+    {
+      if(logging)
+        MvrLog::log(loglevel, "%s: Clearing callbacks", name);
+      list.clear();
+    }
+
+    mutex.unlock();
+  }
+};
+
+
+
+#ifndef MVRINTERFACE
+#ifndef SWIG
+/// @internal
+class MvrLaserCreatorHelper
+{
+public:
+  /// Creates an MvrLMS2xx
+  static MvrLaser *createLMS2xx(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLMS2xx
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateLMS2xxCB(void);
+  /// Creates an MvrUrg
+  static MvrLaser *createUrg(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrUrg
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateUrgCB(void);
+  /// Creates an MvrLMS1XX
+  static MvrLaser *createLMS1XX(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLMS1XX
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateLMS1XXCB(void);
+
+  /// Creates an MvrUrg using SCIP 2.0
+  static MvrLaser *createUrg_2_0(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrUrg
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateUrg_2_0CB(void);
+  /// Creates an MvrS3Series
+  static MvrLaser *createS3Series(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrS3Series
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateS3SeriesCB(void);
+  /// Creates an MvrLMS5XX
+  static MvrLaser *createLMS5XX(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLMS5XX
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateLMS5XXCB(void);
+  /// Creates an MvrTiM3XX
+  static MvrLaser *createTiM3XX(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrTiM3XX
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM3XXCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM551CB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM561CB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM571CB(void);
+  /// Creates an MvrSZSeries
+  static MvrLaser *createSZSeries(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrSZSeries
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateSZSeriesCB(void);
+
+protected:
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourLMS2xxCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourUrgCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourLMS1XXCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourUrg_2_0CB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourS3SeriesCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourLMS5XXCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourTiM3XXCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourSZSeriesCB;
+};
+
+/// @internal
+class MvrBatteryMTXCreatorHelper
+{
+public:
+  /// Creates an MvrBatteryMTX
+  static MvrBatteryMTX *createBatteryMTX(int batteryNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrBatteryMTX
+  static MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *getCreateBatteryMTXCB(void);
+protected:
+  static MvrGlobalRetFunctor2<MvrBatteryMTX *, int, const char *> ourBatteryMTXCB;
+};
+
+/// @internal
+class MvrLCDMTXCreatorHelper
+{
+public:
+  /// Creates an MvrLCDMTX
+  static MvrLCDMTX *createLCDMTX(int lcdNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLCDMTX
+  static MvrRetFunctor2<MvrLCDMTX *, int, const char *> *getCreateLCDMTXCB(void);
+
+protected:
+  static MvrGlobalRetFunctor2<MvrLCDMTX *, int, const char *> ourLCDMTXCB;
+};
+
+/// @internal
+class MvrSonarMTXCreatorHelper
+{
+public:
+  /// Creates an MvrSonarMTX
+  static MvrSonarMTX *createSonarMTX(int sonarNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrSonarMTX
+  static MvrRetFunctor2<MvrSonarMTX *, int, const char *> *getCreateSonarMTXCB(void);
+
+protected:
+  static MvrGlobalRetFunctor2<MvrSonarMTX *, int, const char *> ourSonarMTXCB;
+};
+
+#endif // SWIG
+#endif // MVRINTERFACE
+
+#ifndef SWIG
+/// @internal
+class MvrDeviceConnectionCreatorHelper
+{
+public:
+  /// Creates an MvrSerialConnection
+  static MvrDeviceConnection *createSerialConnection(const char *port, const char *defaultInfo, const char *logPrefix);
+  /// Gets functor for creating an MvrSerialConnection
+  static MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *,const char *> *getCreateSerialCB(void);
+
+  /// Creates an MvrTcpConnection
+  static MvrDeviceConnection *createTcpConnection( const char *port, const char *defaultInfo, const char *logPrefix);
+  /// Gets functor for creating an MvrTcpConnection
+  static MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *getCreateTcpCB(void);
+
+  /// Creates an MvrSerialConnection for RS422
+  static MvrDeviceConnection *createSerial422Connection( const char *port, const char *defaultInfo, const char *logPrefix);
+  /// Gets functor for creating an MvrSerialConnection
+  static MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *getCreateSerial422CB(void);
+
+  /// Sets the success log level
+  static void setSuccessLogLevel(MvrLog::LogLevel successLogLevel);
+  /// Sets the success log level
+  static MvrLog::LogLevel setSuccessLogLevel(void);
+protected:
+  /// Internal Create MvrSerialConnection
+  static MvrDeviceConnection *internalCreateSerialConnection(
+	       const char *port, const char *defaultInfo, const char *logPrefix, bool is422);
+  static MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> ourSerialCB;
+  static MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> ourTcpCB;
+  static MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> ourSerial422CB;
+  static MvrLog::LogLevel ourSuccessLogLevel;
+};
+#endif // SWIG
+
+/// Class for finding robot bounds from the basic measurements
+class MvrPoseUtil
+{
+public:
+  MVREXPORT static std::list<MvrPose> findCornersFromRobotBounds(
+	        double radius, double widthLeft, double widthRight, 
+	        double lengthFront, double lengthRear, bool fastButUnsafe);
+  MVREXPORT static std::list<MvrPose> breakUpDistanceEvenly(MvrPose start, MvrPose end, int resolution);
+};
+
+/// class for checking if something took too long and logging it
+class MvrTimeChecker
+{
+public:
+  /// Constructor
+  MVREXPORT MvrTimeChecker(const char *name = "Unknown", int defaultMSecs = 100);
+  /// Destructor
+  MVREXPORT virtual ~MvrTimeChecker();
+  /// Sets the name
+  void setName(const char *name) { myName = name; }
+  /// Sets the default mSecs
+  void setDefaultMSecs(int defaultMSecs) { myMSecs = defaultMSecs; }
+  /// starts the check
+  MVREXPORT void start(void);
+  /// checks, optionally with a subname (only one subname logged per cycle)
+  MVREXPORT void check(const char *subName);
+  /// Finishes the check
+  MVREXPORT void finish(void);
+  /// Gets the last time a check happened (a start counts as a check too)
+  MvrTime getLastCheckTime() { return myLastCheck; }
+protected:
+  std::string myName;
+  int myMSecs;
+  MvrTime myStarted;
+  MvrTime myLastCheck;
+};
 #endif  // MVRIAUTIL_H
