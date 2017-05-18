@@ -9,7 +9,8 @@
     "initializer_list": "cpp",
     "functional": "cpp",
     "type_traits": "cpp",
-    "chrono": "cpp"
+    "chrono": "cpp",
+    "sstream": "cpp"
   },
   "line-counter.excludes": [
         "**/.vscode/**",
