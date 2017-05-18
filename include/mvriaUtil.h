@@ -44,8 +44,8 @@
 class MvrLaser;
 class MvrBatteryMTX;
 class MvrLCDMTX;
-class MvrSonarMTX:
-class MvrDevieConnection
+class MvrSonarMTX;
+class MvrDevieConnection;
 
 #ifndef M_PI
 #define M_PI 3.1415927
@@ -211,9 +211,9 @@ public:
     /// Compares two strings (ignoring case and surrounding quotes)
   /**
    * This helper method is primarily used to ignore surrounding quotes 
-   * when comparing MvrAgumentBuilder args.
+   * when comparing MvrArgumentBuilder args.
    * @return int set to 0 if the two strings are equivalent, a negative 
-   * number if str1 is "less than" str2, and a postive number if it is
+   * number if str1 is "less than" str2, and a positive number if it is
    * "greater than".
   **/
   MVREXPORT static int strcasequotecmp(const std::string &str1, const std::string &str2);
@@ -234,11 +234,11 @@ public:
   /// Lowers a string from src into dest, make sure there's enough space
   MVREXPORT static void lower(char *dest, const char *src, 
 			      size_t maxLen);
-  /// Returns true if this string is only alphanumeric (i.e. it contains only leters and numbers), false if it contains any non alphanumeric characters (punctuation, whitespace, control characters, etc.)
+  /// Returns true if this string is only alphanumeric (i.e. it contains only letters and numbers), false if it contains any non alphanumeric characters (punctuation, whitespace, control characters, etc.)
   MVREXPORT static bool isOnlyAlphaNumeric(const char *str);
 
   /// Returns true if this string is only numeric (i.e. it contains only numeric
-  //digits), or it's null, or false if it contains any non nonnumeric characters (alphabetic, punctuation, whitespace, control characters, etc.)
+  //digits), or it's null, or false if it contains any non-numeric characters (alphabetic, punctuation, whitespace, control characters, etc.)
   MVREXPORT static bool isOnlyNumeric(const char *str);
 
   /// Returns true if the given string is null or of zero length, false otherwise
@@ -266,7 +266,7 @@ public:
   /// @deprecated format string should be a const char*
   MVREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
 				    char *formatstr, ...);
-#endif
+#endif  //SEIG
 
   /// Function for doing a fprintf to a file (here to make a functor for)
   MVREXPORT static void writeToFile(const char *str, FILE *file);
@@ -380,7 +380,7 @@ public:
   /// this matches the case out of what file we want
   MVREXPORT static bool matchCase(const char *baseDir, const char *fileName, 
 			      char * result, size_t resultLen);
-#endif 
+#endif  // WIN32
   /// Pulls the directory out of a file name
   MVREXPORT static bool getDirectory(const char *fileName, 
 				    char * result, size_t resultLen);
@@ -430,10 +430,7 @@ public:
   MVREXPORT static int atoi(const char *str, bool *ok = NULL, 
 			      bool forceHex = false);
 protected:
-//#ifndef WIN32
-  /// this splits up a file name (it isn't exported since it'd crash with dlls)
   static std::list<std::string> splitFileName(const char *fileName);
-//#endif
 
 private:
   /// The character used as a file separator on the current platform (i.e. Linux or Windows)
@@ -446,7 +443,7 @@ private:
 #ifdef WIN32
   // Used on Windows to make MvrUtil::localtime() function threadsafe
   static MvrMutex ourLocaltimeMutex;
-#endif
+#endif  // WIN32
 };
 
 /** Common math operations
@@ -650,7 +647,7 @@ public:
     return(rand());
 #else
     return(lrand48());
-#endif
+#endif //WIN32
   }
   
   /// Maximum of value returned by random()
@@ -699,7 +696,7 @@ public:
     return _isnan(d);
 #else 
     return isnan(d);
-#endif
+#endif  //WIN32
   }
 
   static bool isNan(float f) 
@@ -708,7 +705,7 @@ public:
 	  return _isnan(f);
 #else
 	  return isnan(f);
-#endif
+#endif  //WIN32
   }
 
   static bool isFinite(float f) 
@@ -717,7 +714,7 @@ public:
 	  return _finite(f);
 #else
 	  return finitef(f);
-#endif
+#endif  //WIN32
   }
 
   static bool isFinite(double d) 
@@ -726,7 +723,7 @@ public:
 	  return _finite(d);
 #else
 	  return finite(d);
-#endif
+#endif  //WIN32
   }
 
   static bool compareFloats(double f1, double f2, double epsilon)
@@ -1204,10 +1201,10 @@ public:
   {
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
     return ourMonotonicClock;
-#endif
+#endif  //_POSIX_TIMERS
 #ifdef WIN32
     return true;
-#endif
+#endif  // WIN32
     return false;
   }
   
@@ -1238,7 +1235,7 @@ protected:
   unsigned long long myMSec;
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
   static bool ourMonotonicClock;
-#endif 
+#endif   //_POSIX_TIMERS
 }; // end class MvrTime
 
 /// A subclass of MvrPose that also stores a timestamp (MvrTime) 
@@ -1518,7 +1515,7 @@ public:
     myLine.makeLinePerp(&pose, &perpLine);
     return intersects(&perpLine, perpPoint);
   }
-#endif
+#endif  //SWIG
   bool getPerpPoint(const MvrPose *pose, MvrPose *perpPoint) const
     {
       MvrLine perpLine;
@@ -1841,7 +1838,7 @@ public:
    * @param ok an optional bool * set to true if the text was successfully 
    * converted; false if the text was not recognized as a priority
   **/
-  MVREXPORT static Priority getPriorityFromName(const char *text,
+  MVREXPORT static Priority getPriorityFromName(const char *text, bool *ok = NULL);
 
 protected:
   /// Whether the map of priorities to display text has been initialized
@@ -1986,7 +1983,7 @@ public:
     va_end(ptr);
     return setName(arg);
   }
-#endif
+#endif  // SWIG
   /// Sets the log level
   void setLogLevel(MvrLog::LogLevel logLevel)
   {
@@ -2232,10 +2229,10 @@ public:
 
 /** @copydoc MvrCallbackList */
 template<class P1, class P2, class P3, class P4>
-class MvrCallbackList4 : public MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4>*>
+class MvrCallbackList4 : public MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>
 {
 public:
-  MvrCallbackList4(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false) : 
+    MvrCallbackList4(const char *name = "", MvrLog::LogLevel logLevel = MvrLog::Verbose, bool singleShot = false) :
                   MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>(name, logLevel, singleShot) {}
   virtual ~MvrCallbackList4() {}
   void invoke(P1 p1, P2 p2, P3 p3, P4 p4)
@@ -2285,7 +2282,6 @@ public:
     mutex.unlock();
   }
 };
-
 
 
 #ifndef MVRINTERFACE
@@ -2454,4 +2450,5 @@ protected:
   MvrTime myStarted;
   MvrTime myLastCheck;
 };
+
 #endif  // MVRIAUTIL_H
