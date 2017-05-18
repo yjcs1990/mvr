@@ -75,10 +75,10 @@ public:
 
   enum Open { 
       OPEN_COULD_NOT_OPEN_PORT = 1, ///< Could not open the port
-      OPEN_COULD_NOT_SET_UP_PORT, ///< Could not set up the port
-      OPEN_INVALID_BAUD_RATE, ///< Baud rate is not valid
-      OPEN_COULD_NOT_SET_BAUD, ///< Baud rate valid, but could not set it
-      OPEN_ALREADY_OPEN ///< Connection was already open
+      OPEN_COULD_NOT_SET_UP_PORT,   ///< Could not set up the port
+      OPEN_INVALID_BAUD_RATE,       ///< Baud rate is not valid
+      OPEN_COULD_NOT_SET_BAUD,      ///< Baud rate valid, but could not set it
+      OPEN_ALREADY_OPEN             ///< Connection was already open
   };
   MVREXPORT virtual MvrTime getTimeRead(int index);
   MVREXPORT virtual bool isTimeStamping(void);
