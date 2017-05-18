@@ -14,6 +14,7 @@
 #include "mvriaTypedefs.h"
 #include "MvrSerialConnection.h"
 #include "MvrTcpConnection.h"
+#include "MvrSimpleConnection.h"
 
 /// TODO
 #endif  // MVRIA_H
