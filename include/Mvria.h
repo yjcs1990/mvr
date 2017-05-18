@@ -10,8 +10,10 @@
 #ifndef MVRIA_H
 #define MVRIA_H
 
-#include <mvriaOSDef.h>
-#include <mvriaTypedefs.h>
-#include <MvrSerialConnection.h>
+#include "mvriaOSDef.h"
+#include "mvriaTypedefs.h"
+#include "MvrSerialConnection.h"
+#include "MvrTcpConnection.h"
+
 /// TODO
 #endif  // MVRIA_H
