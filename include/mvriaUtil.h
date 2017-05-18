@@ -742,4 +742,505 @@ public:
   }
 };  // end class MvrMath
 
+/// Represents an x, y position with an orientation
+/** 
+    This class represents a robot position with heading.  The heading is 
+    automatically adjusted to be in the range -180 to 180.  It also defaults
+    to 0, and so does not need to be used. (This avoids having 2 types of 
+    positions.)  Everything in the class is inline so it should be fast.
+
+  @ingroup UtilityClasses
+  @ingroup easy
+  @sa MvrPoseWithTime
+*/
+class MvrPose
+{
+public:
+  /// Constructor, with optional initial values
+  /** 
+      Sets the pose to the given values.  The constructor can be called with no 
+      parameters, with just x and y, or with x, y, and th.  The given heading (th)
+      is automatically adjusted to be in the range -180 to 180.
+
+      @param x the double to set the x position to, default of 0
+      @param y the double to set the y position to, default of 0
+      @param th the double value for the pose's heading (or th), default of 0
+  */
+  MvrPose(double x = 0, double y = 0, double th = 0) : myX(x), myY(y), myTh(MvrMath::fixAngle(th)) {}
+    
+  /// Copy Constructor
+  MvrPose(const MvrPose &pose) : myX(pose.myX), myY(pose.myY), myTh(pose.myTh) {}
+
+  /// Destructor
+  virtual ~MvrPose() {}
+  /// Sets the position to the given values
+  /** 
+      Sets the position with the given three values, but the theta does not
+      need to be given as it defaults to 0.
+      @param x the position to set the x position to
+      @param y the position to set the y position to
+      @param th the position to set the th position to, default of 0
+  */
+  virtual void setPose(double x, double y, double th = 0) 
+  { setX(x); setY(y); setTh(th); }
+  /// Sets the position equal to the given position
+  /** @param position the position value this instance should be set to */
+  virtual void setPose(MvrPose position)
+  {
+    setX(position.getX());
+    setY(position.getY());
+    setTh(position.getTh());
+  }
+  /// Sets the x position
+  void setX(double x) { myX = x; }
+  /// Sets the y position
+  void setY(double y) { myY = y; }
+  /// Sets the heading
+  void setTh(double th) { myTh = MvrMath::fixAngle(th); }
+  /// Sets the heading, using radians
+  void setThRad(double th) { myTh = MvrMath::fixAngle(MvrMath::radToDeg(th)); }
+  /// Gets the x position
+  double getX(void) const { return myX; }
+  /// Gets the y position
+  double getY(void) const { return myY; }
+  /// Gets the heading
+  double getTh(void) const { return myTh; }
+  /// Gets the heading, in radians
+  double getThRad(void) const { return MvrMath::degToRad(myTh); }
+  /// Gets the whole position in one function call
+  /**
+     Gets the whole position at once, by giving it 2 or 3 pointers to 
+     doubles.  If you give the function a null pointer for a value it won't
+     try to use the null pointer, so you can pass in a NULL if you don't 
+     care about that value.  Also note that th defaults to NULL so you can 
+     use this with just x and y.
+     @param x a pointer to a double to set the x position to
+     @param y a pointer to a double to set the y position to
+     @param th a pointer to a double to set the heading to, defaults to NULL
+   */
+  void getPose(double *x, double *y, double *th = NULL) const
+  { 
+    if (x != NULL) 
+	    *x = myX;
+    if (y != NULL) 
+	    *y = myY; 
+    if (th != NULL) 
+	    *th = myTh; 
+  }
+  /// Finds the distance from this position to the given position
+  /**
+     @param position the position to find the distance to
+     @return the distance to the position from this instance
+  */
+  virtual double findDistanceTo(MvrPose position) const
+  {
+    return MvrMath::distanceBetween(getX(), getY(), 
+		     position.getX(), 
+		     position.getY());
+  }
+
+  /// Finds the square distance from this position to the given position
+  /**
+     This is only here for speed, if you aren't doing this thousands
+     of times a second don't use this one use findDistanceTo
+
+     @param position the position to find the distance to
+     @return the distance to the position from this instance 
+  **/
+  virtual double squaredFindDistanceTo(MvrPose position) const
+  {
+    return MvrMath::squaredDistanceBetween(getX(), getY(), 
+			    position.getX(), 
+			    position.getY());
+  }
+  /// Finds the angle between this position and the given position
+  /** 
+      @param position the position to find the angle to
+      @return the angle to the given position from this instance, in degrees
+  */
+  virtual double findAngleTo(MvrPose position) const
+  {
+    return MvrMath::radToDeg(atan2(position.getY() - getY(),
+		                            position.getX() - getX()));
+  }
+  /// Logs the coordinates using MvrLog
+  virtual void log(void) const
+  { MvrLog::log(MvrLog::Terse, "%.0f %.0f %.1f", myX, myY, myTh); }
+
+  /// Add the other pose's X, Y and theta to this pose's X, Y, and theta (sum in theta will be normalized to (-180,180)), and return the result
+  virtual MvrPose operator+(const MvrPose& other) const
+  {
+    return MvrPose( myX + other.getX(), 
+                   myY + other.getY(), 
+                   MvrMath::fixAngle(myTh + other.getTh()) );
+  }
+
+  /// Substract the other pose's X, Y, and theta from this pose's X, Y, and theta (difference in theta will be normalized to (-180,180)), and return the result
+  virtual MvrPose operator-(const MvrPose& other) const
+  {
+    return MvrPose( myX - other.getX(), 
+                   myY - other.getY(), 
+                   MvrMath::fixAngle(myTh - other.getTh()) );
+  }
+  
+  /// Adds the given pose to this one.
+	MvrPose & operator+= ( const MvrPose & other)
+  {
+    myX += other.myX;
+    myY += other.myY;
+    myTh = MvrMath::fixAngle(myTh + other.myTh);
+    return *this;
+  }
+
+	/** Subtracts the given pose from this one.
+     *  @swigomit
+     */
+	MvrPose & operator-= ( const MvrPose & other)
+  {
+    myX -= other.myX;
+    myY -= other.myY;
+    myTh = MvrMath::fixAngle(myTh - other.myTh);
+    return *this;
+  }
+
+  /// Equality operator (for sets)
+  virtual bool operator==(const MvrPose& other) const
+  {
+    return ((fabs(myX - other.myX) < MvrMath::epsilon()) &&
+            (fabs(myY - other.myY) < MvrMath::epsilon()) &&
+            (fabs(myTh - other.myTh) < MvrMath::epsilon()));
+  }
+
+  virtual bool operator!=(const MvrPose& other) const
+  {
+    return ((fabs(myX - other.myX) > MvrMath::epsilon()) ||
+            (fabs(myY - other.myY) > MvrMath::epsilon()) ||
+            (fabs(myTh - other.myTh) > MvrMath::epsilon()));
+  }
+
+  /// Less than operator (for sets)
+  virtual bool operator<(const MvrPose& other) const
+  {
+    if (fabs(myX - other.myX) > MvrMath::epsilon()) {
+      return myX < other.myX;
+    }
+    else if (fabs(myY - other.myY) > MvrMath::epsilon()) {
+      return myY < other.myY;  
+    }
+    else if (fabs(myTh - other.myTh) > MvrMath::epsilon()) {
+      return myTh < other.myTh;
+    }
+    // Otherwise... x, y, and th are equal
+    return false;
+  } // end operator<
+
+  /// Finds the distance between two poses (static function, uses no
+  /// data from any instance and shouldn't be able to be called on an
+  /// instance)
+  /**
+     @param pose1 the first coords
+     @param pose2 the second coords
+     @return the distance between the poses
+  **/
+  static double distanceBetween(MvrPose pose1, MvrPose pose2)
+  { return MvrMath::distanceBetween(pose1.getX(), pose1.getY(), 
+				     pose2.getX(), pose2.getY()); }
+
+  /// Return true if the X value of p1 is less than the X value of p2
+  static bool compareX(const MvrPose& p1, const MvrPose &p2)
+  { return (p1.getX() < p2.getX()); } 
+  /// Return true if the Y value of p1 is less than the X value of p2
+  static bool compareY(const MvrPose& p1, const MvrPose &p2)
+  { return (p1.getY() < p2.getY()); } 
+
+  bool isInsidePolygon(const std::vector<MvrPose>& vertices) const
+  {
+    bool inside = false;
+    const size_t n = vertices.size();
+    size_t i = 0;
+    size_t j = n-1;
+    for(; i < n; j = i++)
+    {
+      const double x1 = vertices[i].getX();
+      const double x2 = vertices[j].getX();
+      const double y1 = vertices[i].getY();
+      const double y2 = vertices[j].getY();
+      if((((y1 < getY()) && (getY() < y2)) || ((y2 <= getY()) && (getY() < y1))) && (getX() <= (x2 - x1) * (getY() - y1) / (y2 - y1) + x1))
+        inside = !inside;
+    }
+    return inside;
+  }
+
+protected:
+  double myX;
+  double myY;
+  double myTh;
+};
+
+
+/// A class for time readings and measuring durations
+/** 
+    This class is for timing durations or time between events.
+    The time values it stores are relative to an abritrary starting time; it
+    does not correspond to "real world" or "wall clock" time in any way,
+    so DON'T use this for keeping track of what time it is, 
+    just for timestamps and relative timing (e.g. "this loop needs to sleep another 100 ms").
+
+    The recommended methods to use are setToNow() to reset the time,
+    mSecSince() to obtain the number of milliseconds elapsed since it was
+    last reset (or secSince() if you don't need millisecond precision), and
+    mSecSince(MvrTime) or secSince(MvrTime) to find the difference between 
+    two MvrTime objects.
+
+    On systems where it is supported this will use a monotonic clock,
+    this is an ever increasing system that is not dependent on what
+    the time of day is set to.  Normally for linux gettimeofday is
+    used, but if the time is changed forwards or backwards then bad
+    things can happen.  Windows uses a time since bootup, which
+    functions the same as the monotonic clock anyways.  You can use
+    MvrTime::usingMonotonicClock() to see if this is being used.  Note
+    that an MvrTime will have had to have been set to for this to be a
+    good value... Mvria::init does this however, so that should not be
+    an issue.  It looks like the monotonic clocks won't work on linux
+    kernels before 2.6.
+
+  @ingroup UtilityClasses
+*/
+
+class MvrTime
+{
+public:
+  /// Constructor. Time is initialized to the current time.
+  MvrTime() { setToNow(); }
+
+  /// Copy constructor
+  MvrTime(const MvrTime &other) : mySec(other.mySec), myMSec(other.myMSec) {}
+
+  /// Assignment operator 
+  MvrTime &operator=(const MvrTime &other) 
+  {
+    if (this != &other) {
+      mySec = other.mySec;
+      myMSec = other.myMSec;
+    }
+    return *this;
+  }
+
+  //
+  /// Destructor
+  ~MvrTime() {}
+  
+  /// Gets the number of milliseconds since the given timestamp to this one
+  long mSecSince(MvrTime since) const 
+  {
+    long long ret = mSecSinceLL(since);
+    if (ret > INT_MAX)
+	    return INT_MAX;
+    if (ret < -INT_MAX)
+	    return -INT_MAX;
+    return ret;
+  }
+  /// Gets the number of milliseconds since the given timestamp to this one
+  long long mSecSinceLL(MvrTime since) const 
+  {
+    long long timeSince, timeThis;
+
+    timeSince = since.getSecLL() * 1000 + since.getMSecLL();
+    timeThis = mySec * 1000 + myMSec;
+    return timeSince - timeThis;
+  }
+  /// Gets the number of seconds since the given timestamp to this one
+  long secSince(MvrTime since) const
+  {
+    return mSecSince(since)/1000;
+  }
+  /// Gets the number of seconds since the given timestamp to this one
+  long long secSinceLL(MvrTime since) const
+  {
+    return mSecSinceLL(since)/1000;
+  }
+  /// Finds the number of millisecs from when this timestamp is set to to now (the inverse of mSecSince())
+  long mSecTo(void) const
+  {
+    MvrTime now;
+    now.setToNow();
+    return -mSecSince(now);
+  }
+  /// Finds the number of millisecs from when this timestamp is set to to now (the inverse of mSecSince())
+  long long mSecToLL(void) const
+  {
+    MvrTime now;
+    now.setToNow();
+    return -mSecSinceLL(now);
+  }
+  /// Finds the number of seconds from when this timestamp is set to to now (the inverse of secSince())
+  long secTo(void) const
+  {
+    return mSecTo()/1000;
+  }
+  /// Finds the number of seconds from when this timestamp is set to to now (the inverse of secSince())
+  long long secToLL(void) const
+  {
+    return mSecToLL()/1000;
+  }
+  /// Finds the number of milliseconds from this timestamp to now
+  long mSecSince(void) const
+  {
+    MvrTime now;
+    now.setToNow();
+    return mSecSince(now);
+  }
+  /// Finds the number of milliseconds from this timestamp to now
+  long long mSecSinceLL(void) const
+  {
+    MvrTime now;
+    now.setToNow();
+    return mSecSinceLL(now);
+  }
+  /// Finds the number of seconds from when this timestamp was set to now
+  long secSince(void) const
+  {
+    return mSecSince()/1000;
+  }
+  /// Finds the number of seconds from when this timestamp was set to now
+  long long secSinceLL(void) const
+  {
+    return mSecSinceLL()/1000;
+  }
+  /// returns whether the given time is before this one or not
+  bool isBefore(MvrTime testTime) const
+  {
+    if (mSecSince(testTime) < 0)
+    	return true;
+    else
+	    return false;
+  }
+  /// returns whether the given time is equal to this time or not
+  bool isAt(MvrTime testTime) const
+  {
+    if (mSecSince(testTime) == 0)
+	    return true;
+    else
+	    return false;
+  }
+  /// returns whether the given time is after this one or not
+  bool isAfter(MvrTime testTime) const
+  {
+    if (mSecSince(testTime) > 0)
+	    return true;
+    else
+	    return false;
+  }
+  /// Resets the time
+  /// @ingroup easy
+  MVREXPORT void setToNow(void);
+  /// Add some milliseconds (can be negative) to this time
+  bool addMSec(long ms)
+  {
+    //unsigned long timeThis;
+    long long timeThis;
+    timeThis = mySec * 1000 + myMSec;
+    //if (ms < 0 && (unsigned)abs(ms) > timeThis)
+    if (ms < 0 && -ms > timeThis)
+    {
+      MvrLog::log(MvrLog::Terse, "MvrTime::addMSec: tried to subtract too many milliseconds, would result in a negative time.");
+      mySec = 0;
+      myMSec = 0;
+      return false;
+    }
+    else 
+    {
+      timeThis += ms;
+      mySec = timeThis / 1000;
+	    myMSec = timeThis % 1000;
+    }
+    return true;
+  } // end method addMSec
+
+  /// Add some milliseconds (can be negative) to this time
+  bool addMSecLL(long long ms)
+  {
+    //unsigned long timeThis;
+    long long timeThis;
+    timeThis = mySec * 1000 + myMSec;
+    //if (ms < 0 && (unsigned)abs(ms) > timeThis)
+    if (ms < 0 && -ms > timeThis)
+    {
+      MvrLog::log(MvrLog::Terse, "MvrTime::addMSec: tried to subtract too many milliseconds, would result in a negative time.");
+      mySec = 0;
+      myMSec = 0;
+      return false;
+    }
+    else 
+    {
+      timeThis += ms;
+      mySec = timeThis / 1000;
+	    myMSec = timeThis % 1000;
+    }
+    return true;
+  } // end method addMSec
+  
+  /// Sets the seconds value (since the arbitrary starting time)
+  void setSec(unsigned long sec) { mySec = sec; }
+  /// Sets the milliseconds value (occuring after the seconds value)
+  void setMSec(unsigned long msec) { myMSec = msec; }
+  /// Gets the seconds value (since the arbitrary starting time)
+  unsigned long getSec(void) const { return mySec; }
+  /// Gets the milliseconds value (occuring after the seconds value)
+  unsigned long getMSec(void) const { return myMSec; }
+
+  /// Sets the seconds value (since the arbitrary starting time)
+  void setSecLL(unsigned long long sec) { mySec = sec; }
+  /// Sets the milliseconds value (occuring after the seconds value)
+  void setMSecLL(unsigned long long msec) { myMSec = msec; }
+  /// Gets the seconds value (since the arbitrary starting time)
+  unsigned long long getSecLL(void) const { return mySec; }
+  /// Gets the milliseconds value (occuring after the seconds value)
+  unsigned long long getMSecLL(void) const { return myMSec; }
+
+  /// Logs the time
+  void log(const char *prefix = NULL) const
+  { MvrLog::log(MvrLog::Terse, "%sTime: %lld.%lld", ((prefix != NULL) ? prefix : ""), mySec, myMSec); }
+  /// Gets if we're using a monotonic (ever increasing) clock
+  static bool usingMonotonicClock()
+  {
+#if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
+    return ourMonotonicClock;
+#endif
+#ifdef WIN32
+    return true;
+#endif
+    return false;
+  }
+  
+  /// Equality operator (for sets)
+  bool operator==(const MvrTime& other) const
+  {
+    return isAt(other);
+  }
+
+  bool operator!=(const MvrTime& other) const
+  {
+    return (!isAt(other));
+  }
+ 
+  // Less than operator for sets
+  bool operator<(const MvrTime& other) const
+  {
+    return isBefore(other);
+  } // end operator <
+
+  bool operator>(const MvrTime& other) const
+  {
+    return isAfter(other);
+  }
+
+protected:
+  unsigned long long mySec;
+  unsigned long long myMSec;
+#if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
+  static bool ourMonotonicClock;
+#endif 
+}; // end class MvrTime
+
 #endif  // MVRIAUTIL_H
