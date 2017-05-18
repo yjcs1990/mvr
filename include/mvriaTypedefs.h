@@ -8,7 +8,7 @@
 ***************************************************************************************************/
 
 #ifndef MVRIATYPEDEFS_H
-#define MVRTIAYPEDEFS_H
+#define MVRIATYPEDEFS_H
 
 #include <time.h>
 #include <string>
