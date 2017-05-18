@@ -24,19 +24,14 @@
 #endif // MVRIA_STATIC
 #else
 #define MVREXPORT
-#endif  // SWIG
+#endif
 #include <winsock2.h>
 #include <windows.h>
-#endif //WIN32
+#endif //WIN32L
 
 #ifndef WIN32
-
 #define MVREXPORT
-////
-//// Ubuntu
-////
-
-#endif // Ubuntu
+#endif // linux
 
 
 typedef std::map<int, std::string> MvrStrMap;
