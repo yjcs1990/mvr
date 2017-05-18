@@ -7,8 +7,8 @@
  > Modify Time  : 2017年05月10日
 ***************************************************************************************************/
 
-#ifndef MVRTYPEDEFS_H
-#define MVRTYPEDEFS_H
+#ifndef MVRIATYPEDEFS_H
+#define MVRTIAYPEDEFS_H
 
 #include <time.h>
 #include <string>
@@ -74,4 +74,4 @@ public:
   typedef unsigned long long UByte8;
 };
 
-#endif  //MVRTYPEDEFS_H
+#endif  //MVRIATYPEDEFS_H
