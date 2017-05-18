@@ -152,7 +152,7 @@ public:
    name. This allows the code to know how to invoke the functor without
    knowing which class the member function is in.
 
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2, class P3, class P4>
 class MvrFunctor4 : public MvrFunctor3<P1, P2, P3>
