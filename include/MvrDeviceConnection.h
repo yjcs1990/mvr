@@ -12,5 +12,5 @@
 #include <string>
 #include "mvriaTypedefs.h"
 #include "mvriaUtil.h"
-/// TODO
+#include "MvrBasePacket.h"
 #endif  // MVRDEVICECONNECTION_H
