@@ -450,4 +450,13 @@ private:
   static ArMutex ourLocaltimeMutex;
 #endif
 };
+
+/** Common math operations
+    @ingroup UtilityClasses
+    @ingroup easy
+*/
+class MvrMath
+{
+
+};
 #endif  // MVRIAUTIL_H
