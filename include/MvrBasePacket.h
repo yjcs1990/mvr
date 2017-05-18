@@ -11,7 +11,7 @@
 #define MVRBASEPACKET_H
 
 #include <string>
-#include "mviaTypedefs.h"
+#include "mvriaTypedefs.h"
 
 /// Base packet class
 /** This class is a base class for specific packet types implemented by base
