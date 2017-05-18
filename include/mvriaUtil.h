@@ -446,8 +446,8 @@ private:
   static const char OTHER_SEPARATOR_CHAR;
 
 #ifdef WIN32
-  // Used on Windows to make ArUtil::localtime() function threadsafe
-  static ArMutex ourLocaltimeMutex;
+  // Used on Windows to make MvrUtil::localtime() function threadsafe
+  static MvrMutex ourLocaltimeMutex;
 #endif
 };
 
@@ -457,6 +457,289 @@ private:
 */
 class MvrMath
 {
+private:
+  /* see MvrMath::epsilon() */
+  static const double ourEpsilon; 
 
-};
+  // see getRandMax())
+  static const long ourRandMax;
+
+public: 
+  /** @return a very small number which can be used for comparisons of floating 
+   * point values, etc. 
+   */
+  MVREXPORT static double epsilon();
+
+  /// This adds two angles together and fixes the result to [-180, 180] 
+  /**
+     @param ang1 first angle
+     @param ang2 second angle, added to first
+     @return sum of the angles, in range [-180,180]
+     @see subAngle
+     @see fixAngle 
+     @ingroup easy
+  */
+  static double addAngle(double ang1, double ang2) 
+  { return fixAngle(ang1 + ang2); }
+
+  /// This subtracts one angle from another and fixes the result to [-180,180]
+  /**
+     @param ang1 first angle
+     @param ang2 second angle, subtracted from first angle
+     @return resulting angle, in range [-180,180]
+     @see addAngle
+     @see fixAngle
+     @ingroup easy
+  */
+  static double subAngle(double ang1, double ang2) 
+  { return fixAngle(ang1 - ang2); }
+
+  /// Takes an angle and returns the angle in range (-180,180]
+  /**
+     @param angle the angle to fix
+     @return the angle in range (-180,180]
+     @see addAngle
+     @see subAngle
+     @ingroup easy
+  */
+  static double fixAngle(double angle) 
+  {
+    if (angle >= 360)
+      angle = angle - 360.0 * (double)((int)angle / 360);
+    if (angle < -360)
+      angle = angle + 360.0 * (double)((int)angle / -360);
+    if (angle <= -180)
+      angle = + 180.0 + (angle + 180.0);
+    if (angle > 180)
+      angle = - 180.0 + (angle - 180.0);
+    return angle;
+  } 
+
+  /// Converts an angle in degrees to an angle in radians
+  /**
+     @param deg the angle in degrees
+     @return the angle in radians
+     @see radToDeg
+     @ingroup easy
+  */     
+  static double degToRad(double deg) { return deg * M_PI / 180.0; }
+
+  /// Converts an angle in radians to an angle in degrees
+  /**
+     @param rad the angle in radians
+     @return the angle in degrees
+     @see degToRad
+     @ingroup easy
+  */
+  static double radToDeg(double rad) { return rad * 180.0 / M_PI; }
+
+  /// Finds the cos, from angles in degrees
+  /**
+     @param angle angle to find the cos of, in degrees
+     @return the cos of the angle
+     @see sin
+     @ingroup easy
+  */
+  static double cos(double angle) { return ::cos(MvrMath::degToRad(angle)); }
+
+  /// Finds the sin, from angles in degrees
+  /**
+     @param angle angle to find the sin of, in degrees
+     @return the sin of the angle
+     @see cos
+     @ingroup easy
+  */
+  static double sin(double angle) { return ::sin(MvrMath::degToRad(angle)); }
+
+  /// Finds the tan, from angles in degrees
+  /**
+     @param angle angle to find the tan of, in degrees
+     @return the tan of the angle
+     @ingroup easy
+  */
+  static double tan(double angle) { return ::tan(MvrMath::degToRad(angle)); }
+
+  /// Finds the arctan of the given y/x pair
+  /**
+     @param y the y distance
+     @param x the x distance
+     @return the angle y and x form
+     @ingroup easy
+  */
+  static double atan2(double y, double x) 
+  { return MvrMath::radToDeg(::atan2(y, x)); }
+
+
+  /// Finds if one angle is between two other angles
+  /// @ingroup easy
+  static bool angleBetween(double angle, double startAngle, double endAngle)
+  {
+    angle = fixAngle(angle);
+    startAngle = fixAngle(startAngle);
+    endAngle = fixAngle(endAngle);
+    if ((startAngle < endAngle && angle > startAngle && angle < endAngle) ||
+	  (startAngle > endAngle && (angle > startAngle || angle < endAngle)))
+	    return true;
+    else
+	    return false;
+  }
+
+  /// Finds the absolute value of a double
+  /**
+     @param val the number to find the absolute value of
+     @return the absolute value of the number
+  */
+  static double fabs(double val) 
+  {
+    if (val < 0.0)
+	    return -val;
+    else
+	    return val;
+  }
+
+  /// Finds the closest integer to double given
+  /**
+     @param val the double to find the nearest integer to
+     @return the integer the value is nearest to (also caps it within 
+     int bounds)
+  */
+  static int roundInt(double val) 
+  { 
+    val += .49;
+    if (val > INT_MAX)
+	    return (int) INT_MAX;
+    else if (val < INT_MIN)
+	    return (int) INT_MIN;
+    else
+	    return((int) floor(val)); 
+  }
+    
+  /// Finds the closest short to double given
+  /**
+     @param val the double to find the nearest short to
+     @return the integer the value is nearest to (also caps it within 
+     short bounds)
+  */
+  static short roundShort(double val) 
+  { 
+    val += .49;
+    if (val > 32767)
+	    return (short) 32767;
+    else if (val < -32768)
+	    return (short) -32768;
+    else
+	    return((short) floor(val)); 
+  }
+    
+
+  /// Rotates a point around 0 by degrees given
+  static void pointRotate(double *x, double *y, double th)
+  {
+    double cs, sn, xt, yt;
+    cs = cos(th);
+    sn = sin(th);
+    xt = *x;  
+    yt = *y;
+    *x = cs*xt + sn*yt;
+    *y = cs*yt - sn*xt;
+  }
+  
+  /** Returns a random number between 0 and RAND_MAX on Windows, 2^31 on Linux
+   * (see MvrUtil::getRandMax()). On Windows, rand() is used, on Linux, lrand48(). */
+  static long random(void)
+  {
+#ifdef WIN32
+    return(rand());
+#else
+    return(lrand48());
+#endif
+  }
+  
+  /// Maximum of value returned by random()
+  MVREXPORT static long getRandMax();
+
+  /** Returns a random number between @a m and @a n. On Windows, rand() is used,
+   * on Linux lrand48(). 
+   * @ingroup easy
+  */
+  MVREXPORT static long randomInRange(long m, long n);
+
+  /// Finds the distance between two coordinates
+  /**
+     @param x1 the first coords x position
+     @param y1 the first coords y position
+     @param x2 the second coords x position
+     @param y2 the second coords y position
+     @return the distance between (x1, y1) and (x2, y2)
+   * @ingroup easy
+  **/
+  static double distanceBetween(double x1, double y1, double x2, double y2)
+  { return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));  }
+
+  /// Finds the squared distance between two coordinates
+  /**
+     use this only where speed really matters
+     @param x1 the first coords x position
+     @param y1 the first coords y position
+     @param x2 the second coords x position
+     @param y2 the second coords y position
+     @return the distance between (x1, y1) and (x2, y2)
+  **/
+  static double squaredDistanceBetween(double x1, double y1, double x2, double y2)
+  { return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);  }
+
+  /** Base-2 logarithm */
+  static double log2(double x)
+  {
+    return log10(x) / 0.3010303;  // 0.301... is log10(2.0).
+  }
+
+  /// Platform-independent call to determine whether the given double is not-a-number.
+  static bool isNan(double d) 
+  {
+#ifdef WIN32
+    return _isnan(d);
+#else 
+    return isnan(d);
+#endif
+  }
+
+  static bool isNan(float f) 
+  {
+#ifdef WIN32
+	  return _isnan(f);
+#else
+	  return isnan(f);
+#endif
+  }
+
+  static bool isFinite(float f) 
+  {
+#ifdef WIN32
+	  return _finite(f);
+#else
+	  return finitef(f);
+#endif
+  }
+
+  static bool isFinite(double d) 
+  {
+#ifdef WIN32
+	  return _finite(d);
+#else
+	  return finite(d);
+#endif
+  }
+
+  static bool compareFloats(double f1, double f2, double epsilon)
+  {
+    return (fabs(f2-f1) <= epsilon);
+  }
+
+  static bool compareFloats(double f1, double f2)
+  {
+    return compareFloats(f1, f2, epsilon());
+  }
+};  // end class MvrMath
+
 #endif  // MVRIAUTIL_H
