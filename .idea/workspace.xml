@@ -12,9 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="14e537d0-88b1-4c26-ba77-bcaef6727e49" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrFunctor.h" afterPath="$PROJECT_DIR$/include/MvrFunctor.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/mvriaUtil.h" afterPath="$PROJECT_DIR$/include/mvriaUtil.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrDeviceConnection.h" afterPath="$PROJECT_DIR$/include/MvrDeviceConnection.h" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -381,12 +379,12 @@
       <option name="presentableId" value="Default" />
       <updated>1495012481412</updated>
       <workItem from="1495012482634" duration="285000" />
-      <workItem from="1495074390222" duration="1182000" />
+      <workItem from="1495074390222" duration="1878000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1467000" />
+    <option name="totallyTimeSpent" value="2163000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1345" y="-4" width="1855" height="1084" extended-state="6" />
