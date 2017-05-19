@@ -63,15 +63,15 @@ public:
   MVREXPORT MvrSocket();
 
   /// Constructor which immediately connects to a server as a client
-  /// @a host Hostname or IP address of remote server
-  /// @a port Port number on server
-  /// @a Which IP protocol to use, type MvrSocket::TCP or MvrSocket::UDP
+  /// @param host Hostname or IP address of remote server
+  /// @param port Port number on server
+  /// @param Which IP protocol to use, type MvrSocket::TCP or MvrSocket::UDP
   MVREXPORT MvrSocket(const char *host, int port, Type type);
 
   /// Constructor which immediately opens a port as a server
-  /// @a port Port number to open. Use a value greater than 1024.
-  /// @a doClose Automatically close the port when MvrSocket is destroyed (recommend using true)
-  /// @a type Which IP protocol to use, MvrSocket::TCP or MvrSocket::UDP
+  /// @param port Port number to open. Use a value greater than 1024.
+  /// @param doClose Automatically close the port when MvrSocket is destroyed (recommend using true)
+  /// @param type Which IP protocol to use, MvrSocket::TCP or MvrSocket::UDP
   MVREXPORT MvrSocket(int port, bool doClose, Type type);
 
   /// Destructor
@@ -128,7 +128,7 @@ public:
   /// Simply create a port.
   MVREXPORT bool create(Type type);
 
-  /** Find the first valid unused port after @a startPort, and bind the socket to it.
+  /** Find the first valid unused port after @param startPort, and bind the socket to it.
       @param startPort first port to try
 	    @param openOnIP If given, only check ports open on the interface accociated with this address (Linux only)
   */
@@ -182,7 +182,7 @@ public:
   /// Accessor for the port of the sockaddr
   unsigned short int inPort() {return(mySin.sin_port);}
 
-  /// Convert @a addr into string numerical address
+  /// Convert @param addr into string numerical address
   MVREXPORT static void inToA(struct in_addr *addr, char *buff);
 
   /// Size of the sockaddr

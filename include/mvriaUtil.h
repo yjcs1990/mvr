@@ -248,7 +248,7 @@ public:
   MVREXPORT static bool isStrInList(const char *str, const std::list<std::string> &list,
                    bool isIgnoreCase = false);
 
-  /// Returns the floating point number from the string representation of that number in @a nptr, or HUGE_VAL for "inf" or -HUGE_VAL for "-inf".
+  /// Returns the floating point number from the string representation of that number in @param nptr, or HUGE_VAL for "inf" or -HUGE_VAL for "-inf".
   MVREXPORT static double atof(const char *nptr);
 
   /// Converts an integer value into a string for true or false
@@ -258,7 +258,7 @@ public:
   /** Invoke a functor with a string generated via sprintf format conversion
       @param functor The functor to invoke with the formatted string
       @param formatstr The format string into which additional argument values are inserted using vsnprintf() 
-      @param ... Additional arguments are values to interpolate into @a formatstr to generate the final string passed as the argument in the functor invocation.
+      @param ... Additional arguments are values to interpolate into @param formatstr to generate the final string passed as the argument in the functor invocation.
       @swigomit
   */
   MVREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
@@ -319,32 +319,32 @@ public:
 
   /** Put the current year (GMT) in s (e.g. "2005"). 
    *  @param s String buffer (allocated) to write year into
-   *  @param len Size of @a s
+   *  @param len Size of @param s
    */
   MVREXPORT static void putCurrentYearInString(char* s, size_t len);
   /** Put the current month (GMT) in s (e.g. "09" if September). 
    *  @param s String buffer (allocated) to write month into
-   *  @param len Size of @a s
+   *  @param len Size of @param s
    */
   MVREXPORT static void putCurrentMonthInString(char* s, size_t len);
   /** Put the current day (GMT) of the month in s (e.g. "20"). 
    *  @param s String buffer (allocated) to write day into
-   *  @param len Size of @a s
+   *  @param len Size of @param s
    */
   MVREXPORT static void putCurrentDayInString(char* s, size_t len);
   /** Put the current hour (GMT) in s (e.g. "13" for 1 o'clock PM). 
    *  @param s String buffer (allocated) to write hour into
-   *  @param len Size of @a s
+   *  @param len Size of @param s
    */
   MVREXPORT static void putCurrentHourInString(char* s, size_t len);
   /** Put the current minute (GMT) in s (e.g. "05"). 
    *  @param s String buffer (allocated) to write minutes into
-   *  @param len Size of @a s
+   *  @param len Size of @param s
    */
   MVREXPORT static void putCurrentMinuteInString(char* s, size_t len);
   /** Put the current second (GMT) in s (e.g. "59"). 
    *  @param s String buffer (allocated) to write seconds into
-   *  @param len Size of @a s
+   *  @param len Size of @param s
    */
   MVREXPORT static void putCurrentSecondInString(char* s, size_t len);
 
@@ -412,7 +412,7 @@ public:
   /// Sets if the file descriptor will be closed on exec or not
   MVREXPORT static void setFileCloseOnExec(FILE *file, bool closeOnExec = true);
 
-  /** Return true if the value of @a f is not NaN and is not infinite (+/- INF) */
+  /** Return true if the value of @param f is not NaN and is not infinite (+/- INF) */
   MVREXPORT static bool floatIsNormal(double f);
 
   /** Convert seconds to milliseconds */
@@ -653,7 +653,7 @@ public:
   /// Maximum of value returned by random()
   MVREXPORT static long getRandMax();
 
-  /** Returns a random number between @a m and @a n. On Windows, rand() is used,
+  /** Returns a random number between @param m and @param n. On Windows, rand() is used,
    * on Linux lrand48(). 
    * @ingroup easy
   */

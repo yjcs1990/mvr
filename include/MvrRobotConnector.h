@@ -28,7 +28,7 @@ class MvrBatteryConnector;
    port (for the simulator or for robots with Ethernet-serial bridge
    devices instead of onboard computers), or through a direct serial 
    port connection.  Normally, it first attempts a TCP connection on 
-   @a localhost port 8101, to use a simulator if running. If the simulator
+   @param localhost port 8101, to use a simulator if running. If the simulator
    is not running, then it normally then connects using the serial port
    (the first serial port, COM1, by default).  Various other connection
    parameters are configurable through command-line arguments.

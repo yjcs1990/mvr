@@ -110,7 +110,7 @@ public:
 #endif
   /// Get a reference to the underlying OS-specific mutex variable
   MVREXPORT virtual MutexType & getMutex() { return(myMutex); }
-  /** Sets the lock warning time (sec). If it takes more than @a lockWarningSeconds to perform the mutex lock in lock(), log a warning.
+  /** Sets the lock warning time (sec). If it takes more than @param lockWarningSeconds to perform the mutex lock in lock(), log a warning.
       @linuxonly
   */
   static void setLockWarningTime(double lockWarningSeconds) { ourLockWarningMS = (unsigned int)(lockWarningSeconds*1000.0); }
@@ -118,7 +118,7 @@ public:
       @linuxonly
   */
   static double getLockWarningTime(void) { return ourLockWarningMS/1000.0; }
-  /** Sets the unlock warning time (sec). If it takes more than @a unlockWarningSeconds between the mutex being locked with lock() then unlocked with unlock(), log a warning.
+  /** Sets the unlock warning time (sec). If it takes more than @param unlockWarningSeconds between the mutex being locked with lock() then unlocked with unlock(), log a warning.
       @linuxonly
   */
   static void setUnlockWarningTime(double unlockWarningSeconds) { ourUnlockWarningMS = (unsigned int)(unlockWarningSeconds*1000.0); }
