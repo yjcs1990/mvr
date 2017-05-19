@@ -21,6 +21,7 @@
 #include "MvrRobotPacketSender.h"
 #include "MvrRobotPacketReceiver.h"
 #include "MvrRobotConfigPacketReader.h"
+#include "MvrRobotTypes.h"
 
 
 
