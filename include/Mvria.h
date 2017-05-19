@@ -19,6 +19,8 @@
 #include "MvrLog.h"
 #include "MvrRobotPacket.h"
 #include "MvrRobotPacketSender.h"
+#include "MvrRobotPacketReceiver.h"
+#include "MvrRobotConfigPacketReader.h"
 
 
 /// TODO
