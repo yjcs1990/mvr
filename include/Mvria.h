@@ -28,6 +28,7 @@
 #include "MvrFileParser.h"
 #include "MvrConfig.h"
 #include "MvrConfigArg.h"
+#include "MvrConfigGroup.h"
 
 
 
