@@ -245,8 +245,9 @@ public:
   MVREXPORT static bool isStrEmpty(const char *str);
 
   /// Determines whether the given text is contained in the given list of strings.
-  MVREXPORT static bool isStrInList(const char *str, const std::list<std::string> &list,
-                   bool isIgnoreCase = false);
+  MVREXPORT static bool isStrInList(const char *str,
+                                    const std::list<std::string> &list,
+                                    bool isIgnoreCase = false);
 
   /// Returns the floating point number from the string representation of that number in @param nptr, or HUGE_VAL for "inf" or -HUGE_VAL for "-inf".
   MVREXPORT static double atof(const char *nptr);
@@ -262,10 +263,10 @@ public:
       @swigomit
   */
   MVREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
-				    const char *formatstr, ...);
+				                              const char *formatstr, ...);
   /// @deprecated format string should be a const char*
   MVREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
-				    char *formatstr, ...);
+				                              char *formatstr, ...);
 #endif  //SEIG
 
   /// Function for doing a fprintf to a file (here to make a functor for)
@@ -273,7 +274,7 @@ public:
 
   /// Gets a string contained in an arbitrary file
   MVREXPORT static bool getStringFromFile(const char *fileName, 
-					  char *str, size_t strLen);
+					                                char *str, size_t strLen);
   /** 
   These are for passing into getStringFromRegistry
   **/
@@ -286,8 +287,11 @@ public:
   };
 
   /// Returns a string from the Windows registry
-  MVREXPORT static bool getStringFromRegistry(REGKEY root, const char *key,
-            const char *value, char *str, int len);
+  MVREXPORT static bool getStringFromRegistry(REGKEY root,
+                                              const char *key,
+                                              const char *value,
+                                              char *str, 
+                                              int len);
 
   /// Returns a string from the Windows registry, searching each of the following registry root paths in order: REGKEY_CURRENT_USER, REGKEY_LOCAL_MACHINE
   static bool findFirstStringInRegistry(const char* key, const char* value, char* str, int len)
@@ -378,35 +382,45 @@ public:
 // these aren't needed in windows since it ignores case anyhow
 #ifndef WIN32
   /// this matches the case out of what file we want
-  MVREXPORT static bool matchCase(const char *baseDir, const char *fileName, 
-			      char * result, size_t resultLen);
+  MVREXPORT static bool matchCase(const char *baseDir,
+                                  const char *fileName, 
+			                            char * result, 
+                                  size_t resultLen);
 #endif  // WIN32
   /// Pulls the directory out of a file name
   MVREXPORT static bool getDirectory(const char *fileName, 
-				    char * result, size_t resultLen);
+				                             char * result, 
+                                     size_t resultLen);
   /// Pulls the filename out of the file name
   MVREXPORT static bool getFileName(const char *fileName, 
-				    char * result, size_t resultLen);
+				                            char * result, 
+                                    size_t resultLen);
   
   /// Sets the timestamp on the specified file
   MVREXPORT static bool changeFileTimestamp(const char *fileName, time_t timestamp);
 
   /// Opens a file, defaulting it so that the file will close on exec
-  MVREXPORT static FILE *fopen(const char *path, const char *mode, 
-			      bool closeOnExec = true);
+  MVREXPORT static FILE *fopen(const char *path, 
+                               const char *mode, 
+			                         bool closeOnExec = true);
   /// Opens a file, defaulting it so that the file will close on exec
-  MVREXPORT static int open(const char *pathname, int flags, 
-			      bool closeOnExec = true);
+  MVREXPORT static int open(const char *pathname, 
+                            int flags, 
+			                      bool closeOnExec = true);
   /// Opens a file, defaulting it so that the file will close on exec
-  MVREXPORT static int open(const char *pathname, int flags, mode_t mode, 
-			      bool closeOnExec = true);
+  MVREXPORT static int open(const char *pathname, 
+                            int flags, 
+                            mode_t mode, 
+                            bool closeOnExec = true);
   MVREXPORT static int close(int fd);
   /// Opens a file, defaulting it so that the file will close on exec
-  MVREXPORT static int creat(const char *pathname, mode_t mode,
-			      bool closeOnExec = true);
+  MVREXPORT static int creat(const char *pathname, 
+                             mode_t mode,
+                             bool closeOnExec = true);
   /// Opens a pipe, defaulting it so that the file will close on exec
-  MVREXPORT static FILE *popen(const char *command, const char *type, 
-			      bool closeOnExec = true);
+  MVREXPORT static FILE *popen(const char *command, 
+                               const char *type, 
+                               bool closeOnExec = true);
   /// Sets if the file descriptor will be closed on exec or not
   MVREXPORT static void setFileCloseOnExec(int fd, bool closeOnExec = true);
   /// Sets if the file descriptor will be closed on exec or not
@@ -830,8 +844,8 @@ public:
   virtual double findDistanceTo(MvrPose position) const
   {
     return MvrMath::distanceBetween(getX(), getY(), 
-		     position.getX(), 
-		     position.getY());
+		                                position.getX(), 
+		                                position.getY());
   }
 
   /// Finds the square distance from this position to the given position

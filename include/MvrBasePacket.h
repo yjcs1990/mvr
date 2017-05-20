@@ -52,8 +52,10 @@ class MvrBasePacket
 {
 public:
   /// Constructor
-  MVREXPORT MvrBasePacket(MvrTypes::UByte2 bufferSize = 0, MvrTypes::UByte2 headerLength = 0, 
-            char * buf = NULL, MvrTypes::UByte2 footerLength = 0);
+  MVREXPORT MvrBasePacket(MvrTypes::UByte2 bufferSize = 0, 
+                          MvrTypes::UByte2 headerLength = 0, 
+                          char * buf = NULL, 
+                          MvrTypes::UByte2 footerLength = 0);
   /// Copy constructor
   MVREXPORT MvrBasePacket(const MvrBasePacket &other);
   /// Assignment operator

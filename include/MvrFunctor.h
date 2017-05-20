@@ -684,7 +684,8 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1) : myFunc(func), myP1(p1), myP2(), myP3() {}
+  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1) :
+   myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
   /**
@@ -692,7 +693,8 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2) : myFunc(func), myP1(p1), myP2(p2), myP3() {}
+  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2) :
+   myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
   /**
@@ -701,7 +703,8 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) : myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
+  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+   myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
   virtual ~MvrGlobalFunctor3() {}
@@ -776,14 +779,16 @@ public:
   /**
      @param func global function pointer
   */
-  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4)) : myFunc(func), myP1(), myP2(), myP3(), myP4() {}
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4)) :
+   myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
   /**
      @param func global function pointer
      @param p1 default first parameter
   */
-  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1) : myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1) :
+   myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
   /**
@@ -791,7 +796,8 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2) : myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+   myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
   /**
@@ -800,7 +806,8 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) : myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+   myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
    /// Constructor - supply function pointer, default parameters
   /**
@@ -810,7 +817,8 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) : myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) : 
+   myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
   virtual ~MvrGlobalFunctor4() {}
