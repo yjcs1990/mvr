@@ -26,8 +26,7 @@ public:
   /// Adds a functor to handle a keyword that wants an easily parsable string
   MVREXPORT bool addHandler(const char *keyword, MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor);
   /// Adds a functor to handle a keyword that wants an easily parsable string and returns error messages
-  MVREXPORT bool addHandlerWithError(const char *keyword,MvrRetFunctor3<bool, MvrArgumentBuilder *, 
-				   char *, size_t> *functor);
+  MVREXPORT bool addHandlerWithError(const char *keyword,MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor);
   /// Removes a handler for a keyword
   MVREXPORT bool remHandler(const char *keyword, bool logIfCannotFind = true);
   /// Removes any handlers with this functor
@@ -39,8 +38,7 @@ public:
 
   /// Opens, parses, and then closes the specified file.
   MVREXPORT bool parseFile(const char *fileName, bool continueOnErrors = true,
-			     bool noFileNotFoundMessage = false,
-			     char *errorBuffer = NULL, size_t errorBufferLen = 0);
+			      bool noFileNotFoundMessage = false, char *errorBuffer = NULL, size_t errorBufferLen = 0);
 
   /// Parses an open file; the file is not closed by this method.
   /**
@@ -51,7 +49,7 @@ public:
    * even after an error is detected
   **/
   MVREXPORT bool parseFile(FILE *file, char *buffer, int bufferLength, 
-			     bool continueOnErrors = true, char *errorBuffer = NULL, size_t errorBufferLen = 0);
+			      bool continueOnErrors = true, char *errorBuffer = NULL, size_t errorBufferLen = 0);
 
   /// If parseFile is currently in progress, then terminates it as soon as possible.
   MVREXPORT void cancelParsing();
@@ -68,8 +66,7 @@ public:
   MVREXPORT void clearCommentDelimiters();
 
   /// Function to parse a single line 
-  MVREXPORT bool parseLine(char *line, char *errorBuffer = NULL, 
-			  size_t errorBufferLen = 0);
+  MVREXPORT bool parseLine(char *line, char *errorBuffer = NULL, size_t errorBufferLen = 0);
   /// Function to reset counters
   MVREXPORT void resetCounters(void);
   /// Sets the maximum number of arguments in a line we can expect
@@ -106,8 +103,7 @@ protected:
       MvrLog::log(MvrLog::Terse, "MvrFileParser: Horrible problem with process callbacks");
       return false;
     }
-    bool haveFunctor(
-	    MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
+    bool haveFunctor( MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
     { 
       if (myCallbackWithError == functor) 
       	return true; 
