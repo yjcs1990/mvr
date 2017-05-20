@@ -26,6 +26,7 @@
 #include "MvrArgumentBuilder.h"
 #include "MvrArgumentParser.h"
 #include "MvrFileParser.h"
+#include "MvrConfig.h"
 
 
 
