@@ -19,8 +19,10 @@ class MvrArgumentBuilder
 {
 public:
   /// Constructor
-  MVREXPORT MvrArgumentBuilder(size_t argvLen = 512, char extraSpaceChar = '\0',
-			       bool ignoreNormalSpaces = false, bool isPreCompressQuotes = false);
+  MVREXPORT MvrArgumentBuilder(size_t argvLen = 512, 
+                               char extraSpaceChar = '\0',
+			                         bool ignoreNormalSpaces = false, 
+                               bool isPreCompressQuotes = false);
   /// Copy Constructor
   MVREXPORT MvrArgumentBuilder(const MvrArgumentBuilder &builder);
 
