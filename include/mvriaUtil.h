@@ -859,8 +859,8 @@ public:
   virtual double squaredFindDistanceTo(MvrPose position) const
   {
     return MvrMath::squaredDistanceBetween(getX(), getY(), 
-			    position.getX(), 
-			    position.getY());
+                                           position.getX(), 
+                                           position.getY());
   }
   /// Finds the angle between this position and the given position
   /** 
@@ -880,16 +880,16 @@ public:
   virtual MvrPose operator+(const MvrPose& other) const
   {
     return MvrPose( myX + other.getX(), 
-                   myY + other.getY(), 
-                   MvrMath::fixAngle(myTh + other.getTh()) );
+                    myY + other.getY(), 
+                    MvrMath::fixAngle(myTh + other.getTh()) );
   }
 
   /// Substract the other pose's X, Y, and theta from this pose's X, Y, and theta (difference in theta will be normalized to (-180,180)), and return the result
   virtual MvrPose operator-(const MvrPose& other) const
   {
     return MvrPose( myX - other.getX(), 
-                   myY - other.getY(), 
-                   MvrMath::fixAngle(myTh - other.getTh()) );
+                    myY - other.getY(), 
+                    MvrMath::fixAngle(myTh - other.getTh()) );
   }
   
   /// Adds the given pose to this one.
@@ -953,7 +953,7 @@ public:
   **/
   static double distanceBetween(MvrPose pose1, MvrPose pose2)
   { return MvrMath::distanceBetween(pose1.getX(), pose1.getY(), 
-				     pose2.getX(), pose2.getY()); }
+				                            pose2.getX(), pose2.getY()); }
 
   /// Return true if the X value of p1 is less than the X value of p2
   static bool compareX(const MvrPose& p1, const MvrPose &p2)

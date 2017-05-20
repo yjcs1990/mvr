@@ -80,52 +80,52 @@ public:
 
   /// Parse a config file
   MVREXPORT bool parseFile(const char *fileName, 
-                          bool continueOnError = false,
-                          bool noFileNotFoundMessage = false, 
-                          char *errorBuffer = NULL,
-                          size_t errorBufferLen = 0,
-                          std::list<std::string> *sectionsToParse = NULL,
-                          MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
-                          MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY,
-                          MvrConfigArg::RestartLevel *restartLevelNeeded = NULL);
+                           bool continueOnError = false,
+                           bool noFileNotFoundMessage = false, 
+                           char *errorBuffer = NULL,
+                           size_t errorBufferLen = 0,
+                           std::list<std::string> *sectionsToParse = NULL,
+                           MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
+                           MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY,
+                           MvrConfigArg::RestartLevel *restartLevelNeeded = NULL);
       
   /// Write out a config file
   MVREXPORT bool writeFile(const char *fileName, 
-                          bool append = false,
-                          std::set<std::string> *alreadyWritten = NULL,
-                          bool writeExtras = false,
-                          std::list<std::string> *sectionsToWrite = NULL,
-                          MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
-                          MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY);
+                           bool append = false,
+                           std::set<std::string> *alreadyWritten = NULL,
+                           bool writeExtras = false,
+                           std::list<std::string> *sectionsToWrite = NULL,
+                           MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
+                           MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY);
 
   /// Parse a set of text lines, in the same format as the config file.
   MVREXPORT bool parseText(const std::list<std::string> &configLines,
-                          bool continueOnErrors = false,
-                          bool *parseOk = NULL,
-                          bool *processOk = NULL,
-                          char *errorBuffer = NULL,
-                          size_t errorBufferLen = 0,
-                          std::list<std::string> *sectionsToParse = NULL,
-                          MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
-                          MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY,
-                          MvrConfigArg::RestartLevel *restartLevelNeeded = NULL);
-
+                           bool continueOnErrors = false,
+                           bool *parseOk = NULL,
+                           bool *processOk = NULL,
+                           char *errorBuffer = NULL,
+                           size_t errorBufferLen = 0,
+                           std::list<std::string> *sectionsToParse = NULL,
+                           MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
+                           MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY,
+                           MvrConfigArg::RestartLevel *restartLevelNeeded = NULL);
+ 
   
   /// Parse a config resource file, for translation.
   MVREXPORT bool parseResourceFile(const char *fileName, 
-                                  bool continueOnError = true,
-                                  char *errorBuffer = NULL,
-                                  size_t errorBufferLen = 0,
-                                  std::list<std::string> *sectionsToParse = NULL);
-                                        
+                                   bool continueOnError = true,
+                                   char *errorBuffer = NULL,
+                                   size_t errorBufferLen = 0,
+                                   std::list<std::string> *sectionsToParse = NULL);
+                                         
   /// Parse a config resource file with parameters suitable for custom commands.
   MVREXPORT void parseResourceFile(MvrArgumentBuilder *builder);
   
   /// Write a config resource file, for translation.
   MVREXPORT bool writeResourceFile(const char *fileName, 
-                                  bool append = false,
-                                  std::set<std::string> *alreadyWritten = NULL,
-                                  std::list<std::string> *sectionsToWrite = NULL);
+                                   bool append = false,
+                                   std::set<std::string> *alreadyWritten = NULL,
+                                   std::list<std::string> *sectionsToWrite = NULL);
 
   /// Write a config resource file with parameters suitable for custom commands.
   MVREXPORT void writeResourceFile(MvrArgumentBuilder *builder);
@@ -137,29 +137,29 @@ public:
    * then this method can be called to add it to the specified category.
   **/
   MVREXPORT bool addSection(const char *categoryName,
-                           const char *sectionName,
-                           const char *sectionDescription);
+                            const char *sectionName,
+                            const char *sectionDescription);
 
 
   /// Command to add a parameter to the given section with given priority
   MVREXPORT bool addParam(const MvrConfigArg &arg, 
-                         const char *sectionName = "", 
-                         MvrPriority::Priority priority = MvrPriority::NORMAL,
-                         const char *displayHint = NULL,
-                         MvrConfigArg::RestartLevel restart = MvrConfigArg::NO_RESTART);
+                          const char *sectionName = "", 
+                          MvrPriority::Priority priority = MvrPriority::NORMAL,
+                          const char *displayHint = NULL,
+                          MvrConfigArg::RestartLevel restart = MvrConfigArg::NO_RESTART);
 
   /// Command to add a new comment to the given section with given priority
   MVREXPORT bool addComment(const char *comment, const char *sectionName = "", 
-			                     MvrPriority::Priority priority = MvrPriority::NORMAL);
+			                      MvrPriority::Priority priority = MvrPriority::NORMAL);
 
   /// Adds a parameter that has all the other information on it
   /// already set
   MVREXPORT bool addParamAsIs(const MvrConfigArg &arg, 
-			     const char *sectionName = "");
+			                        const char *sectionName = "");
 
   /// Sets the comment for a section
   MVREXPORT void setSectionComment(const char *sectionName, 
-				                          const char *comment);
+				                           const char *comment);
 
 
   /// Uses this argument parser after it parses a file before it processes
@@ -181,53 +181,51 @@ public:
   /// Adds a callback to be invoked when the configuration is loaded or
   /// reloaded.
   MVREXPORT void addProcessFileCB(MvrRetFunctor<bool> *functor, 
-				 int priority = 0);
+				                          int priority = 0);
   /// Adds a callback to be invoked when the configuration is loaded
   /// or reloaded.... if you really want errors you should use
   /// addProcessFileWithErrorCB, this is just to catch mistakes
   MVREXPORT void addProcessFileCB(MvrRetFunctor2<bool, char *, size_t> *functor, 
-				 int priority = 0);
+				                          int priority = 0);
   /// Adds a callback to be invoked when the configuration is loaded or
   /// reloaded, which may also receive error messages
-  MVREXPORT void addProcessFileWithErrorCB(
-	  MvrRetFunctor2<bool, char *, size_t> *functor, 
-	  int priority = 0);
+  MVREXPORT void addProcessFileWithErrorCB(MvrRetFunctor2<bool, char *, size_t> *functor, 
+                                           int priority = 0);
   /// Removes a processedFile callback
   MVREXPORT void remProcessFileCB(MvrRetFunctor<bool> *functor);
   /// Removes a processedFile callback
-  MVREXPORT void remProcessFileCB(
-	  MvrRetFunctor2<bool, char *, size_t> *functor);
+  MVREXPORT void remProcessFileCB(MvrRetFunctor2<bool, char *, size_t> *functor);
   /// Call the processFileCBs
   MVREXPORT bool callProcessFileCallBacks(bool continueOnError,
-					 char *errorBuffer = NULL,
-					 size_t errorBufferLen = 0);
+                                          char *errorBuffer = NULL,
+                                          size_t errorBufferLen = 0);
   /// This parses the argument given (for parser or other use)
   MVREXPORT bool parseArgument(MvrArgumentBuilder *arg, 
-			      char *errorBuffer = NULL,
-			      size_t errorBufferLen = 0);
+                               char *errorBuffer = NULL,
+                               size_t errorBufferLen = 0);
 
   /// Parses the config file version information.
   MVREXPORT bool parseVersion(MvrArgumentBuilder *arg, 
-			                       char *errorBuffer = NULL,
+			                        char *errorBuffer = NULL,
 			                        size_t errorBufferLen = 0);
 
   /// This parses the section change (for parser or other use)
   MVREXPORT bool parseSection(MvrArgumentBuilder *arg, 
-			      char *errorBuffer = NULL,
-			      size_t errorBufferLen = 0);
+                              char *errorBuffer = NULL,
+                              size_t errorBufferLen = 0);
 
   MVREXPORT bool parseListBegin(MvrArgumentBuilder *arg,
-				                       char *errorBuffer,
-				                       size_t errorBufferLen);
+                                char *errorBuffer,
+                                size_t errorBufferLen);
 
   MVREXPORT bool parseListEnd(MvrArgumentBuilder *arg,
-				                     char *errorBuffer,
-				                     size_t errorBufferLen);
+				                      char *errorBuffer,
+				                      size_t errorBufferLen);
 
   /// This parses an unknown argument (so we can save it)
   MVREXPORT bool parseUnknown(MvrArgumentBuilder *arg, 
-			     char *errorBuffer = NULL,
-			     size_t errorBufferLen = 0);
+                              char *errorBuffer = NULL,
+                              size_t errorBufferLen = 0);
 
   /// Gets the restart level needed
   MVREXPORT MvrConfigArg::RestartLevel getRestartLevelNeeded(void) const;
@@ -250,9 +248,9 @@ public:
 
   /// Use an argument parser to change the config
   MVREXPORT bool parseArgumentParser(MvrArgumentParser *parser,
-				    bool continueOnError = false,
-				    char *errorBuffer = NULL,
-				    size_t errorBufferLen = 0);
+                                     bool continueOnError = false,
+                                     char *errorBuffer = NULL,
+                                     size_t errorBufferLen = 0);
 
 
   /// Returns the list of categories contained in this config.
@@ -293,10 +291,10 @@ public:
 
   /// adds a flag to a section
   MVREXPORT bool addSectionFlags(const char *sectionName, 
-				const char *flags);
+				                         const char *flags);
   /// Removes a flag from a section
   MVREXPORT bool remSectionFlag(const char *sectionName, 
-			       const char *flag);
+			                          const char *flag);
 
   /// calls clearValueSet on the whole config (internal for default configs)
   MVREXPORT void clearAllValueSet(void);
@@ -307,12 +305,12 @@ public:
 
   /// Logs the config
   MVREXPORT void log(bool isSummary = true,
-                    std::list<std::string> *sectionNameList = NULL,
-                    const char *logPrefix = "");
+                     std::list<std::string> *sectionNameList = NULL,
+                     const char *logPrefix = "");
 
   /// Sets permissions on some things 
   MVREXPORT void setPermissions(bool allowFactory = true, 
-			       bool rememberUnknowns = true);
+			                          bool rememberUnknowns = true);
 
   /// Adds a section for this config to always skip
   MVREXPORT void addSectionNotToParse(const char *section);
@@ -326,16 +324,16 @@ protected:
 
   /// Write out a section  
   MVREXPORT void writeSection(MvrConfigSection *section, 
-                             FILE *file,
-                             std::set<std::string> *alreadyWritten,
-                             bool writeExtras,
-                             MvrPriority::Priority highestPriority,
-                             MvrPriority::Priority lowestPriority);
+                              FILE *file,
+                              std::set<std::string> *alreadyWritten,
+                              bool writeExtras,
+                              MvrPriority::Priority highestPriority,
+                              MvrPriority::Priority lowestPriority);
 
   /// Write out a section in CSV format for translation
   MVREXPORT void writeSectionResource(MvrConfigSection *section, 
-                                     FILE *file,
-                                     std::set<std::string> *alreadyWritten);
+                                      FILE *file,
+                                      std::set<std::string> *alreadyWritten);
 
   MVREXPORT void translateSection(MvrConfigSection *section);
 
@@ -491,20 +489,20 @@ protected:
 /** Represents a section in the configuration. Sections are used to
  *  group items used by separate parts of Mvria.
  */
-class ArConfigSection
+class MvrConfigSection
 {
 public:
-  MVREXPORT ArConfigSection(const char *name = NULL, 
-						               const char *comment = NULL,
-                           bool isQuiet = false,
-                           const char *categoryName = NULL);
+  MVREXPORT MvrConfigSection(const char *name = NULL, 
+						                 const char *comment = NULL,
+                             bool isQuiet = false,
+                             const char *categoryName = NULL);
 
-  MVREXPORT virtual ~ArConfigSection();
-  MVREXPORT ArConfigSection(const ArConfigSection &section);
-  MVREXPORT ArConfigSection &operator=(const ArConfigSection &section);
+  MVREXPORT virtual ~MvrConfigSection();
+  MVREXPORT MvrConfigSection(const MvrConfigSection &section);
+  MVREXPORT MvrConfigSection &operator=(const MvrConfigSection &section);
 
   /// Copies the given section to this one, detaching any pointers so they are not shared
-  MVREXPORT virtual void copyAndDetach(const ArConfigSection &section);
+  MVREXPORT virtual void copyAndDetach(const MvrConfigSection &section);
 
   /** @return The name of this section */
   const char *getName(void) const { return myName.c_str(); }
@@ -518,7 +516,7 @@ public:
   const char *getFlags(void) const { return myFlags->getFullString(); }
   MVREXPORT bool hasFlag(const char *flag) const;
   
-  std::list<ArConfigArg> *getParams(void) { return &myParams; }
+  std::list<MvrConfigArg> *getParams(void) { return &myParams; }
   
   MVREXPORT void setName(const char *name);
 
@@ -528,21 +526,21 @@ public:
   MVREXPORT bool remFlag(const char *dataFlag);
 
   /// Finds a parameter item in this section with the given name.  Returns NULL if not found.
-  MVREXPORT ArConfigArg *findParam(const char *paramName,
-                                  bool isAllowStringHolders = false);
+  MVREXPORT MvrConfigArg *findParam(const char *paramName,
+                                    bool isAllowStringHolders = false);
 
   /// Finds a list member parameter with the specified name path.  Returns NULL if not found.
-  MVREXPORT ArConfigArg *findParam(const std::list<std::string> &paramNamePath,
-                                  bool isAllowHolders = false); 
+  MVREXPORT MvrConfigArg *findParam(const std::list<std::string> &paramNamePath,
+                                    bool isAllowHolders = false); 
 
   /// Finds a list member parameter with the specified name path.  Returns NULL if not found.
-  MVREXPORT ArConfigArg *findParam(const char **paramNamePath, 
-                                  int pathLength,
-                                  bool isAllowHolders = false); 
+  MVREXPORT MvrConfigArg *findParam(const char **paramNamePath, 
+                                    int pathLength,
+                                    bool isAllowHolders = false); 
 
   /// Determines whether the current section contains parameters in the specified priority ran
-  MVREXPORT bool containsParamsOfPriority(ArPriority::Priority highestPriority,
-                                         ArPriority::Priority lowestPriority);
+  MVREXPORT bool containsParamsOfPriority(MvrPriority::Priority highestPriority,
+                                          MvrPriority::Priority lowestPriority);
 
   /// Removes a string holder for this param, returns true if it found one
   MVREXPORT bool remStringHolder(const char *paramName); 
@@ -553,7 +551,7 @@ public:
 protected:
 
   /// Give the config access to the protected category name setter.
-  friend class ArConfig;
+  friend class MvrConfig;
   
   /// Sets the name of the category to which this section belongs.
   void setCategoryName(const char *categoryName);
@@ -564,10 +562,10 @@ protected:
   std::string myComment;
   std::string myCategoryName;
   std::string myDisplayName; // Not yet supported
-  ArArgumentBuilder *myFlags;
-  std::list<ArConfigArg> myParams;
+  MvrArgumentBuilder *myFlags;
+  std::list<MvrConfigArg> myParams;
   bool myIsQuiet;
 
-}; // end class ArConfigSection
+}; // end class MvrConfigSection
 
 #endif  // MVRCONFIG_H
