@@ -22,6 +22,10 @@
 #include "MvrRobotParams.h"
 #include "MvrActionDesired.h"
 #include "MvrResolver.h"
+#include "MvrTransform.h"
+#include "MvrInterpolation.h"
+#include "MvrKeyHandler.h"
+
 
 /// TODO
 #endif  // MVRROBOT_H
