@@ -29,6 +29,9 @@
 #include "MvrConfig.h"
 #include "MvrConfigArg.h"
 #include "MvrConfigGroup.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
+
 
 
 
