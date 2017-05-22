@@ -22,64 +22,64 @@ class MvrSyncTask
 {
 public:
   /// Constructor, shouldn't ever do a new on anything besides the root node
-  MVEXPORT MvrSyncTask(const char *name, MvrFunctor * functor = NULL, 
+  MVREXPORT MvrSyncTask(const char *name, MvrFunctor * functor = NULL, 
                        MvrTaskState::State *state = NULL,
                        MvrSyncTask * parent = NULL);
   /// Destructor
-  MVEXPORT virtual ~MvrSyncTask();
+  MVREXPORT virtual ~MvrSyncTask();
 
   /// Runs the node, which runs all children of this node as well
-  MVEXPORT void run(void);
+  MVREXPORT void run(void);
   /// Prints the node, which prints all the children of this node as well
-  MVEXPORT void log(int depth = 0);
+  MVREXPORT void log(int depth = 0);
 
   /// Gets the state of the task
-  MVEXPORT MvrTaskState::State getState(void);
+  MVREXPORT MvrTaskState::State getState(void);
   /// Sets the state of the task
-  MVEXPORT void setState(MvrTaskState::State state);
+  MVREXPORT void setState(MvrTaskState::State state);
     
   /// Finds the task in the instances list of children, by name
-  MVEXPORT MvrSyncTask *findNonRecursive(const char *name);
+  MVREXPORT MvrSyncTask *findNonRecursive(const char *name);
   /// Finds the task in the instances list of children, by functor
-  MVEXPORT MvrSyncTask *findNonRecursive(MvrFunctor *functor);
+  MVREXPORT MvrSyncTask *findNonRecursive(MvrFunctor *functor);
 
   /// Finds the task recursively down the tree by name
-  MVEXPORT MvrSyncTask *find(const char *name); 
+  MVREXPORT MvrSyncTask *find(const char *name); 
   /// Finds the task recursively down the tree by functor
-  MVEXPORT MvrSyncTask *find(MvrFunctor *functor);
+  MVREXPORT MvrSyncTask *find(MvrFunctor *functor);
 
   /// Returns what this is running, if anything (recurses)
-  MVEXPORT MvrSyncTask *getRunning(void);
+  MVREXPORT MvrSyncTask *getRunning(void);
 
   /// Adds a new branch to this instance
-  MVEXPORT void addNewBranch(const char *nameOfNew, int position, 
+  MVREXPORT void addNewBranch(const char *nameOfNew, int position, 
 			                       MvrTaskState::State *state = NULL);
   /// Adds a new leaf to this instance
-  MVEXPORT void addNewLeaf(const char *nameOfNew, int position, 
+  MVREXPORT void addNewLeaf(const char *nameOfNew, int position, 
                            MvrFunctor *functor, 
                            MvrTaskState::State *state = NULL);
 
   /// Gets the name of this task
-  MVEXPORT std::string getName(void);
+  MVREXPORT std::string getName(void);
 
   /// Gets the functor this instance runs, if there is one
-  MVEXPORT MvrFunctor *getFunctor(void);
+  MVREXPORT MvrFunctor *getFunctor(void);
 
   /// Sets the functor called to get the cycle warning time (should only be used from the robot)
-  MVEXPORT void setWarningTimeCB(MvrRetFunctor<unsigned int> *functor);
+  MVREXPORT void setWarningTimeCB(MvrRetFunctor<unsigned int> *functor);
   /// Gets the functor called to get the cycle warning time (should only be used from the robot)
-  MVEXPORT MvrRetFunctor<unsigned int> *getWarningTimeCB(void);
+  MVREXPORT MvrRetFunctor<unsigned int> *getWarningTimeCB(void);
 
   /// Sets the functor called to check if there should be a time warning this cycle (should only be used from the robot)
-  MVEXPORT void setNoTimeWarningCB(MvrRetFunctor<bool> *functor);
+  MVREXPORT void setNoTimeWarningCB(MvrRetFunctor<bool> *functor);
   /// Gets the functor called to check if there should be a time warning this cycle (should only be used from the robot)
-  MVEXPORT MvrRetFunctor<bool> *getNoTimeWarningCB(void);
+  MVREXPORT MvrRetFunctor<bool> *getNoTimeWarningCB(void);
   
   // removes this task from the map
-  MVEXPORT void remove(MvrSyncTask * proc);
+  MVREXPORT void remove(MvrSyncTask * proc);
 
   // returns whether this node is deleting or not
-  MVEXPORT bool isDeleting(void);
+  MVREXPORT bool isDeleting(void);
 protected:
   std::multimap<int, MvrSyncTask *> myMultiMap;
   MvrTaskState::State *myStatePointer;
