@@ -34,9 +34,4 @@
 /// TODO
 
 #include "MvrCommands.h"
-
-
-
-
-/// TODO
 #endif  // MVRIA_H
