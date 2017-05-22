@@ -21,6 +21,7 @@
 #include "MvrRobotPacketReaderThread.h"
 #include "MvrRobotParams.h"
 #include "MvrActionDesired.h"
+#include "MvrResolver.h"
 
 /// TODO
 #endif  // MVRROBOT_H
