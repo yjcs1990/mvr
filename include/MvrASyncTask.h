@@ -1,23 +1,18 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobot.h
- > Description  : This class will read a config packet from the robot.
+ > File Name    : MvrASyncTask.h
+ > Description  : Asynchronous task (runs in its own thread)
  > Author       : Yu Jie
  > Create Time  : 2017年05月22日
  > Modify Time  : 2017年05月22日
 ***************************************************************************************************/
-#ifndef MVRROBOT_H
-#define MVRROBOT_H
+#ifndef MVRASYNCTASK_H
+#define MVRASYNCTASK_H
 
 #include "mvriaTypedefs.h"
-#include "MvrRobotPacketSender.h"
-#include "MvrRobotPacketReceiver.h"
 #include "MvrFunctor.h"
-#include "MvrSyncTask.h"
-#include "MvrSensorReading.h"
-#include "MvrMutex.h"
-#include "MvrCondition.h"
-#include "MvrSyncLoop.h"
+#include "MvrThread.h"
 
 /// TODO
-#endif  // MVRROBOT_H
+
+#endif  // MVRASYNCTASK_H
