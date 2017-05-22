@@ -14,6 +14,7 @@
 #include "MvrRobotPacketReceiver.h"
 #include "MvrFunctor.h"
 #include "MvrSyncTask.h"
-#include 
+#include "MvrSensorRecording.h"
+
 
 #endif  // MVRROBOT_H
