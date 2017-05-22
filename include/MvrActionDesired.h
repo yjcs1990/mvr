@@ -64,7 +64,7 @@ public:
       {
         myDesired = desiredChannel->getDesired();
       }
-	// if only this has strength then we don't need to do anything
+	  // if only this has strength then we don't need to do anything
     }
     else if (myStrength >= MIN_STRENGTH)
 	    myDesired = (((oldStrength * myDesired) + (desiredChannel->getDesired() * otherStrength)) / (myStrength));
