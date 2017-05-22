@@ -10,7 +10,8 @@
     "functional": "cpp",
     "type_traits": "cpp",
     "chrono": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "cmath": "cpp"
   },
   "line-counter.excludes": [
         "**/.vscode/**",
