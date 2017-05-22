@@ -18,6 +18,9 @@
 #include "MvrMutex.h"
 #include "MvrCondition.h"
 #include "MvrSyncLoop.h"
+#include "MvrRobotPacketReaderThread.h"
+#include "MvrRobotParams.h"
+#include "MvrActionDesired.h"
 
 /// TODO
 #endif  // MVRROBOT_H
