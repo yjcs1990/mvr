@@ -15,6 +15,8 @@
 #include "MvrFunctor.h"
 #include "MvrSyncTask.h"
 #include "MvrSensorReading.h"
+#include "MvrMutex.h"
+#include "MvrCondition.h"
 
 
 #endif  // MVRROBOT_H
