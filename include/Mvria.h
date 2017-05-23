@@ -30,8 +30,11 @@
 #include "MvrConfigArg.h"
 #include "MvrConfigGroup.h"
 #include "MvrRobot.h"
-
+#include "MvrCommands.h"
+#include "MvrJoyHandler.h"
+#include "MvrSyncTask.h"
+#include "MvrTaskState.h"
+#include "MvriaInternal.h"
 /// TODO
 
-// #include "MvrCommands.h"
 #endif  // MVRIA_H
