@@ -348,7 +348,85 @@ public:
    { if (!myHaveStateOfCharge) return 0; else return myHaveStateOfCharge; }
   /// Gets the last time the state of charge was set
   MvrTime getStateOfChargeSetTime(void) const { return myStateOfChargeSetTime; }
+  /// Gets the state of charge that is considered low
+  double getStateOfChargeLow(void) const
+    { return myStateOfChargeLow; }
+  /// Gets the state of charge (percent of charge, as number between 0 and 100)
+  double getStateOfChargeShutdown(void) const
+    { return myStateOfChargeShutdown; }
+  /// Gets the velocity of the left side of the robot in mm/s (use of getVel() and )getRotVel() is preferred instead)
+  double getLeftVel(void) const { return myLeftVel; }
+  /// Gets the velocity of the right side of the robot in mm/s (use of getVel() and )getRotVel() is preferred instead)
+  double getRightVel(void) const { return myRightVel; }
+  /// Gets the 2 bytes of stall and bumper flags from the robot
+  /*
+   * See robot operations manual SIP packet documentation for details
+   * @see isLeftMotorStalled()
+   * @see isRightMotorStalled()
+   * @see isFrontBumperTriggered()
+   * @see MvrBumpers()
+   */
+  int getStallValue(void) const { return myStallValue; }
+  //// Returns true if the left motor is stalled
+  bool isLeftMotorStalled(void) cosnt
+  { return (myStallValue & 0xff) & MvrUtil::BIT0; }
+  //// Returns true if the right motor is stalled
+  bool isRightMotorStalled(void) cosnt
+  { return ((myStallValue & 0xff00) >> 8) & MvrUtil::BIT0; }
+  /// Returns true if the front bumper is triggered
+  /// @see MvrBumpers
+  bool isFrontBumperTriggered(void) const
+  { return hasFrontBumpers() && ((((myStallValue & 0xff00) >> 8) & ~MvrUtil::BIT0) != 0); }
+  /// Returns true if the rear bumper is triggered.
+  /// @see MvrBumpers
+  bool isRearBumperTriggered(void) const
+  { return hasRearBumpers() && (((myStallValue & 0xff) & ~ArUtil::BIT0) !=0 ); }
 
+  /// Gets the legacy control heading
+  /*
+   * Gets the control heading as an offset from the current heading
+   * @see getTh
+  */
+  double getControl(void) const { return myControl; }
+  /// Sets whether to keep the control value raw or not
+  void setKeepControlRaw(bool keepControlRaw)
+  { myKeepControlRaw = kepControlRaw; }
+  /// Gets whetehr the control value is kept raw
+  bool getKeepControlRaw(void)
+  { return myKeepControlRaw; }
+  /// Gets the flags value
+  int getFlags(void) const { return myFlags; }
+  /// Gets the fault flag values
+  int getFaultFlags(void) const { return myFaultFlags; }
+  /// Gets whethter or not we're getting the fault flags value
+  bool hasFaultFlags(void) const { return myHasFaultFlags; }
+  /// Gets the flags values
+  int getFlags3(void) const { return myFlags3; }
+  /// Gets whether or not we're getting the fault flags values
+  bool hasFlags3(void) const { return myHasFlags3; }
+  /// returns true if the motors are enable
+  bool areMotorsEnabled(void) const { return (myFlags & MvrUtil:BIT0); }
+  /// returns true if the sonars are enable
+  /// This used to just check the low level firmware value, but
+  /// that's now done by areSonarsEnabledLegacy;
+  bool areSonarsEnabled(void) const { return mySonarEnabled; }
+  /// returns true if the sonars are enabled for autonomous driving
+  bool areAutonomousDrivingSonarEnabled(void) const
+  { return myAutonomousDrivingSonarEnabled; }
+  /// returns true if the sonars are enabled on legacy platforms
+  bool areSonarsEnabledLegacy(void) const 
+  {
+    return (myFlags & (MvrUtil::BIT1 | MvrUtil::BIT2 | MvrUtil::BIT3 | MvrUtil::BIT4));
+  }
+  /// returns true if the estop is pressed (or unrelieved)
+  bool isEStopPressed(void) const { return (myFlags & MvrUtil::BIT5); }
+  /// Returns true if the E-Stop button is pressed
+  bool getEstop(void) {return isEStopPressed(); }
+
+
+
+
+  
 
 protected:
   MvrPose myGlobalPose;
