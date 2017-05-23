@@ -35,6 +35,7 @@
 #include "MvrSyncTask.h"
 #include "MvrTaskState.h"
 #include "MvriaInternal.h"
+#include "MvrSonarDevice.h"
 /// TODO
 
 #endif  // MVRIA_H
