@@ -179,7 +179,180 @@ public:
   /// Sets the lateral velocity
   MVREXPORT void setLatVel(double latVelocity);
 
-  ///
+  /// sees if we stopped
+  MVREXPORT bool isStopped(double stoppedVel=0.0, double stoppedRotVel=0.0, double stoppedLatVel=0.0);
+
+  /// Sets the vels required to be stopped
+  MVREXPORT void setStoppedVel(double stoppedVel, double stoppedRotVel, double stoppedLatVel);
+
+  /// Sets the length of time a direct motion command will take precedence
+  /// over actions, in milliseconds
+  MVREXPORT void setDirectMotionPrecedenceTime(int mSec);
+
+  /// Gets the length of time a direct motion command will take precedence
+  /// over actions, in milliseconds
+  MVREXPORT unsigned int getDirectMotionPrecedenceTime(void) const;
+
+  /// Sends a command to the robot with no argument
+  MVREXPORT bool com(unsigned char command);
+  /// Sends a command to the robot with an int for argument
+  MVREXPORT bool comInt(unsigned char command, short int argument);
+  /// Sends a command to the robot with two bytes for argument
+  MVREXPORT bool com2Bytes(unsigned char command, char high, char low);
+  /// Sends a command to the robot with a length-prefixed string for argument
+  MVREXPORT bool comStr(unsigned char command, const char *argument);
+  /// Sends a command to the robot with a length-prefixed string for argument
+  MVREXPORT bool comStrN(unsigned char command, const char *std, int  size);
+  /// Sends a command containing exactly the data in the given buffer as argument
+  MVREXPORT bool comDataN(unsigned char command, const char *data, int size);
+
+  /// Returns the robot's name that is set in its onboard firmware configuration
+  const char *getRobotName(void) const { return myRobotName.c_str(); }
+  /// Returns the type of the robot we are currently connected to 
+  const char *getRobotType(void) const { return myRobotType.c_str(); }
+  /// Returns the subtype of the robot we are currently connected to 
+  const char *getRobotsubType(void) const { return myRobotsubType.c_str(); }
+
+  /// Gets the robot's absolute maximum translational velocity
+  double getAbsoluteMaxTransVel(void) const;
+   { return myAbsoluteMaxTransVel; }
+  /// Sets the robot's absolute maximum translational velocity
+  MVREXPORT bool setAbsoluteMaxTransVel(double maxVel);
+  
+  /// Gets the robot's absolute maximum translational velocity
+  double getAbsoluteMaxTransNegVel(void) const;
+   { return myAbsoluteMaxTransNegVel; }
+  /// Sets the robot's absolute maximum translational velocity
+  MVREXPORT bool setAbsoluteMaxTransNegVel(double maxVel);
+
+  /// Gets the robot's absolute maximum translational acceleration
+  double getAbsoluteMaxTransAccel(void) const
+   { return myAbsoluteMaxTransAccel; }
+  /// Sets the robot's absolute maximum translational acceleration
+  MVREXPORT bool setAbsoluteMaxTransAccel(double maxAccel);
+
+  /// Gets the robot's absolute maximum translational deceleration
+  double getAbsoluteMaxTransDecel(void) const
+   { return myAbsoluteMaxTransDecel; }
+  /// Sets the robot's absolute maximum translational deceleration
+  MVREXPORT bool setAbsoluteMaxTransDecel(double maxDecel);
+
+  /// Gets the robot's absolute maximum rotational velocity
+  double getAbsoluteMaxRotVel(void) const;
+   { return myAbsoluteMaxRotVel; }
+  /// Sets the robot's absolute maximum rotational velocity
+  MVREXPORT bool setAbsoluteMaxRotVel(double maxVel);
+
+  /// Gets the robot's absolute maximum rotational acceleration
+  double getAbsoluteMaxRotAccel(void) const
+   { return myAbsoluteMaxRotAccel; }
+  /// Sets the robot's absolute maximum rotational acceleration
+  MVREXPORT bool setAbsoluteMaxRotAccel(double maxAccel);
+
+  /// Gets the robot's absolute maximum rotational deceleration
+  double getAbsoluteMaxRotDecel(void) const
+   { return myAbsoluteMaxRotDecel; }
+  /// Sets the robot's absolute maximum rotational deceleration
+  MVREXPORT bool setAbsoluteMaxRotDecel(double maxDecel);
+
+  /// Gets the robot's absolute maximum lateral velocity
+  double getAbsoluteMaxLatVel(void) const;
+   { return myAbsoluteMaxLatVel; }
+  /// Sets the robot's absolute maximum lateral velocity
+  MVREXPORT bool setAbsoluteMaxLatVel(double maxVel);
+
+  /// Gets the robot's absolute maximum lateral acceleration
+  double getAbsoluteMaxLatAccel(void) const
+   { return myAbsoluteMaxLatAccel; }
+  /// Sets the robot's absolute maximum lateral acceleration
+  MVREXPORT bool setAbsoluteMaxLatAccel(double maxAccel);
+
+  /// Gets the robot's absolute maximum lateral deceleration
+  double getAbsoluteMaxLatDecel(void) const
+   { return myAbsoluteMaxLatDecel; }
+  /// Sets the robot's absolute maximum rotational deceleration
+  MVREXPORT bool setAbsoluteMaxLatDecel(double maxDecel);
+
+  /// Accessors
+  /*
+   * @brief Get the current stored global position of the robot
+   * This position is updated by data reported by the robot as it 
+   * moves, and may also be changed by other program components,
+   * such as localization process (see moveTo())
+   *
+   * This position is also referred to as the robot's
+   * "odometry" or "odometric" pose, since the robot
+   * uses its odometry data to determine this pose; but it
+   * may also incorporate additional data sources such as
+   * an onboard gyro. The term "odometric pose" also
+   * distinguishes this position by the fact that its
+   * coordinate system may be arbitrary, and seperate
+   * from any external coordinate system.
+   *
+   * @see getEncoderPose()
+   * @see moveTo()
+   * @ingroup easy
+  */
+  MvrPose getPose(void) const { return myGlobalPose; }
+  /// Gets the global X position of the robot
+  double getX(void) const { return myGlobalPose.getX(); }
+  /// Gets the global Y position of the robot
+  double getY(void) const { return myGlobalPose.getY(); }
+  /// Gets the global angular position ("theta") of the robot
+  double getTh(void) const { return myGlobalPose.getTh(); }
+  /// Gets the distance to a point from the robot's current position
+  double findDistanceTo(const MvrPose pose)
+  { return myGlobalPose.findDistanceTo(pose); }
+  /// Gets the angle to a point from the robot's current positoin and orientation
+  double findAngleTo(const MvrPose pose)
+  { return myGlobalPose.findAngleTo(pose); }
+  /// Gets the difference between the angle to a point from the robot's current heading
+  double findDeltaHeadingTo(const MvrPose pose)
+  { return MvrMath::subAngle(myGlobalPose.findAngleTo(pose), myGlobalPose.getTh()); }
+
+  /// Gets the current translational velocity of the robot
+  double getVel(void) const { return myVel; }
+  /// Gets the current rotational velocity of the robot
+  double getRotVel(void) const { return myRotVel; }
+  /// Gets the current lateral velocity of the robot
+  double getLatVel(void) const { return myLatVel; }
+  /// Sees if the robot supports lateral velocities
+  bool hasLatVel(void) const { return myParam->hasLatVel(); }
+  /// Gets the robot radius (in mm)
+  double getRobotRadius(void) const { return myParams->getRobotRadius(); }
+  /// Gets the robot width (in mm)
+  double getRotbotWidth(void) const { return myParams->getRobotWidth(); }
+  /// Gets the robot length (in mm)
+  double getRobotLength(void) const { return myParams->getRobotLength(); }
+  /// Gets the robot length to the front (in mm)
+  double getRobotLengthFront(void) const { return myRobotLengthFront; }
+  /// Gets the robot length to the front (in mm)
+  double getRobotLengthRear(void) const { return myRobotLengthRear; }
+  /// Gets distance from center of robot to frist vertex of octagon approximating the shape of robot (mm)
+  double getRobotDiagonal(void) const { return myParams->getRobotDiagonal();}
+  /// Gets the battery voltage of the robot (normalized to 12 volt system)
+  double getBatteryVoltage(void) const { return myBatteryAverager.getAverag(); }\
+  /// Gets the instanceous battery voltage
+  double getBatteryVoltageNow(void) const { return myBatteryVoltage; }
+  /// Gets the real battery voltage of the robot
+  double getRealBatteryVoltage(void) const
+   { return myRealBatteryAverager.getAverage(); }
+  /// Gets the instaneous battery voltage
+  double getRealBatteryVoltageNow(void) const { return myRealBatteryVoltage; }
+  /// Gets if the state of charge value is in use
+  bool haveStateOfCharge(void) const { return myHaveStateOfCharge; }
+  //// @copydoc haveStateOfCharge
+  bool hasStateOfCharge(void) const { return haveStateOfCharge(); }
+  /// Gets the state of charge (percent of charge, as number between 0 and 100)
+  double getStateOfCharge(void) const
+   { if (!myHaveStateOfCharge) return 0; else return myHaveStateOfCharge; }
+  /// Gets the last time the state of charge was set
+  MvrTime getStateOfChargeSetTime(void) const { return myStateOfChargeSetTime; }
+
+
+protected:
+  MvrPose myGlobalPose;
+
 protected:
 };
 #endif  // MVRROBOT_H
