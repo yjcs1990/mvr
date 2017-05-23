@@ -65,7 +65,43 @@ public:
   };
 
   /// This adds a keyhandler, when the keyToHandle is hit, functor will fire
+  MVREXPORT bool addKeyHandler(int keyToHandler, MvrFunctor *functor);
+  /// This removes a key handler, by key
+  MVREXPORT bool remKeyHandler(int keyToHandler);
+  
+  /// Takes the key control over. For internal or special use, since it's
+  /// called in the constructor
+  MVREXPORT void takeKeys(bool blocking=false);
+  
+  /// Sets stdin back to tis original settings, if its been restored
+  /// it won't read anymore. For internal or special use, since it's
+  /// called in the destructor 
+  MVREXPORT void restore(void);
+  
+  ///  Checks for keys and handles them. This is automatically done in an
+  /// ArRobot task if a keyhandler attached to ArRobot with
+  /// ArRobot::attachKeyHandler() or Aria::setKeyHandler(), in which case 
+  /// you do not need to call it.  If not using or running an ArRobot 
+  /// task cycle, call this instead.
+  AREXPORT void checkKeys(void);
+  
+  /// internal, use addKeyHandler instead... Gets a key from the stdin if ones
+  /// available, -1 if there aren't any available
+  AREXPORT int getKey(void);
 protected:
+#ifndef WIN32
+  int getChar(void);
+#endif  // WIN32
+  std::map<int, MvrFunctor *> myMap;
+  bool myBlocking;
+
+  bool myRestored;
+  MvrFunctorC<MvrKeyHandler> myMvriaExitCB;
+#ifndef WIN32
+  struct termios myOriginalTermios;
+#endif 
+  FILE *myStream;
+  bool myTookKeys;
 };
 
 #endif  // MVRKEYHANDLER_H
