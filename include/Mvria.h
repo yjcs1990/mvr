@@ -54,6 +54,11 @@
 #include "MvrActionRobotJoydrive.h"
 #include "MvrActionJoydrive.h"
 #include "MvrActionKeyDrive.h"
-
+#include "MvrActionTriangleDriveTo.h"
+#include "MvrActionTurn.h"
+#include "MvrActionRatioInput.h"
+#include "MvrActionStop.h"
+#include "MvrActionGoto.h"
+#include "MvrModule.h"
 /// TODO
 #endif  // MVRIA_H
