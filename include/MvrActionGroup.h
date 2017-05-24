@@ -1,7 +1,7 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
  > File Name    : MvrActionGroup.h
- > Description  : Group a set of ArAction objects together 
+ > Description  : Group a set of MvrAction objects together 
  > Author       : Yu Jie
  > Create Time  : 2017年05月24日
  > Modify Time  : 2017年05月24日

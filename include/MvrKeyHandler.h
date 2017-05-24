@@ -79,9 +79,9 @@ public:
   MVREXPORT void restore(void);
   
   ///  Checks for keys and handles them. This is automatically done in an
-  /// ArRobot task if a keyhandler attached to ArRobot with
-  /// ArRobot::attachKeyHandler() or Aria::setKeyHandler(), in which case 
-  /// you do not need to call it.  If not using or running an ArRobot 
+  /// MvrRobot task if a keyhandler attached to MvrRobot with
+  /// MvrRobot::attachKeyHandler() or Mvria::setKeyHandler(), in which case 
+  /// you do not need to call it.  If not using or running an MvrRobot 
   /// task cycle, call this instead.
   AREXPORT void checkKeys(void);
   
