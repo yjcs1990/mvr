@@ -37,5 +37,6 @@
 #include "MvriaInternal.h"
 #include "MvrSonarDevice.h"
 #include "MvrPriorityResolver.h"
+#include "MvrAction.h"
 
 #endif  // MVRIA_H
