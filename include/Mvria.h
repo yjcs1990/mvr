@@ -36,6 +36,6 @@
 #include "MvrTaskState.h"
 #include "MvriaInternal.h"
 #include "MvrSonarDevice.h"
-/// TODO
+#include "MvrPriorityResolver.h"
 
 #endif  // MVRIA_H
