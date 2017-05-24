@@ -14,7 +14,8 @@
     "cmath": "cpp",
     "cstdarg": "cpp",
     "vector": "cpp",
-    "*.tcc": "cpp"
+    "*.tcc": "cpp",
+    "limits": "cpp"
   },
   "line-counter.excludes": [
         "**/.vscode/**",
