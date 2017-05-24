@@ -51,9 +51,9 @@ public:
   MVREXPORT MvrRetFunctor1<bool, MvrPose> *getIgnoreReadingCB(void)
   { return myIgnoreReadingCB; }
 
-  ///@deprecated
-  MVREXPORT void setCumulativeMaxRange(double range)
-  { setMaxDistToKeepCumulative(range); }
+  // ///@deprecated
+  // MVREXPORT void setCumulativeMaxRange(double range)
+  // { setMaxDistToKeepCumulative(range); }
 protected:
   MvrFunctorC<MvrSonarDevice> myProcessCB;
   double myFilterNearDist;      /// we throw out cumulative readings this close to current one
