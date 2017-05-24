@@ -23,8 +23,9 @@
             "includePath": [
                 "${workspaceRoot}",
                 "${workspaceRoot}/include",
+                "/usr/lib/gcc/x86_64-linux-gnu/4.8/include/",
+                "/usr/include/x86_64-linux-gnu/c++/4.8/32",                
                 "/usr/include/c++/4.8.4",
-                "/usr/include/x86_64-linux-gnu/c++/4.8/32",
                 "/usr/local/include",
                 "/usr/include",
                 "/usr/include/x86_64-linux-gnu"
@@ -32,8 +33,9 @@
             "defines": [],
             "browse": {
                 "path": [
+                    "/usr/lib/gcc/x86_64-linux-gnu/4.8/include/",                    
+                    "/usr/include/x86_64-linux-gnu/c++/4.8/32",                   
                     "/usr/include/c++/4.8.4",
-                    "/usr/include/x86_64-linux-gnu/c++/4.8/32",
                     "/usr/local/include",
                     "/usr/include",
                     "/usr/include/x86_64-linux-gnu"
