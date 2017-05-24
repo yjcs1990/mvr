@@ -125,7 +125,7 @@ public:
   // MTX commands
   SRECORD = 210,            /// < int, (for downloading MTX firmware) byte with 0 for wait, 1 for OK, -1 for ERROR (waiting might take 3-5 seconds
   MARCDEBUG = 211,          ///<  for debug messages from MARC, possibly responses, possibly pushed... they are ascii strings that should be logged
-  WHEEL_LIGHT = 212, /      //<  For the wheel lights
+  WHEEL_LIGHT = 212,       ///<  For the wheel lights
   ABSOLUTE_MAXES = 213,     ///<  To set the absolute maxes
 
   SAFETY_STATE_INFO = 214,  ///< int, request safety state info packets (0 == stop, 1 == send once, 2 == send continuous),

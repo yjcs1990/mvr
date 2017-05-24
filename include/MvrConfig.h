@@ -9,6 +9,11 @@
 #ifndef MVRCONFIG_H
 #define MVRCONFIG_H
 
+#include "MvrConfigArg.h"
+#include "MvrFileParser.h"
+#include "MvrHasFileName.h"
+#include <set>
+
 class MvrArgumentBuilder;
 class MvrConfigSection;
 

@@ -14,6 +14,10 @@
   to produce a combined ArActionDesired object from them, according to
   the subclass's particular algorithm or policy.
 */
+#include "mvriaTypedefs.h"
+#include "MvrActionDesired.h"
+#include <string>
+
 class MvrResolver
 {
 public:

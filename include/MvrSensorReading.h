@@ -21,7 +21,7 @@ public:
   /// Copy constructor
   MVREXPORT MvrSensorReading(const MvrSensorReading &reading);
   /// Assignment operator
-  MVREXPORT MvrSensorReading &operator(const MvrSensorReading);
+  MVREXPORT MvrSensorReading &operator=(const MvrSensorReading &reading);
   /// Destructor
   MVREXPORT virtual ~MvrSensorReading();
 

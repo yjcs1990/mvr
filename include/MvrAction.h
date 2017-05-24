@@ -33,7 +33,7 @@ public:
   /// Fires the action, returning what the action wants to do
   MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired) = 0;
   /// Sets the robot this action is driving
-  MVREXPORT virtual setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
   /// Find the number of arguments this action takes
   MVREXPORT virtual int getNumArgs(void) const;
 #ifndef SWIG

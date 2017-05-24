@@ -788,7 +788,7 @@ public:
       if (myHeadingSet)
 	      setDeltaHeading(MvrMath::subAngle(myHeading, robotHeading), 
 			myHeadingStrength);
-      myHeadingSet = false;`
+      myHeadingSet = false;
     }
   /// Logs what is desired
   MVREXPORT virtual void log(void) const;
