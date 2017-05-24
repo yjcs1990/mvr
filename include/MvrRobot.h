@@ -173,7 +173,7 @@ public:
   MVREXPORT bool isHeadingDone(double delta=0.0) const;
   /// Sets the difference required for being done with a heading change(e.g. used in isHeadingDone())
   void setHeadingDoneDiff(double degree)
-   { myHeadingDoneDiff=degrees; }
+   { myHeadingDoneDiff=degree; }
   /// Gets the difference required for being done with a heaing change(e.g. used in isHeadingDone())
   double getHeadingDoneDiff(void) const { return myHeadingDoneDiff; }
   /// Sets the lateral velocity
@@ -211,16 +211,16 @@ public:
   /// Returns the type of the robot we are currently connected to 
   const char *getRobotType(void) const { return myRobotType.c_str(); }
   /// Returns the subtype of the robot we are currently connected to 
-  const char *getRobotsubType(void) const { return myRobotsubType.c_str(); }
+  const char *getRobotSubType(void) const { return myRobotSubType.c_str(); }
 
   /// Gets the robot's absolute maximum translational velocity
-  double getAbsoluteMaxTransVel(void) const;
+  double getAbsoluteMaxTransVel(void) const
    { return myAbsoluteMaxTransVel; }
   /// Sets the robot's absolute maximum translational velocity
   MVREXPORT bool setAbsoluteMaxTransVel(double maxVel);
   
   /// Gets the robot's absolute maximum translational velocity
-  double getAbsoluteMaxTransNegVel(void) const;
+  double getAbsoluteMaxTransNegVel(void) const
    { return myAbsoluteMaxTransNegVel; }
   /// Sets the robot's absolute maximum translational velocity
   MVREXPORT bool setAbsoluteMaxTransNegVel(double maxVel);
@@ -238,7 +238,7 @@ public:
   MVREXPORT bool setAbsoluteMaxTransDecel(double maxDecel);
 
   /// Gets the robot's absolute maximum rotational velocity
-  double getAbsoluteMaxRotVel(void) const;
+  double getAbsoluteMaxRotVel(void) const
   { return myAbsoluteMaxRotVel; }
   /// Sets the robot's absolute maximum rotational velocity
   MVREXPORT bool setAbsoluteMaxRotVel(double maxVel);
@@ -317,7 +317,7 @@ public:
   /// Gets the current lateral velocity of the robot
   double getLatVel(void) const { return myLatVel; }
   /// Sees if the robot supports lateral velocities
-  bool hasLatVel(void) const { return myParam->hasLatVel(); }
+  bool hasLatVel(void) const { return myParams->hasLatVel(); }
   /// Gets the robot radius (in mm)
   double getRobotRadius(void) const { return myParams->getRobotRadius(); }
   /// Gets the robot width (in mm)
@@ -331,7 +331,7 @@ public:
   /// Gets distance from center of robot to frist vertex of octagon approximating the shape of robot (mm)
   double getRobotDiagonal(void) const { return myParams->getRobotDiagonal();}
   /// Gets the battery voltage of the robot (normalized to 12 volt system)
-  double getBatteryVoltage(void) const { return myBatteryAverager.getAverag(); }\
+  double getBatteryVoltage(void) const { return myBatteryAverager.getAverage(); }
   /// Gets the instanceous battery voltage
   double getBatteryVoltageNow(void) const { return myBatteryVoltage; }
   /// Gets the real battery voltage of the robot
@@ -368,10 +368,10 @@ public:
    */
   int getStallValue(void) const { return myStallValue; }
   //// Returns true if the left motor is stalled
-  bool isLeftMotorStalled(void) cosnt
+  bool isLeftMotorStalled(void) const
   { return (myStallValue & 0xff) & MvrUtil::BIT0; }
   //// Returns true if the right motor is stalled
-  bool isRightMotorStalled(void) cosnt
+  bool isRightMotorStalled(void) const
   { return ((myStallValue & 0xff00) >> 8) & MvrUtil::BIT0; }
   /// Returns true if the front bumper is triggered
   /// @see MvrBumpers
@@ -390,7 +390,7 @@ public:
   double getControl(void) const { return myControl; }
   /// Sets whether to keep the control value raw or not
   void setKeepControlRaw(bool keepControlRaw)
-  { myKeepControlRaw = kepControlRaw; }
+  { myKeepControlRaw = keepControlRaw; }
   /// Gets whetehr the control value is kept raw
   bool getKeepControlRaw(void)
   { return myKeepControlRaw; }
@@ -405,7 +405,7 @@ public:
   /// Gets whether or not we're getting the fault flags values
   bool hasFlags3(void) const { return myHasFlags3; }
   /// returns true if the motors are enable
-  bool areMotorsEnabled(void) const { return (myFlags & MvrUtil:BIT0); }
+  bool areMotorsEnabled(void) const { return (myFlags & MvrUtil::BIT0); }
   /// returns true if the sonars are enable
   /// This used to just check the low level firmware value, but
   /// that's now done by areSonarsEnabledLegacy;

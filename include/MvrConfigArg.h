@@ -487,8 +487,8 @@ public:
 
   /// Writes the min/max values of this arg to the given buffer, as applicable.
   MVREXPORT bool writeBounds(char *line,
-                            size_t lineLen,
-                            const char *logPrefix = "") const;
+                             size_t lineLen,
+                             const char *logPrefix = "") const;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Sockets
@@ -502,8 +502,8 @@ public:
    * The given args are formatted according to the SocketIndices defined above.
   **/
   MVREXPORT bool parseSocket(const MvrArgumentBuilder &args,
-                            char *errorBuffer,
-                            size_t errorBufferLen);
+                             char *errorBuffer,
+                             size_t errorBufferLen);
 
   /// Writes the value of this parameter, and all child parameters, to the given text socket.
   /**
@@ -512,7 +512,7 @@ public:
    *     <i>intro</i> <i>paramName</i> <i>paramValue</i>
   **/
   MVREXPORT bool writeValue(MvrSocket *socket,
-                           const char *intro) const;
+                            const char *intro) const;
 
   /// Writes the definition of this parameter, and all child parameters, to the given text socket.
   /**
@@ -521,7 +521,7 @@ public:
    *    <i>intro</i> <i>type</i> <i>paramName</i> <i>priority</i> <i>min</i> <i>max</i> <i>description</i> <i>displayHint</i> <i>listDelimiter</i>
   **/
   MVREXPORT bool writeInfo(MvrSocket *socket,
-                          const char *intro) const;
+                           const char *intro) const;
   
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Misc
@@ -529,8 +529,8 @@ public:
  
   /// Logs the type, name, and value of this argument
   MVREXPORT void log(bool verbose = false,
-                    int indentCount = 1,
-                    const char *logPrefix = "") const;
+                     int indentCount = 1,
+                     const char *logPrefix = "") const;
 
   /// Checks only the name, type, and value attributes and returns whether they are equal.
   MVREXPORT bool isValueEqual(const MvrConfigArg &other) const;
@@ -574,23 +574,23 @@ public:
 
   /// Sets the value of this arg to the resource data described in the given MvrArgumentBuilder
   MVREXPORT bool parseResource(MvrArgumentBuilder *arg, 
-                              char *errorBuffer,
-				                      size_t errorBufferLen,
-                              const char *logPrefix = "",
-                              bool isQuiet = false);
-
+                               char *errorBuffer,
+				                       size_t errorBufferLen,
+                               const char *logPrefix = "",
+                               bool isQuiet = false);
+ 
   /// Parses the text obtained from the resource arg, strips surrounding quotes, blanks, and funny chars.
   MVREXPORT static bool parseResourceArgText(const char *argText,
-                                            char *bufOut,
-                                            size_t bufLen);
+                                             char *bufOut,
+                                             size_t bufLen);
 
   /// Writes this arg to the given file, in a format suitable for reading by parseResource.
   MVREXPORT bool writeResource(FILE *file,
-                         char *lineBuf,
-                         int lineBufSize,
-                         char separatorChar,
-                         const char *sectionName,
-                         const char *logPrefix = "") const;
+                               char *lineBuf,
+                               int lineBufSize,
+                               char separatorChar,
+                               const char *sectionName,
+                               const char *logPrefix = "") const;
  
 
   /// Writes column labels and edit info to the given resource file, returns number of lines written

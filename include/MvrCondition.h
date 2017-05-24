@@ -33,6 +33,7 @@ public:
   typedef HANDLE CondType;
 #else
   typedef pthread_cond_t CondType;
+#endif  // WIN32
 
   /// Constructor
   MVREXPORT MvrCondition();

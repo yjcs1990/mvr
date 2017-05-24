@@ -11,6 +11,12 @@
 #ifndef MVRFUNCTOR_H
 #define MVRFUNCTOR_H
 
+#include "mvriaTypedefs.h"
+#include "mvriaOSDef.h"
+#include <cstdarg>
+#include <stdarg.h>
+#include <stdio.h>
+
 class MvrFunctor
 {
 public:

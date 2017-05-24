@@ -10,7 +10,7 @@
 #define MVRDRAWINGDATA_H
 
 #include "mvriaTypedefs.h"
-#include "mvriaUtial.h"
+#include "mvriaUtil.h"
 
 class MvrColor
 {
@@ -22,7 +22,7 @@ public:
   MvrColor() { myRed = 255; myGreen = 255; myBlue = 255; }
 
   /// Constructs a color from the given RGB value
-  MvrColor(MvrType::Byte4 rgbValue)
+  MvrColor(MvrTypes::Byte4 rgbValue)
   {
     myRed   = (rgbValue & 0xFF0000) >> 16;
     myGreen = (rgbValue & 0x00FF00) >> 8;

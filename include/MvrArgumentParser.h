@@ -32,7 +32,7 @@ class MvrArgumentParser
 					bool returnFirst = false);
   /// Returns the word/argument after given argument 
   MVREXPORT bool checkParameterArgumentString(const char *argument, const char **dest, 
-					  bool *wasReallySet = NULL, mbool returnFirst = false);
+					  bool *wasReallySet = NULL, bool returnFirst = false);
   /// Returns the integer after given argument 
   MVREXPORT bool checkParameterArgumentInteger(const char *argument, int *dest,
 					  bool *wasReallySet = NULL, bool returnFirst = false);
