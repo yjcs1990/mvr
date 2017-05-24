@@ -42,5 +42,18 @@
 #include "MvrActionGroups.h"
 #include "MvrActionDeceleratingLimiter.h"
 #include "MvrActionLimiterForwards.h"
+#include "MvrActionLimiterBackwards.h"
+#include "MvrActionLimiterTableSensor.h"
+#include "MvrActionBumpers.h"
+#include "MvrActionIRs.h"
+#include "MvrActionStallRecover.h"
+#include "MvrActionAvoidFront.h"
+#include "MvrActionAvoidSide.h"
+#include "MvrActionConstantVelocity.h"
+#include "MvrActionInput.h"
+#include "MvrActionRobotJoydrive.h"
+#include "MvrActionJoydrive.h"
+#include "MvrActionKeyDrive.h"
+
 /// TODO
 #endif  // MVRIA_H
