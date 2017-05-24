@@ -9,9 +9,9 @@
 #ifndef MVRRESOLVER_H
 #define MVRRESOLVER_H
 /*
-  ArResolver::resolve() is the function that ArRobot
+  MvrResolver::resolve() is the function that MvrRobot
   calls with the action list in order
-  to produce a combined ArActionDesired object from them, according to
+  to produce a combined MvrActionDesired object from them, according to
   the subclass's particular algorithm or policy.
 */
 #include "mvriaTypedefs.h"
