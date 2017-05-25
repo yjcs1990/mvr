@@ -60,5 +60,14 @@
 #include "MvrActionStop.h"
 #include "MvrActionGoto.h"
 #include "MvrModule.h"
+#include "MvrModuleLoader.h"
+#include "MvrRecurrentTask.h"
+#include "MvrInterpolation.h"
+#include "MvrGripper.h"
+#include "MvrSonyPTZ.h"
+#include "MvrRVisionPTZ.h"
+#include "MvrAMPTU.h"
+#include "MvrP2Arm.h"
+
 /// TODO
 #endif  // MVRIA_H
