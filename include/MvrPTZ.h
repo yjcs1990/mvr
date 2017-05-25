@@ -277,7 +277,6 @@ protected:
   int myMinZoom;
 
   /// Subclasses call this to set extents (limits) returned by getMaxPosPan(), getMaxNegPan(), getMaxPosTilt(), getMaxNegTilt(), getMaxZoom(), and getMinZoom().
-  /// @since 2.7.6
   void setLimits(double maxPosPan, double maxNegPan,      double maxPosTilt, double maxNegTilt, int maxZoom = 0, int minZoom = 0)
   {
     myMaxPosPan = maxPosPan;
@@ -293,8 +292,6 @@ protected:
   /// applied and no call should be made to any pan/tilt or max/min limit accessor
   /// method that does not end in _i, or inversion will be applied again,
   /// reversing it.
-  /// @since 2.7.6
-  //@{
   MVREXPORT virtual bool pan_i (double degrees) = 0;
   MVREXPORT virtual bool panRel_i(double degrees) = 0;
   MVREXPORT virtual bool tilt_i(double degrees) = 0;
@@ -303,7 +300,6 @@ protected:
   MVREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt) = 0;
   MVREXPORT virtual double getPan_i(void) const = 0;
   MVREXPORT virtual double getTilt_i(void) const = 0;
-  //@}
 
 };
 #endif  // MVRPTZ_H
