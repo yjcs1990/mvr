@@ -80,6 +80,9 @@
 #include "MvrNetServer.h"
 #include "MvrSignalHandler.h"
 #include "MvrAnalogGyro.h"
+#include "MvrMapInterface.h"
+#include "MvrMapObject.h"
+#include "MvrMap.h"
 
 /// TODO
 #endif  // MVRIA_H
