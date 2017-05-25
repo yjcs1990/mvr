@@ -268,8 +268,8 @@ protected:
   static MvrMutex ourExitCallbacksMutex;
   static std::multimap<int, MvrFunctor *> ourExitCallbacks;
   static bool ourSigHandleExitNotShutdown;
-  static std::multimap<int, MvrRetFunctor<bool> *> ourParseMvrgCBs;
-  static MvrLog::LogLevel ourParseMvrgsLogLevel;
+  static std::multimap<int, MvrRetFunctor<bool> *> ourParseArgCBs;
+  static MvrLog::LogLevel ourParseArgsLogLevel;
   static std::multimap<int, MvrFunctor *> ourLogOptionsCBs;
   static MvrLog::LogLevel ourExitCallbacksLogLevel;
   static std::map<std::string, MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp> ourDeviceConnectionCreatorMap;
