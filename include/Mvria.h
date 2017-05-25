@@ -70,7 +70,16 @@
 #include "MvrP2Arm.h"
 #include "MvrACTS.h"
 #include "MvrSick.h"
-
+#include "MvrLaserLogger.h"
+#include "MvrIrrfDevice.h"
+#include "MvrKeyHandler.h"
+#include "MvrDPPTU.h"
+#include "MvrVCC4.h"
+#include "MvrMode.h"
+#include "MvrModes.h"
+#include "MvrNetServer.h"
+#include "MvrSignalHandler.h"
+#include "MvrAnalogGyro.h"
 
 /// TODO
 #endif  // MVRIA_H
