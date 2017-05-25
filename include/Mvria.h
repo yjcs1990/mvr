@@ -83,6 +83,25 @@
 #include "MvrMapInterface.h"
 #include "MvrMapObject.h"
 #include "MvrMap.h"
+#include "MvrLineFinder.h"
+#include "MvrBumpers.h"
+#include "MvrIRs.h"
+#include "MvrDrawingData.h"
+#include "MvrForbiddenRangeDevice.h"
+#include "MvrTCM2.h"
+#if !define(WIN32) && !defined(SWIGWIN)
+#include "MvrVersalogicIO.h"
+#include "MvrMTXIO.h"
+#endif  // WIN32
+#include "MvrActionGotoStraight.h"
+#include "MvrDataLogger.h"
+#include "MvrRobotJoyHandler.h"
+#include "MvrRatioInputKeydrive.h"
+#include "MvrRatioInputJoydrive.h"
+#include "MvrRatioInputRobotJoydrive.h"
+#include "MvrActionMovementParameters.h"
+#include "MvrSoundPlayer.h"
+#include "MvrSoundQueue.h"
 
 /// TODO
 #endif  // MVRIA_H
