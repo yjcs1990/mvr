@@ -4,7 +4,7 @@
  > Description  : Some head file 
  > Author       : Yu Jie
  > Create Time  : 2017年05月10日
- > Modify Time  : 2017年05月17日
+ > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
 
 #ifndef MVRIA_H
@@ -102,6 +102,43 @@
 #include "MvrActionMovementParameters.h"
 #include "MvrSoundPlayer.h"
 #include "MvrSoundQueue.h"
+#include "MvrCameraCollection.h"
+#include "MvrCameraCommands.h"
+#include "MvrStringInfoGroup.h"
+#include "MvrSonarAutoDisabler.h"
+#include "MvrActionDriveDistance.h"
+#include "MvrLaserRelectorDriver.h"
+#include "MvrRobotConfig.h"
+#include "MvrTCMCompassRobot.h"
+#include "MvrTCMCompassDirect.h"
+#include "MvrLaserFilter.h"
+#include "MvrUrg.h"
+#include "MvrSpeech.h"
+#include "MvrGPS.h"
+#include "MvrTrimbleGPS.h"
+#include "MvrNovatelGPS.h"
+#include "MvrGPSCoords.h"
+#include "MvrLaser.h"
+#include "MvrRobotConnector.h"
+#include "MvrLaserConnector.h"
+#include "MvrSonarConnector.h"
+#include "MvrBatteryConnector.h"
+#include "MvrLCDConnector.h"
+#include "MvrSonarMTX.h"
+#include "MvrBatteryMTX.h"
+#include "MvrLCDMTX.h"
+#include "MvrSimulatedLaser.h"
+#include "MvrExitErrorSource.h"
+#include "MvrActionLimterRot.h"
+#include "MvrRobotBatteryPacketReader.h"
+#include "MvrLMS1XX.h"
+#include "MvrUrg_2_0.h"
+#include "MvrActionMovementParametersDebuggering.h"
+#include "MvrZippable.h"
+#include "MvrS3Series.h"
+#include "MvrSZSeries.h"
+#include "MvrRobotPacketReaderThread.h"
+#include "MvrHasFileName.h"
 
 /// TODO
 #endif  // MVRIA_H
