@@ -120,10 +120,10 @@ protected:
 class MvrActionGroupRatioDriveUnsafe : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupRatioDriveUnsafe(MvrRobot *robot);
-  AREXPORT virtual ~MvrActionGroupRatioDriveUnsafe();
-  AREXPORT MvrActionRatioInput *getActionRatioInput(void);
-  AREXPORT void addToConfig(MvrConfig *config, const char *section);
+  MVREXPORT MvrActionGroupRatioDriveUnsafe(MvrRobot *robot);
+  MVREXPORT virtual ~MvrActionGroupRatioDriveUnsafe();
+  MVREXPORT MvrActionRatioInput *getActionRatioInput(void);
+  MVREXPORT void addToConfig(MvrConfig *config, const char *section);
 protected:
   MvrActionRatioInput *myInput;
   MvrRatioInputKeydrive *myKeydrive;

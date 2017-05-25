@@ -15,13 +15,13 @@
 class MvrActionStop : public MvrAction
 {
   /// Constructor
-  AREXPORT MvrActionStop(const char *name = "stop");
+  MVREXPORT MvrActionStop(const char *name = "stop");
   /// Destructor
-  AREXPORT virtual ~MvrActionStop();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionStop();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
   { return &myDesired; }
 #endif
 protected:

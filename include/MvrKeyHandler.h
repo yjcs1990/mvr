@@ -83,11 +83,11 @@ public:
   /// MvrRobot::attachKeyHandler() or Mvria::setKeyHandler(), in which case 
   /// you do not need to call it.  If not using or running an MvrRobot 
   /// task cycle, call this instead.
-  AREXPORT void checkKeys(void);
+  MVREXPORT void checkKeys(void);
   
   /// internal, use addKeyHandler instead... Gets a key from the stdin if ones
   /// available, -1 if there aren't any available
-  AREXPORT int getKey(void);
+  MVREXPORT int getKey(void);
 protected:
 #ifndef WIN32
   int getChar(void);

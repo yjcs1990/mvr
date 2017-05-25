@@ -1,7 +1,7 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
  > File Name    : MvrLineFinder.h
- > Description  : his class finds lines out of any range device with raw readings (lasers for instance)
+ > Description  : This class finds lines out of any range device with raw readings (lasers for instance)
  > Author       : Yu Jie
  > Create Time  : 2017年05月24日
  > Modify Time  : 2017年05月24日
