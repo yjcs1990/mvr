@@ -58,7 +58,7 @@ public:
   
 
   /// MvrArgumentBuilder indices for the various map object attributes
-  enum MvrgIndex {
+  enum ArgIndex {
     TYPE_ARG_INDEX = 0,
     POSE_X_ARG_INDEX = 1,
     POSE_Y_ARG_INDEX = 2,
