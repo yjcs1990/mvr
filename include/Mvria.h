@@ -68,6 +68,8 @@
 #include "MvrRVisionPTZ.h"
 #include "MvrAMPTU.h"
 #include "MvrP2Arm.h"
+#include "MvrACTS.h"
+#include "MvrSick.h"
 
 /// TODO
 #endif  // MVRIA_H
