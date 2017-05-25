@@ -672,13 +672,13 @@ public:
    * must be included in the change details.  Note that currently only one
    * level of parent-ness is supported (i.e. there are no grandparents).
   **/
-  MVREXPORT bool isChildMvrg(const char *infoName, MvrArgumentBuilder *arg) const;
+  MVREXPORT bool isChildArg(const char *infoName, MvrArgumentBuilder *arg) const;
 
   /// Determines whether the given arg 0 for the info type is a "child".
-  MVREXPORT bool isChildMvrg(const char *infoName, const char *arg0Text) const;
+  MVREXPORT bool isChildArg(const char *infoName, const char *arg0Text) const;
 
   /// Creates a map of args that are considered to be a "child" of another arg.
-  MVREXPORT void createChildMvrgMap();
+  MVREXPORT void createChildArgMap();
 
   /// Writes the change details to the Mvria log.
   MVREXPORT void log();
@@ -716,7 +716,7 @@ protected:
   MvrMapId myNewMapId;
 
   /// Map of info type identifiers to argument types, and whether each argument type is a child.
-  std::map<std::string, std::map<std::string, bool> > myInfoNameToMapOfChildMvrgsMap;
+  std::map<std::string, std::map<std::string, bool> > myInfoNameToMapOfChildArgsMap;
 
   /// List of scan types included in the change details.
   std::list<std::string> myScanTypeList;
