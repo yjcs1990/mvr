@@ -20,8 +20,8 @@ class P2ArmJoint
 {
 public:
 
-  MVRXPORT P2ArmJoint();
-  MVRXPORT virtual ~P2ArmJoint();
+  MVREXPORT P2ArmJoint();
+  MVREXPORT virtual ~P2ArmJoint();
 
   MvrTypes::UByte myPos;
   MvrTypes::UByte myVel;
@@ -68,134 +68,134 @@ public:
   } StatusType;
 
   /// Bit for joint 1 in arm status byte
-  MVRXPORT static const int ArmJoint1;
+  MVREXPORT static const int ArmJoint1;
   /// Bit for joint 2 in arm status byte
-  MVRXPORT static const int ArmJoint2;
+  MVREXPORT static const int ArmJoint2;
   /// Bit for joint 3 in arm status byte
-  MVRXPORT static const int ArmJoint3;
+  MVREXPORT static const int ArmJoint3;
   /// Bit for joint 4 in arm status byte
-  MVRXPORT static const int ArmJoint4;
+  MVREXPORT static const int ArmJoint4;
   /// Bit for joint 5 in arm status byte
-  MVRXPORT static const int ArmJoint5;
+  MVREXPORT static const int ArmJoint5;
   /// Bit for joint 6 in arm status byte
-  MVRXPORT static const int ArmJoint6;
+  MVREXPORT static const int ArmJoint6;
   /// Bit for arm good state in arm status byte
-  MVRXPORT static const int ArmGood;
+  MVREXPORT static const int ArmGood;
   /// Bit for arm initialized in arm status byte
-  MVRXPORT static const int ArmInited;
+  MVREXPORT static const int ArmInited;
   /// Bit for arm powered on in arm status byte
-  MVRXPORT static const int ArmPower;
+  MVREXPORT static const int ArmPower;
   /// Bit for arm homing in arm status byte
-  MVRXPORT static const int ArmHoming;
+  MVREXPORT static const int ArmHoming;
   /// Number of joints that the arm has
-  MVRXPORT static int NumJoints;
+  MVREXPORT static int NumJoints;
 
   /// Constructor
-  MVRXPORT MvrP2Arm();
+  MVREXPORT MvrP2Arm();
 
   /// Destructor
-  MVRXPORT virtual ~MvrP2Arm();
+  MVREXPORT virtual ~MvrP2Arm();
 
   /// Set the robot to use to talk to the arm
-  MVRXPORT void setRobot(MvrRobot *robot) {myRobot=robot;}
+  MVREXPORT void setRobot(MvrRobot *robot) {myRobot=robot;}
 
   /// Init the arm class
-  MVRXPORT virtual State init();
+  MVREXPORT virtual State init();
 
   /// Uninit the arm class
-  MVRXPORT virtual State uninit();
+  MVREXPORT virtual State uninit();
 
   /// Power on the arm
-  MVRXPORT virtual State powerOn(bool doWait=true);
+  MVREXPORT virtual State powerOn(bool doWait=true);
 
   /// Power off the arm
-  MVRXPORT virtual State powerOff();
+  MVREXPORT virtual State powerOff();
 
   /// Request the arm info packet
-  MVRXPORT virtual State requestInfo();
+  MVREXPORT virtual State requestInfo();
 
   /// Request the arm status packet
-  MVRXPORT virtual State requestStatus(StatusType status);
+  MVREXPORT virtual State requestStatus(StatusType status);
 
   /// Request arm initialization
-  MVRXPORT virtual State requestInit();
+  MVREXPORT virtual State requestInit();
 
   /// Check to see if the arm is still connected
-  MVRXPORT virtual State checkArm(bool waitForResponse=true);
+  MVREXPORT virtual State checkArm(bool waitForResponse=true);
 
   /// Home the arm
-  MVRXPORT virtual State home(int joint=-1);
+  MVREXPORT virtual State home(int joint=-1);
 
   /// Home the arm and power if off
-  MVRXPORT virtual State park();
+  MVREXPORT virtual State park();
 
   /// Move a joint to a position in degrees
-  MVRXPORT virtual State moveTo(int joint, float pos, unsigned char vel=0);
+  MVREXPORT virtual State moveTo(int joint, float pos, unsigned char vel=0);
 
   /// Move a joint to a position in low level arm controller ticks
-  MVRXPORT virtual State moveToTicks(int joint, unsigned char pos);
+  MVREXPORT virtual State moveToTicks(int joint, unsigned char pos);
 
   /// Move a joint step degrees
-  MVRXPORT virtual State moveStep(int joint, float pos, unsigned char vel=0);
+  MVREXPORT virtual State moveStep(int joint, float pos, unsigned char vel=0);
 
   /// Move a joint step ticks
-  MVRXPORT virtual State moveStepTicks(int joint, signed char pos);
+  MVREXPORT virtual State moveStepTicks(int joint, signed char pos);
 
   /// Set the joint to move at the given velocity
-  MVRXPORT virtual State moveVel(int joint, int vel);
+  MVREXPORT virtual State moveVel(int joint, int vel);
 
   /// Stop the arm
-  MVRXPORT virtual State stop();
+  MVREXPORT virtual State stop();
 
   /// Set the auto park timer value
-  MVRXPORT virtual State setAutoParkTimer(int waitSecs);
+  MVREXPORT virtual State setAutoParkTimer(int waitSecs);
 
   /// Set the gripper park timer value
-  MVRXPORT virtual State setGripperParkTimer(int waitSecs);
+  MVREXPORT virtual State setGripperParkTimer(int waitSecs);
 
   /// Set the arm stopped callback
-  MVRXPORT virtual void setStoppedCB(MvrFunctor *func) {myStoppedCB=func;}
+  MVREXPORT virtual void setStoppedCB(MvrFunctor *func) {myStoppedCB=func;}
 
   /// set the arm packet callback
-  MVRXPORT virtual void setPacketCB(MvrFunctor1<PacketType> *func)
+  MVREXPORT virtual void setPacketCB(MvrFunctor1<PacketType> *func)
     {myPacketCB=func;}
 
   /// Get the arm version
-  MVRXPORT virtual std::string getArmVersion() {return(myVersion);}
+  MVREXPORT virtual std::string getArmVersion() {return(myVersion);}
 
   /// Get the joints position in degrees
-  MVRXPORT virtual float getJointPos(int joint);
+  MVREXPORT virtual float getJointPos(int joint);
 
   /// Get the joints position in ticks
-  MVRXPORT virtual unsigned char getJointPosTicks(int joint);
+  MVREXPORT virtual unsigned char getJointPosTicks(int joint);
 
   /// Check to see if the arm is moving
-  MVRXPORT virtual bool getMoving(int joint=-1);
+  MVREXPORT virtual bool getMoving(int joint=-1);
 
   /// Check to see if the arm is powered
-  MVRXPORT virtual bool isPowered();
+  MVREXPORT virtual bool isPowered();
 
   /// Check to see if the arm is communicating
-  MVRXPORT virtual bool isGood();
+  MVREXPORT virtual bool isGood();
 
   /// Get the two byts of status info from P2OS
-  MVRXPORT virtual int getStatus() {return(myStatus);}
+  MVREXPORT virtual int getStatus() {return(myStatus);}
 
   /// Get when the last arm status packet came in
-  MVRXPORT virtual MvrTime getLastStatusTime() {return(myLastStatusTime);}
+  MVREXPORT virtual MvrTime getLastStatusTime() {return(myLastStatusTime);}
 
   /// Get the robot that the arm is on
-  MVRXPORT virtual MvrRobot * getRobot() {return(myRobot);}
+  MVREXPORT virtual MvrRobot * getRobot() {return(myRobot);}
 
   /// Get the joints data structure
-  MVRXPORT virtual P2ArmJoint * getJoint(int joint);
+  MVREXPORT virtual P2ArmJoint * getJoint(int joint);
 
   /// Converts degrees to low level arm controller ticks
-  MVRXPORT virtual bool convertDegToTicks(int joint, float pos,
+  MVREXPORT virtual bool convertDegToTicks(int joint, float pos,
 					  unsigned char *ticks);
 
   /// Converts low level arm controller ticks to degrees
-  MVRXPORT virtual bool convertTicksToDeg(int joint, unsigned char pos, float *degrees);
+  MVREXPORT virtual bool convertTicksToDeg(int joint, unsigned char pos, float *degrees);
 
 
 protected:

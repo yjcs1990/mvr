@@ -144,7 +144,7 @@ public:
    * maximum pose for all scans is returned
   **/
   MVREXPORT virtual MvrPose getMaxPose
-            const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) = 0;
+            (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) = 0;
 
   /// Returns the number of points in the specified scan.
   /**

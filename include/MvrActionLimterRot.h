@@ -16,7 +16,7 @@
    This action uses the robot's range sensors (e.g. sonar, laser) to find a 
    maximum speed at which to travel
    and will increase the deceleration so that the robot doesn't hit
-   anything.  If it has to, it will trigger an estop to avoid a
+   anything.  If it has to, it will trigger an e-stop to avoid a
    collision.
 **/
 class MvrActionLimiterRot : public MvrAction

@@ -164,13 +164,13 @@ public:
   void setSaveData(bool saveData) { mySaveData = saveData; }
   bool getSaveData(void) { return mySaveData; }
   Data *getData(void);
-#endif // ifndef SWIG
+#endif // SWIG
 protected:
   // Find our triangle, Internal function
   MVREXPORT void findTriangle(bool initial, bool goStraight = false);
   // Finds a pose this dist from the vertex along the line from the vertex
   MVREXPORT MvrPose findPoseFromVertex(double distFromVertex);
-  // where the vertex was in encoder coords
+  // where the vertex was in encoder coordinates
   MvrPose myVertex;
 
   MvrRangeDevice *myLaser;

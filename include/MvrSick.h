@@ -20,13 +20,13 @@ class MvrSick : public MvrLMS2xx
 {
 public:
   /// Constructor
-  MVRXPORT MvrSick(size_t currentBufferSize = 361, 
+  MVREXPORT MvrSick(size_t currentBufferSize = 361, 
 		  size_t cumulativeBufferSize = 0,
 		  const char *name = "laser",
 		  bool addMvriaExitCB = true,
 		  bool isSecondLaser = false);
   /// Destructor
-  MVRXPORT virtual ~MvrSick();
+  MVREXPORT virtual ~MvrSick();
 
   enum BaudRate {
     BAUD9600, ///< 9600 Baud
@@ -66,47 +66,47 @@ public:
 
 
   /// Use this to manually configure the laser before connecting to it
-  MVRXPORT void configure(bool useSim = false, bool powerControl = true, 
+  MVREXPORT void configure(bool useSim = false, bool powerControl = true, 
                           bool laserFlipped = false, 
                           BaudRate baud = BAUD38400,
                           Degrees deg = DEGREES180, 
                           Increment incr = INCREMENT_ONE);
   /// Shorter configure for the laser (settings are overridden by the .p file)
-  MVRXPORT void configureShort(bool useSim = false, 
+  MVREXPORT void configureShort(bool useSim = false, 
                                BaudRate baud = BAUD38400,
                                Degrees deg = DEGREES180, 
                                Increment incr = INCREMENT_ONE);
   /// Sets the ranging/reflector information
-  MVRXPORT void setRangeInformation(Bits bits = BITS_1REFLECTOR,
+  MVREXPORT void setRangeInformation(Bits bits = BITS_1REFLECTOR,
 				                            Units units = UNITS_1MM);
 
 
   // Gets whether the laser is simulated or not
-  MVRXPORT bool isUsingSim(void);
+  MVREXPORT bool isUsingSim(void);
   /// Gets whether the computer is controling laser power or not
-  MVRXPORT bool isControllingPower(void);
+  MVREXPORT bool isControllingPower(void);
   /// Gets whether the laser is flipped over or not
-  MVRXPORT bool isLaserFlipped(void);
+  MVREXPORT bool isLaserFlipped(void);
   /// Gets the degrees the laser is scanning
-  MVRXPORT Degrees getDegrees(void);
+  MVREXPORT Degrees getDegrees(void);
 #ifndef SWIG
         // this ends up causing problems in the Java wrapper, since it has the
         // wrong return type vs. MvrLaser::getIncrement(). But we need to keep
         // this function for backwards compatability.
         /// Gets the amount each scan increments
-  MVRXPORT Increment getIncrement(void);
+  MVREXPORT Increment getIncrement(void);
 #endif
   /// Gets the Bits the laser is using
-  MVRXPORT Bits getBits(void);
+  MVREXPORT Bits getBits(void);
   /// Gets the Units the laser is using
-  MVRXPORT Units getUnits(void);
+  MVREXPORT Units getUnits(void);
 
   // Sets whether the laser is simulated or not
-  MVRXPORT void setIsUsingSim(bool usingSim);
+  MVREXPORT void setIsUsingSim(bool usingSim);
   /// Sets whether the computer is controling laser power or not
-  MVRXPORT void setIsControllingPower(bool controlPower);
+  MVREXPORT void setIsControllingPower(bool controlPower);
   /// Sets whether the laser is flipped over or not
-  MVRXPORT void setIsLaserFlipped(bool laserFlipped);
+  MVREXPORT void setIsLaserFlipped(bool laserFlipped);
 
 
 

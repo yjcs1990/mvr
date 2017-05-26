@@ -115,8 +115,8 @@ public:
       @return the time the last read data was read in 
   */
   MVREXPORT virtual MvrTime getTimeRead(int index) = 0;
-  /// sees if timestamping is really going on or not
-  /** @return true if real timestamping is happening, false otherwise */
+  /// sees if timestampe is really going on or not
+  /** @return true if real timestampe is happening, false otherwise */
   MVREXPORT virtual bool isTimeStamping(void) = 0;
 
   /// Gets the port name

@@ -19,8 +19,7 @@ class MvrWGS84;
 
 class Mvr3DPoint 
 {
-  public:
-
+public:
   Mvr3DPoint(void) : myX(0), myY(0), myZ(0) {}
   Mvr3DPoint(double x, double y, double z) : myX(x), myY(y), myZ(z) {}
   /// Destructor.
@@ -37,7 +36,7 @@ class Mvr3DPoint
     Mvr3DPoint dif(myX - c.myX, myY - c.myY, myZ - c.myZ);
     return dif;
   }
-  /// Diff
+  /// Mult
   Mvr3DPoint operator*(double c)
   {
     Mvr3DPoint pro(myX*c, myY*c, myZ*c);
@@ -46,19 +45,19 @@ class Mvr3DPoint
   /// Dot product
   double dot(Mvr3DPoint c)
   {
-    double dotP(myX * c.myX + myY * c.myY + myZ * c.myZ);
+    double dotP = myX * c.myX + myY * c.myY + myZ * c.myZ;
     return dotP;
   }
   /// Cross product
   Mvr3DPoint cross(Mvr3DPoint c)
   {
-    Mvr3DPoint crossP(myY * c.myZ - myZ * c.myY, 
-                      myZ * c.myX - myX * c.myZ, 
-                      myX * c.myY - myY * c.myX);
+    Mvr3DPoint crossP;
+    crossP.myX = myY * c.myZ - myZ * c.myY;
+    crossP.myY = myZ * c.myX - myX * c.myZ;
+    crossP.myZ = myX * c.myY - myY * c.myX;
     return crossP;
   }
   /// Print.
-  /** @swignote Use 'printPoint' instead */
   MVREXPORT void print(const char* head=NULL);
 
   double getX() const {return myX;}

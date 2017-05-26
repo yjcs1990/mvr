@@ -54,7 +54,7 @@ public:
 
   /// Gets the unit number this packet is for
   MVREXPORT unsigned char getUnitNumber(void);
-  /// Sets the unit number htis packet is for
+  /// Sets the unit number this packet is for
   MVREXPORT bool setUnitNumber(unsigned char unitNumber);
   
   MVREXPORT virtual void byteToBuf(MvrTypes::Byte val);

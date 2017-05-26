@@ -51,7 +51,7 @@ class MvrArgumentParser
   /// spaces or what not)
   MVREXPORT void addDefaultArgumentAsIs(const char *argument, int position = -1);
   /// Adds args from default files and environmental variables
-  MVREXPORT void loadDefaultArguments(int positon = 1);
+  MVREXPORT void loadDefaultArguments(int position = 1);
   /// Checks for the help strings and warns about unparsed arguments
   MVREXPORT bool checkHelpAndWarnUnparsed(unsigned int numArgsOkay = 0);
   /// Checks for the help argument  

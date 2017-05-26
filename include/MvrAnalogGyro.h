@@ -38,7 +38,7 @@ class MvrRobotPacket;
    to compute the most probable heading which it then returns to the
    MvrRobot object to use as its heading.
 
-   The robot's normal dead reconing angle is fairly good if you have properly
+   The robot's normal dead-reconing angle is fairly good if you have properly
    inflated tires (if you have pneumatic tires) and if you have
    the revcount parameter sent correctly.  See the robot operation manual for
    how to change the revcount parameter.

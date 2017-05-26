@@ -21,7 +21,7 @@ public:
   MvrACTSBlob() {}
   /// Destructor
   virtual ~MvrACTSBlob() {}
-  /// Gets the number of pixels coverd by the blob
+  /// Gets the number of pixels covered by the blob
   int getArea(void) { return myArea; }
   /// Gets the X Center of Gravity of the blob
   int getXCG(void) { return myXCG; }
@@ -116,7 +116,7 @@ public:
 protected:
   int invertX(int before);
   int invertY(int before);
-  /// an iternal function to strip out the information from some bytes
+  /// an internal function to strip out the information from some bytes
   int getData(char *rawData);
   MvrFunctorC<MvrACTS_1_2> mySensorTaskCB;
   MvrRobot *myRobot;

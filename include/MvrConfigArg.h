@@ -162,12 +162,12 @@ public:
                          const char * description = "", 
                          int minInt = INT_MIN, 
                          int maxInt = INT_MAX); 
-  /// Constructor for making an int argument thats a short (2 bytes)
+  /// Constructor for making an int argument that a short (2 bytes)
   MVREXPORT MvrConfigArg(const char * name, short *pointer, 
                          const char * description = "", 
                          int minInt = SHRT_MIN, 
                          int maxInt = SHRT_MAX); 
-  /// Constructor for making an int argument thats a ushort (2 bytes)
+  /// Constructor for making an int argument that a ushort (2 bytes)
   MVREXPORT MvrConfigArg(const char * name, unsigned short *pointer, 
                          const char * description = "", 
                          int minInt = 0, 
@@ -421,8 +421,7 @@ public:
   MVREXPORT std::string getParentPathName(char separator = '|') const;
 
   /// Given a parent path, as a single string, splits it in a format useable by MvrConfigSection findParam
-  MVREXPORT static std::list<std::string> splitParentPathName(const char *parentPathName,
-                                                              char separator = '|');
+  MVREXPORT static std::list<std::string> splitParentPathName(const char *parentPathName, char separator = '|');
 
 
   /// Replaces spaces in the name with underscores

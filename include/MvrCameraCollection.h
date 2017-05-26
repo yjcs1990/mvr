@@ -248,7 +248,7 @@ public:
    * modified; must be non-NULL
    * @param position the MvrListPos::Pos at which to put the callback
    * (beginning or end)
-   * @return bool true if the callback was succesfully added; false, otherwise.
+   * @return bool true if the callback was successfully added; false, otherwise.
   **/
   MVREXPORT virtual bool addModifiedCB(MvrFunctor *functor,
                                        MvrListPos::Pos position = MvrListPos::LAST);
@@ -256,7 +256,7 @@ public:
   /// Removes a callback from the modified notification list.
   /**
    * @param functor the MvrFunctor * to be removed from the notification list
-   * @return bool true if the callback was succesfully removed; false, otherwise.
+   * @return bool true if the callback was successfully removed; false, otherwise.
   **/
   MVREXPORT virtual bool removeModifiedCB(MvrFunctor *functor);
 
@@ -416,7 +416,7 @@ public:
  * to read and modify some of the camera's parameters.  In general, the 
  * addToCameraCollection() method should add the parameters to the collection.
  * The collection will then invoke the getParameter() and setParameter() methods as
- * callers make changes to the parameters; the MvrCameraParameterSource is reponsible 
+ * callers make changes to the parameters; the MvrCameraParameterSource is responsible
  * for propagating the changes to the camera hardware.
 **/
 class MvrCameraParameterSource : public MvrCameraCollectionItem

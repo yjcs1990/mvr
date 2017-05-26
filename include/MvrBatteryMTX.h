@@ -197,14 +197,14 @@ public:
 		}
   }
 
-  /// Request a continous stream of packets
+  /// Request a continuous stream of packets
   MVREXPORT void requestContinuousSysInfoPackets(void);
   /// Stop the stream of packets
   MVREXPORT void stopSysInfoPackets(void);
   /// See if we've requested packets
   MVREXPORT bool haveRequestedSysInfoPackets(void);
 
-  /// Request a continous stream of packets
+  /// Request a continuous stream of packets
   MVREXPORT void requestContinuousCellInfoPackets(void);
   /// Stop the stream of packets
   MVREXPORT void stopCellInfoPackets(void);
@@ -221,7 +221,7 @@ public:
   /// Gets the default port type for the battery
   const char *getDefaultTcpPort(void) { return myDefaultTcpPort.c_str(); }
 
-  /// Sets the numter of seconds without a response until connection assumed lost
+  /// Sets the number of seconds without a response until connection assumed lost
   virtual void setConnectionTimeoutSeconds(double seconds)
 	{ 
     MvrLog::log(MvrLog::Normal, 
@@ -234,7 +234,7 @@ public:
 	MVREXPORT bool checkLostConnection(void);
 	/// disconnect 
 	MVREXPORT void disconnectOnError(void);
-  /// Gets the time data was last receieved
+  /// Gets the time data was last received
   MvrTime getLastReadingTime(void) { return myLastReading; }
   /// Gets the number of battery readings received in the last second
   MVREXPORT int getReadingCount(void);
@@ -496,4 +496,4 @@ enum Sizes {
 
 
 
-#endif // ARBATTERYMTX_H
+#endif // MVRBATTERYMTX_H

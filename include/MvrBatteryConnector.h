@@ -1,7 +1,7 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
  > File Name    : MvrBatteryConnector.h
- > Description  : Connect to robot and battery based on run-time availablitily and command-line arguments
+ > Description  : Connect to robot and battery based on run-time availability and command-line arguments
  > Author       : Yu Jie
  > Create Time  : 2017年05月17日
  > Modify Time  : 2017年05月17日
@@ -26,7 +26,7 @@ class MvrRobot;
    MvrBatteryConnector makes a battery connection either through a serial port 
    connection, or through a TCP
    port (for the simulator or for robots with Ethernet-serial bridge
-   devices instead of onboard computers).
+   devices instead of on board computers).
    Normally, it first attempts a TCP connection on 
  **/
 class MvrBatteryConnector
@@ -100,7 +100,7 @@ class BatteryData
 		const char *myPortType;
 		// battery Type
 		const char *myType;
-		// wheather to auto conn
+		// whether to auto conn
 		const char *myAutoConn;
 		// battery tcp port if we're doing a remote host
 		int myRemoteTcpPort;
@@ -124,7 +124,7 @@ class BatteryData
   // our parser
   MvrArgumentParser *myParser;
   bool myOwnParser;
-  // if we should autoparse args or toss errors 
+  // if we should auto parse args or toss errors
   bool myAutoParseArgs;
   bool myParsedArgs;
 

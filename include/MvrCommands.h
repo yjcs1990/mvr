@@ -33,10 +33,10 @@ public:
   DHEAD = 13,             ///< int, turn relative to current heading (degrees)
                           //DROTATE = 14, does not really exist
   SAY = 15,               /**< string, makes the robot beep.
-	                        up to 20 pairs of duration (20 ms incrs) and tones (halfcycle) */
+	                        up to 20 pairs of duration (20 ms inches) and tones (halfcycle) */
   JOYINFO = 17,           // int, requests joystick packet, 0 to stop, 1 for 1, 2 for continuous
   CONFIG = 18,            ///< int, request configuration packet
-  ENCODER = 19,           ///< int, > 0 to request continous stream of packets, 0 to stop
+  ENCODER = 19,           ///< int, > 0 to request continuous stream of packets, 0 to stop
   SETRVDIR = 20,          ///< int, Sets the rot vel max in each direction
   RVEL = 21,              ///< int, set rotational velocity (deg/sec)
   DCHEAD = 22,            ///< int, colbert relative heading setpoint (degrees)
@@ -106,16 +106,16 @@ public:
   SOUNDTOG = 92,            ///< int, AmigoBot (old H8 model) specific, enable(1) or diable(0) sound
 
   // Power commands
-  POWER_PC = 95,            ///< int, Powers on or off the PC (if the firwmare is set up to do this in its power settings)
-  POWER_LRF = 96,           ///< int, Powers on or off the laser (if the firwmare is set up to do this in its power settings)
-  POWER_5V = 97,            ///< int, Powers on or off the 5v accessories (if the firwmare is set up to do this in its power settings)
-  POWER_12V = 98,           ///< int, Powers on or off the 12v accessories (if the firwmare is set up to do this in its power settings)
-  POWER_24V = 98,           ///< int, Powers on or off the 24v accessories (if the firwmare is set up to do this in its power settings)
-  POWER_AUX_PC = 125,       ///< int, Powers on or off the auxilliary PC (if the firwmare is set up to do this in its power settings)
-  POWER_TOUCHSCREEN = 126,  ///< int, Powers on or off the touchscreen (if the firwmare is set up to do this in its power settings)
-  POWER_PTZ = 127,          ///< int, Powers on or off the PTZ (if the firwmare is set up to do this in its power settings)
-  POWER_AUDIO = 128,        ///< int, Powers on or off the audio (if the firwmare is set up to do this in its power settings)
-  POWER_LRF2 = 129,         ///< int, Powers on or off the second laser (if the firwmare is set up to do this in its power settings)
+  POWER_PC = 95,            ///< int, Powers on or off the PC (if the firmware is set up to do this in its power settings)
+  POWER_LRF = 96,           ///< int, Powers on or off the laser (if the firmware is set up to do this in its power settings)
+  POWER_5V = 97,            ///< int, Powers on or off the 5v accessories (if the firmware is set up to do this in its power settings)
+  POWER_12V = 98,           ///< int, Powers on or off the 12v accessories (if the firmware is set up to do this in its power settings)
+  POWER_24V = 98,           ///< int, Powers on or off the 24v accessories (if the firmware is set up to do this in its power settings)
+  POWER_AUX_PC = 125,       ///< int, Powers on or off the auxiliary PC (if the firmware is set up to do this in its power settings)
+  POWER_TOUCHSCREEN = 126,  ///< int, Powers on or off the touchscreen (if the firmware is set up to do this in its power settings)
+  POWER_PTZ = 127,          ///< int, Powers on or off the PTZ (if the firmware is set up to do this in its power settings)
+  POWER_AUDIO = 128,        ///< int, Powers on or off the audio (if the firmware is set up to do this in its power settings)
+  POWER_LRF2 = 129,         ///< int, Powers on or off the second laser (if the firmware is set up to do this in its power settings)
 
   // For SEEKUR or later lateral-capable robots
   LATVEL = 110,             ///< int, sets the lateral velocity (mm)
@@ -134,7 +134,7 @@ public:
 
 
   // MobileSim specific:
-  SIM_SET_POSE = 224,           ///< int4,int4,int4 Move robot to global pose in simulator (does not change odometry). Each value is a 4-byte integer.
+  SIM_SET_POSE = 224,           ///< int4,int4,int4 Move robot to global pose in simulator (does not change odometry ). Each value is a 4-byte integer.
   SIM_RESET= 225,               ///< none, Reset robot's state to original in simulator and reset odometry to 0,0,0.
   SIM_LRF_ENABLE = 230,         ///< int, 1 to begin sending packets of data from a simulated laser rangefinder (on the same socket connection), 2 to send extended-information laser packets (with reading flags), 0 to disable LRF
   SIM_LRF_SET_FOV_START = 231,  ///< int Set angle (degrees from center) at which the simulater laser takes its first reading (normally -90).

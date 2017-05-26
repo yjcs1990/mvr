@@ -24,12 +24,12 @@ public:
 
   /// The main run loop
   /*
-     Override this function and put your taskes run loop here. Check the
-     value of getRunning() periodicly in your loop. If the value
+     Override this function and put your tasks run loop here. Check the
+     value of getRunning() periodically in your loop. If the value
      is false, the loop should exit and runThread() should return.
      The argument and return value are specific to the platform thread implementation, and 
      can be ignored.
-     @swignote In the wrapper libraries, this method takes no arguments and has no return value.
+     @ swignote In the wrapper libraries, this method takes no arguments and has no return value.
   */
   MVREXPORT virtual void * runThread(void *arg) = 0;
 

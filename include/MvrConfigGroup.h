@@ -29,7 +29,7 @@ public:
   MVREXPORT bool writeFile(const char *fileName);
   /// Sets the base directory on all configs this contains
   MVREXPORT void setBaseDirectory(const char *baseDirectory);
-  /// Gets the baes directory of this group (not the configs it contains)
+  /// Gets the bases directory of this group (not the configs it contains)
   MVREXPORT const char *getBaseDirectory(void) const;
 protected:
   std::string myBaseDirectory;

@@ -47,7 +47,7 @@ public:
                    const char *description="",
                    double minDouble = -HUGE_VAL,
                    double maxDouble = HUGE_VAL);
-  /// Constructor for making a bollean argument
+  /// Constructor for making a boolean argument
   MVREXPORT MvrArg(const char *name, bool *pointer,
                    const char *description="");
   /// Constructor for making a position argument
@@ -98,7 +98,7 @@ public:
   MVREXPORT MvrPose getPose(void) const;
   /// Gets the argument value, for string arguments
   MVREXPORT const char *getString(void) const;
-  /// Gets the argument value, which is a list of argumentbuilders here
+  /// Gets the argument value, which is a list of argument builders here
   MVREXPORT const std::list<MvrArgumentBuilder *> *getArgsWithFunctor(void) const;
   /// Logs the type, name, and value of this argument
   MVREXPORT void log(void) const;

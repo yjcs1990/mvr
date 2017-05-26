@@ -22,9 +22,9 @@ public:
   enum {
     STATUS_FAILED=1,          ///< General failure
     STATUS_FAILED_DESTROY,    ///< Another thread is waiting on this condition so it can not be destroyed
-    STATUS_FAILED_INIT,       ///< Failed to initialize thread. Requested action is imposesible
-    STATUS_WAIT_TIMEDOUT,     ///< The timedwait timed out before signaling
-    STATUS_WAIT_INTR,         ///< The wait was interupted by a signal
+    STATUS_FAILED_INIT,       ///< Failed to initialize thread. Requested action is impossible
+    STATUS_WAIT_TIMEDOUT,     ///< The time timed out before signaling
+    STATUS_WAIT_INTR,         ///< The wait was interrupted by a signal
     STATUS_MUTEX_FAILED_INIT, ///< The underlying mutex failed to init
     STATUS_MUTEX_FAILED       ///< The underlying mutex failed in some fashion
   };

@@ -40,11 +40,11 @@ public:
   MVREXPORT void addPlain(const char *str, int position = -1);
   /// Adds the given string, without varargs and without touching the str
   MVREXPORT void addPlainAsIs(const char *str, int position = -1);
-  /// Adds the given string thats divided
+  /// Adds the given string that divided
   MVREXPORT void addStrings(char **argv, int argc, int position = -1);
-  /// Adds the given string thats divided
+  /// Adds the given string that divided
   MVREXPORT void addStrings(int argc, char **argv, int position = -1);
-  /// Adds the given string thats divided (but doesn't touch the strings)
+  /// Adds the given string that divided (but doesn't touch the strings)
   MVREXPORT void addStringsAsIs(int argc, char **argv, int position = -1);
   /// Gets the original string of the input
   MVREXPORT const char *getFullString(void) const;

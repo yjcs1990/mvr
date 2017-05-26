@@ -1,7 +1,7 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
  > File Name    : MvrActionRatioInput.h
- > Description  : Action that requests motion based on abstract ratios provided by diferent input sources
+ > Description  : Action that requests motion based on abstract ratios provided by different input sources
  > Author       : Yu Jie
  > Create Time  : 2017年05月24日
  > Modify Time  : 2017年05月24日

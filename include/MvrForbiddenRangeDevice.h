@@ -20,16 +20,16 @@ class MvrForbiddenRangeDevice : public MvrRangeDevice
 public:
   /// Constructor
   MVREXPORT MvrForbiddenRangeDevice(MvrMapInterface *armap, 
-                                  double distanceIncrement = 100,
-				                          unsigned int maxRange = 4000,
-				                          const char *name = "forbidden");
+                                    double distanceIncrement = 100,
+				                    unsigned int maxRange = 4000,
+				                    const char *name = "forbidden");
   /// Destructor
   MVREXPORT virtual ~MvrForbiddenRangeDevice();
   /// Saves the forbidden lines from the map
   MVREXPORT void processMap(void);
   /// Remakes the readings 
   MVREXPORT void processReadings(void);
-  /// Sets the robot pointer and attachs its process function
+  /// Sets the robot pointer and attaches its process function
   MVREXPORT virtual void setRobot(MvrRobot *robot);
 
   /// Enable readings 

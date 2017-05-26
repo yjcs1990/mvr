@@ -39,12 +39,12 @@
     A buffer may be statically allocated externally and supplied to the
     constructor
     (also give a buffer size to determine the maximum amount of data that can be
-    placed in that bufer),
+    placed in that buffer),
     or automatically and dynamically allocated by MvrBasePacket as needed
     (the default behavior).
 
     When it is time to write out a packet, call finalizePacket() to set 
-    up the footer if neccesary.
+    up the footer if neccessary.
     To reuse a packet, use empty() to reset the buffer; new data will
     then be added to the beginning of the buffer again.
 */
@@ -111,7 +111,7 @@ public:
   /// Copies length bytes from data into packet buffer
   MVREXPORT virtual void dataToBuf(const unsigned char *data, int length);
 
-  // Utility functions to read differet data types from a bufer. Each read
+  // Utility functions to read different data types from a buffer. Each read
   // will increment the myReadLength.
   /// Gets a MvrTypes::Byte from the buffer
   MVREXPORT virtual MvrTypes::Byte bufToByte(void);

@@ -25,19 +25,19 @@ class MvrTCM2
 {
 public:
   
-  AREXPORT MvrTCM2();
+  MVREXPORT MvrTCM2();
   virtual ~MvrTCM2() {}
 
   /** If a connection/initialization procedure is required, perform it, and
       return true on success, false on failure. Otherwise, just return true.
   */
-  AREXPORT virtual bool connect();
+  MVREXPORT virtual bool connect();
 
   /** If a connection/initialization procedure is required, perform it, wait
    * until data is recieved from the compass, and
       return true on success, false on failure. Otherwise, just return true.
   */
-  AREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
+  MVREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
 
 
   /// Get the compass heading (-180, 180] degrees
@@ -197,15 +197,15 @@ protected:
   } DeviceType;
   DeviceType myDeviceType;
   const char *mySerialPort;
-  AREXPORT bool parseArgs();
+  MVREXPORT bool parseArgs();
   MvrFunctor *mySerialTCMReadFunctor;
   MvrRobot *myRobot;
-  AREXPORT void logOptions();
+  MVREXPORT void logOptions();
 public:
-  AREXPORT MvrCompassConnector(MvrArgumentParser *argParser);
-  AREXPORT ~MvrCompassConnector();
-  AREXPORT MvrTCM2 *create(MvrRobot *robot);
-  AREXPORT bool connect(MvrTCM2*) const;
+  MVREXPORT MvrCompassConnector(MvrArgumentParser *argParser);
+  MVREXPORT ~MvrCompassConnector();
+  MVREXPORT MvrTCM2 *create(MvrRobot *robot);
+  MVREXPORT bool connect(MvrTCM2*) const;
 };
 
 #endif // ARTCM2_H
