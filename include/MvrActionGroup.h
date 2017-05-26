@@ -34,7 +34,7 @@ public:
   MVREXPORT virtual void deactivate(void);
   /// Removes all the actions in this group from the robot
   MVREXPORT virtual void removeActions(void);
-  /// Delets all the actions in this group
+  /// Deletes all the actions in this group
   MVREXPORT virtual void deleteActions(void);
   /// Gets the action list
   MVREXPORT virtual std::list<MvrAction *> *getActionList(void);

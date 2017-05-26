@@ -23,7 +23,7 @@ public:
 				   double slowDistance = -1000,
 				   double slowSpeed = -250,
 				   double widthRatio = 1.5,
-           bool avoidLocationDependendentObstacles=true);
+           bool avoidLocationDependentObstacles=true);
   /// Destructor
   MVREXPORT virtual ~MvrActionLimiterBackwards();
   MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);

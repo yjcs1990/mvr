@@ -78,7 +78,7 @@ public:
   {
     myAllowOverride = myAllowOverride && desiredChannel->getAllowOverride();
     // if we're allowing override then myDesired is just the least
-    // of the values thats going to come through... still compute
+    // of the values that going to come through... still compute
     // the old way in case something doesn't want to override it
     if (myAllowOverride)
     {
@@ -174,7 +174,7 @@ protected:
    movement command, the resolver (MvrResolver) will combine these strengths 
    and figure out what to do based on them.
 
-   For all strength values there is a total of 1.0 combined strength avaliable.
+   For all strength values there is a total of 1.0 combined strength availiable.
    The range for strength is from 0 to 1.  This is simply a convention that 
    ARIA uses by default, if you don't like it, you could override this
    class the MvrResolver class.
@@ -229,7 +229,7 @@ public:
      This is a way to set the heading instead of using a delta, there is no
      get for this, because accountForRobotHeading MUST be called (this should
      be called by all resolvers, but if you want to call it you can,
-     thats fine).
+     that fine).
      @param heading desired heading (deg)
      @param strength strength given to this, defaults to MAX_STRENGTH (1.0)
   */
@@ -383,7 +383,7 @@ public:
      instead of making people remember which way is left and right
      there are two functions, setLeftLatVel and setRightLatVel... all
      setRightLatVel does is flip the direction on the vel.  You can
-     set a negative left lat vel and thats the same as setting a
+     set a negative left lat vel and that the same as setting a
      positive right vel.  You can do the same with setting a negative
      right vel to get a positive left vel.
 
@@ -398,7 +398,7 @@ public:
      instead of making people remember which way is left and right
      there are two functions, setLeftLatVel and setRightLatVel... all
      setRightLatVel does is flip the direction on the vel.  You can
-     set a negative left lat vel and thats the same as setting a
+     set a negative left lat vel and that the same as setting a
      positive right vel.  You can do the same with setting a negative
      right vel to get a positive left vel.
 
@@ -676,7 +676,7 @@ public:
       myLatAccelDes.merge(&actDesired->myLatAccelDes);
       myLatDecelDes.merge(&actDesired->myLatDecelDes);
     }
-  /// Starts the process of avereraging together different desireds
+  /// Starts the process of averaging together different desired
   /**
      There is a three step process for averaging actionDesireds together,
      first startAverage must be done to set up the process, then addAverage
@@ -750,7 +750,7 @@ public:
       myLatAccelDes.addAverage(&actDesired->myLatAccelDes);
       myLatDecelDes.addAverage(&actDesired->myLatDecelDes);
     }
-  /// Ends the process of avereraging together different desireds
+  /// Ends the process of averaging together different desireds
   /**
      For a description of how to use this, see startAverage.
   */

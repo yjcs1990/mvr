@@ -44,7 +44,7 @@ public:
   // if one cannot be seen
   MVREXPORT void setAcquire(bool acquire);
 
-  // Stop moving alltogether
+  // Stop moving all together
   MVREXPORT void stopMovement(void);
   
   // Start moving

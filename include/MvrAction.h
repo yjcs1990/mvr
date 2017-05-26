@@ -58,7 +58,7 @@ public:
   /// Sets the default activation state for all MvrActions
   static void setDefaultActivationState(bool defaultActivationState)
   { ourDefaultActivationState = defaultActivationState; }
-  /// Gest the defuault activation state for all mvrActions
+  /// Gets the default activation state for all mvrActions
   static bool getDefaultActivationState(void)
   { return ourDefaultActivationState; }
 protected:

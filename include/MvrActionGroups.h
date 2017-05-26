@@ -50,7 +50,7 @@ public:
 public:
   MvrActionStop *myActionStop;
 };
-/// Action group to teleopoperate the robot using MvrActionJoydrive
+/// Action group to teleoperate the robot using MvrActionJoydrive
 /// and the Limiter actions to avoid collisions.
 class MvrActionGroupTeleop : public MvrActionGroup
 {

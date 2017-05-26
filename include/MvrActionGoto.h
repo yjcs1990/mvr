@@ -43,7 +43,7 @@ public:
 
   MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
 
-  /** Used by the action resolvel; return current desired action. */
+  /** Used by the action resolevel; return current desired action. */
   MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
   MVREXPORT virtual const MvrActionDesired *getDesired(void) const 

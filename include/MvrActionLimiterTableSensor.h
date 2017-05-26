@@ -22,7 +22,7 @@ public:
   MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
   MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDisired(void) const
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const
   { return &myDesired; }
 #endif  // SWIG
 protected:
