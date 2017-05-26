@@ -11,7 +11,47 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="14e537d0-88b1-4c26-ba77-bcaef6727e49" name="Default" comment="" />
+    <list default="true" id="14e537d0-88b1-4c26-ba77-bcaef6727e49" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/include/MvrBatteryConnector.1.h" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/robot.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/robot.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrACTS.h" afterPath="$PROJECT_DIR$/include/MvrACTS.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrAMPTU.h" afterPath="$PROJECT_DIR$/include/MvrAMPTU.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrASyncTask.h" afterPath="$PROJECT_DIR$/include/MvrASyncTask.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrAction.h" afterPath="$PROJECT_DIR$/include/MvrAction.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionAvoidSide.h" afterPath="$PROJECT_DIR$/include/MvrActionAvoidSide.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionColorFollow.h" afterPath="$PROJECT_DIR$/include/MvrActionColorFollow.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionDesired.h" afterPath="$PROJECT_DIR$/include/MvrActionDesired.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionGoto.h" afterPath="$PROJECT_DIR$/include/MvrActionGoto.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionGroup.h" afterPath="$PROJECT_DIR$/include/MvrActionGroup.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionGroups.h" afterPath="$PROJECT_DIR$/include/MvrActionGroups.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionIRs.h" afterPath="$PROJECT_DIR$/include/MvrActionIRs.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionJoydrive.h" afterPath="$PROJECT_DIR$/include/MvrActionJoydrive.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionLimiterBackwards.h" afterPath="$PROJECT_DIR$/include/MvrActionLimiterBackwards.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionLimiterTableSensor.h" afterPath="$PROJECT_DIR$/include/MvrActionLimiterTableSensor.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionLimterRot.h" afterPath="$PROJECT_DIR$/include/MvrActionLimterRot.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionRatioInput.h" afterPath="$PROJECT_DIR$/include/MvrActionRatioInput.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionTriangleDriveTo.h" afterPath="$PROJECT_DIR$/include/MvrActionTriangleDriveTo.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrAnalogGyro.h" afterPath="$PROJECT_DIR$/include/MvrAnalogGyro.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrArg.h" afterPath="$PROJECT_DIR$/include/MvrArg.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrArgumentBuilder.h" afterPath="$PROJECT_DIR$/include/MvrArgumentBuilder.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrArgumentParser.h" afterPath="$PROJECT_DIR$/include/MvrArgumentParser.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBasePacket.h" afterPath="$PROJECT_DIR$/include/MvrBasePacket.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBatteryConnector.h" afterPath="$PROJECT_DIR$/include/MvrBatteryConnector.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBatteryMTX.h" afterPath="$PROJECT_DIR$/include/MvrBatteryMTX.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrCameraCollection.h" afterPath="$PROJECT_DIR$/include/MvrCameraCollection.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrCommands.h" afterPath="$PROJECT_DIR$/include/MvrCommands.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrCondition.h" afterPath="$PROJECT_DIR$/include/MvrCondition.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrConfigArg.h" afterPath="$PROJECT_DIR$/include/MvrConfigArg.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrConfigGroup.h" afterPath="$PROJECT_DIR$/include/MvrConfigGroup.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrDeviceConnection.h" afterPath="$PROJECT_DIR$/include/MvrDeviceConnection.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrForbiddenRangeDevice.h" afterPath="$PROJECT_DIR$/include/MvrForbiddenRangeDevice.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrGPSCoords.h" afterPath="$PROJECT_DIR$/include/MvrGPSCoords.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMapInterface.h" afterPath="$PROJECT_DIR$/include/MvrMapInterface.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrP2Arm.h" afterPath="$PROJECT_DIR$/include/MvrP2Arm.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSick.h" afterPath="$PROJECT_DIR$/include/MvrSick.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTCM2.h" afterPath="$PROJECT_DIR$/include/MvrTCM2.h" />
+    </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,80 +61,56 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="MVR" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Mvria.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/Mvria.h">
+      <file leaf-file-name="MvrFileParser.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrFileParser.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="702">
-              <caret line="39" column="10" lean-forward="false" selection-start-line="39" selection-start-column="10" selection-end-line="39" selection-end-column="10" />
+            <state relative-caret-position="146">
+              <caret line="25" column="70" lean-forward="false" selection-start-line="25" selection-start-column="62" selection-end-line="25" selection-end-column="70" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MvrBasePacket.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/MvrBasePacket.h">
+      <file leaf-file-name="MvrForbiddenRangeDevice.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrForbiddenRangeDevice.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3402">
-              <caret line="189" column="6" lean-forward="false" selection-start-line="189" selection-start-column="6" selection-end-line="189" selection-end-column="6" />
-              <folding>
-                <element signature="e#450#467#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mvriaTypedefs.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/mvriaTypedefs.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="43" lean-forward="false" selection-start-line="0" selection-start-column="43" selection-end-line="0" selection-end-column="43" />
-              <folding>
-                <element signature="e#454#471#0" expanded="true" />
-                <element signature="e#535#812#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MvrAction.h" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/include/MvrAction.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="36" column="52" lean-forward="false" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
-              <folding>
-                <element signature="e#460#486#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MvrSensorReading.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/MvrSensorReading.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="486">
-              <caret line="27" column="46" lean-forward="false" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
+            <state relative-caret-position="146">
+              <caret line="31" column="40" lean-forward="false" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MvrPriorityResolver.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/MvrPriorityResolver.h">
+      <file leaf-file-name="MvrFunctor.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrFunctor.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+            <state relative-caret-position="92">
+              <caret line="597" column="12" lean-forward="false" selection-start-line="597" selection-start-column="3" selection-end-line="597" selection-end-column="12" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MvrConfig.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/MvrConfig.h">
+      <file leaf-file-name="MvrBatteryMTX.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrBatteryMTX.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+            <state relative-caret-position="214">
+              <caret line="288" column="18" lean-forward="false" selection-start-line="288" selection-start-column="18" selection-end-line="288" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MvrCameraCommands.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrCameraCommands.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="214">
+              <caret line="41" column="43" lean-forward="false" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -103,31 +119,53 @@
       <file leaf-file-name="MvrCommands.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/MvrCommands.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2286">
-              <caret line="127" column="0" lean-forward="false" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+            <state relative-caret-position="214">
+              <caret line="95" column="11" lean-forward="false" selection-start-line="95" selection-start-column="11" selection-end-line="95" selection-end-column="11" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MvrActionDesired.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/MvrActionDesired.h">
+      <file leaf-file-name="MvrCondition.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrCondition.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14220">
-              <caret line="790" column="27" lean-forward="false" selection-start-line="790" selection-start-column="27" selection-end-line="790" selection-end-column="27" />
+            <state relative-caret-position="214">
+              <caret line="49" column="39" lean-forward="false" selection-start-line="49" selection-start-column="39" selection-end-line="49" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MvrVCC4.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrVCC4.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2068">
+              <caret line="330" column="12" lean-forward="false" selection-start-line="330" selection-start-column="12" selection-end-line="330" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MvrAction.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/MvrAction.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="174">
+              <caret line="60" column="19" lean-forward="false" selection-start-line="60" selection-start-column="19" selection-end-line="60" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Mvria.h" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/include/Mvria.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-42">
+              <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
               <folding>
-                <element signature="e#498#524#0" expanded="true" />
+                <element signature="e#424#447#0" expanded="true" />
+                <element signature="e#2702#2752#0" expanded="true" />
+                <element signature="e#2770#2804#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MvrRobot.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/MvrRobot.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1116">
-              <caret line="62" column="6" lean-forward="false" selection-start-line="62" selection-start-column="6" selection-end-line="62" selection-end-column="14" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -138,7 +176,15 @@
     <findStrings>
       <find>MvrDevieConnection</find>
       <find>MvrActionDesired</find>
+      <find>dotP</find>
+      <find>firwmare</find>
+      <find>thats</find>
     </findStrings>
+    <replaceStrings>
+      <replace />
+      <replace>firmware</replace>
+      <replace>that</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -149,15 +195,48 @@
         <option value="$PROJECT_DIR$/include/MvrMutex.h" />
         <option value="$PROJECT_DIR$/include/MvrFunctor.h" />
         <option value="$PROJECT_DIR$/include/mvriaUtil.h" />
-        <option value="$PROJECT_DIR$/include/MvrBasePacket.h" />
         <option value="$PROJECT_DIR$/include/mvriaTypedefs.h" />
         <option value="$PROJECT_DIR$/include/MvrSensorReading.h" />
         <option value="$PROJECT_DIR$/include/MvrPriorityResolver.h" />
         <option value="$PROJECT_DIR$/include/MvrResolver.h" />
         <option value="$PROJECT_DIR$/include/MvrConfig.h" />
-        <option value="$PROJECT_DIR$/include/MvrCommands.h" />
-        <option value="$PROJECT_DIR$/include/MvrActionDesired.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionIRs.h" />
+        <option value="$PROJECT_DIR$/include/MvrMapInterface.h" />
+        <option value="$PROJECT_DIR$/include/MvrP2Arm.h" />
+        <option value="$PROJECT_DIR$/include/MvrSick.h" />
+        <option value="$PROJECT_DIR$/include/MvrTCM2.h" />
+        <option value="$PROJECT_DIR$/include/MvrGPSCoords.h" />
         <option value="$PROJECT_DIR$/include/MvrAction.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionAvoidSide.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionColorFollow.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionLimiterBackwards.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionLimiterTableSensor.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionDesired.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionGoto.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionGroup.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionGroups.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionJoydrive.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionLimterRot.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionRatioInput.h" />
+        <option value="$PROJECT_DIR$/include/MvrActionTriangleDriveTo.h" />
+        <option value="$PROJECT_DIR$/include/MvrACTS.h" />
+        <option value="$PROJECT_DIR$/include/MvrAMPTU.h" />
+        <option value="$PROJECT_DIR$/include/MvrAnalogGyro.h" />
+        <option value="$PROJECT_DIR$/include/MvrArg.h" />
+        <option value="$PROJECT_DIR$/include/MvrArgumentBuilder.h" />
+        <option value="$PROJECT_DIR$/include/MvrArgumentParser.h" />
+        <option value="$PROJECT_DIR$/include/MvrASyncTask.h" />
+        <option value="$PROJECT_DIR$/include/MvrBasePacket.h" />
+        <option value="$PROJECT_DIR$/include/MvrBatteryConnector.1.h" />
+        <option value="$PROJECT_DIR$/include/MvrBatteryConnector.h" />
+        <option value="$PROJECT_DIR$/include/MvrBatteryMTX.h" />
+        <option value="$PROJECT_DIR$/include/MvrCameraCollection.h" />
+        <option value="$PROJECT_DIR$/include/MvrConfigArg.h" />
+        <option value="$PROJECT_DIR$/include/MvrConfigGroup.h" />
+        <option value="$PROJECT_DIR$/include/MvrDeviceConnection.h" />
+        <option value="$PROJECT_DIR$/include/MvrForbiddenRangeDevice.h" />
+        <option value="$PROJECT_DIR$/include/MvrCommands.h" />
+        <option value="$PROJECT_DIR$/include/MvrCondition.h" />
       </list>
     </option>
   </component>
@@ -169,10 +248,10 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="1345" />
+    <option name="x" value="65" />
     <option name="y" value="-4" />
-    <option name="width" value="1855" />
-    <option name="height" value="1084" />
+    <option name="width" value="1215" />
+    <option name="height" value="1028" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -223,6 +302,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -448,14 +528,27 @@
       <workItem from="1495087091782" duration="7000" />
       <workItem from="1495606953307" duration="935000" />
       <workItem from="1495607936112" duration="20000" />
+      <workItem from="1495724434463" duration="1298000" />
+      <workItem from="1495756359467" duration="12000" />
+      <workItem from="1495756525467" duration="3116000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5461000" />
+    <option name="totallyTimeSpent" value="9887000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1345" y="-4" width="1855" height="1084" extended-state="6" />
+    <frame x="65" y="-4" width="1215" height="1028" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -463,8 +556,8 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1734072" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection Results" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41789475" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27811158" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30872482" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -489,533 +582,410 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/include/MvrSensorReading.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="27" column="46" lean-forward="true" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrPriorityResolver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrConfig.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrCommands.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2286">
-          <caret line="127" column="0" lean-forward="false" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrActionDesired.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14220">
-          <caret line="790" column="27" lean-forward="false" selection-start-line="790" selection-start-column="27" selection-end-line="790" selection-end-column="27" />
-          <folding>
-            <element signature="e#498#524#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrRobot.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1116">
-          <caret line="62" column="6" lean-forward="false" selection-start-line="62" selection-start-column="6" selection-end-line="62" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrAction.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="648">
-          <caret line="36" column="52" lean-forward="true" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
-          <folding>
-            <element signature="e#460#486#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build/CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="30" lean-forward="false" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Mvria.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaOSDef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrBasePacket.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3366">
-          <caret line="187" column="6" lean-forward="false" selection-start-line="187" selection-start-column="6" selection-end-line="187" selection-end-column="6" />
-          <folding>
-            <element signature="e#450#467#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrFunctor.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2826">
-          <caret line="157" column="6" lean-forward="false" selection-start-line="157" selection-start-column="6" selection-end-line="157" selection-end-column="6" />
-          <folding>
-            <element signature="e#4185#4225#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaUtil.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23364">
-          <caret line="1298" column="12" lean-forward="false" selection-start-line="1298" selection-start-column="12" selection-end-line="1298" selection-end-column="12" />
-          <folding>
-            <element signature="e#524#539#0" expanded="true" />
-            <element signature="e#729#773#0" expanded="true" />
-            <element signature="e#911#928#0" expanded="true" />
-            <element signature="e#1196#1218#0" expanded="true" />
-            <element signature="e#2163#2181#0" expanded="true" />
-            <element signature="e#2661#2670#0" expanded="true" />
-            <element signature="e#3099#3108#0" expanded="true" />
-            <element signature="e#19122#19226#0" expanded="true" />
-            <element signature="e#24466#24481#0" expanded="true" />
-            <element signature="e#26013#26030#0" expanded="true" />
-            <element signature="e#26130#26147#0" expanded="true" />
-            <element signature="e#26248#26266#0" expanded="true" />
-            <element signature="e#26370#26388#0" expanded="true" />
-            <element signature="e#42428#42440#0" expanded="true" />
-            <element signature="e#66853#66875#0" expanded="true" />
-            <element signature="e#71090#71100#0" expanded="true" />
-            <element signature="e#73690#73710#0" expanded="true" />
-            <element signature="e#75346#75376#0" expanded="true" />
-            <element signature="e#77031#77071#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaTypedefs.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="43" lean-forward="false" selection-start-line="0" selection-start-column="43" selection-end-line="0" selection-end-column="43" />
-          <folding>
-            <element signature="e#454#471#0" expanded="true" />
-            <element signature="e#535#812#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build/CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="30" lean-forward="false" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Mvria.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaOSDef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrBasePacket.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3366">
-          <caret line="187" column="6" lean-forward="false" selection-start-line="187" selection-start-column="6" selection-end-line="187" selection-end-column="6" />
-          <folding>
-            <element signature="e#450#467#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrFunctor.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2826">
-          <caret line="157" column="6" lean-forward="false" selection-start-line="157" selection-start-column="6" selection-end-line="157" selection-end-column="6" />
-          <folding>
-            <element signature="e#4185#4225#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaUtil.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23364">
-          <caret line="1298" column="12" lean-forward="false" selection-start-line="1298" selection-start-column="12" selection-end-line="1298" selection-end-column="12" />
-          <folding>
-            <element signature="e#524#539#0" expanded="true" />
-            <element signature="e#729#773#0" expanded="true" />
-            <element signature="e#911#928#0" expanded="true" />
-            <element signature="e#1196#1218#0" expanded="true" />
-            <element signature="e#2163#2181#0" expanded="true" />
-            <element signature="e#2661#2670#0" expanded="true" />
-            <element signature="e#3099#3108#0" expanded="true" />
-            <element signature="e#19122#19226#0" expanded="true" />
-            <element signature="e#24466#24481#0" expanded="true" />
-            <element signature="e#26013#26030#0" expanded="true" />
-            <element signature="e#26130#26147#0" expanded="true" />
-            <element signature="e#26248#26266#0" expanded="true" />
-            <element signature="e#26370#26388#0" expanded="true" />
-            <element signature="e#42428#42440#0" expanded="true" />
-            <element signature="e#66853#66875#0" expanded="true" />
-            <element signature="e#71090#71100#0" expanded="true" />
-            <element signature="e#73690#73710#0" expanded="true" />
-            <element signature="e#75346#75376#0" expanded="true" />
-            <element signature="e#77031#77071#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaTypedefs.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="43" lean-forward="false" selection-start-line="0" selection-start-column="43" selection-end-line="0" selection-end-column="43" />
-          <folding>
-            <element signature="e#454#471#0" expanded="true" />
-            <element signature="e#535#812#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build/CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="30" lean-forward="false" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Mvria.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaOSDef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrBasePacket.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2178">
-          <caret line="121" column="0" lean-forward="true" selection-start-line="121" selection-start-column="0" selection-end-line="121" selection-end-column="0" />
-          <folding>
-            <element signature="e#450#467#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrFunctor.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2826">
-          <caret line="157" column="6" lean-forward="false" selection-start-line="157" selection-start-column="6" selection-end-line="157" selection-end-column="6" />
-          <folding>
-            <element signature="e#4185#4225#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaUtil.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23364">
-          <caret line="1298" column="12" lean-forward="false" selection-start-line="1298" selection-start-column="12" selection-end-line="1298" selection-end-column="12" />
-          <folding>
-            <element signature="e#524#539#0" expanded="true" />
-            <element signature="e#729#773#0" expanded="true" />
-            <element signature="e#911#928#0" expanded="true" />
-            <element signature="e#1196#1218#0" expanded="true" />
-            <element signature="e#2163#2181#0" expanded="true" />
-            <element signature="e#2661#2670#0" expanded="true" />
-            <element signature="e#3099#3108#0" expanded="true" />
-            <element signature="e#19122#19226#0" expanded="true" />
-            <element signature="e#24466#24481#0" expanded="true" />
-            <element signature="e#26013#26030#0" expanded="true" />
-            <element signature="e#26130#26147#0" expanded="true" />
-            <element signature="e#26248#26266#0" expanded="true" />
-            <element signature="e#26370#26388#0" expanded="true" />
-            <element signature="e#42428#42440#0" expanded="true" />
-            <element signature="e#66853#66875#0" expanded="true" />
-            <element signature="e#71090#71100#0" expanded="true" />
-            <element signature="e#73690#73710#0" expanded="true" />
-            <element signature="e#75346#75376#0" expanded="true" />
-            <element signature="e#77031#77071#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build/CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="30" lean-forward="false" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Mvria.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaOSDef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaTypedefs.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding>
-            <element signature="e#454#471#0" expanded="true" />
-            <element signature="e#535#812#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaUtil.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="38" column="11" lean-forward="false" selection-start-line="38" selection-start-column="11" selection-end-line="38" selection-end-column="11" />
-          <folding>
-            <element signature="e#524#539#0" expanded="true" />
-            <element signature="e#729#773#0" expanded="true" />
-            <element signature="e#911#928#0" expanded="true" />
-            <element signature="e#1196#1218#0" expanded="true" />
-            <element signature="e#2163#2181#0" expanded="true" />
-            <element signature="e#2661#2670#0" expanded="true" />
-            <element signature="e#3099#3108#0" expanded="true" />
-            <element signature="e#19122#19226#0" expanded="true" />
-            <element signature="e#24466#24481#0" expanded="true" />
-            <element signature="e#26013#26030#0" expanded="true" />
-            <element signature="e#26130#26147#0" expanded="true" />
-            <element signature="e#26248#26266#0" expanded="true" />
-            <element signature="e#26370#26388#0" expanded="true" />
-            <element signature="e#42428#42440#0" expanded="true" />
-            <element signature="e#66853#66875#0" expanded="true" />
-            <element signature="e#71090#71100#0" expanded="true" />
-            <element signature="e#73690#73710#0" expanded="true" />
-            <element signature="e#75346#75376#0" expanded="true" />
-            <element signature="e#77031#77071#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrMutex.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1512">
-          <caret line="84" column="59" lean-forward="true" selection-start-line="84" selection-start-column="59" selection-end-line="84" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build/CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="30" lean-forward="false" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrDeviceConnectio.h" />
-    <entry file="file://$PROJECT_DIR$/include/MvrMutex.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="84" column="59" lean-forward="false" selection-start-line="84" selection-start-column="59" selection-end-line="84" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrFunctor.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2934">
-          <caret line="163" column="6" lean-forward="false" selection-start-line="163" selection-start-column="6" selection-end-line="163" selection-end-column="6" />
-          <folding>
-            <element signature="e#4185#4225#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrSerialConnection.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1707">
-          <caret line="105" column="15" lean-forward="true" selection-start-line="105" selection-start-column="15" selection-end-line="105" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaOSDef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="18" lean-forward="false" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaUtil.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23364">
-          <caret line="1312" column="12" lean-forward="false" selection-start-line="1312" selection-start-column="12" selection-end-line="1312" selection-end-column="12" />
-          <folding>
-            <element signature="e#524#539#0" expanded="true" />
-            <element signature="e#729#773#0" expanded="true" />
-            <element signature="e#911#928#0" expanded="true" />
-            <element signature="e#1196#1218#0" expanded="true" />
-            <element signature="e#2163#2181#0" expanded="true" />
-            <element signature="e#2661#2670#0" expanded="true" />
-            <element signature="e#3099#3108#0" expanded="true" />
-            <element signature="e#19122#19226#0" expanded="true" />
-            <element signature="e#24466#24481#0" expanded="true" />
-            <element signature="e#26013#26030#0" expanded="true" />
-            <element signature="e#26130#26147#0" expanded="true" />
-            <element signature="e#26248#26266#0" expanded="true" />
-            <element signature="e#26370#26388#0" expanded="true" />
-            <element signature="e#42428#42440#0" expanded="true" />
-            <element signature="e#66853#66875#0" expanded="true" />
-            <element signature="e#71090#71100#0" expanded="true" />
-            <element signature="e#73690#73710#0" expanded="true" />
-            <element signature="e#75346#75376#0" expanded="true" />
-            <element signature="e#77031#77071#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrBasePacket.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3402">
-          <caret line="189" column="6" lean-forward="false" selection-start-line="189" selection-start-column="6" selection-end-line="189" selection-end-column="6" />
-          <folding>
-            <element signature="e#450#467#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/mvriaTypedefs.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="43" lean-forward="false" selection-start-line="0" selection-start-column="43" selection-end-line="0" selection-end-column="43" />
-          <folding>
-            <element signature="e#454#471#0" expanded="true" />
-            <element signature="e#535#812#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Mvria.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="39" column="10" lean-forward="false" selection-start-line="39" selection-start-column="10" selection-end-line="39" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrRobot.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1116">
-          <caret line="62" column="6" lean-forward="false" selection-start-line="62" selection-start-column="6" selection-end-line="62" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrSensorReading.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="27" column="46" lean-forward="false" selection-start-line="27" selection-start-column="46" selection-end-line="27" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrResolver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding>
-            <element signature="e#691#717#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/MvrPriorityResolver.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionIRs.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="9" column="8" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrMapInterface.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrP2Arm.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="102" column="24" lean-forward="false" selection-start-line="102" selection-start-column="24" selection-end-line="102" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrSick.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="96" column="10" lean-forward="false" selection-start-line="96" selection-start-column="10" selection-end-line="96" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrTCM2.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="206" column="36" lean-forward="false" selection-start-line="206" selection-start-column="36" selection-end-line="206" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrGPSCoords.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="53" column="22" lean-forward="false" selection-start-line="53" selection-start-column="22" selection-end-line="53" selection-end-column="22" />
+          <folding>
+            <element signature="e#1873#2040#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionAvoidSide.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="48" lean-forward="false" selection-start-line="3" selection-start-column="48" selection-end-line="3" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrConfig.h">
+    <entry file="file://$PROJECT_DIR$/include/MvrActionColorFollow.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+        <state relative-caret-position="127">
+          <caret line="46" column="21" lean-forward="false" selection-start-line="46" selection-start-column="21" selection-end-line="46" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/MvrCommands.h">
+    <entry file="file://$PROJECT_DIR$/include/MvrActionDeceleratingLimiter.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2286">
-          <caret line="127" column="0" lean-forward="false" selection-start-line="127" selection-start-column="0" selection-end-line="127" selection-end-column="0" />
+        <state relative-caret-position="127">
+          <caret line="24" column="67" lean-forward="false" selection-start-line="24" selection-start-column="67" selection-end-line="24" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionInput.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="38" column="33" lean-forward="false" selection-start-line="38" selection-start-column="33" selection-end-line="38" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionKeyDrive.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="19" column="15" lean-forward="false" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionLimiterBackwards.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="25" column="37" lean-forward="false" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionLimiterTableSensor.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="24" column="49" lean-forward="false" selection-start-line="24" selection-start-column="49" selection-end-line="24" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/MvrActionDesired.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14220">
-          <caret line="790" column="27" lean-forward="false" selection-start-line="790" selection-start-column="27" selection-end-line="790" selection-end-column="27" />
-          <folding>
-            <element signature="e#498#524#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="331">
+          <caret line="825" column="11" lean-forward="false" selection-start-line="825" selection-start-column="11" selection-end-line="825" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionGoto.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="45" column="31" lean-forward="false" selection-start-line="45" selection-start-column="31" selection-end-line="45" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionGotoStraight.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="33" column="50" lean-forward="false" selection-start-line="33" selection-start-column="50" selection-end-line="33" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionGroup.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="31" column="41" lean-forward="true" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionGroups.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="63" column="31" lean-forward="false" selection-start-line="63" selection-start-column="31" selection-end-line="63" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionJoydrive.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="66" column="11" lean-forward="false" selection-start-line="66" selection-start-column="11" selection-end-line="66" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionLimterRot.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="18" column="49" lean-forward="false" selection-start-line="18" selection-start-column="49" selection-end-line="18" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionMovementParameters.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="76" lean-forward="false" selection-start-line="3" selection-start-column="76" selection-end-line="3" selection-end-column="76" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionRatioInput.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="86" lean-forward="false" selection-start-line="3" selection-start-column="86" selection-end-line="3" selection-end-column="86" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionRobotJoydrive.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="34" column="35" lean-forward="false" selection-start-line="34" selection-start-column="28" selection-end-line="34" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrActionTriangleDriveTo.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="172" column="47" lean-forward="false" selection-start-line="172" selection-start-column="47" selection-end-line="172" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrACTS.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="118" column="11" lean-forward="false" selection-start-line="118" selection-start-column="11" selection-end-line="118" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrAMPTU.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="56" column="29" lean-forward="false" selection-start-line="56" selection-start-column="29" selection-end-line="56" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrAnalogGyro.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="70" column="72" lean-forward="false" selection-start-line="70" selection-start-column="72" selection-end-line="70" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrArg.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="140" column="11" lean-forward="false" selection-start-line="140" selection-start-column="11" selection-end-line="140" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrArgumentBuilder.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="44" column="29" lean-forward="false" selection-start-line="44" selection-start-column="29" selection-end-line="44" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrArgumentParser.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="116" column="50" lean-forward="false" selection-start-line="116" selection-start-column="50" selection-end-line="116" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrASyncTask.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="31" column="7" lean-forward="false" selection-start-line="31" selection-start-column="7" selection-end-line="31" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrBasePacket.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="134" column="49" lean-forward="false" selection-start-line="134" selection-start-column="49" selection-end-line="134" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrBatteryConnector.1.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="143" column="10" lean-forward="false" selection-start-line="143" selection-start-column="10" selection-end-line="143" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrBatteryConnector.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="126" column="23" lean-forward="false" selection-start-line="126" selection-start-column="23" selection-end-line="126" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrCameraCollection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="418" column="78" lean-forward="false" selection-start-line="418" selection-start-column="78" selection-end-line="418" selection-end-column="78" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrConfig.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="360" column="55" lean-forward="false" selection-start-line="360" selection-start-column="55" selection-end-line="360" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrConfigArg.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="786" column="70" lean-forward="false" selection-start-line="786" selection-start-column="70" selection-end-line="786" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrConfigGroup.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="31" column="18" lean-forward="false" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrDeviceConnection.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="118" column="37" lean-forward="false" selection-start-line="118" selection-start-column="37" selection-end-line="118" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrDPPTU.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="293" column="47" lean-forward="false" selection-start-line="293" selection-start-column="47" selection-end-line="293" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrFileParser.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="25" column="70" lean-forward="false" selection-start-line="25" selection-start-column="62" selection-end-line="25" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrForbiddenRangeDevice.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="31" column="40" lean-forward="false" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrFunctor.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="92">
+          <caret line="597" column="12" lean-forward="false" selection-start-line="597" selection-start-column="3" selection-end-line="597" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrBatteryMTX.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="288" column="18" lean-forward="false" selection-start-line="288" selection-start-column="18" selection-end-line="288" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrCameraCommands.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="41" column="43" lean-forward="false" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrCommands.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="95" column="11" lean-forward="false" selection-start-line="95" selection-start-column="11" selection-end-line="95" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrCondition.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="49" column="39" lean-forward="false" selection-start-line="49" selection-start-column="39" selection-end-line="49" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/MvrVCC4.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2068">
+          <caret line="330" column="12" lean-forward="false" selection-start-line="330" selection-start-column="12" selection-end-line="330" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/MvrAction.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="36" column="52" lean-forward="false" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
+        <state relative-caret-position="174">
+          <caret line="60" column="19" lean-forward="false" selection-start-line="60" selection-start-column="19" selection-end-line="60" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/Mvria.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-42">
+          <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
           <folding>
-            <element signature="e#460#486#0" expanded="true" />
+            <element signature="e#424#447#0" expanded="true" />
+            <element signature="e#2702#2752#0" expanded="true" />
+            <element signature="e#2770#2804#0" expanded="true" />
           </folding>
         </state>
       </provider>
