@@ -1,7 +1,38 @@
 <component name="ProjectDictionaryState">
   <dictionary name="robot">
     <words>
+      <w>accel</w>
+      <w>arnl</w>
+      <w>batterydata</w>
+      <w>convience</w>
+      <w>deadman</w>
+      <w>decel</w>
+      <w>decels</w>
+      <w>delt</w>
+      <w>deltaheading</w>
+      <w>dpptu</w>
+      <w>excusive</w>
+      <w>goto</w>
+      <w>joinable</w>
+      <w>joydrive</w>
+      <w>kalman</w>
+      <w>keydrive</w>
+      <w>limter</w>
+      <w>maxlen</w>
       <w>mvria</w>
+      <w>mvrmap</w>
+      <w>nmea</w>
+      <w>odometry</w>
+      <w>oldsim</w>
+      <w>omni</w>
+      <w>parsable</w>
+      <w>recv</w>
+      <w>retfunctor</w>
+      <w>rotvel</w>
+      <w>setoriginy</w>
+      <w>setsimoriginy</w>
+      <w>teleop</w>
+      <w>unparse</w>
     </words>
   </dictionary>
 </component>
