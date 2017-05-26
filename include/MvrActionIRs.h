@@ -27,7 +27,7 @@ class MvrActionIRs : public MvrAction
   MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
   MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
-                                                        { return &myDesired; }
+  { return &myDesired; }
 #endif
 protected:
   MvrActionDesired myDesired;

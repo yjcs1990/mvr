@@ -3,7 +3,7 @@
  > File Name    : MvrActionDesired.h
  > Description  : Class used by MvrActionDesired for each channel, internal
  > Author       : Yu Jie
- > Create Time  : 2017年05月22日
+ > Create Time  : 2017年04月24日
  > Modify Time  : 2017年05月22日
 ***************************************************************************************************/
 #ifndef MVRACTIONDESIRED_H

@@ -3,7 +3,7 @@
  > File Name    : MvrActionAvoidFront.h
  > Description  : This action does obstacle avoidance, controlling both trans and rot
  > Author       : Yu Jie
- > Create Time  : 2017年05月24日
+ > Create Time  : 2017年04月24日
  > Modify Time  : 2017年05月24日
 ***************************************************************************************************/
 #ifndef MVRACTIONAVOIDFRONT_H

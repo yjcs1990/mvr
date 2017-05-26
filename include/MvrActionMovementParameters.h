@@ -4,7 +4,7 @@
  > Description  : This is a class for setting max velocities and accels and decels via MvrConfig parameters 
                   (see addToConfig()) or manually (using setParameters())
  > Author       : Yu Jie
- > Create Time  : 2017年05月25日
+ > Create Time  : 2017年04月24日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
 #ifndef ARACTIONMOVEMENTPARAMTERS_H

@@ -3,7 +3,7 @@
  > File Name    : MvrGPSCoords.h
  > Description  : Base class for points in 3 dimensional cartesian space. 
  > Author       : Yu Jie
- > Create Time  : 2017年05月25日
+ > Create Time  : 2017年05月20日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
 #ifndef MVRGPSCOORDS_H
