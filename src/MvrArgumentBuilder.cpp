@@ -683,3 +683,96 @@ MVREXPORT double MvrArgumentBuilder::getArgDouble(size_t whichArg, bool *ok) con
   else 
     return 0;
 }
+
+MVREXPORT void MvrArgumentBuilder::compressQuoted(bool stripQuotationMarks)
+{
+  size_t argLen;
+  size_t i;
+  std::string myNewArg;
+
+  for (i=0; i<myArgc; i++)
+  {
+    argLen = strlen(myArgv[i]);
+    if (stripQuotationMarks && argLen >= 2 &&
+        myArgv[i][0] == '"' && myArgv[i][argLen-1] == '"')
+    {
+      myNewArg = &myArgv[i][1];
+      myNewArg[myNewArg.size() -1] = '\0';
+      delete [] myArgv[i];
+      // but replacing ourself with new arg
+      myArgv[i] = cppstrdup(myNewArg.c_str());
+      // myArgv[i] = strdup(myNewArg.c_str());
+      continue;
+    }
+    // if this arg begins with a quote bute doesn't end with one
+    if (argLen >= 2 && myArgv[i][0] == '"' && myArgv[i][argLen-1] != '"')
+    {
+      /// Start the new value for this arg, if stripping quotations
+      /// then start after the quote
+      if (stripQuotationMarks)
+        myNewArg = &myArgv[i][1];
+      else
+        myNewArg = myArgv[i];
+      bool isEndQuoteFound = false;
+
+      /// now while the end char of the next args isn't the end of our
+      /// start quote we toss things into this arg
+      while ((i+1 < myArgc) && !isEndQuoteFound)
+      {
+        int nextArgLen = strlen(myArgv[i+1]);
+
+        /// Check whether the next arg contains the ending quote
+        if ((nextArgLen > 0) && (myArgv[i+1][nextArgLen-1] == '"'))
+        {
+          isEndQuoteFound = true;
+        }
+
+        /// Concatenate the next arg to this one ...
+        myNewArg += " ";
+        myNewArg += myArgv[i+1];
+        
+        if (stripQuotationMarks && myNewArg.size()>0 && isEndQuoteFound)
+          myNewArg[myNewArg.size() -1] = '\0';
+        /// remove those next args
+        removeArg(i+1);
+        delete [] myArgv[i];
+
+        /// but replacing ourself with the new arg
+        myArgv[i] = cppstrdup(myNewArg.c_str());
+        // myArgv[i] = strdup(myNewArg.c_str());
+      }
+    }
+  }
+}
+
+MVREXPORT void MvrArgumentBuilder::setQuiet(bool isQuiet)
+{
+  myIsQuiet = isQuiet;
+}
+
+MVREXPORT void MvrArgumentBuilder::rebuildFullString()
+{
+  myFullString = "";
+  for (size_t k=0; k<myArgc; k++)
+  {
+    myFullString += myArgv[k];
+    /// Don't take an extra space on at the end
+    if (k<myArgc -1){
+      myFullString += " ";
+    }
+  }
+}
+
+MVREXPORT bool MvrArgumentBuilderCompareOp::operator()(MvrArgumentBuilder &arg1,
+                MvrArgumentBuilder &arg2) const
+{
+  if (arg1 == NULL)
+    return true;
+  else if (arg2 == NULL){
+    return false;
+  }
+  std::string arg1String = arg1->getFullString();
+  std::string arg2String = arg2->getFullString();
+
+  return (arg1String.compare(arg2String) < 0);
+}
