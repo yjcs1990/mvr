@@ -4,7 +4,7 @@
  > Description  : Base class for device connections
  > Author       : Yu Jie
  > Create Time  : 2017年04月10日
- > Modify Time  : 2017年05月17日
+ > Modify Time  : 2017年05月27日
 ***************************************************************************************************/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
