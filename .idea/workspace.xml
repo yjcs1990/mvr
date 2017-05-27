@@ -12,11 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="14e537d0-88b1-4c26-ba77-bcaef6727e49" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrArgumentBuilder.h" afterPath="$PROJECT_DIR$/include/MvrArgumentBuilder.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBasePacket.h" afterPath="$PROJECT_DIR$/include/MvrBasePacket.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrConfig.h" afterPath="$PROJECT_DIR$/include/MvrConfig.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLog.h" afterPath="$PROJECT_DIR$/include/MvrLog.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrArgumentBuilder.cpp" afterPath="$PROJECT_DIR$/src/MvrArgumentBuilder.cpp" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -501,7 +497,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="203" y="108" width="1215" height="1000" extended-state="1" />
+    <frame x="203" y="108" width="1215" height="1000" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1862661" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
