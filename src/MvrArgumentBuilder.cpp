@@ -4,7 +4,7 @@
  > Description  : Base class for device connections
  > Author       : Yu Jie
  > Create Time  : 2017年04月10日
- > Modif y Time  : 2017年05月17日
+ > Modify Time  : 2017年05月17日
 ***************************************************************************************************/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
@@ -16,7 +16,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-char *cppstrdup(const char *str)
+char * cppstrdup(const char *str)
 {
   char *ret;
   ret = new char[strlen(str) + 1];
@@ -33,9 +33,9 @@ char *cppstrdup(const char *str)
  * @param isPreCompresseQuotes a bool set to true if strings enclosed in 
  * double-quotes should be parsed as a single argument. This should roughly
  * equivalent to calling MvrArgumentBuilder::compressQuoted(false) on the resulting
- * builder. but is more efficient and hanles embeded space better. The defualt value 
+ * builder. but is more efficient and handles embeded space better. The default value
  * is false and preserves the original behavior where each argument is a 
- * space-sepaerated alphanumeric string.
+ * space-seperated alphanumeric string.
  */
  MVREXPORT MvrArgumentBuilder::MvrArgumentBuilder(size_t argvLen, char extraSpaceChar,
                                                   bool ignoreNormalSpaces, bool isPreCompresseQuotes)
@@ -126,7 +126,7 @@ MVREXPORT void MvrArgumentBuilder::removeArg(size_t which, bool isRebuildFullStr
   if (which>myArgc-1)
   {
     MvrLog::log(MvrLog::Terse, "MvrArgumentBuilder::removeArg: %d is greater than the number of arguments which is %d",
-                which, myArgc)
+                which, myArgc);
     return;
   }
 
@@ -179,7 +179,7 @@ bool MvrArgumentBuilder::isStartArg(const char *buf, int len, int index, int *en
       else {  //not precompressed quote
         if (endArgFlagsOut != NULL){
           /// This is set to ANY_SPACE to preserve the original behavior ... i.e. space
-          /// charactre "matches" with myExtraSpace
+          /// character "matches" with myExtraSpace
           *endArgFlagsOut = ANY_SPACE;
         }
       }  // end else not precompressed quote
@@ -196,8 +196,7 @@ bool MvrArgumentBuilder::isEndArg(const char *buf, int len, int &index, int endA
   if ((endArgFlags &QUOTE) != 0){
     if (buf[index] == '\"'){
       if ((index+1 >= len) || (buf[index+1] == '\0')){
-        /// Quoteis not EOF
-        index ++;
+        index++;
         return true;
       }
     } // end if quote found
@@ -217,7 +216,7 @@ bool MvrArgumentBuilder::isEndArg(const char *buf, int len, int &index, int endA
  * than 0 means to add at the end, if this number if greater than how
  * many position exist then it will also be added at the end
  */
-MVREXPORT void MvrArgumentBuilder::internalAdd(const char *str, int position)
+MVREXPORT void ArArgumentBuilder::internalAdd(const char *str, int position)
 {
   char buf[10000];
   int i = 0;
@@ -225,118 +224,127 @@ MVREXPORT void MvrArgumentBuilder::internalAdd(const char *str, int position)
   size_t k = 0;
   int len = 0;
   bool addAtEnd = true;
-  // size_t startingArgc = getArgc(); 
-
+  //size_t startingArgc = getArgc();
   bool isArgInProgress = false;
   int curArgStartIndex = -1;
 
   if (position < 0 || (size_t)position > myArgc)
     addAtEnd = true;
-  else 
-    AddAtEnd = false;
+  else
+    addAtEnd = false;
 
   strncpy(buf, str, sizeof(buf));
   len = strlen(buf);
 
-  /// can do whatever you want with the buf now
-  /// first we advance to non-space
-  for (i=0; i<len; ++i)
+  // can do whatever you want with the buf now
+  // first we advance to non-space
+  for (i = 0; i < len; ++i)
   {
-    if (!isSpace(buf[i]))
+    if (!isSpace(buf[i])) {
+       //(!myIgnoreNormalSpaces && !isspace(buf[i])) || 
+       // (myExtraSpace != '\0' && buf[i] != myExtraSpace))
       break;
-  }
-  if (i==len)
+    } // end if non-space found
+  } // end for each char in buffer
+
+  // see if we're done
+  if (i == len)
   {
-    if (!myIsQuiet){
-      MvrLog::log(MvrLog::Verbose, "All white space add for argument builder.");
+    if (!myIsQuiet) {
+      ArLog::log(ArLog::Verbose, "All white space add for argument builder.");
     }
     return;
   }
 
   int endArgFlags = ANY_SPACE;
 
-  /// Walk througth the line until we get the end of the buffer..
-  for (curArgStartIndex=i; ; ++i)
+  // walk through the line until we get to the end of the buffer...
+  // we keep track of if we're looking for white space or non-white...
+  // if we're looking for white space when we find it we have finished
+  // one argument, so we toss that into argv, reset pointers and moven
+  for (curArgStartIndex = i; ; ++i)
   {
-    /// Remove the slash of esaceped spaces. This is primarily done to hanle command
-    /// line argumetns (especially on linux)
-    if (!myIsPreCompressQuotes && (buf[i] == '\\') && (i+1 < len) && (buf[i+1] == ' ') &&
-        ((i==0) || (buf[i-1] != '\\')))
+    // Remove the slash of escaped spaces.  This is primarily done to handle command 
+    // line arguments (especially on Linux). If quotes are "pre-compressed", then
+    // the backslash is preserved.  Consecutive backslashes are also preserved 
+    // (i.e. "\\ " is not modified).
+    if (!myIsPreCompressQuotes && (buf[i] == '\\') && (i + 1 < len) && (buf[i + 1] == ' ') && ((i == 0) || (buf[i - 1] != '\\')))
     {
-      for (j=i; j<len && j!='\0'; j++)
+      for (j = i; j < len && j != '\0'; j++)
       {
-        buf[j] = buf[j+1];
+        buf[j] = buf[j + 1];
       }
       --len;
-    }
-    /// if we're not in the middle of an argument, then determine whether the
-    /// current buffer position marks the start of one.
-    else if ((!isArgInProgress) && (i<len) && (buf[i] !='\0') && (isStartArg(buf, len,i, &endArgFlags))) 
+    } // end if escaped space
+  
+    // If we're not in the middle of an argument, then determine whether the 
+    // current buffer position marks the start of one.
+    else if ((!isArgInProgress) &&  (i < len) && (buf[i] != '\0') &&  (isStartArg(buf, len, i, &endArgFlags))) 
     {
       curArgStartIndex = i;
       isArgInProgress = true;
     }
-    /// if we are in the middle of argument, then determine whether the current
-    /// buffer position marks the end of it.
-    else if (isArgInProgress && ((i==len) || (buf[i]=='\0') || (isEndArg(buf, len, i, endArgFlags))))
+    // If we are in the middle of an argument, then determine whether the current
+    // buffer position marks the end of it.  (Note that i may be incremented by
+    // isEndArg when quotes are pre-compressed.)
+    else if (isArgInProgress &&  ((i == len) || (buf[i] == '\0') || (isEndArg(buf, len, i, endArgFlags)))) 
     {
-      /// See if we have room in our argvLen
-      if (myArgc+1 >= myArgvLen)
+      // see if we have room in our argvLen
+      if (myArgc + 1 >= myArgvLen)
       {
-        MvrLog::log(MvrLog::Terse, "MvrArgumentBuilder::Add: could not add argument since argc 
-                    (%u) has grown beyond the argv given in the constructor (%u)", myArgc, myArgvLen);
+        ArLog::log(ArLog::Terse, "ArArgumentBuilder::Add: could not add argument since argc (%u) has grown beyond the argv given in the constructor (%u)", myArgc, myArgvLen);
       }
-      else // room in arg araray
+      else // room in arg array
       {
-        /// if we're adding at the end just put it there, also put it 
-        /// at the end if its too far out
+        // if we're adding at the end just put it there, also put it
+        // at the end if its too far out
         if (addAtEnd)
         {
-          myArgv[myArgc] = new char[i-curArgStartIndex + 1];
-          strncpy(myArgv[myArgc], &buf[curArgStartIndex], i-curArgStartIndex]);
-          myArgv[myArgc][i-curArgStartIndex]='\0';
-
-          /// add to our full string
-          /// if its not our fires aadd a space
-          if (!myFirstAdd && myExtraSpace=='\0')
+          myArgv[myArgc] = new char[i - curArgStartIndex + 1];
+          strncpy(myArgv[myArgc], &buf[curArgStartIndex], i - curArgStartIndex);
+          myArgv[myArgc][i - curArgStartIndex] = '\0';
+          // add to our full string
+          // if its not our first add a space (or whatever our space char is)
+          if (!myFirstAdd && myExtraSpace == '\0')
             myFullString += " ";
           else if (!myFirstAdd)
             myFullString += myExtraSpace;
-            
+
           myFullString += myArgv[myArgc];
           myFirstAdd = false;
 
           myArgc++;
           myOrigArgc = myArgc;
         }
-        /// otherwise stick it where we wanted it if we can or just insert arg
-        /// at specif ied position
-        else 
+        // otherwise stick it where we wanted it if we can or just 
+        else // insert arg at specified position
         {
-          /// first move things down
-          for (k=myArgc+1; k>(size_t)position; k--)
+          // first move things down
+          for (k = myArgc + 1; k > (size_t)position; k--)
           {
-            myArgv[k] = myArgv[k-1];
+            myArgv[k] = myArgv[k - 1];
           }
           myArgc++;
           myOrigArgc = myArgc;
 
           myArgv[position] = new char[i - curArgStartIndex + 1];
-          strncpy(myArgv[position], &buf[curArgStartIndex], i-curArgStartIndex);
-          myArgv[position][i-curArgStartIndex] = '\0';
+          strncpy(myArgv[position], &buf[curArgStartIndex], i - curArgStartIndex);
+          myArgv[position][i - curArgStartIndex] = '\0';
           position++;
 
           rebuildFullString();
           myFirstAdd = false;
         }
-      }
+      } 
       isArgInProgress = false;
       endArgFlags = ANY_SPACE;
     }
-    if (i==len || buf[i] == '\0')
+    // if we're at the end or its a null, we're at the end of the buf
+    if (i == len || buf[i] == '\0')
       break;
-  }
-}
+  } 
+
+} // end method internalAdd
 
 /*
  * @param str the string to add
