@@ -210,3 +210,212 @@ bool MvrArgumentBuilder::isEndArg(const char *buf, int len, int &index, int endA
   return false;
 }  // end method isEndArg
 
+/// Interal function that adds a string starting at some given space
+/*
+ * @param str the string to add
+ * @param position the position to add the string at, a position less
+ * than 0 means to add at the end, if this number if greater than how
+ * many position exist then it will also be added at the end
+ */
+MVREXPORT void MvrArgumentBuilder::internalAdd(const char *str, int position)
+{
+  char buf[10000];
+  int i = 0;
+  int j = 0;
+  size_t k = 0;
+  int len = 0;
+  bool addAtEnd = true;
+  // size_t startingArgc = getArgc(); 
+
+  bool isArgInProgress = false;
+  int curArgStartIndex = -1;
+
+  if (position < 0 || (size_t)position > myArgc)
+    addAtEnd = true;
+  else
+    AddAtEnd = false;
+
+  strncpy(buf, str, sizeof(buf));
+  len = strlen(buf);
+
+  /// can do whatever you want with the buf now
+  /// first we advance to non-space
+  for(i=0; i<len; ++i)
+  {
+    if(!isSpace(buf[i]))
+      break;
+  }
+  if(i==len)
+  {
+    if(!myIsQuiet){
+      MvrLog::log(MvrLog::Verbose, "All white space add for argument builder.");
+    }
+    return;
+  }
+
+  int endArgFlags = ANY_SPACE;
+
+  /// Walk througth the line until we get the end of the buffer..
+  for(curArgStartIndex=i; ; ++i)
+  {
+    /// Remove the slash of esaceped spaces. This is primarily done to hanle command
+    /// line argumetns (especially on linux)
+    if(!myIsPreCompressQuotes && (buf[i] == '\\') && (i+1 < len) && (buf[i+1] == ' ') &&
+        ((i==0) || (buf[i-1] != '\\')))
+    {
+      for(j=i; j<len && j!='\0'; j++)
+      {
+        buf[j] = buf[j+1];
+      }
+      --len;
+    }
+    /// If we're not in the middle of an argument, then determine whether the
+    /// current buffer position marks the start of one.
+    else if((!isArgInProgress) && (i<len) && (buf[i] !='\0') && (isStartArg(buf, len,i, &endArgFlags))) 
+    {
+      curArgStartIndex = i;
+      isArgInProgress = true;
+    }
+    /// If we are in the middle of argument, then determine whether the current
+    /// buffer position marks the end of it.
+    else if(isArgInProgress && ((i==len) || (buf[i]=='\0') || (isEndArg(buf, len, i, endArgFlags))))
+    {
+      /// See if we have room in our argvLen
+      if(myArgc+1 >= myArgvLen)
+      {
+        MvrLog::log(MvrLog::Terse, "MvrArgumentBuilder::Add: could not add argument since argc 
+                    (%u) has grown beyond the argv given in the constructor (%u)", myArgc, myArgvLen);
+      }
+      else // room in arg araray
+      {
+        /// If we're adding at the end just put it there, also put it 
+        /// at the end if its too far out
+        if(addAtEnd)
+        {
+          myArgv[myArgc] = new char[i-curArgStartIndex + 1];
+          strncpy(myArgv[myArgc], &buf[curArgStartIndex], i-curArgStartIndex]);
+          myArgv[myArgc][i-curArgStartIndex]='\0';
+
+          /// add to our full string
+          /// if its not our fires aadd a space
+          if(!myFirstAdd && myExtraSpace=='\0')
+            myFullString += " ";
+          else if(!myFirstAdd)
+            myFullString += myExtraSpace;
+            
+          myFullString += myArgv[myArgc];
+          myFirstAdd = false;
+
+          myArgc++;
+          myOrigArgc = myArgc;
+        }
+        /// otherwise stick it where we wanted it if we can or just insert arg
+        /// at specified position
+        else
+        {
+          /// first move things down
+          for(k=myArgc+1; k>(size_t)position; k--)
+          {
+            myArgv[k] = myArgv[k-1];
+          }
+          myArgc++;
+          myOrigArgc = myArgc;
+
+          myArgv[position] = new char[i - curArgStartIndex + 1];
+          strncpy(myArgv[position], &buf[curArgStartIndex], i-curArgStartIndex);
+          myArgv[position][i-curArgStartIndex] = '\0';
+          position++;
+
+          rebuildFullString();
+          myFirstAdd = false;
+        }
+      }
+      isArgInProgress = false;
+      endArgFlags = ANY_SPACE;
+    }
+    if(i==len || buf[i] == '\0')
+      break;
+  }
+}
+
+/*
+ * @param str the string to add
+ * @param position the position to add ths string at, a position less
+ * than 0 means to add at the end, if this number is greater than how
+ * many positions exist then it will also be added at the end
+ */
+ MVREXPORT void MvrArgumentBuilder::addPlain(const char *str, int position)
+ {
+   internalAdd(str, position);
+ }
+
+ /*
+  * @param argc how many arguments to add
+  * @param argv the strings to add
+  * @param position the position to add the string at, a position less
+  * than 0 means to add at the end, if this number is greater than how
+  * many positions exist then it will also be added at the end
+  */
+MVREXPORT void MvrArgumentBuilder::addStrings(int argc, char **argv, int position)
+{
+  int i;
+  if(position < 0)
+  {
+    /// Don't try to use incremental positions, since the sequence would be out
+    /// of order, just keep using the same special "at-end" meaning of negative position
+    /// value
+    for(i=0; i<argc; i++)
+      internalAdd(argv[i], position);
+  }
+  else
+  {
+    for(i=0; i<argc; i++)
+      internalAdd(argv[i], position+i);
+  }
+}
+
+ /*
+  * @param argc how many arguments to add
+  * @param argv the strings to add
+  * @param position the position to add the string at, a position less
+  * than 0 means to add at the end, if this number is greater than how
+  * many positions exist then it will also be added at the end
+  */
+MVREXPORT void MvrArgumentBuilder::addStringsAsIs(int argc, char **argv, int position)
+{
+  int i;
+  if(position<0)
+  {
+    /// Don't try to use incremental positions, since the sequence would be out
+    /// of order, just keep using the same special "at-end" meaning of negtive position
+    /// value
+    for(i=0; i<argc; i++)
+      internalAddAsIs(argv[i], position);
+   }
+  else
+  {
+    for(i=0; i<argc; i++)
+      internalAddAsIs(argv[i], position+i);
+  }
+  /// TODO
+}
+
+/*
+ * @param str the string to add
+ * @param position the position to add the string at, a position less
+ * than 0 means to add at the end, if the number is greater than how
+ * many positions exist then it will also be added at the end
+ */
+MVREXPORT void MvrArgumentBuilder::addPlainAsIs(const char *str, int position)
+{
+  internalAddAsIs(str, position);
+}
+MVREXPORT void MvrArgumentBuilder::internalAddAsIs(const char *str, int position)
+{
+  size_t k = 0;
+  bool addAtEnd;
+  if(position<0 || (size_t)position > myArgc)
+    addAtEnd = true;
+  else
+    addAtEnd = false;
+}
