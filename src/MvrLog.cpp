@@ -417,11 +417,207 @@ MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
     ourFP = stdout;
   else if (type == StdErr)
     ourFP = stderr;
-  else if (tyle == File)
+  else if (type == File)
   {
     if (fileName != NULL)
     {
       if (strcmp(ourFileName.c_str(), fileName) == 0)
+      {
+        MvrLog::logNoLock(MvrLog::Terse, "MvrLog::init: Continuing to log to the same file");
+      }
+      else
+      {
+        close();
+        if ((ourFP = MvrUtil::fopen(fileNamem "w")) == NULL)
+        {
+          MvrLog::logNoLock(MvrLog::Terse, "MvrLog::init: Could not open file %s for logging", fileName);
+          ourMutex.unlock();
+          return false;
+        }
+        ourFileName = fileName;
+      }
     }
   }
-}                
+  else if (type == Colbert)
+  {
+    colbertPrint = NULL;
+    ourColbertStream = -1;    // use default stream
+    if (fileName)
+    { // need to translate fileName to integer index 
+    }
+  }
+  else if (type == None)
+  {
+
+  }
+  ourtype = type;
+  ourLevel = level;
+  
+  // environment variable override level
+  {
+    char *lev = getenv("MVRLOG_LEVEL");
+    if (lev)
+    {
+      switch(toupper(lev[0]))
+      {
+        case 'N':
+          ourLevel = Normal;
+          break;
+        case 'T':
+          ourLevel = Terse;
+          break;
+        case 'V':
+          ourLevel = Verbose;
+          break;
+      }
+    }
+  }
+
+  ourLoggingTime = logTime;
+  ourAlsoPrint = alsoPrint;
+
+  if (printThisCall)
+  {
+    printf("MvrLog::init: ");
+
+    if (ourType == StdOut)
+      printf(" StdOut\t");
+    else if (ourType == StrErr)
+      printf(" StdErr\t");
+    else if (ourType == File)
+      printf(" File(%s)\t", ourFileName.c_str());
+    else if (ourType == Colbert)
+      printf(" Colbert\t");
+    else if (ourType == None)
+      printf(" None\t)");
+    else
+      printf("BadType\t");
+
+    if (ourLoggingTime)
+      printf(" Logging Time\t");
+    else
+      printf(" No logging time\t");
+    
+    if (ourAlsoPrint)
+      printf(" Also printing\n");
+    else
+      printf(" Not also printing");
+  }
+  ourMutex.unlock();
+  return true;
+}             
+
+MVREXPORT void MvrLog::close()
+{
+  if (ourFP && (ourType == File))
+  {
+    fclose(ourFP);
+    ourFP = 0;
+    ourFileName = "";
+  }
+}   
+
+MVREXPORT void MvrLog::logNoLock(LogLevel level, const char *str, ...)
+{
+  if (level > ourLevel)
+    return;
+  char buf[2048];
+  char *bufPtr;
+  char *timeStr;
+  int timeLen = 20;
+
+  time_t now;
+
+  // put our time in we want it
+  if (ourLoggingTime)
+  {
+    now = time(NULL);
+    timeStr = ctime(&now);
+    // get take just the portion of the time we want
+    strncpy(buf, timeStr, timeLen);
+    buf[timeLen] = '\0';
+    bufPtr = &buf[timeLen];
+  }
+  else
+    bufPtr = buf;
+  va_list ptr;
+  va_start(ptr, str);
+  // vsnprintf(bufPtr, sizeof(buf)-timeLen-1, str, ptr);
+  vsprintf(bufPtr, str, ptr);
+  // can do whatever you want with the buf now
+  if (ourType == Colbert)
+  {
+    if (colbertPrint)
+      (*colbertPrint)(ourColbertStream, buf);
+  }
+  else if (ourFP)
+  {
+    int written;
+    if ((written = fprintf(ourFP, "%s\n", buf)) > 0)
+      ourCharsLogged += written;
+    fflush(ourFP);
+    checkFileSize();
+  }
+  else if (ourType != None)
+    printf("%s\n", buf);
+  if (ourAlsoPrint)
+    printf("%s\n", buf);
+  
+  invokeFunctor(buf);
+
+  va_end(ptr);
+}
+
+MVREXPORT void MvrLog::logBacktrace(logLevel level)
+{
+#ifndef WIN32
+  int size = 100;
+  int numEntries;
+  void *buffer[size];
+  char **names;
+
+  numEntries = backtrace(buffer, size);
+  MvrLog::log(MvrLog::Normal, "Backtrace %d level", numEntries);
+
+  names = backtrace_symbols(buffer, numEntries);
+  if (names == NULL)
+    return;
+  int i;
+  for (i=0; i<numEntries; i++)
+    MvrLog::log(MvrLog::Normal, "%s", name[i]);
+  free(names);
+#endif  // WIN32
+}
+
+/// Log a file if it exists
+MVREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
+{
+  FILE *strFile;
+  unsigned int i;
+  char str[100000];
+
+  str[0] = '\0';
+
+  if ((strFile = MvrUtil::fopen(fileName, "r")) != NULL)
+  {
+    while(fgets(str, sizeof(str), strFile) != NULL)
+    {
+      bool endedLine = false;
+      for (i=0; i<sizeof(str) && !endedLine; i++)
+      {
+        if (str[i] == '\r' || str[i] == '\n' || str[i] == '\0')
+        {
+          str[i] = '\0';
+          MvrLog::log(level, str);
+          endedLine = true;
+        }
+      }
+    }
+    fclose(strFile);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
