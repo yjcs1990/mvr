@@ -630,5 +630,118 @@ MVREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
 
   str[0] = '\0';
 
-  
+  if ((strFile = MvrUtil::fopen(fileName, "r")) != NULL)
+  {
+    while (fgets(str, sizeof(str), strFile) != NULL)
+    {
+      bool endedLine = false;
+      for (i=0; i<sizeof(str) && !endedLine; i++)
+      {
+        if(str[i]=='\r' || str[i] == '\n' || str[i] == '\0')
+        {
+          str[i] = '\0';
+          MvrLog::log(level, str);
+          endedLine = true;
+        }
+      }
+    }
+    fclose(strFile);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
+
+MVREXPORT void MvrLog::addToConfig(MvrConfig *config)
+{
+  std::string section = "LogConfig";
+  config->addParam(MvrConfigArg("LogType", (int *)&ourConfigLogType, 
+                   "The type of log we'll be using, 0 for StdOut, 1 for StdErr, 2 for File((and give it a file name), 3 for colbert (don't use that), and 4 for None",
+                   MvrLog::StdOut, MvrLog::None),
+                   section.c_str(), MvrPriority::TRIVIAL);
+  config->addParam(MvrConfigArg("LogLevel", (int *)&ourConfigLogLevel, 
+                   "The type of logging to do, 0 for Terse, 1 for Normal, 2 for Verbose",
+                   MvrLog::Terse, MvrLog::Verbose),
+                   section.c_str(), MvrPriority::TRIVIAL);)
+  config->addParam(MvrConfigArg("LogFileName", ourConfigFileName, 
+                   "File to log to", sizeof(ourConfigFileName)),
+                   section.c_str(), MvrPriority::TRIVIAL); 
+  config->addParam(MvrConfigArg("LogTime", &ourConfigLogTime, 
+                   "True to prefix log messages with time and data, false not to"),
+                   section.c_str(), MvrPriority::TRIVIAL);       
+  config->addParam(MvrConfigArg("LogAlsoPrint", &ourConfigAlsoPrint, 
+                   "True to also printf the message, false not to"),
+                   section.c_str(), MvrPriority::TRIVIAL);          
+  ourConfigProcessFileCB.setName("MvrLog");
+  config->addProcessFileCB(&ourConfigProcessFileCB, 200);
+}
+
+MVREXPORT bool MvrLog::processFile(void)
+{
+  if (ourConfigLogType != ourType || ourConfigLogLevel != ourLevel ||
+      strcmp(ourConfigFileName, ourFileName.c_str() != 0 ||
+      ourConfigLogTime != ourLoggingTime || ourConfigAlsoPrint != ourAlsoPrint)
+  {
+    MvrLog::logNoLock(MvrLog::Normal, "Initializing log from config");
+    return MvrLog::init(ourConfigLogType, ourConfigLogLevel, ourConfigFileName, 
+                        ourConfigLogTime, ourConfigAlsoPrint, true);
+  }
+  return true;
+}
+
+#ifdef MVRINTERFACE
+  MVREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLevel, double defaultSize, bool daemonized)
+  {
+    if (prefix == NULL || prefix[0] == '\0')
+      ourAramPrefix += "";
+    else
+    {
+      ourAramPrefix = prefix;
+      if (prefix[strlen(prefix)-1] != '/')
+        ourAramPrefix += "/";
+    }
+    std::string section = "Log Config";
+    Mvria::getConfig()->addParam(
+      MvrConfigArg("Level", ourAramConfigLogLevel,
+      "The level of logging type of log we'll be using", sizeof(ourAramConfigLogLevel)),
+      section.c_str(), MvrPriority::TRIVIAL,
+      "Choices:Terse;;Normal;;Verbose");
+    Mvria::getConfig()->addParam(
+      MvrConfigArg("LogFileSize", &ourAramConfigLogSize,
+      "The maximum size of the log files (6 files are rotated through), 0 means no maximum", 0, 20000),
+      section.c_str(), MvrPriority::TRIVIAL);
+    
+    ourUseAramBehavior = true;
+    ourAramConfigProcessFileCB.setName("MvrLogAram");
+    Mvria::getConfig->addProcessFileCB(&ourAramConfigProcessFileCB, 210);
+
+    if (defaultLevel == MvrLog::Terse)
+      sprintf(ourAramConfigLogLevel, "Terse");
+    else if (defaultLevle == MvrLog::Normal)
+      sprintf(ourAramConfigLogLevel, "Normal");
+    if (defaultLevel == MvrLog::Verbose)
+      sprintf(ourAramConfigLogLevel, "Verbose");
+
+    ourAramDaemonized = daemonized;
+
+    char buf[2048];
+    snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
+    MvrLog::init(MvrLog::File, defaultLevel, buf, true, !daemonized, true);
+
+    if (ourAramDaemonized)
+    {
+      if (dup2(fileno(ourFP), fileno(stderr)) < 0)
+        MvrLog::logErrorFromOSNoLock(MvrLog::Normal, "MvrLog: Error redirecting stderr to log file");
+
+      fprintf(stderr, "Stderr...\n");
+    }
+    ourAramConfigLogSize = defaultSize;
+    ourAramLogSize = MvrMath::roundInt(ourAramConfigLogSize * 1000000);
+  }
+
+ 
+
+
+#endif  // MVRINTERFACE
