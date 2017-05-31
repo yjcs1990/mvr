@@ -741,7 +741,148 @@ MVREXPORT bool MvrLog::processFile(void)
     ourAramLogSize = MvrMath::roundInt(ourAramConfigLogSize * 1000000);
   }
 
- 
+  MVREXPORT bool MvrLog::aramProcessFile(void)
+  {
+    ourMutex.lock();
+    ourAramLogSize = MvrMath::roundInt(ourAramConfigLogSize * 1000000);
+    if (strcasecmp(ourAramConfigLogLevel, "Terse") == 0)
+      ourLevel = Terse;
+    else if (strcasecmp(ourAramConfigLogLevel, "Verbose") == 0)
+      ourLevel = Verbose;
+    else if (strcasecmp(ourAramConfigLogLevel, "Normal") == 0)
+      ourLevel = Normal;
+    else{
+      MvrLog::logNoLock(MvrLog::Normal, "MvrLog: Bad log level '%s' defaulting to Normal", ourAramConfigLogLevel);
+      ourLevel = Normal;
+    }
+    ourMutex.unlock();
+    return true;
+  }
 
+MVREXPORT void MvrLog::filledAramLog(void)
+{
+  MvrLog::logNoLock(MvrLog::Normal, "MvrLog: Log filled, starting new file");
 
+  fclose(ourFP);
+  
+  char buf[2048];
+  int i;
+  for (i=5; i>0; i--)
+  {
+    snprintf(buf, sizeof(buf), "mv %slog%d.txt %slog%d.txt", ourAramPrefix.c_str(), i, ourAramPrefix.c_str(), i+1);
+    system(buf);
+  }
+
+  snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
+  if ((ourFP = MvrUtil::fopen(ourFileName.c_str(), "w")) == NULL)
+  {
+    ourType = StdOut;
+    MvrLog::LogNoLock(MvrLog::Normal, 
+                      "MvrLog: Couldn't reopen file '%s', failing back to stdout",
+                      ourFileName.c_str());
+  }
+  ourCharsLogged = 0;
+
+  if (ourAramDaemonized)
+  {
+    if (dup2(fileno(ourFP), fileno(stderr)) < 0)
+      MvrLog::logErrorFromOSNoLock(MvrLog::Normal, "MvrLog: Error redirecting stderr to log file.");
+      
+      fprintf(stderr, "Stderr...\n");
+  }
+}
 #endif  // MVRINTERFACE
+
+MVREXPORT void MvrLog::setFunctor(MvrFunctor1<const char *> *functor)
+{
+  ourFunctor = functor;
+}
+
+MVREXPORT void MvrLog::clearFunctor()
+{
+  ourFunctor = NULL;
+}
+
+MVREXPORT void MvrLog::invokeFunctor(const char *message)
+{
+  MvrFunctor1<const char *> *functor;
+  functor = ourFunctor;
+  if (functor != NULL)
+    functor->invoke(message);
+}
+
+MVREXPORT void MvrLog::checkFileSize(void)
+{
+  if (ourAramDaemonized)
+  {
+    long size;
+    size = MvrUtil::sizeFile(ourFileName);
+    if (size>0 && size>ourCharsLogged)
+    {
+      ourCharsLogged = size;
+    }
+  }
+}
+
+MVREXPORT void MvrLog::internalForceLockup(void)
+{
+  MvrLog::log(MvrLog::Terse, "MvrLog: forcing internal lookup");
+  ourMutex.lock();
+}
+
+MVREXPORT void MvrLog::log_v(LogLevel level, const char *prefix, const char *str, va_list ptr)
+{
+  char buf[1024];
+  strncpy(buf, prefix, sizeof(buf));
+  const size_t prefixSize = strlen(prefix);
+  vsnprintf(buf+prefixSize, sizeof(buf)-prefixSize, str, ptr);
+  buf[sizeof(buf)-1] = '\0';
+  logNoLock(level, buf);
+}
+
+MVREXPORT void MvrLog::info(const char *str, ...)
+{
+  ourMutex.lock();
+  va_list ptr;
+  va_start(ptr, str);
+  log_v(Normal, "", str, ptr);
+  va_end(ptr);
+  ourMutex.unlock();
+}
+
+MVREXPORT void Mvrlog::warning(const char *str, ...)
+{
+  ourMutex.lock();
+  va_list ptr;
+  va_start(ptr, str);
+  log_v(Terse, "Warning", str, ptr);
+  va_end(ptr);
+  ourMutex.unlock();
+}
+
+MVREXPORT void Mvrlog::error(const char *str, ...)
+{
+  ourMutex.lock();
+  va_list ptr;
+  va_start(ptr, str);
+  log_v(Terse, "Error", str, ptr);
+  va_end(ptr);
+  ourMutex.unlock();
+}
+
+MVREXPORT void Mvrlog::debug(const char *str, ...)
+{
+  ourMutex.lock();
+  va_list ptr;
+  va_start(ptr, str);
+  log_v(Terse, "[debug]", str, ptr);
+  va_end(ptr);
+  ourMutex.unlock();
+}
+
+MVREXPORT void MvrLog::setLogLevel(LogLevel level)
+{
+  ourMutex.lock();
+  ourLevel = level;
+  ourMutex.unlock();
+}
