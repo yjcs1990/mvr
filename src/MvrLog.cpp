@@ -621,3 +621,14 @@ MVREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
     return false;
   }
 }
+
+MVREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
+{
+  FILE *strFile;
+  unsigned int i;
+  char str[100000];
+
+  str[0] = '\0';
+
+  
+}
