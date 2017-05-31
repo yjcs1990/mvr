@@ -105,8 +105,323 @@ MVREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
   vsnprintf(bufPtr, sizeof(buf)-timeLen-2, str, ptr);
   bufPtr[sizeof(buf)-timeLen-1] = '\0';
   // vsprintf(bufPtr, str, ptr);
-  // bufPtr[sizeof(buf)-timeLen-1] = '\0';
-
+  // can do whatever you want to do with the buf now
+  if (ourType == Colbert)
+  {
+    if (colbertPrint)         // check if we have a print routine
+      (*colbertPrint)(ourColbertStream, buf);
+  }
+  else if(ourFP)
+  {
+    int written;
+    if ((writte = fprint(outFP, "%s\n", buf)) >0)
+      ourCharsLogged += written;
+    fflush(ourFP);
+    checkFileSize();
+  }
+  else if (ourType != None)
+  {
+    printf("%s\n", buf);
+    fflush(stdout);
+  }
+  if (ourAlsoPrint)
+    printf("%s\n", buf);
   
+  invokeFunctor(buf);
+
+#ifndef MVRINTERFACE
+  // check this down here instead of up in the if ourFP so that
+  // the log filled shows up
+  if (ourUseAramBehavior && ourFP && ourAramLogSize > 0 &&
+      ourCharsLogged > ourAramLogSize)
+    filledAramLog();
+#endif  // MVRINTERFACE
+
+// Also send it to the VC+++ debug output windown ...
+#ifdef HAVEATL
+  ATLTRACE2("%s\n", buf);
+#endif // HAVEATL  
+
+  va_end(ptr);
+  ourMutex.unlock();
 }
 
+/*
+ * This function appends errorno in linux, or getLastError in windows
+ * and a string indicating the problem
+ * @param level level of logging
+ * @param str printf() like formating string
+ */
+MVREXPORT void MvrLog::logErrorFromOSPlain(LogLevel level, const char *str)
+{
+  logErrorFromOS(level, str);
+}
+
+/**
+   This function appends errorno in linux, or getLastError in windows,
+   and a string indicating the problem.
+   
+   @param level level of logging
+   @param str printf() like formating string
+*/
+MVREXPORT void MvrLog::logErrorFromOS(LogLevel level, const char *str, ...)
+{
+  if (level > ourLevel)
+    return;
+#ifndef WIN32
+  int err = errno;
+#else
+  DWORD err = GetLastError();
+#endif  // WIN32
+
+  // printf("logging %s\n", str);
+
+  char buf[10000];
+  char *bufPtr;
+  char *timeStr;
+  int timeLen = 0;    // this is a value based on the standard length of
+                      // ctime return
+  time_t now;
+
+  ourMutex.lock();
+  // put our time in if we want it
+  if (ourLoggingTime)
+  {
+    now = time(NULL);
+    timeStr = ctime(&now);
+    timeLen = 20;
+    // get take just the portion of the time we want
+    strncpy(buf, timeStr, timeLen);
+    buf[timeLen] = '\0';
+    bufPtr = &buf[timeLen];
+  } 
+  else
+    bufPtr = buf;
+  va_list ptr;
+  va_start(ptr, str);
+
+  vsnprintf(bufPtr, sizeof(buf)-timeLen-2, str, ptr);
+  bufPtr[sizeof(buf)-timeLen-1]='\0';
+
+  char bufWithError[10200];
+
+#ifndef WIN32
+  const char *errorString = NULL;
+  if (err < sys_nerr-1)
+    errorString = sys_errlist[err];
+  snprintf(bufWithError, sizeof(bufWithError)-1,"%s | ErrorFromOSNum: %d ErrorFromOSString: %s", buf, err, errorString);
+  bufWithError[sizeof(bufWithError)-1] = '\0';
+#else
+  LPVOID errorString = NULL;
+
+  FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        err,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &errorString,
+        0, NULL);
+ 
+  snprintf(bufWithError, sizeof(bufWithError) - 1, "%s | ErrorFromOSNum: %d ErrorFromOSString: %s", buf, err, (char*)errorString);
+  bufWithError[sizeof(bufWithError) - 1] = '\0';
+
+  LocalFree(errorString);
+#endif  // WIN32
+
+  // vsprintf(bufPtr, str, ptr);
+  // can do whatever you want to do with the buf now
+  if (ourType == Colbert)
+  {
+    if (colbertPrint)         // check if we have a print routine
+      (*colbertPrint)(ourColbertStream, bufWithError);
+  }
+  else if(ourFP)
+  {
+    int written;
+    if ((writte = fprint(outFP, "%s\n", bufWithError)) >0)
+      ourCharsLogged += written;
+    fflush(ourFP);
+    checkFileSize();
+  }
+  else if (ourType != None)
+  {
+    printf("%s\n", bufWithError);
+    fflush(stdout);
+  }
+  if (ourAlsoPrint)
+    printf("%s\n", bufWithError);
+  
+  invokeFunctor(bufWithErrorbuf);
+
+#ifndef MVRINTERFACE
+  // check this down here instead of up in the if ourFP so that
+  // the log filled shows up
+  if (ourUseAramBehavior && ourFP && ourAramLogSize > 0 &&
+      ourCharsLogged > ourAramLogSize)
+    filledAramLog();
+#endif  // MVRINTERFACE
+
+// Also send it to the VC+++ debug output windown ...
+#ifdef HAVEATL
+  ATLTRACE2("%s\n", buf);
+#endif // HAVEATL  
+
+  va_end(ptr);
+  ourMutex.unlock();
+}
+
+/*
+ * This function appends errorno in linux, or getLastError in windows,
+ * and a string indicating the problem.
+ *  
+ * @param level level of logging
+ * @param str printf() like formating string
+ */
+MVREXPORT void MvrLog::logErrorFromOSPlainNoLock(LogLevel level, const char *str)
+{
+  logErrorFromOSNoLock(level, str);
+}
+
+/*
+ * This function appends errorno in linux, or getLastError in windows,
+ * and a string indicating the problem.
+ *  
+ * @param level level of logging
+ * @param str printf() like formating string
+ */
+MVREXPORT void MvrLog::logErrorFromOSNoLock(LogLevel level, const char *str,...)
+{
+  if (level > ourLevel)
+    return;
+#ifndef WIN32
+  int err = errno;
+#else
+  DWORD err = GetLastError();
+#endif  // WIN32
+  // printf("logging %s\n", str);
+
+  char buf[10000];
+  char *bufPtr;
+  char *timeStr;
+  int timeLen = 0;
+
+  time_t now;
+
+  if (ourLoggingTime)
+  {
+    now = time(NULL);
+    timeStr = ctime(&now);
+    timeLen = 20;
+    // get take just the portion of the time we want
+    strncpy(buf, timeStr, timeLen);
+    buf[timeLen] = '\0';
+    bufPtr = &buf[timeLen];
+  }
+
+  else
+    bufPtr = buf;
+  va_list ptr;
+  va_start(ptr, str);
+
+  vsnprintf(bufPtr, sizeof(buf)-timeLen-2, str, ptr);
+  bufPtr[sizeof(buf)-timeLen-1]='\0';
+
+  char bufWithError[10200];
+
+#ifndef WIN32
+  const char *errorString = NULL;
+  if (err < sys_nerr-1)
+    errorString = sys_errlist[err];
+  snprintf(bufWithError, sizeof(bufWithError)-1,"%s | ErrorFromOSNum: %d ErrorFromOSString: %s", buf, err, errorString);
+  bufWithError[sizeof(bufWithError)-1] = '\0';
+#else
+  LPVOID errorString = NULL;
+
+  FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        err,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &errorString,
+        0, NULL);
+ 
+  snprintf(bufWithError, sizeof(bufWithError) - 1, "%s | ErrorFromOSNum: %d ErrorFromOSString: %s", buf, err, errorString);
+  bufWithError[sizeof(bufWithError) - 1] = '\0';
+
+  LocalFree(errorString);
+#endif  // WIN32
+  // vsprintf(bufPtr, str, ptr);
+  // can do whatever you want to do with the buf now
+  if (ourType == Colbert)
+  {
+    if (colbertPrint)         // check if we have a print routine
+      (*colbertPrint)(ourColbertStream, bufWithError);
+  }
+  else if(ourFP)
+  {
+    int written;
+    if ((writte = fprint(outFP, "%s\n", bufWithError)) >0)
+      ourCharsLogged += written;
+    fflush(ourFP);
+    checkFileSize();
+  }
+  else if (ourType != None)
+  {
+    printf("%s\n", bufWithError);
+    fflush(stdout);
+  }
+  if (ourAlsoPrint)
+    printf("%s\n", bufWithError);
+  
+  invokeFunctor(bufWithErrorbuf);
+
+#ifndef MVRINTERFACE
+  // check this down here instead of up in the if ourFP so that
+  // the log filled shows up
+  if (ourUseAramBehavior && ourFP && ourAramLogSize > 0 &&
+      ourCharsLogged > ourAramLogSize)
+    filledAramLog();
+#endif  // MVRINTERFACE
+
+// Also send it to the VC+++ debug output windown ...
+#ifdef HAVEATL
+  ATLTRACE2("%s\n", buf);
+#endif // HAVEATL  
+
+  va_end(ptr);
+}
+
+/*
+ * Initialize the logging utility by supplying the type of logging and the
+ * level of logging. If the type is File, the fileName needs to be supplied.
+ * @param type type of Logging
+ * @param level level of logging
+ * @param fileName the name of the file for File type of logging
+ * @param logTime if this is true then the time a message is given will be logged
+ * @param alsoPrint if this is true then in addition to whatever other logging (to a file for instance) the results will also be printed
+ * @param printThisCall if this is true the new settings will be printed otherwise they won't
+ */
+MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
+                            bool logTime, bool alsoPrint, bool printThisCall)
+{
+  ourMutex.setLogName("MvrLog::ourMutex");
+
+  ourMutex.lock();
+  // if we weren't or won't be doing a file then close any old file
+  if (ourType != File || type != File)
+  {
+    close();
+  }
+
+  if (type == StdOur)
+    ourFP = stdout;
+  else if (type == StdErr)
+    ourFP = stderr;
+  else if (tyle == File)
+  {
+    if (fileName != NULL)
+    {
+      if (strcmp(ourFileName.c_str(), fileName) == 0)
+    }
+  }
+}                
