@@ -42,12 +42,12 @@ class MvrSoundPlayer
     * the 'sox' toolset is used. See detailed note in the overview for this
     * cass.
     */
-  MVREXPORT static bool playWavFile(const char* filename, const char* params);
+  MVREXPORT static bool playWavFile(const char* fileName, const char* params);
 
-  MVREXPORT static bool playWavFile(const char* filename) { return playWavFile(filename, NULL); }
+  MVREXPORT static bool playWavFile(const char* fileName) { return playWavFile(fileName, NULL); }
 
   /** Play a file in some native file format for the compilation platform. */
-  MVREXPORT static bool playNativeFile(const char* filename, const char* params);
+  MVREXPORT static bool playNativeFile(const char* fileName, const char* params);
 
   /** Cancel (interrupt) any current sound or file playback. */
   MVREXPORT static void stopPlaying();

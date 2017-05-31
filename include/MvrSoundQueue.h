@@ -352,7 +352,7 @@ public:
   MVREXPORT void speak(const char *str);
 
   /** Add a sound file to the queue for default sound file playback.  */
-  MVREXPORT void play(const char *filename);
+  MVREXPORT void play(const char *fileName);
   
 #if !(defined(WIN32) && defined(_MANAGED)) && !defined(SWIG)
 
@@ -371,7 +371,7 @@ public:
   MVREXPORT void speakWithPriority(int priority, const char* fmt, ...);
 
   /// Add a sound file to the queue for default sound file playback.
-  MVREXPORT void playf(const char *filename_fmt, ...);
+  MVREXPORT void playf(const char *fileName_fmt, ...);
 
 #endif // MS Managed C++ or SWIG
 
@@ -379,7 +379,7 @@ public:
   MVREXPORT MvrSoundsQueue::Item createDefaultSpeechItem(const char* speech = 0);
 
   /// Return an item set up for sound file playback with previously set default play callbacks.
-  MVREXPORT MvrSoundsQueue::Item createDefaultFileItem(const char* filename = 0);
+  MVREXPORT MvrSoundsQueue::Item createDefaultFileItem(const char* fileName = 0);
 
   /** Set a playback condition functor used for default speech and sound file
    * items. Set to NULL to clear. */

@@ -391,7 +391,7 @@ public:
   MVREXPORT static bool getDirectory(const char *fileName, 
 				                             char * result, 
                                      size_t resultLen);
-  /// Pulls the filename out of the file name
+  /// Pulls the fileName out of the file name
   MVREXPORT static bool getFileName(const char *fileName, 
 				                            char * result, 
                                     size_t resultLen);

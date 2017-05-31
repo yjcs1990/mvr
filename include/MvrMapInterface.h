@@ -1212,7 +1212,7 @@ public:
   MVREXPORT virtual void setTempDirectory(const char *tempDirectory) = 0;
 
 
-  /// Prepends the appropriate directory information on the given filename.
+  /// Prepends the appropriate directory information on the given fileName.
  	MVREXPORT virtual std::string createRealFileName(const char *fileName) = 0;
 
   /// Gets the fileName that was loaded

@@ -58,7 +58,7 @@ class MvrBasePacket;
 /**
  * MvrMapId is a small helper class that contains all of the information 
  * needed to uniquely identify an Mvria map.  In addition to the standard
- * file attributes (such as filename, size, and timestamps), it 
+ * file attributes (such as fileName, size, and timestamps), it 
  * contains the name of the originating source robot or server.  It 
  * also contains the checksum of the file contents.  This checksum is
  * currently calculated by the MvrMD5Calculator class.  All of the 
