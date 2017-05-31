@@ -94,6 +94,19 @@ MVREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
     timeLen = 28;
     // get take just the portion of the time we want
     strncpy(buf, timeStr, timeLen);
+    buf[timeLen] = '\0';
+    bufPtr = &buf[timeLen];
   }
+  else
+    bufPtr = buf;
+  va_list ptr;
+  va_start(ptr, str);
+
+  vsnprintf(bufPtr, sizeof(buf)-timeLen-2, str, ptr);
+  bufPtr[sizeof(buf)-timeLen-1] = '\0';
+  // vsprintf(bufPtr, str, ptr);
+  // bufPtr[sizeof(buf)-timeLen-1] = '\0';
+
+  
 }
 
