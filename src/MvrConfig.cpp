@@ -649,7 +649,7 @@ MVREXPORT void MvrConfig::setSectionComment(const char *sectionName, const char 
  * exist then it is created.
  * @warning The section name and flags must not contain any characters with
  *          special meaning when saved and loaded from a config file, such as '#', ';',
- *         tab, or newline.  
+ *          tab, or newline.  
  */
 MVREXPORT bool MvrConfig::addSectionFlags(const char *sectionName, const char *flags)
 {
@@ -667,5 +667,293 @@ MVREXPORT bool MvrConfig::addSectionFlags(const char *sectionName, const char *f
   else
     section->addFlags(flags, myIsQuiet);
   return true;
+}
+
+/*
+ * Add a flag to a section. If the section doesn't 
+ *  exist then it is created.
+ */
+MVREXPORT bool MvrConfig::remSectionFlag(const char *sectionName, const char *flag)
+{
+  MvrConfigSection *section = findSection(sectionName);
+
+  if (section == NULL)
+    return false;
+  section->remFlag(flag);
+  return true;
+}
+
+/// Add a parameter.  
+/*   
+ * @param arg Object containing key, description and value type of this parameter. This object will be copied....
+ *            it must already have the priority, display hint, restart level, and other things like that already set.
+ * @param sectionName Name of the section to put this parameter in.
+ */
+ MVREXPORT bool MvrConfig::addParamAsIs(const MvrConfigArg &arg, const char *sectionName)
+ {
+   return addParam(arg, sectionName, arg.getConfigPriority(), arg.getDisplayHint(), arg.getRestartLevel());
+ }
+
+/// Add a parameter
+/*  
+ * @param arg Object containing key, description and value type of this parameter. This object will be copied.
+ * @param sectionName Name of the section to put this parameter in.
+ * @param priority Priority or importance of this parameter to a user.
+ * @param displayHint Suggest an appropriate UI control for editing this parameter's value. See ArConfigArg::setDisplayHint() for description of display hint format.
+ * @param restart restart level
+ */
+MVREXPORT bool MvrConfig::addParam(const MvrConfigArg &arg, 
+                                   const char *sectionName,
+                                   MvrPriority::Priority priority,
+                                   const char *displayHint,
+                                   MvrConfigArg::RestartLevel restart)
+{
+  MvrConfigSection *section = findSection(sectionName);
+
+  MvrConfigSection *xltrSection = NULL;
+  MvrConfigArg *xltrArg = NULL;
+  if ((myTranslator != NULL) && (arg.getType() != MvrConfigArg::SEPARATOR))
+  {
+    xltrSection = myTranslator->findSection(sectionName);
+
+    if (xltrSection != NULL){
+      xltrArg = xltrSection->findParam(arg.getName(), true); // allow string holders
+      
+      if (xltrArg != NULL){
+        IFDEBUG(MvrLog::log(MvrLog::Normal,
+                            "MvrConfig::addParam() found translation arg for %s, %s",
+                            sectionName, arg.getName()));
+      }
+      else{
+        IFDEBUG(MvrLog::log(MvrLog::Normal,
+                            "MvrConfig::addParam() cannot find translation arg for %s, %s",
+                            sectionName, arg.getName()));
+      }
+    }
+    else{
+        IFDEBUG(MvrLog::log(MvrLog::Normal,
+                            "MvrConfig::addParam() cannot find translation section for %s",
+                            sectionName));
+    }
+  }
+  //printf("SECTION '%s' name '%s' desc '%s'\n", sectionName, arg.getName(), arg.getDescription());
+  if (section == NULL)
+  {
+    MvrLog::log(MvrLog::Verbose, "MvrConfigArg %s: Making new section '%s' (for param)",
+                myLogPrefix.c_str(), sectionName);
+    section = new MvrConfigSection(sectionName, NULL, myIsQuiet);
+
+    translateSection(section);
+
+    mySections.push_back(section);
+  }
+
+  std::list<MvrConfigArg> *params = section->getParams();
+
+  if (params == NULL)
+  {
+    MvrLog::log(MvrLog::Terse, "%sSomething has gone hideously wrong in MvrConfig::addParam()", myLogPrefix.c_str());
+    return false;
+  }
+
+  // Dont add consecutive separators
+  if (arg.getType() == MvrConfigArg::SEPARATOR && !params->empty() && params->back().getType() == MvrConfigArg::SEPARATOR)
+  {
+    // MvrLog::log(MvrLog::Verbose, "Last parameter a sep, so is this one, ignoring it");
+    return true;
+  }
+
+  std::list<MvrConfigSection *>::iterator sectionIt;
+
+  for (sectionIt = mySections.begin(); sectionIt!=mySections.end(); sectionIt++)
+  {
+    MvrConfigSection *curSection = *sectionIt;
+
+    MvrConfig *existingParam = NULL;
+    if (!MvrUtil::isStrEmpty(arg.getName())){
+      existingParam = curSection->findParam(arg.getName());
+    }
+
+    // If we have an argument of this name but we don't have see if
+    // this section is our own, if its not then note we have
+    // duplicates
+    if (existingParam != NULL)
+    {
+       if (strcasecmp(curSection->getName(), section->getName) != 0){
+         MvrLog::log(MvrLog::Verbose,
+                     "%sParameter %s (type %s) name duplicated in section %s and %s",
+                     myLogPrefix.c_str(),
+                     arg.getName(),
+                     MvrConfigArg::toString(arg.getType()),
+                     curSection->getName(),
+                     section->getName());
+       myDuplicateParams = true;
+      }
+      else{
+        MvrLog::log(((!existingParam->isPlaceholder()) ? MvrLog::Normal : MvrLog::Verbose),
+                    "%sParameter %s (type %s) already exists in section %s (placeholder = %i)",
+                    myLogPrefix.c_str(),
+                    arg.getName(),
+                    MvrConfigArg::toString(arg.getType()),
+                    section->getName(),
+                    existingParam->isPlaceholder());  
+      }
+    }
+  }
+
+  // now make sure we can add it to the file parser (with the section stuff its okay if we can't)
+  if (!myParser.addHandlerWithError(arg.getName(), &myParserCB))
+  {
+    if (!myIsQuiet){
+      MvrLog::log(MvrLog::Verbose, "%sCould not add parameter '%s' to file parser, probably already there.",
+                  myLogPrefix.c_str(), arg.getName());
+    }
+  }
+
+  // now we add all the list names to the parser too (the function makes sure it's a list)
+  addListNamesToParser(arg);
+
+  // remove any string and list holders for this param
+  section->remStringHolder(arg->getName());
+
+  params->push_back(arg);
+
+  if (xltrArg != NULL){
+    params->back().copyTranslation(*xltrArg);
+  }
+
+  params->back().setConfigPriority(priority);
+  params->back().setDisplayHint(displayHint);
+
+  params->back().setIgnoreBounds(myIgnoreBounds);
+  params->back().replaceSpacesInName();
+
+  IFDEBUG(MvrLog::log(MvrLog::Verbose, "%sAdded parameter '%s' to section '%s'",
+                      myLogPrefix.c_str(), arg.getName(), section->getName()));
+  return true;
+}   
+
+/// Add a comment to a section
+/*
+ * @param comment Text of the comment.
+ * @param sectionName Name of the section to add the comment to. If the section does not exist, it will be created.
+ * @param priority Priority or importance.
+ */
+MVREXPORT bool MvrConfig::addComment(const char *comment, const char *sectionName, MvrPriority::Priority priority)
+{
+  return addParam(MvrConfigArg(comment), sectionName, priority);
+}
+
+MVREXPORT bool MvrConfig::parseVersion(MvrArgumentBuilder *arg, char *errorBuffer, size_t errorBufferLen)
+{
+  if ((errorBuffer != NULL) && (errorBufferLen > 0)){
+    errorBuffer[0] = '\0';
+  }
+  if ((arg->getArgc() < 0) || (arg->getArg(0) == NULL)){
+    if ((errorBuffer != NULL) && (errorBufferLen > 0)){
+      snprintf(errorBuffer, errorBufferLen, "Configuration version error (blank");
+      errorBuffer[errorBufferLen - 1] = '\0';
+    }
+    return false;
+  }
+
+  myConfigVersion = arg->getArg(0);
+  MvrLog::log(MvrLog::Normal, "%sConfig version: %s", myLogPrefix.c_str(), myConfigVersion.c_str());
+
+  return true;
+} 
+
+/*
+ * The extra string of the parser should be set to the 'Section'
+ * command while the rest of the arg should be the arguments to the
+ * section command. Its case insensitive.
+ * @param arg Should contain the 'Section' keyword as its "extra" string, and section name as argument(s).
+ * @param errorBuffer if this is NULL it is ignored, otherwise the
+ * string for the error is put into the buffer, the first word should
+ * be the parameter that has trouble
+ * @param errorBufferLen the length of the error buffer
+ */
+MVREXPORT bool MvrConfig::parseSection(MvrArgumentBuilder *arg, char *errorBuffer, size_t errorBufferLen)
+{
+  if (myFailOnBadSection && errorBuffer != NULL)
+    errorBuffer[0] = '\0';
+  std::list<MvrConfigSection *>::iterator sectionIt;
+  MvrConfigSection *section = NULL;
+
+  if (myFailOnBadSection && errorBuffer != NULL)
+    errorBuffer[0] = '\0';
+  for (sectionIt=mySections.begin(); sectionIt!=mySections.end(); sectionIt++){
+    section = (*sectionIt);
+    if (MvrUtil::strcasecmp(section->getName(), arg->getFullString()) == 0)
+    {
+      bool isParseSection = true;
+      if (mySectionToParse != NULL){
+        isParseSection = false;
+        for (std::list<std::string>::iterator sIter = mySectionsToParse->begin(); sIter!=mySectionsToParse->end(); sIter++)
+        {
+          std::string sp = *sIter;
+          if (MvrUtil::strcasecmp(section->getName(), sp.c_str()) == 0){
+            isParseSection = true;
+            break;
+          }
+        }
+      }
+      if (mySectionsNotToParse.find(section->getName()) != mySectionsNotToParse.end())
+      {
+        isParseSection = false;
+      }
+
+      if (isParseSection){
+        MvrLog::log(MvrLog::Verbose, "%sConfig switching to section '%s'", myLogPrefix.c_str(), arg->getFullString());
+
+        mySection = arg->getFullString();
+        mySectionBroken = false;
+        mySectionIgnored = false;
+        myUsingSections = true;
+        return true;
+      }
+      else{
+        MvrLog::log(MvrLog::Verbose, "%signoring section '%s'",
+                    myLogPrefix.c_str(), arg->getFullString());
+
+        mySection = arg->getFullString();
+        mySectionBroken = false;
+        mySectionIgnored = true;
+        myUsingSections = true;
+        return true;                    
+      }
+    }
+  }
+  if (myFailOnBadSection)
+  {
+    mySection = "";
+    mySectionBroken = true;
+    mySectionIgnored = false;
+    snprintf(errorBuffer, errorBufferLeem, "MvrConfig: Could not find section '%s'",
+             arg->getFullString());
+    MvrLog::log(MvrLog::Terse, "%sCould not find section '%s', failing", myLogPrefix.c_str(), arg->getFullString());
+    return false;
+  }
+  else{
+    if (mySaveUnknown && mySectionsToParse == NULL && myPermissionSaveUnknown){
+      MvrLog::log(MvrLog::Verbose, "%smaking new section '%s' to save unknown", 
+                  myLogPrefix.c_str(), arg->getFullString());
+      mySection = arg->getFullString();
+      mySectionBroken = false;
+      mySectionIgnored = false;
+      section = new ArConfigSection(arg->getFullString(), NULL, myIsQuiet);
+
+      translateSection(section);
+
+      mySections.push_back(section);
+    }
+    else{
+      mySection = "";
+      mySectionBroken = false;
+      mySectionIgnored = true;
+      MvrLog::log(MvrLog::Normal, "%sIgnoring unknown section '%s'", myLogPrefix.c_str(), arg->getFullString());
+    }
+    return true;
+  }
 }
 
