@@ -1158,32 +1158,33 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg, char *errorBuff
           }
           std::list<std::string>::iterator listIter = myParseListNames.begin();
           listIter++;
-          std::list<ArConfigArg*> matchParamList;
+
+          std::list<MvrConfigArg*> matchParamList;
           matchParamList.push_back(param);
 
-          std::list<ArConfigArg*> tempParamList;
+          std::list<MvrConfigArg*> tempParamList;
 
           while (listIter != myParsingListNames.end()) {
 
-            for (std::list<ArConfigArg*>::iterator mIter = matchParamList.begin();
+            for (std::list<MvrConfigArg*>::iterator mIter = matchParamList.begin();
                  mIter != matchParamList.end();
                  mIter++) {
-              ArConfigArg *matchParam = *mIter;
+              MvrConfigArg *matchParam = *mIter;
               if (matchParam == NULL) {
                 continue;
               }
               for (int i = 0; i < matchParam->getArgCount(); i++) {
             
-                ArConfigArg *childArg = matchParam->getArg(i);
+                MvrConfigArg *childArg = matchParam->getArg(i);
                 if (childArg == NULL) {
                   continue;
                 }
-                if (ArUtil::strcasecmp(childArg->getName(), *listIter) != 0) {
+                if (MvrUtil::strcasecmp(childArg->getName(), *listIter) != 0) {
                   continue;
                 }
                 tempParamList.push_back(childArg);
               }
-            } // end for each matching parameter list
+            } 
 
             matchParamList.clear();
             matchParamList = tempParamList;
@@ -1193,108 +1194,83 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg, char *errorBuff
 
           } // end for each list level
           
-          for (std::list<ArConfigArg*>::iterator matchIter = matchParamList.begin();
+          for (std::list<MvrConfigArg*>::iterator matchIter = matchParamList.begin();
                matchIter != matchParamList.end();
                matchIter++) {
 
-             ArConfigArg *matchParam = *matchIter;
+             MvrConfigArg *matchParam = *matchIter;
              if (matchParam == NULL) {
                continue;
              }
 
              for (int i = 0; i < matchParam->getArgCount(); i++) {
             
-                ArConfigArg *childArg = matchParam->getArg(i);
+                MvrConfigArg *childArg = matchParam->getArg(i);
                 if (childArg == NULL) {
                   continue;
                 }
-                if (ArUtil::strcasecmp(childArg->getName(), arg->getExtraString()) != 0) {
+                if (MvrUtil::strcasecmp(childArg->getName(), arg->getExtraString()) != 0) {
                   continue;
                 }
                 parseParamList.push_back(childArg);
-              } // end for each child
-          } // end for each matching parameter 
-        } // end else parameter is in a list
+              }
+          }
+        }
 
 
-        for (std::list<ArConfigArg*>::iterator parseIter = parseParamList.begin();
+        for (std::list<MvrConfigArg*>::iterator parseIter = parseParamList.begin();
              parseIter != parseParamList.end();
              parseIter++) {
 
-          ArConfigArg *parseParam = *parseIter;
+          MrConfigArg *parseParam = *parseIter;
           if (parseParam == NULL) {
             continue;
           }
 
           found = true;
 
-          // Make sure that the parameter is within the specified priority range,
-          // primarily to avoid accidentally overwriting factory and calibration
-          // parameters.  Return true because it is not an error condition.
-          //
           if ((parseParam->getConfigPriority() < myHighestPriorityToParse) ||
               (parseParam->getConfigPriority() > myLowestPriorityToParse)) {
             return true;
           }
 
-          // KMC 7/11/12 Changed this from an equality check to accomodate the new 
-          // calibration priority
-          if ((myPermissionAllowFactory) ||
-              (parseParam->getConfigPriority() < ArPriority::FACTORY)) {
+          if ((myPermissionAllowFactory) || (parseParam->getConfigPriority() < MvrPriority::FACTORY))
+           {
       
-	    bool changed = false;
+	          bool changed = false;
             if (!parseParam->parseArgument(arg, errorBuffer, errorBufferLen, myLogPrefix.c_str(), myIsQuiet, &changed)) {
 
-              ArLog::log(ArLog::Normal,
-                         "ArConfig::parseArgument() error parsing %s",
+              MvrLog::log(MvrLog::Normal,
+                         "MvrConfig::parseArgument() error parsing %s",
                          arg->getFullString());
               ret = false;
             }
-	    if (changed)
-	    {
-	      /*
-	      ArLog::log(ArLog::Normal, "%sParameter '%s' changed with restart level (%d)", 
-			 myLogPrefix.c_str(), 
-	      	 parseParam->getName(), parseParam->getRestartLevel());
-	      */
-	      if (parseParam->getRestartLevel() > myRestartLevelNeeded)
-	      {
-		myRestartLevelNeeded = parseParam->getRestartLevel();
-		// don't print out the warning if nothings checking for it
-		if (myCheckingForRestartLevel)
-		  ArLog::log(ArLog::Normal, 
-			     "%sParameter '%s' in section '%s' changed, bumping restart level needed to %s (%d)", 
-			     myLogPrefix.c_str(), parseParam->getName(),
-			     section->getName(),
-			     ArConfigArg::toString(myRestartLevelNeeded),
-			     myRestartLevelNeeded);
-	      }
-	    }
-	      
-	      
+            if (changed)
+            {
+              if (parseParam->getRestartLevel() > myRestartLevelNeeded)
+              {
+                myRestartLevelNeeded = parseParam->getRestartLevel();
+                // don't print out the warning if nothings checking for it
+                if (myCheckingForRestartLevel)
+                  MvrLog::log(MvrLog::Normal, 
+                "%sParameter '%s' in section '%s' changed, bumping restart level needed to %s (%d)", 
+                myLogPrefix.c_str(), parseParam->getName(),
+                section->getName(),
+                MvrConfigArg::toString(myRestartLevelNeeded),
+                myRestartLevelNeeded);
+              }
+            }
           }
-          else { // factory parameter and no permission to change
-          
-            /// MPL we'll want to do something here, but kathleen and i still have to work out what...
-            /*
-            if (errorBuffer != NULL)
-            snprintf(errorBuffer, errorBufferLen, 
-            "%s is a factory level parameter but those are not allowed to be changed", 
-            param->getName());
-            */      
-
-          } // end else factory parameter and no permission to change
-        } // end if parameter found
-
-      } // end for each parameter in section
-
-    } // end if parameter list
-  } // end if section found
-
-  // if we didn't find this param its because its a parameter in another section, so pass this off to the parser for unknown things
+          else {}
+        } 
+      } 
+    } 
+  } 
+  // if we didn't find this param its because its a parameter in another section, 
+  // so pass this off to the parser for unknown things
   if (!found)
   {
-    ArArgumentBuilder unknown;
+    MvrArgumentBuilder unknown;
     unknown.setQuiet(myIsQuiet);
     unknown.addPlain(arg->getExtraString());
     unknown.addPlain(arg->getFullString());
@@ -1303,71 +1279,64 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg, char *errorBuff
   return ret;
 }
 
-/**
-   The extra string of the parser should be set to the command wanted,
-   while the rest of the arg should be the arguments to the command.
-   Its case insensitive.
 
-   @param arg Obtain parameter name from this argument builder's "exra" string and value(s) from its argument(s).
+/// The extra string of the parser should be set to the command wanted,
+/// while the rest of the arg should be the arguments to the command.
+/// Its case insensitive.
+
+/*
+ * @param arg Obtain parameter name from this argument builder's "exra" string and value(s) from its argument(s). 
+ * @param errorBuffer if this is NULL it is ignored, otherwise the
+ * string for the error is put into the buffer, the first word should
+ * be the parameter that has trouble
    
-   @param errorBuffer if this is NULL it is ignored, otherwise the
-   string for the error is put into the buffer, the first word should
-   be the parameter that has trouble
-   
-   @param errorBufferLen the length of the error buffer
+ * @param errorBufferLen the length of the error buffer
  **/
-AREXPORT bool ArConfig::parseUnknown(ArArgumentBuilder *arg, 
-				     char *errorBuffer,
-				     size_t errorBufferLen)
+MVREXPORT bool MvrConfig::parseUnknown(MvrArgumentBuilder *arg, char *errorBuffer, size_t errorBufferLen)
 {
   if (arg->getArgc() < 1)
   {
     if (!myIsQuiet) {
-      ArLog::log(ArLog::Verbose, "%sEmpty arg in section '%s', ignoring it", 
+      MvrLog::log(MvrLog::Verbose, "%sEmpty arg in section '%s', ignoring it", 
                  myLogPrefix.c_str(), mySection.c_str());
     }
     return true;
   }
 
-  if (mySaveUnknown && mySectionsToParse == NULL && 
-      myPermissionSaveUnknown)
+  if (mySaveUnknown && mySectionsToParse == NULL && myPermissionSaveUnknown)
   {
     if (arg->getArgc() < 2)
     {
-
       if (!myIsQuiet) {
-        ArLog::log(ArLog::Verbose, "%sNo arg for param '%s' in section '%s', saving it anyways", 
+        MvrLog::log(MvrLog::Verbose, "%sNo arg for param '%s' in section '%s', saving it anyways", 
                   myLogPrefix.c_str(), arg->getArg(0), mySection.c_str());
       }
       
-      if (myParsingListNames.empty() || myIsParsingListBroken) {
-  
-        addParam(ArConfigArg(arg->getArg(0), ""),
-	               mySection.c_str());
+      if (myParsingListNames.empty() || myIsParsingListBroken) 
+      {
+        addParam(MvrConfigArg(arg->getArg(0), ""), mySection.c_str());
       }
-      else { 
-        ArConfigSection *section = findSection(mySection.c_str());
+      else 
+      { 
+        MvrConfigSection *section = findSection(mySection.c_str());
         if (section == NULL) {
-          ArLog::log(ArLog::Normal,
-                     "%sArConfigArg::parseUnknown() cannot find section %s",
-                     myLogPrefix.c_str(),
-                     mySection.c_str());
+          MvrLog::log(MvrLog::Normal,
+                      "%sMvrConfigArg::parseUnknown() cannot find section %s",
+                      myLogPrefix.c_str(),
+                      mySection.c_str());
           return false;
         }  
-        ArConfigArg *parentParam = section->findParam(myParsingListNames, true);
+        MvrConfigArg *parentParam = section->findParam(myParsingListNames, true);
         if (parentParam == NULL) {
-          ArLog::log(ArLog::Normal,
-                     "%sArConfigArg::parseUnknown() cannot find parent param %s for %s",
+          MvrLog::log(MvrLog::Normal,
+                     "%sMvrConfigArg::parseUnknown() cannot find parent param %s for %s",
                      myLogPrefix.c_str(),
                      myParsingListNames.front().c_str(),
                      arg->getArg(0));
           return false;
         }
-        parentParam->addArg(ArConfigArg(arg->getArg(0), ""));
-  
-
-
-      } // end else list member
+        parentParam->addArg(MvrConfigArg(arg->getArg(0), ""));
+      }
     }
     else
     {
@@ -1381,89 +1350,81 @@ AREXPORT bool ArConfig::parseUnknown(ArArgumentBuilder *arg,
       }
 
       if (!myIsQuiet) {
-        ArLog::log(ArLog::Verbose, "%sUnknown '%s %s' in section '%s', saving it", 
-		              myLogPrefix.c_str(), arg->getArg(0), str.c_str(), 
-		              mySection.c_str());
+        MvrLog::log(MvrLog::Verbose, "%sUnknown '%s %s' in section '%s', saving it", 
+                    myLogPrefix.c_str(), arg->getArg(0), str.c_str(), 
+                    mySection.c_str());
       }
       if (myParsingListNames.empty() || myIsParsingListBroken) {
   
-        addParam(ArConfigArg(arg->getArg(0), str.c_str()),
-	               mySection.c_str());
+        addParam(MvrConfigArg(arg->getArg(0), str.c_str()),mySection.c_str());
       }
-      else {
-
-        ArConfigSection *section = findSection(mySection.c_str());
-        if (section == NULL) {
-          ArLog::log(ArLog::Normal,
-                     "%sArConfigArg::parseUnknown() cannot find section %s",
-                     myLogPrefix.c_str(),
-                     mySection.c_str());
+      else 
+      {
+        MvrConfigSection *section = findSection(mySection.c_str());
+        if (section == NULL)
+        {
+          MvrLog::log(MvrLog::Normal,
+                      "%sMvrConfigArg::parseUnknown() cannot find section %s",
+                      myLogPrefix.c_str(),
+                      mySection.c_str());
           return false;
         }  
-        ArConfigArg *parentParam = section->findParam(myParsingListNames, true);
-        if (parentParam == NULL) {
-          ArLog::log(ArLog::Normal,
-                     "%sArConfigArg::parseUnknown() cannot find parent param '%s' for %s",
-                     myLogPrefix.c_str(),
-                     myParsingListNames.front().c_str(),
-                     arg->getArg(0));
+        MvrConfigArg *parentParam = section->findParam(myParsingListNames, true);
+        if (parentParam == NULL) 
+        {
+          MvrLog::log(MvrLog::Normal,
+                      "%sMvrConfigArg::parseUnknown() cannot find parent param '%s' for %s",
+                      myLogPrefix.c_str(),
+                      myParsingListNames.front().c_str(),
+                      arg->getArg(0));
           return false;
         }
        
-        parentParam->addArg(ArConfigArg(arg->getArg(0), str.c_str()));
+        parentParam->addArg(MvrConfigArg(arg->getArg(0), str.c_str()));
 
       } // end else list member
     }
   }
   else
   {
-    IFDEBUG(ArLog::log(ArLog::Normal,
-                       "ArConfig::parseUnknown() mySaveUnknown = %i, myPermissionSaveUnknown = %i mySectionsToParse %s NULL",
-                       mySaveUnknown,
-                       myPermissionSaveUnknown,
-                       ((mySectionsToParse == NULL) ? "==" : "!=")));
+    IFDEBUG(MvrLog::log(MvrLog::Normal,
+                        "MvrConfig::parseUnknown() mySaveUnknown = %i, myPermissionSaveUnknown = %i mySectionsToParse %s NULL",
+                        mySaveUnknown,
+                        myPermissionSaveUnknown,
+                        ((mySectionsToParse == NULL) ? "==" : "!=")));
 
-    ArLog::log(ArLog::Verbose, "%sUnknown '%s' in section '%s', ignoring it", 
-	             myLogPrefix.c_str(), arg->getFullString(), mySection.c_str());
+    MvrrLog::log(MvrLog::Verbose, "%sUnknown '%s' in section '%s', ignoring it", 
+	               myLogPrefix.c_str(), arg->getFullString(), mySection.c_str());
   }
   return true;
-
-} // end method parseUnknown
+} 
 
 /**
    @param fileName the file to load
-
    @param continueOnErrors whether to continue parsing if we get
-   errors (or just bail)
-
+          errors (or just bail)
    @param noFileNotFoundMessage if the file isn't found and this param
-   is true it won't complain, otherwise it will
-
+          is true it won't complain, otherwise it will
    @param errorBuffer If an error occurs and this is not NULL, copy a description of the error into this buffer
-   
    @param errorBufferLen the length of @a errorBuffer
-
    @param sectionsToParse if NULL, then parse all sections; otherwise,
-   a list of the section names that should be parsed (sections not in 
-   the list are ignored)
-
+          a list of the section names that should be parsed (sections not in 
+          the list are ignored)
    @param highestPriority Any configuration settings with a priority before 
-this are ignored
-
+          this are ignored
    @param lowestPriority Any configuration settings with a priority after
-this are ignored.
-
-    @param restartLevelNeeded for internal use, leave as NULL
+          this are ignored.
+   @param restartLevelNeeded for internal use, leave as NULL
  **/
-AREXPORT bool ArConfig::parseFile(const char *fileName, 
-                                  bool continueOnErrors,
-                                  bool noFileNotFoundMessage, 
-                                  char *errorBuffer,
-                                  size_t errorBufferLen,
-                                  std::list<std::string> *sectionsToParse,
-                                  ArPriority::Priority highestPriority,
-                                  ArPriority::Priority lowestPriority,
-                                  ArConfigArg::RestartLevel *restartLevelNeeded)
+MVREXPORT bool MvrConfig::parseFile(const char *fileName, 
+                                    bool continueOnErrors,
+                                    bool noFileNotFoundMessage, 
+                                    char *errorBuffer,
+                                    size_t errorBufferLen,
+                                    std::list<std::string> *sectionsToParse,
+                                    MvrPriority::Priority highestPriority,
+                                    MvrPriority::Priority lowestPriority,
+                                    MvrConfigArg::RestartLevel *restartLevelNeeded)
 {
   bool ret = true;
 
@@ -1472,7 +1433,7 @@ AREXPORT bool ArConfig::parseFile(const char *fileName,
   else
     myFileName = "";
 
-  ArLog::log(myProcessFileCallbacksLogLevel,
+  MvrLog::log(myProcessFileCallbacksLogLevel,
 	     "Starting parsing file %s (%s)", myFileName.c_str(), fileName);
 
 
@@ -1489,7 +1450,7 @@ AREXPORT bool ArConfig::parseFile(const char *fileName,
   copySectionsToParse(sectionsToParse);
   myHighestPriorityToParse = highestPriority;
   myLowestPriorityToParse  = lowestPriority;
-  myRestartLevelNeeded = ArConfigArg::NO_RESTART;
+  myRestartLevelNeeded = MvrConfigArg::NO_RESTART;
   if (restartLevelNeeded != NULL)
     myCheckingForRestartLevel = true;
   else
@@ -1505,13 +1466,11 @@ AREXPORT bool ArConfig::parseFile(const char *fileName,
     errorBuffer = NULL;
     errorBufferLen = 0;
   }
-  //printf("file %s\n", ArUtil::convertBool(ret));
 
   // if we have a parser and haven't failed (or we continue on errors)
   // then parse the arguments from the parser
   if (myArgumentParser != NULL && (ret || continueOnErrors))
-    ret = parseArgumentParser(myArgumentParser, continueOnErrors, 
-			      errorBuffer, errorBufferLen) && ret;
+    ret = parseArgumentParser(myArgumentParser, continueOnErrors, errorBuffer, errorBufferLen) && ret;
 
   // set our pointers so we don't copy anymore into/over it
   if (errorBuffer != NULL && errorBuffer[0] != '\0')
@@ -1519,13 +1478,12 @@ AREXPORT bool ArConfig::parseFile(const char *fileName,
     errorBuffer = NULL;
     errorBufferLen = 0;
   }
-  //printf("parser %s\n", ArUtil::convertBool(ret));
+  //printf("parser %s\n", MvrUtil::convertBool(ret));
   
   // if we haven't failed (or we continue on errors) then call the
   // process file callbacks
   if (ret || continueOnErrors)
-    ret = callProcessFileCallBacks(continueOnErrors, errorBuffer,
-					  errorBufferLen) && ret;
+    ret = callProcessFileCallBacks(continueOnErrors, errorBuffer, errorBufferLen) && ret;
   
   // copy our error if we have one and haven't copied in yet
   // set our pointers so we don't copy anymore into/over it
@@ -1542,47 +1500,41 @@ AREXPORT bool ArConfig::parseFile(const char *fileName,
   delete mySectionsToParse; 
   mySectionsToParse = NULL;
 
-  myHighestPriorityToParse = ArPriority::FIRST_PRIORITY;
-  myLowestPriorityToParse  = ArPriority::LAST_PRIORITY;
-  myRestartLevelNeeded = ArConfigArg::NO_RESTART;
+  myHighestPriorityToParse = MvrPriority::FIRST_PRIORITY;
+  myLowestPriorityToParse  = MvrPriority::LAST_PRIORITY;
+  myRestartLevelNeeded = MvrConfigArg::NO_RESTART;
   myCheckingForRestartLevel = true;
 
-  ArLog::log(myProcessFileCallbacksLogLevel,
-	     "Done parsing file %s (ret %s)", fileName,
-	     ArUtil::convertBool(ret));
+  MvrLog::log(myProcessFileCallbacksLogLevel,
+              "Done parsing file %s (ret %s)", fileName,
+              MvrUtil::convertBool(ret));
   return ret;
 }
 
 /**
    @param fileName the name of the file to write out
-
    @param append if true then text will be appended to the file if it exists, otherwise any existing file will be overwritten.
-
    @param alreadyWritten if non-NULL, a list of strings that have already been
-   written out, don't write it again if it's in this list; when 
-   something is written by this function, then it is put it into this list 
-
+          written out, don't write it again if it's in this list; when 
+          something is written by this function, then it is put it into this list 
    @param writeExtras if this is true then the priority, display hint, restart level, and other later extras of each parameter will 
-   also be written to the file, if it is false they will not be
-
+          also be written to the file, if it is false they will not be
    @param sectionsToWrite if NULL, then write all sections; otherwise,
-   a list of the section names that should be written 
-   
-   @param highestPriority the ArPriority::Priority that specifies the minimum (numerical)
-   priority that a parameter must have in order to be written; not related to the 
-   writeExtras flag
-
-   @param lowestPriority the ArPriority::Priority that specifies the maximum (numerical)
-   priority that a parameter must have in order to be written; not related to the 
-   writeExtras flag
+          a list of the section names that should be written 
+   @param highestPriority the MvrPriority::Priority that specifies the minimum (numerical)
+          priority that a parameter must have in order to be written; not related to the 
+          writeExtras flag
+   @param lowestPriority the MvrPriority::Priority that specifies the maximum (numerical)
+          priority that a parameter must have in order to be written; not related to the 
+          writeExtras flag
  **/
-AREXPORT bool ArConfig::writeFile(const char *fileName, 
-                                  bool append, 
-                                  std::set<std::string> *alreadyWritten,
-                                  bool writeExtras,
-                                  std::list<std::string> *sectionsToWrite,
-                                  ArPriority::Priority highestPriority,
-                                  ArPriority::Priority lowestPriority)
+MVREXPORT bool MvrConfig::writeFile(const char *fileName, 
+                                    bool append, 
+                                    std::set<std::string> *alreadyWritten,
+                                    bool writeExtras,
+                                    std::list<std::string> *sectionsToWrite,
+                                    MvrPriority::Priority highestPriority,
+                                    MvrPriority::Priority lowestPriority)
 {
   FILE *file;
 
@@ -1592,7 +1544,7 @@ AREXPORT bool ArConfig::writeFile(const char *fileName,
     written = alreadyWritten;
   else
     written = &writtenSet;
-  //std::list<ArConfigArg>::iterator it;
+  //std::list<MvrConfigArg>::iterator it;
 
   // later this'll have a prefix
   std::string realFileName;
@@ -1613,10 +1565,10 @@ AREXPORT bool ArConfig::writeFile(const char *fileName,
   else
     mode = "w";
 
-  if ((file = ArUtil::fopen(realFileName.c_str(), mode.c_str())) == NULL)
+  if ((file = MvrUtil::fopen(realFileName.c_str(), mode.c_str())) == NULL)
   {
-    ArLog::log(ArLog::Terse, "%sCannot open file '%s' for writing",
-	       myLogPrefix.c_str(), realFileName.c_str());
+    MvrLog::log(MvrLog::Terse, "%sCannot open file '%s' for writing",
+	              myLogPrefix.c_str(), realFileName.c_str());
     return false;
   }
 
@@ -1624,13 +1576,12 @@ AREXPORT bool ArConfig::writeFile(const char *fileName,
   fprintf(file, "%s %s\n", CONFIG_VERSION_TAG, CURRENT_CONFIG_VERSION);
 
   bool firstSection = true;
-  std::list<ArConfigSection *>::iterator sectionIt;
-  ArConfigSection *section = NULL;
+  std::list<MvrConfigSection *>::iterator sectionIt;
+  MvrConfigSection *section = NULL;
   
   // first write out the generic section (ie sectionless stuff, mostly
   // for backwards compatibility)
-  if ( ((section = findSection("")) != NULL) &&
-       (sectionsToWrite == NULL) )
+  if ( ((section = findSection("")) != NULL) && (sectionsToWrite == NULL) )
   {
     if (!firstSection)
       fprintf(file, "\n");
@@ -1639,25 +1590,24 @@ AREXPORT bool ArConfig::writeFile(const char *fileName,
   }
 
   // then write out the rest (skip the generic section if we have one)
-  for (sectionIt = mySections.begin(); 
-       sectionIt != mySections.end(); 
-       sectionIt++)
+  for (sectionIt = mySections.begin(); sectionIt != mySections.end(); sectionIt++)
   {
     section = (*sectionIt);
     if (strcmp(section->getName(), "") == 0)
       continue;
 
-    if (sectionsToWrite != NULL) {
+    if (sectionsToWrite != NULL) 
+    {
       bool isSectionFound = false;
-      for (std::list<std::string>::iterator swIter = sectionsToWrite->begin();
-           swIter != sectionsToWrite->end();
-           swIter++) {
+      for (std::list<std::string>::iterator swIter = sectionsToWrite->begin(); swIter != sectionsToWrite->end(); swIter++) 
+      {
         std::string sp = *swIter;
-        if (ArUtil::strcasecmp(section->getName(), sp.c_str()) == 0) {
+        if (MvrUtil::strcasecmp(section->getName(), sp.c_str()) == 0) 
+        {
           isSectionFound = true;
           break;
         }
-      } // end for each section to write
+      } 
 
       if (!isSectionFound) {
         continue;
@@ -1676,16 +1626,16 @@ AREXPORT bool ArConfig::writeFile(const char *fileName,
 }
   
 
-AREXPORT bool ArConfig::parseText(const std::list<std::string> &configLines,
-                                  bool continueOnErrors,
-                                  bool *parseOk,
-                                  bool *processOk,
-                                  char *errorBuffer,
-                                  size_t errorBufferLen,
-                                  std::list<std::string> *sectionsToParse,
-                                  ArPriority::Priority highestPriority,
-                                  ArPriority::Priority lowestPriority,
-                                  ArConfigArg::RestartLevel *restartLevelNeeded)
+MVREXPORT bool MvrConfig::parseText(const std::list<std::string> &configLines,
+                                    bool continueOnErrors,
+                                    bool *parseOk,
+                                    bool *processOk,
+                                    char *errorBuffer,
+                                    size_t errorBufferLen,
+                                    std::list<std::string> *sectionsToParse,
+                                    MvrPriority::Priority highestPriority,
+                                    MvrPriority::Priority lowestPriority,
+                                    MvrConfigArg::RestartLevel *restartLevelNeeded)
 {
   if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
     errorBuffer[0] = '\0';
@@ -1701,7 +1651,6 @@ AREXPORT bool ArConfig::parseText(const std::list<std::string> &configLines,
 
   bool ret = true;
   
-  // Should be null, but just in case...
   if (mySectionsToParse != NULL)
   {
     delete mySectionsToParse; 
@@ -1712,7 +1661,7 @@ AREXPORT bool ArConfig::parseText(const std::list<std::string> &configLines,
   copySectionsToParse(sectionsToParse);
   myHighestPriorityToParse = highestPriority;
   myLowestPriorityToParse  = lowestPriority;
-  myRestartLevelNeeded = ArConfigArg::NO_RESTART;
+  myRestartLevelNeeded = MvrConfigArg::NO_RESTART;
   
 
   if (restartLevelNeeded != NULL)
@@ -1720,23 +1669,17 @@ AREXPORT bool ArConfig::parseText(const std::list<std::string> &configLines,
   else
     myCheckingForRestartLevel = false;
 
-  // KMC 8/9/13 I think that the original ARCL command handler acted 
-  // differently. Maybe stopped on first parse error, but allowed 
-  // the callbacks to continue on errors.  TODO Why??!
-
   char lineBuf[10000];
   size_t lineBufLen = sizeof(lineBuf);
   
-  for (std::list<std::string>::const_iterator iter = configLines.begin();
-       iter != configLines.end();
-       iter++) {
+  for (std::list<std::string>::const_iterator iter = configLines.begin(); iter != configLines.end(); iter++) 
+  {
     const std::string &curLine = *iter;
 
     if (curLine.empty()) {
       continue;
     }
-    snprintf(lineBuf, lineBufLen,
-             curLine.c_str());
+    snprintf(lineBuf, lineBufLen, curLine.c_str());
 
     if (!myParser.parseLine(lineBuf, errorBuffer, errorBufferLen))
     {
@@ -1755,16 +1698,16 @@ AREXPORT bool ArConfig::parseText(const std::list<std::string> &configLines,
     errorBuffer = NULL;
     errorBufferLen = 0;
   }
-  //printf("parser %s\n", ArUtil::convertBool(ret));
   
   // if we haven't failed (or we continue on errors) then call the
   // process file callbacks
-  if (ret || continueOnErrors) {
-    if (!callProcessFileCallBacks(continueOnErrors, 
-                                  errorBuffer,
-					                        errorBufferLen)) {
+  if (ret || continueOnErrors) 
+  {
+    if (!callProcessFileCallBacks(continueOnErrors, errorBuffer, errorBufferLen)) 
+    {
       ret = false;
-      if (processOk != NULL) {
+      if (processOk != NULL) 
+      {
         *processOk = false;
       }
     } 
@@ -1785,28 +1728,25 @@ AREXPORT bool ArConfig::parseText(const std::list<std::string> &configLines,
   delete mySectionsToParse; 
   mySectionsToParse = NULL;
 
-  myHighestPriorityToParse = ArPriority::FIRST_PRIORITY;
-  myLowestPriorityToParse  = ArPriority::LAST_PRIORITY;
-  myRestartLevelNeeded = ArConfigArg::NO_RESTART;
+  myHighestPriorityToParse = MvrPriority::FIRST_PRIORITY;
+  myLowestPriorityToParse  = MvrPriority::LAST_PRIORITY;
+  myRestartLevelNeeded = MvrConfigArg::NO_RESTART;
   myCheckingForRestartLevel = true;
 
-  ArLog::log(myProcessFileCallbacksLogLevel,
-      	     "Done parsing text list (ret %s)", 
-	           ArUtil::convertBool(ret));
+  MvrLog::log(myProcessFileCallbacksLogLevel,
+              "Done parsing text list (ret %s)", 
+              MvrUtil::convertBool(ret));
 
   return ret;
 
 } // end method parseText 
 
-// -----------------------------------------------------------------------------
-
-
 /// Parse a config resource file, for translation.
-AREXPORT bool ArConfig::parseResourceFile(const char *fileName, 
-                                  bool continueOnError,
-                                  char *errorBuffer,
-                                  size_t errorBufferLen,
-                                  std::list<std::string> *sectionsToParse)
+MVREXPORT bool MvrConfig::parseResourceFile(const char *fileName, 
+                                            bool continueOnError,
+                                            char *errorBuffer,
+                                            size_t errorBufferLen,
+                                            std::list<std::string> *sectionsToParse)
 {
   bool ret = true;
 
@@ -1815,61 +1755,46 @@ AREXPORT bool ArConfig::parseResourceFile(const char *fileName,
   else
     myFileName = "";
 
-
   if (errorBuffer != NULL)
     errorBuffer[0] = '\0';
-
  
   // stat(fileName, &myReadFileStat);
   FILE *file = NULL;
-
   char line[10000];
 
-  ArLog::log(ArLog::Normal, 
-             "%sArConfig::parseResourceFile() Opening file %s", 
-             myLogPrefix.c_str(),
-             fileName);
-
+  MvrLog::log(MvrLog::Normal, "%sMvrConfig::parseResourceFile() Opening file %s", myLogPrefix.c_str(), fileName);
 
   // Open file in binary mode to avoid conversion of CRLF in windows. 
   // This is necessary so that a consistent checksum value is obtained.
-  if ((file = ArUtil::fopen(fileName, "rb")) == NULL)
+  if ((file = MvrUtil::fopen(fileName, "rb")) == NULL)
   {
-    ArLog::log(ArLog::Terse, "Cannot open file '%s'", fileName);
-    // TODO This used to put the config param name into the error buffer
+    MvrLog::log(MvrLog::Terse, "Cannot open file '%s'", fileName);
+
     if (errorBuffer != NULL) {
-      snprintf(errorBuffer, errorBufferLen, 
-               "Resource file invalid: cannot open file '%s'",
-               fileName);
+      snprintf(errorBuffer, errorBufferLen, "Resource file invalid: cannot open file '%s'", fileName);
     }
     return false;
   }
-
 
   bool isSuccess = true;
 
   char *localErrorBuffer = NULL;
   size_t localErrorBufferLen = 0;
 
-  if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
+  if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+  {
     localErrorBufferLen = errorBufferLen;
     localErrorBuffer = new char[localErrorBufferLen];
     localErrorBuffer[0] = '\0';
   }
 
-  // KMC TODO Parse and use the version info someday.
-  // Parse resource version. 
   fgets(line, sizeof(line), file);
 
-  // KMC TODO This needs to be improved... made more generic... possibly test
-  // that this is really header information.
-  //
-  // Skipping two lines for the header.  The third one is blank.
   for (int h = 0; h < 2; h++) {
     if (fgets(line, sizeof(line), file) == NULL) {
-      ArLog::log(ArLog::Terse, "%sArConfig::parseResourceFile() Header missing in '%s'", 
-                 myLogPrefix.c_str(),
-                 fileName);
+      MvrLog::log(MvrLog::Terse, "%sMvrConfig::parseResourceFile() Header missing in '%s'", 
+                  myLogPrefix.c_str(),
+                  fileName);
       return false;
     }
   }
@@ -1877,160 +1802,140 @@ AREXPORT bool ArConfig::parseResourceFile(const char *fileName,
   bool ignoreNormalSpaces = true;
    
   while ((fgets(line, sizeof(line), file) != NULL)) 
+  {
+    if (MvrUtil::isStrEmpty(line)) 
     {
-      if (ArUtil::isStrEmpty(line)) {
-        continue;
-      }
+      continue;
+    }
      
-      ArArgumentBuilder builder(512, myCsvSeparatorChar, ignoreNormalSpaces); // , true, true);
+    MvrArgumentBuilder builder(512, myCsvSeparatorChar, ignoreNormalSpaces); 
  
-      builder.addPlain(line);
+    builder.addPlain(line);
 
-      if ((builder.getArgc() == 0) ||
-          (ArUtil::isStrEmpty(builder.getArg(0)))) {
-        continue; // More whitespace possibilities
-      }
-      if (builder.getArgc() < ArConfigArg::RESOURCE_INDEX_OF_DESCRIPTION) {
-        // KMC Commented this out because Ctrl-M frequently shows in log
-        IFDEBUG(ArLog::log(ArLog::Normal,
-                  "ArConfig::parseResourceFile() no section for %s",
-                  builder.getFullString()));
-                   
+    if ((builder.getArgc() == 0) || (MvrUtil::isStrEmpty(builder.getArg(0)))) 
+    {
+      continue;
+    }
+    if (builder.getArgc() < MvrConfigArg::RESOURCE_INDEX_OF_DESCRIPTION) 
+    {
+      IFDEBUG(MvrLog::log(MvrLog::Normal,
+                          "MvrConfig::parseResourceFile() no section for %s",
+                          builder.getFullString()));
+      continue;
+    }
+    std::string sectionName = MvrConfigArg::parseResourceSectionName(&builder, myLogPrefix.c_str());  
+    MvrConfigSection *section = findSection(sectionName.c_str());
+    if (section == NULL) {
+      IFDEBUG(MvrLog::log(MvrLog::Normal,
+                          "MvrConfig::parseResourceFile() adding section %s",
+                          sectionName.c_str()));        
+      if (!addSection(CATEGORY_DEBUG, sectionName.c_str(), "")) 
+      {
+        MvrLog::log(MvrLog::Normal,
+                    "MvrConfig::parseResourceFile() error adding section %s",
+                    sectionName.c_str());    
         continue;
       }
 
-      std::string sectionName = ArConfigArg::parseResourceSectionName(&builder,
-                                                                      myLogPrefix.c_str());
-      
-      ArConfigSection *section = findSection(sectionName.c_str());
+      section = findSection(sectionName.c_str());
       if (section == NULL) {
-        IFDEBUG(ArLog::log(ArLog::Normal,
-                           "ArConfig::parseResourceFile() adding section %s",
-                           sectionName.c_str()));        
-        if (!addSection(CATEGORY_DEBUG, sectionName.c_str(), "")) {
-          ArLog::log(ArLog::Normal,
-                     "ArConfig::parseResourceFile() error adding section %s",
-                     sectionName.c_str());    
-          continue;
-        }
-
-        section = findSection(sectionName.c_str());
-        if (section == NULL) {
-          ArLog::log(ArLog::Normal,
-                     "ArConfig::parseResourceFile() error finding new section %s",
-                     sectionName.c_str());    
-          continue;
-        }
+        MvrLog::log(MvrLog::Normal,
+                    "MvrConfig::parseResourceFile() error finding new section %s",
+                    sectionName.c_str());    
+        continue;
       }
+    }
 
-      std::string argName = ArConfigArg::parseResourceArgName(&builder,
-                                                              myLogPrefix.c_str());
+    std::string argName = MvrConfigArg::parseResourceArgName(&builder, myLogPrefix.c_str());
 
-     // An empty argument name means that the section comment should be set.
-     if (argName.empty()) {
-      
-       std::string desc = ArConfigArg::parseResourceDescription(&builder,
-                                                                myLogPrefix.c_str());
+    // An empty argument name means that the section comment should be set.
+    if (argName.empty()) 
+    {
+      std::string desc = MvrConfigArg::parseResourceDescription(&builder, myLogPrefix.c_str());
    
-       if (!desc.empty()) {
+      if (!desc.empty()) 
+      {
+        IFDEBUG(MvrLog::log(MvrLog::Normal,
+                            "MvrConfig::parseResourceFile() setting comment for section %s",
+                            section->getName()));
+        section->setComment(desc.c_str());
+      }
+      continue;
+    } // end if no parameter name
 
-         IFDEBUG(ArLog::log(ArLog::Normal,
-                    "ArConfig::parseResourceFile() setting comment for section %s",
-                    section->getName()));
+    MvrConfigArg::Type argType = MvrConfigArg::parseResourceType(&builder, myLogPrefix.c_str());
 
-         section->setComment(desc.c_str());
-       }
-       continue;
-
-     } // end if no parameter name
-
-
-     ArConfigArg::Type argType = ArConfigArg::parseResourceType(&builder,
-                                                                 myLogPrefix.c_str());
-
-      bool isTopLevel = ArConfigArg::isResourceTopLevel(&builder, 
-                                                        myLogPrefix.c_str());
+    bool isTopLevel = MvrConfigArg::isResourceTopLevel(&builder, myLogPrefix.c_str());
  
-      ArConfigArg *curArg = NULL;
-      ArConfigArg *parentArg = NULL;
+    MvrConfigArg *curArg = NULL;
+    MvrConfigArg *parentArg = NULL;
 
-      if (isTopLevel) {
-        curArg = section->findParam(argName.c_str());
+    if (isTopLevel) 
+    { 
+      curArg = section->findParam(argName.c_str());
+    }
+    else 
+    {
+      std::list<std::string> parentPath = MvrConfigArg::parseResourceParentPath(&builder, 
+                                                                                '|', // TODO Constant
+                                                                                myLogPrefix.c_str());
+      parentArg = section->findParam(parentPath, true); // allow holders
+      if (parentArg != NULL) {
+        curArg = parentArg->findArg(argName.c_str());
+      }
+    }
+
+    if (curArg == NULL) 
+    {
+      IFDEBUG(MvrLog::log(MvrLog::Normal, "MvrConfig::parseResourceFile() creating arg for %s", argName.c_str()));
+      if ((argType != MvrConfigArg::LIST) && (argType != MvrConfigArg::LIST_HOLDER)) 
+      {
+        curArg = new MvrConfigArg(MvrConfigArg::STRING_HOLDER, argName.c_str(), "");
       }
       else {
-        std::list<std::string> parentPath = ArConfigArg::parseResourceParentPath(&builder, 
-                                                                                 '|', // TODO Constant
-                                                                                 myLogPrefix.c_str());
-        parentArg = section->findParam(parentPath, true); // allow holders
-        if (parentArg != NULL) {
-          curArg = parentArg->findArg(argName.c_str());
-        }
+        curArg = new MvrConfigArg(MvrConfigArg::LIST_HOLDER, argName.c_str(), "");
       }
-
-      if (curArg == NULL) {
-
-        IFDEBUG(ArLog::log(ArLog::Normal,
-                           "ArConfig::parseResourceFile() creating arg for %s",
-                           argName.c_str()));
-
-        // This is a hack that should be fixed someday. If the arg type is a
-        // list, then create a list arg -- to which children can be added.
-        // If the arg is a normal arg, then create a string holder.
-        if ((argType != ArConfigArg::LIST) && (argType != ArConfigArg::LIST_HOLDER)) {
-          curArg = new ArConfigArg(ArConfigArg::STRING_HOLDER, argName.c_str(), "");
-        }
-        else {
-          curArg = new ArConfigArg(ArConfigArg::LIST_HOLDER, argName.c_str(), "");
-        }
         
-        if (curArg->parseResource(&builder, NULL, 0, myLogPrefix.c_str())) {
-        
-          if (isTopLevel) {
+      if (curArg->parseResource(&builder, NULL, 0, myLogPrefix.c_str())) 
+      {  
+        if (isTopLevel) 
+        {
             addParamAsIs(*curArg, sectionName.c_str());
-          }
-          else if (parentArg != NULL) {
-            parentArg->addArg(*curArg);
-          }
+        }
+        else if (parentArg != NULL) 
+        {
+          parentArg->addArg(*curArg);
         }
       }
-      else {
-        IFDEBUG(ArLog::log(ArLog::Normal,
-                           "ArConfig::parseResourceFile() found arg for %s",
-                           argName.c_str()));
-        curArg->parseResource(&builder, NULL, 0, myLogPrefix.c_str());
-      }
-    
- 
-    } // end while more lines to read
-
-
+    }
+    else 
+    {
+      IFDEBUG(MvrLog::log(MvrLog::Normal,
+                          "MvrConfig::parseResourceFile() found arg for %s",
+                          argName.c_str()));
+      curArg->parseResource(&builder, NULL, 0, myLogPrefix.c_str());
+    }
+  } // end while more lines to read
   fclose(file);
-
-
   return ret;
-
-} // end method parseResourceFile
+}
   
 /// Parse a config resource file with parameters suitable for custom commands.
-AREXPORT void ArConfig::parseResourceFile(ArArgumentBuilder *builder)
+MVREXPORT void MvrConfig::parseResourceFile(MvrArgumentBuilder *builder)
 {
-  if ((builder == NULL) || 
-      (builder->getArgc() <= 0) ||
-      (builder->getArg(0) == NULL)) {
-    ArLog::log(ArLog::Normal,
-               "ArConfig::parseResourceFile() invalid input");
+  if ((builder == NULL) || (builder->getArgc() <= 0) || (builder->getArg(0) == NULL)) 
+  {
+    MvrLog::log(MvrLog::Normal, "MvrConfig::parseResourceFile() invalid input");
     return;
   }
   parseResourceFile(builder->getArg(0));
 } // end method parseResourceFile
 
-
-      
 /// Write a config resource file, for translation.
-AREXPORT bool ArConfig::writeResourceFile(const char *fileName, 
-                                 bool append,
-                                 std::set<std::string> *alreadyWritten,
-                                 std::list<std::string> *sectionsToWrite)
+MVREXPORT bool MvrConfig::writeResourceFile(const char *fileName, 
+                                            bool append,
+                                            std::set<std::string> *alreadyWritten,
+                                            std::list<std::string> *sectionsToWrite)
 {
   FILE *file = NULL;
   char headerBuf[1024];
@@ -2056,25 +1961,24 @@ AREXPORT bool ArConfig::writeResourceFile(const char *fileName,
 
   std::string mode = ((!append) ? "wb" : "a");
 
-  if ((file = ArUtil::fopen(realFileName.c_str(), mode.c_str())) == NULL)
+  if ((file = MvrUtil::fopen(realFileName.c_str(), mode.c_str())) == NULL)
   {
-    ArLog::log(ArLog::Terse, "%sCannot open file '%s' for writing",
-	       myLogPrefix.c_str(), realFileName.c_str());
+    MvrLog::log(MvLog::Terse, "%sCannot open file '%s' for writing",
+	              myLogPrefix.c_str(), realFileName.c_str());
     return false;
   }
-
   // Start the resource file with version information
   fprintf(file, "%s %s\n", RESOURCE_VERSION_TAG, CURRENT_RESOURCE_VERSION);
 
-  int headerLineCount = ArConfigArg::writeResourceHeader(file, 
-                                                    headerBuf, 
-                                                    sizeof(headerBuf), 
-                                                    myCsvSeparatorChar, 
-                                                    "SECTION",
-                                                    myLogPrefix.c_str());
+  int headerLineCount = MvrConfigArg::writeResourceHeader(file, 
+                                                          headerBuf, 
+                                                          sizeof(headerBuf), 
+                                                          myCsvSeparatorChar, 
+                                                          "SECTION",
+                                                          myLogPrefix.c_str());
 
-  ArLog::log(ArLog::Normal,
-             "%sArConfig::writeResourceFile() file %s, %s %s, header contains %i lines",
+  MvrLog::log(MvrLog::Normal,
+              "%sMvrConfig::writeResourceFile() file %s, %s %s, header contains %i lines",
               myLogPrefix.c_str(), 
               realFileName.c_str(),
               RESOURCE_VERSION_TAG,
@@ -2082,12 +1986,9 @@ AREXPORT bool ArConfig::writeResourceFile(const char *fileName,
               headerLineCount);
   
   bool firstSection = true;
-  ArConfigSection *section = NULL;
+  MvrConfigSection *section = NULL;
   
-  // first write out the generic section (ie sectionless stuff, mostly
-  // for backwards compatibility)
-  if ( ((section = findSection("")) != NULL) &&
-       (sectionsToWrite == NULL) )
+  if (((section = findSection("")) != NULL) && (sectionsToWrite == NULL))
   {
     if (!firstSection)
       fprintf(file, "\n");
@@ -2096,21 +1997,20 @@ AREXPORT bool ArConfig::writeResourceFile(const char *fileName,
   }
 
   // then write out the rest (skip the generic section if we have one)
-  for (std::list<ArConfigSection *>::iterator sectionIt = mySections.begin(); 
-       sectionIt != mySections.end(); 
-       sectionIt++)
+  for (std::list<MvrConfigSection *>::iterator sectionIt = mySections.begin(); sectionIt != mySections.end(); sectionIt++)
   {
     section = (*sectionIt);
     if (strcmp(section->getName(), "") == 0)
       continue;
 
-    if (sectionsToWrite != NULL) {
+    if (sectionsToWrite != NULL) 
+    {
       bool isSectionFound = false;
-      for (std::list<std::string>::iterator swIter = sectionsToWrite->begin();
-           swIter != sectionsToWrite->end();
-           swIter++) {
+      for (std::list<std::string>::iterator swIter = sectionsToWrite->begin(); swIter != sectionsToWrite->end(); swIter++) 
+      {
         std::string sp = *swIter;
-        if (ArUtil::strcasecmp(section->getName(), sp.c_str()) == 0) {
+        if (MvrUtil::strcasecmp(section->getName(), sp.c_str()) == 0) 
+        {
           isSectionFound = true;
           break;
         }
@@ -2130,32 +2030,26 @@ AREXPORT bool ArConfig::writeResourceFile(const char *fileName,
   }
   fclose(file);
   return true;
-
 } // end method writeResourceFile
 
 /// Write a config resource file with parameters suitable for custom commands.
-AREXPORT void ArConfig::writeResourceFile(ArArgumentBuilder *builder)
+MVREXPORT void MvrConfig::writeResourceFile(MvrArgumentBuilder *builder)
 {
-  if ((builder == NULL) || 
-      (builder->getArgc() <= 0) ||
-      (builder->getArg(0) == NULL)) {
-    ArLog::log(ArLog::Normal,
-               "ArConfig::writeResourceFile() invalid input");
+  if ((builder == NULL) || (builder->getArgc() <= 0) || (builder->getArg(0) == NULL)) 
+  {
+    MvrLog::log(MvrLog::Normal, "MvrConfig::writeResourceFile() invalid input");
     return;
   }
   writeResourceFile(builder->getArg(0));
-
 } // end method writeResourceFile
 
-// -----------------------------------------------------------------------------
 
-
-AREXPORT void ArConfig::writeSection(ArConfigSection *section, 
-                                     FILE *file,
-                                     std::set<std::string> *alreadyWritten,
-                                     bool writeExtras,
-                                     ArPriority::Priority highestPriority,
-                                     ArPriority::Priority lowestPriority)
+MVREXPORT void MvrConfig::writeSection(MvrConfigSection *section, 
+                                       FILE *file,
+                                       std::set<std::string> *alreadyWritten,
+                                       bool writeExtras,
+                                       MvrPriority::Priority highestPriority,
+                                       MvrPriority::Priority lowestPriority)
 {
   // holds each line
   char line[1024];
@@ -2164,62 +2058,56 @@ AREXPORT void ArConfig::writeSection(ArConfigSection *section,
   bool commented = false;
   unsigned int startCommentColumn = 25;
 
- 
   /// clear out our written ones between sections
   alreadyWritten->clear();
   
-  if (!ArUtil::isStrEmpty(section->getName())) {
+  if (!MvrUtil::isStrEmpty(section->getName())) 
+  {
     //fprintf(file, "; %s\n", section->getName());
     fprintf(file, "Section %s\n", section->getName());
   }
 
   sprintf(line, "; ");
 
-  if (!ArUtil::isStrEmpty(section->getComment())) 
+  if (!MvrUtil::isStrEmpty(section->getComment())) 
   {
-     ArConfigArg::writeMultiLineComment(section->getComment(),
-                                        file,
-                                        line,
-                                        sizeof(line),
-                                        "; ");
+     MvrConfigArg::writeMultiLineComment(section->getComment(),
+                                         file,
+                                         line,
+                                         sizeof(line),
+                                         "; ");
   }
   
-  fprintf(file, ";SectionFlags for %s: %s\n", 
-	        section->getName(), section->getFlags());
+  fprintf(file, ";SectionFlags for %s: %s\n", section->getName(), section->getFlags());
   
-  std::list<ArConfigArg> *params = section->getParams();
+  std::list<MvrConfigArg> *params = section->getParams();
   
   if (params == NULL) {
     return;
   }
 
-  for (std::list<ArConfigArg>::iterator paramIt = params->begin(); 
-       paramIt != params->end(); 
-       paramIt++)
+  for (std::list<MvrConfigArg>::iterator paramIt = params->begin(); paramIt != params->end(); paramIt++)
   {
     commented = false;
     
-    ArConfigArg *param = &(*paramIt);
+    MvrConfigArg *param = &(*paramIt);
     
-    if (param->getType() == ArConfigArg::SEPARATOR) {
+    if (param->getType() == MvrConfigArg::SEPARATOR) {
       continue;
     }
-    if (alreadyWritten != NULL && 
-	      param->getType() != ArConfigArg::DESCRIPTION_HOLDER &&
+    if (alreadyWritten != NULL && param->getType() != MvrConfigArg::DESCRIPTION_HOLDER &&
 	      alreadyWritten->find(param->getName()) != alreadyWritten->end()) {
       continue;
-      
     }
-    else if (alreadyWritten != NULL && 
-	           param->getType() != ArConfigArg::DESCRIPTION_HOLDER)
+    else if (alreadyWritten != NULL && param->getType() != MvrConfigArg::DESCRIPTION_HOLDER)
     {
       alreadyWritten->insert(param->getName());
     }
 
     // If the parameter's priority does not fall in the specified bounds,
     // then do not write it.
-    if ((param->getConfigPriority() < highestPriority) ||
-        (param->getConfigPriority() > lowestPriority)) {
+    if ((param->getConfigPriority() < highestPriority) || (param->getConfigPriority() > lowestPriority)) 
+    {
       continue;
     }
 
@@ -2230,29 +2118,24 @@ AREXPORT void ArConfig::writeSection(ArConfigSection *section,
                           startCommentColumn,
                           writeExtras,
                           myLogPrefix.c_str());
-                           
-
     // now put a blank line between params if we should
     if (!myNoBlanksBetweenParams)
       fprintf(file, "\n");
   }
 }
 
-
-
-
-AREXPORT void ArConfig::writeSectionResource(ArConfigSection *section, 
-                                        FILE *file,
-                                        std::set<std::string> *alreadyWritten)
+MVREXPORT void MvrConfig::writeSectionResource(MvrConfigSection *section, 
+                                               FILE *file,
+                                               std::set<std::string> *alreadyWritten)
 {
-  if ((section == NULL) || (file == NULL)) {
-    ArLog::log(ArLog::Normal,
-               "ArConfig::writeSectionResource() error, invalid input");
+  if ((section == NULL) || (file == NULL)) 
+  {
+    MvrLog::log(MvrLog::Normal, "MvrConfig::writeSectionResource() error, invalid input");
     return;
   }
 
   // holds each line
-  char line[10000]; // KMC TODO Reasonable max?
+  char line[10000]; 
   const size_t lineSize = sizeof(line);
  
   /// clear out our written ones between sections
@@ -2260,103 +2143,102 @@ AREXPORT void ArConfig::writeSectionResource(ArConfigSection *section,
     alreadyWritten->clear();
   }
 
-  ArConfigArg::writeResourceSectionHeader(file,
-                                          line,
-                                          lineSize,
-                                          myCsvSeparatorChar,
-                                          section->getName(),
-                                          section->getComment(),
-                                          "",   
-                                          "",   // TODO Display name
-                                          true, // TODO,
-                                          myLogPrefix.c_str());
+  MvrConfigArg::writeResourceSectionHeader(file,
+                                           line,
+                                           lineSize,
+                                           myCsvSeparatorChar,
+                                           section->getName(),
+                                           section->getComment(),
+                                           "",   
+                                           "",   
+                                           true, 
+                                           myLogPrefix.c_str());
  
-  std::list<ArConfigArg> *params = section->getParams();
+  std::list<MvrConfigArg> *params = section->getParams();
   
   if (params == NULL) {
     return;
   }
 
-  for (std::list<ArConfigArg>::iterator paramIt = params->begin(); 
+  for (std::list<MvrConfigArg>::iterator paramIt = params->begin(); 
        paramIt != params->end(); 
        paramIt++)
   {
     
-    ArConfigArg *param = &(*paramIt);
+    MvrConfigArg *param = &(*paramIt);
     
-    if (param->getType() == ArConfigArg::SEPARATOR) {
+    if (param->getType() == MvrConfigArg::SEPARATOR) {
       continue;
     }
-    if (ArUtil::isStrEmpty(param->getName())) {
+    if (MvrUtil::isStrEmpty(param->getName())) {
       continue;
     }
     if (alreadyWritten != NULL && 
-	      param->getType() != ArConfigArg::DESCRIPTION_HOLDER &&
+	      param->getType() != MvrConfigArg::DESCRIPTION_HOLDER &&
 	      alreadyWritten->find(param->getName()) != alreadyWritten->end())
       continue;
 
     else if (alreadyWritten != NULL && 
-	           param->getType() != ArConfigArg::DESCRIPTION_HOLDER)
+	           param->getType() != MvrConfigArg::DESCRIPTION_HOLDER)
     {
       alreadyWritten->insert(param->getName());
     }
    
     // Write the parameter to the file.
     param->writeResource(file,
-                    line,
-                    lineSize,
-                    myCsvSeparatorChar,
-                    section->getName(),
-                    myLogPrefix.c_str());
+                         line,
+                         lineSize,
+                         myCsvSeparatorChar,
+                         section->getName(),
+                         myLogPrefix.c_str());
     
   }
 } // end method writeSectionResource
 
-AREXPORT void ArConfig::translateSection(ArConfigSection *section)
+MVEXPORT void MvrConfig::translateSection(MvrConfigSection *section)
 {
-  if ((section == NULL) || (ArUtil::isStrEmpty(section->getName()))) {
+  if ((section == NULL) || (MvrUtil::isStrEmpty(section->getName()))) {
     return;
   }
 
-  IFDEBUG(ArLog::log(ArLog::Normal,
-             "%sArConfig::translateSection() %stranslator for %s",
-             myLogPrefix.c_str(),
-             ((myTranslator != NULL) ? "" : "NULL "),
-             section->getName()));
+  IFDEBUG(MvrLog::log(MvrLog::Normal,
+                      "%sMvrConfig::translateSection() %stranslator for %s",
+                      myLogPrefix.c_str(),
+                      ((myTranslator != NULL) ? "" : "NULL "),
+                      section->getName()));
   
   if (myTranslator != NULL) 
   {
-    ArConfigSection *xltrSection = myTranslator->findSection(section->getName());
+    MvrConfigSection *xltrSection = myTranslator->findSection(section->getName());
 
     if (xltrSection != NULL) {
-      if (!ArUtil::isStrEmpty(xltrSection->getComment())) {
-        IFDEBUG(ArLog::log(ArLog::Normal,
-                 "ArConfig::addSection() translator section for %s",
-                 section->getName()));
+      if (!MvrUtil::isStrEmpty(xltrSection->getComment())) {
+        IFDEBUG(MvrLog::log(MvrLog::Normal,
+                            "MvrConfig::addSection() translator section for %s",
+                            section->getName()));
         section->setComment(xltrSection->getComment());
       }
       else { 
-        IFDEBUG(ArLog::log(ArLog::Normal,
-                 "ArConfig::addSection() no comment in translator section for %s",
-                 section->getName()));
+        IFDEBUG(MvrLog::log(MvrLog::Normal,
+                            "MvrConfig::addSection() no comment in translator section for %s",
+                            section->getName()));
       }
     }
     else {
-      ArLog::log(ArLog::Normal,
-                 "ArConfig::addSection() did not find translator section for %s",
-                 section->getName());
+      MvrLog::log(MvrLog::Normal,
+                  "MvrConfig::addSection() did not find translator section for %s",
+                  section->getName());
     }
   }
+}
 
-} // end method translateSection
 
-
-AREXPORT const char *ArConfig::getBaseDirectory(void) const
+MVREXPORT const char *MvrConfig::getBaseDirectory(void) const
 {
   return myBaseDirectory.c_str();
 }
 
-AREXPORT void ArConfig::setBaseDirectory(const char *baseDirectory)
+MVREXPORT void MvrConfig::setBaseDirectory(const char *baseDirectory)
 {
   if (baseDirectory != NULL && strlen(baseDirectory) > 0)
     myBaseDirectory = baseDirectory;
@@ -2366,7 +2248,7 @@ AREXPORT void ArConfig::setBaseDirectory(const char *baseDirectory)
   myParser.setBaseDirectory(baseDirectory);
 }
 
-AREXPORT const char *ArConfig::getFileName(void) const
+MVREXPORT const char *MvrConfig::getFileName(void) const
 {
   return myFileName.c_str();
 }
@@ -2377,28 +2259,20 @@ AREXPORT const char *ArConfig::getFileName(void) const
    called if there were no errors parsing the file or
    continueOnError was set to false when parseFile was called
 
-   The functor should return true if the config parsed was good
-   (parseFile will return true) false if the config parsed wasn't
-   (parseFile will return false)
-
    @param functor the functor to call 
-
    @param priority the functors are called in descending order, if two
    things have the same number the first one added is the first one
    called
 **/
-AREXPORT void ArConfig::addProcessFileCB(ArRetFunctor<bool> *functor,
-					 int priority)
+MVREXPORT void MvrConfig::addProcessFileCB(MvrRetFunctor<bool> *functor, int priority)
 {
-  myProcessFileCBList.insert(
-	  std::pair<int, ProcessFileCBType *>(-priority, 
-					      new ProcessFileCBType(functor)));
+  myProcessFileCBList.insert(std::pair<int, ProcessFileCBType *>(-priority, new ProcessFileCBType(functor)));
 }
 
 /** 
     Removes a processFileCB, see addProcessFileCB for details
  **/
-AREXPORT void ArConfig::remProcessFileCB(ArRetFunctor<bool> *functor)
+MVREXPORT void MvrConfig::remProcessFileCB(MvrRetFunctor<bool> *functor)
 {
   std::multimap<int, ProcessFileCBType *>::iterator it;
   ProcessFileCBType *cb;
@@ -2422,42 +2296,25 @@ AREXPORT void ArConfig::remProcessFileCB(ArRetFunctor<bool> *functor)
    called if there were no errors parsing the file or
    continueOnError was set to false when parseFile was called
 
-   The functor should return true if the config parsed was good
-   (parseFile will return true) false if the config parsed wasn't
-   (parseFile will return false)
-
    @param functor the functor to call 
-
    @param priority the functors are called in descending order, if two
-   things have the same number the first one added is the first one
-   called
+          things have the same number the first one added is the first one
+          called
 **/
-AREXPORT void ArConfig::addProcessFileCB(
-	ArRetFunctor2<bool, char *, size_t> *functor,
-	int priority)
+MVREXPORT void MvrConfig::addProcessFileCB(MvrRetFunctor2<bool, char *, size_t> *functor, int priority)
 {
   if (functor->getName() != NULL && functor->getName()[0] != '\0')
-    ArLog::log(ArLog::Normal, "ArConfig::addProcessFileCB: Adding error handler callback %s that should have used addProcessFileWithErrorCB", functor->getName());
+    MvrLog::log(MvrLog::Normal, "MvrConfig::addProcessFileCB: Adding error handler callback %s that should have used addProcessFileWithErrorCB", functor->getName());
   else
-    ArLog::log(ArLog::Normal, "ArConfig::addProcessFileCB: Adding anonymous error handler callback that should have used addProcessFileWithErrorCB");
-  myProcessFileCBList.insert(
-	  std::pair<int, ProcessFileCBType *>(-priority, 
-					      new ProcessFileCBType(functor)));
+    MvrLog::log(MvrLog::Normal, "MvrConfig::addProcessFileCB: Adding anonymous error handler callback that should have used addProcessFileWithErrorCB");
+  myProcessFileCBList.insert(std::pair<int, ProcessFileCBType *>(-priority, new ProcessFileCBType(functor)));
 }
+
 /**
    This function has a different name than addProcessFileCB just so
    that if you mean to get this function but have the wrong functor
    you'll get an error.  The rem's are the same though since that
    shouldn't matter.
-
-   After a file has been read all the way these processFileCBs are
-   called in the priority (higher numbers first)... these are only
-   called if there were no errors parsing the file or
-   continueOnError was set to false when parseFile was called
-
-   The functor should return true if the config parsed was good
-   (parseFile will return true) false if the config parsed wasn't
-   (parseFile will return false)
 
    @param functor the functor to call (the char * and unsigned int
    should be used by the functor to put an error message into that
@@ -2467,20 +2324,15 @@ AREXPORT void ArConfig::addProcessFileCB(
    things have the same number the first one added is the first one
    called
 **/
-AREXPORT void ArConfig::addProcessFileWithErrorCB(
-	ArRetFunctor2<bool, char *, size_t> *functor,
-	int priority)
+MVREXPORT void MvrConfig::addProcessFileWithErrorCB(MvrRetFunctor2<bool, char *, size_t> *functor, int priority)
 {
-  myProcessFileCBList.insert(
-	  std::pair<int, ProcessFileCBType *>(-priority, 
-				      new ProcessFileCBType(functor)));
+  myProcessFileCBList.insert( std::pair<int, ProcessFileCBType *>(-priority, new ProcessFileCBType(functor)));
 }
 
 /** 
     Removes a processFileCB, see addProcessFileCB for details
  **/
-AREXPORT void ArConfig::remProcessFileCB(
-	ArRetFunctor2<bool, char *, size_t> *functor)
+MVREXPORT void MvrConfig::remProcessFileCB(MvrRetFunctor2<bool, char *, size_t> *functor)
 {
   std::multimap<int, ProcessFileCBType *>::iterator it;
   ProcessFileCBType *cb;
@@ -2497,14 +2349,14 @@ AREXPORT void ArConfig::remProcessFileCB(
   }
 }
 
-AREXPORT bool ArConfig::callProcessFileCallBacks(bool continueOnErrors,
-						 char *errorBuffer,
-						 size_t errorBufferLen)
+MVREXPORT bool MvrConfig::callProcessFileCallBacks(bool continueOnErrors,
+                                                   char *errorBuffer,
+                                                   size_t errorBufferLen)
 {
   bool ret = true;
   std::multimap<int, ProcessFileCBType *>::iterator it;
   ProcessFileCBType *callback;
-  ArLog::LogLevel level = myProcessFileCallbacksLogLevel;
+  MvrLog::LogLevel level = myProcessFileCallbacksLogLevel;
 
   // reset our section to nothing again
   mySection = "";
@@ -2516,20 +2368,16 @@ AREXPORT bool ArConfig::callProcessFileCallBacks(bool continueOnErrors,
   if (errorBuffer != NULL && errorBufferLen > 0)
     errorBuffer[0] = '\0';
 
-  ArLog::log(level, "%sProcessing file", myLogPrefix.c_str());
-  for (it = myProcessFileCBList.begin(); 
-       it != myProcessFileCBList.end(); 
-       ++it)
+  MvrLog::log(level, "%sProcessing file", myLogPrefix.c_str());
+  for (it = myProcessFileCBList.begin(); it != myProcessFileCBList.end(); ++it)
   {
     callback = (*it).second;
     if (callback->getName() != NULL && callback->getName()[0] != '\0')
-      ArLog::log(level, "%sProcessing functor '%s' (%d)", 
-                 myLogPrefix.c_str(),
-		             callback->getName(), -(*it).first);
+      MvrLog::log(level, "%sProcessing functor '%s' (%d)", 
+                  myLogPrefix.c_str(),
+		              callback->getName(), -(*it).first);
     else
-      ArLog::log(level, "%sProcessing unnamed functor (%d)", 
-                 myLogPrefix.c_str(),
-                 -(*it).first);
+      MvrLog::log(level, "%sProcessing unnamed functor (%d)", myLogPrefix.c_str(), -(*it).first);
     if (!(*it).second->call(errorBuffer, errorBufferLen))
     {
       //printf("# %s\n", scratchBuffer); 
@@ -2538,52 +2386,50 @@ AREXPORT bool ArConfig::callProcessFileCallBacks(bool continueOnErrors,
       // pointer to it
       if (errorBuffer != NULL && errorBuffer[0] != '\0')
       {
-	errorBuffer = NULL;
-	errorBufferLen = 0;
+        errorBuffer = NULL;
+        errorBufferLen = 0;
       }
       ret = false;
       if (!continueOnErrors)
       {
-	if (callback->getName() != NULL && callback->getName()[0] != '\0')
-	  ArLog::log(ArLog::Normal, "ArConfig: Failed, stopping because the '%s' process file callback failed", 
-		     callback->getName());
-	else
-	  ArLog::log(ArLog::Normal, "ArConfig: Failed, stopping because unnamed process file callback failed");
-	break;
+	      if (callback->getName() != NULL && callback->getName()[0] != '\0')
+	        MvrLog::log(MvrLog::Normal, "MvrConfig: Failed, stopping because the '%s' process file callback failed", 
+		                  callback->getName());
+	      else
+	        MvrLog::log(MvrLog::Normal, "MvrConfig: Failed, stopping because unnamed process file callback failed");
+	      break;
       }
       else
       {
-	if (callback->getName() != NULL && callback->getName()[0] != '\0')
-	  ArLog::log(ArLog::Normal, "ArConfig: Failed but continuing, the '%s' process file callback failed", 
-		     callback->getName());
-	else
-	  ArLog::log(ArLog::Normal, "ArConfig: Failed but continuing, an unnamed process file callback failed");
+	      if (callback->getName() != NULL && callback->getName()[0] != '\0')
+	        MvrLog::log(MvrLog::Normal, "MvrConfig: Failed but continuing, the '%s' process file callback failed", 
+		                 callback->getName());
+	      else
+	        MvrLog::log(MvrLog::Normal, "MvrConfig: Failed but continuing, an unnamed process file callback failed");
       }
-
     }
   }
   if (ret || continueOnErrors)
   {
-    ArLog::log(level, "%sProcessing with own processFile",
-                 myLogPrefix.c_str());
+    MvrLog::log(level, "%sProcessing with own processFile", myLogPrefix.c_str());
     if (!processFile())
       ret = false;
   }
-  ArLog::log(level, "%sDone processing file, ret is %s", myLogPrefix.c_str(),
-	     ArUtil::convertBool(ret));
+  MvrLog::log(level, "%sDone processing file, ret is %s", myLogPrefix.c_str(),
+	            MvrUtil::convertBool(ret));
 
   return ret;
 }
 
   
-AREXPORT std::list<std::string> ArConfig::getCategoryNames() const
+MVREXPORT std::list<std::string> MvrConfig::getCategoryNames() const
 {
   std::list<std::string> retList;
 
-  for (std::map<std::string, std::list<std::string> >::const_iterator iter =
-                                    myCategoryToSectionsMap.begin();
+  for (std::map<std::string, std::list<std::string> >::const_iterator iter = myCategoryToSectionsMap.begin();
        iter != myCategoryToSectionsMap.end();
-       iter++) {
+       iter++) 
+  {
     retList.push_back(iter->first);
   }
   return retList;
@@ -2596,51 +2442,47 @@ AREXPORT std::list<std::string> ArConfig::getCategoryNames() const
  * section names; if empty/null, then the method returns the names of all
  * sections that have not been included in any category
 **/
-AREXPORT std::list<std::string> ArConfig::getSectionNamesInCategory
-                                              (const char *categoryName) const
+MVREXPORT std::list<std::string> MvrConfig::getSectionNamesInCategory(const char *categoryName) const
 {
   std::list<std::string> retList;
   
-  if (!ArUtil::isStrEmpty(categoryName)) {
- 
-    std::map<std::string, std::list<std::string> >::const_iterator iter =
-                                      myCategoryToSectionsMap.find(categoryName);
-    if (iter != myCategoryToSectionsMap.end()) {
+  if (!MvrUtil::isStrEmpty(categoryName)) 
+  {
+    std::map<std::string, std::list<std::string> >::const_iterator iter = myCategoryToSectionsMap.find(categoryName);
+    if (iter != myCategoryToSectionsMap.end()) 
+    {
       retList = iter->second;
     }
   }
   else { // find sections that have no category
    
-    for (std::list<ArConfigSection *>::const_iterator sIter = mySections.begin(); 
+    for (std::list<MvrConfigSection *>::const_iterator sIter = mySections.begin(); 
          sIter != mySections.end();
-         sIter++) {
-                           
-      const ArConfigSection *section = *sIter;
+         sIter++) 
+    {                       
+      const MvrConfigSection *section = *sIter;
       if ((section != NULL) &&
-          (!ArUtil::isStrEmpty(section->getName())) &&
-          (ArUtil::isStrEmpty(section->getCategoryName()))) {
+          (!MvrUtil::isStrEmpty(section->getName())) &&
+          (MvrUtil::isStrEmpty(section->getCategoryName()))) {
         retList.push_back(section->getName());
       }
     } // end for each section
-
   } // end else find sections that have no category
-
   return retList;
-  
 } // end method getSectionNamesInCategory
   
 
-AREXPORT std::list<std::string> ArConfig::getSectionNames() const
+MVREXPORT std::list<std::string> MvrConfig::getSectionNames() const
 {
    std::list<std::string> retList;
 
-   for (std::list<ArConfigSection *>::const_iterator sIter = mySections.begin(); 
+   for (std::list<MvrConfigSection *>::const_iterator sIter = mySections.begin(); 
         sIter != mySections.end();
         sIter++) {
                            
-    const ArConfigSection *section = *sIter;
-    if ((section != NULL) &&
-        (!ArUtil::isStrEmpty(section->getName()))) {
+    const MvrConfigSection *section = *sIter;
+    if ((section != NULL) &&(!MvrUtil::isStrEmpty(section->getName()))) 
+    {
       retList.push_back(section->getName());
     }
   } // end for each section
@@ -2650,18 +2492,18 @@ AREXPORT std::list<std::string> ArConfig::getSectionNames() const
 } // end method getSectionNames
 
 
-AREXPORT std::list<ArConfigSection *> *ArConfig::getSections(void)
+MVREXPORT std::list<MvrConfigSection *> *MvrConfig::getSections(void)
 {
   return &mySections;
 }
 
 
-AREXPORT void ArConfig::setNoBlanksBetweenParams(bool noBlanksBetweenParams)
+MVREXPORT void MvrConfig::setNoBlanksBetweenParams(bool noBlanksBetweenParams)
 {
   myNoBlanksBetweenParams = noBlanksBetweenParams;
 }
 
-AREXPORT bool ArConfig::getNoBlanksBetweenParams(void)
+MVREXPORT bool MvrConfig::getNoBlanksBetweenParams(void)
 {
   return myNoBlanksBetweenParams;
 }
@@ -2671,27 +2513,27 @@ AREXPORT bool ArConfig::getNoBlanksBetweenParams(void)
    this name, note that ONLY the first parameter of this name will be
    used, so if you have duplicates only the first one will be set.
  **/
-AREXPORT void ArConfig::useArgumentParser(ArArgumentParser *parser)
+MVREXPORT void MvrConfig::useArgumentParser(MvrArgumentParser *parser)
 {
   myArgumentParser = parser;
 }
 
-AREXPORT bool ArConfig::parseArgumentParser(ArArgumentParser *parser, 	
-					    bool continueOnError,
-					    char *errorBuffer,
-					    size_t errorBufferLen)
+MVREXPORT bool MvrConfig::parseArgumentParser(MvrArgumentParser *parser, 	
+                                              bool continueOnError,
+                                              char *errorBuffer,
+                                              size_t errorBufferLen)
 {
-  std::list<ArConfigSection *>::iterator sectionIt;
-  std::list<ArConfigArg>::iterator paramIt;
-  ArConfigSection *section = NULL;
-  ArConfigArg *param = NULL;
-  std::list<ArConfigArg> *params = NULL;
+  std::list<MvrConfigSection *>::iterator sectionIt;
+  std::list<MvrConfigArg>::iterator paramIt;
+  MvrConfigSection *section = NULL;
+  MvrConfigArg *param = NULL;
+  std::list<MvrConfigArg> *params = NULL;
 
   bool ret;
   size_t i;
   std::string strArg;
   std::string strUndashArg;
-  ArArgumentBuilder builder;
+  MvrArgumentBuilder builder;
   builder.setQuiet(myIsQuiet);
 
   bool plainMatch;
@@ -2700,12 +2542,10 @@ AREXPORT bool ArConfig::parseArgumentParser(ArArgumentParser *parser,
   {
     if (parser->getArg(i) == NULL)
     {
-      ArLog::log(ArLog::Terse, "%sset up wrong (parseArgumentParser broken).",
-                 myLogPrefix.c_str());
+      MvrLog::log(MvrLog::Terse, "%sset up wrong (parseArgumentParser broken).",
+                  myLogPrefix.c_str());
       if (errorBuffer != NULL)
-        strncpy(errorBuffer, 
-        "ArConfig set up wrong (parseArgumentParser broken).", 
-        errorBufferLen);
+        strncpy(errorBuffer, "MvrConfig set up wrong (parseArgumentParser broken).", errorBufferLen);
       return false;
     }
     strArg = parser->getArg(i); 
@@ -2714,9 +2554,7 @@ AREXPORT bool ArConfig::parseArgumentParser(ArArgumentParser *parser,
     else
       strUndashArg = "";
     //printf("normal %s undash %s\n", strArg.c_str(), strUndashArg.c_str());
-    for (sectionIt = mySections.begin(); 
-         sectionIt != mySections.end(); 
-         sectionIt++)
+    for (sectionIt = mySections.begin(); sectionIt != mySections.end(); sectionIt++)
     {
       section = (*sectionIt);
       params = section->getParams();
@@ -2724,15 +2562,10 @@ AREXPORT bool ArConfig::parseArgumentParser(ArArgumentParser *parser,
       for (paramIt = params->begin(); paramIt != params->end(); paramIt++)
       {
         param = &(*paramIt);
-        /*
-        printf("### normal %s undash %s %d %d\n", strArg.c_str(), 
-        strUndashArg.c_str(),
-        ArUtil::strcasecmp(param->getName(), strArg),
-        ArUtil::strcasecmp(param->getName(), strUndashArg));
-        */
+
         if (strlen(param->getName()) > 0 &&
-          ((plainMatch = ArUtil::strcasecmp(param->getName(),strArg)) == 0 ||
-          ArUtil::strcasecmp(param->getName(), strUndashArg) == 0))
+          ((plainMatch = MvrUtil::strcasecmp(param->getName(),strArg)) == 0 ||
+          MvrUtil::strcasecmp(param->getName(), strUndashArg) == 0))
         {
           if (plainMatch == 0)
             builder.setExtraString(strArg.c_str());
@@ -2767,9 +2600,8 @@ AREXPORT bool ArConfig::parseArgumentParser(ArArgumentParser *parser,
           // errors call ourselves again (so we don't hose iterators up above)
           if (ret || continueOnError)
           {
-            //printf("Ret %s\n", ArUtil::convertBool(ret));
-            return ret && parseArgumentParser(parser, continueOnError, 
-              errorBuffer, errorBufferLen);
+            //printf("Ret %s\n", MvrUtil::convertBool(ret));
+            return ret && parseArgumentParser(parser, continueOnError, errorBuffer, errorBufferLen);
           }
           else
             return false;
@@ -2781,39 +2613,31 @@ AREXPORT bool ArConfig::parseArgumentParser(ArArgumentParser *parser,
   return true;
 }
 
-AREXPORT ArConfigSection *ArConfig::findSection(const char *sectionName) const
+MVREXPORT MvrConfigSection *MvrConfig::findSection(const char *sectionName) const
 {
-  // KMC 6/26/13 Added this to prevent exception in call to strcasecmp (at 
-  // least in its current implementation). Still allowing a search for an 
-  // empty string because that would have previously worked, and do not want
-  // to break any existing functionality.
-  if (sectionName == NULL) {
-    ArLog::log(ArLog::Normal,
-               "ArConfig::findSection() cannot find NULL section name");
+  if (sectionName == NULL) 
+  {
+    MvrLog::log(MvrLog::Normal,"MvrConfig::findSection() cannot find NULL section name");
     return NULL;
   }
 
-  ArConfigSection *section = NULL;
-  ArConfigSection *tempSection = NULL;
+  MvrConfigSection *section = NULL;
+  MvrConfigSection *tempSection = NULL;
 
-  for (std::list<ArConfigSection *>::const_iterator sectionIt = mySections.begin(); 
-       sectionIt != mySections.end(); 
-       sectionIt++)
+  for (std::list<MvrConfigSection *>::const_iterator sectionIt = mySections.begin(); sectionIt != mySections.end(); sectionIt++)
   {
     tempSection = (*sectionIt);
     if (tempSection == NULL) {
-      ArLog::log(ArLog::Normal,
-                 "ArConfig::findSection(%s) unexpected null section in config",
-                 sectionName);
+      MvrLog::log(MvrLog::Normal,
+                  "MvrConfig::findSection(%s) unexpected null section in config",
+                  sectionName);
       continue;
     }
 
    
-    if (ArUtil::strcasecmp(tempSection->getName(), sectionName) == 0)
+    if (MvrUtil::strcasecmp(tempSection->getName(), sectionName) == 0)
     {
       section = tempSection;
-      // KMC 7/11/12 Added the break here (hoping there's not a compelling
-      // reason to always search the config for null sections.
       break;
     }
   }
@@ -2822,63 +2646,58 @@ AREXPORT ArConfigSection *ArConfig::findSection(const char *sectionName) const
 } // end method findSection
 
 
-void ArConfig::copySectionsToParse(std::list<std::string> *from)
+void MvrConfig::copySectionsToParse(std::list<std::string> *from)
 {
-  // MPL inserted these two lines trying to track down a memory leak
   if (mySectionsToParse != NULL)
     delete mySectionsToParse;
   std::string sections;
   mySectionsToParse = NULL;
   if (from != NULL) {
     mySectionsToParse = new std::list<std::string>();
-    for (std::list<std::string>::const_iterator spIter = from->begin();
-         spIter != from->end();
-         spIter++) {
+    for (std::list<std::string>::const_iterator spIter = from->begin(); spIter != from->end(); spIter++) 
+    {
       sections += "'";
       sections += (*spIter);
       sections += "' ";
       mySectionsToParse->push_back(*spIter);
     } // end for each section to parse
-    ArLog::log(ArLog::Verbose, "Will parse section(s) %s", sections.c_str());
+    MvrLog::log(MvrLog::Verbose, "Will parse section(s) %s", sections.c_str());
   } // end if copy sections to parse
   else
   {
-    ArLog::log(ArLog::Verbose, "Will parse all sections");
+    MvrLog::log(MvrLog::Verbose, "Will parse all sections");
   }
 } // end method copySectionsToParse
 
-AREXPORT void ArConfig::addSectionNotToParse(const char *section)
+MVREXPORT void MvrConfig::addSectionNotToParse(const char *section)
 {
-  ArLog::log(ArLog::Normal, "%sWill not parse section %s", 
-	     myLogPrefix.c_str(), section);
+  MvrLog::log(MvrLog::Normal, "%sWill not parse section %s", 
+	            myLogPrefix.c_str(), section);
   mySectionsNotToParse.insert(section);
 } // end method copySectionsToParse
 
 
 
-AREXPORT void ArConfig::remSectionNotToParse(const char *section)
+MVREXPORT void MvrConfig::remSectionNotToParse(const char *section)
 {
-  ArLog::log(ArLog::Normal, "%sWill not not parse section %s", 
-	     myLogPrefix.c_str(), section);
+  MvrLog::log(MvrLog::Normal, "%sWill not not parse section %s", myLogPrefix.c_str(), section);
   mySectionsNotToParse.erase(section);
 } // end method copySectionsToParse
 
 
 
-AREXPORT void ArConfig::clearAllValueSet(void)
+MVREXPORT void MvrConfig::clearAllValueSet(void)
 {
-  std::list<ArConfigSection *> *sections;
-  ArConfigSection *section;
-  std::list<ArConfigSection *>::iterator sectionIt;
+  std::list<<MvrConfigSection *> *sections;
+  MvrConfigSection *section;
+  std::list<MvrConfigSection *>::iterator sectionIt;
   
-  std::list<ArConfigArg> *params;
-  ArConfigArg *param;
-  std::list<ArConfigArg>::iterator paramIt;
+  std::list<MvrConfigArg> *params;
+  MvrConfigArg *param;
+  std::list<MvrConfigArg>::iterator paramIt;
 
   sections = getSections();
-  for (sectionIt = sections->begin(); 
-       sectionIt != sections->end(); 
-       sectionIt++)
+  for (sectionIt = sections->begin(); sectionIt != sections->end(); sectionIt++)
   {
     section = (*sectionIt);
     params = section->getParams();
@@ -2891,43 +2710,41 @@ AREXPORT void ArConfig::clearAllValueSet(void)
 }
 
 
-AREXPORT void ArConfig::removeAllUnsetValues(void)
+MVREXPORT void MvrConfig::removeAllUnsetValues(void)
 {
   removeAllUnsetValues(false);
 }
 
-AREXPORT void ArConfig::removeAllUnsetSections(void)
+MVREXPORT void MvrConfig::removeAllUnsetSections(void)
 {
   removeAllUnsetValues(true);
 }
 
 
-AREXPORT void ArConfig::removeAllUnsetValues(bool isRemovingUnsetSectionsOnly)
+MVREXPORT void MvrConfig::removeAllUnsetValues(bool isRemovingUnsetSectionsOnly)
 {
-  std::list<ArConfigSection *> *sections;
-  ArConfigSection *section;
-  std::list<ArConfigSection *>::iterator sectionIt;
+  std::list<MvrConfigSection *> *sections;
+  MvrConfigSection *section;
+  std::list<MvrConfigSection *>::iterator sectionIt;
   
-  std::list<ArConfigArg> *params;
-  ArConfigArg *param;
-  std::list<ArConfigArg>::iterator paramIt;
-  std::list<std::list<ArConfigArg>::iterator> removeParams;
-  std::list<std::list<ArConfigArg>::iterator>::iterator removeParamsIt;
+  std::list<MvrConfigArg> *params;
+  MvrConfigArg *param;
+  std::list<MvrConfigArg>::iterator paramIt;
+  std::list<std::list<MvrConfigArg>::iterator> removeParams;
+  std::list<std::list<MvrConfigArg>::iterator>::iterator removeParamsIt;
 
   sections = getSections();
-  for (sectionIt = sections->begin(); 
-       sectionIt != sections->end(); 
-       sectionIt++)
+  for (sectionIt = sections->begin(); sectionIt != sections->end(); sectionIt++)
   {
     section = (*sectionIt);
     params = section->getParams();
     for (paramIt = params->begin(); paramIt != params->end(); paramIt++)
     {
       param = &(*paramIt);
-      if (param->getType() != ArConfigArg::SEPARATOR && 
-	        param->getType() != ArConfigArg::STRING_HOLDER && 
-	        param->getType() != ArConfigArg::LIST_HOLDER && 
-	        param->getType() != ArConfigArg::DESCRIPTION_HOLDER)
+      if (param->getType() != MvrConfigArg::SEPARATOR && 
+	        param->getType() != MvrConfigArg::STRING_HOLDER && 
+	        param->getType() != MvrConfigArg::LIST_HOLDER && 
+	        param->getType() != MvrConfigArg::DESCRIPTION_HOLDER)
       {
         if (!param->isValueSet()) {
 	        removeParams.push_back(paramIt);
@@ -2937,16 +2754,15 @@ AREXPORT void ArConfig::removeAllUnsetValues(bool isRemovingUnsetSectionsOnly)
           break;
         }
       }
-
     }
     while ((removeParamsIt = removeParams.begin()) != removeParams.end())
     {
-      ArLog::log(ArLog::Verbose, 
-		 "%s:removeAllUnsetValues: Removing %s:%s", 
-     myLogPrefix.c_str(),
-		 section->getName(), (*(*removeParamsIt)).getName());
-      section->getParams()->erase((*removeParamsIt));
-      removeParams.pop_front();      
+      MvrLog::log(MvrLog::Verbose, 
+		              "%s:removeAllUnsetValues: Removing %s:%s", 
+                  myLogPrefix.c_str(),
+		              section->getName(), (*(*removeParamsIt)).getName());
+                  section->getParams()->erase((*removeParamsIt));
+                  removeParams.pop_front();      
     }
   }
 }
@@ -2958,18 +2774,17 @@ AREXPORT void ArConfig::removeAllUnsetValues(bool isRemovingUnsetSectionsOnly)
    and such, this should be called by anything that's going to parse
    the config...
 **/
-AREXPORT void ArConfig::setPermissions(
-	bool allowFactory, bool saveUnknown)
+MVREXPORT void MvrConfig::setPermissions(bool allowFactory, bool saveUnknown)
 {
   myPermissionAllowFactory = allowFactory;
   myPermissionSaveUnknown = saveUnknown;
   
-  ArLog::log(ArLog::Normal, "%s: Setting permissions of allowFactory to %s and saveUnknown to %s",
-	     myLogPrefix.c_str(), 
-	     ArUtil::convertBool(myPermissionAllowFactory),
-	     ArUtil::convertBool(myPermissionSaveUnknown));
+  MvrLog::log(MvrLog::Normal, "%s: Setting permissions of allowFactory to %s and saveUnknown to %s",
+	            myLogPrefix.c_str(), 
+              MvrUtil::convertBool(myPermissionAllowFactory),
+              MvrUtil::convertBool(myPermissionSaveUnknown));
 }
-
+///TODO
 AREXPORT ArConfigArg::RestartLevel ArConfig::getRestartLevelNeeded(void) const
 {
   return myRestartLevelNeeded;
