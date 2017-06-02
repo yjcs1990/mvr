@@ -4,7 +4,7 @@
  > Description  : Base packet class
  > Author       : Yu Jie
  > Create Time  : 2017年04月17日
- > Modify Time  : 2017年05月17日
+ > Modify Time  : 2017年06月02日
 ***************************************************************************************************/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
