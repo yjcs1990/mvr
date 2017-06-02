@@ -245,8 +245,7 @@ MVREXPORT MvrConfig &MvrConfig::Operator=(const MvrConfig &config)
                         "%soperator=(from %s) begins",
                         myLogPrefix.c_str(),
                         config.myLogPrefix.c_str()));
-  // TODO: The following attributes also need to be copied (or
-  // something)
+
   myArgumentParser = NULL;
   setBaseDirectory(config.getBaseDirectory());
   myNoBlanksBetweenParams = config.myNoBlanksBetweenParams;
@@ -303,8 +302,7 @@ MVREXPORT void MvrConfig::copyAndDetach(const MvrConfig &config)
                         "%soperator=(from %s) begins",
                         myLogPrefix.c_str(),
                         config.myLogPrefix.c_str()));
-  // TODO: The following attributes also need to be copied (or
-  // something)
+
   myArgumentParser = NULL;
   setBaseDirectory(config.getBaseDirectory());
   myNoBlanksBetweenParams = config.myNoBlanksBetweenParams;
@@ -1877,7 +1875,7 @@ MVREXPORT bool MvrConfig::parseResourceFile(const char *fileName,
     else 
     {
       std::list<std::string> parentPath = MvrConfigArg::parseResourceParentPath(&builder, 
-                                                                                '|', // TODO Constant
+                                                                                '|', 
                                                                                 myLogPrefix.c_str());
       parentArg = section->findParam(parentPath, true); // allow holders
       if (parentArg != NULL) {
@@ -2586,7 +2584,7 @@ MVREXPORT bool MvrConfig::parseArgumentParser(MvrArgumentParser *parser,
           bool oldDuplicateParams = myDuplicateParams;
           mySection = section->getName();
           mySectionBroken = false;
-          mySectionIgnored = false; // ?? TODO
+          mySectionIgnored = false; // ??
           myUsingSections = true;
           myDuplicateParams = false;
           ret = parseArgument(&builder, errorBuffer, errorBufferLen);
@@ -2784,45 +2782,46 @@ MVREXPORT void MvrConfig::setPermissions(bool allowFactory, bool saveUnknown)
               MvrUtil::convertBool(myPermissionAllowFactory),
               MvrUtil::convertBool(myPermissionSaveUnknown));
 }
-///TODO
-AREXPORT ArConfigArg::RestartLevel ArConfig::getRestartLevelNeeded(void) const
+
+MVREXPORT MvrConfigArg::RestartLevel MvrConfig::getRestartLevelNeeded(void) const
 {
   return myRestartLevelNeeded;
 }
 
-AREXPORT void ArConfig::resetRestartLevelNeeded(void) 
+MVREXPORT void MvrConfig::resetRestartLevelNeeded(void) 
 {
-  myRestartLevelNeeded = ArConfigArg::NO_RESTART;
+  myRestartLevelNeeded = MvrConfigArg::NO_RESTART;
 }
 
 
-AREXPORT void ArConfig::addListNamesToParser(const ArConfigArg &parent)
+MVREXPORT void MvrConfig::addListNamesToParser(const MvrConfigArg &parent)
 {
-  if (parent.getType() != ArConfigArg::LIST)
+  if (parent.getType() != MvrConfigArg::LIST)
     return;
   
-  std::list<ArConfigArg> children = parent.getArgs();
-  std::list<ArConfigArg>::iterator it;
+  std::list<MvrConfigArg> children = parent.getArgs();
+  std::list<MvrConfigArg>::iterator it;
   
   for (it = children.begin(); it != children.end(); it++)
   {
-    ArConfigArg child = (*it);
-    //ArLog::log(ArLog::Normal, "@@@ Adding %s", child.getName());
+    MvrConfigArg child = (*it);
+    //MvrLog::log(MvrLog::Normal, "@@@ Adding %s", child.getName());
     if (!myParser.addHandlerWithError(child.getName(), &myParserCB))
     {
-      if (!myIsQuiet) {
-	ArLog::log(ArLog::Verbose, "%sCould not add parameter '%s' to file parser, probably already there.", 
-		   myLogPrefix.c_str(), child.getName());
+      if (!myIsQuiet) 
+      {
+	      MvrLog::log(MvrLog::Verbose, "%sCould not add parameter '%s' to file parser, probably already there.", 
+		    myLogPrefix.c_str(), child.getName());
       }
     }
     addListNamesToParser(child);
   }
 }
 
-AREXPORT ArConfigSection::ArConfigSection(const char *name, 
-					                                const char *comment,
-                                          bool isQuiet,
-                                          const char *categoryName) :
+MVREXPORT MvrConfigSection::MvrConfigSection(const char *name, 
+                                             const char *comment,
+                                             bool isQuiet,
+                                             const char *categoryName) :
   myName((name != NULL) ? name : ""),
   myComment((comment != NULL) ? comment : ""),
   myCategoryName((categoryName != NULL) ? categoryName : ""),
@@ -2831,40 +2830,39 @@ AREXPORT ArConfigSection::ArConfigSection(const char *name,
   myParams(),
   myIsQuiet(isQuiet)
 {
-  myFlags = new ArArgumentBuilder(512, '|');
+  myFlags = new MvrArgumentBuilder(512, '|');
   myFlags->setQuiet(myIsQuiet);
 }
 
-AREXPORT ArConfigSection::~ArConfigSection()
+MVREXPORT MvrConfigSection::~MvrConfigSection()
 {
   delete myFlags;
 }
 
 
-AREXPORT ArConfigSection::ArConfigSection(const ArConfigSection &section) 
+MVREXPORT MvrConfigSection::MvrConfigSection(const MvrConfigSection &section) 
 {
   myName = section.myName;
   myComment = section.myComment;
   myCategoryName = section.myCategoryName;
   myDisplayName = section.myDisplayName;
 
-  myFlags = new ArArgumentBuilder(512, '|');
+  myFlags = new MvrArgumentBuilder(512, '|');
   // Since any messages were logged when the first section was created,
   // it doesn't seem necessary to log them again.
   myFlags->setQuiet(true);
   myFlags->addPlain(section.myFlags->getFullString());
 
-  for (std::list<ArConfigArg>::const_iterator it = section.myParams.begin(); 
+  for (std::list<MvrConfigArg>::const_iterator it = section.myParams.begin(); 
        it != section.myParams.end(); 
        it++) 
   {
     myParams.push_back(*it);
   }
-
   myIsQuiet = section.myIsQuiet;
 }
 
-AREXPORT ArConfigSection &ArConfigSection::operator=(const ArConfigSection &section) 
+MVREXPORT MvrConfigSection &MvrConfigSection::operator=(const MvrConfigSection &section) 
 {
   if (this != &section) 
   {
@@ -2875,25 +2873,23 @@ AREXPORT ArConfigSection &ArConfigSection::operator=(const ArConfigSection &sect
     myDisplayName = section.myDisplayName;
   
     delete myFlags;
-    myFlags = new ArArgumentBuilder(512, '|');
+    myFlags = new MvrArgumentBuilder(512, '|');
     //myFlags->setQuiet(myIsQuiet);
     myFlags->addPlain(section.myFlags->getFullString());
     
-    for (std::list<ArConfigArg>::const_iterator it = section.myParams.begin(); 
-	 it != section.myParams.end(); 
-	 it++) 
+    for (std::list<MvrConfigArg>::const_iterator it = section.myParams.begin(); 
+         it != section.myParams.end(); 
+         it++) 
     {
       myParams.push_back(*it);
     }
-      
     myIsQuiet = section.myIsQuiet;
-
   }
   return *this;
 }
 
 
-AREXPORT void ArConfigSection::copyAndDetach(const ArConfigSection &section) 
+MVREXPORT void MvrConfigSection::copyAndDetach(const MvrConfigSection &section) 
 {
   if (this != &section) 
   {
@@ -2904,46 +2900,42 @@ AREXPORT void ArConfigSection::copyAndDetach(const ArConfigSection &section)
     myDisplayName = section.myDisplayName;
 
     delete myFlags;
-    myFlags = new ArArgumentBuilder(512, '|');
+    myFlags = new MvrArgumentBuilder(512, '|');
     myFlags->setQuiet(myIsQuiet);
 
     myFlags->addPlain(section.myFlags->getFullString());
     
-    for (std::list<ArConfigArg>::const_iterator it = section.myParams.begin(); 
+    for (std::list<MvrConfigArg>::const_iterator it = section.myParams.begin(); 
 	       it != section.myParams.end(); 
 	       it++) 
     {
-      ArConfigArg paramCopy;
+      MvrConfigArg paramCopy;
       paramCopy.copyAndDetach(*it);
       myParams.push_back(paramCopy);
     }
 
     myIsQuiet = section.myIsQuiet;
-
   }
   //return *this;
-
 }
 
-
-
-AREXPORT ArConfigArg *ArConfigSection::findParam(const char *paramName,
-                                                 bool isAllowStringHolders)
+MVREXPORT MvrConfigArg *MvrConfigSection::findParam(const char *paramName,
+                                                    bool isAllowStringHolders)
 {
-  ArConfigArg *param = NULL;
-  ArConfigArg *tempParam = NULL;
+  MvrConfigArg *param = NULL;
+  MvrConfigArg *tempParam = NULL;
 
-  for (std::list<ArConfigArg>::iterator pIter = myParams.begin(); 
+  for (std::list<MvrConfigArg>::iterator pIter = myParams.begin(); 
        pIter != myParams.end(); 
        pIter++)
   {
     tempParam = &(*pIter);
     // ignore string holders 
     if (!isAllowStringHolders &&
-        ((tempParam->getType() == ArConfigArg::STRING_HOLDER) || 
-         (tempParam->getType() == ArConfigArg::LIST_HOLDER)))
+        ((tempParam->getType() == MvrConfigArg::STRING_HOLDER) || 
+        (tempParam->getType() == MvrConfigArg::LIST_HOLDER)))
       continue;
-    if (ArUtil::strcasecmp(tempParam->getName(), paramName) == 0)
+    if (MvrUtil::strcasecmp(tempParam->getName(), paramName) == 0)
     {
       param = tempParam;
     }
@@ -2955,56 +2947,20 @@ AREXPORT ArConfigArg *ArConfigSection::findParam(const char *paramName,
 /**
  * This method provides a shortcut for looking up child parameters 
  * in a list type parameter that is contained in the section.
- * For example:
- * <code>
- *     std::list<std::string> maxRangeP;
- *     maxRangeP.push_back(laserName);
- *     maxRangeP.push_back("LMS2xxInfo");
- *     maxRangeP.push_back("MaxRange");
- *     ArConfigArg *maxRangeArg = section->findParam(maxRangeP);
- *
- *     if(maxRangeArg)
- *     {
- *          ...
- * 
- * </code>
- *
- * This is functionally equivalent to the following, but better for long
- * sequences.
- * <code>
- *     ArConfigArg *laserListArg = section->findParam(laserName);
- *     if(laserListArg)
- *     {
- *        ArConfigArg *lms2xxArg   = laserListArg->findArg("LMS2xxInfo");
- *        if(lms2xxArg)
- *        {
- *            ArConfigArg *maxRangeArg  = lms2xxxArg->findArg("MaxRange");
- *            if(maxRangeArg)
- *            {
- *                 ...
- *            }
- *            else
- *            {
- *                ...
- *         ...
- *     ...
- *     etc.
- * </code>
- *
  * @param paramNamePath a list of strings that specifies the sequence of parameter
  * names, from "top" to "bottom"
- * @return ArConfigArg *, a pointer to the requested parameter, or NULL
+ * @return MvrConfigArg *, a pointer to the requested parameter, or NULL
  * if not found
 **/ 
-AREXPORT ArConfigArg *ArConfigSection::findParam
-                                      (const std::list<std::string> &paramNamePath,
-                                       bool isAllowHolders)
+MVREXPORT MvrConfigArg *MvrConfigSection::findParam(const std::list<std::string> &paramNamePath,
+                                                    bool isAllowHolders)
 {
-  if (paramNamePath.empty()) {
+  if (paramNamePath.empty()) 
+  {
     return NULL;
   }
 
-  ArConfigArg *topParam = findParam(paramNamePath.front().c_str(), isAllowHolders);
+  MvrConfigArg *topParam = findParam(paramNamePath.front().c_str(), isAllowHolders);
   if (topParam == NULL) {
     return NULL;
   }
@@ -3014,101 +2970,87 @@ AREXPORT ArConfigArg *ArConfigSection::findParam
     return topParam;
   }
 
-  ArConfigArg *curParam = topParam;
+  MvrConfigArg *curParam = topParam;
 
   std::list<std::string>::const_iterator iter = paramNamePath.begin();
   iter++; // skipping the front one from above
   
-  for (iter; iter != paramNamePath.end(); iter++) {
-
+  for (iter; iter != paramNamePath.end(); iter++) 
+  {
     // If curParam is not a LIST type, then findArg will return NULL.
     curParam = curParam->findArg((*iter).c_str());
-  
-  } // end while not found
-
-  // At this point, curParam should either be NULL (because the path 
-  // was not found)... or... nameIndex should equal pathLength and 
-  // curParam should be the requested one.
-
+  }
   return curParam;
-  
-} // end method findParam
+}
 
 
-AREXPORT ArConfigArg *ArConfigSection::findParam(const char **paramNamePath, 
-                                                 int pathLength,
-                                                 bool isAllowHolders)
+MVREXPORT MvrConfigArg *MvrConfigSection::findParam(const char **paramNamePath, 
+                                                    int pathLength,
+                                                    bool isAllowHolders)
 {
-  if ((paramNamePath == NULL) || (pathLength <= 0)) {
-    ArLog::log(ArLog::Normal,
-               "ArConfigSection::findParam() invalid input, paramNamePath = %p pathLength = %i",
-               paramNamePath,
-               pathLength);
+  if ((paramNamePath == NULL) || (pathLength <= 0)) 
+  {
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigSection::findParam() invalid input, paramNamePath = %p pathLength = %i",
+                paramNamePath,
+                pathLength);
     return NULL;
   }
 
   std::list<std::string> nameList;
-  for (int i = 0; i < pathLength; i++) {
+  for (int i = 0; i < pathLength; i++) 
+  {
     nameList.push_back(paramNamePath[i]);
-  } // end for each path component
-
+  }
   return findParam(nameList, isAllowHolders);
+} 
 
-
-} // end method findParam
-
-
-AREXPORT bool ArConfigSection::containsParamsOfPriority
-                                        (ArPriority::Priority highestPriority,
-                                         ArPriority::Priority lowestPriority)
+MVREXPORT bool MvrConfigSection::containsParamsOfPriority(MvrPriority::Priority highestPriority,
+                                                          MvrPriority::Priority lowestPriority)
 {
   if (highestPriority > lowestPriority) {
     return false;
   }
-  for (std::list<ArConfigArg>::iterator iter = myParams.begin();
+  for (std::list<MvrConfigArg>::iterator iter = myParams.begin();
        iter != myParams.end();
        iter++) {
-    const ArConfigArg &arg = *iter;
+    const MvrConfigArg &arg = *iter;
 
-    if (arg.getType() == ArConfigArg::SEPARATOR) {
+    if (arg.getType() == MvrConfigArg::SEPARATOR) {
       continue;
     }
     if ((arg.getConfigPriority() >= highestPriority) &&
         (arg.getConfigPriority() <= lowestPriority)) {
       return true;
     }
-  } // end for each parameter
-
+  }
   return false;
+}
 
-} // end method containsParamsOfPriority
-
-
-// This will also remove list holders
-AREXPORT bool ArConfigSection::remStringHolder(const char *paramName)
+// Remove list holders
+MVREXPORT bool MvrConfigSection::remStringHolder(const char *paramName)
 {
-  ArConfigArg *tempParam = NULL;
+  MvrConfigArg *tempParam = NULL;
   
-  for (std::list<ArConfigArg>::iterator pIter = myParams.begin(); 
+  for (std::list<MvrConfigArg>::iterator pIter = myParams.begin(); 
        pIter != myParams.end(); 
        pIter++)
   {
     tempParam = &(*pIter);
     
      // pay attention to only string holders
-    if (ArUtil::isStrEmpty(paramName)) {
+    if (MvrUtil::isStrEmpty(paramName)) {
       continue;
     }
-    if ((tempParam->getType() != ArConfigArg::STRING_HOLDER) &&
-        (tempParam->getType() != ArConfigArg::LIST_HOLDER)) { 
+    if ((tempParam->getType() != MvrConfigArg::STRING_HOLDER) &&
+        (tempParam->getType() != MvrConfigArg::LIST_HOLDER)) { 
       continue;
     }
 
-    if (ArUtil::strcasecmp(tempParam->getName(), paramName) == 0)
+    if (MvrUtil::strcasecmp(tempParam->getName(), paramName) == 0)
     {
       myParams.erase(pIter);
-      // Recurse to ensure that all occurrences of the string holder
-      // are removed.
+      // Recurse to ensure that all occurrences of the string holder are removed.
       remStringHolder(paramName);
       return true;
     }
@@ -3116,7 +3058,7 @@ AREXPORT bool ArConfigSection::remStringHolder(const char *paramName)
   return false;
 }
 
-AREXPORT bool ArConfigSection::hasFlag(const char *flag) const
+MVREXPORT bool MvrConfigSection::hasFlag(const char *flag) const
 {
   size_t i;
   for (i = 0; i < myFlags->getArgc(); i++)
@@ -3129,21 +3071,17 @@ AREXPORT bool ArConfigSection::hasFlag(const char *flag) const
   return false;
 }
 
-AREXPORT bool ArConfigSection::addFlags(const char *flags, bool isQuiet)
+MVREXPORT bool MvrConfigSection::addFlags(const char *flags, bool isQuiet)
 {
   if (myFlags == NULL) {
     return false;
   }
   myFlags->setQuiet(isQuiet);
 
-  // MPL replacing this line with the stuff from after it until the
-  // return, this is so that if the section already has a flag we
-  // don't add it again
-
   //myFlags->addPlain(flags); 
 
   size_t i;
-  ArArgumentBuilder theseFlags(512, '|');
+  MvrArgumentBuilder theseFlags(512, '|');
   theseFlags.setQuiet(isQuiet);
 
   theseFlags.addPlain(flags);
@@ -3156,7 +3094,7 @@ AREXPORT bool ArConfigSection::addFlags(const char *flags, bool isQuiet)
   return true; 
 }
 
-AREXPORT bool ArConfigSection::remFlag(const char *flag)
+MVREXPORT bool MvrConfigSection::remFlag(const char *flag)
 {
   size_t i;
   
@@ -3172,29 +3110,29 @@ AREXPORT bool ArConfigSection::remFlag(const char *flag)
   return true;
 }
   
-AREXPORT void ArConfigSection::setQuiet(bool isQuiet)
+MVREXPORT void MvrConfigSection::setQuiet(bool isQuiet)
 {
   myIsQuiet = isQuiet;
 }
 
 
-AREXPORT void ArConfigSection::setName(const char *name) 
+MVREXPORT void MvrConfigSection::setName(const char *name) 
 { 
   myName = ((name != NULL) ? name : "");
 }
  
-AREXPORT void ArConfigSection::setComment(const char *comment) 
+MVREXPORT void MvrConfigSection::setComment(const char *comment) 
 { 
   myComment = ((comment != NULL) ? comment : ""); 
 }
 
 
-AREXPORT const char *ArConfigSection::getCategoryName() const
+MVREXPORT const char *MvrConfigSection::getCategoryName() const
 {
   return myCategoryName.c_str();
 }
 
-void ArConfigSection::setCategoryName(const char *categoryName)
+void MvrConfigSection::setCategoryName(const char *categoryName)
 {
   myCategoryName = ((categoryName != NULL) ? categoryName : "");
 }
