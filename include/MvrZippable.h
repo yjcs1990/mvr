@@ -61,9 +61,6 @@ public:
    * otherwise
   **/
   MVREXPORT virtual bool contains(const char *memberName) = 0;
-  // TODO: Perhaps add a callback to be invoked when isOverwrite is false and
-  // an overwrite condition is detected
-
   /// Extracts all of the files from the zip file.
   /**
    * The zip file must have been opened in UNZIP_MODE.
