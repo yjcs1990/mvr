@@ -6,6 +6,7 @@
  > Create Time  : 2017年05月10日
  > Modify Time  : 2017年06月02日
 ***************************************************************************************************/
+#define _GNU_SOURCE 1
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 
@@ -119,7 +120,7 @@ MvrMutex MvrUtil::ourLocaltimeMutex;
   Sleep (do nothing, without continuing the program) for @arg ms miliseconds.
   Use this to add idle time to threads, or in situations such as waiting for
   hardware with a known response time.  To perform actions at specific intervals,
-  however, use the ArTime timer utility instead, or the ArUtil::getTime() method
+  however, use the MvrTime timer utility instead, or the MvrUtil::getTime() method
   to check time.
   @param ms the number of milliseconds to sleep for
 */
@@ -145,5 +146,554 @@ MVREXPORT unsigned int MvrUtil::getTime(void)
 #endif
 #if !defined(WIN32)
   struct timeval tv;
-  if (gettimeofday)
+  if (gettimeofday(&tv, NULL) == 0)
+    return tv.tv_usec/1000 + (tv.tv_sec % 1000000) * 1000;
+  else
+    return 0;
+#elif defined(WIN32)
+  return timeGetTime();
+#endif
 }
+
+#ifdef WIN32
+
+/*
+ * @param fileName name of the file to size
+ * @return size in byte, -1 on error
+ */
+MVREXPORT long MvrUtil::sizeFile(std::string fileName)
+{
+  struct _stat buf;
+  if (_stat(fileName.c_str(), &buf) < 0)
+    return -1;
+  if (!(buf.st_mode | _S_IFREG))
+    return -1;
+  return (buf.st_size);  
+}
+
+/*
+ * @param fileName of the file to size
+ * @return size in byte, -1 on error
+ */
+MVREXPORT long MvrUtil::sizeFile(const char *fileName)
+{
+  struct _stat buf;
+  if (_stat(fileName, &buf) < 0)
+    return -1;
+  if (!(buf.st_mode | _S_IFREG))
+    return -1;
+  return (buf.st_size);  
+}
+
+#else
+/*
+ * @param fileName of the file to size
+ * @return size in byte, -1 on error
+ */
+MVREXPORT long MvrUtil::sizeFile(std::string fileName)
+{
+  struct stat buf;
+
+  if (stat(fileName.c_str(), &buf) < 0)
+  {
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrUtil::sizeFile: stat failed");
+    return -1;
+  }
+
+  if (!S_ISREG(buf.st_mode))
+    return -1;
+  return buf.st_size;
+}
+/*
+ * @param fileName of the file to size
+ * @return size in byte, -1 on error
+ */
+MVREXPORT long MvrUtil::sizeFile(const char * fileName)
+{
+  struct stat buf;
+
+  if (stat(fileName, &buf) < 0)
+  {
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrUtil::sizeFile: stat failed");
+    return -1;
+  }
+
+  if (!S_ISREG(buf.st_mode))
+    return -1;
+  return buf.st_size;
+}
+#endif // WIN32
+
+/*
+ * @param fileName name of the file to size
+ * @return  true if file is found
+ */
+MVREXPORT bool MvrUtil::findFile(const char * fileName)
+{
+  FILE *fp;
+  if ((fp=MvrUtil::fopen(fileName, "r")))
+  {
+    fclose(fp);
+    return true;
+  }
+  else
+    return false;
+}
+
+MVREXPORT bool MvrUtil::stripQuotes(char *dest, const char *src, size_t destLen)
+{
+  size_t srcLen = strlen(src);
+  if (destLen < srcLen+1)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrUtil::stripQuotes: destLen isn't long enough to fit copy its should be %d", destLen, srcLen + 1);
+    return false;
+  }
+  // if there are no quotes to strip jsut copy and return 
+  if (srcLen < 2 || (src[0] != '"' || src[srcLen-1] != '"'))
+  {
+    strcpy(dest, src);
+    return true;
+  }
+  // we have quotes so chop of the first and last char
+  strncpy(dest, &src[1], srcLen-1);
+  dest[srcLen-2] = '\0';
+  return true;
+}
+
+/**
+ * This method behaves similarly to the char[] version, except that it modifies
+ * the given std::string. 
+ * @param strToStrip a pointer to the std::string to be read/modified; must be 
+ * non-NULL
+ * @return bool true if the string was successfully processed; false otherwise 
+**/  
+MVREXPORT bool MvrUtil::stripQuotes(std::string *strToStrip)
+{
+  if (strToStrip == NULL){
+    MvrLog::log(MvrLog::Normal, "MvrUtil::stripQuotes() NULL string");
+    return false;
+  }
+  // if there are no matching quotes to strip, just return
+  if ((strToStrip->size() < 2 )|| 
+      (strToStrip->at(0) != '"') ||
+      (strToStrip->at(strToStrip->size()-1) != '"'))
+  {
+    return true;
+  }
+
+  // Matching quotes found so chop of the first and last char
+  strToStrip->erase(strToStrip->begin());
+  strToStrip->erase(strToStrip->size() - 1);
+
+  return true; 
+}
+
+/*
+ * This method strips out bad characters
+ */
+
+MVREXPORT bool MvrUtil::fixBadCharacters(std::string *strToFix, bool removeSpaces, bool fixOtherWhiteSpace)
+{
+  if (strToFix == NULL){
+    MvrLog::log(MvrLog::Normal, "MvrUtil::fixBadCharacters() NULL string");
+    return false;
+  }
+
+  for (size_t i=0; i<(*strToFix).length(); i++)
+  {
+    if (!removeSpaces && (*strToFix)[i] == ' ')
+      continue;
+    else if (!removeSpaces && fixOtherWhiteSpace && isspace((*strToFix)[i]))
+      (*strToFix)[i] = ' ';
+    else if ((*strToFix)[i] == '(' || (*strToFix)[i] == '{' )
+      (*strToFix)[i] = '[';
+    else if ((*strToFix)[i] == ')' || (*strToFix)[i] == '}' )
+      (*strToFix)[i] = ']';
+    else if (isalpha((*strToFix)[i]) || isdigit((*strToFix)[i]) ||
+             (*strToFix)[i] == '.' || (*strToFix)[i] == '_' ||
+             (*strToFix)[i] == '-' || (*strToFix)[i] == '+' ||
+             (*strToFix)[i] == '[' || (*strToFix)[i] == ']' )
+      continue;
+    else
+      (*strToFix)[i] = '-';
+  }
+  return true;
+}
+
+/** Append a directory separator character to the given path string, depending on the
+ * platform. 
+ * @param path the path string to append a slash to
+ * @param pathLength maximum length allocated for path string
+ */
+MVREXPORT void MvrUtil::appendSlash(char *path, size_t pathLength)
+{
+  // first check boundary
+  size_t len;
+  len = strlen(path);
+  if (len > pathLength-2)
+    return;
+
+  if (len == 0 || (path[len-1] != '\\' && path[len-1] != '/'))
+  {
+#ifdef WIN32
+    path[len] = '\\';
+#else
+    path[len] = '/'
+#endif
+    path[len+1] = '\0';
+  }
+}
+
+/// Append the appropriate directory separator for this platform
+MVREXPORT void MvrUtil::appendSlash(std::string &path)
+{
+  size_t len = path.length();
+  if ((len == 0) || (path[len-1] != SEPARATOR_CHAR && path[len-1] != OTHER_SEPARATOR_CHAR)){
+    path += SEPARATOR_STRING;
+  }
+}
+
+/**
+   Replace in @a path all incorrect directory separators for this platform with
+   the correct directory separator character.
+   @param path the path in which to fix the orientation of the slashes
+   @param pathLength the maximum length of path
+*/
+MVREXPORT void MvrUtil::fixSlashes(char *path, size_t pathLength)
+{
+#ifdef WIN32
+    fixSlashesBackward(path, pathLength);
+#else
+    fixSlashesForward(path, pathLength);
+#endif 
+}
+
+/** Replace any forward slash charactars ('/') in @a path with backslashes ('\').
+   @param path the path in which to fix the orientation of the slashes
+   @param pathLength size of @a path
+*/
+MVREXPORT void MvrUtil::fixSlashesBackward(char *path, size_t pathLength)
+{
+  for (size_t i=0; path[i] != '\0' && i<pathLength; i++){
+    if (path[i] == '/')
+      path[i] = '\\';
+  }
+}
+
+MVREXPORT void MvrUtil::fixSlashesForward(char *path, size_t pathLength)
+{
+  for (size_t i=0; path[i] != '\0' && i<pathLength; i++){
+    if (path[i] == '\\')
+      path[i] = '/';
+  }
+}
+
+/**
+   Replace in @a path all incorrect directory separators for this platform with
+   the correct directory separator character 
+   @param path the path in which to fix the orientation of the slashes
+*/
+MVREXPORT void MvrUtil::fixSlashes(std::string &path)
+{
+  for (size_t i=0; i<path.length(); i++)
+  {
+    if (path[i] == OTHER_SEPARATOR_CHAR)
+      path[i] = SEPARATOR_CHAR;
+  }
+}
+
+MVREXPORT char MvrUtil::getSlash(void)
+{
+  return SEPARATOR_CHAR;
+}
+
+/*
+   This function will take the @a baseDir and add @a insideDir after
+   it, separated by appropriate directory path separators for this platform,
+   with a final directory separator retained or added after @a inside dir.
+   
+   @param dest the place to put the result
+   @param destLength the length available in @a dest
+   @param baseDir the directory to start with
+   @param insideDir the directory to place after the baseDir 
+ */
+MVREXPORT void MvrUtil::addDirectories(char *dest, size_t destLength,
+                                       const char *baseDir,
+                                       const char *insideDir)
+{
+  // start it off
+  strncpy(dest, baseDir, destLength-1);
+  // make sure we have null term
+  dest[destLength-1] = '\0';
+  appendSlash(dest, destLength);
+
+  strncat(dest, insideDir, destLength-strlen(dest) -1);
+
+  appendSlash(dest, destLength);
+  fixSlashes(dest, destLength);
+}                                       
+
+/** 
+    This compares two strings, it returns an integer less than, equal to, 
+    or greater than zero  if @a str  is  found, respectively, to be less than, to
+    match, or be greater than @a str2. 
+
+    @param str the string to compare
+    @param str2 the second string to compare
+    @return an integer less than, equal to, or greater than zero if str is 
+            found, respectively, to be less than, to match, or be greater than str2.
+*/
+MVREXPORT int MvrUtil::strcmp(const std::string &str, const std::string &str2)
+{
+  return ::strcmp(str.c_str(), str2.c_str());
+}
+
+/** 
+    This compares two strings, it returns an integer less than, equal to, 
+    or greater than zero  if  str  is  found, respectively, to be less than, to
+    match, or be greater than str2.
+
+    @param str the string to compare
+    @param str2 the second string to compare
+    @return an integer less than, equal to, or greater than zero if str is 
+            found, respectively, to be less than, to match, or be greater than str2.
+*/
+MVREXPORT int MvrUtil::strcmp(const std::string &str, const char *str2)
+{
+  if (str2 != NULL) {
+    return ::strcmp(str.c_str(), str2);
+  }
+  else {
+    return 1;
+  }
+}
+
+MVREXPORT int MvrUtil::strcmp(const char *str, const std::string &str2)
+{
+  if (str != NULL) {
+    return ::strcmp(str, str2.c_str());
+  }
+  else {
+    return -1;
+  }
+}
+
+MVREXPORT int MvrUtil::strcmp(const char *str, const char *str2)
+{
+  if ((str != NULL) && (str2 != NULL)) {
+    return ::strcmp(str, str2);
+  }
+  else if ((str == NULL) && (str2 == NULL)) {
+    return 0;
+  }
+  else if (str == NULL) {
+    return -1;
+  }
+  else { // str2 == NULL
+    return 1;
+  }
+}
+
+MVREXPORT int MvrUtil::strcasecmp(const std::string &str, const std::string &str2)
+{
+  return ::strcasecmp(str.c_str(), str2.c_str());
+}
+
+MVREXPORT int MvrUtil::strcasecmp(const std::string &str, const char *str2)
+{
+  if (str2 != NULL) {
+    return ::strcasecmp(str.c_str(), str2);
+  }
+  else {
+    return 1;
+  }
+}
+
+MVREXPORT int MvrUtil::strcasecmp(const char *str, const std::string &str2)
+{
+  if (str != NULL) {
+    return ::strcasecmp(str, str2.c_str());
+  }
+  else {
+    return -1;
+  }
+}
+
+MVREXPORT int MvrUtil::strcasecmp(const char *str, const char *str2)
+{
+  if ((str != NULL) && (str2 != NULL)) {
+    return ::strcasecmp(str, str2);
+  }
+  else if ((str == NULL) && (str2 == NULL)) {
+    return 0;
+  }
+  else if (str == NULL) {
+    return -1;
+  }
+  else { // str2 == NULL
+    return 1;
+  }
+}
+
+MVREXPORT bool MvrUtil::strSuffixCmp(const char *str, const char *suffix)
+{
+  if (str != NULL && str[0] != '\0' && 
+      suffix != NULL && suffix[0] != '\0' &&
+      strlen(str) > strlen(suffix) + 1 &&
+      strncmp(&str[strlen(str) - strlen(suffix)], 
+		  suffix, strlen(suffix)) == 0)
+    return true;
+  else
+    return false;
+}
+
+MVREXPORT bool MvrUtil::strSuffixCaseCmp(const char *str, const char *suffix)
+{
+  if (str != NULL && str[0] != '\0' && 
+      suffix != NULL && suffix[0] != '\0' &&
+      strlen(str) > strlen(suffix) + 1 &&
+      strncasecmp(&str[strlen(str) - strlen(suffix)], 
+		  suffix, strlen(suffix)) == 0)
+    return true;
+  else
+    return false;
+}
+
+MVREXPORT int MvrUtil::strcasequotecmp(const std::string &inStr1, const std::string &inStr2)
+{
+  std::string str1 = inStr1;
+  std::string str2 = inStr2;
+
+	int x = 0;
+	while (x < str1.length()) {
+		if (isalpha(str1[x]) && isupper(str1[x]))
+			str1[x] = tolower(str1[x]);
+	  x++;
+	}
+
+	x = 0;
+	while (x < str2.length()) {
+		if (isalpha(str2[x]) && isupper(str2[x]))
+			str2[x] = tolower(str2[x]);
+	  x++;
+	}
+  
+  int len1 = str1.length();
+  size_t pos1 = 0;
+  if ((len1 >= 2) && (str1[0] == '\"') && (str1[len1 - 1] == '\"')) {
+    pos1 = 1;
+  }
+  int len2 = str2.length();
+  size_t pos2 = 0;
+  if ((len2 >= 2) && (str2[0] == '\"') && (str2[len2 - 1] == '\"')) {
+    pos2 = 1;
+  }
+
+#if defined(__GNUC__) && (__GNUC__ <= 2) && (__GNUC_MINOR__ <= 96)
+#warning Using GCC 2.96 or less so must use nonstandard std::string::compare method.
+  int cmp = str1.compare(str2.substr(pos2, len2 - 2 * pos2), pos1, len1 - 2 * pos1);
+#else
+  int cmp = str1.compare(pos1, len1 - 2 * pos1, str2, pos2, len2 - 2 * pos2);
+#endif
+  return cmp;
+} // end method strcasequotecmp
+
+MVREXPORT void MvrUtil::escapeSpaces(char *dest, const char *src, size_t maxLen)
+{
+  size_t i, adj, len;
+
+  len = strlen(src);
+  // walk it, when we find one toss in the slash and incr adj so the
+  // next characters go in the right space
+  for (i = 0, adj = 0; i < len && i + adj < maxLen; i++)
+  {
+    if (src[i] == ' ')
+    {
+      dest[i+adj] = '\\';
+      adj++;
+    }
+    dest[i+adj] = src[i];
+  }
+  // make sure its null terminated
+  dest[i+adj] = '\0';
+}
+
+/**
+   This copies src into dest but makes it lower case make sure you
+   have at least maxLen arrays that you're passing as dest... this
+   allocates no memory
+**/
+MVREXPORT void MvrUtil::lower(char *dest, const char *src, size_t maxLen)
+{
+  size_t i;
+  size_t len;
+
+  len = strlen(src);
+  for (i=0; i<len && i<maxLen; i++)
+  {
+    dest[i] = tolower(src[i]);
+  }
+  dest[i] = '\0';
+}
+
+MVREXPORT bool MvrUtil::isOnlyAlphaNumeric(const char *str)
+{
+  unsigned int ui;
+  unsigned int len;
+  if (str == NULL)
+    return true;
+  for (ui=0, len=strlen(str); ui<len; ui++)
+  {
+    if (!isalpha(str[ui]) && !isdigit(str[ui]) && str[ui] != '\0' &&
+        str[ui] != '+' && str[ui] != '-')
+        return false;
+  }
+  return true;
+}
+
+MVREXPORT bool MvrUtil::isOnlyNumeric(const char *str)
+{
+  if (str == NULL)
+    return true;
+  for (unsigned i=0, len=strlen(str); i<len; i++)
+  {
+    if (!isdigit(str[i]) && str[i] != '\0' && str[i] !='+' && str[i] != '-')
+      return false;
+  }
+  return true;
+}
+
+MVREXPORT bool MvrUtil::isStrEmpty(const char *str)
+{
+  if (str == NULL){
+    return true;
+  }
+  if (str[0] == '\0')
+    return true;
+  return false;
+}
+
+MVREXPORT bool MvrUtil::isStrInList(const char *str,
+                                    const std::list<std::string> &list,
+                                    bool isIgnoreCase)
+{
+  if (str == NULL)
+    return false;
+  for (std::list<std::string>::const_iterator aIter = list.begin();
+       aIter != list.end();
+       aIter++)
+  {
+    if (!isIgnoreCase){
+      if (strcmp((*aIter).c_str(), str) == 0){
+        return true;
+      }
+    }
+    else{
+      if (strcasecmp((*aIter).c_str(), str) == 0){
+        return true;
+      }
+    }
+  }
+  return false;
+}                                    
+
