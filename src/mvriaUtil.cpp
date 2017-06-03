@@ -697,3 +697,315 @@ MVREXPORT bool MvrUtil::isStrInList(const char *str,
   return false;
 }                                    
 
+MVREXPORt const char *MvrUtil::convertBool(int val)
+{
+  if (val)
+    return TRUESTRING;
+  else
+    return FALSESTRING;
+}
+
+MVREXPORT double MvrUtil::atof(const char *nptr)
+{
+  if (strcasecmp(nptr, "inf") == 0)
+    return HUGE_VAL;
+  else if (strcasecmp(nptr, "-inf") == 0)
+    return -HUGE_VAL;    
+  else
+    return ::atof(nptr);
+}
+
+MVREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor, const char *str, ...)
+{
+  char buf[10000];
+  va_list ptr;
+  va_start(ptr, str);
+  vsnprintf(buf, sizeof(buf)-1, str, ptr);
+  buf[sizeof(buf)-1] = '\0';
+  functor->invoke(buf);
+  va_end(ptr);
+}
+
+// preserving this old version that takes char* as format str instead of const char*
+// to maximize compatibility
+MVREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor, char *str, ...)
+{
+  char buf[10000];
+  va_list ptr;
+  va_start(ptr, str);
+
+  vsnprintf(buf, sizeof(buf)-1, (const char*)str, ptr);
+  buf[sizeof(buf)-1] = '\0';
+  functor->invoke(buf);
+  va_end(ptr);
+}
+
+MVREXPORT void MvrUtil::writeToFIle(const char *str, FILE *file)
+{
+  fputs(str, file);
+}
+
+/* 
+   This function reads a string from a file.
+   The file can contain spaces or tabs.
+   @param fileName name of the file in which to look
+   @param str the string to copy the file contents into
+   @param strLen the maximum allocated length of str
+ */
+MVREXPORT bool MvrUtil::getStringFromFIle(const char *fileName, char *str, size_t strLen)
+{
+  FILE *strFile;
+  unsigned int i;
+
+  str[0] = '\0';
+
+  if ((strFile = MvrUtil::fopen(fileName, "r")) != NULL)
+  {
+    fgets(str, strLen, strFile);
+    for (i=0; i<strLen; i++)
+    {
+      if (str[i] == '\r' || str[i] == '\n' || str[i] == '\0')
+      {
+        str[i] = '\0';
+        fclose(strFile);
+        break;
+      }
+    }
+  }
+  else
+  {
+    str[0] = '\0';
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Look up the given value under the given key, within the given registry root
+ * key.
+   @param root the root key to use, one of the REGKEY enum values
+   @param key the name of the key to find
+   @param value the value name in which to find the string
+   @param str where to put the string found, or if it could not be
+          found, an empty (length() == 0) string
+   @param len the length of the allocated memory in str
+   @return true if the string was found, false if it was not found or if there was a problem such as the string not being long enough 
+ **/
+MVREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root, 
+                                              const char *key,
+                                              const char *value,
+                                              char *str,
+                                              int len)
+{
+#ifndef WIN32
+  return false;
+#else  // WIN32
+  HKEY hkey;
+  int err;
+  unsigned long numKeys;
+  unsigned long longestKey;
+  unsigned long numValues;
+  unsigned long longestValue;
+  unsigned long longestDataLength;
+  char *valueName;
+  unsigned long valueLength;
+  unsigned long type;
+  char *data;
+  unsigned long dataLength;
+  HKEY rootKey;
+  switch (root)
+  {
+  case REGKEY_CLASSES_ROOT:
+    rootKey = HKEY_CLASSES_ROOT;
+    break;
+  case REGKEY_CURRENT_CONFIG:
+    rootKey = HKEY_CURRENT_CONFIG;
+    break;
+  case REGKEY_CURRENT_USER:
+    rootKey = HKEY_CURRENT_USER;
+    break;
+  case REGKEY_LOCAL_MACHINE:
+    rootKey = HKEY_LOCAL_MACHINE;
+    break;
+  case REGKEY_USERS:
+    rootKey=HKEY_USERS;
+    break;
+  default:
+    MvrLog::log(MvrLog::Terse, 
+	       "MvrLog::getStringFromRegistry: Bad root key given.");
+    return false;
+  }
+
+
+  if ((err = RegOpenKeyEx(rootKey, key, 0, KEY_READ, &hkey)) == ERROR_SUCCESS)
+  {
+    //printf("Got a key\n");
+    if (RegQueryInfoKey(hkey, NULL, NULL, NULL, &numKeys, &longestKey, NULL, 
+			&numValues, &longestValue, &longestDataLength, NULL, NULL) == ERROR_SUCCESS)
+    {
+      data = new char[longestDataLength+2];
+      valueName = new char[longestValue+2];
+      for (unsigned long i = 0; i < numValues; ++i)
+      {
+        dataLength = longestDataLength+1;
+        valueLength = longestValue+1;
+        if ((err = RegEnumValue(hkey, i, valueName, &valueLength, NULL, 
+              &type, (unsigned char *)data, &dataLength)) == ERROR_SUCCESS)
+        {
+          //printf("Enumed value %d, name is %s, value is %s\n", i, valueName, data);
+          if (strcmp(value, valueName) == 0)
+          {
+            if (len < dataLength)
+            {
+              MvrLog::log(MvrLog::Terse,"MvrUtil::getStringFromRegistry: str passed in not long enough for data.");
+              delete data;
+              delete valueName;
+              return false;
+            }
+            strncpy(str, data, len);
+            delete data;
+            delete valueName;
+            return true;
+          }
+        }
+	    }
+      delete data;
+      delete valueName;
+    }
+  }
+  return false;
+#endif
+}
+  
+#if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
+bool MvrTime::ourMonotonicClock = true;
+#endif 
+                                           
+MVREXPORT void MvrTime::setToNow(void)
+{
+  // if we have the best way of finding time use that
+#if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
+  if (ourMonotonicClock)
+  {
+    struct timespec timeNow;
+    if (clock_gettime(CLOCK_MONOTONIC, &timeNow) == 0)
+    {
+      // start a million seconds into the future so we have some
+      // room to go backwards
+      mySec  = timeNow.tv_sec + 1000000;
+      myMSec = timeNow.tv_nsec / 1000000;
+      return;
+    }
+    else
+    {
+      ourMonotonicClock = false;
+      MvrLog::logNoLock(MvrLog::Terse, "MvrTime::setNow: invalid return from clock_gettime");
+    }
+  }
+#endif
+// if our good way didn't work use the old way
+#ifndef WIN32
+  struct timeval timeNow;
+  
+  if (gettimeofday(&timeNow, NULL) == 0)
+  {
+    // start a million seconds into the future so we have some
+    // room to go backwards
+    mySec  = timeNow.tv_sec + 1000000;
+    myMSec = timeNow.tv_usec / 1000;
+  }
+  else
+    MvrLog::logNoLock(MvrLog::Terse, "MvrTime::setToNow: invalid return from gettimeofday.");
+#else
+  long timeNow;
+  timeNow = timeGetTime();
+  // start a million seconds into the future so we have some
+  // room to go backwards
+  mySec  = timeNow / 1000 + 1000000;
+  myMSec = timeNow % 1000;
+#endif
+}                                          
+
+MVREXPORT MvrRunningAverage::MvrRunningAverage(size_t numToAverage)
+{
+  myNumToAverage = numToAverage;
+  myTotal = 0;
+  myNum = 0;
+  myUseRootMeanSquare = false;
+}
+
+MVREXPORT MvrRunningAverage::~MvrRunningAverage()
+{
+
+}
+
+MVREXPORT double MvrRunningAverage::getAverage(void) const
+{
+  if (myNum == 0)
+    return 0.0;
+  if (myUseRootMeanSquare)
+    return sqrt(myTotal / myNum);
+  else
+    return myTotal / myNum;
+}
+
+MVREXPORT void MvrRunningAverage::add(double val)
+{
+  if (myUseRootMeanSquare)
+    myTotal += (val * val);
+  else
+    myTotal += vale;
+  myNum++;
+  myVals.push_front(val);
+  if (myVals.size() > myNumToAverage || myNum > myNumToAverage)
+  {
+    if (myUseRootMeanSquare)
+      myTotal -= (myVals.back() * myVals.back());
+    else
+      myTotal -= myVals.back();
+    myNum --;
+    myVals.pop_back();
+  }
+}
+
+MVREXPORT void MvrRunningAverage::clear(void)
+{
+  while (myVals.size() > 0)
+    myVals.pop_back();
+  myNum = 0;
+  myTotal = 0;
+}
+
+MVREXPORT size_t MvrRunningAverage::getNumToAverage(void) const
+{
+  return myNumToAverage;
+}
+
+MVREXPORT void MvrRunningAverage::setNumToAverage(size_t numToAverage)
+{
+  myNumToAverage = numToAverage;
+  while (myVals.size() > myNumToAverage)
+  {
+    if (myUseRootMeanSquare)
+      myTotal -= (myVals.back() * myVals.back());
+    else
+      myTotal -= myVals.back();
+    myNum--;
+    myVals.pop_back();
+  }
+}
+
+MVREXPORT size_t MvrRunningAverage::getCurrentNumAveraged(void)
+{
+  return myNum;
+}
+
+MVREXPORT void MvrRunningAverage::setUseRootMeanSquare(bool useRootMeanSquare)
+{
+  if (myUseRootMeanSquare != useRootMeanSquare)
+  {
+    myTotal = 0;
+    std::list<double>::iterator it;
+    for (it=myVal)
+  }
+}
