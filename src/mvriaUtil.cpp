@@ -1006,6 +1006,1299 @@ MVREXPORT void MvrRunningAverage::setUseRootMeanSquare(bool useRootMeanSquare)
   {
     myTotal = 0;
     std::list<double>::iterator it;
-    for (it=myVal)
+    for (it=myVal.begin(); it != myVals.end(); it++)
+    {
+      if (useRootMeanSquare)
+        myTotal += ((*it) * (*it));
+      else
+        myTotal += (*it);
+    }
   }
+  myUseRootMeanSquare = useRootMeanSquare;
+}
+
+MVREXPORT bool MvrRunningAverage::getUseRootMeanSquare(void)
+{
+  return myUseRootMeanSquare;
+}
+
+MVREXPORT MvrRootMeanSquareCalculator::MvrRootMeanSquareCalculator()
+{
+  clear();
+  myName = "MvrRootMeanSquareCalculator";
+}
+
+MVREXPORT MvrRootMeanSquareCalculator::~MvrRootMeanSquareCalculator()
+{
+
+}
+
+MVREXPORT double MvrRootMeanSquareCalculator::getRootMeanSquare(void) const
+{
+  if (myNum == 0)
+    return 0.0;
+  else
+    return sqrt((double) myTotal / (double) myNum);
+}
+
+MVREXPORT void MvrRootMeanSquareCalculator::add(int val)
+{
+  myTotal += val * val;
+  myNum ++;
+  if (myTotal < 0)
+  {
+    MvrLog::log(MvrLog::Normal, "%s: total wrapped, resetting", myName.c_str());
+    clear()
+  }
+}
+
+MVREXPORT void MvrRootMeanSquareCalculator::clear(void)
+{
+  myTotal = 0;
+  myNum   = 0;
+}
+
+MVREXPORT size_t MvrRootMeanSquareCalculator::getCurrentNumAveraged(void)
+{
+  return myNum;
+}
+
+MVREXPORT void MvrRootMeanSquareCalculator::setName(const char *name)
+{
+  if (name != NULL)
+    myName = name;
+  else
+    myName = "MvrRootMeanSquareCalculator";
+}
+
+#ifndef WIN32
+MVREXPORT MvrDaemonizer::MvrDaemonizer(int *argc, char **argv,
+                                       bool closeStdErrAndStdOut) :
+          myParser(argc, argv),
+          myLogOptionsCB(this, &MvrDaemonizer::logOptions),
+{
+  myIsDaemonized = false;
+  myCloseStdErrAndStdOut = closeStdErrAndStdOut;
+  Mvria::addLogOptionsCB(&myLogOptionsCB);
+}          
+
+MVREXPORT MvrDaemonizer::~MvrDaemonizer()
+{
+
+}
+
+MVREXPORT bool MvrDaemonizer::daemonize(void)
+{
+  if (myParser.checkArgument("~daemonize") || myParser.checkArgument("-d"))
+  {
+    return forceDaemonize();
+  }
+  else
+    return true;
+}
+
+/*
+ * This returns true if daemonizing worked, returns false if it 
+ * didn't... the parent process exits here if forking worked
+ */
+
+MVREXPORT bool MvrDaemonizer::forceDaemonize(void)
+{
+  switch(fork())
+  {
+    case 0:     // child process just return
+      myIsDaemonized = true;
+      if (myCloseStdErrAndStdOut)
+      {
+        fclose(stdout);
+        fclose(stderr);
+      }
+      return true;
+    case -1:  // error ...fail
+      printf("Can't fork");
+      MvrLog::log(MvrLog::Tersem, "MvrDaemonizer: Can't fork");
+      return false;
+    default:
+      printf("Deamon start\n");
+      exit(0);
+  }
+}
+
+MVREXPORT void MvrDaemonizer::logOptions(void) const
+{
+  MvrLog::log(MvrLog::Terse, "Options for Daemonizing: ");
+  MvrLog::log(MvrLog::Terse, "~daemonize");
+  MvrLog::log(MvrLog::Terse, "-d");
+  MvrLog::log(MvrLog::Terse, "");
+}
+
+#endif  // WIN32
+
+std::map<MvrPriority::Priority, std::string> MvrPriority::ourPriorityNames;
+std::map<std::string, MvrPriority::Priority, MvrStrCaseCmpOp> MvrPriority::ourNameToPriorityMap;
+
+str::string MvrPriority::ourUnknownPriorityName;
+bool MvrPriority::ourStringsInited = false;
+
+MVREXPORT const char *MvrPriority::getPriorityName(Priority priority)
+{
+  if (!ourStringsInited)
+  {
+    ourPriorityNames[IMPORTANT]     = "Basic";
+    ourPriorityNames[NORMAL]        = "Intermediate";
+    ourPriorityNames[TRIVIAL]       = "Advanced";
+    ourPriorityNames[DETAILED]      = "Advanced";
+
+    ourPriorityNames[EXPERT]        = "Export";
+    ourPriorityNames[FACTORY]       = "Factory";
+    ourPriorityNames[CALIBRATION]   = "Calibration";
+
+    for (std::map<MvrPriority::priority, std::string>::iterator iter = ourPriorityNames.begin();
+         iter != ourPriorityNames.end();
+         iter++){
+      ourNameToPriorityMap[iter->second] = iter->first;
+    }
+
+    ourUnknownPriorityName = "Unknown";
+    ourStringsInited       = true;
+  }
+
+  std::map<MvrPriority::Priority, std::string>::iterator iter = ourPriorityNames.find(priority);
+
+  if (iter != ourPriorityNames.end()){
+    return iter->second.c_str();
+  }
+  else{
+    return ourUnknownPriorityName.c_str();
+  }
+}
+
+MVREXPORT MvrPriority::Priority MvrPriority::getPriorityFromName(const char *test, bool *ok)
+{
+  if (!ourStringsInited){
+    getPriorityName(IMPORTANT);
+  }
+  if (ok != NULL){
+    *ok = false;
+  }
+
+  if (MvrUtil::isStrEmpty(text)){
+    MvrLog::log(MvrLog::Normal,
+                "MvrPriority::getPriorityFromName() error finding priority from empty text");
+    return LAST_PRIORITY;
+  }
+
+  MvrLog::log(MvrLog::Normal,
+              "MvrPriority::getPriorityFromName() error finding priority for %s",
+              text);
+  return LAST_PRIORITY;
+}
+
+MVREXPORT void MvrUtil::putCurrentYearInString(char *s, size_t len)
+{
+  struct tm t;
+  MvrUtil::localtime(&t);
+  snprintf(s, len, "%4d", 1900 + t.tm_year);
+  s[len-1] = '\0';
+}
+
+MVREXPORT void MvrUtil::putCurrentMonthInString(char *s, size_t len)
+{
+
+  struct tm t;
+  MvrUtil::localtime(&t);
+  snprintf(s, len, "%02d", t.tm_mon + 1);
+  s[len-1] = '\0';
+}
+
+MVREXPORT void MvrUtil::putCurrentDayInString(char* s, size_t len)
+{
+  struct tm t;
+  MvrUtil::localtime(&t);
+  snprintf(s, len, "%02d", t.tm_mday);
+  s[len-1] = '\0';
+}
+
+MVREXPORT void MvrUtil::putCurrentHourInString(char* s, size_t len)
+{
+  struct tm t;
+  MvrUtil::localtime(&t);
+  snprintf(s, len, "%02d", t.tm_hour);
+  s[len-1] = '\0';
+}
+
+MVREXPORT void MvrUtil::putCurrentMinuteInString(char* s, size_t len)
+{
+  struct tm t; 
+  MvrUtil::localtime(&t);
+  snprintf(s, len, "%02d", t.tm_min);
+  s[len-1] = '\0';
+}
+
+MVREXPORT void MvrUtil::putCurrentSecondInString(char* s, size_t len)
+{
+  struct tm t;
+  MvrUtil::localtime(&t);
+  snprintf(s, len, "%02d", t.tm_sec);
+  s[len-1] = '\0';
+}
+
+MVREXPORT time_t MvrUtil::parseTime(const char *str, bool *ok, bool toToday)
+{
+  struct tm tmOut;
+  if (toToday)
+  {
+    struct tm now;
+    if (!localtime(&now))
+    {
+      *ok = false;
+      return 0;
+    }
+    memcpy(&tmOut, &now, sizeof(now));
+  }
+  else
+  {
+    memset(&tmOut, 0, sizeof(tmOut));
+
+    tmOut.tm_mday  = 1;
+
+    tmOut.tm_year  = 70;
+    tmOut.tm_isdst = -1;
+  }
+
+  bool isValid = true;
+  int hrs      = -1;
+  int min      = -1;
+  int sec      = -1;
+
+  MvrArgumentBuilder separator(512, ':');
+  separator.add(str);
+
+  if ((separator.getArgc() != 2 && separator.getArgc() != 3) ||
+      !separator.isArgInt(0) || !separator.isArgInt(1) || 
+      (!separator.isArgInt(2) || !separator.isArgInt(3)))
+  {
+    isValid = false;
+  }
+  else
+  {
+    hrs = separator.getArgInt(0);
+    min = separator.getArgInt(1);
+    if (separator.getArgc() == 3)
+      sec = separator.getArgc(2);
+  }
+
+  if (!((hrs >= 0) && (hrs < 24) && (min >= 0) && (min < 60) &&
+      (sec >= 0) && (sec < 60)))
+    isValid = false;
+  if (isValid)
+  {
+    timOut.tm_hour = hrs;
+    tmOut.tm_min   = min;
+    tmOut.tm_sec   = sec;
+  }
+
+  time_t newTime = mktime(&tmOut);
+
+  if (ok != NULL)
+  {
+    *ok = (isValid && (newTime != -1));
+  }
+  return newTime;
+}
+
+MVREXPORT bool MvrUtil::localtime(const time_t *timep, struct tm *result)
+{
+#ifdef WIN32
+  ourLocaltimeMutex.lock();
+  struct tm *r = ::localtime(timep);
+  if (r == NULL){
+    ourLocaltimeMutex.unlock();
+    return false;
+  }
+  *result = *r; // copy the 'struct tm' object before unlocking.
+  ourLocaltimeMutex.unlock();
+  return false;
+#else
+  return (::localtime_r(tiemp, result) != NULL);
+#endif
+}
+
+/*
+ * @return fasle on error, otherwise true
+ */
+MVREXPORT bool MvrUtil::localtime(struct tm *result)
+{
+  time_t now = time(NULL);
+  return MvrUtil::localtime(&now, result);
+}
+
+#ifndef WIN32
+/**
+   @param baseDir the base directory to work from
+   @param fileName the fileName to squash the case from
+   @param result where to put the result
+   @param resultLen length of the result
+   @return true if it could find the file, the result is in result,
+   false if it couldn't find the file
+**/
+MVREXPORT bool MvrUtil::matchCase(const char *baseDir,
+                                  const char *fileName,
+                                  char *result,
+                                  size_t resultLen)
+{
+  DIR *dir;
+  struct dirent *ent;
+
+  char separator;
+
+#ifndef WIN32
+  separator = '/';
+#else
+  separator = '\\';
+#endif
+
+  result[0] = '\0';
+
+  std::list<std::string> split = splitFileName(fileName);
+  std::list<std::string>::iterator it = split.begin();
+  std::string finding = (*it);
+
+  if ((dir = opendir(baseDir)) == NULL)
+  {
+    MvrLog::log(MvrLog::Normal,
+                "MvrUtil: No such directory '%s' for base",
+                baseDir);
+    return false;
+  }
+
+  if (finding == ".")
+  {
+    it++;
+    if (it != split.end())
+    {
+      finding = (*it);
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Normal, 
+		             "MvrUtil: No file or directory given (base = %s file = %s)", 
+		             baseDir,
+                 fileName);
+      closedir(dir);
+
+      return false;
+    }
+  }
+  while ((ent = readdir(dir)) != NULL)
+  {
+    if (ent->d_name[0] == ".")
+    {
+      continue;
+    }
+    if (MvrUtil::strcasecmp(ent->d_name, finding) == 0)
+    {
+      size_t lenOfResult;
+      lenOfResult = strlen(result);
+
+      if (strlen(ent->d_name) > resultLen - lenOfResult -2)
+      {
+        MvrLog::log(MvrLog::Normal,
+                    "MvrUtil::matchCase: result not long enough");
+        closedir(dir)
+        return false;
+      }
+
+      if (lenOfResult != 0)
+      {
+        result[lenOfResult] = separator;
+        result[lenOfResult+1] = '\0';
+      }
+      strcpy(&result[strlen(result)], ent->d_name);
+
+      it ++;
+      if (it != split.end())
+      {
+        finding = (*it);
+        std::string wholeDir;
+        wholeDir = baseDir;
+        wholeDir += result;
+        closedir(dir);
+
+        if ((dir = opendir(wholeDir.c_str())) == NULL)
+        {
+          MvrLog::log(MvrLog::Normal,
+                      "MvrUtil::matchCase: Error going into %s",
+                      result);
+          return false;
+        }
+      }
+      else
+      {
+        closedir(dir);
+        return true;
+      }
+    }
+  }
+  MvrLog::log(MvrLog::Normal,
+              "MvrUtil::matchCase: %s doesn't exist in %s", fileName,
+              baseDir);
+  closedir(dir);
+  return false;
+}                                                                    
+#endif  // WIN32
+
+MVREXPORT bool MvrUtil::getDirectory(const char *fileName,
+                                     char *result, size_t resultLen)
+{
+  char separator;
+#ifndef WIN32
+  separator = '/';
+#else
+  separator = '\\';
+#endif
+
+  if (fileName == NULL || fileName[0] == '\0' || resultLen == 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrUtil: getDirectory, bad setup");
+    return false;
+  }
+  strcpy(result, fileName, resultLen -1);
+
+  result[resultLen -1] = '\0';
+
+  char *toPos;
+  MvrUtil::fixSlashes(result, resultLen);
+
+  toPos = strrchr(result, separator);
+
+  if (toPos == NULL)
+  {
+    result[0] = '\0';
+    return true;
+  }
+  else
+  {
+    *toPose = '\0';
+    return true;
+  }
+}
+
+MVRexport bool MvrUtil::getFileName(const char *fileName, 
+                                    char *result, size_t resultLen)
+{
+  char separator;
+#ifndef WIN32
+  separator = '/';
+#else
+  separator = '\\';
+#endif
+
+  if (fileName == NULL || fileName[0] == '\0' || resultLen == 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrUtil: getDirectory, bad setup");
+    return false;
+  }
+  char *str;
+  size_t fileNameLen = strlen(fileName);
+  str = new char[fileNameLen + 1];
+
+  strncpy(str, fileName, fileNameLen);
+
+  str[fileNameLen] = '\0';
+
+  char *toPos;
+  MvrUtil::fixSlashes(str, fileNameLen + 1);
+
+  toPos = strrchr(str, separator);
+
+  if (toPos == NULL)
+  {
+    strncpy(result, str, resultLen - 1);
+    result[resultLen - 1] = '\0';
+    delete[] str;
+    return true;
+  }
+  else
+  {
+    strncpy(result, &str[toPos - str + 1], resultLen - 2);
+    result[resultLen - 1] = '\0';
+
+    delete[] str;
+    return true;
+  }
+
+  char *str;
+  size_t fileNameLen = strlen(fileName);
+  str = new char[fileNameLen + 1];
+  //printf("0 %s\n", fileName);
+  // just play in the result buffer
+  strncpy(str, fileName, fileNameLen);
+  // make sure its nulled
+  str[fileNameLen] = '\0';
+  //printf("1 %s\n", str);
+
+  char *toPos;
+  MvrUtil::fixSlashes(str, fileNameLen + 1);
+  //printf("2 %s\n", str);
+  // see where the last directory is
+  toPos = strrchr(str, separator);
+  // if there's no divider it must just be a file name
+  if (toPos == NULL)
+  {
+    // copy the filename in and make sure it has a null
+    strncpy(result, str, resultLen - 1);
+    result[resultLen - 1] = '\0';
+    //printf("3 %s\n", result);
+    delete[] str;
+    return true;
+  }
+  // otherwise take the section from that separator to the end
+  else
+  {
+    strncpy(result, &str[toPos - str + 1], resultLen - 2);
+    result[resultLen - 1] = '\0';
+    //printf("4 %s\n", result);
+    delete[] str;
+    return true;
+  }
+}
+
+#ifndef WIN32                                                              
+/*
+ * This function assumes the slashes are all heading the right way already
+ */
+std::list<std::string> MvrUtil::splitFileName(const char *fileName)
+{
+  std::list<std::string> split;
+  if (fileName == NULL)
+    return split;
+
+  char separator;
+#ifndef WIN32
+  separator = '/';
+#else
+  separator = '\\';
+#endif
+  size_t len;
+  size_t i;
+  size_t last;
+  bool justSepped;
+  char entry[2048];
+  for (i=0, justSepped=false, last=0, len=strlen(fileName); ; i++)
+  {
+    if ((fileName[i] == separator && !justSepped) || fileName[i] == '\0' || i >= len)
+    {
+      if (i - last > 2047)
+      {
+	      MvrLog::log(MvrLog::Normal, "MvrUtil::splitFileName: some directory or file too long");
+      }
+      if (!justSepped)
+      {
+        strncpy(entry, &fileName[last], i-last);
+        entry[i-last] = '\0';
+        split.push_back(entry);
+
+        justSepped = true;
+      }
+      if (fileName[i] == '\0' || i>=len)
+        return split;
+    }
+    else if (fileName[i] == separator && justSepped)
+    {
+      justSepped = true;
+      last = i;
+    }
+    else if (fileName[i] != separator && justSepped)
+    {
+      justSepped = false;
+      last = i;
+    }
+  }
+
+  MvrLog::log(MvrLog::Normal, "MvrUtil::splitFileName: file str ('%s‘) happend weird", fileName);
+  return split;
+}
+#endif // !WIN32
+
+MVREXPORT bool MvrUtil::changeFileTimestamp(const char *fileName, 
+                                            time_t timestamp) 
+{
+  if (MvrUtil::isStrEmpty(fileName)) 
+  {
+    MvrLog::log(MvrLog::Normal, "Cannot change date on file with empty name");
+    return false;
+  }
+#ifdef WIN32
+  FILETIME fileTime;
+  HANDLE hFile = CreateFile(fileName,
+                            GENERIC_READ | GENERIC_WRITE,
+                            0,NULL,
+                            OPEN_EXISTING,
+                            0,NULL);
+
+  if (hFile == NULL) {
+    return false;
+  }
+
+  LONGLONG temp = Int32x32To64(timestamp, 10000000) + 116444736000000000;
+  fileTime.dwLowDateTime = (DWORD) temp;
+  fileTime.dwHighDateTime = temp >> 32;
+
+  SetFileTime(hFile, 
+              &fileTime, 
+              (LPFILETIME) NULL,  // don't change last access time (?)
+              &fileTime);
+
+  CloseHandle(hFile);
+
+#else // unix
+        
+  char timeBuf[500];
+  strftime(timeBuf, sizeof(timeBuf), "%c", ::localtime(&timestamp));
+  MvrLog::log(MvrLog::Normal,
+              "Changing file %s modified time to %s",
+              fileName,
+              timeBuf);
+
+  struct utimbuf fileTime;
+  fileTime.actime  = timestamp;
+  fileTime.modtime = timestamp;
+  utime(fileName, &fileTime);
+
+#endif // else unix
+  return true;
+}
+
+MVREXPORT void MvrUtil::setFileCloseOnExec(int fd, bool closeOnExec)
+{
+#ifndef WIN32
+  if (fd <= 0)
+    return;
+
+  int flags;
+
+  if ((flags = fcntl(fd, F_GETFD)) < 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrUtil::setFileCloseOnExec: Cannot use F_GETFD in fnctl on fd %d", fd);
+    return;
+  }
+
+  if (closeOnExec)
+    flags |= FD_CLOEXEC;
+  else
+    flags &= ~FD_CLOEXEC;
+
+  if (fcntl(fd, F_SETFD, flags) < 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrUtil::setFileCloseOnExec: Cannot use F_GETFD in fnctl on fd %d", fd);
+    return;
+  }
+#endif
+}
+
+MVREXPORT void MvrUtil::setFileCloseOnExec(FILE *file, bool closeOnExec)
+{
+  if (file != NULL)
+    setFileCloseOnExec(fileno(file));
+}
+
+MVREXPORT FILE *MvrUtil::fopen(const char *path, const char *mode, 
+			                         bool closeOnExec)
+{
+  FILE *file;
+  file = ::fopen(path, mode);
+  setFileCloseOnExec(file, closeOnExec);
+  return file;
+}
+
+MVREXPORT int MvrUtil::open(const char *pathname, int flags, 
+			                      bool closeOnExec)
+{
+  int fd;
+  fd = ::open(pathname, flags);
+  setFileCloseOnExec(fd, closeOnExec);
+  return fd;
+}
+
+MVREXPORT int MvrUtil::open(const char *pathname, int flags, mode_t mode, 
+			                      bool closeOnExec)
+{
+  int fd;
+  fd = ::open(pathname, flags, mode);
+  setFileCloseOnExec(fd, closeOnExec);
+  return fd;
+}
+
+MVREXPORT int MvrUtil::close(int fd)
+{
+	return ::close(fd);
+}
+
+MVREXPORT int MvrUtil::creat(const char *pathname, mode_t mode, 
+			                       bool closeOnExec)
+{
+  int fd;
+  fd = ::creat(pathname, mode);
+  setFileCloseOnExec(fd, closeOnExec);
+  return fd;
+}
+
+MVREXPORT FILE *MvrUtil::popen(const char *command, const char *type, 
+			                         bool closeOnExec)
+{
+  FILE *file;
+#ifndef WIN32
+  file = ::popen(command, type);
+#else
+  file = _popen(command, type);
+#endif
+  setFileCloseOnExec(file, closeOnExec);
+  return file;
+}
+
+
+MVREXPORT bool MvrUtil::floatIsNormal(double f)
+{
+#ifdef WIN32
+	  return (!::_isnan(f) && ::_finite(f));
+#else
+	  return isnormal(f);
+#endif
+}
+
+MVREXPORT int MvrUtil::atoi(const char *str, bool *ok, bool forceHex) 
+{
+  bool isSuccess = false;
+  int ret = 0;
+
+  // if the argument isn't bogus
+  if (str != NULL) {
+  
+    int base = 10;
+    if (forceHex)
+      base = 16;
+    // see if it has the hex prefix and strip it
+    if (strlen(str) > 2 && str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
+    {
+      str = &str[2];
+      base = 16;
+    }
+    char *endPtr = NULL;
+    ret = strtol(str, &endPtr, base);
+ 
+    if (endPtr[0] == '\0' && endPtr != str) {
+      isSuccess = true;
+    }
+  } // end if valid arg
+
+  if (ok != NULL) {
+    *ok = isSuccess;
+  }
+  
+  if (isSuccess) 
+    return ret;
+  else 
+    return 0;
+
+} // end method atoi
+
+
+MVREXPORT long MvrMath::randomInRange(long m, long n)
+{
+    return m + random() / (ourRandMax / (n - m + 1) + 1);
+}
+
+MVREXPORT double MvrMath::epsilon() { return ourEpsilon; }
+MVREXPORT long MvrMath::getRandMax() { return ourRandMax; }
+
+#ifndef MVRINTERFACE
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourLMS2xxCB(&MvrLaserCreatorHelper::createLMS2xx);
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourUrgCB(&MvrLaserCreatorHelper::createUrg);
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourLMS1XXCB(&MvrLaserCreatorHelper::createLMS1XX);
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourS3SeriesCB(&MvrLaserCreatorHelper::createS3Series);
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourUrg_2_0CB(&MvrLaserCreatorHelper::createUrg_2_0);
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourLMS5XXCB(&MvrLaserCreatorHelper::createLMS5XX);
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourTiM3XXCB(&MvrLaserCreatorHelper::createTiM3XX);
+
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourSZSeriesCB(&MvrLaserCreatorHelper::createSZSeries);
+
+MvrLaser *createAnyLMS1xx(int laserNumber, const char *logPrefix, const char *name, MvrLMS1XX::LaserModel model)
+{
+	return new MvrLMS1XX(laserNumber, name, model);
+}
+
+MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
+TiM551CB(&createAnyLMS1xx, -1, "", "tim551", MvrLMS1XX::TiM551);
+
+MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
+TiM561CB(&createAnyLMS1xx, -1, "", "tim561", MvrLMS1XX::TiM561); 
+
+MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
+TiM571CB(&createAnyLMS1xx, -1, "", "tim571", MvrLMS1XX::TiM571);
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *
+MvrLaserCreatorHelper::getCreateTiM551CB(void) {
+  return &TiM551CB;
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *
+MvrLaserCreatorHelper::getCreateTiM561CB(void) {
+  return &TiM561CB;
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *
+MvrLaserCreatorHelper::getCreateTiM571CB(void) {
+  return &TiM571CB;
+}
+
+
+MvrGlobalRetFunctor2<MvrBatteryMTX *, int, const char *>
+MvrBatteryMTXCreatorHelper::ourBatteryMTXCB(&MvrBatteryMTXCreatorHelper::createBatteryMTX);
+
+MvrGlobalRetFunctor2<MvrLCDMTX *, int, const char *>
+MvrLCDMTXCreatorHelper::ourLCDMTXCB(&MvrLCDMTXCreatorHelper::createLCDMTX);
+
+MvrGlobalRetFunctor2<MvrSonarMTX *, int, const char *>
+MvrSonarMTXCreatorHelper::ourSonarMTXCB(&MvrSonarMTXCreatorHelper::createSonarMTX);
+
+
+MvrLaser *MvrLaserCreatorHelper::createLMS2xx(int laserNumber, 
+					    const char *logPrefix)
+{
+  return new MvrLMS2xx(laserNumber);
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS2xxCB(void)
+{
+  return &ourLMS2xxCB;
+}
+
+MvrLaser *MvrLaserCreatorHelper::createUrg(int laserNumber, const char *logPrefix)
+{
+  return new MvrUrg(laserNumber);
+}
+
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateUrgCB(void)
+{
+  return &ourUrgCB;
+}
+
+MvrLaser *MvrLaserCreatorHelper::createLMS1XX(int laserNumber, const char *logPrefix)
+{
+	return new MvrLMS1XX(laserNumber, "lms1xx", MvrLMS1XX::LMS1XX);
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS1XXCB(void)
+{
+  return &ourLMS1XXCB;
+}
+
+MvrLaser *MvrLaserCreatorHelper::createS3Series(int laserNumber, 
+					    const char *logPrefix)
+{
+  return new MvrS3Series(laserNumber);
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateS3SeriesCB(void)
+{
+  return &ourS3SeriesCB;
+}
+
+
+MvrLaser *MvrLaserCreatorHelper::createUrg_2_0(int laserNumber, 
+					     const char *logPrefix)
+{
+  return new MvrUrg_2_0(laserNumber);
+}
+
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateUrg_2_0CB(void)
+{
+  return &ourUrg_2_0CB;
+}
+
+MvrLaser *MvrLaserCreatorHelper::createLMS5XX(int laserNumber,
+		const char *logPrefix)
+{
+
+
+	return new MvrLMS1XX(laserNumber, "lms5XX", MvrLMS1XX::LMS5XX);
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS5XXCB(void)
+{
+  return &ourLMS5XXCB;
+}
+
+MvrLaser *MvrLaserCreatorHelper::createTiM3XX(int laserNumber,
+		const char *logPrefix)
+{
+
+
+	return new MvrLMS1XX(laserNumber, "tim3XX", MvrLMS1XX::TiM3XX);
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateTiM3XXCB(void)
+{
+  return &ourTiM3XXCB;
+}
+
+MvrLaser *MvrLaserCreatorHelper::createSZSeries(int laserNumber,
+					    const char *logPrefix)
+{
+  return new MvrSZSeries(laserNumber);
+}
+
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateSZSeriesCB(void)
+{
+  return &ourSZSeriesCB;
+}
+
+MvrBatteryMTX *MvrBatteryMTXCreatorHelper::createBatteryMTX(int batteryNumber,
+					    const char *logPrefix)
+{
+  return new MvrBatteryMTX(batteryNumber);
+}
+
+MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *MvrBatteryMTXCreatorHelper::getCreateBatteryMTXCB(void)
+{
+  return &ourBatteryMTXCB;
+}
+
+MvrLCDMTX *MvrLCDMTXCreatorHelper::createLCDMTX(int lcdNumber,
+					    const char *logPrefix)
+{
+  return new MvrLCDMTX(lcdNumber);
+}
+
+MvrRetFunctor2<MvrLCDMTX *, int, const char *> *MvrLCDMTXCreatorHelper::getCreateLCDMTXCB(void)
+{
+  return &ourLCDMTXCB;
+}
+
+MvrSonarMTX *MvrSonarMTXCreatorHelper::createSonarMTX(int sonarNumber,
+					    const char *logPrefix)
+{
+  return new MvrSonarMTX(sonarNumber);
+}
+
+MvrRetFunctor2<MvrSonarMTX *, int, const char *> *MvrSonarMTXCreatorHelper::getCreateSonarMTXCB(void)
+{
+  return &ourSonarMTXCB;
+}
+
+#endif // MVRINTERFACE
+
+MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> 
+MvrDeviceConnectionCreatorHelper::ourSerialCB(
+	&MvrDeviceConnectionCreatorHelper::createSerialConnection);
+MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> 
+MvrDeviceConnectionCreatorHelper::ourTcpCB(
+	&MvrDeviceConnectionCreatorHelper::createTcpConnection);
+MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *>
+MvrDeviceConnectionCreatorHelper::ourSerial422CB(
+	&MvrDeviceConnectionCreatorHelper::createSerial422Connection);
+MvrLog::LogLevel MvrDeviceConnectionCreatorHelper::ourSuccessLogLevel = MvrLog::Verbose;
+
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createSerialConnection(
+	const char *port, const char *defaultInfo, const char *logPrefix)
+{
+	MvrDeviceConnection *devConn;
+
+	devConn = internalCreateSerialConnection(port, defaultInfo, logPrefix, false);
+
+	return devConn;
+}
+
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createSerial422Connection(
+	const char *port, const char *defaultInfo, const char *logPrefix)
+{
+	MvrDeviceConnection *devConn;
+
+	devConn = internalCreateSerialConnection(port, defaultInfo, logPrefix, true);
+
+	return devConn;
+}
+
+
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::internalCreateSerialConnection(
+	const char *port, const char *defaultInfo, const char *logPrefix, bool is422)
+{
+  MvrSerialConnection *serConn = new MvrSerialConnection(is422);
+  
+  std::string serPort;
+  if (strcasecmp(port, "COM1") == 0)
+    serPort = MvrUtil::COM1;
+  else if (strcasecmp(port, "COM2") == 0)
+    serPort = MvrUtil::COM2;
+  else if (strcasecmp(port, "COM3") == 0)
+    serPort = MvrUtil::COM3;
+  else if (strcasecmp(port, "COM4") == 0)
+    serPort = MvrUtil::COM4;
+  else if (strcasecmp(port, "COM5") == 0)
+    serPort = MvrUtil::COM5;
+  else if (strcasecmp(port, "COM6") == 0)
+    serPort = MvrUtil::COM6;
+  else if (strcasecmp(port, "COM7") == 0)
+    serPort = MvrUtil::COM7;
+  else if (strcasecmp(port, "COM8") == 0)
+    serPort = MvrUtil::COM8;
+  else if (strcasecmp(port, "COM9") == 0)
+    serPort = MvrUtil::COM9;
+  else if (strcasecmp(port, "COM10") == 0)
+    serPort = MvrUtil::COM10;
+  else if (strcasecmp(port, "COM11") == 0)
+    serPort = MvrUtil::COM11;
+  else if (strcasecmp(port, "COM12") == 0)
+    serPort = MvrUtil::COM12;
+  else if (strcasecmp(port, "COM13") == 0)
+    serPort = MvrUtil::COM13;
+  else if (strcasecmp(port, "COM14") == 0)
+    serPort = MvrUtil::COM14;
+  else if (strcasecmp(port, "COM15") == 0)
+    serPort = MvrUtil::COM15;
+  else if (strcasecmp(port, "COM16") == 0)
+    serPort = MvrUtil::COM16;
+  else if (port != NULL)
+    serPort = port;
+  
+  MvrLog::log(ourSuccessLogLevel, "%sSet serial port to open %s", 
+	     logPrefix, serPort.c_str());
+  serConn->setPort(serPort.c_str());
+  return serConn;
+  
+MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
+MvrDeviceConnectionCreatorHelper::getCreateSerialCB(void)
+{
+  return &ourSerialCB;
+}
+
+MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
+MvrDeviceConnectionCreatorHelper::getCreateSerial422CB(void)
+{
+  return &ourSerial422CB;
+}
+
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createTcpConnection(
+	const char *port, const char *defaultInfo, const char *logPrefix)
+{
+  MvrTcpConnection *tcpConn = new MvrTcpConnection;
+
+  tcpConn->setPort(port, atoi(defaultInfo));
+  MvrLog::log(ourSuccessLogLevel, 
+	     "%sSet tcp connection to open %s (and port %d)", 
+	     logPrefix, port, atoi(defaultInfo));
+  return tcpConn;
+}
+
+MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
+MvrDeviceConnectionCreatorHelper::getCreateTcpCB(void)
+{
+  return &ourTcpCB;
+}
+
+void MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(MvrLog::LogLevel successLogLevel)
+{
+  ourSuccessLogLevel = successLogLevel;
+}
+
+MvrLog::LogLevel MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(void)
+{
+  return ourSuccessLogLevel;
+}
+
+MVREXPORT std::list<MvrPose> MvrPoseUtil::findCornersFromRobotBounds(
+	double radius, double widthLeft, double widthRight, 
+	double lengthFront, double lengthRear, bool fastButUnsafe)
+{
+
+  std::list<MvrPose> ret;
+
+  if (fastButUnsafe)
+  {
+    MvrPose frontLeft;   
+    if (lengthFront >= radius && widthLeft >= radius)
+      frontLeft.setPose(lengthFront,widthLeft);
+    else if (lengthFront >= radius)
+      frontLeft.setPose(lengthFront,0);
+    else
+      frontLeft.setPose(lengthFront,sqrt(radius * radius - lengthFront * lengthFront));
+    
+    MvrPose leftFront;
+    if (widthLeft >= radius && lengthFront >= radius)
+      leftFront.setPose(lengthFront, widthLeft);
+    else if (widthLeft >= radius)
+      leftFront.setPose(0, widthLeft);
+    else
+      leftFront.setPose(sqrt(radius * radius - widthLeft * widthLeft),widthLeft);
+
+    MvrPose leftRear;
+    if (widthLeft >= radius && lengthRear >= radius)
+      leftRear.setPose(-lengthRear, widthLeft);
+    else if (widthLeft >= radius)
+      leftRear.setPose(0, widthLeft);
+    else
+      leftRear.setPose(-sqrt(radius * radius - widthLeft * widthLeft),widthLeft);
+
+    MvrPose rearLeft;
+    if (lengthRear >= radius && widthLeft >= radius)
+      rearLeft.setPose(-lengthRear, widthLeft);
+    else if (lengthRear >= radius)
+      rearLeft.setPose(-lengthRear, 0);
+    else
+      rearLeft.setPose(-lengthRear, sqrt(radius * radius - lengthRear * lengthRear ));
+
+
+    MvrPose rearRight;
+    if (lengthRear >= radius && widthRight >= radius)
+      rearRight.setPose(-lengthRear, -widthRight);
+    else if (lengthRear >= radius)
+      rearRight.setPose(-lengthRear, 0);
+    else
+      rearRight.setPose(-lengthRear,-sqrt(radius * radius - lengthRear * lengthRear));
+
+
+    MvrPose rightRear;
+    if (widthRight >= radius && lengthRear >= radius)      
+      rightRear.setPose(-lengthRear, -widthRight);
+    else if (widthRight >= radius)
+      rightRear.setPose(0, -widthRight);
+    else
+      rightRear.setPose(-sqrt(radius * radius - widthRight * widthRight),	-widthRight);
+
+    MvrPose rightFront;
+    if (widthRight >= radius && lengthFront >= radius)
+      rightFront.setPose(lengthFront, -widthRight);
+    else if (widthRight >= radius)
+      rightFront.setPose(0, -widthRight);
+    else
+      rightFront.setPose(sqrt(radius * radius - widthRight * widthRight), -widthRight);
+
+    MvrPose frontRight;
+    if (lengthFront >= radius && widthRight >= radius)
+      frontRight.setPose(lengthFront, -widthRight);
+    else if (lengthFront >= radius)
+      frontRight.setPose(lengthFront,0);
+    else
+      frontRight.setPose(lengthFront,
+			 -sqrt(radius * radius - lengthFront * lengthFront));
+
+    if (frontRight.squaredFindDistanceTo(frontLeft) > 1)
+      ret.push_back(frontLeft);
+
+    if (frontLeft.squaredFindDistanceTo(leftFront) > 1)
+      ret.push_back(leftFront);
+    if (leftFront.squaredFindDistanceTo(leftRear) > 1)
+      ret.push_back(leftRear);
+
+    if (leftRear.squaredFindDistanceTo(rearLeft) > 1) 
+      ret.push_back(rearLeft);
+    if (rearLeft.squaredFindDistanceTo(rearRight) > 1) 
+      ret.push_back(rearRight);
+
+    if (rearRight.squaredFindDistanceTo(rightRear) > 1)
+      ret.push_back(rightRear);
+    if (rightRear.squaredFindDistanceTo(rightFront) > 1)
+      ret.push_back(rightFront);
+
+    if (rightFront.squaredFindDistanceTo(frontRight) > 1)
+      ret.push_back(frontRight);
+    return ret;
+  }
+
+  return ret;    
+}
+
+
+MVREXPORT std::list<MvrPose> MvrPoseUtil::breakUpDistanceEvenly(
+	MvrPose start, MvrPose end, int resolution)
+{
+  std::list<MvrPose> ret;
+
+  ret.push_back(start);
+
+  double dist = start.findDistanceTo(end);
+  double angle = start.findAngleTo(end);
+  double cos = MvrMath::cos(angle);
+  double sin = MvrMath::sin(angle);
+
+  if (dist > resolution)
+  {
+
+    int steps = dist / resolution + 1;
+    double increment = dist / steps;
+
+    double atX = start.getX();
+    double atY = start.getY();
+    
+    // now walk the length of the line and see if we should put the points in
+    for (int ii = 1; ii <= steps; ii++)
+    {
+      atX += increment * cos;
+      atY += increment * sin;
+      ret.push_back(MvrPose(atX, atY));
+    }
+  }
+
+  ret.push_back(end);
+  return ret;
+}
+
+MVREXPORT MvrTimeChecker::MvrTimeChecker(const char *name, int defaultMSecs)
+{
+  if (name != NULL)
+    myName = name;
+  else
+    myName = "Unknown";
+  myMSecs = defaultMSecs;
+}
+
+MVREXPORT MvrTimeChecker::~MvrTimeChecker()
+{
+
+}
+
+MVREXPORT void MvrTimeChecker::start(void)
+{
+  myStarted.setToNow();
+  myLastCheck.setToNow();
+}
+
+MVREXPORT void MvrTimeChecker::check(const char *subName)
+{
+  long long took = myLastCheck.mSecSinceLL();
+
+  if (took > (long long) myMSecs && subName != NULL)
+    MvrLog::log(MvrLog::Normal, "%s::%s took too long (%lld msecs) in thread %s",
+	       myName.c_str(), subName, took, 
+	       MvrThread::self()->getThreadName());
+
+  myLastCheck.setToNow();
+}
+
+
+MVREXPORT void MvrTimeChecker::finish(void)
+{
+  long long took = myStarted.mSecSinceLL();
+
+  if (took > (long long) myMSecs)
+    MvrLog::log(MvrLog::Normal, "%s took too long (%lld msecs) in thread %s",
+	       myName.c_str(), took, MvrThread::self()->getThreadName());
 }
