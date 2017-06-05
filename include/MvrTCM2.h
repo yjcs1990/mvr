@@ -7,8 +7,8 @@
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
 
-#ifndef ARTCM2_H
-#define ARTCM2_H
+#ifndef MVRTCM2_H
+#define MVRTCM2_H
 
 #include "mvriaUtil.h"
 #include "MvrFunctor.h"
@@ -16,9 +16,9 @@
 
 
 #ifdef WIN32
-#define ARTCM2_DEFAULT_SERIAL_PORT "COM4"
+#define MVRTCM2_DEFAULT_SERIAL_PORT "COM4"
 #else
-#define ARTCM2_DEFAULT_SERIAL_PORT "/dev/ttyS3"
+#define MVRTCM2_DEFAULT_SERIAL_PORT "/dev/ttyS3"
 #endif
 
 class MvrTCM2
@@ -208,4 +208,4 @@ public:
   MVREXPORT bool connect(MvrTCM2*) const;
 };
 
-#endif // ARTCM2_H
+#endif // MVRTCM2_H

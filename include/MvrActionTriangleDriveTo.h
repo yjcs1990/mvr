@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月24日
  > Modify Time  : 2017年05月24日
 ***************************************************************************************************/
-#ifndef ARACTIONTRIANGLEDRIVETO_H
-#define ARACTIONTRIANGLEDRIVETO_H
+#ifndef MVRACTIONTRIANGLEDRIVETO_H
+#define MVRACTIONTRIANGLEDRIVETO_H
 
 #include "mvriaTypedefs.h"
 #include "MvrAction.h"

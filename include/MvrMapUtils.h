@@ -33,8 +33,8 @@
  *    them after the Mvria map has been changed.
  */
 
-#ifndef ARMAPUTILS_H
-#define ARMAPUTILS_H
+#ifndef MVRMAPUTILS_H
+#define MVRMAPUTILS_H
 
 #include <algorithm>
 #include <functional>
@@ -892,5 +892,5 @@ class MvrMapChangedHelper
  
 #endif // ifndef SWIG
 
-#endif // ARMAPUTILS_H
+#endif // MVRMAPUTILS_H
 

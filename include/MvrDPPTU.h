@@ -7,8 +7,8 @@
  > Modify Time  : 2017年05月23日
 ***************************************************************************************************/
 
-#ifndef ARDPPTU_H
-#define ARDPPTU_H
+#ifndef MVRDPPTU_H
+#define MVRDPPTU_H
 
 #include "mvriaTypedefs.h"
 #include "MvrRobot.h"
@@ -350,4 +350,4 @@ protected:
   static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 };
 
-#endif // ARDPPTU_H
+#endif // MVRDPPTU_H

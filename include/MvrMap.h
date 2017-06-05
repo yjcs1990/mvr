@@ -99,8 +99,7 @@ class MvrFileParser;
 /// A map of a two-dimensional space the robot can navigate within, and which can be updated via the Mvria config
 /**
 * MvrMap contains data that represents the operating space of the robot, and can
-* be used for space searching, localizing, navigating etc.  MobileRobots' ARNL
-* and SONARNL localization and navigation libraries use MvrMap objects.
+* be used for space searching, localizing, navigating etc.  
 * MvrMap also provides methods to read and write the map from and to a file,
 * along with a mechanism for setting the map file via the global Mvria config.
 * 
@@ -128,8 +127,7 @@ class MvrFileParser;
 * 
 * @section MapThreading Thread issuses, and changing the map
 * 
-* Different threads will need to access the same map data (for example ARNL, 
-* MvrForbiddenRangeDevice, networking). However, the MvrMap class is not 
+* Different threads will need to access the same map data However, the MvrMap class is not 
 * inherently thread-safe.  You must call lock() and  unlock() methods, before 
 * and after any access to the map data (e.g. calls to getMapObjects(), 
 * getPoints(), setMapObjects(), setPoints()).  
@@ -268,50 +266,50 @@ public:
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   MVREXPORT virtual const char *getDisplayString
-            (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+            (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual std::vector<MvrPose> *getPoints
-            (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+            (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual MvrPose getMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual bool isSortedPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
 
   MVREXPORT virtual void setPoints(const std::vector<MvrPose> *points,
-                                   const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                   const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                    bool isSortedPoints = false,
                                    MvrMapChangeDetails *changeDetails = NULL);
 
   MVREXPORT virtual std::vector<MvrLineSegment> *getLines
-            (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+            (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual bool isSortedLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
    
   MVREXPORT virtual void setLines(const std::vector<MvrLineSegment> *lines,
-                                  const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                  const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                   bool isSortedLines = false,
                                   MvrMapChangeDetails *changeDetails = NULL);
   
-  MVREXPORT virtual int getResolution(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getResolution(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void setResolution(int resolution,
-                                       const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                       const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                        MvrMapChangeDetails *changeDetails = NULL);
  
   MVREXPORT virtual void writeScanToFunctor(MvrFunctor1<const char *> *functor, 
                                             const char *endOfLineChars,
-                                            const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                                            const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void writePointsToFunctor(MvrFunctor2<int, std::vector<MvrPose> *> *functor,
-                                              const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                              const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                               MvrFunctor1<const char *> *keywordFunctor = NULL);
 
    MVREXPORT virtual void writeLinesToFunctor(MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
-                                              const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                              const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                               MvrFunctor1<const char *> *keywordFunctor = NULL);
   
    MVREXPORT virtual bool addToFileParser(MvrFileParser *fileParser);
@@ -633,6 +631,6 @@ public:
 }; // end class MvrMap
 
  
-#endif // ARMAP_H
+#endif // MVRMAP_H
  
  

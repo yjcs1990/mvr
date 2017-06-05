@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月25日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARLMS2XXPACKET_H
-#define ARLMS2XXPACKET_H
+#ifndef MVRLMS2XXPACKET_H
+#define MVRLMS2XXPACKET_H
 
 #include "mvriaTypedefs.h"
 #include "MvrBasePacket.h"
@@ -57,4 +57,4 @@ protected:
 
 typedef MvrLMS2xxPacket MvrSickPacket;
 
-#endif // ARSICKPACKET_H
+#endif // MVRLMS2XXPACKET_H

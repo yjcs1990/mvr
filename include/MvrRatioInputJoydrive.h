@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月25日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARRATIOINPUTJOYDRIVE_H
-#define ARRATIOINPUTJOYDRIVE_H
+#ifndef MVRRATIOINPUTJOYDRIVE_H
+#define MVRRATIOINPUTJOYDRIVE_H
 
 #include "mvriaTypedefs.h"
 #include "MvrAction.h"
@@ -76,4 +76,4 @@ protected:
   MvrFunctorC<MvrRatioInputJoydrive> myFireCB;
 };
 
-#endif //ARRATIOINPUTJOYDRIVE_H
+#endif //MVRRATIOINPUTJOYDRIVE_H

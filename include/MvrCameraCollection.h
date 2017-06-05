@@ -7,8 +7,8 @@
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
 
-#ifndef ARCAMERACOLLECTION_H
-#define ARCAMERACOLLECTION_H
+#ifndef MVRCAMERACOLLECTION_H
+#define MVRCAMERACOLLECTION_H
 
 #include <list>
 #include <map>
@@ -438,4 +438,4 @@ public:
 }; // end class MvrCameraParameterSource
 
 
-#endif // ARCAMERACOLLECTION_H
+#endif // MVRCAMERACOLLECTION_H

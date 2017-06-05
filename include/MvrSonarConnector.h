@@ -198,4 +198,4 @@ protected:
   MvrConstFunctorC<MvrLaserConnector> myLogOptionsCB;
 };
 
-#endif // ARLASERCONNECTOR_H
+#endif // MVRLASERCONNECTOR_H

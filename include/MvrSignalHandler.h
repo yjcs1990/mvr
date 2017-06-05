@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月25日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARSIGNALHANDLER_H
-#define ARSIGNALHANDLER_H
+#ifndef MVRSIGNALHANDLER_H
+#define MVRSIGNALHANDLER_H
 
 
 #include <list>
@@ -143,4 +143,4 @@ protected:
 };
 
 
-#endif // ARSIGNALHANDLER_H
+#endif // MVRSIGNALHANDLER_H

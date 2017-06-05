@@ -6,8 +6,8 @@
  > Create Time  : 2017年04月24日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARACTIONGOTOSTRAIGHT_H
-#define ARACTIONGOTOSTRAIGHT_H
+#ifndef MVRACTIONGOTOSTRAIGHT_H
+#define MVRACTIONGOTOSTRAIGHT_H
 
 #include "mvriaTypedefs.h"
 #include "mvriaUtil.h"
@@ -106,4 +106,4 @@ protected:
   State myState;
 };
 
-#endif // ARACTIONGOTO
+#endif // MVRACTIONGOTOSTRAIGHT_H

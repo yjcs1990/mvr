@@ -86,10 +86,10 @@ std::string Mvria::ourIdentifier = "generic";
    SIGHUP, SIGINT, SIGQUIT, and SIGTERM.
 
    This method also adds the file /etc/Mvria.args and the environment variable
-   ARIAARGS as locations for MvrArgumentParser to obtain default argument values
+   MVRIAARGS as locations for MvrArgumentParser to obtain default argument values
    from. 
 
-   @param method the method in which to handle signals. Defaulted to SIGHANDLE_SINGLE, or the method indicated by the ARIA_SIGHANDLE_METHOD environment variable (NONE, SINGLE or THREAD), if it exists. 
+   @param method the method in which to handle signals. Defaulted to SIGHANDLE_SINGLE, or the method indicated by the MVRIA_SIGHANDLE_METHOD environment variable (NONE, SINGLE or THREAD), if it exists. 
    @param initSockets specify whether or not to initialize the socket layer. This is only meaningfull for Windows. Defaulted to true.
    @param sigHandleExitNotShutdown if this is true and a signal
    happens Mvria will use exit() to quit instead of shutdown(), false will
@@ -160,9 +160,9 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHan
 
   if (ourDirectory.length() == 0)
   {
-    if (getenv("ARIA") != NULL)
+    if (getenv("MVRIA") != NULL)
     {
-      setDirectory(getenv("ARIA"));
+      setDirectory(getenv("MVRIA"));
     }
     else
     {
@@ -190,9 +190,9 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHan
         else
         {
   #ifndef MVRINTERFACE
-    MvrLog::log(MvrLog::Terse, "NonCritical Error: ARIA could not find where it is located.");
+    MvrLog::log(MvrLog::Terse, "NonCritical Error: MVRIA could not find where it is located.");
   #else
-    MvrLog::log(MvrLog::Verbose, "NonCritical Error: ARIA could not find where it is located.");
+    MvrLog::log(MvrLog::Verbose, "NonCritical Error: MVRIA could not find where it is located.");
   #endif
         }
       }
@@ -233,10 +233,25 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHan
     (*iter)->invoke();
 
   MvrArgumentParser::addDefaultArgumentFile("/etc/Mvria.args");
-  MvrArgumentParser::addDefaultArgumentEnv("ARIAARGS");
+  MvrArgumentParser::addDefaultArgumentEnv("MVRIAARGS");
   
   MvrVCC4::registerPTZType();
   MvrRVisionPTZ::registerPTZType();
   MvrDPPTU::registerPTZType();
   MvrSonyPTZ::registerPTZType();
 }
+
+/// This must be called last, after all other Aria functions.
+MVREXPORT void Mvria::uninit()
+{
+  std::list<MvrFunctor *>::iterator iter;
+
+  for (iter=ourUninitCBs.begin(); iter!=ourUninitCBs.end(); ++iter)
+    (*iter)->invoke();
+#ifndef MVRINTERFACE
+  MvrModuleLoader::closeAll();
+#endif  // MVRINTERFACE
+  MvrSocket::shutdown();
+  MvrThread::shutdown();
+}
+

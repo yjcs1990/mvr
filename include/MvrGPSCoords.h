@@ -77,9 +77,9 @@ protected:
 
 #ifdef WIN32
 // Need to export some variables on Windows because they are used in inline methods (which is good), but they can't be exported if const.
-#define ARGPSCOORDS_CONSTANT 
+#define MVRGPSCOORDS_CONSTANT 
 #else
-#define ARGPSCOORDS_CONSTANT const
+#define MVRGPSCOORDS_CONSTANT const
 #endif
 
 
@@ -102,16 +102,16 @@ class MvrWGS84
   
 
 private:
-  MVREXPORT static ARGPSCOORDS_CONSTANT double mya;     // meters
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myb;     // meters
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myep; 
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myc;     // m/sec
-  MVREXPORT static ARGPSCOORDS_CONSTANT double mye;
-  MVREXPORT static ARGPSCOORDS_CONSTANT double my1byf;
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myOmega; // rad/sec
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myGM;    // m^3/sec^2
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myg;     // m/sec^2. Ave g.
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myM;     // kg. Mass of earth.
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double mya;     // meters
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myb;     // meters
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myep; 
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myc;     // m/sec
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double mye;
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double my1byf;
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myOmega; // rad/sec
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myGM;    // m^3/sec^2
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myg;     // m/sec^2. Ave g.
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myM;     // kg. Mass of earth.
 };
 
 

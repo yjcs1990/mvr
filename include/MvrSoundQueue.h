@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月25日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARSOUNDSQUEUE_H
-#define ARSOUNDSQUEUE_H
+#ifndef MVRSOUNDSQUEUE_H
+#define MVRSOUNDSQUEUE_H
 
 
 #include "mvriaTypedefs.h"
@@ -450,4 +450,4 @@ protected:
 
 };
 
-#endif
+#endif  // MVRSOUNDSQUEUE_H

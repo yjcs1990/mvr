@@ -7,8 +7,8 @@
  > Create Time  : 2017年04月24日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARACTIONMOVEMENTPARAMTERS_H
-#define ARACTIONMOVEMENTPARAMTERS_H
+#ifndef MVRACTIONMOVEMENTPARAMTERS_H
+#define MVRACTIONMOVEMENTPARAMTERS_H
 
 #include "mvriaTypedefs.h"
 #include "MvrAction.h"
@@ -66,4 +66,4 @@ protected:
   MvrActionDesired myDesired;
 };
 
-#endif // ARACTIONMOVEMENTPARAMTERS_H
+#endif // MVRACTIONMOVEMENTPARAMTERS_H

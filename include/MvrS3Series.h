@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月22日
  > Modify Time  : 2017年05月22日
 ***************************************************************************************************/
-#ifndef ARS3SERIES_H
-#define ARS3SERIES_H
+#ifndef MVRS3SERIES_H
+#define MVRS3SERIES_H
 
 #include "mvriaTypedefs.h"
 #include "mvriaOSDef.h"
@@ -239,4 +239,4 @@ protected:
   MvrRetFunctor1C<bool, MvrS3Series, MvrRobotPacket *> myPacketHandlerCB;
 };
 
-#endif 
+#endif // MVRS3SERIES_H

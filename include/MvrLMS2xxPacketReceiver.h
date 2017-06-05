@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月25日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARLMS2XXPACKETRECEIVER_H
-#define ARLMS2XXPACKETRECEIVER_H
+#ifndef MVRLMS2XXPACKETRECEIVER_H
+#define MVRLMS2XXPACKETRECEIVER_H
 
 #include "mvriaTypedefs.h"
 #include "MvrDeviceConnection.h"
@@ -51,4 +51,4 @@ protected:
 
 typedef MvrLMS2xxPacketReceiver MvrSickPacketReceiver;
 
-#endif // ARSICKPACKETRECEIVER_H
+#endif // MVRLMS2XXPACKETRECEIVER_H

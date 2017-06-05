@@ -44,7 +44,7 @@ private:
   void handleHCHDM(MvrNMEAParser::Message);
 public:
   MVREXPORT MvrTCMCompassDirect(MvrDeviceConnection *devCon);
-  MVREXPORT MvrTCMCompassDirect(const char *serialPortName = ARTCM2_DEFAULT_SERIAL_PORT);
+  MVREXPORT MvrTCMCompassDirect(const char *serialPortName = MVRTCM2_DEFAULT_SERIAL_PORT);
   MVREXPORT ~MvrTCMCompassDirect();
 
   /** Open device connection if not yet open  and send commands to configure compass. */

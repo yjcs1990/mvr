@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月25日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARLMS2XX_H
-#define ARLMS2XX_H
+#ifndef MVRLMS2XX_H
+#define MVRLMS2XX_H
 
 
 #include "mvriaTypedefs.h"
@@ -159,4 +159,4 @@ protected:
 };
 
 
-#endif 
+#endif  // MVRLMS2XX_H

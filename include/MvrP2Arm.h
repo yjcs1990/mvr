@@ -200,9 +200,9 @@ public:
 
 protected:
 
-  // AROS/P2OS parameters
-  static const unsigned int ARMpac;
-  static const unsigned int ARMINFOpac;
+  // MVROS/P2OS parameters
+  static const unsigned int MVRMpac;
+  static const unsigned int MVRMINFOpac;
   static const unsigned char ComArmInfo;
   static const unsigned char ComArmStats;
   static const unsigned char ComArmInit;

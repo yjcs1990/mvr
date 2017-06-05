@@ -62,7 +62,4 @@ protected:
   static std::list<MvrMode *> ourModes;
 };
 
-#endif // ARMODE_H
-
-
 #endif  // MVRMODE_H

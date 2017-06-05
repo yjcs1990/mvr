@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月22日
  > Modify Time  : 2017年05月22日
 ***************************************************************************************************/
-#ifndef ARSZSERIES_H
-#define ARSZSERIES_H
+#ifndef MVRSZSERIES_H
+#define MVRSZSERIES_H
 
 #include "mvriaTypedefs.h"
 #include "mvriaOSDef.h"
@@ -180,5 +180,5 @@ protected:
   MvrRetFunctorC<bool, MvrSZSeries> myMvriaExitCB;
 };
 
-#endif 
+#endif  // MVRSZSERIES_H
 
