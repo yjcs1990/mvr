@@ -219,16 +219,14 @@ public:
   MVREXPORT virtual const char *getLinesKeyword() const;
 
   /// Writes the scan's data points (and introductory keyword) to the given functor.
-  MVREXPORT virtual void writePointsToFunctor
-             (MvrFunctor1<const char *> *functor, 
- 			        const char *endOfLineChars,
-               const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual void writePointsToFunctor(MvrFunctor1<const char *> *functor, 
+                                              const char *endOfLineChars,
+                                              const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   /// Writes the scan's data lines (and introductory keyword) to the given functor.
-  MVREXPORT virtual void writeLinesToFunctor
-             (MvrFunctor1<const char *> *functor, 
- 			        const char *endOfLineChars,
-              const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual void writeLinesToFunctor(MvrFunctor1<const char *> *functor, 
+                                             const char *endOfLineChars,
+                                             const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   
   /// Adds the handlers for the data points and lines keywords to the given file parser.
