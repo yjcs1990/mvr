@@ -602,7 +602,7 @@ MVREXPORT int Mvria::getMaxNumSonarBoards(void)
 
 /**
    Sets the maximum number of sonars to check for and use, if you are
-   going to set this you should do it after the Aria::init
+   going to set this you should do it after the Mvria::init
 **/
 MVREXPORT void Mvria::setMaxNumSonarBoards(int maxNumSonarBoards)
 {
@@ -730,7 +730,7 @@ MVREXPORT void Mvria::setExitCallbacksLogLevel(MvrLog::LogLevel level)
   ourExitCallbacksLogLevel = level;
 }
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 /**
    This adds a functor which can create a laser of a given type. 
 
@@ -1035,7 +1035,7 @@ MVREXPORT MvrSonarMTX *Mvria::sonarCreate(const char *sonarType, int sonarNumber
   return (*it).second->invokeR(sonarNumber, logPrefix);
 }
 
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 /**
    This adds a functor which can create a deviceConnection of a given
