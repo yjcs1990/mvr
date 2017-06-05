@@ -157,6 +157,26 @@ private:
   static MvrGlobalRetFunctor<unsigned long> ourGetProgramUptimeCallback;
 
   static MvrMutex ourWirelessMutex;
-  static 
+  static int ourLinkQuality, ourLinkSignal, ourLinkNoise, ourDiscardedTotal, ourDiscardedDecrypt, ourDiscardedConflict;
+  static MvrGlobalRetFunctor<int> ourGetWirelessLinkQualityCallback;
+  static MvrGlobalRetFunctor<int> ourGetWirelessLinkNoiseCallback;
+  static MvrGlobalRetFunctor<int> ourGetWirelessLinkSignalCallback;
+
+  static MvrMutex ourMTXWirelessMutex;
+  static int ourMTXWirelessLink, ourMTXWirelessQuality, ourMTXIp1, ourMTXIp2, ourMTXIp3, ourMTXIp4;
+  static std::string ourMTXIpString;
+  static MvrGlobalRetFunctor<int> ourGetMTXWirelessLinkCallback;
+  static MvrGlobalRetFunctor<int> ourGetMTXWirelessQualityCallback;
+
+  static void refreshCPU();          ///< Refresh CPU, if necessary
+  static void refreshWireless();     ///< Refresh Wireless stats, if necessary
+
+  static void refreshMTXWireless();  ///< Refresh MTX Wireless stats, if necessary
+
+  static MvrSystemStatusRefreshThread* ourPeriodicUpdateThread;
+  static bool ourShouldRefreshWireless;
+  static bool ourShouldRefreshCPU;
+
+  static bool ourShouldRefreshMTXWireless;
 };
 #endif  // MVRSYSTEMSTATUS_H
