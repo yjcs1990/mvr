@@ -4,7 +4,7 @@
  > Description  : Some Utility classes and functions
  > Author       : Yu Jie
  > Create Time  : 2017年05月10日
- > Modify Time  : 2017年06月02日
+ > Modify Time  : 2017年06月04日
 ***************************************************************************************************/
 #define _GNU_SOURCE 1
 #include "MvrExport.h"
