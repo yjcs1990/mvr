@@ -10,7 +10,7 @@
 #define MVREXPORT_H
 
 /// Including this header file forces MVREXPORT to be defined as the dllexport declaration in Windows DLL builds.
-/// It should only be included in source files in ARIA and other libraries. Header files should include ariaTypedefs instead.
+/// It should only be included in source files in MVRIA and other libraries. Header files should include ariaTypedefs instead.
 
 #if (defined(_WIN32) || defined(WIN32)) && !defined(MINGW)
 

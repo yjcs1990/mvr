@@ -176,7 +176,7 @@ protected:
 
    For all strength values there is a total of 1.0 combined strength availiable.
    The range for strength is from 0 to 1.  This is simply a convention that 
-   ARIA uses by default, if you don't like it, you could override this
+   MVRIA uses by default, if you don't like it, you could override this
    class the MvrResolver class.
 
    Note that for the different maximum/accel/decel values they take an

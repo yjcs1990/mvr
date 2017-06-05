@@ -6,8 +6,8 @@
  > Create Time  : 2017年05月19日
  > Modify Time  : 2017年05月25日
 ***************************************************************************************************/
-#ifndef ARIRS_H
-#define ARIRS_H
+#ifndef MVRIRS_H
+#define MVRIRS_H
 
 #include "mvriaTypedefs.h"
 #include "MvrRangeDevice.h"
@@ -31,4 +31,4 @@ protected:
 };
 
 
-#endif // ARIRS_H
+#endif // MVRIRS_H

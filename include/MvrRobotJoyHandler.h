@@ -25,7 +25,7 @@ class MvrRobotPacket;
 
   When created, this class requests continuous joystick packets from the robot if already
   connected, or if not, requests joystick packets upon robot connection.  In
-  requests that the joystick data be stopped upon normal robot disconnection, ARIA
+  requests that the joystick data be stopped upon normal robot disconnection, MVRIA
   program exit, or when this object is destroyed.
 
 */

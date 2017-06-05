@@ -42,7 +42,7 @@
 #pragma warning(disable:4996)
 
 // Warning about "new behavior" in VC2008 that array elements are not automatically initialized 
-// (which is normal C++ behavior anyway and ARIA doesn't assume it)
+// (which is normal C++ behavior anyway and MVRIA doesn't assume it)
 #pragma warning(disable:4351)
 
 

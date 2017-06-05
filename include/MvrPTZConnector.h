@@ -71,7 +71,7 @@ public:
   typedef MvrGlobalRetFunctor4<MvrPTZ*, size_t, MvrPTZParams, MvrArgumentParser*, MvrRobot*> GlobalPTZCreateFunc;  
 
   /** Register a new PTZ type. Mvria::init() registers PTZ types built in to
-   * ARIA. MvrVideo::init() registers new PTZ types implemented in the MvrVideo
+   * MVRIA. MvrVideo::init() registers new PTZ types implemented in the MvrVideo
    * library. You may also add any new PTZ types you create. 
   */
   MVREXPORT static void registerPTZType(const std::string& typeName, MvrPTZConnector::PTZCreateFunc* func);
