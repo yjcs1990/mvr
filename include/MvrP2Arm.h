@@ -240,7 +240,7 @@ protected:
   MvrTypes::UByte2 myLastStatus;
   MvrTypes::UByte2 myStatus;
   MvrSerialConnection myCon;
-  MvrRetFunctorC<State, MvrP2Arm> myAriaUninitCB;
+  MvrRetFunctorC<State, MvrP2Arm> myMvriaUninitCB;
   MvrRetFunctor1C<bool, MvrP2Arm, MvrRobotPacket*> myArmPacketHandler;
   MvrFunctor1<PacketType> *myPacketCB;
   MvrFunctor *myStoppedCB;
