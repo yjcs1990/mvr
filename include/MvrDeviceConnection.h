@@ -102,11 +102,11 @@ public:
   */
   MVREXPORT virtual const char * getOpenMessage(int messageNumber) = 0;
   enum Status { 
-      STATUS_NEVER_OPENED = 1, ///< Never opened
-      STATUS_OPEN,  ///< Currently open
-      STATUS_OPEN_FAILED, ///< Tried to open, but failed
-      STATUS_CLOSED_NORMALLY, ///< Closed by a close call
-      STATUS_CLOSED_ERROR ///< Closed because of error
+      STATUS_NEVER_OPENED = 1,  ///< Never opened
+      STATUS_OPEN,              ///< Currently open
+      STATUS_OPEN_FAILED,       ///< Tried to open, but failed
+      STATUS_CLOSED_NORMALLY,   ///< Closed by a close call
+      STATUS_CLOSED_ERROR       ///< Closed because of error
   };
   /// Gets the time data was read in
   /** 
