@@ -6,6 +6,7 @@
  > Create Time  : 2017年05月10日
  > Modify Time  : 2017年06月07日
 ***************************************************************************************************/
+
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrDeviceConnection.h"
