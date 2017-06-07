@@ -20,7 +20,7 @@ MvrThread::MapType MvrThread::ourThreads;
 std::map<HANDLE, MvrThread *> MvrThread::ourThreadHandles;
 #endif  // WIN32 
 MVREXPORT MvrLog::LogLevel MvrThread::ourLogLevel = MvrLog::Verbose;
-// TODO, instead of AREXPORT move accessors into .cpp
+// TODO, instead of MVREXPORT move accessors into .cpp
 std::string MvrThread::ourUnknownThreadName = "unknown";
 
 MVREXPORT void MvrThread::stopAll()
