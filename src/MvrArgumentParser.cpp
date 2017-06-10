@@ -406,3 +406,188 @@ void MvrArgumentParser::removeArg(size_t which)
   }
 }
 
+MVREXPORT size_t MvrArgumentParser::getArgc(void) const
+{
+  if (myUsingBuilder)
+    return myBuilder->getArgc();
+  else
+    return *myArgc;
+}
+
+MVREXPORT char **MvrArgumentParser::getArgv(void) const
+{
+  if (myUsingBuilder)
+    return myBuilder->getArgv();
+  else
+    return myArgv;
+}
+MVREXPORT char *MvrArgumentParser::getArg(size_t whichArg) const
+{
+  if (whichArg >= getArgc())
+    return NULL;
+  else
+    return getArgv()[whichArg];
+}
+
+MVREXPORT void MvrArgumentParser::log(void) const
+{
+  size_t i;
+  MvrLog::log(MvrLog::Terse, "Num arguments: %d", getArgc());
+  for (i=0; i<getArgc(); ++i)
+  {
+    MvrLog::log(MvrLog::Terse, "Arg %d: %s", i, getArgv()[i]);
+  }
+}
+
+MVREXPORT const char *MvrArgumentParser::getStartingArguments(void) const
+{
+  if (myUsingBuilder)
+    return myBuilder->getFullString();
+  else
+    return NULL; 
+}
+
+MVREXPORT void MvrArgumentParser::addDefaultArgument(const char *argument, int position)
+{
+  if (!myUsingBuilder)
+  {
+    myBuilder       = new MvrArgumentBuilder;
+    myBuilder->addStringsAsIs(*myArgc, myArgv);
+    myOwnBuilder    = true;
+    myUsingBuilder  = true;
+  }
+  myBuilder->addPlain(argument, position);
+}
+
+/**
+ * Search all locations for argument defaults and parse them.
+ * These locations may be environment variables to read argument varues
+ * from, or files to read. 
+ */
+
+MVREXPORT void MvrArgumentParser::loadDefaultArguments(int position)
+{
+  std::list<std::string>::iterator it;
+  std::list<bool>::iterator bIt;
+  const char *str;
+  char *argumentsPtr;
+  char arguments[100000];
+
+  if (!myUsingBuilder)
+  {
+    myBuilder = new MvrArgumentBuilder;
+    myBuilder->addStringsAsIs(*myArgc, myArgv);
+    myOwnBuilder = true;
+    myUsingBuilder = true;
+  }  
+  for (it=ourDefaultArgumentLocs.begin(), bIt=ourDefaultArgumentLocIsFile.begin();
+       it!=ourDefaultArgumentLocs.end(); 
+       it++, bIt++)
+  {
+    str = (*it).c_str();
+    if (!(*bIt) && (argumentsPtr = getenv(str)) != NULL)
+    {
+      MvrArgumentBuilder compressed;
+      compressed.addPlain(argumentsPtr);
+      compressed.compressQuoted(true);
+      myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(),position);
+
+      MvrLog::log(MvrLog::Normal, "Added arguments from environmental variable '%s'", str);
+    }
+    else if ((*bIt) && MvrUtil::getStringFromFile(str, arguments, sizeof(arguments)))
+    {
+      MvrArgumentBuilder compressed;
+      compressed.addPlain(argumentsPtr);
+      compressed.compressQuoted(true);
+      myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(),position);
+
+      MvrLog::log(MvrLog::Normal, "Added arguments from file '%s'", str);      
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Verbose, "Could not load form environment vaiable or file '%s'", str);
+    }
+  }
+}
+/*
+  This adds a file to the list of default argument locations.
+  @param file Name of the file
+ */
+MVREXPORT void MvrArgumentParser::addDefaultArgumentFile(const char *file)
+{
+  ourDefaultArgumentLocs.push_back(file);
+  ourDefaultArgumentLocIsFile.push_back(true);
+}
+
+/**
+   This adds an environment variable to the list of default argument
+   locations.
+   @param env Name of the environment variable 
+ **/
+ MVREXPORT void MvrArgumentParser::addDefaultArgumentEnv(const char *env)
+ {
+   std::list<std::string>::iterator it;
+   std::list<bool>::iterator bIt;
+
+   MvrLog::log(MvrLog:Normal, "Default argument files or environmental variables:");
+
+  for (it=ourDefaultArgumentLocs.begin(), bIt=ourDefaultArgumentLocIsFile.begin();
+       it!=ourDefaultArgumentLocs.end(); 
+       it++, bIt++)
+  {
+    if (*bIt)
+      MvrLog::log(MvrLog::Normal, "%10s%-10s%s", "", "file", (*it).c_str());
+    else
+      MvrLog::log(MvrLog::Normal, "%10s%-10s%s", "", "envVar", (*it).c_str());
+  }
+ }
+
+ /**
+ * Check whether a special -help flag was given in the arguments
+ * The following are the help flags: -help, -h, --help, /?, /h.  
+ * @return false if a help flag was found true otherwise.
+ */
+MVREXPORT bool MvrArgumentParser::checkHelp()
+{
+  if (myHelp || checkArgument("-help") || checkArgument("-h") ||
+      checkArgument("/?") || checkArgument("/h"))
+  {
+    myHelp = true;
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Check whether a special -help flag was given in the arguments. If a -help
+ * flag was not given, also check whether any arguments remain unparsed by this
+ * argument parser.
+ */
+MVREXPORT bool MvrArgumentParser::checkHelpAndWarnUnparsed(unsigned int numArgsOkay)
+{
+  if (!checkHelp())
+    return false;
+  
+  if (getArgc() < 1 + numArgsOkay)
+    return false;
+  
+  size_t i;
+  char buf[2048];
+  sprintf(buf, "Unhandled arguments to program:");
+  for (i=1+(int)numArgsOkay; i< getArgc(); i++)
+    sprintf(buf, "%s %s", but, getArg(i));
+  MvrLog::log(MvrLog::Normal, buf);
+  MvrLog::log(MvrLog::Normal, "Program will continue but to see the help listing type '%s -help", getArg(0));
+
+  return true;
+}
+
+MVREXPORT void MvrArgumentParser::setWasReallySetOnlyTrue(bool setWasReallySetOnlyTrue)
+{
+  myReallySetOnlyTrue = setWasReallySetOnlyTrue;
+}
+
+MVREXPORT bool MvrArgumentParser::getWasReallySetOnlyTrue(void)
+{
+  return myReallySetOnlyTrue;
+}
