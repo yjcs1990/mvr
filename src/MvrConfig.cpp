@@ -65,7 +65,7 @@ MVREXPORT const char *MvrConfig::toCategoryName(const char *categoryName)
  * @param saveUnknown if this is true and there are unknown parameters or sections then they will be saved,
  * if false then they will be ignored (can also be set with setSaveUnknown())
  */
-MVREXPORT MvrConfig::MvrCOnfig(const char *baseDirectory, 
+MVREXPORT MvrConfig::MvrConfig(const char *baseDirectory, 
                                bool noBlanksBetweenParams,
                                bool ignoreBounds, 
                                bool failOnBadSection, 
