@@ -254,8 +254,8 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, bool val,
 
 /**
  * This constructor can accept both an already-allocated string,
- * or ArConfigArg can to the memory managment itself (reallocation
- * and finally deletion). If @param maxStrLen is 0, then ArConfigArg will
+ * or MvrConfigArg can to the memory managment itself (reallocation
+ * and finally deletion). If @param maxStrLen is 0, then MvrConfigArg will
  * do its own memory management, with the contents of @param str copied
  * as the initial value of the internally held string. Otherwise,
  * @param str must point to an allocated string, with its size given by @param
@@ -1351,7 +1351,7 @@ MVREXPORT std::string MvrConfigArg::setCppString(const std::string &str, char *e
   if (myData.myCppStringData.myCppStringPtr == NULL)
   {
     MvrLog::log(MvrLog::Normal,
-                "ArConfigArg of %s: setCppString called but std::string target pointer is NULL.", getName());    
+                "MvrConfigArg of %s: setCppString called but std::string target pointer is NULL.", getName());    
     if (errorBuffer != NULL)
       snprintf(errorBuffer, errorBufferLen, "%s pointer is NULL.", getName());
     return false;                
@@ -1372,7 +1372,7 @@ MVREXPORT std::string MvrConfigArg::setCppString(const std::string &str, char *e
  * If the given child arg is not a separator, then it must have a unique, 
  * non-empty name.
  * 
- * @param arg the ArConfigArg to be added as a child of this composite arg
+ * @param arg the MvrConfigArg to be added as a child of this composite arg
  * @return bool true if the child arg was successfully added; false if an 
  * error occurred
  */
@@ -1555,7 +1555,7 @@ MVREXPORT size_t MvrConfigArg::getDescendantArgCount() const
 
 
 /*
- * @return std::list<ArConfigArg> a list of all of the child arg (copies) 
+ * @return std::list<MvrConfigArg> a list of all of the child arg (copies) 
  * in this arg.
  */
 MVREXPORT std::list<MvrConfigArg> MvrConfigArg::getArgs(bool *ok) const
@@ -1574,7 +1574,7 @@ MVREXPORT std::list<MvrConfigArg> MvrConfigArg::getArgs(bool *ok) const
 } 
 
 /*
- * @return std::list<ArConfigArg> a list of all of the child arg (copies) 
+ * @return std::list<MvrConfigArg> a list of all of the child arg (copies) 
  * in this arg.
  */
 MVREXPORT const MvrConfigArg *MvrConfigArg::getArg(size_t index) const
@@ -1622,7 +1622,7 @@ MVREXPORT MvrConfigArg *MvrConfigArg::getArg(size_t index)
  *
  * @param childParamName the char * name of the child arg to be retrieved; must be
  * non-empty
- * @return ArConfigArg * a pointer to the requested child arg; or NULL if not 
+ * @return MvrConfigArg * a pointer to the requested child arg; or NULL if not 
  * found.
  */
 MVREXPORT const MvrConfigArg *MvrConfigArg::findArg(const char *childParamName) const
@@ -1713,3 +1713,754 @@ MVREXPORT MvrConfigArg *MvrConfig::findArg(const char *childParamName)
   return child;
 }
 
+MVREXPORT bool MvrConfig::getAncestorList(std::list<MvrConfigArg *> *ancestorListOut)
+{
+  if (getParentArg() == NULL)
+  {
+    return false;
+  }
+  if (ancestorListOut == NULL)
+  {
+    return true;
+  }
+  ancestorListOut->push_front(this);
+
+  MvrConfigArg *parentParam = getParentArg();
+
+  ancestorListOut->push_front(parentParam);
+
+  while (parentParam->getParentArg() != NULL)
+  {
+    ancestorListOut->push_front(parentParam->getParentArg());
+    parentParam = parentParam->getParentArg();
+  }
+  return true;
+}
+
+MVREXPORT const MvrConfigArg *MvrConfigArg::getTopLevelArg() const
+{
+  MvrConfigArg *parentArg = getParentArg();
+  if (parentArg == NULL){
+    return this;
+  }
+  while (parentArg->getParentArg() != NULL)
+  {
+    parentArg = parentArg->getParentArg();
+  }
+  return parentArg;
+}
+
+/****************************************************************************
+                          Method for FUNCTOR Type
+****************************************************************************/
+MVREXPORT const std::list<MvrArgumentBuilder *> *MvrConfigArg::getArgsWithFunctor(bool *ok) const
+{
+  if (ok != NULL)
+  {
+    *ok = (myType == FUNCTOR);
+  }
+  if (myType == FUNCTOR)
+  {
+    if (myData.myFunctorData.myGetFunctor != NULL)
+      return myData.myFunctorData.myGetFunctor;
+  }
+  return NULL;
+}
+
+MVREXPORT bool MvrConfigArg::setArgWithFunctor(MvrArgumentBuilder *argument,
+                                               char *errorBuffer,
+                                               size_t errorBufferLen,
+                                               bool doNotSet)
+{
+  if (myType != FUNCTOR)
+  {
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigArg::setArgWithFunctor() cannto set %s, wrong type (%s)",
+                getName(), toString(myType));
+    return false;
+  }
+
+  myValueSet = true;
+  bool ret = true;
+  if (myData.myFunctorData.mySetFunctor == NULL)
+  {
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigArg of %s: setArgWithFunctor called with NULL pointer.", getName());
+    return false;
+  }
+  if (!doNotSet)
+  {
+    ret = myData.myFunctorData.mySetFunctor->invokeR(argument);
+  }
+  return ret;
+}            
+
+/****************************************************************************
+                      General Methods (for all types)
+****************************************************************************/                                   
+
+/*
+ * @return MvrConfigArg * the parent arg, if this is a child in a list arg;
+ */
+MVREXPORT MvrConfigArg *MvrConfigArg::getParentArg() const
+{
+  return myParentArg;
+}
+
+std::string MvrConfigArg::getParentPathName(char separator) const
+{
+  std::string parentPath;
+  MvrConfigArg *curParent = myParentArg;
+  while (curParent != NULL)
+  {
+    if (!parentPath.empty())
+    {
+      parentPath = separator + parentPath;
+
+      curParent = curParent->getParentArg();
+    }
+  }
+  return parentPath;
+}
+
+MVREXPORT std::list<std::string> MvrConfigArg::splitParentPathName(const char *parentPathName,
+                                                                   char separator)
+{
+  std::list<std::string> pathList;
+  if (MvrUtil::isStrEmpty(parentPathName))
+  {
+    return pathList;
+  }
+  MvrArgumentBuilder builder(512, separator);
+  builder.add(parentPathName);
+
+  for (int c=0; c<builder.getArgc(); c++)
+  {
+    IFDEBUG(MvrLog::log(MvrLog::Normal,
+                        "MvrConfigArg::splitParentPathName() %s - adding %s to list",
+                        parentPathName, builder.getArg(c)));
+    pathList.push_back(builder.getArg(c));                            
+  }
+  return pathList;
+}                                                                   
+
+/****************************************************************************
+                            File Parsing
+****************************************************************************/    
+
+/*
+ * For normal args, this method simply adds the parserCB handler for the keyword
+ * (i.e. arg name).  For list args, this method adds the parserCB handler
+ * for all child arg names.  The list arg itself is handled by MvrConfig using 
+ * the special keywords (_beginList and _endList).
+ * 
+ * @param parser the MvrFileParser * to which to add the handler
+ * @param parserCB the MvrFunctor * that will parse the arg when the keyword is
+ * found
+ * @param logPrefix the char * prefix to use in debug log messages 
+ * @param isQuiet a bool set to true if minimal log messages should be generated;
+ * false if verbosity is desired.
+ * @return bool true if the hanlder was successfully added to the parser; false 
+ * if an error occurred
+ */
+MVREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
+                                             MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder *,
+                                                             char *, size_t> *parserCB,
+                                             const char *logPrefix,
+                                             bool isQuiet) const
+{
+  if ((parser == NULL) || (logPrefix == NULL))
+  {
+    return false;
+  }
+
+  bool isSuccess = true;
+
+  if (!isListType())
+  {
+    if (!parser->addHandlerWithError(getName(), parserCB))
+    {
+      if (!isQuiet)
+      {
+        MvrLog::log(MvrLog::Verbose,        
+                    "%sCould not add keyword %s (probably unimportant)",
+                    logPrefix, getName());
+      }
+    }
+  }
+  // Otherwise, it's a list.  These are handled in MvrConfig by the special 
+  // _beginList and _endList keywords.  The list members need to be added to
+  // the parser however.
+  else if (myData.myListData.myChildArgList != NULL)
+  {
+    for (std::list<MvrConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
+         iter = myData.myListData.myChildArgList->end();
+         iter ++)
+    {
+      if (!(*iter).addToFileParser(parser, parserCB, logPrefix, isQuiet))
+      {
+        isSuccess = false;
+      }
+    }
+  }  
+  return isSuccess;
+}
+
+/*
+ * @internal
+ * 
+ * @return bool true if the arg was successfully parsed; false if an error occurred
+ */
+
+MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
+                                        char *errorBuffer,
+                                        size_t errorBufferLen,
+                                        const char *logPrefix,
+                                        bool isQuiet,
+                                        bool *changed)
+{
+  if ((arg == NULL) || (logPrefix == NULL) || ((errorBuffer != NULL) && (errorBufferLen < 0)))
+  {
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigArg::parseArgument() invalid input");
+    return false;
+  }
+
+  if ((arg->getArg(0) == NULL) && ((getType() != MvrConfigArg::STRING) && (getType() != MvrConfigArg::FUNCTOR)))
+  {
+    if (!isQuiet)
+    {
+      MvrLog::log(MvrLog::Verbose,
+                  "%sparameter '%s' has no argument",
+                  logPrefix, getName());
+    }
+    return true;      
+  }
+  // this controls if we print out what changed
+  bool printing = false;
+  bool ok = true;
+
+  switch (getType())
+  {
+    case DESCRIPTION_HOLDER::
+    case SEPARATOR:
+    case STRING_HOLDER:
+    case LIST_HOLDER:
+      {
+        // No need to read anything for these types
+      }
+      break;
+    case INT:
+      {
+        int origInt = getInt();
+        int valInt  = arg->getArgInt(0, &ok);
+        if (ok){
+          ok = setInt(valInt, errorBuffer, errorBufferLen);
+
+          if (origInt != getInt() && changed != NULL && !mySuppressChanges)
+          {
+            if (printing)
+              MvrLog::log(MvrLog::Normal,
+                          "%sParameter %s (int) changed from %d to %d",
+                          logPrefix, getName(), origInt, getInt());
+            *changed = true;
+          }
+          if (ok)
+          {
+            IFDEBUG(MvrLog::log(MvrLog::Verbose,
+                                "%sSet parameter '%s' to '%d'",
+                                logPrefix, getName(), valInt));            
+          }
+          else
+          {
+            MvrLog::log(MvrLog::Verbose,
+                        "%sCould not set parameter '%s' to '%d'",
+                        logPrefix, getName(), valInt));               
+          }
+        }
+        else
+        {
+          if (errorBuffer != NULL)
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                     "%s is an integer parameter but was given non-integer argument of '%s'",
+                     getName(), arg->getArg(0));
+          }
+        }
+      }
+      break;
+
+    case DOUBLE:
+      {
+        double origDouble = getDouble();
+        int valDouble  = arg->getArgDouble(0, &ok);
+        if (ok){
+          ok = setDouble(valDouble, errorBuffer, errorBufferLen);
+
+          if (fabs(origDouble-getDouble()) > MvrMath::epsilon() && changed != NULL && !mySuppressChanges)
+          {
+            if (printing)
+              MvrLog::log(MvrLog::Normal,
+                          "%sParameter %s (double) changed from %d to %d",
+                          logPrefix, getName(), origDouble, getDouble());
+            *changed = true;
+          }
+          if (ok)
+          {
+            IFDEBUG(MvrLog::log(MvrLog::Verbose,
+                                "%sSet parameter '%s' to '%.10f'",
+                                logPrefix, getName(), valDouble));            
+          }
+          else
+          {
+            MvrLog::log(MvrLog::Verbose,
+                        "%sCould not set parameter '%s' to '%.10f'",
+                        logPrefix, getName(), valDouble));               
+          }
+        }
+        else
+        {
+          MvrLog::log(MvrLog::Terse,
+                      "%sparameter '%s' is a double parameter but was given non-double argument of '%s'", 
+                      logPrefix, getName(), arg->getArg(0)));            
+          if (errorBuffer != NULL)
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                     "%s is a double parameter but was given non-double argument of '%s'",
+                     getName(), arg->getArg(0));
+          }
+        }
+      }
+      break;
+
+    case BOOL:
+      {
+        bool origBool = getBool();
+        bool valBool = arg->getArgBool(0, &ok);
+        if (ok) 
+        {
+          ok = setBool(valBool, errorBuffer, errorBufferLen);
+
+          if (origBool != getBool() && changed != NULL && !mySuppressChanges)
+          {
+            if (printing)
+              MvrLog::log(MvrLog::Normal, "%sParameter %s (bool) changed from %s to %s",
+                          logPrefix, getName(), 
+                          MvrUtil::convertBool(origBool), MvrUtil::convertBool(getBool()));
+            *changed = true;
+          }
+
+          if (ok) 
+          {
+            IFDEBUG(MvrLog::log(MvrLog::Verbose, 
+                                "%sSet parameter '%s' to %s",
+                                logPrefix, getName(), valBool ? "true" : "false" ));
+          }
+          else  
+          { // error setting bool
+            MvrLog::log(MvrLog::Verbose, 
+                        "%sCould not set parameter '%s' to %s",
+                        logPrefix, getName(), valBool ? "true" : "false" );
+          } // end else error setting bool
+        }
+        else 
+        { // error parsing bool
+          MvrLog::log(MvrLog::Terse, 
+                      "%sparameter '%s' is a bool parameter but was given non-bool argument of '%s'", 
+                      logPrefix, getName(), arg->getArg(0));
+    
+          if (errorBuffer != NULL) 
+          {
+            snprintf(errorBuffer, errorBufferLen, 
+                     "%s is a bool parameter but was given non-bool argument of '%s'", 
+                     getName(), arg->getArg(0));
+          }
+        } // end else error parsing bool
+      }
+      break;
+
+    case STRING:
+      {
+        std::string origString = getString();
+        ok = setString(arg->getFullString());
+
+        if (MvrUtil::strcmp(origString, getString()) != 0 && changed != NULL)
+        {
+          if (printing)
+            MvrLog::log(MvrLog::Normal, "%sParameter %s (string) changed from '%s' to '%s'",
+                        logPrefix, getName(), 
+                        origString.c_str(), getString());
+          
+          *changed = true;
+        }
+        if (ok) 
+        {
+          IFDEBUG(MvrLog::log(MvrLog::Verbose, 
+                            "%sSet parameter string '%s' to '%s'",
+                            logPrefix,
+                            getName(), getString()));
+        }
+        else 
+        { // error setting setring  
+          MvrLog::log(MvrLog::Verbose, 
+                    "%sCould not set string parameter '%s' to '%s'",
+                    logPrefix,
+                    getName(), getString());
+
+          if (errorBuffer != NULL && errorBuffer[0] == '\0')
+            snprintf(errorBuffer, errorBufferLen, 
+                    "%s could not be set to '%s'.", 
+                    getName(), arg->getFullString());
+        } // end else error setting string 
+      }
+      break;
+
+    case LIST:
+      {
+        MvrLog::log(MvrLog::Normal, 
+                    "%sReceived LIST arg '%s' with '%s'",   
+                    logPrefix, getName(), arg->getFullString());
+
+        int childCount = arg->getArgInt(0, &ok);
+        if (ok) 
+        {
+        }
+        else 
+        { // error parsing int
+          if (errorBuffer != NULL) 
+          {
+            snprintf(errorBuffer, errorBufferLen, 
+                    "%s is an list parameter but was given non-integer child count argument of '%s'", 
+                      getName(), arg->getArg(0));
+          }
+        } // end else error parsing int
+      }
+      break;
+
+    case FUNCTOR:
+      {
+        ok = setArgWithFunctor(arg);
+        
+        if (changed != NULL)
+        {
+          *changed = true;
+          MvrLog::log(MvrLog::Verbose, 
+                      "%sAssuming arg '%s' changed because it's a functor MvrConfigArg",
+                      logPrefix, getName());
+        }
+        if (ok) 
+        {
+          IFDEBUG(MvrLog::log(MvrLog::Verbose, 
+                              "%sSet arg '%s' with '%s'",
+                              logPrefix, getName(), arg->getFullString()));
+        }
+        else 
+        { // error setting from functor
+          MvrLog::log(MvrLog::Verbose, 
+                      "MvrConfig: Could not set parameter '%s' to '%s'",
+                      logPrefix,
+                      getName(), arg->getFullString());
+            
+          // if it didn't put in an error message make one
+          if (errorBuffer != NULL && errorBuffer[0] == '\0') 
+          {
+            snprintf(errorBuffer, errorBufferLen, "%s could not be set to '%s'.", getName(), arg->getFullString());
+          }
+        }
+      }
+      break;
+
+    case CPPSTRING:
+      {
+        std::string origString = getCppString();
+        ok = setCppString(arg->getFullString());
+        if(origString != getCppString() && changed != NULL)
+        {
+          if(printing)  
+              MvrLog::log(MvrLog::Normal, "%sParameter %s (cppstring) changed from '%s' to '%s'",
+                        logPrefix, getName(), 
+                        origString.c_str(), getCppString().c_str());
+              *changed = true;
+        }
+        if (ok) 
+        {
+          IFDEBUG(MvrLog::log(MvrLog::Verbose, 
+                              "%sSet parameter string '%s' to '%s'",
+                              logPrefix,
+                              getName(), getString()));
+        }
+        else 
+        { // error setting string  
+          MvrLog::log(MvrLog::Verbose, 
+                      "%sCould not set cppstring parameter '%s' to '%s'",
+                      logPrefix,
+                      getName(), getCppString().c_str());
+          if (errorBuffer != NULL)
+            snprintf(errorBuffer, errorBufferLen, "%s could not be set to '%s'.", getName(), arg->getFullString());
+        }
+      } 
+      break;
+
+    default:
+      {
+        // While this seems like it would be an error condition, the original code
+        // did not set retFlag to false.
+        MvrLog::log(MvrLog::Verbose, 
+                  "%sWarning: Don't know the argument type for '%s' in section, got string '%s'", //, in section '%s'.", 
+                  logPrefix, arg->getExtraString(), arg->getFullString());
+      }
+
+  } // end switch type
+  return ok;
+}                                        
+
+/*
+ * @param file the FILE * to be written, must be non-NULL
+ * @param lineBuf a char array to be used as a temporary write buffer,
+ * must be non-NULL
+ * @param lineBufSize the int number of chars in lineBuf, must be positive
+ * @param startCommentColumn the int column index at which to indent
+ * the arg description / comment
+ * @param isWriteExtra a bool set to true if the arg priority, display
+ * hint, restart level and other later extras should also be written
+ * to the file
+ * @param logPrefix the char * prefix to use in debug log messages, must be
+ * non-NULL
+ * @param indentLevel the int level of indentation for the arg (children
+ * of lists are indented further); must be non-negative
+ * @return bool true if the arguments were successfully written; false if an 
+ * error occurred
+ */
+MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
+                                            char *lineBuf,
+                                            int lineBufSize,
+                                            int startCommentColumn,
+                                            bool isWriteExtra,
+                                            const char *logPrefix,
+                                            int indentLevel) const
+{
+  if ((file == NULL) || (lineBuf == NULL) || (lineBufSize < 0) || (logPrefix == NULL) || (indentLvel < 0))
+  {
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigArg::writeArguments() invalid input");
+    return false;
+  }
+  if (!isSerializable())
+  {
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigArg::writeArguments() skipping non-serializable parameter %s", getName());    
+    return true;                
+  }
+
+  lineBuf[0] = '\0';
+
+  char startLine[128];
+  startLine[0] = '\0';
+
+  char nameBuf[256];
+  nameBuf[0] = '\0';
+
+  char indentBuf[128];
+  indentBuf[0] = '\0';
+  snprintf(indentBuf, sizeof(indentBuf), "%*s", (indentLevel * ourIndentSpaceCount), "");
+
+  // if the type is a functor then we need to handle all of it up
+  // here since its a special case both in regards to comments and values
+  if (getType() == MvrConfigArg::FUNCTOR)
+  {
+    // put the comments in the file first
+    int nextChar = snprintf(lineBuf, lineBufSize, "; ");
+
+    if (!MvrUtil::isStrEmpty(getDescription()))
+    {
+      writeMultiLineComment(getDescription(), file, lineBuf, lineBufSize, startLine);
+    }
+
+    std::list<MvrArgumentBuilder *>::const_iterator argIt;
+    const std::list<MvrArgumentBuilder *> *argList = getArgsWithFunctor();
+
+    if (argList != NULL)
+    {
+      for (argIt = argList->begin; argIt != argList->end(); argIt++)
+      {
+        // if there's a space in the name then quote the param name
+        if (strchr(getName(), ' ') != NULL || strchr(getName(), '\t') != NULL)
+          fprintf(file, "\"%s\" %s\n", getName(), (*argIt)->getFullString());
+        else
+          fprintf(file,  "%s %s\n", getName(), (*argIt)->getFullString());
+      }
+    }
+    return true;
+  }  
+
+  writeName(nameBuf, sizeof(nameBuf),((!isListType()) ? indentLevel : 0));
+
+  // Write the param value ...
+  switch (getType())
+  {
+    case INT:
+      {
+        snprintf(lineBuf, lineBufSize, "%s %d", nameBuf, getInt());
+      }
+      break;
+
+    case DOUBLE:
+      {
+        // Easier to debug ...
+        double d = getDouble();
+        int p = getDoublePrecision();
+
+        if (p >= 0)
+        {
+          snprintf(lineBuf, lineBufSize, "%s %.*f", nameBuf, p, d);
+        }
+        else
+        {
+          snprintf(lineBuf, lineBufSize, "%s %g", nameBuf, d);
+        }
+      }
+      break;
+    
+    case BOOL:
+      {
+        snprintf(lineBuf, lineBufSize, "%s %s", nameBuf, getBool() ? "true", "false");
+      }
+      break;
+    
+    case STRING:
+    case STRING_HOLDER:
+      {
+        snprintf(lineBuf, lineBufSize, "%s %s", nameBuf, getString());
+      }
+      break;
+    
+    case CPPSTRING:
+      {
+        snprintf(lineBuf, lineBufSize, "%s %s", nameBuf, getCppString().c_str());
+      }
+      break;    
+    
+    case LIST:
+    case LIST_HOLDER:
+      {
+        snprintf(lineBuf, lineBufSize, "%s%s %s", indentBuf, LIST_BEGIN_TAG, nameBuf);
+      }
+      break;
+    case DESCRIPTION_HOLDER:
+      {
+        //if (strlen(param->getDescription()) == 0)
+        //{
+        //  fprintf(file, "\n");
+        //  continue;
+        //}
+        // ????
+      }
+      break;
+
+    default:
+      {
+        MvrLog::log(MvrLog::Terse, "%s in writeArguments(): unhandled argument type %s for config arg %s", logPrefix, toString(getType()), getName());
+      }
+      break;
+    }
+
+  // make sure there's no overrun
+  lineBuf[lineBufSize-1] = '\0';
+
+  if (getType() == STRING_HOLDER)
+  {
+    fprintf(file, "%s\n", lineBuf);
+    return true;
+  }
+
+  // configure our start of line part
+  if (getType() == MvrConfigArg::DESCRIPTION_HOLDER)
+  {
+    sprintf(startLine, "; %%s");
+  }
+  else
+  {
+    sprintf(startLine, "%%-%ds;", startCommentColumn);
+  }
+
+    // if our line is already longer then where we want to go put in
+  // an extra space
+  if (strlen(lineBuf) >= startCommentColumn) 
+  {
+    sprintf(lineBuf, "%s ;", lineBuf);
+  }
+  else if (!MvrUtil::isStrEmpty(lineBuf))
+  {
+    sprintf(lineBuf, startLine, lineBuf);
+  }
+  else
+  {
+    sprintf(lineBuf, startLine, "");
+  }
+
+  writeBounds(lineBuf, lineBufSize, logPrefix);
+
+  // if we have a description to put in ,put it in with word wrap
+  if (!MvrUtil::isStrEmpty(getDescription()))
+  {
+    writeMultiLineComment(getDescription(), file, lineBuf, lineBufSize, startLine);
+  }
+  // else no description, just end the line
+  else
+  {
+    fprintf(file, "%s\n", lineBuf);
+  }
+
+  lineBuf[0] = '\0';
+
+  // For list types, indent and write their children.  This is done
+  // outside the main switch statement so that the description can 
+  // remain with the list intro.  
+  if (isListType()) 
+  {
+    if (myData.myListData.myChildArgList != NULL) 
+    {
+      for (std::list<MvrConfigArg>::const_iterator cIter = myData.myListData.myChildArgList->begin();
+            cIter != myData.myListData.myChildArgList->end();
+            cIter++) 
+      {
+
+        (*cIter).writeArguments(file, lineBuf, lineBufSize, startCommentColumn, isWriteExtra, logPrefix, indentLevel + 1);
+      } 
+    } 
+
+    lineBuf[0] = '\0';
+
+    writeName(lineBuf, lineBufSize, ((isListType()) ? indentLevel : 0));
+
+    snprintf(lineBuf, lineBufSize, "%s%s %s", indentBuf, LIST_END_TAG, nameBuf);
+
+    fprintf(file, "%s\n", lineBuf);
+    lineBuf[0] = '\0';
+
+  } 
+
+  // if they have a config priority put that on its own line
+  if (isWriteExtra)
+  {
+    sprintf(lineBuf, startLine, "");
+    fprintf(file, "%s Priority: %s\n", lineBuf, MvrPriority::getPriorityName(getConfigPriority()));
+    lineBuf[0] = '\0';
+
+    sprintf(lineBuf, startLine, "");
+    fprintf(file, "%s DisplayHint: %s\n", lineBuf, getDisplayHint());
+
+    lineBuf[0] = '\0';
+
+    sprintf(lineBuf, startLine, "");
+    fprintf(file, "%s RestartLevel: %d\n", lineBuf, getRestartLevel());
+
+    lineBuf[0] = '\0';
+    
+  }
+  return true;
+}
+
+/****************************************************************************
+                            Socket
+****************************************************************************/  
