@@ -3827,7 +3827,7 @@ MVREXPORT void MvrConfigArg::log(bool verbose,
 }
 
 /**
-   The priority of this argument when used in ArConfig.
+   The priority of this argument when used in MvrConfig.
  **/
 MVREXPORT MvrPriority::Priority MvrConfigArg::getConfigPriority(void) const
 {
@@ -3835,7 +3835,7 @@ MVREXPORT MvrPriority::Priority MvrConfigArg::getConfigPriority(void) const
 }
 
 /**
-   The priority of this argument when used in ArConfig.
+   The priority of this argument when used in MvrConfig.
  **/
 
 MVREXPORT void MvrConfigArg::setConfigPriority(MvrPriority::Priority priority)
@@ -3911,7 +3911,7 @@ MVREXPORT bool MvrConfigArg::hasMinBound() const
       break;
 
     case DOUBLE:
-      isMinValid = (ArMath::fabs(myData.myDoubleData.myMinDouble + HUGE_VAL) > ArMath::epsilon());
+      isMinValid = (MvrMath::fabs(myData.myDoubleData.myMinDouble + HUGE_VAL) > MvrMath::epsilon());
       break;
 
     default:
@@ -3936,7 +3936,7 @@ MVREXPORT bool MvrConfigArg::hasMaxBound() const
       break;
 
     case DOUBLE:
-      isMaxValid = (ArMath::fabs(myData.myDoubleData.myMaxDouble - HUGE_VAL) > ArMath::epsilon());
+      isMaxValid = (MvrMath::fabs(myData.myDoubleData.myMaxDouble - HUGE_VAL) > MvrMath::epsilon());
       break;
 
     default:
@@ -4025,7 +4025,7 @@ MVREXPORT bool MvrConfigArg::isValueEqual(const MvrConfigArg &other) const
       break;
 
     case DOUBLE:
-      isEqual = (ArMath::fabs(getDouble() - other.getDouble()) < ArMath::epsilon());
+      isEqual = (MvrMath::fabs(getDouble() - other.getDouble()) < MvrMath::epsilon());
       break;
 
     case STRING:
@@ -4056,11 +4056,11 @@ MVREXPORT bool MvrConfigArg::isValueEqual(const MvrConfigArg &other) const
                                 other.myData.myListData.myChildArgList->size()) 
           {
             for (std::list<MvrConfigArg>::const_iterator 
-                 iter1 = myData.myListData.myChildArgList->begin(),
-                 iter2 = other.myData.myListData.myChildArgList->begin();
+                          iter1 = myData.myListData.myChildArgList->begin(),
+                          iter2 = other.myData.myListData.myChildArgList->begin();
                  ((iter1 != myData.myListData.myChildArgList->end()) &&
-                 (iter2 != other.myData.myListData.myChildArgList->end()));
-                  iter1++, iter2++) 
+                        (iter2 != other.myData.myListData.myChildArgList->end()));
+                 iter1++, iter2++) 
             {
             
               if (!(*iter1).isValueEqual(*iter2)) 
@@ -4201,7 +4201,6 @@ MVREXPORT bool MvrConfigArg::setValue(const MvrConfigArg &source, bool isVerifyA
       break;
 
     case DESCRIPTION_HOLDER:
-      // Not copying description holders either right now...
       isSuccess = false;
       break;
 
