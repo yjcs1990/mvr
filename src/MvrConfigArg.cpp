@@ -2464,3 +2464,650 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
 /****************************************************************************
                             Socket
 ****************************************************************************/  
+bool MvrConfigArg::isNone(const char *argText) 
+{
+  if (MvrUtil::isStrEmpty(argText)) 
+  {
+    return true;
+  }
+  else if (MvrUtil::strcasecmp(argText, "None") == 0) 
+  {
+    return true;
+  }
+
+  return false;
+} // end method isNone
+
+MVREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
+                                         char *errorBuffer,
+                                         size_t errorBufferLen)
+{
+
+  MvrConfigArg configArg;
+  bool ok = true;
+
+  // This is a redundant check. The MVRCL command handler should have verified the count
+  // before calling this method and will display a better error message.
+  if (args.getArgc() <=  SOCKET_INDEX_OF_TYPE) 
+  {
+    if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+    {
+      snprintf(errorBuffer, errorBufferLen, "Insufficient arguments");
+    }
+    return false;
+  }
+ 
+  std::string name = args.getArg(SOCKET_INDEX_OF_ARG_NAME);
+
+  if (name.empty())
+  {
+    if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+    {
+      snprintf(errorBuffer, errorBufferLen, "Syntax: <name> was empty, it must have a value.");
+    }
+    return false;
+
+  }
+
+  std::string description = args.getArg(SOCKET_INDEX_OF_DESCRIPTION);
+  // Okay for the description to be empty
+  
+  std::string priorityText = args.getArg(SOCKET_INDEX_OF_PRIORITY);
+  
+  MvrPriority::Priority priority = MvrPriority::getPriorityFromName(priorityText.c_str(), &ok);
+
+  if (!ok) 
+  {
+    if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+    {
+      snprintf(errorBuffer, errorBufferLen,
+               "Priority was '%s' but can only be one of Basic, Intermediate, Advanced, Expert, Factory, Calibration",
+	             args.getArg(SOCKET_INDEX_OF_PRIORITY));
+    }
+    return false;
+  }
+
+
+  std::string typeText = args.getArg(SOCKET_INDEX_OF_TYPE);
+
+  MvrConfigArg::Type type = typeFromString(typeText.c_str());
+
+  switch (type) 
+  {
+    case INT:
+      {
+        int defaultInt = -1; 
+        int minInt = INT_MIN;
+        int maxInt = INT_MAX;
+        
+        if (args.getArgc() > SOCKET_INDEX_OF_VALUE) {
+        
+          defaultInt = args.getArgInt(SOCKET_INDEX_OF_VALUE, &ok);
+
+          if (!ok) 
+          {
+            if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+            {
+              snprintf(errorBuffer, errorBufferLen,
+                      "type was int, but default value was '%s' when it should be an int",
+                      args.getArg(SOCKET_INDEX_OF_VALUE));
+            }
+            return false;
+          } 
+        }
+        else 
+        {         
+          if ((errorBuffer != NULL) && (errorBufferLen > 0))
+          {
+            snprintf(errorBuffer, errorBufferLen, "type was int, but no default value was given");
+          }
+          return false;
+        }
+
+        
+        if (args.getArgc() > SOCKET_INDEX_OF_MIN_VALUE)
+        {
+          if (!isNone(args.getArg(SOCKET_INDEX_OF_MIN_VALUE))) 
+          {
+            minInt = args.getArgInt(SOCKET_INDEX_OF_MIN_VALUE, &ok);
+            if (!ok)
+            {
+              if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+              {
+                snprintf(errorBuffer, errorBufferLen,
+                        "type was int, but min was '%s' when it should be an int or 'None'",
+                        args.getArg(SOCKET_INDEX_OF_MIN_VALUE));
+              }
+              return false;
+            } // end if error parsing min int
+          } // end if min specified
+        } // end if min arg included
+
+        if (args.getArgc() > SOCKET_INDEX_OF_MAX_VALUE)
+        {
+          if (!isNone(args.getArg(SOCKET_INDEX_OF_MAX_VALUE))) 
+          {
+            maxInt = args.getArgInt(SOCKET_INDEX_OF_MAX_VALUE, &ok);
+
+            if (!ok) 
+            {
+              if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+              {
+                snprintf(errorBuffer, errorBufferLen,
+                        "type was int, but max was '%s' when it should be an int or 'None'",
+                        args.getArg(SOCKET_INDEX_OF_MAX_VALUE));
+              }
+              return false;
+            } // end if error parsing max int
+          } // end if max specified
+
+        } // end if max arg included
+
+        if (minInt > maxInt) 
+        {
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was int, but min (%d) is greater than max (%d)",
+                    minInt, maxInt);
+          }
+          return false;
+        }
+
+        if (defaultInt < minInt)
+        {
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was int, but defaultVal (%d) is less than min (%d)",
+                    defaultInt, minInt);
+          }
+          return false;
+        }
+
+        if (defaultInt > maxInt)
+        {
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was int, but defaultVal (%d) is greater than max (%d)",
+                    defaultInt, maxInt);
+          }
+          return false;
+        }
+        configArg = MvrConfigArg(name.c_str(), defaultInt, description.c_str(), minInt, maxInt);
+      }
+
+      break;
+
+    case DOUBLE:
+      {
+        double defaultDouble = -1;
+        double minDouble = -HUGE_VAL;
+        double maxDouble = HUGE_VAL;
+
+        if (args.getArgc() > SOCKET_INDEX_OF_VALUE) 
+        {
+          defaultDouble = args.getArgDouble(SOCKET_INDEX_OF_VALUE, &ok);
+
+          if (!ok) 
+          {
+            if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
+              snprintf(errorBuffer, errorBufferLen,
+                      "type was double, but default value was '%s' when it should be an double",
+                      args.getArg(SOCKET_INDEX_OF_VALUE));
+            }
+            return false;
+          } // end if error parsing double 
+        }
+        else { // insufficient args
+        
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was double, but no default value was given");
+          }
+          return false;
+
+        } 
+
+        
+        if (args.getArgc() > SOCKET_INDEX_OF_MIN_VALUE)
+        {
+          if (!isNone(args.getArg(SOCKET_INDEX_OF_MIN_VALUE))) 
+          {
+            minDouble = args.getArgDouble(SOCKET_INDEX_OF_MIN_VALUE, &ok);
+            if (!ok) 
+            {
+              if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+              {
+                snprintf(errorBuffer, errorBufferLen,
+                        "type was double, but min was '%s' when it should be a double or 'None'",
+                        args.getArg(SOCKET_INDEX_OF_MIN_VALUE));
+              }
+              return false;
+
+            } // end if error parsing min double 
+          } // end if min specified
+        } // end if min arg included
+
+
+        if (args.getArgc() > SOCKET_INDEX_OF_MAX_VALUE)
+        {
+          if (!isNone(args.getArg(SOCKET_INDEX_OF_MAX_VALUE))) 
+          {
+            maxDouble = args.getArgDouble(SOCKET_INDEX_OF_MAX_VALUE, &ok);
+
+            if (!ok) 
+            {
+              if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+              {
+                snprintf(errorBuffer, errorBufferLen,
+                        "type was double, but max was '%s' when it should be a double or 'None'",
+                        args.getArg(SOCKET_INDEX_OF_MAX_VALUE));
+              }
+              return false;
+
+            } // end if error parsing max double 
+          } // end if max specified
+
+        } // end if max arg included
+
+        if (minDouble > maxDouble) 
+        {
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was double, but min (%g) is greater than max (%g)",
+                    minDouble, maxDouble);
+          }
+          return false;
+        }
+
+        if (defaultDouble < minDouble)
+        {
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was double, but defaultVal (%g) is less than min (%g)",
+                    defaultDouble, minDouble);
+          }
+          return false;
+        }
+
+        if (defaultDouble > maxDouble)
+        {
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was double, but defaultVal (%g) is greater than max (%g)",
+                    defaultDouble, maxDouble);
+          }
+          return false;
+        }
+        configArg = MvrConfigArg(name.c_str(), defaultDouble, description.c_str(), minDouble, maxDouble);
+      } // end case double
+      break;
+
+    case BOOL:
+      {
+        bool defaultBool = false;
+        if (args.getArgc() > SOCKET_INDEX_OF_VALUE) 
+        {
+          defaultBool = args.getArgBool(SOCKET_INDEX_OF_VALUE, &ok);
+
+          if (!ok) 
+          {
+            if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+            {
+              snprintf(errorBuffer, errorBufferLen,
+                      "type was bool, but default value was '%s' when it should be an bool",
+                      args.getArg(SOCKET_INDEX_OF_VALUE));
+            }
+            return false;
+
+          } // end if error parsing double 
+        }
+        else 
+        { // insufficient args
+        
+          if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+          {
+            snprintf(errorBuffer, errorBufferLen,
+                    "type was bool, but no default value was given");
+          }
+          return false;
+
+        } // end else insufficient args
+
+        configArg = MvrConfigArg(name.c_str(), defaultBool, description.c_str());
+
+      } // end case bool
+      break;
+
+    case STRING:
+      {
+        std::string defaultString;
+        if (args.getArgc() > SOCKET_INDEX_OF_VALUE) 
+        {
+          defaultString = args.getArg(SOCKET_INDEX_OF_VALUE);
+        }
+
+        configArg = MvrConfigArg(name.c_str(), defaultString.c_str(), description.c_str());
+
+      } // end case string
+      break;
+
+      case SEPARATOR:
+        {
+          configArg = MvrConfigArg(MvrConfigArg::SEPARATOR);
+        }
+        break;
+
+    case LIST:
+      {
+        configArg = MvrConfigArg(LIST, name.c_str(), description.c_str());
+
+      } // end case list
+      break; 
+
+    default:
+      {     
+        if ((errorBuffer != NULL) && (errorBufferLen > 0)) 
+        {
+          snprintf(errorBuffer, errorBufferLen,
+                  "Unknown type '%s' given, choices are int|double|string|bool|separator",
+                  args.getArg(SOCKET_INDEX_OF_TYPE));
+        }
+        return false;
+      
+      } // end default
+      break;
+
+  } // end switch type 
+
+
+  std::string displayHint;
+ 
+  if ((args.getArgc() > SOCKET_INDEX_OF_DISPLAY) && (!isNone(args.getArg(SOCKET_INDEX_OF_DISPLAY)))) 
+  {
+    displayHint = args.getArg(SOCKET_INDEX_OF_DISPLAY);
+  }
+  configArg.setDisplayHint(displayHint.c_str());
+
+  configArg.setConfigPriority(priority);
+
+  // There are no pointers so the "detach" aspect isn't terribly important
+  copyAndDetach(configArg);
+
+  return true;
+
+} // end method parseSocket
+
+
+MVREXPORT bool MvrConfigArg::writeValue(MvrSocket *socket, const char *intro) const
+{
+  char value[10000];
+  const size_t valueLength = sizeof(value);  
+
+  switch (getType()) 
+  { 
+  case INT:
+	  snprintf(value, valueLength, "%d", getInt());
+    break;
+  
+  case DOUBLE:
+	  snprintf(value, valueLength, "%g", getDouble());
+    break;
+
+  case BOOL:
+	  snprintf(value, valueLength, "%s", MvrUtil::convertBool(getBool()));
+    break;
+	
+  case STRING:
+    snprintf(value, valueLength, "%s", getString());
+    break;
+
+  case LIST:
+    snprintf(value, valueLength, "%s", LIST_BEGIN_TAG);
+    break;
+ 
+  default:
+    // Don't write anything for other arg types
+    return false;
+
+  } // end switch
+      
+  socket->writeString("%s %s %s", ((intro != NULL) ? intro : ""), getName(), value);
+
+  if (getType() == LIST) 
+  {
+
+    char introBuf[512];
+    const size_t introBufLength = sizeof(introBuf);
+
+    snprintf(introBuf, introBufLength, "%s    ", intro);
+
+    for (int c = 0; c < getArgCount(); c++) 
+    {
+      const MvrConfigArg *child = getArg(c);
+      if (child == NULL) 
+      {
+        continue;
+      }
+      child->writeValue(socket, introBuf);
+
+    } // end for each child
+
+    snprintf(value, valueLength, "%s", LIST_END_TAG);
+
+    socket->writeString("%s %s %s", ((intro != NULL) ? intro : ""), getName(), value);
+
+  } 
+  return true;
+} 
+
+MVREXPORT bool MvrConfigArg::writeInfo(MvrSocket *socket, const char *intro) const
+{
+  // Don't write nameless parameters
+  if (MvrUtil::isStrEmpty(getName()))
+  {
+    return false;
+  }
+  char min[512];
+  char max[512];
+  char type[512];
+  char level[512];
+  char delimiter[512];
+  const size_t delimiterLength = 512;
+
+  snprintf(min, sizeof(min), "None");
+  snprintf(max, sizeof(max), "None");
+
+  const char *priorityName = MvrPriority::getPriorityName(getConfigPriority());
+
+  if (priorityName == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "Config parameter %s has unknown priority", getName());
+    return false;
+  }
+
+  if (getConfigPriority() < MvrPriority::FACTORY)
+  {
+    snprintf(level, sizeof(level), priorityName);
+  }
+  else  // convert to all caps
+  {
+    // This was done to match the original "FACTORY" output
+    size_t i=0;
+    sizt_t priorityNameLength = strlen(priorityName);
+
+    for (; ((i<prioriytNameLength) && (i < sizeof(level))); i++)
+    {
+      level[i] = ::toupper(priorityName[i]);
+    }
+    if (i >= sizeof(level))
+    {
+      i = sizeof(level) -1;
+    }
+    level[i] = '\0';
+  }
+  switch (getType())
+  {
+    case INT:
+  	snprintf(type, sizeof(type), "Int");
+  	snprintf(min, sizeof(min), "%d", getMinInt());
+  	snprintf(max, sizeof(max), "%d", getMaxInt());
+     break;
+  
+    case DOUBLE:
+      snprintf(type, sizeof(type), "Double");
+      snprintf(min,  sizeof(min),  "%g", getMinDouble());
+      snprintf(max,  sizeof(max),  "%g", getMaxDouble());
+      break;
+
+    case BOOL:
+      snprintf(type, sizeof(type), "Bool");
+      break;
+    
+    case STRING:
+      snprintf(type, sizeof(type), "String");
+      break;
+
+    case LIST:
+      snprintf(type, sizeof(type), "List");
+
+      snprintf(delimiter, delimiterLength, "%s", LIST_BEGIN_TAG);
+      break;
+  
+    default:
+      // Don't write anything for other arg types
+      return false;
+  }
+
+  socket->writeString("%s %s %s %s %s %s \"%s\" \"%s\" \"%s\"",
+                      ((intro != NULL) ? intro : ""),
+                      type, getName(), level, min, max,
+                      ((getDescription() != NULL) ? getDescription() : ""),
+                      ((getDisplayHint() != NULL) ? getDisplayHint() : ""),
+                      delimiter);
+  if (getType() == LIST)
+  {
+    char introBuf[512];
+    const size_t introBufLength = sizeof(introBuf);
+
+    snprintf(introBuf, introBufLength, "%s    ", intro);
+
+    for (int c=0; c<getArgCount(); c++)
+    {
+      const MvrConfigArg *child = getArg(c);
+      if (child == NULL)
+      {
+        continue;
+      }
+      child->writeInfo(socket, introBuf);
+    }
+    snprintf(delimiter, delimiterLength, "%s", LIST_END_TAG);
+    socket->writeString("%s %s %s %s %s %s \"%s\" \"%s\" \"%s\"", 
+                        ((intro != NULL) ? intro : ""),
+                        type, getName(), level, min, max,
+                        ((getDescription() != NULL) ? getDescription() : ""),
+                        ((getDisplayHint() != NULL) ? getDisplayHint() : ""),
+                        delimiter);
+  }                      
+  return true;
+)
+
+/****************************************************************************
+                      Resource/Translator Files
+****************************************************************************/ 
+MVREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg, char *errorBuffer,
+                                           size_t errorBufferLen, const char *logProfix,
+                                           bool isQuiet)
+{
+  if (arg == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "%sMvrConfigArg::parseResource(), invalid input",
+                ((logPrefix != NULL) ? logPrefix : ""));
+    return false;
+  }
+  if (arg->getArgc() == 0) 
+  {
+    // Don't log error because this just indicates an empty line
+    return false;
+  }
+  if (arg->getArgc() <= RESOURCE_INDEX_OF_DESCRIPTION)
+  {
+    MvrLog::log(MvrLog::Normal, "%sMvrConfigArg::parseResource(), invalid input, too few args (%i)",
+                ((logPrefix != NULL) ? logPrefix : ""), arg->getArgc());
+    return false;                
+  }
+
+  if (MvrUtil::isStrEmpty(arg->getArg(RESOURCE_INDEX_OF_ARG_NAME)))
+  {
+    MvrLog::log(MvrLog::Normal, "%sMvrConfigArg::parseResource(), empty name",
+                ((logPrefix != NULL) ? logPrefix : ""));
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (arg->getArgc() > RESOURCE_INDEX_OF_DESCRIPTION)
+  {
+    if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_DESCRIPTION), buf, MAX_RESOURCE_ARG_TEXT_LENGTH))
+    {
+      myDescription = buf;
+    }
+  }
+  if (arg->getArgc() > RESOURCE_INDEX_OF_EXTRA)
+  {
+    if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_EXTRA), buf, MAX_RESOURCE_ARG_TEXT_LENGTH))
+    {
+      myExtraExplanation = buf;
+    }
+  }
+  if (arg->getArgc() > RESOURCE_INDEX_OF_DISPLAY) 
+  {
+    if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_DISPLAY), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+    {
+      myDisplayName = buf;
+    }
+  }
+
+  if (arg->getArgc() > RESOURCE_INDEX_OF_NEW) 
+  {
+    if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_NEW), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+    {
+      if (MvrUtil::strcasecmp(buf, NEW_RESOURCE_TAG) == 0) 
+      {
+        myIsTranslated = false;
+      }
+      else 
+      {
+        myIsTranslated = true;
+      }
+    }
+  }
+  return true;
+}
+
+MVREXPORT std::string MvrConfigArg::parseResourceSectionName(MvrArgumentBuilder *arg, const char *logPrefix)
+{
+  std::string sectionName;
+
+  if ((arg == NULL) || (arg->getArgc() <= RESOURCE_INDEX_OF_SECTION_NAME)) 
+  {
+     MvrLog::log(MvrLog::Normal,
+                 "%sMvrConfigArg::parseResourceSectionName() invalid input",
+                 ((logPrefix != NULL) ? logPrefix : ""));
+    return sectionName;
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_SECTION_NAME),
+                           buf,
+                           MAX_RESOURCE_ARG_TEXT_LENGTH)) {
+    sectionName = buf;
+  }
+  return sectionName;
+}
+
