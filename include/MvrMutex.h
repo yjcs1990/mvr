@@ -9,7 +9,7 @@
 #ifndef MVRMUTEX_H
 #define MVRMUTEX_H
 
-#if !ifdefined(WIN32) || defined(MINGW)
+#if !defined(WIN32) || defined(MINGW)
 #include <pthread.h>
 #endif
 #include <string>
