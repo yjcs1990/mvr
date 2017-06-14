@@ -4,7 +4,7 @@
  > Description  : Argument class for MvrConfig
  > Author       : Yu Jie
  > Create Time  : 2017年05月20日
- > Modify Time  : 2017年05月20日
+ > Modify Time  : 2017年06月13日
 ***************************************************************************************************/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
