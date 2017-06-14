@@ -3111,3 +3111,1131 @@ MVREXPORT std::string MvrConfigArg::parseResourceSectionName(MvrArgumentBuilder 
   return sectionName;
 }
 
+MVREXPORT std::string MvrConfigArg::parseResourceArgName(MvrArgumentBuilder *arg, const char *logPrefix)
+{
+  std::string argName;
+
+  if ((arg == NULL) || (arg->getArgc() <= RESOURCE_INDEX_OF_ARG_NAME)) 
+  {
+     MvrLog::log(MvrLog::Normal,
+                 "%sMvrConfigArg::parseResourceArgName() invalid input (%s)",
+                 ((logPrefix != NULL) ? logPrefix : ""),
+                 ((arg != NULL) ? arg->getFullString() : "NULL"));
+    return argName;
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_ARG_NAME), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+  {
+    argName = buf;
+  }
+  return argName;
+
+} // end method parseResourceArgName
+
+
+MVREXPORT MvrConfigArg::Type MvrConfigArg::parseResourceType(MvrArgumentBuilder *arg, const char *logPrefix)
+{
+  Type t = INVALID;
+
+  if ((arg == NULL) || (arg->getArgc() <= RESOURCE_INDEX_OF_TYPE)) 
+  {
+     MvrLog::log(MvrLog::Normal,
+                 "%sMvrConfigArg::parseResourceType() invalid input",
+                 ((logPrefix != NULL) ? logPrefix : ""));
+    return t;
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_TYPE), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+  {
+    t = typeFromString(buf);
+  }
+  return t;
+
+} // end method parseResourceType
+
+MVREXPORT bool MvrConfigArg::isResourceTopLevel(MvrArgumentBuilder *arg, const char *logPrefix)
+{
+  bool b = true;
+
+  if ((arg == NULL) || (arg->getArgc() <= RESOURCE_INDEX_OF_PARENT_PATH)) 
+  {
+     MvrLog::log(MvrLog::Normal,
+                 "%sMvrConfigArg::isResourceTopLevel() invalid input",
+                 ((logPrefix != NULL) ? logPrefix : ""));
+    return b;
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_PARENT_PATH), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+  {
+    b = MvrUtil::isStrEmpty(buf);
+  }
+  return b;
+
+} // end method isResourceTopLevel
+
+
+MVREXPORT std::list<std::string> MvrConfigArg::parseResourceParentPath(MvrArgumentBuilder *arg, 
+                                                                       char separator,
+                                                                       const char *logPrefix)
+{
+  std::list<std::string> path;
+
+  if ((arg == NULL) ||(arg->getArgc() <= RESOURCE_INDEX_OF_PARENT_PATH)) 
+  {
+     MvrLog::log(MvrLog::Normal,
+                 "%sMvrConfigArg::isResourceTopLevel() invalid input",
+                 ((logPrefix != NULL) ? logPrefix : ""));
+    return path;
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_PARENT_PATH), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+  {
+    path = splitParentPathName(buf, separator);
+  }
+
+  return path;
+
+} // end method parseResourceParentPath
+
+MVREXPORT std::string MvrConfigArg::parseResourceDescription(MvrArgumentBuilder *arg, const char *logPrefix)
+{
+  std::string desc;
+
+  if ((arg == NULL) || (arg->getArgc() <= RESOURCE_INDEX_OF_DESCRIPTION)) 
+  {
+     MvrLog::log(MvrLog::Normal,
+                 "%sMvrConfigArg::parseResourceDescription() invalid input (%s)",
+                 ((logPrefix != NULL) ? logPrefix : ""),
+                 ((arg != NULL) ? arg->getFullString() : "NULL"));
+    return desc;
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_DESCRIPTION), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+  {
+    desc = buf;
+  }
+  return desc;
+
+} // end method parseResourceDescription
+
+MVREXPORT std::string MvrConfigArg::parseResourceExtra(MvrArgumentBuilder *arg, const char *logPrefix)
+{
+  std::string desc;
+
+  if ((arg == NULL) || (arg->getArgc() <= RESOURCE_INDEX_OF_EXTRA)) 
+  {
+     MvrLog::log(MvrLog::Normal,
+                 "%sMvrConfigArg::parseResourceExtra() invalid input (%s)",
+                 ((logPrefix != NULL) ? logPrefix : ""),
+                 ((arg != NULL) ? arg->getFullString() : "NULL"));
+    return desc;
+  }
+
+  char buf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+
+  if (parseResourceArgText(arg->getArg(RESOURCE_INDEX_OF_EXTRA), buf, MAX_RESOURCE_ARG_TEXT_LENGTH)) 
+  {
+    desc = buf;
+  }
+  return desc;
+
+} // end method parseResourceExtra
+
+MVREXPORT bool MvrConfigArg::parseResourceArgText(const char *argText,
+                                                 char *bufOut,
+                                                 size_t bufLen)
+{
+  if ((argText == NULL) || (bufOut == NULL) || (bufLen <= 0)) {
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigArg::parseResourceArgText() error, invalid input");
+    return false;
+  }
+
+  char otherBuf[MAX_RESOURCE_ARG_TEXT_LENGTH];
+  
+  strncpy(otherBuf, argText, MAX_RESOURCE_ARG_TEXT_LENGTH);
+  otherBuf[MAX_RESOURCE_ARG_TEXT_LENGTH - 1] = '\0';
+  
+  int len = strlen(otherBuf);
+
+  for (int j = len - 1; j >= 0; j--) 
+  {
+   if ((otherBuf[j] < 0) || isspace(otherBuf[j])) 
+   {
+     otherBuf[j] = '\0';
+   }
+   else 
+   {
+     break;
+   }
+ }
+
+ len = strlen(otherBuf);
+
+ int k = 0;
+ for (k = 0; k < len; k++) 
+ {
+   if ((otherBuf[k] >= 0) && !isspace(otherBuf[k])) 
+   {
+     break;
+   }
+ }
+ if (k < len)
+ {
+   bool isStripped = MvrUtil::stripQuotes(bufOut, &otherBuf[k], bufLen); 
+ }
+ else 
+ {
+   bufOut[0] = '\0';
+ }
+
+ bool isNullArg = false;
+ if ((strlen(bufOut) == 0) || (strcmp(bufOut, NULL_TAG) == 0)) 
+ {
+   isNullArg = true;
+ }
+
+  if (isNullArg) 
+  {
+    bufOut[0] = '\0';
+  }
+ 
+  return true;
+
+} // end method parseResourceArgText
+
+ 
+MVREXPORT bool MvrConfigArg::writeResource(FILE *file,
+                                           char *lineBuf,
+                                           int lineBufSize,
+                                           char separatorChar,
+                                           const char *sectionName,
+                                           const char *logPrefix) const
+{
+     
+  bool ignoreNormalSpaces = true;
+  MvrArgumentBuilder builder(512, separatorChar, ignoreNormalSpaces); 
+
+  if ((file == NULL) || (lineBuf == NULL) || (lineBufSize <= 0)) 
+  {
+    MvrLog::log(MvrLog::Normal,
+                "%sMvrConfigArg::writeCsv() error writing %s, invalid input",
+                ((logPrefix != NULL) ? logPrefix : ""),
+                ((getName() != NULL) ? getName() : ""));
+    return false;
+  }
+
+  if (getType() == STRING_HOLDER) 
+  {
+    return true;
+  }
+
+  std::string parentPathName = getParentPathName();
+  if (parentPathName.empty()) 
+  {
+    parentPathName = NULL_TAG;
+  }
+    
+  builder.addPlain((sectionName != NULL) ? sectionName : NULL_TAG);
+  builder.addPlain(myName.c_str());
+  builder.addPlain(toString(myType));
+  builder.addPlain(MvrPriority::getPriorityName(myConfigPriority));
+  builder.addPlain(toString(myRestartLevel));
+  builder.addPlain(parentPathName.c_str());
+  builder.addPlain(((!myDescription.empty()) ? myDescription.c_str() : NULL_TAG));
+  builder.addPlain(((!myExtraExplanation.empty()) ? myExtraExplanation.c_str() : NULL_TAG));
+   
+  builder.addPlain(((!myDisplayName.empty()) ? myDisplayName.c_str() : NULL_TAG));
+ 
+  builder.addPlain(((myIsTranslated) ? NULL_TAG : NEW_RESOURCE_TAG));
+      
+  fprintf(file, "%s\n", builder.getFullString());
+
+  if (isListType()) 
+  {
+    for (size_t i = 0; i < getArgCount(); i++) 
+    {
+      const MvrConfigArg *childArg = getArg(i);
+      if (childArg != NULL) 
+      {
+        bool isChildSuccess = childArg->writeResource(file,
+                                                      lineBuf,
+                                                      lineBufSize,
+                                                      separatorChar,
+                                                      sectionName,
+                                                      logPrefix);
+      }
+    }
+  } // end if list
+
+  return true;
+
+} // end method writeResource
+
+ 
+MVREXPORT int MvrConfigArg::writeResourceHeader(FILE *file,
+                                                char *lineBuf,
+                                                int lineBufSize,
+                                                char separatorChar,
+                                                const char *sectionTitle,
+                                                const char *logPrefix)
+{
+
+  if ((file == NULL) || (lineBuf == NULL) || (lineBufSize <= 0)) 
+  {
+    MvrLog::log(MvrLog::Normal,
+                "%sMvrConfigArg::writeResourceHeader() error writing header, invalid input",
+                ((logPrefix != NULL) ? logPrefix : ""));
+    return false;
+  }
+
+
+  IFDEBUG(MvrLog::log(MvrLog::Normal,
+                      "%sMvrConfigArg::writeResourceHeader() writing header with section title = %s",
+                      ((logPrefix != NULL) ? logPrefix : ""),
+                      ((sectionTitle != NULL) ? sectionTitle : "NULL")));
+  
+  snprintf(lineBuf, lineBufSize,
+           //0   1   2   3   4   5   6   7   8   9
+           "%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+           ((!MvrUtil::isStrEmpty(sectionTitle)) ? sectionTitle : "SECTION"),  // 0
+           separatorChar,
+           "NAME",                                       // 1
+           separatorChar,
+           "TYPE",                                       // 2
+           separatorChar,
+           "PRIORITY",                                   // 3
+           separatorChar,
+           "RESTART",                                    // 4
+           separatorChar,
+           "PARENT",                                     // 5
+           separatorChar,
+           "DESCRIPTION",                                // 6
+           separatorChar,
+           "EXTRA",                                      // 7
+           separatorChar,
+           "DISPLAY",                                    // 8
+           separatorChar,
+           "NEW");                                       // 9
+  
+  fprintf(file, "%s\n", lineBuf);
+
+  const char *roText = "read-only";
+  const char *edText = "editable";
+  snprintf(lineBuf, lineBufSize,
+          // 0   1   2   3   4   5   6   7   8   9
+           "%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+           roText, //  "SECTION",                                    // 0
+           separatorChar,
+           roText, // "NAME",                                       // 1
+           separatorChar,
+           roText, // "TYPE",                                       // 2
+           separatorChar,
+           roText, // "PRIORITY",                                   // 3
+           separatorChar,
+           roText, // "RESTART",                                    // 4
+           separatorChar,
+           roText, // "PARENT",                                     // 5
+           separatorChar,
+           edText,      //"DESCRIPTION",                            // 6
+           separatorChar,
+           edText,      // "EXTRA"                                  // 7
+           separatorChar,
+           "future",    // "DISPLAY"                                // 8
+           separatorChar,
+           edText);     // "NEW"                                    // 9 
+  fprintf(file, "%s\n", lineBuf);
+  
+  fprintf(file, "\n");
+
+  return 3;
+
+} // end method writeResourceHeader
+
+MVREXPORT int MvrConfigArg::writeResourceSectionHeader(FILE *file,
+                                                       char *lineBuf,
+                                                       int lineBufSize,
+                                                       char separatorChar,
+                                                       const char *sectionName,
+                                                       const char *sectionDesc,
+                                                       const char *sectionExtra,
+                                                       const char *sectionDisplayName,
+                                                       bool isTranslated,
+                                                       const char *logPrefix)
+{
+  if ((file == NULL) || (lineBuf == NULL) || (lineBufSize <= 0) ||
+      (MvrUtil::isStrEmpty(sectionName))) 
+  {
+    MvrLog::log(MvrLog::Normal,
+                "%sMvrConfigArg::writeResourceSectionHeader() error writing header, invalid input",
+                ((logPrefix != NULL) ? logPrefix : ""));
+    return false;
+  }
+
+
+  
+  snprintf(lineBuf, lineBufSize,
+           //0   1   2   3   4   5   6   7   8   9
+           "%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
+           sectionName,                                    // 0
+           separatorChar,
+           NULL_TAG,                                       // 1
+           separatorChar,
+           NULL_TAG,                                       // 2
+           separatorChar,
+           NULL_TAG,                                       // 3
+           separatorChar,
+           NULL_TAG,                                       // 4
+           separatorChar,
+           NULL_TAG,                                       // 5
+           separatorChar,
+           ((!MvrUtil::isStrEmpty(sectionDesc)) ? sectionDesc : NULL_TAG),   // 6
+           separatorChar,
+           ((!MvrUtil::isStrEmpty(sectionExtra)) ? sectionExtra : NULL_TAG), // 7
+           separatorChar,
+           ((!MvrUtil::isStrEmpty(sectionDisplayName)) ? sectionDisplayName : NULL_TAG), // 8
+           separatorChar,
+           ((isTranslated) ? NULL_TAG : NEW_RESOURCE_TAG));  // TODO Any indication for new sections?
+  
+  fprintf(file, "%s\n", lineBuf);
+  return true;
+} // end method writeResourceSectionHeader
+
+/**
+ * @param lineBuf a char array to which to write the name,
+ * must be non-NULL
+ * @param lineBufSize the int number of chars in lineBuf, must be positive
+ * @param indentLevel the int level of indentation for the arg (children
+ * of lists are indented further); must be non-negative
+ * @return bool true if the name was successfully written; false if an 
+ * error occurred
+**/
+MVREXPORT bool MvrConfigArg::writeName(char *lineBuf,
+                                       int lineBufSize,
+                                       int indentLevel) const
+{
+  if ((lineBuf == NULL) || (lineBufSize <= 0)) 
+  {
+    return false;
+  }
+
+  snprintf(lineBuf, lineBufSize,
+           "%*s", (indentLevel * ourIndentSpaceCount), "");
+
+  if ((getType() != MvrConfigArg::STRING_HOLDER) && ((strchr(getName(), ' ') != NULL || 
+          strchr(getName(), '\t') != NULL) )) 
+  {
+
+    snprintf(lineBuf, lineBufSize, "%s\"%s\"", lineBuf, getName());
+  }
+  else 
+  {
+    snprintf(lineBuf, lineBufSize, "%s%s", lineBuf, getName());
+  }
+  return true;
+
+} // end method writeName
+
+
+/**
+ * @param comment the char * string to be written to the file, must be 
+ * non-NULL
+ * @param file the FILE * to be written, must be non-NULL
+ * @param lineBuf a char array to be used as a temporary write buffer,
+ * must be non-NULL
+ * @param lineBufSize the int number of chars in lineBuf, must be positive
+ * @param startComment the char * text that should prefix the comment
+ * on the first line
+ * @return bool true if the comment was successfully written; false if an 
+ * error occurred
+**/
+MVREXPORT bool MvrConfigArg::writeMultiLineComment(const char *comment,
+                                                   FILE *file,
+                                                   char *lineBuf,
+                                                   int lineBufSize,
+                                                   const char *startComment)
+{
+  if ((comment == NULL) || (file == NULL) || (lineBuf == NULL) || (lineBufSize <= 0) || (startComment == NULL)) 
+  { 
+    MvrLog::log(MvrLog::Normal,
+                "MvrConfigArg::writeMultiLineComment() invalid input");
+    return false;
+  }
+  MvrArgumentBuilder descr;
+  descr.setQuiet(true); 
+  descr.addPlain(comment);
+
+  for (unsigned int i = 0; i < descr.getArgc(); i++)
+  {
+    if (strlen(lineBuf) + strlen(descr.getArg(i)) > 78)
+    {
+      fprintf(file, "%s\n", lineBuf);
+
+      sprintf(lineBuf, startComment, "");
+      sprintf(lineBuf, "%s %s", lineBuf, descr.getArg(i));
+    }
+    else 
+    { 
+    
+      sprintf(lineBuf, "%s %s", lineBuf, descr.getArg(i));
+    }
+  }
+  fprintf(file, "%s\n", lineBuf);
+
+  return true;
+
+} // end method writeMultiLineComment
+
+
+
+/**
+ * @param line a char array to be used as a temporary write buffer,
+ * must be non-NULL
+ * @param lineLen the int number of chars in line, must be positive
+ * @param logPrefix the char * prefix to use in debug log messages, must be
+ * non-NULL
+ * @return bool true if the values were successfully written; false if an 
+ * error occurred
+**/
+MVREXPORT bool MvrConfigArg::writeBounds(char *line,
+                                         size_t lineLen,
+                                         const char *logPrefix) const
+{
+  if ((line == NULL) || (lineLen <= 0) || (logPrefix == NULL)) 
+  {
+    MvrLog::log(MvrLog::Normal, "MvrConfigArg::writeBounds() invalid input");
+    return false;
+  }
+  switch (getType()) 
+   {
+    case INT:
+      {
+        if (hasMinBound()) 
+        {
+          if (hasMaxBound()) 
+          {
+            sprintf(line, "%s range [%d, %d], ", line, getMinInt(), getMaxInt());
+          }
+          else 
+          { // no max, just write min
+            sprintf(line, "%s minimum %d, ", line, getMinInt());
+          } // end else no max, just write min
+        }
+        else if (hasMaxBound()) 
+        {
+          sprintf(line, "%s maximum %d, ", line, getMaxInt());
+        }
+      }
+      break;
+
+    case DOUBLE:
+      {
+        if (hasMinBound()) 
+        {
+          if (hasMaxBound()) 
+          {
+            sprintf(line, "%s range [%g, %g], ", line, getMinDouble(), getMaxDouble());
+          }
+          else 
+          {
+            sprintf(line, "%s minimum %g, ", line, getMinDouble());
+          }
+        }
+        else if (hasMaxBound()) 
+        {
+          sprintf(line, "%s maximum %g, ", line, getMaxDouble());
+        }
+      }
+      break;
+
+    default:
+      break;
+   } // end switch
+
+   line[lineLen - 1] = '\0';
+
+   return true;
+
+} // end method writeBounds
+
+
+MVREXPORT void MvrConfigArg::log(bool verbose, 
+                                 int indentCount,
+                                 const char *logPrefix) const
+{
+  std::list<MvrArgumentBuilder *>::const_iterator it;
+  const std::list<MvrArgumentBuilder *> *argList = NULL;
+  std::string intType;
+
+  // Arbitrarily capping at 11 tabs
+  char indent[12];
+  int i = 0;
+  for (; ((i < indentCount) && (i < 12 - 1)); i++) {
+    indent[i] = '\t';
+  } // end for each indentation
+  indent[i] = '\0';
+
+  void *intPointer = NULL;
+
+  MvrLog::log(MvrLog::Terse, "%s%s%s (name)",
+              ((logPrefix != NULL) ? logPrefix : ""), indent, getName());
+
+  switch (getType()) 
+  {
+    case MvrConfigArg::INVALID:
+      MvrLog::log(MvrLog::Terse, 
+          "\tType: %10s.  This argument was not created properly.", 
+          "invalid");
+
+    case MvrConfigArg::INT:
+
+      switch (myData.myIntData.myIntType) 
+      {
+        case INT_NOT:
+          intType = "Not";
+          intPointer = NULL;
+          break;
+        case INT_INT:
+          intType = "Int";
+          intPointer = myData.myIntData.myIntPointer;
+          break;
+        case INT_SHORT:
+          intType = "Short";
+          intPointer = myData.myIntData.myIntShortPointer;
+          break;
+        case INT_UNSIGNED_SHORT:
+          intType = "Unsigned Short";
+          intPointer = myData.myIntData.myIntUnsignedShortPointer;
+          break;
+        case INT_UNSIGNED_CHAR:
+          intType = "Unsigned Short";
+          intPointer = myData.myIntData.myIntUnsignedCharPointer;
+          break;
+        default:
+          intType = "Unknown";
+          intPointer = NULL;
+          break;
+        }
+
+      MvrLog::log(MvrLog::Terse, "%s\tValue: %d \tType: %s intType: %s", indent,
+                  getInt(), "int", intType.c_str());
+      if (!myOwnPointedTo)
+        MvrLog::log(MvrLog::Terse, "%s\tPointer: %p", indent, intPointer);
+
+      if (verbose)
+        MvrLog::log(MvrLog::Terse, "%s\tMin: %10d     Max: %10d", 
+                    indent, myData.myIntData.myMinInt, myData.myIntData.myMaxInt);
+      break;
+
+    case MvrConfigArg::DOUBLE:
+      MvrLog::log(MvrLog::Terse, "%s\tValue: %f \tType: %s",
+                indent, getDouble(), "double");
+      if (!myOwnPointedTo)
+        MvrLog::log(MvrLog::Terse, "%s\tPointer: %p",
+                    indent, myData.myDoubleData.myDoublePointer);
+      if (verbose)
+        MvrLog::log(MvrLog::Terse, "%s\tMin: %10g     Max: %10g", 
+                    indent, myData.myDoubleData.myMinDouble, myData.myDoubleData.myMaxDouble);
+      break; 
+
+    case MvrConfigArg::STRING:
+    case MvrConfigArg::STRING_HOLDER:
+      MvrLog::log(MvrLog::Terse, "%s\tValue: %s \tType: %s", 
+                  indent, getString(), "string");
+      if (!myOwnPointedTo)
+        MvrLog::log(MvrLog::Terse, "%s\tPointer: %p",
+                    indent, myData.myStringData.myStringPointer);
+      if (verbose)
+        MvrLog::log(MvrLog::Terse, "%s\tLength: %d", 
+                    indent, myData.myStringData.myMaxStrLen);
+      break;
+
+    case MvrConfigArg::CPPSTRING:
+      MvrLog::log(MvrLog::Terse, "%s\tValue: %s \tType: %s", 
+                  indent, getString(), "cppstring");
+      if (!myOwnPointedTo)
+        MvrLog::log(MvrLog::Terse, "%s\tPointer: %p",
+                    indent, myData.myCppStringData.myCppStringPtr);
+      break;
+
+    case MvrConfigArg::BOOL:
+      MvrLog::log(MvrLog::Terse, "%s\tValue: %s \tType: %s", 
+                  indent, MvrUtil::convertBool(getBool()),  "bool");
+      if (!myOwnPointedTo)
+        MvrLog::log(MvrLog::Terse, "%s\tPointer: %p",
+                    indent, myData.myBoolData.myBoolPointer);
+      break;
+
+
+    case MvrConfigArg::LIST:
+    case MvrConfigArg::LIST_HOLDER:
+
+      MvrLog::log(MvrLog::Terse, "%sChildren: %d type: %10s", 
+                indent, getArgCount(), "list");
+
+      break;
+
+    case MvrConfigArg::FUNCTOR:
+      MvrLog::log(MvrLog::Terse, "%sType: %s", 
+                  indent, "functor");
+      MvrLog::log(MvrLog::Terse, "%s\t\t\tValues:", indent);
+
+      argList = myData.myFunctorData.myGetFunctor->invokeR();
+      for (it = argList->begin(); it != argList->end(); it++)
+        MvrLog::log(MvrLog::Terse, "%s\t\t%s", indent, (*it)->getFullString());
+      break;
+
+    case MvrConfigArg::DESCRIPTION_HOLDER:
+      MvrLog::log(MvrLog::Terse, "%sType: %20s Description: %s", 
+                indent, "description_holder", getDescription());
+
+    default:
+      MvrLog::log(MvrLog::Terse, 
+                "\tType: %10s.  This type doesn't have a case in MvrConfigArg::log.",
+                toString(myType));
+      break;
+  }
+
+  MvrLog::log(MvrLog::Terse, "\t\tPriority: %s", 
+	     MvrPriority::getPriorityName(myConfigPriority));
+  if (strlen(getDescription()) != 0)
+    MvrLog::log(MvrLog::Terse, "%s\tDescription: %s",
+	       indent, getDescription());
+
+  if ((isListType()) && (myData.myListData.myChildArgList != NULL)) 
+  {
+    int c = 1;
+    for (std::list<MvrConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
+         iter != myData.myListData.myChildArgList->end();
+         iter++, c++) 
+    {
+      MvrLog::log(MvrLog::Terse, "%sChild Arg #%i:", indent, c);
+      (*iter).log(verbose, indentCount + 1);
+    } // end for each child arg
+  }
+
+}
+
+/**
+   The priority of this argument when used in ArConfig.
+ **/
+MVREXPORT MvrPriority::Priority MvrConfigArg::getConfigPriority(void) const
+{
+  return myConfigPriority;
+}
+
+/**
+   The priority of this argument when used in ArConfig.
+ **/
+
+MVREXPORT void MvrConfigArg::setConfigPriority(MvrPriority::Priority priority)
+{
+  myConfigPriority = priority;
+}
+
+
+MVREXPORT const char *MvrConfigArg::getDisplayHint() const
+{
+  if (myDisplayHint.length() > 0) 
+  {
+    return myDisplayHint.c_str();
+  }
+  else 
+  {
+    return NULL;
+  }
+} // end method getDisplayHint
+
+
+MVREXPORT void MvrConfigArg::setDisplayHint(const char *hintText)
+{
+  if (hintText != NULL) {
+    myDisplayHint = hintText;
+  }
+  else {
+    myDisplayHint = "";
+  }
+} // end method setDisplayHint
+
+  
+MVREXPORT MvrConfigArg::RestartLevel MvrConfigArg::getRestartLevel() const
+{
+  return myRestartLevel;
+}
+  
+MVREXPORT void MvrConfigArg::setRestartLevel(RestartLevel level)
+{
+  myRestartLevel = level;
+}
+
+
+MVREXPORT bool MvrConfigArg::getSuppressChanges() const
+{
+  return mySuppressChanges;
+}
+  
+MVREXPORT void MvrConfigArg::setSuppressChanges(bool suppressChanges)
+{
+  mySuppressChanges = suppressChanges;
+}
+
+
+MVREXPORT bool MvrConfigArg::isSerializable() const
+{
+  return myIsSerializable;
+}
+
+MVREXPORT void MvrConfigArg::setSerializable(bool isSerializable)
+{
+  myIsSerializable = isSerializable;
+}
+  
+MVREXPORT bool MvrConfigArg::hasMinBound() const
+{
+  bool isMinValid = false;
+
+  switch (getType()) 
+  {
+    case INT:
+      isMinValid = myData.myIntData.myMinInt != INT_MIN;
+      break;
+
+    case DOUBLE:
+      isMinValid = (ArMath::fabs(myData.myDoubleData.myMinDouble + HUGE_VAL) > ArMath::epsilon());
+      break;
+
+    default:
+      isMinValid = false;
+      break;
+  } // end switch type
+
+  return isMinValid;
+  
+} // end method hasMinBound
+
+  
+MVREXPORT bool MvrConfigArg::hasMaxBound() const
+{
+  bool isMaxValid = false;
+
+  switch (getType()) 
+  {
+
+    case INT:
+      isMaxValid = (myData.myIntData.myMaxInt != INT_MAX);
+      break;
+
+    case DOUBLE:
+      isMaxValid = (ArMath::fabs(myData.myDoubleData.myMaxDouble - HUGE_VAL) > ArMath::epsilon());
+      break;
+
+    default:
+      isMaxValid = false;
+      break;
+  } // end switch type
+
+  return isMaxValid;
+
+} // end method hasMaxBound
+
+/**
+   This is for debugging and will prevent the bounds checking from
+   happening, you shouldn't normally use it
+ **/
+MVREXPORT void MvrConfigArg::setIgnoreBounds(bool ignoreBounds)
+{
+  myIgnoreBounds = ignoreBounds;
+}
+
+MVREXPORT bool MvrConfigArg::hasExternalDataReference() const
+{
+  bool b = false;
+
+  switch (getType()) 
+  {
+
+    case INT:
+    case DOUBLE:
+    case BOOL:
+      b = !myOwnPointedTo;
+      break;
+
+    case STRING:
+    case STRING_HOLDER:
+    case CPPSTRING:
+      b = !myOwnPointedTo;
+      break;
+
+    default:
+      b = false;
+      break;
+  }
+
+  return b;
+
+} // end method hasExternalDataReference
+
+  
+MVREXPORT bool MvrConfigArg::isPlaceholder() const
+{
+  switch (getType()) 
+  {
+    case STRING_HOLDER:
+    case LIST_HOLDER:
+    case DESCRIPTION_HOLDER:
+      return true;
+    default:
+      return false;
+    }
+    return false;
+}
+
+
+MVREXPORT bool MvrConfigArg::isValueEqual(const MvrConfigArg &other) const
+{
+  if (strcmp(getName(), other.getName()) != 0) 
+  {
+    return false;
+  }
+  Type t = getType();
+  if (t != other.getType()) 
+  {
+    return false;
+  }
+  bool isEqual = false;
+
+  switch (t) 
+  {
+    case INVALID:
+      isEqual = true; // Seems logical that two invalid args are equal...
+      break;
+
+    case INT:
+      isEqual = (getInt() == other.getInt());
+      break;
+
+    case DOUBLE:
+      isEqual = (ArMath::fabs(getDouble() - other.getDouble()) < ArMath::epsilon());
+      break;
+
+    case STRING:
+      isEqual = (strcmp(getString(), other.getString()) == 0);
+      break;
+
+    case CPPSTRING:
+      isEqual = *(getCppStringPtr()) == *(other.getCppStringPtr());
+      break;
+
+    case BOOL:
+      isEqual = (getBool() == other.getBool());
+      break;
+
+    case SEPARATOR:
+      isEqual = true;
+      break;
+
+    // Since STRING_HOLDERs do not appear to have equal values, assuming
+    // the same for LIST_HOLDERs.
+    case LIST:
+      {
+        if ((myData.myListData.myChildArgList != NULL) &&
+            (other.myData.myListData.myChildArgList != NULL)) 
+        {
+
+          if (myData.myListData.myChildArgList->size() == 
+                                other.myData.myListData.myChildArgList->size()) 
+          {
+            for (std::list<MvrConfigArg>::const_iterator 
+                 iter1 = myData.myListData.myChildArgList->begin(),
+                 iter2 = other.myData.myListData.myChildArgList->begin();
+                 ((iter1 != myData.myListData.myChildArgList->end()) &&
+                 (iter2 != other.myData.myListData.myChildArgList->end()));
+                  iter1++, iter2++) 
+            {
+            
+              if (!(*iter1).isValueEqual(*iter2)) 
+              {
+                isEqual = false;
+                break;
+              }
+            }
+          } 
+          else 
+          { // different sizes, not equal
+            isEqual = false;
+          }
+
+        }
+        else 
+        {
+          isEqual = ((myData.myListData.myChildArgList == NULL) &&
+                    (other.myData.myListData.myChildArgList == NULL));
+        }
+
+      }
+      break;
+
+    case FUNCTOR:
+
+      isEqual = ((myData.myFunctorData.mySetFunctor == other.myData.myFunctorData.mySetFunctor) &&
+                (myData.myFunctorData.myGetFunctor == other.myData.myFunctorData.myGetFunctor));
+      break;
+
+    case DESCRIPTION_HOLDER:
+      isEqual = (strcmp(getDescription(), other.getDescription()) == 0);
+      break;
+
+    default:
+      isEqual = false;
+      break;
+
+  } // end switch type
+
+  return isEqual;
+
+} // end method isValueEqual
+
+
+MVREXPORT bool MvrConfigArg::setValue(const MvrConfigArg &source, bool isVerifyArgNames)
+{
+  Type t = getType();
+  if (t != source.getType()) 
+  {
+    return false;
+  }
+
+  if (isVerifyArgNames && MvrUtil::strcmp(getName(), source.getName()) != 0) 
+  {
+    /**
+    MvrLog::log(MvrLog::Verbose,
+               "MvrConfigArg::setValue() unverified names, cannot set %s to %s",
+               getName(), source.getName());
+    **/
+    return false;
+  }
+
+  bool isSuccess = true;
+
+  switch (t) 
+  {
+    case INVALID:
+      // Nothing to copy with invalid args
+      break;
+
+    case INT:
+      isSuccess = setInt(source.getInt());
+      break;
+
+    case DOUBLE:
+      isSuccess = setDouble(source.getDouble());
+      break;
+
+    case STRING:
+      isSuccess = setString(source.getString());
+      break;
+
+    case CPPSTRING:
+      isSuccess = setCppString(source.getCppString());
+      break;
+
+    case BOOL:
+      isSuccess = setBool(source.getBool());
+      break;
+
+    case SEPARATOR:
+      break;
+
+    // Since STRING_HOLDERs are apparently not copied, assuming the 
+    // same for LIST_HOLDERs.
+    case LIST:
+      // Not entirely sure about this, but I think it's consistent 
+      if ((myData.myListData.myChildArgList != NULL) && 
+          (source.myData.myListData.myChildArgList != NULL)) 
+      {
+
+        if (myData.myListData.myChildArgList->size() == 
+                source.myData.myListData.myChildArgList->size()) 
+        {
+
+          std::list<MvrConfigArg>::const_iterator iter2 = 
+                                    source.myData.myListData.myChildArgList->begin();
+
+          for (std::list<MvrConfigArg>::iterator 
+               iter1 = myData.myListData.myChildArgList->begin();
+               ((iter1 != myData.myListData.myChildArgList->end()) && 
+               (iter2 != source.myData.myListData.myChildArgList->end()));
+               iter1++, iter2++) 
+          {
+
+            if (!((*iter1).setValue(*iter2, isVerifyArgNames))) 
+            {
+              isSuccess = false;
+              break;
+            }
+          } // end for each child arg list
+        }
+        else 
+        { // different size lists
+          isSuccess = false;
+        }
+      }
+      else 
+      {
+        isSuccess = ((myData.myListData.myChildArgList != NULL) && 
+                    (source.myData.myListData.myChildArgList != NULL));
+      }
+      break;
+
+    case FUNCTOR:
+      isSuccess = false;
+      break;
+
+    case DESCRIPTION_HOLDER:
+      // Not copying description holders either right now...
+      isSuccess = false;
+      break;
+
+    default:
+      isSuccess = false;
+      break;
+
+  } // end switch type
+
+  return isSuccess;
+
+} // end method setValue
+
+  
+MVREXPORT bool MvrConfigArg::isTranslated() const
+{
+  return myIsTranslated;
+
+} // end method isTranslated
+
+  
+MVREXPORT void MvrConfigArg::setTranslated(bool b) 
+{
+  myIsTranslated = b;
+
+} // end method setTranslated
+
+
+MVREXPORT void MvrConfigArg::setDescription(const char *description)
+{
+  myDescription = description; 
+}
+
+MVREXPORT bool MvrConfigArg::isListType() const
+{
+  return ((myType == LIST) || (myType == LIST_HOLDER));
+}
