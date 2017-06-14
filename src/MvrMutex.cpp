@@ -117,13 +117,13 @@ int MvrMutex::lock()
   if (myFailedInit)
   {
     MvrLog::logNoLock(MvrLog::Terse, 
-                      "MvrMutex::lock: Initialization of mutex '%s' form thread ('%s' %d pid %d) failed,  failed lock",
+                      "MvrMutex::lock: Initialization of mutex '%s' form thread ('%s' %d pid %d) failed, failed lock",
                       myLogName.c_str(),
                       MvrThread::getThisThreadName(),
                       MvrThread::getThisThread(),
                       getpid());
     MvrLog::logNoLock(MvrLog::Terse, 
-                      "MvrMutex::lock: Initialization of mutex failed , faild lock");                      ;
+                      "MvrMutex::lock: Initialization of mutex failed , faild lock");
     return STATUS_FAILED_INIT;
   }                      
 
@@ -201,8 +201,153 @@ int MvrMutex::lock()
 
 int MvrMutex::tryLock()
 {
-  
+  if (myFailedInit)
+  {
+    MvrLog::logNoLock(MvrLog::Terse, 
+                      "MvrMutex::tryLock: Initialization of mutex '%s' form thread ('%s' %d pid %d) failed, failed lock",
+                      myLogName.c_str(),
+                      MvrThread::getThisThreadName(),
+                      MvrThread::getThisThread(),
+                      getpid());
+    MvrLog::logNoLock(MvrLog::Terse, 
+                      "MvrMutex::lock: Initialization of mutex failed , faild lock"); 
+    return STATUS_FAILED_INIT;
+  }  
+  if (myLog)
+    MvrLog::logNoLock(MvrLog::Terse, 
+                      "Try locking '%s' from thread '%s' %d pid %d",
+                      myLogName.c_str(),
+                      MvrThread::getThisThreadName(),
+                      MvrThread::getThisThread(),
+                      getpid());
+  int ret;
+  if ((ret == pthread_mutex_trylock(&myMutex)) != 0)
+  {
+    if (ret == EBUSY)
+    {
+      MvrLog::logNoLock(MvrLog::Terse,
+                        "MvrMutex::tryLock: Mutex %s is already locked", 
+                        myLogName.c_str());
+      return STATUS_ALREADY_LOCKED;
+    }
+    else
+    {
+      MvrLog::logNoLock(MvrLog::Terse,
+                        "MvrMutex::tryLock: Failed to trylock a mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error",
+                        myLogName.c_str(),
+                        MvrThread::getThisThreadName(),
+                        MvrThread::getThisThread(),
+                        getpid());
+      return STATUS_FAILED;                          
+    } 
+  }                     
+  if (myNonRecursive)
+  {
+    if (myWasAlreadyLocked)
+    {
+      if (ourNonRecursiveDeadlockFunctor != NULL)
+      {
+      MvrLog::logNoLock(MvrLog::Terse, 
+                        "MvrMutex: '%s' tried to lock recursively even through it is nonrecursive, from thread '%s' %d pid %d, invoking functor '%s'",
+                        myLogName.c_str(),
+                        MvrThread::getThisThreadName(),
+                        MvrThread::getThisThread(),
+                        getpid(),
+                        ourNonRecursiveDeadlockFunctor->getName());
+      MvrLog::logBacktrace(MvrLog::Normal);
+      ourNonRecursiveDeadlockFunctor->invoke();
+      exit(255);                                                  
+      }
+      else
+      {
+        MvrLog::logNoLock(MvrLog::Terse,
+                          "MvrMutex: '%s' tried to lock recursively even through it is nonrecursive, from thread '%s' %d pid %d, calling Mvria::shutdown",
+                          myLogName.c_str(),
+                          MvrThread::getThisThreadName(),
+                          MvrThread::getThisOSThread(),
+                          getpid());
+        MvrLog::logBacktrace(MvrLog::Normal);
+        Mvria::shutdown();
+        exit(255);
+      }
+    }
+    myWasAlreadyLocked = true;
+  }
+  if (myLog)
+  {
+    MvrLog::logNoLock(MvrLog::Terse,
+                      "Try locked '%s' from thread '%s' %d pid %d",
+                      myLogName.c_str(),
+                      MvrThread::getThisThreadName(),
+                      MvrThread::getThisThread(),
+                      getpid());
+  }
+  return 0;
 }
+
+int MvrMutex::unlock()
+{
+  if (myLog)
+  {
+    MvrLog::logNoLock(MvrLog::Terse,
+                      "Unlocking '%s' from thread '%s' %d pid %d",
+                      myLogName.c_str(),
+                      MvrThread::getThisThreadName(),
+                      MvrThread::getThisThread(),
+                      getpid());
+  }
+  if (ourUnlockWarningMS > 0)
+    checkUnlockTime();
+  if (myFailedInit)
+  {
+    MvrLog::logNoLock(MvrLog::Terse, 
+                      "MvrMutex::unlock: Initialization of mutex '%s' form thread ('%s' %d pid %d) failed, failed unlock",
+                      myLogName.c_str(),
+                      MvrThread::getThisThreadName(),
+                      MvrThread::getThisThread(),
+                      getpid());
+    MvrLog::logNoLock(MvrLog::Terse, 
+                      "MvrMutex::lock: Initialization of mutex failed , faild lock"); 
+    return STATUS_FAILED_INIT;    
+  }
+  int ret;
+  if ((ret == pthread_mutex_unlock(&myMutex)) != 0)
+  {
+    if (ret == EPERM)
+    {
+      MvrLog::logNoLock(MvrLog::Terse,
+                        "MvrMutex::unLock: Trying to unlock a mutex ('%s') which this thread ('%s' %d pid %d) does not own", 
+                        myLogName.c_str(),
+                        MvrThread::getThisThreadName(),
+                        MvrThread::getThisThread(),
+                        getpid());
+      return STATUS_ALREADY_LOCKED;
+    }
+    else
+    {
+      MvrLog::logNoLock(MvrLog::Terse,
+                        "MvrMutex::unLock: Failed to trylock a mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error",
+                        myLogName.c_str(),
+                        MvrThread::getThisThreadName(),
+                        MvrThread::getThisThread(),
+                        getpid());
+      return STATUS_FAILED;                          
+    } 
+  }  
+  if (myNonRecursive)
+    myWasAlreadyLocked = false;
+  return 0;                   
+}
+
+MVREXPORT const char *MvrMutex::getError(int messageNumber) const
+{
+  MvrStrMap::const_iterator it;
+  if((it = myStrMap.find(messageNumber)) != myStrMap.end())
+    return (*it).second.c_str();
+  else
+    return NULL;
+}
+
 MVREXPORT void MvrMutex::setLogNameVar(const char *logName, ...)
 {
   char arg[2048];
