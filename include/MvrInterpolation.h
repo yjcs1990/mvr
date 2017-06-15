@@ -1,7 +1,7 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
  > File Name    : MvrInterpolation.h
- > Description  : Store a buffer of positions (ArPose objects) with associated timestamps, can
+ > Description  : Store a buffer of positions (MvrPose objects) with associated timestamps, can
                   be queried to interpolate (or optionally extrapolate) a pose for any arbitrary
                   timestamp. 
  > Author       : Yu Jie
