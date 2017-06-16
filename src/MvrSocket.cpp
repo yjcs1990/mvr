@@ -4,7 +4,7 @@
  > Description  : For connecting to a device through a TCP network socket
  > Author       : Yu Jie
  > Create Time  : 2017年05月18日
- > Modify Time  : 2017年06月15日
+ > Modify Time  : 2017年06月16日
 ***************************************************************************************************/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
