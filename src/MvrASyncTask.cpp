@@ -30,7 +30,7 @@ MVREXPORT int MvrASyncTask::create(bool joinable, bool lowerPriority)
 }
 
 /**
-   This will run the code of the ArASyncTask without creating a new
+   This will run the code of the MvrASyncTask without creating a new
    thread to run it in. It performs the needed setup then calls runThread().
    This is good if you have a task which you wish to run multiple
    instances of and you want to use the main() thread  instead of having
