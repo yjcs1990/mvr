@@ -851,3 +851,224 @@ MVREXPORT int MvrSocket::read(void *buff, size_t len, unsigned int msWait)
   return ret;
 }
 
+#ifndef SWIG
+/*
+ * This cannot write more than 512 number of bytes
+ * @param str the string to write to the socket
+ * @return number of bytes written
+ */
+MVREXPORT int MvrSocket::writeString(const char *str, ...)
+{
+  char buf[10000];
+  int len;
+  int ret;
+  myWriteStringMutex.lock();
+  va_list ptr;
+  va_start(ptr, str);
+  vsnprintf(buf, sizeof(buf)-3, str, ptr);
+  va_end(ptr);
+  len = strlen(buf);
+  if (myStringWrongEndChars)
+  {
+    buf[len] = '\n';
+    len++;
+    buf[len] = '\r';
+    len++;
+  }
+  else
+  {
+    buf[len] = '\r';
+    len++;
+    buf[len] = '\n';
+    len++;
+  }
+  ret = write(buf, len);
+  // this is after the write since we don't send NULLs out the write,
+  // but we need them on the log messages or it'll crash
+  buf[len] = '\0';
+  len++;
+  if (ret <= 0)
+  {
+    if (ret < 0)
+      MvrLog::log(MvrLog::Normal, 
+                  "Problem sending (ret %d errno %d) to %s: %s",
+                  ret, errno, getIPString(), buf);
+    else 
+      MvrLog::log(MvrLog::Normal, 
+                  "Problem sending (backed up) to %s: %s",
+                  getIPString(), buf);                     
+  }
+  else if (myLogWriteStrings)
+    MvrLog::log(MvrLog::Normal, 
+                "Sent to  %s: %s",
+                getIPString(), buf);
+  myWriteStringMutex.unlock();
+
+  return ret;
+}
+#endif
+
+void MvrSocket::setRawIPString(void)
+{
+  unsigned char *bytes;
+  bytes = (unsigned char *)inAddr();
+  if (bytes != NULL)
+    sprintf(myRawIPString, "%d.%d.%d.%d",
+    bytes[0],bytes[1],bytes[2],bytes[3]);
+  myIPString = myRawIPString;    
+}
+
+/*
+ * @param msWait if 0, don't block, if > 0 wait this long for data
+ * @return Data read, or an empty string (first character will be '\\0') 
+ * if no data was read.  If there was an error reading from the socket,
+ * NULL is returned.
+ */
+MVREXPORT char *MvrSocket::readString(unsigned int msWait)
+{
+  size_t i;
+  int n;
+
+  bool printing = false;
+
+  myReadStringMutex.lock();
+  myStringBufEmpty[0] = '\0';
+
+  // read one byte at a time
+  for (i = myStringPos; i < sizeof(myStringBuf); i++)
+  {
+    n = read(&myStringBuf[i], 1. msWait);
+    if (n > 0)
+    {
+      if (i == 0 && myStringBuf[i] < 0)
+      {
+        myStringGotEscapeChars = true;
+      }
+      if (myStringIgnoreReturn && myStringBuf[i] == '\r')
+      {
+        i--;
+        continue;
+      }
+      if (myStringBuf[i] == '\n' || myStringBuf[i] == '\r')
+      {
+        /// if we aren't at the start, it's a complete string
+        if (i != 0)
+        {
+          myStringGotComplete = true;
+        }
+        else
+        {
+          myLastStringReadTime.setToNow();
+          if (printing)
+            MvrLog::log(MvrLog::Normal,
+                        "MvrSocket::ReadString: calling readstring again since got \\n or \\r as the first char",
+                        myStringBuf, strlen(myStringBuf));
+          myReadStringMutex.unlock();
+          return readString(msWait);
+        }
+        myStringBuf[1] = '\0';
+        myStringPos    = 0;
+        myStringPosLast= 0;
+        // if we have leading escape characters get rid of them
+        if (myStringBuf[0] < 0)
+        {
+          int ei;
+          myStringGotEscapeChars = true;
+          // increment out the escape chars
+          for (ei = 0; myStringBuf[ei] < 0 || (ei > 0 && myStringBuf[ei -1] < 0); ei++);
+          // okay now return the good stuff
+          doStringEcho();
+          myLastStringReadTime.setToNow();
+          if (printing)
+            MvrLog::log(MvrLog::Normal,
+                        "MvrSocket::ReadString: '%s' (%d) (got \\n or \\r)",
+                        myStringBuf, strlen(myStringBuf));
+          myReadStringMutex.unlock();
+          return myStringBuf;
+        }
+        // if we don't return what we want
+        doStringEcho();
+        myLastStringReadTime.setToNow();
+        if (printing)
+          MvrLog::log(MvrLog::Normal,
+              		    "MvrSocket::ReadString: '%s' (%d) (got \\n or \\r)",
+                      myStringBuf, strlen(myStringBuf));
+        myReadStringMutex.unlock();
+        return myStringBuf;
+      }
+      /// if its not an ending character but was good keep going
+      else
+        continue;
+    }
+    /// failed
+    else if (n == 0)
+    {
+      myStringPos = i;
+      myStringBuf[myStringPos] = '\0';
+      if (printing)
+        MvrLog::log(MvrLog::Normal,
+                    "MvrSocket::ReadString: NULL (0) (got 0 bytes, means connection closed)");
+      myReadStringMutex.unlock();
+      return NULL;
+    }
+    else // Which means (n < 0)
+    {
+#ifdef WIN32
+      if (WSAGetLastError() == WSAEWOULDBLOCK)
+      {
+        myStringPos = i;
+        doStringEcho();
+        if (printing)
+          MvrLog::log(MvrLog::Normal, "MvrSocket::ReadString: '%s' (%d) (got WSAEWOULDBLOCK)",
+                      myStringBufEmpty, strlen(myStringBufEmpty));
+        myReadStringMutex.unlock();
+        return myStringBufEmpty;  
+      }        
+#endif 
+#ifndef WIN32
+      if (errno == EAGAIN)
+      {
+        myStringPos = i;
+        doStringEcho();
+        if (printing)
+          MvrLog::log(MvrLog::Normal, 
+                      "MvrSocket::ReadString: '%s' (%d) (got EAGAIN)",
+                      myStringBufEmpty, strlen(myStringBufEmpty));
+        myReadStringMutex.unlock();
+        return myStringBufEmpty;
+      }  
+#endif    
+      MvrLog::logErrorFromOS(MvrLog::Normal,
+                             "MvrSocket::ReadString: Error in reading from network");
+      if (printing)
+        MvrLog::log(MvrLog::Normal,
+                    "MvrSocket::ReadString: NULL (0) (got 0 bytes, error reading network");
+      myReadStringMutex.unlock();
+      return NULL;                        
+    }
+  }
+  /// if they want an 0 length string
+  MvrLog::log(MvrLog::Normal,
+              "Some trouble in MvrSocket::readString to %s (cannot fit string into buffer?)",
+              getIPString());
+  myReadStringMutex.unlock();
+  return NULL;
+}
+
+MVREXPORT void MvrSocket::clearPartialReadString(void)
+{
+  myReadingMutex.lock();
+  myStringBuf[0] = '\0';
+  myStringPos    = 0;
+  myReadingMutex.unlock();
+}
+
+MVREXPORT int MvrSocket::comparePartialReadString(const char *partialString)
+{
+  int ret;
+  myReadingMutex.lock();
+  ret = strncmp(partialString, myStringBuf, strlen(partialString));
+  myReadingMutex.unlock();
+  return ret;
+}
+
