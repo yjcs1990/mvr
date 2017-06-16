@@ -10,9 +10,18 @@
 #include "mvriaOSDef.h"
 #include "MvrLog.h"
 #include "MvrThread.h"
+#include "MvrSignalHandler.h"
 
 #include <errno.h>
 #include <list>
+#include <sched.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#ifndef MINGW
+#include <sys/syscall.h>
+#endif
+
 
 MvrMutex MvrThread::ourThreadsMutex;
 MvrThread::MapType MvrThread::ourThreads;
@@ -22,6 +31,29 @@ std::map<HANDLE, MvrThread *> MvrThread::ourThreadHandles;
 MVREXPORT MvrLog::LogLevel MvrThread::ourLogLevel = MvrLog::Verbose;
 // TODO, instead of MVREXPORT move accessors into .cpp
 std::string MvrThread::ourUnknownThreadName = "unknown";
+
+static void *run(void *arg)
+{
+  MvrThread *t = (MvrThread*) arg;
+  void *ret = NULL;
+
+  if (t->getBlockAllSignals())
+    MvrSignalHandler::blockCommonThisThread();
+  
+  if (dynamic_cast<MvrRetFunctor<void *>*>(t->getFunc()))
+    ret = ((MvrRetFunctor<void *>*)t->getFunc())->invokeR();
+  else
+    t->getFunc()->invoke();
+  return ret;
+}
+
+/**
+   Initializes the internal structures which keep track of what thread is
+   what. This is called by Mvria::init(), so the user will not normaly need
+   to call this function themselves. This funtion *must* be called from the
+   main thread of the application. In otherwords, it should be called by
+   main().
+*/
 
 MVREXPORT void MvrThread::stopAll()
 {
