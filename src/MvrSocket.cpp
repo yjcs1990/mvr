@@ -730,3 +730,74 @@ MVREXPORT int MvrSocket::recvFrom(void *msg, int len, sockaddr_in *sin)
   }
   return ret;
 }
+
+/*
+ * @param buff buffer to write from
+ * @param len how many bytes to write
+ * @return number of bytes written
+*/
+MVREXPORT int MvrSocket::write(const void *buff, size_t len)
+{
+  // this is for when we're faking MvrNetworking commands over the text server
+  if (myFakeWrites)
+    return len;
+  
+  if (myFD < 0)
+  {
+    MvrLog::log(MvrLog::Terse, "MvrSocket::write: called after socket closed.");
+    return 0;
+  }
+
+  struct timeval tval;
+  fd_set fdSet;
+  tval.tv_sec  = 0;
+  tval.tv_usec = 0;
+  FD_ZERO(&fdSet);
+  FD_SET(myFD, &fdSet);
+
+#ifdef WIN32
+  if (select(0, NULL, &fdSet, NULL, &tval) <= 0) // fd count is ignored on windows (fd_set is an array)
+#else
+  if (select(myFD+1, NULL, &fdSet, NULL, &tval) <= 0)
+#endif 
+    return 0;
+  
+  int ret;
+#ifdef WIN32
+  ret = ::send(myFD, (char*)buff, len, 0);
+#else
+  ret = ::write(myFd, (char *)buff, len);
+#endif 
+
+  if (ret > 0)
+  {
+    mySends++;
+    myBytesSent += mySends;
+  }
+
+  if (myErrorTracking && ret < 0)
+  {
+    if (myNonBlocking)
+    {
+#ifdef WIN32
+      if (WSAGetLastError() != WSAEWOULDBLOCK)
+        myBadWrite = true;
+#endif
+
+#ifndef WIN32
+      if (errno != EAGAIN)
+        myBadWrite = true;
+#endif        
+    }
+    else
+      myBadWrite = false;
+  }
+  return ret;
+}
+
+/**
+   @param buff buffer to read into
+   @param len how many bytes to read
+   @param msWait if 0, don't block, if > 0 wait this long for data
+   @return number of bytes read
+*/
