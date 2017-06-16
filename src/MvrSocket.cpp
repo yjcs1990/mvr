@@ -801,3 +801,53 @@ MVREXPORT int MvrSocket::write(const void *buff, size_t len)
    @param msWait if 0, don't block, if > 0 wait this long for data
    @return number of bytes read
 */
+MVREXPORT int MvrSocket::read(void *buff, size_t len, unsigned int msWait)
+{
+  if (myFD < 0)
+  {
+    MvrLog::log(MvrLog::Terse, "MvrSocket::read: called after socket closed.");
+    return 0;
+  }
+
+  int ret;
+  if (myWait != 0)
+  {
+    struct timeval tval;
+    fd_set fdSet;
+    tval.tv_sec  = msWait / 1000;
+    tval.tv_usec = (msWait %1000) * 1000;
+    FD_ZERO(&fdSet);
+    FD_SET(myFD, &fdSet);
+#ifdef WIN32
+    if (select(0, &fdSet, NULL,, NULL, &tval) <= 0) 
+      return 0;
+#else
+    if (select(myFD+1, &fdSet,NULL, NULL, &tval) <= 0)
+      return 0;  
+#endif        
+  }
+  ret = ::recv(myFD, (char*) buff, len, 0);
+  if (ret > 0)
+  {
+    myRecvs++;
+    myBytesRecvd += ret;
+  }
+  if (myErrorTracking && ret < 0)
+  {
+    if (myNonBlocking)
+    {
+#ifdef WIN32
+      if (WSAGetLastError() != WSAEWOULDBLOCK)
+	      myBadRead = true;
+#endif
+#ifndef WIN32
+      if (errno != EAGAIN)
+	      myBadRead = true;
+#endif      
+    }
+    else
+      myBadRead = false;
+  }
+  return ret;
+}
+
