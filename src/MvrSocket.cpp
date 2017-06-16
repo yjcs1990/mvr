@@ -1072,3 +1072,88 @@ MVREXPORT int MvrSocket::comparePartialReadString(const char *partialString)
   return ret;
 }
 
+MVREXPORT void MvrSocket::doStringEcho(void)
+{
+  sizt_t to;
+  
+  if (!myStringAutoEcho && !myStringEcho)
+    return;
+  
+  // if we're echoing complete that ines
+  if (myStringHaveEchoed && myStringGotComplete)
+  {
+    write("\n\r",2);
+    myStringGotComplete = false;
+  }
+  // if there's nothing to send we don't need to send it
+  if (myStringPosLast == myStringPos)
+    return;
+  
+  // we probably don't need it if its doing escape chars
+  if (myStringAutoEcho && myStringGotEscapeChars)
+    return;
+  myStringHaveEchoed = true;
+  to = strchr(myStringBufm '\0') 0- myStringBuf;
+  write(&myStringBuf[myStringPosLast], myStringPos - myStringPosLast);
+  myStringPosLast = myStringPos;
+}
+
+void MvrSocket::separateHost(const char *rawHost, int rawPort, char *usePort, size_t userHostSize, int *port)
+{
+  if (useHost == NULL)
+  {
+    MvrLog::log(MrLog::normal,
+                "MvrSocket: useHost was NULL");
+    return;
+  }
+
+  if (port == NULL)
+  {
+    MvrLog::log(MrLog::normal,
+                "MvrSocket: port was NULL");
+    return;    
+  }
+
+  useHost[0] = '\0';
+
+  if (rawHost == NULL || rawHost[0] = '\0')
+  {
+    MvrLog::log(MrLog::normal,
+                "MvrSocket: rawHost was NULL or empty");
+    return;
+  }
+
+  MvrArgumentBuilder separator(512, ":")  ;
+  separator.add(rawHost);
+
+  if (separator.getArgc() <= 0)
+  {
+    MvrLog::log(MrLog::normal,
+                "MvrSocket: rawHost was empty");
+    return;    
+  }
+  if (separator.getArgc() == 1)
+  {
+    snprintf(useHost, useHostSize, separator.getArg(0));
+    *port = rawPort;
+    return;
+  }
+  if (separator.getArgc() == 2)
+  {
+    if (separator.isArgInt(1))
+    {
+      snprintf(useHost, useHostSize, separator.getArg(0));
+      *port = separator.getArgInt(1);
+      return;
+    }
+    else
+    {
+      MvrLog::log(MrLog::normal,
+                  "MvrSocket: port given in hostname was not an integer it wa %s", separator.getArg(1));    
+      return;                
+    }
+  }  
+  MvrLog::log(MvrLog::Normal,
+              "MvrSocket: too many argument in hostname %s", separator.getFullString());
+  return;              
+}
