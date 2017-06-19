@@ -89,16 +89,16 @@ public:
   MVREXPORT static std::string getUptimeHoursAsString();
 
   /// @return Pointer to a functor which can be used to retrieve the current CPU percentage
-  MVREXPORT static ArRetFunctor<double>* getCPUPercentFunctor();
+  MVREXPORT static MvrRetFunctor<double>* getCPUPercentFunctor();
 
   /// @return Pointer to a functor which can be used to retrieve the current uptime (hours)
-  MVREXPORT static ArRetFunctor<double>* getUptimeHoursFunctor();
+  MVREXPORT static MvrRetFunctor<double>* getUptimeHoursFunctor();
 
   /// @return Pointer to a functor which can be used to retrieve the current uptime (hours)
-  MVREXPORT static ArRetFunctor<unsigned long>* getUptimeFunctor();
+  MVREXPORT static MvrRetFunctor<unsigned long>* getUptimeFunctor();
 
   /// @return Pointer to a functor which can be used to retrieve the current uptime (hours)
-  MVREXPORT static ArRetFunctor<unsigned long>* getProgramUptimeFunctor();
+  MVREXPORT static MvrRetFunctor<unsigned long>* getProgramUptimeFunctor();
 
   /// Get wireless network general link quality heuristic (for first configured wireless device).
   MVREXPORT static int getWirelessLinkQuality();
@@ -146,15 +146,15 @@ public:
 private:
 
   static MvrMutex ourCPUMutex;
-  static double ourCPU;
-  static unsigned long ourUpTime;
-  static unsigned long ourFirstUpTime;
-  static unsigned long ourLastCPUTime;
-  static MvrTime ourLastCPURefreshTime;
-  static MvrGlobalRetFunctor<double> ourGetCPUPecentCallback;
-  static MvrGlobalRetFunctor<double> ourGetUptimeHoursCallback;
-  static MvrGlobalRetFunctor<unsigned long> ourGetUptimeHoursCallback;
-  static MvrGlobalRetFunctor<unsigned long> ourGetProgramUptimeCallback;
+	static double ourCPU;
+	static unsigned long ourUptime;
+	static unsigned long ourFirstUptime;
+	static unsigned long ourLastCPUTime;
+	static MvrTime ourLastCPURefreshTime;
+	static MvrGlobalRetFunctor<double> ourGetCPUPercentCallback;
+	static MvrGlobalRetFunctor<double> ourGetUptimeHoursCallback;
+	static MvrGlobalRetFunctor<unsigned long> ourGetUptimeCallback;
+	static MvrGlobalRetFunctor<unsigned long> ourGetProgramUptimeCallback;
 
   static MvrMutex ourWirelessMutex;
   static int ourLinkQuality, ourLinkSignal, ourLinkNoise, ourDiscardedTotal, ourDiscardedDecrypt, ourDiscardedConflict;
