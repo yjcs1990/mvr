@@ -101,7 +101,389 @@ void MvrSystemStatus::refreshCPU()
 #endif  
 }
 
-/// Internal class
+/// @Internal class
+class MvrSystemStatusRefreshThread : public virtual MvrASyncTask
+{
+public: 
+  MvrSystemStatusRefreshThread(int refreshFrequency) :
+  myRefreshFrequency(refreshFrequency)
+  {
+    setThreadName("MvrSystemStatusRefreshThread");
+  }
+  void runAsync() { create(false); }
+  void setRefreshFreq(int freq) { myRefreshFrequency = freq; }
+private:
+  int myRefreshFrequency;
+  virtual void *runThread(void *arg)
+  {
+    threadStarted();
+    while (Mvria::getRunning() && getRunning())
+    {
+      MvrSystemStatus::invalidate();
+      MvrUtil::sleep(myRefreshFrequency);
+    }
+    threadFinished();
+    return NULL;
+  }
+};
+
+MVREXPORT void MvrSystemStatus::startPeriodicUpdate(int frefreshFrequency, MvrLog::LogLevel logLevel)
+{
+  ourCPUMutex.setLogName("MvrSystemStatusRefreshThread::ourCPUMutex");
+  ourWirelessMutex.setLogName("MvrSystemStatusRefreshThread::ourWirelessMutex");
+
+  if (ourPeriodicUpdateThread)
+  {
+    // If we already have a thread, just change its refresh frequency
+    ourPeriodicUpdateThread->setRefreshFreq(frefreshFrequency);
+    ourPeriodicUpdateThread->setLogLevel(logLevel);
+    return;
+  }
+  // Otherwise start a new thread, with the desired refresh frequency
+  ourPeriodicUpdateThread = new MvrSystemStatusRefreshThread(frefreshFrequency)
+  ourPeriodicUpdateThread->setRefreshFreq(frefreshFrequency);
+  ourPeriodicUpdateThread->runAsync();
+}
+
+MVREXPORT void MvrSystemStatus::stopPeriodicUpdate(void)
+{
+  if (!ourPeriodicUpdateThread)
+    return;
+  ourPeriodicUpdateThread->stopRunning();
+  delete ourPeriodicUpdateThread;
+  ourPeriodicUpdateThread = 0;
+}
+
+MVREXPORT double MvrSystemStatus::getCPU()
+{
+  MvrScopedLock lock(ourCPUMutex);
+  refreshCPU();
+  return ourCPU;
+}
+
+MVREXPORT double MvrSystemStatus::getCPUPercent()
+{
+  MvrScopedLock lock(ourCPUMutex);
+  refreshCPU();
+  if (ourCPU < 0)
+    return ourCPU; // invalid value indicator
+  return ourCPU * 100.0;
+}
+
+/// Get CPU percentage in a string
+MVREXPORT std::string MvrSystemStatus::getCPUPercentAsString()
+{
+	MvrScopedLock lock(ourCPUMutex);
+	refreshCPU();
+	if (ourCPU < 0)
+	{
+		return std::string("n/a");
+	}
+	char tmp[32];
+	snprintf(tmp, 31, "%.2f", getCPUPercent());
+	return std::string(tmp);  
+}
 
 
+// Get total system uptime (seconds)
+MVREXPORT unsigned long MvrSystemStatus::getUptime() 
+{
+	MvrScopedLock lock(ourCPUMutex);
+	refreshCPU();
+	return ourUptime;
+}
+
+// Get total system uptime (hours)
+MVREXPORT double MvrSystemStatus::getUptimeHours() 
+{
+	MvrScopedLock lock(ourCPUMutex);
+	refreshCPU();
+	return ourUptime / 3600.0;
+}
+
+// Get total system uptime (seconds)
+MVREXPORT unsigned long MvrSystemStatus::getProgramUptime() 
+{
+	MvrScopedLock lock(ourCPUMutex);
+	refreshCPU();
+	return ourUptime - ourFirstUptime;
+}
+
+// Get total system uptime in a string (hours)
+MVREXPORT std::string MvrSystemStatus::getUptimeHoursAsString() 
+{
+	MvrScopedLock lock(ourCPUMutex);
+	refreshCPU();
+	char tmp[32];
+	snprintf(tmp, 31, "%.2f", getUptimeHours());
+	return std::string(tmp);
+}
+
+// return Pointer to a functor which can be used to retrieve the current CPU percentage
+MVREXPORT MvrRetFunctor<double>* MvrSystemStatus::getCPUPercentFunctor() 
+{
+	return &ourGetCPUPercentCallback;
+}
+
+// return Pointer to a functor which can be used to retrieve the current uptime (hours)
+MVREXPORT MvrRetFunctor<double>* MvrSystemStatus::getUptimeHoursFunctor() 
+{
+	return &ourGetUptimeHoursCallback;
+}
+
+// return Pointer to a functor which can be used to retrieve the current uptime (seconds)
+MVREXPORT MvrRetFunctor<unsigned long>* MvrSystemStatus::getUptimeFunctor() 
+{
+	return &ourGetUptimeCallback;
+}
+
+// return Pointer to a functor which can be used to retrieve the current program uptime (seconds)
+MVREXPORT MvrRetFunctor<unsigned long>* MvrSystemStatus::getProgramUptimeFunctor() 
+{
+	return &ourGetProgramUptimeCallback;
+}
+
+MVREXPORT MvrRetFunctor<int>* MvrSystemStatus::getWirelessLinkQualityFunctor() 
+{
+	return &ourGetWirelessLinkQualityCallback;
+}
+MVREXPORT MvrRetFunctor<int>* MvrSystemStatus::getWirelessLinkNoiseFunctor() 
+{
+	return &ourGetWirelessLinkNoiseCallback;
+}
+MVREXPORT MvrRetFunctor<int>* MvrSystemStatus::getWirelessLinkSignalFunctor() 
+{
+	return &ourGetWirelessLinkSignalCallback;
+}
+
+MVREXPORT MvrRetFunctor<int>* MvrSystemStatus::getMTXWirelessLinkFunctor() 
+{
+	return &ourGetMTXWirelessLinkCallback;
+}
+MVREXPORT MvrRetFunctor<int>* MvrSystemStatus::getMTXWirelessQualityFunctor() 
+{
+	return &ourGetMTXWirelessQualityCallback;
+}
+
+// Get wireless stats from /proc/net/wireless:
+
+void MvrSystemStatus::refreshWireless()
+{
+#ifndef WIN32
+	if (ourPeriodicUpdateThread && !ourShouldRefreshWireless) return;
+	FILE* fp = MvrUtil::fopen("/proc/net/wireless", "r");
+	if (!fp)
+	{
+		MvrLog::log(MvrLog::Terse, "MvrSystemStatus: Error: Failed to open /proc/net/wireless!");
+		ourShouldRefreshWireless = false;
+		return;
+	}
+
+	// first two lines are header info
+	char line[256];
+	if (!(fgets(line, 256, fp) && fgets(line, 256, fp)))
+	{
+		fclose(fp);
+		ourLinkQuality = ourLinkSignal = ourLinkNoise =
+			ourDiscardedTotal = ourDiscardedDecrypt = -1;
+		ourShouldRefreshWireless = false;
+		return;
+	}
+
+
+	// next line is info for first device
+	char id[32];
+	unsigned int stat;
+	int disc_frag, disc_retry, disc_misc, missed;
+	disc_frag = disc_retry = disc_misc = missed = 0;
+	int r = fscanf(fp, "%31s %x %d. %d. %d. %d %d %d %d %d %d",
+                 id, &stat,
+                 &ourLinkQuality, &ourLinkSignal, &ourLinkNoise,
+                 &ourDiscardedConflict, &ourDiscardedDecrypt,
+                 &disc_frag, &disc_retry, &disc_misc, &missed);
+	fclose(fp);
+	if (r < 11)
+		MvrLog::log(MvrLog::Verbose, "MvrSystemStatus: Warning: Failed to parse /proc/net/wireless (only %d out of 11 values parsed).", r);
+	if (ourDiscardedConflict == -1 || ourDiscardedDecrypt == -1)
+		ourDiscardedTotal = -1;
+	else
+		ourDiscardedTotal = ourDiscardedConflict + ourDiscardedDecrypt + disc_frag + disc_retry + disc_misc;
+	ourShouldRefreshWireless = false;
+#endif // WIN32
+}
+
+
+// Get wireless stats from /var/robot/status/network/wireless
+
+void MvrSystemStatus::refreshMTXWireless()
+{
+#ifndef WIN32
+	if (ourPeriodicUpdateThread && !ourShouldRefreshMTXWireless) return;
+	FILE* fpIp = MvrUtil::fopen("/mnt/status/network/wireless/ip", "r");
+	FILE* fpLink = MvrUtil::fopen("/mnt/status/network/wireless/link", "r");
+	FILE* fpQuality = MvrUtil::fopen("/mnt/status/network/wireless/quality", "r");
+
+	if ((!fpIp) || (!fpLink) || (!fpQuality))
+	{
+		MvrLog::log(MvrLog::Terse, "MvrSystemStatus: Error: Failed to open /mnt/status/network/wireless/ files!");
+		ourShouldRefreshMTXWireless = false;
+		return;
+	}
+
+#if 0
+	// grab the data from each file
+	char lineIp[256];
+	if (!(fgets(lineIp, 256, fpIp)))
+	{
+		fclose(fpIp);
+		ourMTXIP1 = ourMTXIp2 = ourMTXIp3 = ourMTXIp4 = -1;
+		ourMTXWirelessLink = -1;
+		ourMTXWirelessQuality = -1;
+		ourShouldRefreshMTXWireless = false;
+		return;
+	}
+#endif
+
+
+	// ?? - need to store IP somewhere don't know if we need it
+
+	if (!(fscanf(fpLink, "%d", &ourMTXWirelessLink)))
+	{
+		fclose(fpLink);
+		fclose(fpIp);
+		ourMTXIp1 = ourMTXIp2 = ourMTXIp3 = ourMTXIp4 = -1;
+		ourMTXWirelessLink = -1;
+		ourMTXWirelessQuality = -1;
+		ourShouldRefreshMTXWireless = false;
+		return;
+	}
+
+
+	if (!((fscanf(fpQuality, "%d", &ourMTXWirelessQuality))))
+	{
+		fclose(fpQuality);
+		fclose(fpLink);
+		fclose(fpIp);
+		ourMTXIp1 = ourMTXIp2 = ourMTXIp3 = ourMTXIp4 = -1;
+		ourMTXWirelessQuality = -1;
+		ourShouldRefreshMTXWireless = false;
+		return;
+	}
+
+	if (!(fscanf(fpIp, "%d.%d.%d.%d", &ourMTXIp1, &ourMTXIp2, &ourMTXIp3, &ourMTXIp4)))
+	{
+		fclose(fpIp);
+		ourMTXIp1 = ourMTXIp2 = ourMTXIp3 = ourMTXIp4 = -1;
+		ourShouldRefreshMTXWireless = false;
+		return;
+	}
+
+
+	/*
+	MvrLog::log(MvrLog::Normal, "MvrSystemStatus: %d.%d.%d.%d %d %d ",
+	ourMTXIp1, ourMTXIp2, ourMTXIp3, ourMTXIp4, ourMTXLinkQuality, ourMTXLinkSignal);
+	*/
+
+	char buf[1024];
+	sprintf(buf, "%d.%d.%d.%d", ourMTXIp1, ourMTXIp2, ourMTXIp3, ourMTXIp4);
+	ourMTXIpString = buf;
+
+	fclose(fpQuality);
+	fclose(fpLink);
+	fclose(fpIp);
+	ourShouldRefreshMTXWireless = false;
+#endif // WIN32
+}
+
+MVREXPORT int MvrSystemStatus::getWirelessLinkQuality() 
+{
+	MvrScopedLock lock(ourWirelessMutex);
+	refreshWireless();
+	return ourLinkQuality;
+}
+
+MVREXPORT int MvrSystemStatus::getWirelessLinkSignal() 
+{
+	MvrScopedLock lock(ourWirelessMutex);
+	refreshWireless();
+	return ourLinkSignal;
+}
+
+MVREXPORT int MvrSystemStatus::getWirelessLinkNoise() 
+{
+	MvrScopedLock lock(ourWirelessMutex);
+	refreshWireless();
+	return ourLinkNoise;
+}
+
+MVREXPORT int MvrSystemStatus::getWirelessDiscardedPackets() 
+{
+	MvrScopedLock lock(ourWirelessMutex);
+	refreshWireless();
+	return ourDiscardedTotal;
+}
+
+MVREXPORT int MvrSystemStatus::getWirelessDiscardedPacketsBecauseNetConflict() 
+{
+	MvrScopedLock lock(ourWirelessMutex);
+	refreshWireless();
+	return ourDiscardedConflict;
+}
+
+MVREXPORT int MvrSystemStatus::getMTXWirelessLink() 
+{
+	MvrScopedLock lock(ourMTXWirelessMutex);
+	refreshMTXWireless();
+	return ourMTXWirelessLink;
+}
+
+MVREXPORT int MvrSystemStatus::getMTXWirelessQuality() 
+{
+	MvrScopedLock lock(ourMTXWirelessMutex);
+	refreshMTXWireless();
+	return ourMTXWirelessQuality;
+}
+
+MVREXPORT int MvrSystemStatus::getMTXWirelessIpAddress1() 
+{
+	MvrScopedLock lock(ourMTXWirelessMutex);
+	refreshMTXWireless();
+	return ourMTXIp1;
+}
+
+MVREXPORT int MvrSystemStatus::getMTXWirelessIpAddress2() 
+{
+	MvrScopedLock lock(ourMTXWirelessMutex);
+	refreshMTXWireless();
+	return ourMTXIp2;
+}
+MVREXPORT int MvrSystemStatus::getMTXWirelessIpAddress3() 
+{
+	MvrScopedLock lock(ourMTXWirelessMutex);
+	refreshMTXWireless();
+	return ourMTXIp3;
+}
+
+MVREXPORT int MvrSystemStatus::getMTXWirelessIpAddress4() 
+{
+	MvrScopedLock lock(ourMTXWirelessMutex);
+	refreshMTXWireless();
+	return ourMTXIp4;
+}
+
+MVREXPORT const char * MvrSystemStatus::getMTXWirelessIpAddressString() 
+{
+	MvrScopedLock lock(ourMTXWirelessMutex);
+	refreshMTXWireless();
+	return ourMTXIpString.c_str();
+}
+
+MVREXPORT void MvrSystemStatus::invalidate()
+{
+	MvrScopedLock lockc(ourCPUMutex);
+	MvrScopedLock lockw(ourWirelessMutex);
+	ourShouldRefreshCPU = true;
+	ourShouldRefreshWireless = true;
+	ourShouldRefreshMTXWireless = true;
+}
 
