@@ -148,8 +148,7 @@ MVREXPORT MvrModuleLoader::Status MvrModuleLoader::reload(const char *modName,
    @param quiet whether to print out a message if this fails or not,
    defaults to false
 */
-MVREXPORT MvrModuleLoader::Status MvrModuleLoader::close(const char *modName,
-						                                             bool quiet)
+MVREXPORT MvrModuleLoader::Status MvrModuleLoader::close(const char *modName, bool quiet)
 {
   std::string name;
   std::map<std::string, DllRef>::iterator iter;
