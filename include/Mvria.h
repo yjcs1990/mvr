@@ -140,5 +140,4 @@
 #include "MvrRobotPacketReaderThread.h"
 #include "MvrHasFileName.h"
 
-/// TODO
 #endif  // MVRIA_H
