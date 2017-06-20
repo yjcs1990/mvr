@@ -14,7 +14,7 @@
 #include "mvriaTypedefs.h"
 #include "MvrSerialConnection.h"
 #include "MvrTcpConnection.h"
-#include "MvrSimpleConnection.h"
+#include "MvrSimpleConnector.h"
 #include "MvrLogFileConnection.h"
 #include "MvrLog.h"
 #include "MvrRobotPacket.h"
