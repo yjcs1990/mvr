@@ -16,7 +16,7 @@
 
 class MvrRobot;
 class MvrBasePacket;
-class MvrRObotPacket;
+class MvrRobotPacket;
 class MvrDeviceConnection;
 
 class MvrPTZ
