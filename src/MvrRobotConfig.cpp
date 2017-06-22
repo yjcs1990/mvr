@@ -21,7 +21,7 @@
  * packet will ever be honored (so that you can save the settings from
  * one point in time)
    
- * @param packetMvrrivedCB a functor to call when the packet comes in,
+ * @param packetArrivedCB a functor to call when the packet comes in,
  * note the robot is locked during this callback
  */
 MVREXPORT MvrRobotConfig::MvrRobotConfig(MvrRobot *robot) :

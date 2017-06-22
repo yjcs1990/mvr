@@ -1391,7 +1391,7 @@ MVREXPORT bool MvrConfig::parseUnknown(MvrArgumentBuilder *arg, char *errorBuffe
                         myPermissionSaveUnknown,
                         ((mySectionsToParse == NULL) ? "==" : "!=")));
 
-    MvrrLog::log(MvrLog::Verbose, "%sUnknown '%s' in section '%s', ignoring it", 
+    MvrLog::log(MvrLog::Verbose, "%sUnknown '%s' in section '%s', ignoring it", 
 	               myLogPrefix.c_str(), arg->getFullString(), mySection.c_str());
   }
   return true;
