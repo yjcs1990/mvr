@@ -1,0 +1,76 @@
+/**************************************************************************************************
+ > Project Name : MVR - mobile vacuum robot
+ > File Name    : MvrRobot.cpp
+ > Description  : Central class for communicating with and operating the robot
+ > Author       : Yu Jie
+ > Create Time  : 2017年05月22日
+ > Modify Time  : 2017年06月22日
+***************************************************************************************************/
+#include "MvrExport.h"
+#include "mvriaOSDef.h"
+#include <time.h>
+#include <ctype.h>
+
+#include "MvrRobot.h"
+#include "MvrLog.h"
+#include "MvrDeviceConnection.h"
+#include "MvrTcpConnection.h"
+#include "MvrSerialConnection.h"
+#include "MvrLogFileConnection.h"
+#include "mvriaUtil.h"
+#include "MvrSocket.h"
+#include "MvrCommands.h"
+#include "MvrRobotTypes.h"
+#include "MvrSignalHandler.h"
+#include "MvrPriorityResolver.h"
+#include "MvrAction.h"
+#include "MvrRangeDevice.h"
+#include "MvrRobotConfigPacketReader.h"
+#include "MvrRobotBatteryPacketReader.h"
+#include "mvriaInternal.h"
+#include "MvrLaser.h"
+#include "MvrBatteryMTX.h"
+#include "MvrSonarMTX.h"
+#include "MvrLCDMTX.h"
+
+/*
+ * The parameters only rarely need to be specified.
+ *
+ * @param name A name for this robot, useful if a program has more than one
+ * MvrRobot object 
+ * @param obsolete This parameter is ignored.
+ * (It used to turn off state reflection if false, but that
+ * is no longer possible.)
+
+ * @param doSigHandle do normal signal handling and have this robot
+ * instance stopRunning() when the program is signaled
+
+ * @param normalInit whether the robot should initializes its
+ * structures or the calling program will take care of it.  No one
+ * will probalby ever use this value, since if they are doing that
+ * then overriding will probably be more useful, but there it is.
+
+ * @param addMvriaExitCallback If true (default), add callback to global Mvria class
+ * to stop running the processing loop and disconnect from robot 
+ * when Mvria::exit() is called. If false, do not disconnect on Mvria::exit()
+ */
+MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, bool doSigHandle, bool normalInit, bool addMvriaExitCallback) :
+          myMotorPacketCB(this, &MvrRobot::processMotorPacket),
+          myEncoderPacketCB(this, &MvrRobot::processEncoderPacket),
+          myIOPacketCB(this, &MvrRobot::processIOPacket),
+          myPacketHandlerCB(this, &MvrRobot::packetHandler),
+          myActionHandlerCB(this, &MvrRobot::actionHandler),
+          myStateReflectorCB(this, &MvrRobot::stateReflector),
+          myRobotLockerCB(this, &MvrRobot::robotLocker),
+          myRobotUnlockerCB(this, &MvrRobot::robotUnlocker),
+          myKeyHandlerExitCB(this, &MvrRobot::keyHandlerExit),
+          myGetCycleWarningTimeCB(this, &MvrRobot::getCycleWarningTime),
+          myGetNoTimeWarningThisCycleCB(this, &MvrRobot::getNoTimeWarningThisCycle),
+          myBatteryAverager(20),
+          myRealBatteryAverager(20),
+          myMvriaExitCB(this, &Mvria::mvriaExitCallback),
+          myPoseInterpPositionCB(this, &MvrRobot::getPoseInterpPosition),
+          myEncoderPoseInterpPositionCB(this, &MvrRobot::getEncoderPoseInterpPositionCallback)
+{
+  
+}
