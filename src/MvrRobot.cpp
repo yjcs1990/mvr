@@ -72,5 +72,48 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, bool doSigHandle, 
           myPoseInterpPositionCB(this, &MvrRobot::getPoseInterpPosition),
           myEncoderPoseInterpPositionCB(this, &MvrRobot::getEncoderPoseInterpPositionCallback)
 {
-  
+  myMutex.setLogName("MvrRobot::myMutex");
+  myPacketMutex.setLogName("MvrRobot::myPacketMutex");
+  myConnectionTimeoutMutex.setLogName("MvrRobot::myConnectionTimeoutMutex");
+
+  setName(name);
+  myMvriaExitCB.setName("MvrRobotExit");
+  myNoTimeWarningThisCycle = false;
+  myGlobalPose.setPose(0, 0, 0);
+  mySetEncoderTransformCBList.setName("SetEncoderTransformCBList");
+
+  myParam = new MvrRobotGeneric("");
+  processParamFile();
+
+  myRunningNonThreaded = true;
+
+  myMotorPacketCB.setName("MvrRobot::motorPacket");
+  myEncoderPacketCB.setName("MvrRobot::encoderPacket");
+  myIOPacketCB.setName("MvrRobot::IOPacket");
+
+  myInterpolation.setName("MvrRobot::Interpolation");
+  myEncoderInterpolation.setName("MvrRobot::EncoderInterpolation");
+
+  myPtz           = NULL;
+  myKeyHandler    = NULL;
+  myKeyHandlerCB  = NULL;
+  myMTXTimeUSecCB = NULL;
+
+  myConn = NULL;
+
+  myOwnTheResolver = false;
+
+  myBlockingConnectRun = false;
+  myAsyncConnectFlag   = false;
+
+  myRequireConfigPacket= false;
+
+  myLogMovementSent       = false;
+  myLogMovementReceived   =false;
+  myLogVelocitiesReceived = false;
+  myLogActions            = false;
+  myLastVel               = 0;
+  myLastRotVal            = 0;
+  myLastHeading           = 0;
+  myLastDeltaHeading      = 0;
 }
