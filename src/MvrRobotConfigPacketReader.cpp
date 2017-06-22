@@ -242,55 +242,45 @@ MVREXPORT std::string MvrRobotConfigPacketReader::buildString(void) const
     sprintf(line, "LatVelTop %d LatAccelTop %d\n", getLatVelTop(), getLatAccelTop());
     ret += lien;
   }
-  sprintf(line, "PWMMax %d ResetBaud %s\n", getPwmMax(),
-	     MvrUtil::convertBool(getResetBaud()));
+  sprintf(line, "PWMMax %d ResetBaud %s\n", getPwmMax(), MvrUtil::convertBool(getResetBaud()));
   ret += line;
   sprintf(line, "Current values:\n");
   ret += line;
-  sprintf(line, "TransVelMax %d TransAccel %d TransDecel %d\n", 
-	     getTransVelMax(), getTransAccel(), getTransDecel());
+  sprintf(line, "TransVelMax %d TransAccel %d TransDecel %d\n", getTransVelMax(), getTransAccel(), getTransDecel());
   ret += line;  
-  sprintf(line, "RotVelMax %d RotAccel %d RotDecel %d\n", 
-	     getRotVelMax(), getRotAccel(), getRotDecel());
+  sprintf(line, "RotVelMax %d RotAccel %d RotDecel %d\n", getRotVelMax(), getRotAccel(), getRotDecel());
   ret += line;
   if (myRobot->hasLatVel())
   {
-    sprintf(line, "LatVelMax %d LatAccel %d LatDecel %d\n", 
-	    getLatVelMax(), getLatAccel(), getLatDecel());
+    sprintf(line, "LatVelMax %d LatAccel %d LatDecel %d\n", getLatVelMax(), getLatAccel(), getLatDecel());
     ret += line;  
   }
   sprintf(line, "Accessories:\n");
   ret += line;  
-  sprintf(line, 
-	  "Gripper %s FrontSonar %s RearSonar %s Charger %d GyroType %d\n", 
-	  MvrUtil::convertBool(getHasGripper()), 
-	  MvrUtil::convertBool(getFrontSonar()), 
-	  MvrUtil::convertBool(getRearSonar()), 
-	  getHasCharger(),
-	  getGyroType());
+  sprintf(line, "Gripper %s FrontSonar %s RearSonar %s Charger %d GyroType %d\n", 
+	        MvrUtil::convertBool(getHasGripper()), 
+	        MvrUtil::convertBool(getFrontSonar()), 
+	        MvrUtil::convertBool(getRearSonar()), 
+	        getHasCharger(),
+	        getGyroType());
   ret += line;  
-  sprintf(line, "FrontBumps %d RearBumps %d\n", 
-	     getFrontBumps(), getRearBumps());
+  sprintf(line, "FrontBumps %d RearBumps %d\n", getFrontBumps(), getRearBumps());
   ret += line;  
   sprintf(line, "Settings:\n");
   ret += line;  
   sprintf(line, "SipCycle %d SonarCycle %d HostBaud %d Aux1Baud %d\n", getSipCycleTime(), getSonarCycle(), getHostBaud(), getAux1Baud());
   ret += line;  
-  sprintf(line, "StallVal %d StallCount %d RevCount %d Watchdog %d\n",
-	     getStallVal(), getStallCount(), getRevCount(), getWatchdog());
+  sprintf(line, "StallVal %d StallCount %d RevCount %d Watchdog %d\n", getStallVal(), getStallCount(), getRevCount(), getWatchdog());
   ret += line;  
-  sprintf(line, "GyroRateLimit %d\n",
-	  getGyroRateLimit());
+  sprintf(line, "GyroRateLimit %d\n", getGyroRateLimit());
   ret += line;  
   sprintf(line, "JoyVel %d JoyRVel %d NormalMotorPackets %s\n", getJoyVel(), getJoyRotVel(), MvrUtil::convertBool(getNormalMPacs()));
   ret += line;  
   sprintf(line, "PID Settings:\n");
   ret += line;  
-  sprintf(line, "Trans kp %d kv %d ki %d\n", getTransKP(), 
-	     getTransKV(), getTransKI());
+  sprintf(line, "Trans kp %d kv %d ki %d\n", getTransKP(), getTransKV(), getTransKI());
   ret += line;  
-  sprintf(line, "Rot kp %d kv %d ki %d\n", getRotKP(), getRotKV(),
-	     getRotKI());
+  sprintf(line, "Rot kp %d kv %d ki %d\n", getRotKP(), getRotKV(), getRotKI());
   ret += line;  
   sprintf(line, "Other:\n");
   ret += line;  
@@ -305,13 +295,9 @@ MVREXPORT std::string MvrRobotConfigPacketReader::buildString(void) const
   sprintf(line, "TicksMM %d GyroCW %d GyroCCW %d\n", getTicksMM(),
 	  getGyroCW(), getGyroCCW());
   ret += line;  
-  sprintf(line, 
-	  "LowBattery %d ShutdownVoltage %d PowerbotChargeThreshold %d\n", 
-	  getLowBattery(), getShutdownVoltage(), getPowerbotChargeThreshold());
+  sprintf(line, "LowBattery %d ShutdownVoltage %d PowerbotChargeThreshold %d\n", getLowBattery(), getShutdownVoltage(), getPowerbotChargeThreshold());
   ret += line;  
-  sprintf(line, 
-	  "LowStateOfCharge %d ShutdownStateOfCharge %d\n", 
-	  getStateOfChargeLow(), getStateOfChargeShutdown());
+  sprintf(line, "LowStateOfCharge %d ShutdownStateOfCharge %d\n", getStateOfChargeLow(), getStateOfChargeShutdown());
   ret += line;  
 
   char buf[128];
@@ -329,9 +315,28 @@ MVREXPORT std::string MvrRobotConfigPacketReader::buildString(void) const
       sprintf(buf, "%s%d", buf, 0);
   }
 
-  sprintf(line, "HighTempShutdown %d PowerBits %s\n",
-	  getHighTemperatureShutdown(), buf);
+  sprintf(line, "HighTempShutdown %d PowerBits %s\n", getHighTemperatureShutdown(), buf);
   ret += line;  
 
   return ret;
 }
+
+MVREXPORT std::string MvrRobotConfigPacketReader::buildStringMovement(void) const
+{
+  std::string ret;
+
+  char line[32000];
+  sprintf(line, "TransVelMax %d TransAccel %d TransDecel %d\n", getTransVelMax(), getTransAccel() ,getTransDecel());
+  ret += line;
+  sprintf(line, "RotVelMax %d RotAccel %d RotDecel %d\n", getRotVelMax(), getRotAccel() ,getRotDecel());
+  ret += line;
+
+  if (myRobot->hasLatVel())
+  {
+    sprintf(line, "LatVelMax %d LatAccel %d LatDecel %d\n", getLatVelMax(), getLatAccel() ,getLatDecel());
+    ret += line;      
+  }  
+  return ret;
+}
+
+
