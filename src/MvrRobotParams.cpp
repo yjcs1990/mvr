@@ -517,7 +517,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(int lcdNumber, MvrConfig* config, 
   LCDMTXBoardData *lcdMTXBoardData = new LCDMTXBoardData;
   myLCDMTXBoards[lcdNumber] = lcdMTXBoardData;
 
-  /// MPL TODO what's this for?
+  ///  TODO what's this for?
   myLCDMTXBoardCount++;
 
   std::string displayHintPlain = "Visible:LCDAutoConnect=true";
@@ -530,9 +530,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(int lcdNumber, MvrConfig* config, 
   displayHintCustom = "Checkbox&&Visible:Generation!=Legacy";
 
   char tempDescBuf[512];
-  snprintf(tempDescBuf, sizeof(tempDescBuf),
-           "%s exists and should automatically be connected at startup.",
-           lcdName.c_str());
+  snprintf(tempDescBuf, sizeof(tempDescBuf), "%s exists and should automatically be connected at startup.", lcdName.c_str());
 
   config->addParam(MvrConfigArg("LCDAutoConnect", &lcdMTXBoardData->myLCDMTXBoardAutoConn, tempDescBuf),
                    section.c_str(), MvrPriority::FACTORY, displayHintCustom.c_str(), restartLevel);
@@ -599,10 +597,10 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
   SonarMTXBoardData *sonarMTXBoardData = new SonarMTXBoardData;
   mySonarMTXBoards[sonarBoardNumber] = sonarMTXBoardData;
 
-  /// MPL TODO what's this do?
+  ///  TODO what's this do?
   mySonarMTXBoardCount++;
 
-  /// MPL TODO remove this next line (it's in the constructor
+  ///  TODO remove this next line (it's in the constructor
   //sonarMTXBoardData->mySonarMTXBoardAutoConn = false;
   displayHintCustom = "Checkbox&&Visible:Generation!=Legacy";
 
@@ -643,12 +641,12 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
   config->addParam(MvrConfigArg("SonarDelay", &sonarMTXBoardData->mySonarDelay, "Sonar delay (in ms).", 0, 10), 
 	                 section.c_str(), MvrPriority::FACTORY, displayHintPlain.c_str(), restartLevel);
 
-  /// MPL Remove this sonar gain, it's in the constructor
+  ///  Remove this sonar gain, it's in the constructor
   //sonarMTXBoardData->mySonarGain = 5;
   config->addParam(MvrConfigArg("SonarGain", &sonarMTXBoardData->mySonarGain, "Default sonar gain for the board, range 0-31.", 0, 31), 
 	                 section.c_str(), MvrPriority::FACTORY, displayHintPlain.c_str(), restartLevel);
 
-  // MPL TODO remove (moved this to constructor)
+  // TODO remove (moved this to constructor)
   //strcpy(&sonarMTXBoardData->mySonarThreshold[0],"3000|1500|2000");
   config->addParam(MvrConfigArg("SonarDetectionThreshold", &sonarMTXBoardData->mySonarDetectionThreshold, "Default sonar detection threshold for the board.",0, 65535),
                    section.c_str(), MvrPriority::FACTORY, displayHintPlain.c_str(), restartLevel);
@@ -708,3 +706,676 @@ void MvrRobotParams::addVideoToConfig(int i, MvrConfig *config)
   config->addParam(MvrConfigArg("VideoAddress", &(myVideoParams[i].address), "IP address or hostname, or none if not using network communication."), section.c_str());
   config->addParam(MvrConfigArg("VideoTCPPort", &(myVideoParams[i].tcpPort), "TCP Port to use for HTTP network connection"), section.c_str());
 }
+
+/* Called by subclasses in MvrRobotTypes.h to set defaults (before file load; parameter file parsing uses parseSonar() instead)
+ * If any value is -1, then it is not set and any exisiting stored value is kept.
+ * @param num Index of sonar sensor on robot (starts at 0). NOTE These must form a set of consecutive integers over all calls to this function; if any are skipped then their entries in sonar unit parameters will be unset (uninitialized)!
+ * @param x X position of sensor on robot
+ * @param y Y position of sensor on robot
+ * @param th Angle at which the sensor points
+ * @param mtxboard For MTX sonar, which sonar module controls this sensor. Starts at 1.
+ * @param mtxunit For MTX sonar, index of this sensor in the MTX sonar module @a mtxboard. Starts at 1.
+ * @param mtxgain For MTX sonar, gain to set, or 0 to use default.
+ * @param mtxthresh For MTX sonar, detection threshold to set, or 0 to use default.
+ * @param mtxmax for MTX sonar, max range set on sonar to limit sensing
+ */
+MVREXPORT void MvrRobotParams::internalSetSonar(int num, int x, int y, int th,
+                                                int mtxboard, int mtxunit, int mtxgain, int mtxthresh, int mtxmax)
+{
+  if (num < 0)
+  {
+    MvrLog::log(MvrLog::Terse, "MvrRobotParams::internalSetSonar: Error: Invalid SonarUnit # %d (must be > 0).", num);
+    return;
+  }
+  mySonarMap[num][SONAR_X]            = x;
+  mySonarMap[num][SONAR_Y]            = y;
+  mySonarMap[num][SONAR_TH]           = th;
+  mySonarMap[num][SONAR_BOARD]        = mtxboard;
+  mySonarMap[num][SONAR_BOARDUNITPOSITION]  = mtxunit;
+  mySonarMap[num][SONAR_GAIN]               = mtxgain;
+  mySonarMap[num][SONAR_DETECTION_THRESHOLD]= mtxthresh;
+  mySonarMap[num][SONAR_MAX_RANGE]          = mtxmax;
+  mySonarMap[num][SONAR_USE_FOR_AUTONOMOUS_DRIVING] = true;
+  myNumSonarUnits = MvrUtil::findMax(myNumSonarUnits, (num + 1));
+}                                                 
+
+#if 0
+MVREXPORT const std::list<MvrArgumentBuilder *> *MvrRobotParams::getSonarUnits(void)
+{
+  std::map<int, std::map<int, int> >::iterator it;
+  int num, x, y, th;
+  MvrArgumentBuilder *builder;
+
+  for (it = mySonarMap.begin(); it != mySonarMap.end(); it++)
+  {
+    num = (*it).first;
+    x = (*it).second[SONAR_X];
+    y = (*it).second[SONAR_Y];
+    th = (*it).second[SONAR_TH];
+    builder = new MvrArgumentBuilder;
+    builder->add("%d %d %d %d", num, x, y, th);
+    myGetSonarUnitList.push_back(builder);
+  }
+  return &myGetSonarUnitList;
+}
+#endif
+
+MVREXPORT bool MvrRobotParams::parseSonarUnit(MvrArgumentBuilder *builder)
+{
+  // if only three valuse given, the its pre-MTX style. If more, then its for MTX
+  if (builder->getArgc() == 4)
+  {
+    // pre-MTX style
+    if (builder->getArgc() != 4 || !builder->isArgInt(0) ||
+        !builder->isArgInt(1) || !builder->isArgInt(2) ||
+        !builder->isArgInt(3))
+    {
+      MvrLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid");
+      return false;
+    }        
+    const int num = builder->getArgInt(0);
+    if (num < 0)
+    {
+      MvrLog::log(MvrLog::Terse, "MvrRobotParams:Error: Invalid SonarUnit # %d (must be > 0).", num);
+      return false;
+    }
+    mySonarMap[num][SONAR_X]  = builder->getArgInt(1);
+    mySonarMap[num][SONAR_Y]  = builder->getArgInt(2);
+    mySonarMap[num][SONAR_TH] = builder->getArgInt(3);
+
+    MvrLog::log(MvrLog::Terse, "MvrRobotParams: parseSonarUnit done parsing");
+
+    return true;
+  }
+  else
+  {
+    return parseMTXSonarUnit(builder);
+  }
+}
+
+MVREXPORT bool MvrRobotParams::parseMTXSonarUnit(MvrArgumentBuilder *builder)
+{
+
+  if (builder->getArgc() < 5 || !builder->isArgInt(0) ||
+    !builder->isArgInt(1) || !builder->isArgInt(2) ||
+    !builder->isArgInt(3) || !builder->isArgInt(4) || !builder->isArgInt(5))
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobotParams: SonarUnit parameters invalid, must include at least 5 integer values (MTX-style SonarUnit).",
+								builder->getArgc());
+    return false;                
+  }  
+  const int num = builder->getArgInt(0);
+  if (num < 0)
+  {
+    MvrLog::log(MvrLog::Terse, "MvrRobotParams:Error: Invalid SonarUnit # %d (must be > 0).", num);
+    return false;
+  }
+  mySonarMap[num][SONAR_X]  = builder->getArgInt(1);
+  mySonarMap[num][SONAR_Y]  = builder->getArgInt(2);
+  mySonarMap[num][SONAR_TH] = builder->getArgInt(3);
+  const int boardnum = builder->getArgInt(4);
+  mySonarMap[num][SONAR_BOARD] = boardnum;
+  mySonarMap[num][SONAR_BOARDUNITPOSITION] = builder->getArgInt(5);
+
+  SonarMTXBoardData *SonarMTXBoardData = getSonarMTXBoard(boardnum);
+  if (SonarMTXBoardData)
+    SonarMTXBoardData->myNumSonarTransducers = MvrUtil::findMax(sonarMTXBoardData->myNumSonarTransducers,  mySonarMap[num][SONAR_BOARDUNITPOSITION]);
+  else
+  {
+    MvrLog::log(MvrLog::Terse, "MvrRobotParams:Error: Invalid MTX sonar board # %d in SonarUnit # %d", boardnum, num);
+    return false;      
+  }
+
+  // prob should get these defaults from board
+  mySonarMap[num][SONAR_GAIN] = 0;  // SONAR_DEFAULT_GAIN
+  /*
+  mySonarMap[builder->getArgInt(0)][SONAR_NOISE_DELTA] = 0;
+  */
+  mySonarMap[num][SONAR_DETECTION_THRESHOLD] = 0;
+  mySonarMap[num][SONAR_USE_FOR_AUTONOMOUS_DRIVING] = true;
+
+  if (builder->getArgc() > 6)
+  {
+    // gain arg will either be an int or "default"
+    if (builder->isArgInt(6))
+    {
+      mySonarMap[builder->getArgInt(0)][SONAR_GAIN] = builder->getArgInt(6);
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 7th value(gain) must be an integer value.");
+      return false;            
+    }
+  }
+  if (builder->getArgc() > 7)
+  {
+    // gain arg will either be an int or "default"
+    if (builder->isArgInt(7))
+    {
+      mySonarMap[builder->getArgInt(0)][SONAR_DETECTION_THRESHOLD] = builder->getArgInt(7);
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 8th value (detect. thresh.) must be an integer value.");
+      return false;            
+    }
+  }
+  if (builder->getArgc() > 8)
+  {
+    // gain arg will either be an int or "default"
+    if (builder->isArgInt(8))
+    {
+      mySonarMap[builder->getArgInt(0)][SONAR_MAX_RANGE] = builder->getArgInt(8);
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 9th value (max range) must be an integer value.");
+      return false;            
+    }
+  }
+  if (builder->getArgc() > 9)
+  {
+    // gain arg will either be an int or "default"
+    if (builder->isArgInt(9))
+    {
+      mySonarMap[builder->getArgInt(0)][SONAR_USE_FOR_AUTONOMOUS_DRIVING] = builder->getArgInt(9);
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 10th value (use for autonomous) must be a boolean value.");
+      return false;            
+    }
+  }   
+
+  /*
+  if (builder->getArgc() > 10) {
+      // gain arg will either be an int or "default"
+      if (builder->isArgInt(10)) {
+        mySonarMap[builder->getArgInt(0)][SONAR_NOISE_FLOOR] = builder->getArgInt(9);
+      }
+      else
+      {
+        MvrLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 11th value (noise floor) must be an integer value.");
+        return false;
+      }
+    }
+  */
+  MvrLog::log(MvrLog::Verbose,
+              "MvrRobotParams::parseSonarUnit() parsed unit %d %d %d", myNumSonarUnits,
+              mySonarMap[builder->getArgInt(0)][SONAR_BOARD],
+              mySonarMap[builder->getArgInt(0)][SONAR_BOARDUNITPOSITION]);
+
+  myNumSonar = myNumSonarUnits;
+
+  return true;                     
+}
+
+MVREXPORT const char std::list<MvrArgumentBuilder *> *MvrRobotParams::getSonarUnits(void)
+{
+  //  MvrLog::log(MvrLog::Normal, "Saving sonar units?");
+  std::map<int, std::map<int, int> >::iterator it;
+  int unitNum, x, y, th, boardNum, boardUnitPosition, gain, /*noiseDelta,*/detectionThreshold, numEchoSample;
+  bool useForAutonomousDriving;
+  MvrArgumentBuilder *builder;
+
+  for (it = mySonarMap.begin(); it != mySonarMap.end(); it++)
+  {
+    unitNum  = (*it).first;
+    x        = (*it).second[SONAR_X];
+    y        = (*it).second[SONAR_Y];
+    th       = (*it).second[SONAR_TH];
+    boardNum = (*it).second[SONAR_BOARD];
+    boardUnitPosition = (*it).second[SONAR_BOARDUNITPOSITION];
+    gain = (*it).second[SONAR_GAIN];
+		/*
+    noiseDelta = (*it).second[SONAR_NOISE_DELTA];
+		*/
+    detectionThreshold = (*it).second[SONAR_DETECTION_THRESHOLD];
+    numEchoSamples     = (*it).second[SONAR_MAX_RANGE];
+    useForAutonomousDriving = (*it).second[SONAR_USE_FOR_AUTONOMOUS_DRIVING];
+    builder = new MvrArgumentBuilder;
+    if (boardNum < 1 || boardUnitPosition < 1 || gain < 0 || detectionThreshold < 0 || numEchoSample < 0)
+      builder->add("%d %d %d %d", unitNum, x, y, th);
+    else
+      builder->add("%d %d %d %d %d %d %d %d %d %d", unitNum, x, y, th, boardNum, boardUnitPosition,
+                   gain, detectionThreshold, numEchoSamples, useForAutonomousDriving);
+    myGetSonarUnitList.push_back(builder);
+  }
+  return &myGetSonarUnitList;
+}
+
+MVREXPORT bool MvrRobotParams::parseIRUnit(MvrArgumentBuilder *builder)
+{
+  if (builder->getArgc() != 5 || !builder->isArgInt(0) ||
+      !builder->isArgInt(1) || !builder->isArgInt(2) ||
+      !builder->isArgInt(3) || !builder->isArgInt(4))
+  {
+    MvrLog::log(MvrLog::Terse, "MvrRobotParams: IRUnit parameters invalid");
+    return false;
+  }        
+  mySonarMap[builder->gerArgInt(0)][IR_TYPE]    = builder->getArgInt(1);
+  mySonarMap[builder->gerArgInt(0)][IR_CYCLES]  = builder->getArgInt(2);
+  mySonarMap[builder->gerArgInt(0)][IR_X]       = builder->getArgInt(3);
+  mySonarMap[builder->gerArgInt(0)][IR_Y]       = builder->getArgInt(4);
+
+  return true;
+}
+
+MVREXPORT const std::list<MvrArgumentBuilder *> *MvrRobotParams::getIRUnits(void)
+{
+  std::map<int, std::list<int, int> >::iterator it;
+  int num, type, cycles, x, y;
+  MvrArgumentBuilder *builder;
+
+  for (it = myIRMap.begin(); it != myIRMap.end(); it++)
+  {
+    num  = (*it).first;
+    type = (*it).second[IR_TYPE];
+    cycles = (*it).second[IR_CYCLES];
+    x = (*it).second[IR_X];
+    y = (*it).second[IR_Y];
+    builder = new MvrArgumentBuilder;
+    builder->add("%d %d %d %d %d", num, type, cycles, x, y);
+    myGetIRUnitList.push_back(builder);
+  }
+  return &myGetIRUnitList;
+}
+
+MVREXPORT void MvrRobotParams::internalSetIR(int num, int type, int cycles, int x, int y)
+{
+  myIRMap[num][IR_TYPE]   = type;
+  myIRMap[num][IR_CYCLES] = cycles;
+  myIRMap[num][IR_X]      = x;
+  myIRMap[num][IR_Y]      = y ;
+}
+
+MVREXPORT bool MvrRobotParams::save(void)
+{
+  char buf[10000];
+  sprintf(buf, "%sparams/", Mvria::getDirectory());
+  setBaseDirectory(buf);
+  sprintf(buf, "%s.p", getSubClassName());
+  return writeFile(buf, false, NULL, false);
+}
+
+void MvrRobotParams::internalAddToConfigCommercial(MvrConfig *config)
+{
+  MvrLog::log(MvrLog::Normal, "MvrRobotParams: Adding to config");
+
+  // initialize some value
+  myCommercialConfig = config;
+  myCommercialAddedConnectables = false;
+  myCommercialProcessedSonar    = false;
+  myCommercialNumSonar          = 16;
+  myCommercialMaxNumberOfLasers = 4;
+  myCommercialMaxNumberOfBatteries = 1;
+  myCommercialMaxNumberOfLCDs      = 1;
+  myCommercialMaxNumberOfSonarBoards = 2;
+
+  // add the callback
+  myCommercialConfig->addProcessFileCB(&myCommercialProcessFileCB, 90);
+
+  // reset some value from their default
+  sprintf(myClass, "MTX");
+  // these probably aren't actually used anywhere, but just in case
+  myFrontBumpers = true;
+  myRearBumpers  = true;
+  myRobotRadius  = 200;
+  myRobotWidth   = 400;
+  myRobotLengthFront = 255;
+  myRobotLengthRear  = 255;
+// now add the normal config
+  std::string section = "General";
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
+                     section.c_str(), "The general definition of this vehicle");
+
+  MvrConfigArg generationArg("Generation", myClass, 
+	                          "The generation of technology this is.  The MT400 and Motivity Core this should be Legacy.  Everything else is MTX.", 
+	                          sizeof(myClass));
+  generationArg.setExtraExplanation("This main external thing this affects is that for a Legacy lasers are named by type (for backwards compatibility with existing config files), whereas for MTX they are named by their number (for easier future compatibility).");
+
+  myCommercialConfig->addParam(generationArg, section.c_str(), MvrPriority::FACTORY, "Choices:Legacy;;MTX", MvrConfigArg::RESTART_SOFTWARE);
+
+  myCommercialConfig->addParam(MvrConfigArg("Model", mySubClass, 
+                               "The model name. This should be human readable and is only for human consumption.", 
+		                           sizeof(mySubClass)), section.c_str(), MvrPriority::FACTORY, "",MvrConfigArg::RESTART_SOFTWARE);
+
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section.c_str(), MvrPriority::FACTORY);
+
+  myCommercialConfig->addParam(MvrConfigArg("Radius", &myRobotRadius, "The radius in mm that is needed to turn in place safely. (mm)", 1), 
+	                             section.c_str(), MvrPriority::FACTORY, "", MvrConfigArg::RESTART_SOFTWARE);
+  myCommercialConfig->addParam(MvrConfigArg("Width", &myRobotWidth, "Width in mm (mm)", 1), 
+	                             section.c_str(), MvrPriority::FACTORY, "", MvrConfigArg::RESTART_SOFTWARE);
+  myCommercialConfig->addParam(MvrConfigArg("LengthFront", &myRobotLengthFront, "Length in mm from the idealized center of rotation to the front (mm)", 1),
+                               section.c_str(), MvrPriority::FACTORY, "", MvrConfigArg::RESTART_SOFTWARE);
+  myCommercialConfig->addParam(MvrConfigArg("LengthRear", &myRobotLengthRear, "Length in mm from the idealized center of rotation to the rear (mm)", 1), 
+	                             section.c_str(), MvrPriority::FACTORY, "", MvrConfigArg::RESTART_SOFTWARE);
+
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section.c_str(), MvrPriority::FACTORY);
+
+
+  myCommercialConfig->addParam(MvrConfigArg("DistanceCalibrationFactor", &myDistConvFactor, "The per-vehicle calibration factor for distance errors.  A perfect vehicle would have a value of 1.  Travelled distances are multiplied by this, so if the vehicle drove 1% to far you'd make this value .99. This is to account for differences within a model that ideally (ideally there wouldn't be any).  (multiplier)", 0),
+	                             section.c_str(), MvrPriority::CALIBRATION, "", MvrConfigArg::RESTART_SOFTWARE);
+
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section.c_str(), MvrPriority::FACTORY);
+
+  myCommercialConfig->addParam(MvrConfigArg("NumberOfFrontBumpers", &myNumFrontBumpers, "Number of front bumpers", 0, 7), 
+	                             section.c_str(), MvrPriority::FACTORY, "SpinBox", MvrConfigArg::RESTART_SOFTWARE);
+  myCommercialConfig->addParam(MvrConfigArg("NumberOfRearBumpers", &myNumRearBumpers, "Number of rear bumpers", 0, 7), 
+	                             section.c_str(), MvrPriority::FACTORY, "SpinBox", MvrConfigArg::RESTART_SOFTWARE);
+  
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section.c_str(), MvrPriority::FACTORY);
+
+  myCommercialConfig->addParam(MvrConfigArg("MaxNumberOfLasers", &myCommercialMaxNumberOfLasers,"Max number of lasers", 1, 9), 
+	                             section.c_str(), MvrPriority::FACTORY, "SpinBox", MvrConfigArg::RESTART_SOFTWARE);
+  
+  myCommercialConfig->addParam(MvrConfigArg("MaxNumberOfBatteries", &myCommercialMaxNumberOfBatteries,"Max number of Batteries", 0, 9), 
+                               section.c_str(), MvrPriority::FACTORY, "SpinBox&&Visible:Generation!=Legacy", MvrConfigArg::RESTART_SOFTWARE);
+
+  myCommercialConfig->addParam(MvrConfigArg("MaxNumberOfLCDs", &myCommercialMaxNumberOfLCDs,"Max number of LCDs", 0, 9), 
+	                             section.c_str(), MvrPriority::FACTORY, "SpinBox&&Visible:Generation!=Legacy", MvrConfigArg::RESTART_SOFTWARE);
+
+  myCommercialConfig->addParam(MvrConfigArg("MaxNumberOfSonarBoards", &myCommercialMaxNumberOfSonarBoards,"Max number of Sonar Boards", 0, 9), 
+	                             section.c_str(), MvrPriority::FACTORY, "SpinBox&&Visible:Generation!=Legacy", MvrConfigArg::RESTART_SOFTWARE);
+
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section.c_str(), MvrPriority::FACTORY);
+}
+
+MVREXPORT bool MvrRobotParams::commercialProcessFile(void)
+{
+  myRobotLength = myRobotLengthFront + myRobotLengthRear;
+  // TODO Process the sonar
+  if (myCommercialAddedConnectables && !myCommercialProcessedSonar)
+  {
+    processSonarCommercial(myCommercialConfig);
+    myCommercialProcessedSonar = true;
+  }
+  
+  if (!myCommercialAddedConnectables)
+  {
+    MvrLog::log(MvrLog::log, "MvrRobotParams: Adding connectables");
+
+    myCommercialAddedConnectables = true;
+    mvria::setMaxNumLasers(myCommercialMaxNumberOfLasers);
+
+    // if it's an MTX set the types
+    if (MvrUtil::strcasecmp(myClass, "Legacy") != 0)
+    {
+      Mvria::setMaxNumBatteries(myCommercialMaxNumberOfBatteries);
+      Mvria::setMaxNumLCDs(myCommercialMaxNumberOfLCDs);
+      Mvria::setMaxNumSonarBoards(myCommercialMaxNumberOfSonarBoards);
+      addSonarToConfigCommercial(myCommercialConfig, true);
+    }
+    else
+    {
+      Mvria::setMaxNumBatteries(0);
+      Mvria::setMaxNumLCDs(0);
+      mvria::setMaxNumSonarBoards(0);
+      addSonarToConfigCommercial(myCommercialConfig, false);
+    }
+
+    int i;
+    for (i = 1; i <= Mvria::getMaxNumSonarBoards(); i++)
+      addSonarBoardToConfig(i, myCommercialConfig, ourUseDefaultBehavior);
+    
+    for (i = 1; i <= Mvria::getMaxNumLasers(); i++)
+    {
+      char buf[1024];
+      sprintf(buf, "Laser_%d", i);
+      
+      addLaserToConfig(i, myCommercialConfig, ourUseDefaultBehavior, buf);
+    }
+    
+    for (i = 1; i <= Mvria::getMaxNumBatteries(); i++)
+      addBatteryToConfig(i, myCommercialConfig, ourUseDefaultBehavior);
+    
+    for (i = 1; i <= Mvria::getMaxNumLCDs(); i++)
+      addLCDToConfig(i, myCommercialConfig, ourUseDefaultBehavior);
+  }
+  return true;
+}
+
+void MvrRobotParams::addSonarToConfigCommercial(MvrConfig *config, bool isMTXsonar)
+{
+  std::string section = "Sonar";
+
+  int maxSonar = 64;
+
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL, section.c_str(), "Definition of the sonar on this vehicle.");
+
+  config->addParam(MvrConfigArg("NumSonar", &myCommercialNumSonar, "Number of sonars on this robot.", 0, maxSonar),
+		               section.c_str(), MvrPriority::FACTORY, "SpinBox", MvrConfigArg::RESTART_SOFTWARE);
+  
+  MvrConfigArg sonar(MvrConfigArg::LIST, "Sonar", "Definition of this single sonar transducer.");
+  sonar.setConfigPriority(MvrPriority::FACTORY);
+  sonar.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+
+  MvrConfigArg sonarX("X", 0, "Location (in mm) of this sonar transducer in X (+ front, - back) relative to the robot's idealized center of rotation.");
+  sonarX.setConfigPriority(MvrPriority::FACTORY);
+  sonarX.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+  myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_X;
+  sonar.addArg(sonarX);
+
+  MvrConfigArg sonarY("Y", 0, "Location (in mm) of this sonar transducer in Y (+ left, - right) relative to the robot's idealized center of rotation.");
+  sonarY.setConfigPriority(MvrPriority::FACTORY);
+  sonarY.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+  myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_Y;
+  sonar.addArg(sonarY);
+
+  MvrConfigArg sonarTh("Th", 0, "Rotation (in deg) of this sonar transducer (+ counterclockwise, - clockwise).", -180, 180);
+  sonarTh.setConfigPriority(MvrPriority::FACTORY);
+  sonarTh.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+  myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_TH;
+  sonar.addArg(sonarTh);
+
+  if (isMTXSonar)
+  {
+    MvrConfigArg sonarBoard("SonarBoard", 0, "Sonar board that is used by this transducer. 0 means that it is not yet configured.",0, Mvria::getMaxNumSonarBoards());
+    sonarBoard.setConfigPriority(MvrPriority::FACTORY);
+    sonarBoard.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+    myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_BOARD;
+    sonar.addArg(sonarBoard);
+
+    MvrConfigArg sonarBoardUnitPosition("SonarBoardUnitPosition", 0, 
+    "Position of the transducer on the sonar board. 0 means that it is not yet configured.", 0, 8);
+    sonarBoardUnitPosition.setConfigPriority(MvrPriority::FACTORY);
+    sonarBoardUnitPosition.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+    myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_BOARDUNITPOSITION;
+    sonar.addArg(sonarBoardUnitPosition);
+    
+    MvrConfigArg sonarGain("Gain", 0, "Sonar gain to be used by this transducer. 0 to use the board default.", 0, 31);
+
+    sonarGain.setConfigPriority(MvrPriority::FACTORY);
+    sonarGain.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+    myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_GAIN;
+    sonar.addArg(sonarGain);
+
+		/*
+    MvrConfigArg sonarNoiseDelta("NoiseDelta", 0, 
+				"Sonar noise delta to be used by this transducer. 0 to use the board default.", 0, 65535);
+    sonarNoiseDelta.setConfigPriority(MvrPriority::FACTORY);
+    sonarNoiseDelta.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+    myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_NOISE_DELTA;
+    sonar.addArg(sonarNoiseDelta);
+		*/
+
+    MvrConfigArg sonarDetectionThreshold("DetectionThreshold", 0, "Sonar detection threshold to be used by this transducer. 0 to use the board default.", 0, 65535);
+    sonarDetectionThreshold.setConfigPriority(MvrPriority::FACTORY);
+    sonarDetectionThreshold.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+    myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_DETECTION_THRESHOLD;
+    sonar.addArg(sonarDetectionThreshold);
+
+    MvrConfigArg sonarMaxRange("MaxRange", 0, "Maximum range for this transducer. 0 to use the board default.", 0, 17*255);
+    sonarMaxRange.setConfigPriority(MvrPriority::FACTORY);
+    sonarMaxRange.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+    myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_MAX_RANGE;
+    sonar.addArg(sonarMaxRange);
+
+    MvrConfigArg sonarUseForAutonomousDriving("UseForAutonomousDriving", true, 
+					"Checked means use for Autonomous Driving (aka Path Planning) as well as all other driving.  Not checked means use the sonar will still be used by all other driving.");
+    sonarUseForAutonomousDriving.setConfigPriority(MvrPriority::FACTORY);
+    sonarUseForAutonomousDriving.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
+    sonarUseForAutonomousDriving.setDisplayHint("Checkbox");
+    myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_USE_FOR_AUTONOMOUS_DRIVING;
+    sonar.addArg(sonarUseForAutonomousDriving);
+  }
+
+  char displayHintBuf[1024];
+  char nameBuf[1024];
+  
+  for (int ii = 0; ii < maxSonar; ii++)
+  {
+    snprintf(nameBuf, sizeof(nameBuf),  "Sonar_%d", ii+1);
+
+    snprintf(displayHintBuf, sizeof(displayHintBuf), "Visible:NumSonar>%d", ii);
+
+    MvrConfigArg *arg = new MvrConfigArg(nameBuf, sonar);
+
+    config->addParam(*arg, section.c_str(), MvrPriority::FACTORY, displayHintBuf, MvrConfigArg::RESTART_SOFTWARE);
+  }    
+}
+
+void MvrRobotParams::processSonarCommercial(MvrConfig *config)
+{
+  int ii;
+
+  std::string configSection = "Sonar";
+
+  MvrConfigSection *section = NULL;
+  if ((section = Mvria::getConfig()->findSection(configSection.c_str())) == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobotParams:processSonarCommercial: Can't find section '%s'", configSection.c_str());
+    return;
+  }
+
+  char nameBuf[1024];
+
+	myNumSonarUnits = myCommercialNumSonar;
+	myNumSonar = myCommercialNumSonar;
+
+  for (ii = 0; ii < myCommercialNumSonar; ii++)
+  {
+    snprintf(nameBuf, sizeof(nameBuf), "Sonar_%d", ii+1);
+
+    MvrConfigArg *argFromConfig = NULL;
+    if ((argFromConfig = section->findParam(nameBuf)) == NULL)
+    {
+      MvrLog::log(MvrLog::Normal, "MvrRobotParams:processSonarCommercial: Can't find parameter '%s' in section '%s'", nameBuf, configSection.c_str());
+      continue;
+    }
+
+    for (int jj = 0; jj < argFromConfig->getArgCount(); jj++)
+    {
+      // this sets the sonar number ii field jj (mapped when added) to
+      // the value of the integer, doing the same thing normally done
+      // with the SonarInfo enum, but automatically instead of relying
+      // on pesky humans typing
+      if (argFromConfig->getArg(jj)->getType() == MvrConfigArg::INT)
+	      mySonarMap[ii][jj] = argFromConfig->getArg(jj)->getInt();    
+      else if (argFromConfig->getArg(jj)->getType() == MvrConfigArg::BOOL)
+	      mySonarMap[ii][jj] = argFromConfig->getArg(jj)->getBool();    
+    }
+  }
+}
+
+MVREXPORT void MvrVideoParams::merge(const MvrVideoParams& other)
+{
+//  printf("MvrVideoParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
+  if(other.type != "unknown" && other.type != "none" && other.type != "")
+  {
+    //printf("MvrVideoParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
+    type = other.type;
+  }
+  if(other.connectSet)
+  {
+ //   printf("MvrVideoParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
+    connect = other.connect;
+    connectSet = true;
+  }
+  if(other.imageWidth != -1)
+  {
+    imageWidth = other.imageWidth;
+  }
+  if(other.imageHeight != -1)
+  {
+    imageHeight = other.imageHeight;
+  }
+  if(other.deviceIndex != -1)
+  {
+    deviceIndex = other.deviceIndex;
+  }
+  if(other.deviceName != "none" && other.deviceName != "")
+  {
+    deviceName = other.deviceName;
+  }
+  if(other.channel != -1)
+  {
+    channel = other.channel;
+  }
+  if(other.analogSignalFormat != "none" && other.analogSignalFormat != "")
+  {
+    analogSignalFormat = other.analogSignalFormat;
+  }
+  //printf("MvrVideoParams::merge: this address is %s, other address is %s\n", address.c_str(), other.address.c_str());
+  if(other.address != "none" && other.address != "")
+  {
+	  //printf("MvrVideoParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
+    address = other.address;
+  }
+  if(other.tcpPortSet)
+  {
+    tcpPort = other.tcpPort;
+    tcpPortSet = true;
+  }
+  if(other.invertedSet)
+  {
+    //printf("MvrVideoParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
+    inverted = other.inverted;
+    invertedSet = true;
+  }
+}
+
+void MvrPTZParams::merge(const MvrPTZParams& other)
+{
+  //printf("MvrPTZParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
+  if(other.type != "unknown" && other.type != "none" && other.type != "")
+  {
+    //printf("MvrPTZParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
+    type = other.type;
+  }
+  if(other.connectSet)
+  {
+    //pgintf("MvrPTZParams::merge: replacing this connect %d with other %d\n", connect, other.connect);
+    //printf("MvrPTZParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
+    connect = other.connect;
+    connectSet = true;
+  }
+  if(other.serialPort != "none" && other.serialPort != "")
+  {
+    //printf("MvrPTZParams::merge: replacing this serialPort %s with other %s\n", serialPort.c_str(), other.serialPort.c_str());
+    serialPort = other.serialPort;
+  }
+  if(other.robotAuxPort != -1)
+  {
+    //printf("MvrPTZParams::merge: replacing this robotAuxPort %d with other %d\n", robotAuxPort, other.robotAuxPort);
+    robotAuxPort = other.robotAuxPort;
+  }
+  if(other.address != "none")
+  {
+    //printf("MvrPTZParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
+    address = other.address;
+  }
+  if(other.tcpPortSet)
+  {
+    //printf("MvrPTZParams::merge: replacing this tcpPort %d with other %d\n", tcpPort, other.tcpPort);
+    tcpPort = other.tcpPort;
+    tcpPortSet = true;
+  }
+  if(other.invertedSet)
+  {
+    //printf("MvrPTZParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
+    inverted = other.inverted;
+    invertedSet = true;
+  }
+}
+
