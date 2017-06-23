@@ -262,7 +262,7 @@ MVREXPORT std::string MvrRobotConfigPacketReader::buildString(void) const
 	        MvrUtil::convertBool(getFrontSonar()), 
 	        MvrUtil::convertBool(getRearSonar()), 
 	        getHasCharger(),
-	        getGyroType());
+	        getGyroType()) ;
   ret += line;  
   sprintf(line, "FrontBumps %d RearBumps %d\n", getFrontBumps(), getRearBumps());
   ret += line;  
