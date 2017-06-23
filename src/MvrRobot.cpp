@@ -116,4 +116,63 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, bool doSigHandle, 
   myLastRotVal            = 0;
   myLastHeading           = 0;
   myLastDeltaHeading      = 0;
+
+  myKeepControlRaw = false;
+
+  myPacketsSentTracking = false;
+  myPacketsReceivedTracking = false;
+  myPacketsReceivedTrackingCount = false;
+  myPacketsReceivedTrackingStarted.setToNow();
+
+  myLogSIPContents = false;
+
+  myCycleTime         = 100;
+  myCycleWarningTime  = 250;
+  myConnectionCycleMultiplier = 2;
+  myTimeoutTime       = 8000;
+  myStabilizingTime   = 0;
+  mycounter           = 1;
+  myResolver          = NULL;
+  myNumSonar          = 0;
+
+  myCycleChained      = true;
+
+  myMoveDoneDist      = 40;
+  myHeadingDoneDiff   = 3;
+
+  myStoppedVel        = 4;
+  myStoppedRotVel     = 1;
+  myStoppedLatVel     = 4;
+
+  myOrigRobotConfig   = NULL;
+  myBatteryPacketReader = NULL;
+
+  reset();
+  if (normalInit)
+    init();
+  
+  mySyncLoop.setRobot(this);
+  myPacketReader.setRobot(this);
+
+  if (doSigHandle)
+    Mvria::addRobot(this);
+  if (addMvriaExitCallback)
+  {
+    Mvria::addExitCallback(&myMvriaExitCB, 0);
+    myAddedMvriaExitCB = true;
+  }
+  else
+  {
+    myAddedMvriaExitCB = false;
+  }
+
+  myConnectWithNoParams = false;
+  myDoNotSwitchBaud     = false;
+
+  myPacketReceivedCondition.setLogName("MvrRobot::myPacketReceivedCondition");
+  myConnectCond.setLogName("MvrRobot::myConnectCond");
+  myConnOrFailCond.setLogName("MvrRobot::myConnOrFailCond");
+  myRunExitCond.setLogName("MvrRobot::myRunExitCond");
+
+  
 }
