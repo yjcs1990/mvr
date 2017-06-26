@@ -700,4 +700,4 @@ MVREXPORT double MvrRobot::getLatDecel(void) const
  * commands will be sent and packets will be received from
  * @param connection The deviceConnection to use for this robot
  */
- 
+ MVREXPORT void MvrRobot::setDeviceConnection(MvrDevieConnection *connection)
