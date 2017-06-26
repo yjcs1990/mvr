@@ -32,7 +32,7 @@ public:
   /// See if we've requested packets
   MVREXPORT bool haveRequestedPackets(void);
   /// See if we've gotten the data
-  bool hasPacketArrrived(void) const { return myPacketArrived; }
+  bool hasPacketArrived(void) const { return myPacketArrived; }
   /// Gets the number of batteries
   int getNumBatteries(void) const { return myNumBatteries; }
   /// Gets the number of bytes per battery
