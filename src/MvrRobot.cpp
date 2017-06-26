@@ -39,8 +39,6 @@
  * @param name A name for this robot, useful if a program has more than one
  * MvrRobot object 
  * @param obsolete This parameter is ignored.
- * (It used to turn off state reflection if false, but that
- * is no longer possible.)
 
  * @param doSigHandle do normal signal handling and have this robot
  * instance stopRunning() when the program is signaled
@@ -173,6 +171,4 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, bool doSigHandle, 
   myConnectCond.setLogName("MvrRobot::myConnectCond");
   myConnOrFailCond.setLogName("MvrRobot::myConnOrFailCond");
   myRunExitCond.setLogName("MvrRobot::myRunExitCond");
-
-  
 }
