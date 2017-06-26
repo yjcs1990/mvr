@@ -105,7 +105,7 @@ public:
 
   /// Stops the robot from donig any more processing
   /// @ingroup easy
-  MVREXPORT void stopRunnint(bool doDisconnect=true);
+  MVREXPORT void stopRunning(bool doDisconnect=true);
 
   /// Sets the connection this instance uses
   MVREXPORT void setDeviceConnection(MvrDeviceConnection *connection);
