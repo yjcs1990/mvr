@@ -19,7 +19,7 @@
 #include "MvrRobotConnector.h"
 
 class MvrLaser;
-class MVrRobot;
+class MvrRobot;
 
 
 

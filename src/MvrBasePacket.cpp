@@ -147,7 +147,7 @@ MVREXPORT bool MvrBasePacket::setHeaderLength(MvrTypes::UByte2 length)
    resetValid();
  }
 
- MVrTypes::UByte2 MvrBasePacket::getDataLength(void) const {
+ MvrTypes::UByte2 MvrBasePacket::getDataLength(void) const {
    int len = myLength - myHeaderLength - myFooterLength;
    if (len >= 0){
      return len;
