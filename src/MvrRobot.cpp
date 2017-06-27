@@ -969,17 +969,17 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
 
   if (myAsyncConnectState == 3)
   {
-    if (!myOrigRobotConfig > hasPacketMvrrived())
+    if (!myOrigRobotConfig > hasPacketArrived())
     {
       myOrigRobotConfig->requestPacket();
     }
     // if we've gotten our config packet or if we've timed out then
     // set our vel and acc/decel param and skip to the next part
-    if (myOrigRobotConfig->hasPacketMvrrived() || myAsyncStartedConnection.mSecSince() > 1000)
+    if (myOrigRobotConfig->hasPacketArrived() || myAsyncStartedConnection.mSecSince() > 1000)
     {
       bool gotConfig;
       // if we have data from the robot use that
-      if (myOrigRobotConfig->hasPacketMvrrived())
+      if (myOrigRobotConfig->hasPacketArrived())
       {
         gotConfig = true;
         setAbsoluteMaxTransVel(myOrigRobotConfig->getTransVelTop());
@@ -1079,7 +1079,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     // we shouldn't change the baud or if we'd change it to a slower
     // baud rate or we aren't using a serial port then don't switch
     // the baud
-    if (!myOrigRobotConfig->hasPacketMvrrived() || !myOrigRobotConfig->getResetBaud() || 
+    if (!myOrigRobotConfig->hasPacketArrived() || !myOrigRobotConfig->getResetBaud() || 
         serConn == NULL || myParams->getSwitchToBaudRate() == 0 || 
 	      (serConn != NULL && serConn->getBaud() >= myParams->getSwitchToBaudRate()) || myDoNotSwitchBaud)
     {
@@ -1983,4 +1983,519 @@ MVREXPORT void MvrRobot::setHeading(double heading)
  * nearest whole integer degree, and sent to the robot as an RVEL command.
 
  * @param velocity the desired rotational velocity of the robot (deg/sec)
+ */
+MVREXPORT void MvrRobot::setRotVel(double velocity)
+{
+  myRotVal = velocity;
+  myRotType = ROT_VEL:
+  myRotSetTime.setToNow();
+  if (myTransType == TRANS_VEL2)
+  {
+    myTransType = TRANS_IGNORE;
+    myTransVal = 0;
+    myTransVal2 = 0;
+  }
+}
+
+/*
+ * Sets a delta heading to the robot, it caches this value, and sends
+ * it during the next cycle.  
+
+ * @param deltaHeading the desired amount to change the heading of the robot by
+ */
+MVREXPORT void MvrRobot::setDeltaHeading(double deltaHeading)
+{
+  myRotVal = MvrMath::addAngle(getTh(), deltaHeading);
+  myRotType = ROT_HEADING;
+  myRotSetTime.setToNow();
+  if (myTransType == TRANS_VEL2)
+  {
+    myTransType = TRANS_IGNORE;
+    myTransVal = 0;
+    myTransVal2 = 0;
+  }
+}
+
+MVREXPORT bool MvrRobot::isStopped(double stoppedVel, double stoppedRotVel, double stoppedLatVel)
+{
+  if (stoppedVel < 0.001)
+    stoppedVel = myStoppedVel;
+  if (stoppedRotVel < 0.001)
+    stoppedRotVel = myStoppedRotVel;
+  if (stoppedLatVel < 0.001)
+    stoppedLatVel = myStoppedLatVel;
+
+  if (fabs(myVel) <= stoppedVel && fabs(myRotVel) <= stoppedRotVel && 
+      (!hasLatVel() || fabs(myLatVel) < stoppedLatVel))
+    return true;
+  else
+    return false;
+}
+
+// Sets the vels required to be stopped
+MVREXPORT void MvrRobot::setStoppedVels(double stoppedVel, double stoppedRotVel, double stoppedLatVel)
+{
+	myStoppedVel    = stoppedVel;
+	myStoppedRotVel = stoppedRotVel;
+	myStoppedLatVel = stoppedLatVel;  
+}
+
+/*
+ * This sets the absolute maximum velocity the robot will go... the
+ * maximum velocity can also be set by the actions and by
+ * setTransVelMax, but it will not be allowed to go higher than this
+ * value.  You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setTransVelMax.
+
+ * @param maxVel the maximum velocity to be set, it must be a non-zero
+ * number and is in mm/sec
+
+ * @return true if the value is good, false othrewise
+ */
+MVREXPORT bool MvrRobot::setAbsoluteMaxTransVel(double maxVel)
+{
+  if (maxVel < 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransVel: given a value <= 0 (%g) and will not set it", maxVel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() &&
+      maxVel > myOrigRobotConfig->getTransVelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransVel: given a value (%g) over TransVelTop (%g) and will cap it", maxVel, myOrigRobotConfig->getTransVelTop());
+    maxVel = myOrigRobotConfig->getTransVelTop();
+  }
+
+  if (fabs(maxVel - myAbsoluteMaxTransVel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxTransVel: Setting to %g",maxVel);
+
+  myAbsoluteMaxTransVel = maxVel;
+  if (getTransVelMax() > myAbsoluteMaxTransVel)
+    setTransVelMax(myAbsoluteMaxTransVel);
+  return true;  
+}
+
+/*
+ * This sets the absolute maximum velocity the robot will go... the
+ * maximum velocity can also be set by the actions and by
+ * setTransVelMax, but it will not be allowed to go higher than this
+ * value.  You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setTransVelMax.
+
+ * @param maxVel the maximum velocity to be set, it must be a non-zero
+ * number and is in -mm/sec (use negative values)
+
+ * @return true if the value is good, false othrewise
+ */
+MVREXPORT bool MvrRobot::setAbsoluteMaxTransNegVel(double maxNegVel)
+{
+  if (maxNegVel >= 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransNegVel: given a value >= 0 (%g) and will not set it", maxNegVel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && maxNegVel < -myOrigRobotConfig->getTransVelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransNegVel: given a value (%g) below TransVelTop (-%g) and will cap it", maxNegVel, myOrigRobotConfig->getTransVelTop());
+    maxNegVel = -myOrigRobotConfig->getTransVelTop();
+  }
+
+  if (fabs(maxNegVel - myAbsoluteMaxTransNegVel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxTransNegVel: Setting to %g",
+                maxNegVel);
+
+  myAbsoluteMaxTransNegVel = maxNegVel;
+  if (getTransNegVelMax() < myAbsoluteMaxTransNegVel)
+    setTransNegVelMax(myAbsoluteMaxTransNegVel);
+  return true;
+}
+
+/*
+ * This sets the absolute maximum translational acceleration the robot
+ * will do... the acceleration can also be set by the actions and by
+ * setTransAccel, but it will not be allowed to go higher than this
+ * value.  You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setTransAccel.
+
+ * @param maxAccel the maximum acceleration to be set, it must be a non-zero
+ * number 
+
+ * @return true if the value is good, false othrewise
+ */
+MVREXPORT bool MvrRobot::setAbsoluteMaxTransAccel(double maxAccel)
+{
+  if (maxAccel <= 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransAccel: given a value <= 0 (%g) and will not set it", maxAccel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxAccel > myOrigRobotConfig->getTransAccelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransAccel: given a value (%g) over TransAccelTop (%g) and will cap it", maxAccel, myOrigRobotConfig->getTransAccelTop());
+    maxAccel = myOrigRobotConfig->getTransAccelTop();
+  }
+
+  if (fabs(maxAccel - myAbsoluteMaxTransAccel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxTransAccel: Setting to %g",
+                maxAccel);
+
+  myAbsoluteMaxTransAccel = maxAccel;
+  if (getTransAccel() > myAbsoluteMaxTransAccel)
+    setTransAccel(myAbsoluteMaxTransAccel);
+  return true;
+}
+
+/**
+  This sets the absolute maximum translational deceleration the robot
+  will do... the deceleration can also be set by the actions and by
+  setTransDecel, but it will not be allowed to go higher than this
+  value.  You should not set this very often, if you want to
+  manipulate this value you should use the actions or setTransDecel.
+
+  @param maxDecel the maximum deceleration to be set, it must be a non-zero
+  number 
+
+  @return true if the value is good, false othrewise
  **/
+
+MVREXPORT bool MvrRobot::setAbsoluteMaxTransDecel(double maxDecel)
+{
+  if (maxDecel <= 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransDecel: given a value <= 0 (%g) and will not set it", maxDecel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxDecel > myOrigRobotConfig->getTransAccelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxTransDecel: given a value (%g) over TransAccelTop (%g) and will cap it", maxDecel, myOrigRobotConfig->getTransAccelTop());
+    maxDecel = myOrigRobotConfig->getTransAccelTop();
+  }
+
+  if (fabs(maxDecel - myAbsoluteMaxTransDecel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxTransDecel: Setting to %g",
+                maxDecel);
+
+  myAbsoluteMaxTransDecel = maxDecel;
+  if (getTransDecel() > myAbsoluteMaxTransDecel)
+    setTransDecel(myAbsoluteMaxTransDecel);
+  return true;
+}
+
+/**
+  This sets the absolute maximum velocity the robot will go... the
+  maximum velocity can also be set by the actions and by
+  setRotVelMax, but it will not be allowed to go higher than this
+  value.  You should not set this very often, if you want to
+  manipulate this value you should use the actions or setRotVelMax.
+
+  @param maxVel the maximum velocity to be set, it must be a non-zero number
+  @return true if the value is good, false othrewise
+ **/
+
+MVREXPORT bool MvrRobot::setAbsoluteMaxRotVel(double maxVel)
+{
+  if (maxVel <= 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxRotVel: given a value <= 0 (%g) and will not use it", maxVel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxVel > myOrigRobotConfig->getRotVelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxRotVel: given a value (%g) over RotVelTop (%g) and will cap it", maxVel, myOrigRobotConfig->getRotVelTop());
+    maxVel = myOrigRobotConfig->getRotVelTop();
+  }
+
+  if (fabs(maxVel - myAbsoluteMaxRotVel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxRotVel: Setting to %g",
+                maxVel);
+
+  myAbsoluteMaxRotVel = maxVel;
+  if (getRotVelMax() > myAbsoluteMaxRotVel)
+    setRotVelMax(myAbsoluteMaxRotVel);
+  return true;
+}
+
+/**
+  This sets the absolute maximum rotational acceleration the robot
+  will do... the acceleration can also be set by the actions and by
+  setRotAccel, but it will not be allowed to go higher than this
+  value.  You should not set this very often, if you want to
+  manipulate this value you should use the actions or setRotAccel.
+
+  @param maxAccel the maximum acceleration to be set, it must be a non-zero
+  number 
+
+  @return true if the value is good, false othrewise
+ **/
+
+MVREXPORT bool MvrRobot::setAbsoluteMaxRotAccel(double maxAccel)
+{
+  if (maxAccel <= 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxRotAccel: given a value <= 0 (%g) and will not use it", maxAccel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxAccel > myOrigRobotConfig->getRotAccelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxRotAccel: given a value (%g) over RotAccelTop (%g) and will cap it", maxAccel, myOrigRobotConfig->getRotAccelTop());
+    maxAccel = myOrigRobotConfig->getRotAccelTop();
+  }
+
+  if (fabs(maxAccel - myAbsoluteMaxRotAccel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxRotAccel: Setting to %g",
+                maxAccel);
+
+  myAbsoluteMaxRotAccel = maxAccel;
+  if (getRotAccel() > myAbsoluteMaxRotAccel)
+    setRotAccel(myAbsoluteMaxRotAccel);
+  return true;
+}
+
+/**
+  This sets the absolute maximum rotational deceleration the robot
+  will do... the deceleration can also be set by the actions and by
+  setRotDecel, but it will not be allowed to go higher than this
+  value.  You should not set this very often, if you want to
+  manipulate this value you should use the actions or setRotDecel.
+
+  @param maxDecel the maximum deceleration to be set, it must be a non-zero
+  number 
+
+  @return true if the value is good, false othrewise
+ **/
+
+MVREXPORT bool MvrRobot::setAbsoluteMaxRotDecel(double maxDecel)
+{
+  if (maxDecel <= 0)
+  {    
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxRotDecel: given a value <= 0 (%g) and will not use it", maxDecel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxDecel > myOrigRobotConfig->getRotAccelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxRotDecel: given a value (%g) over RotAccelTop (%g) and will cap it", maxDecel, myOrigRobotConfig->getRotAccelTop());
+    maxDecel = myOrigRobotConfig->getRotAccelTop();
+  }
+
+  if (fabs(maxDecel - myAbsoluteMaxRotDecel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxRotDecel: Setting to %g",
+                maxDecel);
+
+  myAbsoluteMaxRotDecel = maxDecel;
+  if (getRotDecel() > myAbsoluteMaxRotDecel)
+    setRotDecel(myAbsoluteMaxRotDecel);
+  return true;
+}
+
+/**
+  This sets the absolute maximum lateral velocity the robot will
+  go... the maximum velocity can also be set by the actions and by
+  setLatVelMax, but it will not be allowed to go higher than this
+
+  value.  You should not set this very often, if you want to
+  manipulate this value you should use the actions or setLatVelMax.
+
+  @param maxLatVel the maximum velocity to be set, it must be a non-zero
+  number 
+
+  @return true if the value is good, false othrewise
+ **/
+
+MVREXPORT bool MvrRobot::setAbsoluteMaxLatVel(double maxLatVel)
+{
+  if (maxLatVel <= 0)
+  {    
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxLatVel: given a value <= 0 (%g) and will not use it", maxLatVel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxLatVel > myOrigRobotConfig->getLatVelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxLatVel: given a value (%g) over LatVelTop (%g) and will cap it", 
+	       maxLatVel, myOrigRobotConfig->getLatVelTop());
+    maxLatVel = myOrigRobotConfig->getLatVelTop();
+  }
+
+  if (fabs(maxLatVel - myAbsoluteMaxLatVel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxLatVel: Setting to %g",
+                maxLatVel);
+
+  myAbsoluteMaxLatVel = maxLatVel;
+  if (getLatVelMax() > myAbsoluteMaxLatVel)
+    setLatVelMax(myAbsoluteMaxLatVel);
+  return true;
+}
+
+/**
+  This sets the absolute maximum lateral acceleration the robot
+  will do... the acceleration can also be set by the actions and by
+  setLatAccel, but it will not be allowed to go higher than this
+  value.  You should not set this very often, if you want to
+  manipulate this value you should use the actions or setLatAccel.
+
+  @param maxAccel the maximum acceleration to be set, it must be a non-zero
+  number 
+
+  @return true if the value is good, false othrewise
+ **/
+
+MVREXPORT bool MvrRobot::setAbsoluteMaxLatAccel(double maxAccel)
+{
+  if (maxAccel <= 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxLatAccel: given a value <= 0 (%g) and will not use it", maxAccel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxAccel > myOrigRobotConfig->getLatAccelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxLatAccel: given a value (%g) over LatAccelTop (%g) and will cap it", 
+                maxAccel, myOrigRobotConfig->getLatAccelTop());
+    maxAccel = myOrigRobotConfig->getLatAccelTop();
+  }
+
+  if (fabs(maxAccel - myAbsoluteMaxLatAccel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxLatAccel: Setting to %g",
+                maxAccel);
+
+  myAbsoluteMaxLatAccel = maxAccel;
+  if (getLatAccel() > myAbsoluteMaxLatAccel)
+    setLatAccel(myAbsoluteMaxLatAccel);
+  return true;
+}
+
+/**
+  This sets the absolute maximum lateral deceleration the robot
+  will do... the deceleration can also be set by the actions and by
+  setLatDecel, but it will not be allowed to go higher than this
+  value.  You should not set this very often, if you want to
+  manipulate this value you should use the actions or setLatDecel.
+
+  @param maxDecel the maximum deceleration to be set, it must be a non-zero
+  number 
+
+  @return true if the value is good, false othrewise
+ **/
+
+MVREXPORT bool MvrRobot::setAbsoluteMaxLatDecel(double maxDecel)
+{
+  if (maxDecel <= 0)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxLatDecel: given a value <= 0 (%g) and will not use it", maxDecel);
+    return false;
+  }
+
+  if (myOrigRobotConfig->hasPacketArrived() && 
+      maxDecel > myOrigRobotConfig->getLatAccelTop())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxLatDecel: given a value (%g) over LatAccelTop (%g) and will cap it", 
+                maxDecel, myOrigRobotConfig->getLatAccelTop());
+    maxDecel = myOrigRobotConfig->getLatAccelTop();
+  }
+
+  if (fabs(maxDecel - myAbsoluteMaxLatDecel) > MvrMath::epsilon())
+    MvrLog::log(MvrLog::Verbose, 
+                "MvrRobot::setAbsoluteMaxLatDecel: Setting to %g",
+                maxDecel);
+
+  myAbsoluteMaxLatDecel = maxDecel;
+  if (getLatDecel() > myAbsoluteMaxLatDecel)
+    setLatDecel(myAbsoluteMaxLatDecel);
+  return true;
+}
+
+/*
+ * This gets the raw IO Analog value, which is a number between 0 an 1024(10^2)
+ * @see requestIOPackets()
+ */
+MVREXPORT int MvrRobot::getIOAnalog(int num) const
+{
+  if (num <= getIOAnalog())
+    return myIOAnalog[num];
+  else
+    return 0;
+}
+
+/*
+ * This gets the IO Analog value converted to a voltage between 0 and 5 votes
+ * @see requestIOPackets()
+ */
+MVREXPORT double MvrRobot::getIOAnalogVoltage(int num) const
+{
+  if (num <= getIOAnalogSize())
+  {
+    return (myIOAnalog[num] & 0xfff) * 0.0048828;
+  }
+  else
+    return 0;
+}
+
+MVREXPORT unsigned char MvrRobot::getIODigIn(int num) const
+{
+  if (num <= getIODigInSize)
+    return myIODigIn[num];
+  else
+    return (unsigned char) 0;
+}
+
+MVREXPORT unsigned char MvrRobot::getIODigOut(int num) const
+{
+  if (num <= getIODigOutSize)
+    return myIODigOut[num];
+  else
+    return (unsigned char) 0;
+}
+
+// @return the MvrRobotParams instance the robot is using for its parameters
+MVREXPORT MvrRobotParams *MvrRobot::getRobotParams(void) const
+{
+  return myParams;
+}
+// @return the MvrRobotParams instance the robot is using for its parameters
+MVREXPORT MvrRobotParams *MvrRobot::getRobotParamsInternal(void) const
+{
+  return myParams;
+}
+// @return the MvrRobotConfigPacketReader taken when this instance got connected to the robot
+MVREXPORT const MvrRobotConfigPacketReader *MvrRobot::getOrigRobotConfig(void) const
+{
+  return myOrigRobotConfig;
+}
+
+/*
+ *  Adds a packet handler.  A packet handler is an MvrRetFunctor1<bool, MvrRobotPacket*>, 
+ *  (e.g.  created as an instance of MvrRetFunctor1C.  The return is a boolean, while the functor
+ *  takes an MvrRobotPacket pointer as the argument.  This functor is placed in
+ *  a list of functors to call when a packet arrives. This list is processed
+ *  in order until one of the handlers returns true. Your packet handler
+ *  function may be invoked for any packet, so it should test the packet type
+ *  ID (see MvrRobotPacket::getID()). If you handler gets data from the packet
+ *  (it "handles" it) it should return true, to prevent MvrRobot from invoking
+ *  other handlers with the packet (with data removed). If you hander
+ *  cannot interpret the packet, it should leave it unmodified and return
+ *  false to allow other handlers a chance to receive it.
+ *  @param functor the functor to call when the packet comes in
+ *  @param position whether to place the functor first or last
+ */
