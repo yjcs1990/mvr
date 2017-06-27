@@ -222,8 +222,7 @@ MVREXPORT void MvrRobot::run(bool stopRunIfNotConnected, bool runNonThreaded)
 {
   if (mySyncLoop.getRunning)
   {
-    MvrLog::log(MvrLog::Terse,
-                "The robot is already running, cannot run it again");
+    MvrLog::log(MvrLog::Terse, "The robot is already running, cannot run it again");
     return ;
   }
   mySyncLoop.setRunning(true);
@@ -261,8 +260,7 @@ MVREXPORT void MvrRobot::runAsync(bool stopRunIfNotConnected, bool runNonThreade
 {
   if (mySyncLoop.getRunning)
   {
-    MvrLog::log(MvrLog::Terse,
-                "The robot is already running, cannot run it again");
+    MvrLog::log(MvrLog::Terse, "The robot is already running, cannot run it again");
     return ;    
   }
   if (runNonThreadedPacketReader)
@@ -733,9 +731,7 @@ MVREXPORT void MvrRobot::setConnectionTimeoutTime(int mSecs)
 {
   myConnectionTimeoutMutex.lock();
 
-  MvrLog::log(MvrLog::Normal,
-              "MvrRobot::setConnectionTimeoutTime: Setting timeout to %d mSecs",
-              mSecs);
+  MvrLog::log(MvrLog::Normal, "MvrRobot::setConnectionTimeoutTime: Setting timeout to %d mSecs", mSecs);
   myLastOdometryReceivedTime.setToNow();
   myLastPacketReceivedTime.setToNow();
 
@@ -915,8 +911,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     {
       if (!myConn->openSimple())
       {
-        MvrLog::log(MvrLog::Terse,
-                    "Counld not connect, because open on the device connection failed.");
+        MvrLog::log(MvrLog::Terse, "Counld not connect, because open on the device connection failed.");
         failedConnect();
         return 2;
       }
@@ -1111,7 +1106,8 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
         baudNum = 4;
       else
       {
-      	MvrLog::log(MvrLog::Normal, "Warning: SwitchToBaud is set to %d baud, ignoring.",
+      	MvrLog::log(MvrLog::Normal,
+                    "Warning: SwitchToBaud is set to %d baud, ignoring.",
       		          myParams->getSwitchToBaudRate());
       	MvrLog::log(MvrLog::Normal, "\tGood bauds are 9600 19200 38400 56800 115200.");
       	myAsyncConnectState = 5;
@@ -1541,9 +1537,7 @@ MVREXPORT bool MvrRobot::madeConnection(bool resetConnectionTime)
 
   subtypeParamFileName += ".p";
   if ((loadedSubTypeParam = myParams->parseFile(subtypeParamFileName.c_str(), true, true)))
-      MvrLog::log(MvrLog::Normal, 
-		              "Loaded robot parameters from %s", 
-		 subtypeParamFileName.c_str());
+      MvrLog::log(MvrLog::Normal, "Loaded robot parameters from %s", subtypeParamFileName.c_str());
   /* If the above line was replaced with this one line
      paramFile->load(); 
      then the sonartest (and lots of other stuff probably) would break
@@ -1558,7 +1552,7 @@ MVREXPORT bool MvrRobot::madeConnection(bool resetConnectionTime)
     if (loadedSubTypeParam)
       MvrLog::log(MvrLog::Normal, 
                   "Loaded robot parameters from %s on top of %s robot parameters", 
-		 nameParamFileName.c_str(), subtypeParamFileName.c_str());
+                  nameParamFileName.c_str(), subtypeParamFileName.c_str());
     else
       MvrLog::log(MvrLog::Normal, "Loaded robot parameters from %s", 
 		 nameParamFileName.c_str());
@@ -2103,9 +2097,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxTransNegVel(double maxNegVel)
   }
 
   if (fabs(maxNegVel - myAbsoluteMaxTransNegVel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxTransNegVel: Setting to %g",
-                maxNegVel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxTransNegVel: Setting to %g",maxNegVel);
 
   myAbsoluteMaxTransNegVel = maxNegVel;
   if (getTransNegVelMax() < myAbsoluteMaxTransNegVel)
@@ -2141,9 +2133,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxTransAccel(double maxAccel)
   }
 
   if (fabs(maxAccel - myAbsoluteMaxTransAccel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxTransAccel: Setting to %g",
-                maxAccel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxTransAccel: Setting to %g",maxAccel);
 
   myAbsoluteMaxTransAccel = maxAccel;
   if (getTransAccel() > myAbsoluteMaxTransAccel)
@@ -2180,9 +2170,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxTransDecel(double maxDecel)
   }
 
   if (fabs(maxDecel - myAbsoluteMaxTransDecel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxTransDecel: Setting to %g",
-                maxDecel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxTransDecel: Setting to %g",maxDecel);
 
   myAbsoluteMaxTransDecel = maxDecel;
   if (getTransDecel() > myAbsoluteMaxTransDecel)
@@ -2217,9 +2205,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxRotVel(double maxVel)
   }
 
   if (fabs(maxVel - myAbsoluteMaxRotVel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxRotVel: Setting to %g",
-                maxVel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxRotVel: Setting to %g", maxVel);
 
   myAbsoluteMaxRotVel = maxVel;
   if (getRotVelMax() > myAbsoluteMaxRotVel)
@@ -2256,9 +2242,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxRotAccel(double maxAccel)
   }
 
   if (fabs(maxAccel - myAbsoluteMaxRotAccel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxRotAccel: Setting to %g",
-                maxAccel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxRotAccel: Setting to %g",maxAccel);
 
   myAbsoluteMaxRotAccel = maxAccel;
   if (getRotAccel() > myAbsoluteMaxRotAccel)
@@ -2295,9 +2279,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxRotDecel(double maxDecel)
   }
 
   if (fabs(maxDecel - myAbsoluteMaxRotDecel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxRotDecel: Setting to %g",
-                maxDecel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxRotDecel: Setting to %g",maxDecel);
 
   myAbsoluteMaxRotDecel = maxDecel;
   if (getRotDecel() > myAbsoluteMaxRotDecel)
@@ -2330,15 +2312,14 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxLatVel(double maxLatVel)
   if (myOrigRobotConfig->hasPacketArrived() && 
       maxLatVel > myOrigRobotConfig->getLatVelTop())
   {
-    MvrLog::log(MvrLog::Normal, "MvrRobot::setAbsoluteMaxLatVel: given a value (%g) over LatVelTop (%g) and will cap it", 
-	       maxLatVel, myOrigRobotConfig->getLatVelTop());
+    MvrLog::log(MvrLog::Normal,
+                "MvrRobot::setAbsoluteMaxLatVel: given a value (%g) over LatVelTop (%g) and will cap it", 
+	              maxLatVel, myOrigRobotConfig->getLatVelTop());
     maxLatVel = myOrigRobotConfig->getLatVelTop();
   }
 
   if (fabs(maxLatVel - myAbsoluteMaxLatVel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxLatVel: Setting to %g",
-                maxLatVel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxLatVel: Setting to %g", maxLatVel);
 
   myAbsoluteMaxLatVel = maxLatVel;
   if (getLatVelMax() > myAbsoluteMaxLatVel)
@@ -2376,9 +2357,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxLatAccel(double maxAccel)
   }
 
   if (fabs(maxAccel - myAbsoluteMaxLatAccel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxLatAccel: Setting to %g",
-                maxAccel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxLatAccel: Setting to %g", maxAccel);
 
   myAbsoluteMaxLatAccel = maxAccel;
   if (getLatAccel() > myAbsoluteMaxLatAccel)
@@ -2416,9 +2395,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxLatDecel(double maxDecel)
   }
 
   if (fabs(maxDecel - myAbsoluteMaxLatDecel) > MvrMath::epsilon())
-    MvrLog::log(MvrLog::Verbose, 
-                "MvrRobot::setAbsoluteMaxLatDecel: Setting to %g",
-                maxDecel);
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::setAbsoluteMaxLatDecel: Setting to %g",maxDecel);
 
   myAbsoluteMaxLatDecel = maxDecel;
   if (getLatDecel() > myAbsoluteMaxLatDecel)
@@ -2820,4 +2797,1300 @@ MVREXPORT void MvrRobot::wakeAllWaitingThreads()
 /*
  * This will wake all the threads waiting for the robot to be connected.
  */
-MVREXPORT void MvrRobot
+MVREXPORT void MvrRobot::wakeAllConnWaitingThreads()
+{
+  myConnectCond.broadcast();
+  myConnOrFailCond.broadcast();
+}
+
+/*
+ * This will wake all the threads waiting for the robot to be connected or
+ * waiting for the robot to fail to connect
+ */
+MVREXPORT void MvrRobot::wakeAllConnOrFailWaitingThreads()
+{
+  myConnOrFailCond.broadcast();
+}
+
+/*
+ * This will wake all thre threads waiting for the run loop to exit
+ */
+MVREXPORT void MvrRobot::wakeAllRunExitWaitingThreads()
+{
+  myRunExitCond.broadcast();
+}
+
+/*
+ * This gets the root of the synchronous task tree, so that someone can add
+ * their own new types of tasks, or find out more information about each
+ * task...
+ * @return the root of the sychronous tasks tree
+ */
+MVREXPORT MvrSyncTask *MvrRobot::getSyncTaskRoot(void)
+{
+  return mySyncTaskRoot;
+}
+
+/*
+ * The synchronous tasks get called every robot cycle (every 100 ms by 
+ * default).  
+ * @warning Not thread safe; if robot thread is running in background (from
+ * runAsync()), you must lock the MvrRobot object before calling and unlock after
+ * calling this method.
+ * @param name the name to give to the task, should be unique
+ * @param position the place in the list of user tasks to place this
+ * task, this can be any integer, though by convention 0 to 100 is
+ * used.  The tasks are called in order of highest number to lowest
+ * position number.
+ * @param functor functor created from MvrFunctorC which refers to the 
+ * function to call.
+ * @param state Optional pointer to external MvrSyncTask state variable; normally not needed
+ * and may be NULL or omitted.
+ */
+MVREXPORT bool MvrRobot::addUserTask(const char *name, int position, MvrFunctor *functor, MvrTaskState::State *state)
+{
+  MvrSyncTask *proc;
+  if (mySyncTaskRoot == NULL)
+    return false;
+  proc = mySyncTaskRoot->findNonRecursive("User Tasks");
+  if (proc == NULL)
+    return false;
+  proc->addNewLeaf(name, position, functor, state);
+  return true;
+}
+
+MVREXPORT void MvrRobot::remUserTask(const char *name)
+{
+  MvrSyncTask *proc;
+  MvrSyncTask *userProc;
+
+  if (mySyncTaskRoot == NULL)
+    return;
+  proc = mySyncTaskRoot->findNonRecursive("User Tasks");
+  if (proc == NULL)
+    return;
+  userProc = proc->findNonRecursive(name);
+  if (userProc == NULL)
+    return;
+  
+  delete userProc;
+}
+
+MVREXPORT void MvrRobot::remUserTask(MvrFunctor *functor)
+{
+  MvrSyncTask *proc;
+  MvrSyncTask *userProc;
+
+  if (mySyncTaskRoot == NULL)
+    return;
+  proc = mySyncTaskRoot->findNonRecursive("User Tasks");
+  if (proc == NULL)
+    return;
+  userProc = proc->findNonRecursive(functor);
+  if (userProc == NULL)
+    return;
+  
+  delete userProc;  
+}
+
+/**
+ * The synchronous tasks get called every robot cycle (every 100 ms by 
+ * default).  
+ * @warning Not thread safe; if robot thread is running in background (from
+ *  runAsync()), you must lock the MvrRobot object before calling and unlock after
+ *  calling this method.
+ * @param name the name to give to the task, should be unique
+ * @param position the place in the list of user tasks to place this 
+ * task, this can be any integer, though by convention 0 to 100 is used.
+ * The tasks are called in order of highest number to lowest number.
+ * @param functor functor created from MvrFunctorC which refers to the 
+ * function to call.
+ * @param state Optional pointer to external MvrSyncTask state variable; normally not needed
+ * and may be NULL or omitted.
+ */
+MVREXPORT bool MvrRobot::addSensorInterpTask(const char *name, int position, MvrFunctor *functor, MvrTaskState::State state)
+{
+  MvrSyncTask *proc;
+  if (mySyncTaskRoot == NULL)
+    return false;
+  proc = mySyncTaskRoot->findNonRecursive("Sensor Interp");
+  if (proc == NULL)
+    return false;
+  
+  proc->addNewLeaf(name, position, functor, state);
+  return true;
+}
+
+MVREXPORT void MvrRobot::remSensorInterpTask(const char *name)
+{
+  MvrSyncTask *proc;
+  MvrSyncTask *sensorInterpProc;
+
+  if (mySyncTaskRoot == NULL)
+    return;
+  proc = mySyncTaskRoot->findNonRecursive("Sensor Interp");
+  if (proc == NULL)
+    return;
+  sensorInterpProc = proc->findNonRecursive(name); 
+  if (sensorInterpProc == NULL)
+    return;
+  delete sensorInterpProc;
+}
+
+MVREXPORT void MvrRobot::remSensorInterpTask(MvrFunctor *functor)
+{
+  MvrSyncTask *proc;
+  MvrSyncTask *sensorInterpProc;
+
+  if (mySyncTaskRoot == NULL)
+    return;
+  proc = mySyncTaskRoot->findNonRecursive("Sensor Interp");
+  if (proc == NULL)
+    return;
+  sensorInterpProc = proc->findNonRecursive(functor);
+  if (sensorInterpProc == NULL)
+    return;
+  
+  delete sensorInterpProc;   
+}
+
+MVREXPORT void MvrRobot::logUserTasks(void) const
+{
+  MvrSyncTask *proc;
+  if (mySyncTaskRoot == NULL)
+    return;
+  proc = mySyncTaskRoot->findNonRecursive("User Tasks");
+  if (proc == NULL)
+    return;
+  
+  proc->log();
+}
+
+MVREXPORT void MvrRobot::logAllTasks(void) const
+{
+  if (mySyncTaskRoot != NULL)
+    mySyncTaskRoot->log();
+}
+
+/*
+ * Finds a user task by its name, searching the entire space of tasks
+ * @return NULL if no user task of that name found, otherwise a pointer to
+ * the MvrSyncTask for the first task found with that name
+ */
+MVREXPORT MvrSyncTask *MvrRobot::findUserTask(const char *name)
+{
+  MvrSyncTask *proc;
+  if (mySyncTaskRoot == NULL)
+    return NULL;
+  
+  proc = mySyncTaskRoot->findNonRecursive("User Tasks");
+  if (proc == NULL)
+    return NULL:
+  return proc->find(name);
+}
+
+/*
+ * Finds a user task by its functor, searching the entire space of tasks
+ * @return NULL if no user task of that name found, otherwise a pointer to
+ * the MvrSyncTask for the first task found with that name
+ */
+MVREXPORT MvrSyncTask *MvrRobot::findUserTask(MvrFunctor *functor)
+{
+  MvrSyncTask *proc;
+  if (mySyncTaskRoot == NULL)
+    return NULL;
+  
+  proc = mySyncTaskRoot->findNonRecursive("User Tasks");
+  if (proc == NULL)
+    return NULL:
+  return proc->find(functor);
+}
+
+/*
+ * Finds a task by its name, searching the entire space of tasks
+ * @return NULL if no user task of that name found, otherwise a pointer to
+ * the MvrSyncTask for the first task found with that name
+ */
+MVREXPORT MvrSyncTask *MvrRobot::findTask(const char *name)
+{
+  if (mySyncTaskRoot == NULL)
+    return mySyncTaskRoot->find(name);
+  else
+    return NULL;
+} 
+
+/*
+ * Finds a task by its functor, searching the entire space of tasks
+ * @return NULL if no user task of that name found, otherwise a pointer to
+ * the MvrSyncTask for the first task found with that name
+ */
+MVREXPORT MvrSyncTask *MvrRobot::findTask(MvrFunctor *functor)
+{
+  if (mySyncTaskRoot == NULL)
+    return mySyncTaskRoot->find(functor);
+  else
+    return NULL;
+} 
+
+/* 
+ * Adds an action to the list of actions with the given priority. In
+ * the case of two (or more) actions with the same priority, the
+ * default resolver (MvrPriorityResolver) averages the the multiple
+ * readings. The priority can be any integer, but as a convention 0
+ * to 100 is used, with 100 being the highest priority. The default
+ * resolver (MvrPriorityResolver) resolves the actions in order of descending
+ * priority. For example, an action with priority 100 is evaluated before 
+ * one with priority 99, followed by 50, etc.  This means that an action with 
+ * a higher priority may be able to supercede a lower-priority action's
+ * desired value for a certain output to a lesser or greater degree, depending 
+ * on how high a "strength" value it sets.  See the overview of ARIA in this 
+ * reference manual for more discussion on Actions.
+
+ * @param action the action to add 
+ * @param priority what importance to give the action; how to order the actions.  High priority actions are evaluated by the action resolvel before lower priority actions.
+ * @return true if the action was successfully added, false on error (e.g. the action was NULL)
+*/
+MVREXPORT bool MvrRobot::addAction(MvrAction *action, int priority)
+{
+  if (action == NULL)
+  {
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addAction: an attempt was made to add a NULL action pointer");
+    return false;
+  }
+  action->setRobot(this);
+  myActions.insert(std::pair<int, MvrAction *>(priority, action));
+  return true;
+}
+
+/*
+ * Finds the action with the given name and removes it from the actions...
+ * if more than one acion has that name it find the one with the lowest priority
+ * @param actionName the name of the action we want to find
+ * @return whether remAction found anything with that action to remove or not
+ */
+MVREXPORT bool MvrRobot::remAction(const char *actionName)
+{
+  MvrResolver::ActionMap::iterator it;
+  MvrAction *act;
+
+  for (it = myActions.begin(); it != myActions.end(); it++)
+  {
+    act = (*it).second;
+    if (strcmp(actionName, act->getName()) == 0)
+      break;
+  }
+
+  if (it != myActions.end())
+  {
+    myActions.erase(it);
+    return true;
+  }
+  return false;
+}
+
+/*
+ * Finds the action with the given pointer and removes it from the actions... 
+ * if more than one action has that pointer it find the one with the lowest
+ * priority
+ * @param action the action we want to remove
+ * @return whether remAction found anything with that action to remove or not
+ */
+MVREXPORT bool MvrRobot::remAction(MvrAction *action)
+{
+  MvrResolver::ActionMap::iterator it;
+  MvrAction *act;
+
+  for (it = myActions.begin(); it != myActions.end(); it++)
+  {
+    act = (*it).second;
+    if (act == action)
+      break;
+  }
+
+  if (it != myActions.end())
+  {
+    myActions.erase(it);
+    return true;
+  }
+  return false;
+}
+
+/*
+ * Finds the action with the given name... if more than one action
+ * has that name it find the one with the highest priority
+ * @param actionName the name of the action we want to find
+ * @return the action, if found.  If not found, NULL
+ */
+MVREXPORT MvrAction *MvrRobot::findAction(const char *actionName)
+{
+  MvrResolver::ActionMap::reverse_iterator it;
+  MvrAction *it;
+
+  for (it = myActions.rbegin(); it != myActions.rend(); ++it)
+  {
+    act = (*it).second;
+    if (strcmp(actionName, act->getName()) == 0)
+      return act;
+  }
+  return NULL;
+}
+/*
+ * @internal
+ * This returns the actionMap the robot has... do not mess with this
+ * list except by using MvrRobot::addAction() and MvrRobot::remAction()...
+ * This is jsut for the things like MvrActionGroup that want to
+ * deactivate or activate all the actions (well, only deactivating
+ * everything makes sense).
+ * @return the actions the robot is using
+ */
+MVREXPORT MvrResolver::ActionMap *MvrRobot::getActionMap(void)
+{
+  return &myActions;
+}
+
+MVREXPORT void MvrRobot::deactivateActions(void)
+{
+  MvrResolver::ActionMap *am;
+  MvrResolver::ActionMap::iterator amit;
+
+  am = getActionMap();
+  if (am == NULL)
+  {
+    MvrLog::log(MvrLog::Terse, "MvrRobot::deactivateActions: NULL action Map... failed");
+    return;
+  } 
+  for (amit = am->begin(); amit != am->end(); amit++)
+    (*amit).second->deactivate();
+}
+
+MVREXPORT void MvrRobot::logActions(bool logDeactivated) const
+{
+  MvrResolver::ActionMap::const_reverse_iterator it;
+  int lastPriority;
+  bool first = true;
+  const MvrAction *action;
+
+  if (logDeactivated)
+    MvrLog::log(MvrLog::Terse, "The action list (%d total);" myActions.size());
+  else
+    MvrLog::log(MvrLog::Terse, "Teh active action list:");
+  for (it = myActions.rbegin(); it != myActions.rend(); ++it)
+  {
+    action = (*it).second;
+    if ((logDeactivated || action->isActive()) && (first || lastPriority != (*it).first))
+    {
+      MvrLog::log(MvrLog::Terse, "Priority %d:", (*it).first);
+      first = false;
+      lastPriority = (*it).first;
+    }
+    if (logDeactivated || action->isActive())
+      action->log(false);
+  }
+}
+
+MVREXPORT MvrResolver *MvrRobot::getResolver(void)
+{
+  return myResolver;
+}
+
+MVREXPORT void MvrRobot::setResolver(MvrResolver *resolver)
+{
+  if (myOwnTheResolver)
+  {
+    delete myOwnTheResolver;
+    myResolver = NULL:
+  }
+  myResolver = resolver;
+}
+
+/*
+ * @internal
+ *
+ * If state reflecting (really direct motion command reflecting) was
+ * enabled in the constructor (MvrRobot::MvrRobot) then this will see if
+ * there are any direct motion commands to send, and if not then send
+ * the command given by the actions.  If state reflection is disabled
+ * this will send a pulse to the robot every state reflection refresh
+ * time (setStateReflectionRefreshTime), if you don't wish this to happen
+ * simply set this to a very large value.
+ */
+MVREXPORT void MvrRobot::stateReflector(void)
+{
+  short transVal;
+  short transVal2;
+  short maxVel;
+  short maxNegVel;
+  double maxTransVel;
+  double maxNegTransVel;
+  double transAccel;
+  double transDecel;
+
+  double maxRotVel = -1;
+  double maxRotVelPos = -1;
+  double maxRotVelNeg = -1;
+  short rotVal = 0;
+  double rotAccel;
+  double rotDecel;
+  bool rotStopped = false;
+  bool rotHeading = false;
+  double encTh;
+  double rawTh;
+
+  short latVal;
+  short maxLatVel;
+  double maxLeftLatVel;
+  double maxRightLatVel;
+  double latAccel;
+  double latDecel;
+
+  if (!myIsConnected)
+    return;
+
+  myTryingToMove = false;
+
+  // if this is true actions can't go
+  if ((myTransType != TRANS_NONE && myDirectPrecedenceTime == 0) ||
+      (myTransType != TRANS_NONE && myDirectPrecedenceTime != 0 && 
+       myTransSetTime.mSecSince() < myDirectPrecedenceTime))
+  {
+    myActionTransSet = false;
+    transVal = MvrMath::roundShort(myTransVal);
+    transVal2 = 0;
+
+    if (hasSettableVelMaxes() && MvrMath::fabs(myLastSentTransVelMax - myTransVelMax) >= 1)
+    {
+      comInt(MvrCommands::SETV, MvrMath::roundShort(myTransVelMax));
+      myLastSentTransVelMax = myTransVelMax;
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "Non-action trans max vel of %d", MvrMath::roundShort(myTransVelMax));
+    }
+
+    if (hasSettableAccsDecs() && MvrMath::fabs(myTransAccel) > 1 && 
+	      MvrMath::fabs(myLastSentTransAccel - myTransAccel) >= 1)
+    {
+      comInt(MvrCommands::SETA, MvrMath::roundShort(myTransAccel));
+      myLastSentTransAccel = myTransAccel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "Non-action trans accel of %d", MvrMath::roundShort(myTransAccel));
+    }
+
+    if (hasSettableAccsDecs() && MvrMath::fabs(myTransDecel) > 1 &&
+      	MvrMath::fabs(myLastSentTransDecel - myTransDecel) >= 1)
+    {
+      comInt(MvrCommands::SETA, -MvrMath::roundShort(myTransDecel));
+      myLastSentTransDecel = myTransDecel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "Non-action trans decel of %d",  -MvrMath::roundShort(myTransDecel));
+    }
+
+    if (myTransType == TRANS_VEL)
+    {
+      maxVel = MvrMath::roundShort(myTransVelMax);
+      maxNegVel = MvrMath::roundShort(myTransNegVelMax);
+      if (transVal > maxVel)
+	      transVal = maxVel;
+      if (transVal < maxNegVel)
+        transVal = maxNegVel;
+      if (myLastTransVal != transVal || myLastTransType != myTransType ||
+          (myLastTransSent.mSecSince() >= myStateReflectionRefreshTime))
+      {
+        comInt(MvrCommands::VEL, MvrMath::roundShort(transVal));
+        myLastTransSent.setToNow();
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "Non-action trans vel of %d", MvrMath::roundShort(transVal));
+        //printf("Sent command vel!\n");
+      }
+      if (fabs((double)transVal) > (double).5)
+        myTryingToMove = true;
+    }
+    else if (myTransType == TRANS_VEL2)
+    {
+      if (MvrMath::roundShort(myTransVal/myParams->getVel2Divisor()) > 128)
+        transVal = 128;
+      else if (MvrMath::roundShort(myTransVal/myParams->getVel2Divisor()) < -128)
+        transVal = -128;
+      else 
+        transVal = MvrMath::roundShort(myTransVal/myParams->getVel2Divisor());
+      if (MvrMath::roundShort(myTransVal2/myParams->getVel2Divisor()) > 128)
+        transVal2 = 128;
+      else if (MvrMath::roundShort(myTransVal2/myParams->getVel2Divisor()) < -128)
+        transVal2 = -128;
+      else 
+        transVal2 = MvrMath::roundShort(myTransVal2/myParams->getVel2Divisor());
+      if (myLastTransVal != transVal || myLastTransVal2 != transVal2 || 
+          myLastTransType != myTransType || (myLastTransSent.mSecSince() >= myStateReflectionRefreshTime))
+      {
+        com2Bytes(MvrCommands::VEL2, transVal, transVal2);
+        myLastTransSent.setToNow();
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "Non-action vel2 of %d %d", transVal, transVal2);
+        //printf("Sent command vel2!\n");
+      }
+      if (fabs((double)transVal) > (double).5 || fabs((double)transVal2) > (double).5)
+        myTryingToMove = true;
+    }
+    else if (myTransType == TRANS_DIST_NEW || myTransType == TRANS_DIST)
+    {
+      // if the robot doesn't have its own distance command
+      if (!myParams->hasMoveCommand())
+      {
+        double distGone;
+        double distToGo;
+        double vel;
+      
+        myTransType = TRANS_DIST;
+        distGone = myTransDistStart.findDistanceTo(getPose());
+        distToGo = fabs(fabs(myTransVal) - distGone);
+        if (distGone > fabs(myTransVal) || (distToGo < 10 && fabs(getVel()) < 30))
+        {
+          comInt(MvrCommands::VEL, 0);
+          myTransType = TRANS_VEL;
+          myTransVal = 0;
+        }
+      else
+        myTryingToMove = true;
+      vel = sqrt(distToGo * 200 * 2);
+      if (vel > getTransVelMax())
+        vel = getTransVelMax();
+      if (myTransVal < 0)
+        vel *= -1;
+      comInt(MvrCommands::VEL, MvrMath::roundShort(vel));
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "Non-action move-helper of %d", MvrMath::roundShort(vel));
+      }
+      else if (myParams->hasMoveCommand() && myTransType == TRANS_DIST_NEW) 
+      {
+        comInt(MvrCommands::MOVE, transVal);
+        myLastTransSent.setToNow();
+        myTransType = TRANS_DIST;
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "Non-action move of %d", transVal);
+        myTryingToMove = true;
+      }
+      else if (myTransType == TRANS_DIST && (myLastTransSent.mSecSince() >= myStateReflectionRefreshTime))
+      {
+        com(0);
+        myLastPulseSent.setToNow();
+        myLastTransSent.setToNow();
+        //printf("Sent pulse for dist!\n");
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "Non-action pulse for dist");
+      }
+      //printf("Sent command move!\n");
+    }
+    else if (myTransType == TRANS_IGNORE)
+    {
+      //printf("No trans command sent\n");
+    }
+    else
+      MvrLog::log(MvrLog::Terse, "MvrRobot::stateReflector: Invalid translational type %d.",myTransType);
+    myLastTransVal  = transVal;
+    myLastTransVal2 = transVal2;
+    myLastTransType = myTransType;
+  }
+  else // if actions can go
+  {
+    if (hasSettableVelMaxes() && MvrMath::fabs(myLastSentTransVelMax - myTransVelMax) >= 1)
+    {
+      comInt(MvrCommands::SETV,
+	     MvrMath::roundShort(myTransVelMax));
+      myLastSentTransVelMax = myTransVelMax;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "Action-but-robot trans max vel of %d", MvrMath::roundShort(myTransVelMax));
+    }
+    
+    // first we'll handle all of the accel decel things
+    if (myActionDesired.getTransAccelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      transAccel = MvrMath::roundShort(myActionDesired.getTransAccel());
+      if (hasSettableAccsDecs() && MvrMath::fabs(transAccel) > 1 &&
+	        MvrMath::fabs(myLastSentTransAccel - transAccel) >= 1)
+      {
+        comInt(MvrCommands::SETA, MvrMath::roundShort(transAccel));
+        myLastSentTransAccel = transAccel;
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "Action trans accel of %d", MvrMath::roundShort(transAccel));
+      }
+    }
+    else if (hasSettableAccsDecs() && MvrMath::fabs(myTransAccel) > 1 && 
+	           MvrMath::fabs(myLastSentTransAccel - myTransAccel) >= 1)
+    {
+      comInt(MvrCommands::SETA, MvrMath::roundShort(myTransAccel));
+      myLastSentTransAccel = myTransAccel;
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "Action-but-robot trans accel of %d", MvrMath::roundShort(myTransAccel));
+    }
+
+    if (myActionDesired.getTransDecelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      transDecel = MvrMath::roundShort(myActionDesired.getTransDecel());
+      if (hasSettableAccsDecs() && MvrMath::fabs(transDecel) > 1 &&
+          MvrMath::fabs(myLastSentTransDecel - transDecel) >= 1)
+      {
+        comInt(MvrCommands::SETA, -MvrMath::roundShort(transDecel));
+        myLastSentTransDecel = transDecel;
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "Action trans decel of %d", -MvrMath::roundShort(transDecel));
+      }
+    }
+    else if (hasSettableAccsDecs() && MvrMath::fabs(myTransDecel) > 1 &&
+	           MvrMath::fabs(myLastSentTransDecel - myTransDecel) >= 1)
+    {
+      comInt(MvrCommands::SETA, -MvrMath::roundShort(myTransDecel));
+      myLastSentTransDecel = myTransDecel;
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "Action-but-robot trans decel of %d", -MvrMath::roundShort(myTransDecel));
+    }
+
+    if (myActionDesired.getMaxVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      maxTransVel = myActionDesired.getMaxVel();
+      if (maxTransVel > myTransVelMax)
+        maxTransVel = myTransVelMax;
+    }
+    else
+      maxTransVel = myTransVelMax;
+
+    if (myActionDesired.getMaxNegVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      maxNegTransVel = -MvrMath::fabs(myActionDesired.getMaxNegVel());
+      if (maxNegTransVel < myTransNegVelMax)
+        maxNegTransVel = myTransNegVelMax;
+    }
+    else
+      maxNegTransVel = myTransNegVelMax;
+    
+    if (myActionDesired.getVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      transVal = MvrMath::roundShort(myActionDesired.getVel());
+      myActionTransSet = true;
+    }
+    else
+    {
+
+      //transVal = myLastActionTransVal; 
+      transVal = 0;
+    }
+
+    if (fabs((double)transVal) > (double).5)
+      myTryingToMove = true;
+
+    maxVel = MvrMath::roundShort(maxTransVel);
+    maxNegVel = MvrMath::roundShort(maxNegTransVel);
+    if (transVal > maxVel)
+      transVal = maxVel;
+    if (transVal < maxNegVel)
+      transVal = maxNegVel;
+
+    if (myActionTransSet && (myLastTransSent.mSecSince() >= myStateReflectionRefreshTime || transVal != myLastActionTransVal))			     
+    {
+      comInt(MvrCommands::VEL, MvrMath::roundShort(transVal));
+      myLastTransSent.setToNow();
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "Action trans vel of %d", MvrMath::roundShort(transVal));      
+    }
+    myLastActionTransVal = transVal;
+  }
+
+  // if this is true actions can't go
+  if ((myRotType != ROT_NONE && myDirectPrecedenceTime == 0) ||
+      (myRotType != ROT_NONE && myDirectPrecedenceTime != 0 && 
+       myRotSetTime.mSecSince() < myDirectPrecedenceTime))
+  {
+    if (hasSettableVelMaxes() && MvrMath::fabs(myLastSentRotVelMax - myRotVelMax) >= 1)
+    {
+      //comInt(MvrCommands::SETRVDIR, 0);
+      comInt(MvrCommands::SETRV, MvrMath::roundShort(myRotVelMax));
+
+      myLastSentRotVelMax = myRotVelMax;
+      myLastSentRotVelPosMax = -1;
+      myLastSentRotVelNegMax = -1;
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "%25sNon-action rot vel max of %d", "",MvrMath::roundShort(myRotVelMax));      
+
+    }
+    if (hasSettableAccsDecs() && MvrMath::fabs(myRotAccel) > 1 &&
+      	MvrMath::fabs(myLastSentRotAccel - myRotAccel) >= 1)
+    {
+      comInt(MvrCommands::SETRA,
+	     MvrMath::roundShort(myRotAccel));
+      myLastSentRotAccel = myRotAccel;
+      if (myLogMovementSent)
+      	MvrLog::log(MvrLog::Normal, "%25sNon-action rot accel of %d", "", MvrMath::roundShort(myRotAccel));      
+    }
+    if (hasSettableAccsDecs() && MvrMath::fabs(myRotDecel) > 1 &&
+	      MvrMath::fabs(myLastSentRotDecel - myRotDecel) >= 1)
+    {
+      comInt(MvrCommands::SETRA, -MvrMath::roundShort(myRotDecel));
+      myLastSentRotDecel = myRotDecel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "%25sNon-action rot decel of %d", "", -MvrMath::roundShort(myRotDecel));      
+    }
+
+    myActionRotSet = false;
+    rotVal = MvrMath::roundShort(myRotVal);
+    if (myRotType == ROT_HEADING)
+    {
+      encTh = MvrMath::subAngle(myRotVal, myEncoderTransform.getTh());
+      rawTh = MvrMath::addAngle(encTh, MvrMath::subAngle(myRawEncoderPose.getTh(), myEncoderPose.getTh()));
+      rotVal = MvrMath::roundShort(rawTh);
+
+      // if we were using a different heading type, a different heading
+      // our heading doesn't match what we want it to be, or its been a while
+      // since we sent the heading, send it again
+      if (myLastRotVal != rotVal || myLastRotType != myRotType ||
+          fabs(MvrMath::subAngle(rotVal, getTh())) > 1 || 
+          (myLastRotSent.mSecSince() >= myStateReflectionRefreshTime))  
+      {
+        comInt(MvrCommands::HEAD, rotVal);
+        myLastRotSent.setToNow();
+        //printf("sent command, heading\n");
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, 
+                      "%25sNon-action rot heading of %d (encoder %d, raw %d)",
+                      "",
+                      MvrMath::roundShort(myRotVal),
+                      MvrMath::roundShort(encTh),
+                      MvrMath::roundShort(rotVal));
+      }
+      if (fabs(MvrMath::subAngle(rotVal, getTh())) > 1)
+	      myTryingToMove = true;
+    }
+    else if (myRotType == ROT_VEL)
+    {
+      if (myLastRotVal != rotVal || myLastRotType != myRotType ||
+	        (myLastRotSent.mSecSince() >= myStateReflectionRefreshTime))
+      {
+        comInt(MvrCommands::RVEL, rotVal);
+        myLastRotSent.setToNow();
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%25sNon-action rot vel of %d", "", rotVal);      
+        //printf("sent command, rot vel\n");
+        if (fabs((double)rotVal) > (double).5)
+          myTryingToMove = true;
+      }
+    }
+    else if (myRotType == ROT_IGNORE)
+    {
+      //printf("Not sending any command, rot is set to ignore");
+    }
+    else
+      MvrLog::log(MvrLog::Terse, "MvrRobot::stateReflector: Invalid rotation type %d.",myRotType);
+    myLastRotVal = rotVal;
+    myLastRotType = myRotType;
+  }
+  else // if the action can fire
+  {
+    // first we'll handle all of the accel decel things
+    // if ONLY rot vel is sent handle it the way we always have
+    if (myActionDesired.getMaxRotVelStrength() >=
+        MvrActionDesired::MIN_STRENGTH &&
+        myActionDesired.getMaxRotVelPosStrength() <
+        MvrActionDesired::MIN_STRENGTH &&
+        myActionDesired.getMaxRotVelNegStrength() < 
+        MvrActionDesired::MIN_STRENGTH)
+    {
+      maxRotVel = myActionDesired.getMaxRotVel();
+      if (maxRotVel > myAbsoluteMaxRotVel)
+        maxRotVel = myAbsoluteMaxRotVel;
+      maxRotVel = MvrMath::roundShort(maxRotVel);
+      if (MvrMath::fabs(myLastSentRotVelMax - maxRotVel) >= 1)
+      {
+        myLastSentRotVelMax    = maxRotVel;
+        myLastSentRotVelPosMax = -1;
+        myLastSentRotVelNegMax = -1;
+        //comInt(MvrCommands::SETRVDIR, 0);
+        comInt(MvrCommands::SETRV, MvrMath::roundShort(maxRotVel));
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%25sAction rot vel max of %d", "", MvrMath::roundShort(maxRotVel));
+      }
+    }
+    // if a max pos or neg rot vel is set then use that
+    else if (myActionDesired.getMaxRotVelPosStrength() >= 
+             MvrActionDesired::MIN_STRENGTH ||
+             myActionDesired.getMaxRotVelNegStrength() >=
+             MvrActionDesired::MIN_STRENGTH)
+    {
+      if (myActionDesired.getMaxRotVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+        maxRotVel = myActionDesired.getMaxRotVel();
+      else
+        maxRotVel = myRotVelMax;
+      
+      if (maxRotVel > myAbsoluteMaxRotVel)
+        maxRotVel = myAbsoluteMaxRotVel;
+
+      if (myActionDesired.getMaxRotVelPosStrength() >= MvrActionDesired::MIN_STRENGTH)
+        maxRotVelPos = MvrUtil::findMin(maxRotVel, myActionDesired.getMaxRotVelPos());
+      else
+        maxRotVelPos = maxRotVel;
+
+      if (maxRotVelPos < .5)
+        maxRotVelPos = 1;
+
+      if (myActionDesired.getMaxRotVelNegStrength() >= MvrActionDesired::MIN_STRENGTH)
+        maxRotVelNeg = MvrUtil::findMin(maxRotVel, myActionDesired.getMaxRotVelNeg());
+      else
+        maxRotVelNeg = maxRotVel;
+
+      // 1 here actually means 0 (since there's no -0 and its not
+      // worth two commands)
+      if (maxRotVelNeg < .5)
+	      maxRotVelNeg = 1;
+
+      if (MvrMath::fabs(myLastSentRotVelPosMax - maxRotVelPos) >= 1 ||
+	        MvrMath::fabs(myLastSentRotVelNegMax - maxRotVelNeg) >= 1)
+      {
+        myLastSentRotVelMax = -1;
+        myLastSentRotVelPosMax = maxRotVelPos;
+        myLastSentRotVelNegMax = maxRotVelNeg;
+	
+        // this command doesn't exist just yet...
+        comInt(MvrCommands::SETRVDIR, MvrMath::roundShort(maxRotVelPos));
+        comInt(MvrCommands::SETRVDIR, MvrMath::roundShort(-maxRotVelNeg));
+        if (myLogMovementSent)
+        {
+          MvrLog::log(MvrLog::Normal, "%25sAction rot vel pos max of %d", "", MvrMath::roundShort(maxRotVelPos));
+          MvrLog::log(MvrLog::Normal, "%25sAction rot vel neg max of %d", "", MvrMath::roundShort(-maxRotVelNeg));
+        }
+      }
+    }
+    else if (hasSettableVelMaxes() && MvrMath::fabs(myLastSentRotVelMax - myRotVelMax) >= 1)
+    {
+      //comInt(MvrCommands::SETRVDIR, 0);
+      comInt(MvrCommands::SETRV, MvrMath::roundShort(myRotVelMax));
+      myLastSentRotVelMax = myRotVelMax;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "%25sAction-but-robot rot vel max of %d", "", MvrMath::roundShort(myRotVelMax));      
+    }
+
+    if (myActionDesired.getRotAccelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      rotAccel = MvrMath::roundShort(myActionDesired.getRotAccel());
+      if (MvrMath::fabs(myLastSentRotAccel - rotAccel) >= 1)
+      {
+        comInt(MvrCommands::SETRA, MvrMath::roundShort(rotAccel));
+        myLastSentRotAccel = rotAccel;
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%25sAction rot accel of %d", "", MvrMath::roundShort(rotAccel));
+      }
+    }
+    else if (hasSettableAccsDecs() && MvrMath::fabs(myRotAccel) > 1 &&
+             MvrMath::fabs(myLastSentRotAccel - myRotAccel) >= 1)
+    {
+      comInt(MvrCommands::SETRA, MvrMath::roundShort(myRotAccel));
+      myLastSentRotAccel = myRotAccel;
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "%25sAction-but-robot rot accel of %d", "", MvrMath::roundShort(myRotAccel));      
+    }
+
+    if (myActionDesired.getRotDecelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      rotDecel = MvrMath::roundShort(myActionDesired.getRotDecel());
+      if (MvrMath::fabs(myLastSentRotDecel - rotDecel) >= 1)
+      {
+        comInt(MvrCommands::SETRA, -MvrMath::roundShort(rotDecel));
+        myLastSentRotDecel = rotDecel;
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%25sAction rot decel of %d", "", -MvrMath::roundShort(rotDecel));
+      }
+    }
+    else if (hasSettableAccsDecs() && MvrMath::fabs(myRotDecel) > 1 &&
+	           MvrMath::fabs(myLastSentRotDecel - myRotDecel) >= 1)
+    {
+      comInt(MvrCommands::SETRA, -MvrMath::roundShort(myRotDecel));
+      myLastSentRotDecel = myRotDecel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "%25sAction-but-robot rot decel of %d", "", -MvrMath::roundShort(myRotDecel));      
+    }
+
+    if (myActionDesired.getDeltaHeadingStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      if (MvrMath::roundShort(myActionDesired.getDeltaHeading()) == 0)
+      {
+        rotStopped = true;
+        rotVal = 0;
+        rotHeading = false;
+      }
+      else
+      {
+        encTh = MvrMath::subAngle(MvrMath::addAngle(myActionDesired.getDeltaHeading(), getTh()), myEncoderTransform.getTh());
+        rawTh = MvrMath::addAngle(encTh, MvrMath::subAngle(myRawEncoderPose.getTh(), myEncoderPose.getTh()));
+        rotVal = MvrMath::roundShort(rawTh);
+        rotStopped = false;
+        rotHeading = true;
+        myTryingToMove = true;
+      }
+      myActionRotSet = true;
+    } 
+    else if (myActionDesired.getRotVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      if (MvrMath::roundShort(myActionDesired.getRotVel()) == 0)
+      {
+        rotStopped = true;
+        rotVal = 0;
+        rotHeading = false;
+      }
+      else
+      {
+        double rotVelocity = MvrMath::roundShort(myActionDesired.getRotVel());
+        if (maxRotVelPos > -.5 && rotVelocity > 0)
+        {
+          if (maxRotVelPos < 1.1)
+          {
+            rotVelocity = 0;
+            rotStopped = false;
+            rotVal = 0;
+            rotHeading = false;
+          }
+          else
+          {
+            rotVelocity = MvrUtil::findMin(rotVelocity, maxRotVelPos);
+            rotStopped = false;
+            rotVal = MvrMath::roundShort(rotVelocity);
+            rotHeading = false;
+	        }
+      	}
+        else if (maxRotVelNeg > -.5 && rotVelocity < 0)
+        {
+          if (maxRotVelNeg < 1.1)
+          {
+            rotVelocity = 0;
+            rotStopped = false;
+            rotVal = 0;
+            rotHeading = false;
+          }
+          else
+          {
+            rotVelocity = MvrUtil::findMax(rotVelocity, -maxRotVelNeg);
+            rotStopped = false;
+            rotVal = MvrMath::roundShort(rotVelocity);
+            rotHeading = false;
+          }
+        }
+        else
+        {
+          rotStopped = false;
+          rotVal = MvrMath::roundShort(myActionDesired.getRotVel());
+          rotHeading = false;
+        }
+          myTryingToMove = true;
+      }
+    myActionRotSet = true;
+    }
+    else
+    {
+     //rotStopped = myLastActionRotStopped;
+      //rotVal = myLastActionRotVal;
+      //rotHeading = myLastActionRotHeading;
+      rotStopped = true;
+    }
+      
+    if (myActionRotSet && (myLastRotSent.mSecSince() > myStateReflectionRefreshTime ||
+        rotStopped != myLastActionRotStopped || 
+        rotVal != myLastActionRotVal || 
+        rotHeading != myLastActionRotHeading))
+    {
+      if (rotStopped)
+      {
+        comInt(MvrCommands::RVEL, 0);
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%25sAction rot vel of 0 (rotStopped)", "");
+      }
+      else if (rotHeading)
+      {
+        comInt(MvrCommands::HEAD, rotVal);
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%25sAction rot heading of %d (encoder %d, raw %d)", "",
+                      MvrMath::roundShort(MvrMath::addAngle(myActionDesired.getDeltaHeading(), getTh())),
+                      MvrMath::roundShort(encTh),
+                      MvrMath::roundShort(rotVal));
+      }
+      else
+      {
+        comInt(MvrCommands::RVEL, rotVal);
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%25sAction rot vel of %d", "", rotVal);
+      }
+      myLastRotSent.setToNow();
+    }		    
+    
+    myLastActionRotVal = rotVal;
+    myLastActionRotStopped = rotStopped;
+    myLastActionRotHeading = rotHeading;
+  }
+  
+  // start lat
+
+  // if we don't have lat vel then don't do any of this
+  if (!hasLatVel())
+  {
+  }
+  // if this is true actions can't go
+  else if ((myLatType != LAT_NONE && myDirectPrecedenceTime == 0) ||
+	   (myLatType != LAT_NONE && myDirectPrecedenceTime != 0 && 
+	    myLatSetTime.mSecSince() < myDirectPrecedenceTime))
+  {
+    myActionLatSet = false;
+    latVal = MvrMath::roundShort(myLatVal);
+
+    if (MvrMath::fabs(myLastSentLatVelMax - myLatVelMax) >= 1)
+    {
+      comInt(MvrCommands::SETLATV, MvrMath::roundShort(myLatVelMax));
+      myLastSentLatVelMax = myLatVelMax;
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "%12sNon-action lat max vel of %d", "", MvrMath::roundShort(myLatVelMax));
+    }
+
+    if (MvrMath::fabs(myLatAccel) > 1 && MvrMath::fabs(myLastSentLatAccel - myLatAccel) >= 1)
+    {
+      comInt(MvrCommands::LATACCEL, MvrMath::roundShort(myLatAccel));
+      myLastSentLatAccel = myLatAccel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "%12sNon-action lat accel of %d", "", MvrMath::roundShort(myLatAccel));
+    }
+
+    if (MvrMath::fabs(myLatDecel) > 1 && MvrMath::fabs(myLastSentLatDecel - myLatDecel) >= 1)
+    {
+      comInt(MvrCommands::LATACCEL, -MvrMath::roundShort(myLatDecel));
+      myLastSentLatDecel = myLatDecel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "%12sNon-action lat decel of %d", "", -MvrMath::roundShort(myLatDecel));
+    }
+
+    if (myLatType == LAT_VEL)
+    {
+      maxLatVel = MvrMath::roundShort(myLatVelMax);
+      if (latVal > maxLatVel)
+        latVal = maxLatVel;
+      if (latVal < -maxLatVel)
+        latVal = -maxLatVel;
+      if (myLastLatVal != latVal || myLastLatType != myLatType || (myLastLatSent.mSecSince() >= myStateReflectionRefreshTime))
+      {
+        comInt(MvrCommands::LATVEL, MvrMath::roundShort(latVal));
+        myLastLatSent.setToNow();
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%12sNon-action lat vel of %d", "", MvrMath::roundShort(latVal));
+      }
+      if (fabs((double)latVal) > (double).5)
+      	myTryingToMove = true;
+    }
+    else if (myLatType == LAT_IGNORE)
+    {
+      //printf("No lat command sent\n");
+    }
+    else
+      MvrLog::log(MvrLog::Terse, "MvrRobot::stateReflector: Invalid lat type %d.", myLatType);
+    myLastLatVal = latVal;
+    myLastLatType = myLatType;
+  }
+  else // if actions can go
+  {
+    if (MvrMath::fabs(myLastSentLatVelMax - myLatVelMax) >= 1)
+    {
+      comInt(MvrCommands::SETLATV, MvrMath::roundShort(myLatVelMax));
+      myLastSentLatVelMax = myLatVelMax;
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "%12sAction-but-robot lat max vel of %d", "", MvrMath::roundShort(myLatVelMax));
+    }
+    
+    // first we'll handle all of the accel decel things
+    if (myActionDesired.getLatAccelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      latAccel = MvrMath::roundShort(myActionDesired.getLatAccel());
+      if (MvrMath::fabs(latAccel) > 1 && MvrMath::fabs(myLastSentLatAccel - latAccel) >= 1)
+      {
+        comInt(MvrCommands::LATACCEL,MvrMath::roundShort(latAccel));
+        myLastSentLatAccel = latAccel;
+        if (myLogMovementSent)
+          MvrLog::log(MvrLog::Normal, "%12sAction lat accel of %d", "", MvrMath::roundShort(latAccel));
+      }
+    }
+    else if (MvrMath::fabs(myLatAccel) > 1 && MvrMath::fabs(myLastSentLatAccel - myLatAccel) >= 1)
+    {
+      comInt(MvrCommands::LATACCEL,
+	     MvrMath::roundShort(myLatAccel));
+      myLastSentLatAccel = myLatAccel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "%12sAction-but-robot lat accel of %d", "", MvrMath::roundShort(myLatAccel));
+    }
+
+    if (myActionDesired.getLatDecelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      latDecel = MvrMath::roundShort(myActionDesired.getLatDecel());
+      if (MvrMath::fabs(latDecel) > 1 && MvrMath::fabs(myLastSentLatDecel - latDecel) >= 1)
+      {
+	      comInt(MvrCommands::LATACCEL, -MvrMath::roundShort(latDecel));
+	      myLastSentLatDecel = latDecel;
+	      if (myLogMovementSent)
+	        MvrLog::log(MvrLog::Normal, "%12sAction lat decel of %d", "", -MvrMath::roundShort(latDecel));
+      }
+    }
+    else if (MvrMath::fabs(myLatDecel) > 1 && MvrMath::fabs(myLastSentLatDecel - myLatDecel) >= 1)
+    {
+      comInt(MvrCommands::LATACCEL, -MvrMath::roundShort(myLatDecel));
+      myLastSentLatDecel = myLatDecel;
+      if (myLogMovementSent)
+	      MvrLog::log(MvrLog::Normal, "%12sAction-but-robot lat decel of %d", "", -MvrMath::roundShort(myLatDecel));
+    }
+
+    if (myActionDesired.getMaxLeftLatVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      maxLeftLatVel = myActionDesired.getMaxLeftLatVel();
+      if (maxLeftLatVel > myLatVelMax)
+        maxLeftLatVel = myLatVelMax;
+    }
+    else
+      maxLeftLatVel = myLatVelMax;
+
+    if (myActionDesired.getMaxRightLatVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      maxRightLatVel = myActionDesired.getMaxRightLatVel();
+      if (maxRightLatVel > myLatVelMax)
+        maxRightLatVel = myLatVelMax;
+    }
+    else
+      maxRightLatVel = myLatVelMax;
+
+    if (myActionDesired.getLatVelStrength() >= MvrActionDesired::MIN_STRENGTH)
+    {
+      latVal = MvrMath::roundShort(myActionDesired.getLatVel());
+      myActionLatSet = true;
+    }
+    else
+    {
+      //latVal = myLastActionLatVal; 
+      latVal = 0;
+    }
+
+    if (fabs((double)latVal) > (double).5)
+      myTryingToMove = true;
+
+    //maxLatVel = MvrMath::roundShort(maxLatVel);
+    if (latVal > 0 && latVal > maxLeftLatVel)
+      latVal = maxLeftLatVel;
+    if (latVal < 0 && latVal < -maxRightLatVel)
+      latVal = -maxRightLatVel;
+
+    if (myActionLatSet && (myLastLatSent.mSecSince() >= myStateReflectionRefreshTime || latVal != myLastActionLatVal))			     
+    {
+      comInt(MvrCommands::LATVEL, MvrMath::roundShort(latVal));
+      myLastLatSent.setToNow();
+      if (myLogMovementSent)
+        MvrLog::log(MvrLog::Normal, "%12sAction lat vel of %d", "", MvrMath::roundShort(latVal));      
+    }
+    myLastActionLatVal = latVal;
+  }
+  // end lat
+
+  if (myLastRotSent.mSecSince() > myStateReflectionRefreshTime &&
+      myLastTransSent.mSecSince() > myStateReflectionRefreshTime &&
+      myLastPulseSent.mSecSince() > myStateReflectionRefreshTime && 
+      (!hasLatVel() || (hasLatVel() && myLastLatSent.mSecSince() > myStateReflectionRefreshTime)))
+  {
+    com(MvrCommands::PULSE);
+    myLastPulseSent.setToNow();
+    if (myLogMovementSent)
+      MvrLog::log(MvrLog::Normal, "Pulse"); 
+  }
+}
+
+MVREXPORT bool MvrRobot::handlePacket(MvrRobotPacket *packet)
+{
+  std::list<MvrRetFunctor1<bool, MvrRobotPacket *> *>::iterator it;
+  bool handled;
+
+  lock();
+
+  if (myIgnoreNextPacket)
+  {
+    if ((packet->getID() == 0x32 || packet->getID() == 0x33))
+    {
+      MvrLog::log(MvrLog::Normal, "MvrRobot: Ignoring motor packet of type 0x%x", packet->getID());
+      myIgnoreNextPacket = false;
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Normal, "MvrRobot: Ignoring packet of type 0x%x", packet->getID());
+    }
+    unlock();
+    return false;
+  }
+
+  myConnectionTimeoutMutex.lock();
+  myLastPacketReceivedTime = packet->getTimeReceived();
+  myConnectionTimeoutMutex.unlock();
+
+  if (packet->getID() == 0xff)
+  {
+    dropConnection("Losing connection because microcontroller reset.","because microcontroller reset");
+    unlock();
+    return false;
+  }
+  if (packet->getID() == 0xfe)
+  {
+    char buf[10000];
+    sprintf(buf, "Losing connection because microcontroller reset with reset data");
+
+    while (packet->getDataLength() - packet->getDataReadLength() > 0)
+      sprintf(buf, "%s 0x%x", buf, packet->bufToUByte());
+    dropConnection(buf, "Because microcontroller reset");
+    unlock();
+    return false;
+  }
+
+  for (handled = false, it = myPacketHandlerList.begin();
+       it != myPacketHandlerList.end() && handled = false;
+       it++)
+  {
+    if ((*it) != NULL && (*it)->invokeR(packet))
+    {
+      if (myPacketsReceivedTracking)
+        MvrLog::log(MvrLog::Normal, "Handled by %s", (*it)->getName());
+      handled = true;
+    }
+    else
+    {
+      packet->resetRead();
+    }
+  }
+  if (!handled)
+    MvrLog::log(MvrLog::Normal, "No packet handler wanted packet with ID: 0x%x", packet->getID());
+  unlock();
+  return handled;
+}
+
+/* @note You must first start the encoder packet stream by calling
+ * requestEncoderPackets() before this function will return encoder values.
+ */
+MVREXPORT long ing MvrRobot::getLeftEncoder()
+{
+  return myLeftEncoder;
+}
+
+/* @note You must first start the encoder packet stream by calling
+ * requestEncoderPackets() before this function will return encoder values.
+ */
+MVREXPORT long ing MvrRobot::getRightEncoder()
+{
+  return myRightEncoder;
+}
+
+/*
+ * @internal
+ *  This just locks the robot, so that its locked for all the user tasks
+ */
+MVREXPORT void MvrRobot::robotLocker(void)
+{
+  lock();
+}
+
+/*
+ * @internal
+ * This just unlocks the robot
+ */
+MVREXPORT void MvrRobot::robotUnlocker(void)
+{
+  unlock();
+}
+
+MVREXPORT void
