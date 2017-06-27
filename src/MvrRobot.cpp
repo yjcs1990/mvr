@@ -1515,7 +1515,7 @@ MVREXPORT bool MvrRobot::madeConnection(bool resetConnectionTime)
       myParams = new MvrRobotResearchPB_lms500;
     else if(MvrUtil::strcasecmp(myRobotSubType, "pioneer-lx") == 0 ||  // real type for Pioneer LX
       MvrUtil::strcasecmp(myRobotSubType, "lx") == 0 ||   // subtype used in MobileSim 0.7.2
-      MvrUtil::strcasecmp(myRobotSubType, "marc_devel") == 0 || // subtype used in early versions of MARCOS firmware
+      MvrUtil::strcasecmp(myRobotSubType, "marc_devel") == 0 || // subtype used in early versions of MVRCOS firmware
       MvrUtil::strcasecmp(myRobotSubType, "lynx") == 0
     )
       myParams = new MvrRobotPioneerLX;
@@ -1604,11 +1604,11 @@ MVREXPORT bool MvrRobot::madeConnection(bool resetConnectionTime)
  *  Encoder packets may be stopped with stopEncoderPackets().
  *
  * @note Encoder data is not available with all robot types.  It is currently
- * only available from robots with SH controllers running ARCOS (Pioneer 3,
+ * only available from robots with SH controllers running MVRCOS (Pioneer 3,
  * PowerBot, PeopleBot, AmigoBot).  If a robot does not support encoder data,
  * this request will be ignored.
  * 
- * Encoder packets are sent after the main SIP (motor packet) by ARCOS. If you want to 
+ * Encoder packets are sent after the main SIP (motor packet) by MVRCOS. If you want to 
  * handle encoder packets immediately upon reception, add a general robot packet handler to
  * MvrRobot with addPacketHandler(), and check the packet for the encoder packet ID
  * 0x90. See addPacketHandler() for details on how to write a general packet
@@ -2499,3 +2499,325 @@ MVREXPORT const MvrRobotConfigPacketReader *MvrRobot::getOrigRobotConfig(void) c
  *  @param functor the functor to call when the packet comes in
  *  @param position whether to place the functor first or last
  */
+MVREXPORT void MvrRobot::addPacketHandler(MvrRetFunctor1<bool, MvrRobotPacket *> *functor,
+                                          MvrListPos::Pos position)
+{
+  if (position == MvrListPos::FIRST)
+    myPacketHandlerList.push_front(functor);
+  else if (position == MvrListPos::LAST)
+    myPacketHandlerList.push_back(functor);
+  else
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addPacketHandler: Invalid position");
+}
+
+/*
+ *@param functor the functor to remove from the list of packet handlers
+ *@see addPacketHandler
+ */
+MVREXPORT void MvrRobot::remPacketHandler(MvrRetFunctor1<bool, MvrRobotPacket *> *functor)
+{
+  myPacketHandlerList.remove(functor);
+}
+
+/*
+ * Adds a connect callback, which is an MvrFunctor, (created as an MvrFunctorC).
+ * The entire list of connect callbacks is called when a connection is made
+ * with the robot.  If you have some sort of module that adds a callback, 
+ * that module must remove the callback when the module is removed.
+ * @param functor A functor (created from MvrFunctorC) which refers to the 
+ * function to call.
+ * @param position whether to place the functor first or last
+ * @see remConnectCB
+ */
+MVREXPORT void MvrRobot::addConnectCB(MvrFunctor *functor, MvrListPos::Pos position)
+{
+  if (position == MvrListPos::FIRST)
+    myConnectCBList.push_front(functor);
+  else if (position == MvrListPos::LAST)
+    myConnectCBList.push_back(functor);
+  else
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addConnectCallback: Invalid position");
+}
+
+/*
+ *@param functor the functor to remove from the list of connect callbacks
+ *@see addConnectCB
+ */
+MVREXPORT void MvrRobot::remConnectCB(MvrFunctor *functor)
+{
+  myConnectCBList.remove(functor);
+}
+
+/* Adds a failed connect callback,which is an MvrFunctor, created as an 
+ * MvrFunctorC.  This whole list of failed connect callbacks is called when
+ * an attempt is made to connect to the robot, but fails.   The usual reason 
+ * for this failure is either that there is no robot/sim where the connection
+ * was tried to be made, the robot wasn't given a connection, or the radio
+ * modems that communicate with the robot aren't on.  If you have some sort
+ * of module that adds a callback, that module must remove the callback
+ * when the module removed.
+ * @param functor functor created from MvrFunctorC which refers to the 
+ * function to call.
+ * @param position whether to place the functor first or last
+ * @see remFailedConnectCB
+ */
+MVREXPORT void MvrRobot::addFailedConnectCB(MvrFunctor *functor, MvrListPos::Pos position)
+{
+  if (position == MvrListPos::FIRST)
+    myFailedConnectCBList.push_front(functor);
+  else if (position == MvrListPos::LAST)
+    myFailedConnectCBList.push_back(functor);
+  else
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addFailedConnectCallback: Invalid position");
+}
+
+/* 
+ * @param functor the functor to remove from the list of connect callbacks
+ * @see addFailedConnectCB
+ */
+MVREXPORT void MvrRobot::remFailedConnectCB(MvrFunctor *functor)
+{
+  myFailedConnectCBList.remove(functor);
+}
+
+/* Adds a disconnect normally callback,which is an MvrFunctor, created as an 
+ * MvrFunctorC.  This whole list of disconnect normally callbacks is called 
+ * when something calls disconnect if the instance isConnected.  If there is 
+ * no connection and disconnect is called nothing is done.  If you have some
+ * sort of module that adds a callback, that module must remove the callback
+ * when the module is removed.
+ * @param functor functor created from MvrFunctorC which refers to the 
+ * function to call.
+ * @param position whether to place the functor first or last
+ * @see remFailedConnectCB
+ */
+MVREXPORT void MvrRobot::addDisconnectNormallyCB(MvrFunctor *functor, MvrListPos::Pos position)
+{
+  if (position == MvrListPos::FIRST)
+    myDisconnectNormallyCBList.push_front(functor);
+  else if (position == MvrListPos::LAST)
+    myDisconnectNormallyCBList.push_back(functor);
+  else
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addDisconnectNormallyCallback: Invalid position");
+}
+
+/* 
+ * @param functor the functor to remove from the list of connect callbacks
+ * @see addDisconnectNormallyCB
+ */
+MVREXPORT void MvrRobot::remDisconnectNormallyCB(MvrFunctor *functor)
+{
+  myDisconnectNormallyCBList.remove(functor);
+}
+
+/* Adds a disconnect on error callback, which is an MvrFunctor, created as an 
+ * MvrFunctorC.  This whole list of disconnect on error callbacks is called 
+ * when MVRIA loses connection to a robot because of an error.  This can occur
+ * if the physical connection (ie serial cable) between the robot and the 
+ * computer is severed/disconnected, if one of a pair of radio modems that 
+ * connect the robot and computer are disconnected, if someone presses the
+ * reset button on the robot, or if the simulator is closed while MVRIA
+ * is connected to it.  Note that if the link between the two is lost the 
+ * MVRIA assumes it is temporary until it reaches a timeout value set with
+ * setConnectionTimeoutTime.  If you have some sort of module that adds a 
+ * callback, that module must remove the callback when the module removed.
+ * @param functor functor created from MvrFunctorC which refers to the 
+ * function to call.
+ * @param position whether to place the functor first or last
+ * @see remDisconnectOnErrorCB
+ */
+MVREXPORT void MvrRobot::addDisconnectOnErrorCB(MvrFunctor *functor, MvrListPos::Pos position)
+{
+  if (position == MvrListPos::FIRST)
+    myDisconnectOnErrorCBList.push_front(functor);
+  else if (position == MvrListPos::LAST)
+    myDisconnectOnErrorCBList.push_back(functor);
+  else
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addDisconnectOnErrorCB: Invalid position");
+}
+
+/* 
+ * @param functor the functor to remove from the list of connect callbacks
+ * @see addDisconnectNormallyCB
+ */
+MVREXPORT void MvrRobot::remDisconnectOnErrorCB(MvrFunctor *functor)
+{
+  myDisconnectOnErrorCBList.remove(functor);
+}
+
+/*
+ * Adds a callback that is called when the run loop exits. The functor is
+ * which is an MvrFunctor, created as an MvrFunctorC. The whole list of
+ * functors is called when the run loop exits. This is most usefull for
+ * threaded programs that run the robot using MvrRobot::runAsync. This will
+ * allow user threads to know when the robot loop has exited.
+ * @param functor functor created from MvrFunctorC which refers to the 
+ * function to call.
+ * @param position whether to place the functor first or last
+ * @see remRunExitCB
+ */ 
+MVREXPORT void MvrRobot::addRunExitCB(MvrFunctor *functor, MvrListPos::Pos position)
+{
+  if (position == MvrListPos::FIRST)
+    myRunExitCBList.push_front(functor);
+  else if (position == MvrListPos::LAST)
+    myRunExitCBList.push_back(functor);
+  else
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addRunExitCB: Invalid position");
+}
+
+/* 
+ * @param functor the functor to remove from the list of connect callbacks
+ * @see addRunExitCB
+ */
+MVREXPORT void MvrRobot::remRunExitCB(MvrFunctor *functor)
+{
+  myRunExitCBList.remove(functor);
+}
+
+/*
+ * Adds a stablizing callback, which is an MvrFunctor, created as an
+ * MvrFunctorC.  The entire list of connect callbacks is called just
+ * before the connection is called done to the robot.  This time can
+ * be used to calibtrate readings (on things like gyros).
+ * @param functor The functor to call (e.g. MvrFunctorC)
+ * @param position whether to place the functor first or last
+ * @see remConnectCB
+ */
+MVREXPORT void MvrRobot::addStabilizingCB(MvrFunctor *functor, 
+				       MvrListPos::Pos position)
+{
+  if (position == MvrListPos::FIRST)
+    myStabilizingCBList.push_front(functor);
+  else if (position == MvrListPos::LAST)
+    myStabilizingCBList.push_back(functor);
+  else
+    MvrLog::log(MvrLog::Terse, "MvrRobot::addConnectCallback: Invalid position.");
+}
+
+/* 
+ * @param functor the functor to remove from the list of stabilizing callbacks
+ * @see addConnectCB
+ */
+MVREXPORT void MvrRobot::remStabilizingCB(MvrFunctor *functor)
+{
+  myStabilizingCBList.remove(functor);
+}
+
+MVREXPORT std::list<MvrFunctor *> * MvrRobot::getRunExitListCopy()
+{
+  return (new std::list<MvrFunctor *>(myRunExitCBList));
+}
+
+/*
+ * This will suspend the calling thread until the MvrRobot's run loop has
+ * managed to connect with the robot. There is an optional paramater of
+ * milliseconds to wait for the MvrRobot to connect. If msecs is set to 0,
+ * it will wait until the MvrRobot connects. This function will never
+ * return if the robot can not be connected with. If you want to be able
+ * to handle that case within the calling thread, you must call
+ * waitForConnectOrConnFail().
+ * @param msecs milliseconds in which to wait for the MvrRobot to connect
+ * @return WAIT_CONNECTED for success
+ */
+MVREXPORT MvrRobot::WaitState MvrRobot::waitForConnect(unsigned int msecs)
+{
+  int ret;
+
+  if (isConnected())
+    return (WAIT_CONNECTED);
+  
+  if (msecs == 0)
+    ret = myConnectCond.wait();
+  else
+    ret = myConnectCond.timedWait(msecs);
+  
+  if (ret == MvrCondition::STATUS_WAIT_INTR)
+    return WAIT_INTR;
+  else if (ret == MvrCondition::STATUS_WAIT_TIMEOUT)
+    return WAIT_CONNECTED;
+  else
+    return WAIT_FAIL;
+}
+
+/*
+ * This will suspend the calling thread until the MvrRobot's run loop has
+ * managed to connect with the robot or fails to connect with the robot.
+ * There is an optional paramater of milliseconds to wait for the MvrRobot
+ * to connect. If msecs is set to 0, it will wait until the MvrRobot connects.
+ * @param msecs milliseconds in which to wait for the MvrRobot to connect
+ * @return WAIT_CONNECTED for success
+ * @see waitForConnect
+ */
+MVREXPORT MvrRobot::WaitState MvrRobot::waitForConnectOrConnFail(unsigned int msecs)
+{
+  int ret;
+
+  if (isConnected())
+    return (WAIT_CONNECTED);
+  
+  if (msecs == 0)
+    ret = myConnectCond.wait();
+  else
+    ret = myConnectCond.timedWait(msecs);
+  
+  if (ret == MvrCondition::STATUS_WAIT_INTR)
+    return WAIT_INTR;
+  else if (ret == MvrCondition::STATUS_WAIT_TIMEOUT)
+    return WAIT_CONNECTED;
+  else if (ret == 0)
+  {
+    if (isConnected())
+      return WAIT_CONNECTED;
+    else
+      return WAIT_FAILED_CONN;
+  }
+    return WAIT_FAIL;
+}
+
+
+/*
+ * This will suspend the calling thread until the MvrRobot's run loop has
+ * exited. There is an optional paramater of milliseconds to wait for the
+ * MvrRobot run loop to exit . If msecs is set to 0, it will wait until
+ * the MvrRrobot run loop exits.
+ * @param msecs milliseconds in which to wait for the robot to connect
+ * @return WAIT_RUN_EXIT for success
+ */
+MVREXPORT MvrRobot::WaitState MvrRobot::waitForRunExit(unsigned int msecs)
+{
+  int ret;
+
+  if (!isRunning())
+    return(WAIT_RUN_EXIT);
+
+  if (msecs == 0)
+    ret=myRunExitCond.wait();
+  else
+    ret=myRunExitCond.timedWait(msecs);
+
+  if (ret == MvrCondition::STATUS_WAIT_INTR)
+    return(WAIT_INTR);
+  else if (ret == MvrCondition::STATUS_WAIT_TIMEDOUT)
+    return(WAIT_TIMEDOUT);
+  else if (ret == 0)
+    return(WAIT_RUN_EXIT);
+  else
+    return(WAIT_FAIL);
+}
+
+/*
+ * This will wake all the threads waiting for various major state changes
+ * in this particular MvrRobot. This includes all threads waiting for the
+ * robot to be connected and all threads waiting for the run loop to exit.
+ */
+MVREXPORT void MvrRobot::wakeAllWaitingThreads()
+{
+  wakeAllConnWaitingThreads();
+  wakeAllRunExitWaitingThreads();
+}
+
+/*
+ * This will wake all the threads waiting for the robot to be connected.
+ */
+MVREXPORT void MvrRobot
