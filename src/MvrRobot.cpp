@@ -4261,5 +4261,1162 @@ MVREXPORT void MvrRobot::packetHandlerThreadedProcessor(void)
       }
       myPacketMutex.unlock();
     }
+    else
+    {
+      myPacketMutex.unlock();
+    }
+
+    if (packet == NULL)
+    {
+      if (isCycleChained())
+        timeToWait = getCycleTime() * 2 - start.mSecSince();
+      else
+        timeToWait = getCycleTime() - start.mSecSince();
+      
+      int ret = 0;
+
+      if (timeToWait < 0 || (ret = myPacketReceivedCondition.timedWait(timeToWait)) != 0)
+      {
+        if (myCycleWarningTime != 0)
+          MvrLog::log(MvrLog::Normal,
+                      "MvrRobot::myPacketReader: Time out (%d) at %d (%d into cycle after sleeping %d)",
+                      ret, myPacketsReceivedTrackingStarted.mSecSince(),
+                      start.mSecSince(), timeToWait);
+        break;
+      }
+      else
+      {
+        continue;
+      }
+    }
+    handlePacket(packet);
+    if ((packet->getID() & 0xf0) == 0x30)
+    {
+      // only mark the sip handled if it was the only one in the buffer
+      if (!anotherSip)
+        sipHandled = true;
+      if (myPacketsReceivedTracking)
+      {
+        MvrLog::log(MvrLog::Normal, "Rcvd: packet (%ld) 0x%x at %ld (%ld)",
+                    myPacketsReceivedTrackingCount, 
+                    packet->getID(), start.mSecSince(), 
+                    myPacketsReceivedTrackingStarted.mSecSince());
+        myPacketsReceivedTrackingCount++;
+      }
+    }
+    else
+    {
+      if (myPacketsReceivedTracking)
+      {
+        MvrLog::log(MvrLog::Normal,
+                    "Rcvd: prePacket (%ld) 0x%x at %ld (%ld)",
+                    myPacketsReceivedTrackingCount, 
+                    packet->getID(), start.mSecSince(), 
+                    myPacketsReceivedTrackingStarted.mSecSince());
+        myPacketsReceivedTrackingCount++;
+      }
+    }
+    delete packet;
+    packet = NULL;
+  }
+  myConnectionTimeoutMutex.lock();
+  if (myTimeoutTime > 0 && ((-myLastOdometryReceivedTime.mSecTo()) > myTimeoutTime))
+  {
+    char buf[10000];
+    sprintf(buf, "Losing connection because no odometry received from robot in %ld milliseconds (greater than the timeout of %d).",
+            (-myLastOdometryReceivedTime.mSecTo()), myTimeoutTime);
+    myConnectionTimeoutMutex.unlock();
+    dropConnection(buf, "bucause lost connection to microcontroller");
+  }
+  else
+  {
+    myConnectionTimeoutMutex.unlock();
+  }
+  myConnectionTimeoutMutex.lock();
+  if (myTimeoutTime > 0 && ((-myLastPacketReceivedTime.mSecTo()) > myTimeoutTime))
+  {
+    char buf[10000];
+    sprintf(buf, "Losing connection because nothing received from robot in %ld milliseconds (greater than the timeout of %d).", 
+	       (-myLastPacketReceivedTime.mSecTo()), myTimeoutTime);
+    myConnectionTimeoutMutex.unlock();
+    dropConnection(buf, "because lost connection to microcontroller");
+  }
+  else
+  {
+    myConnectionTimeoutMutex.unlock();
+  }
+
+  if (myPacketsReceivedTracking)
+    MvrLog::log(MvrLog::Normal, "Rcvd(t): time taken %ld %d", start.mSecSince(), myPacketsReceivedTrackingStarted.mSecSince());
+}
+
+/// This function gets called from the MvrRobotPacketReaderThread, and
+/// does the actual reading of packets
+MVREXPORT void MvrRobot::packetHandlerThreadedReader(void)
+{
+  bool isAllocatingPackets = myReceiver.isAllocatingPackets();
+  myReceiver.setAllocatingPackets(true);
+
+  MvrTime lastPacketReceived;
+
+  MvrRobotPacket *packet = NULL;
+
+  while (isRunning())
+  {
+    if (myConn == NULL || myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN)
+    {
+      MvrUtil::sleep(1);
+      continue;
+    }
+    if ((packet = myReceiver.receivePacket(1000)) != NULL)
+    {
+      lastPacketReceived.setToNow();
+      myPacketMutex.lock();
+      myPacketList.push_back(packet);
+      packet = NULL;
+      myPacketMutex.unlock();
+      myPacketReceivedCondition.broadcast();
+    }
+  }
+  myReceiver.setAllocatingPackets(isAllocatingPackets);
+}
+
+/*
+ * Runs the resolver on the actions, it just saves these values for
+ * use by the stateReflector, otherwise it sends these value straight
+ * down to the robot
+ */
+MVREXPORT void MvrRobot::actionHandler(void)
+{
+  MvrActionDesired *actDesired;
+
+  if (myResolver == NULL || myActions.size() == 0 || !isConnected())
+    return;
+  actDesired = myResolver->resolve(&myActions, this, myLogActions);
+
+  myActionDesired.reset();
+
+  if (actDesired == NULL)
+    return;
+  
+  myActionDesired.merge(actDesired);
+
+  if (myLogActions)
+  {
+    MvrLog::log(MvrLog::Normal, "Final resolved desired");
+    myActionDesired.log();
   }
 }
+
+/*
+ * Sets a time such that if the number of milliseconds between cycles
+ * goes over this then there will be an MvrLog::log(MvrLog::Normal)
+ * warning.
+ * @param ms the number of milliseconds between cycles to warn over, 0
+ * turns warning off
+ */
+MVREXPORT void MvrRobot::setCycleWarningTime(unsigned int ms)
+{
+  myCycleWarningTime = ms;
+  // we don't have to send it down because the functor gets it each cycle
+}
+
+/*
+ * Sets a time such that if the number of milliseconds between cycles
+ * goes over this then there will be an MvrLog::log(MvrLog::Normal)
+ * warning.
+
+ * @return the number of milliseconds between cycles to warn over, 0
+ * means warning is off
+ */
+MVREXPORT unsigned int MvrRobot::getCycleWarningTime(void) const
+{
+  return myCycleWarningTime;
+}
+
+/**
+ * Sets a time such that if the number of milliseconds between cycles
+ * goes over this then there will be an MvrLog::log(MvrLog::Normal)
+ * warning.
+
+ * @return the number of milliseconds between cycles to warn over, 0
+ * means warning is off
+**/
+MVREXPORT unsigned int MvrRobot::getCycleWarningTime(void)
+{
+  return myCycleWarningTime;
+}
+
+/*
+ * Sets the number of milliseconds between cycles, at each cycle is 
+ * when all packets are processed, all sensors are interpretted, all
+ * actions are called, and all user tasks are serviced.  Be warned,
+ * if you set this too small you could overflow your serial connection.
+ * @param ms the number of milliseconds between cycles
+ */
+MVREXPORT void MvrRobot::setCycleTime(unsigned int ms)
+{
+  myCycleTime = ms;
+}
+
+/*
+ * This is the amount of time the robot will stabilize for after it
+ * has connected to the robot (it won't report it is connected until
+ * after this time is over).  By convention you should never set this
+ * lower than what you find the value at (though it will let you) this
+ * is so that everything can get itself stabilized before we let
+ * things drive.
+ * @param mSecs the amount of time to stabilize for (0 disables)
+ */
+MVREXPORT void MvrRobot::setStabilizingTime(int mSecs)
+{
+  if (mSecs > 0)
+ *  myStabilizingTime = mSecs;
+  else
+ *  myStabilizingTime = 0;
+}
+
+/*
+ * This is the amount of time the robot will stabilize for after it
+ * has connected to the robot (it won't report it is connected until
+ * after this time is over).
+ */
+MVREXPORT int MvrRobot::getStabilizingTime(void) const
+{
+  return myStabilizingTime;
+}
+
+/*
+ * Finds the number of milliseconds between cycles, at each cycle is 
+ * when all packets are processed, all sensors are interpretted, all
+ * actions are called, and all user tasks are serviced.  Be warned,
+ * if you set this too small you could overflow your serial connection.
+ * @return the number of milliseconds between cycles
+ */
+MVREXPORT unsigned int MvrRobot::getCycleTime(void) const
+{
+  return myCycleTime;
+}
+
+
+/*
+ * @param multiplier when the MvrRobot is waiting for a connection
+ * packet back from a robot, it waits for this multiplier times the
+ * cycle time for the packet to come back before it gives up on it...
+ * This should be small for normal connections but if doing something
+ * over a slow network then you may want to make it larger
+ */
+MVREXPORT void MvrRobot::setConnectionCycleMultiplier(unsigned int multiplier)
+{
+  myConnectionCycleMultiplier = multiplier;
+}
+
+/*
+ * @return when the MvrRobot is waiting for a connection packet back
+ * from a robot, it waits for this multiplier times the cycle time for
+ * the packet to come back before it gives up on it...  This should be
+ * small for normal connections but if doing something over a slow
+ * network then you may want to make it larger
+ */
+MVREXPORT unsigned int MvrRobot::getConnectionCycleMultiplier(void) const
+{
+  return myConnectionCycleMultiplier;
+}
+
+
+/* 
+ *  This function is only for serious developers, it basically runs the 
+ *  loop once.  You would use this function if you were wanting to use robot
+ *  control in some other monolithic program, so you could work within its 
+ *  framework, rather than trying to get it to work in MVRIA.
+ */
+MVREXPORT void MvrRobot::loopOnce(void)
+{
+  if (mySyncTaskRoot != NULL)
+    mySyncTaskRoot->run();
+  incCounter();
+}
+
+// DigIn IR logic is reverse. 0 means broken, 1 means not broken
+MVREXPORT bool MvrRobot::isLeftTableSensingIRTriggered(void) const
+{
+  if (myParams->haveTableSensingIR())
+  {
+    if (myParams->haveNewTableSensingIR() && myIODigInSize > 3)
+      return !(getIODigIn(3) & MvrUtil::BIT1);
+    else
+      return !(getDigIn() & MvrUtil::BIT0);
+  }
+  return 0;
+}
+
+MVREXPORT bool MvrRobot::isRightTableSensingIRTriggered(void) const
+{
+  if (myParams->haveTableSensingIR())
+  {
+    if (myParams->haveNewTableSensingIR() && myIODigInSize > 3)
+      return !(getIODigIn(3) & MvrUtil::BIT0);
+    else
+      return !(getDigIn() & MvrUtil::BIT1);
+  }
+  return 0;  
+}
+
+MVREXPORT bool MvrRobot::isLeftBreakBeamTriggered(void) const
+{
+  if (myParams->haveTableSensingIR())
+  {
+    if (myParams->haveNewTableSensingIR() && myIODigInSize > 3)
+      return !(getIODigIn(3) & MvrUtil::BIT2);
+    else
+      return !(getDigIn() & MvrUtil::BIT3);
+  }
+  return 0;
+}
+
+MVREXPORT bool MvrRobot::isRightBreakBeamTriggered(void) const
+{
+  if (myParams->haveTableSensingIR())
+  {
+    if (myParams->haveNewTableSensingIR() && myIODigInSize > 3)
+      return !(getIODigIn(3) & MvrUtil::BIT3);
+    else
+      return !(getDigIn() & MvrUtil::BIT2);
+  }
+  return 0;
+}
+
+MVREXPORT int MvrRobot::getMotorPacCount(void) const
+{
+  if (myTimeLastMotorPacket == time(NULL))
+    return myMotorPacCount;
+  if (myTimeLastMotorPacket == time(NULL) - 1)
+    return myMotorPacCurrentCount;
+  return 0;
+}
+
+MVREXPORT int MvrRobot::getSonarPacCount(void) const
+{
+  if (myTimeLastSonarPacket == time(NULL))
+    return mySonarPacCount;
+  if (myTimeLastSonarPacket == time(NULL) -1)
+    return mySonarPacCurrentCount;
+  return 0;
+}
+
+MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
+{
+  int x, y, th, qx, qy, qth;
+  double deltaX, deltaY, deltaTh;
+
+  int numReadings;
+  int sonarNum;
+  int sonarRange;
+
+  if (packet->getID() != 0x32 && packet->getID() != 0x33)
+    return false;
+  
+  // upkeep the counting valiable
+  if (myTimeLastMotorPacket != time(NULL))
+  {
+    myTimeLastMotorPacket = time(NULL);
+    myMotorPacCount = myMotorPacCurrentCount;
+    myMotorPacCurrentCount = 0;
+  }
+  myMotorPacCurrentCount++;
+
+  x  = (packet->bufToUByte2() & 0x7fff);
+  y  = (packet->bufToUByte2() & 0x7fff);
+  th = packet->bufToByte2();
+
+  if (myFakeFirstEncoderPose)
+  {
+    myLastX  = x;
+    myLastY  = y;
+    myLastTh = th;
+    myFakeFirstEncoderPose = false;
+  }
+
+  if (myFirstEncoderPose)
+  {
+    qx  = 0;
+    qy  = 0;
+    qth = 0;
+    myFirstEncoderPose = false;
+    myRawEncoderPose.setPose(myParams->getDistConvFactor() * x,
+                             myParams->getDistConvFactor() * y, 
+                             MvrMath::radToDeg(myParams->getAngleConvFactor() * (double)th)); 
+    myEncoderPose = myRawEncoderPose;
+    myEncoderTransform.setTransform(myEncoderPose, myGlobalPose);
+  }
+  else
+  {
+    qx = x - myLastX;
+    qy = y - myLastY;
+    qth = th - myLastTh;
+  }
+  // MvrLog::log(MvrLog::Terse, "qx %d qy %d,  x %d y %d,  lastx %d lasty %d", qx, qy, x, y, myLastX, myLastY);  
+  myLastX = x;
+  myLastY = y;
+  myLastTh = th;
+
+  if (qx > 0x1000) 
+    qx -= 0x8000;
+  if (qx < -0x1000)
+    qx += 0x8000;
+
+  if (qy > 0x1000) 
+    qy -= 0x8000;
+  if (qy < -0x1000)
+    qy += 0x8000;
+  
+  deltaX = myParams->getDistConvFactor() * (double)qx;
+  deltaY = myParams->getDistConvFactor() * (double)qy;
+  deltaTh = MvrMath::radToDeg(myParams->getAngleConvFactor() * (double)qth);
+
+  myLeftVel  = myParams->getVelConvFactor() * packet->bufToByte2();
+  myRightVel = myParams->getVelConvFactor() * packet->bufToByte2();
+  myVel      = (myLeftVel + myRightVel)/2.0;
+
+  double batteryVoltage;
+  batteryVoltage = packet->bufToUByte() * .1;
+  if (!myIgnoreMicroControllerBatteryInfo)
+  {
+    myBatteryVoltage = batteryVoltage;
+    myBatteryAverager.add(myBatteryVoltage);
+  }
+
+  myStallValue = packet->bufToByte2();
+  if (!myKeepControlRaw) 
+    myControl = MvrMath::fixAngle(MvrMath::radToDeg(myParams->getAngleConvFactor() * (packet->bufToByte2() - th)));
+  else
+    myControl = packet->bufToByte2();
+
+  myFlags = packet->bufToUByte2();
+  myCompass = 2*packet->bufToUByte();
+  
+  for (numReadings = packet->bufToByte(); numReadings > 0; numReadings--)
+  {
+    sonarNum = packet->bufToByte();
+    sonarRange = MvrMath::roundInt((double)packet->bufToUByte2() * myParams->getRangeConvFactor());
+    processNewSonar(sonarNum, sonarRange, packet->getTimeReceived());
+  }
+  
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    myAnalogPortSelected = packet->bufToUByte2();
+    myAnalog = packet->bufToByte();
+    myDigIn = packet->bufToByte();
+    myDigOut = packet->bufToByte();
+  }
+
+  double realBatteryVoltage;
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+    realBatteryVoltage = packet->bufToUByte2() * .1;
+  else
+    realBatteryVoltage = myBatteryVoltage;
+  if (!myIgnoreMicroControllerBatteryInfo)
+  {
+    myRealBatteryVoltage = realBatteryVoltage;
+    myRealBatteryAverager.add(myRealBatteryVoltage);
+  }
+
+
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    if (!myOverriddenChargeState)
+      myChargeState = (ChargeState) packet->bufToUByte();
+    else
+      packet->bufToUByte();
+  }
+  else if (!myOverriddenChargeState)
+    myChargeState = CHARGING_UNKNOWN;
+
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+    myRotVel = (double)packet->bufToByte2() / 10.0;
+  else
+    myRotVel = MvrMath::radToDeg((myRightVel - myLeftVel) / 2.0 * myParams->getDiffConvFactor());
+
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    myHasFaultFlags = true;
+    myFaultFlags = packet->bufToUByte2();  
+  }
+  else
+  {
+    myHasFaultFlags = false;
+    myFaultFlags = 0; //packet->bufToUByte2();  
+  }
+
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    myLatVel = packet->bufToByte2();
+  }
+
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    myTemperature = packet->bufToByte();
+  }
+
+  double stateOfCharge;
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    stateOfCharge = packet->bufToByte();
+    if (!myIgnoreMicroControllerBatteryInfo)
+    {
+      myStateOfCharge = stateOfCharge;
+      if (!myHaveStateOfCharge && myStateOfCharge > 0)
+	      myHaveStateOfCharge = true;
+      myStateOfChargeSetTime.setToNow();
+    }
+  }
+
+  // holder for information we log if we're tracking packet received
+  // and have timing info
+  std::string movementReceivedTimingStr;
+
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    MvrTypes::UByte4 uCUSec = 0;
+    MvrTypes::UByte4 lpcNowUSec = 0;
+    MvrTypes::UByte4 lpcUSec = 0;
+    MvrTime now;
+    long long mSecSince = -999;
+    MvrTime recvTime;
+
+    uCUSec = packet->bufToUByte4();
+    // make sure we get a good value
+    if ((myPacketsReceivedTracking || myLogMovementReceived) && myMTXTimeUSecCB != NULL && myMTXTimeUSecCB->invokeR(&lpcNowUSec))
+    {
+      mSecSince = packet->getTimeReceived().mSecSinceLL(now);
+      lpcUSec = lpcNowUSec - (mSecSince + myOdometryDelay) * 1000;
+      
+      recvTime = packet->getTimeReceived();
+      recvTime.addMSec(-myOdometryDelay);
+
+      char buf[1024];
+      sprintf(buf, " time: %6lld.%03lld.000 uCTime: %6u.%03u.%.03u",
+	            recvTime.getSecLL(), recvTime.getMSecLL(),
+	            uCUSec / 1000000, (uCUSec % 1000000) / 1000, uCUSec % 1000);
+      movementReceivedTimingStr = buf;
+    }
+
+    if (myPacketsReceivedTracking)
+      MvrLog::log(MvrLog::Normal, "MotorPacketTiming: commDiff %lld fpgaNowDiff %2d.%03d fpgaPacketDiff %2d.%03d bytes %d\nFPGA:uC  %6u.%03u.%.03u\nFPGA:lpcNow %6u.%03u.%.03u\nMvrTime:1stByte %6lld.%03lld\nMvrTime:now     %6lld.%.03lld\nFPGA:lpcPacket %6u.%03u.%03u", 
+                  mSecSince, 
+                  ((lpcNowUSec - uCUSec) % 1000000) / 1000, (lpcNowUSec - uCUSec) % 1000,
+                  ((lpcUSec - uCUSec) % 1000000) / 1000, (lpcUSec - uCUSec) % 1000,		 
+                  packet->getLength(),
+                  
+                  uCUSec / 1000000, (uCUSec % 1000000) / 1000, uCUSec % 1000,
+                  lpcNowUSec / 1000000, (lpcNowUSec % 1000000) / 1000, lpcNowUSec % 1000,
+                  packet->getTimeReceived().getSecLL(), 
+                  packet->getTimeReceived().getMSecLL(),
+                  now.getSecLL(), now.getMSecLL(),
+                  lpcUSec / 1000000, (lpcUSec % 1000000) / 1000, lpcUSec % 1000);
+    
+  }
+  else if (myLogMovementReceived)
+  {
+    MvrTime recvTime = packet->getTimeReceived();
+    recvTime.addMSec(-myOdometryDelay);
+    
+    char buf[1024];
+    sprintf(buf, " time: %6lld.%03lld.000", recvTime.getSecLL(), recvTime.getMSecLL());
+    movementReceivedTimingStr = buf;
+  }
+
+  if (packet->getDataLength() - packet->getDataReadLength() > 0)
+  {
+    myHasFlags3 = true;
+    myFlags3 = packet->bufToUByte4();      
+  }
+  else
+  {
+    myHasFlags3 = false;
+    myFlags3 = 0;
+  }
+  
+  if(myLogSIPContents)
+  {
+    MvrLog::log(MvrLog::Normal, "SIP Contents:\n\tx=%d, y=%d, th=%d, lvel=%.2f, rvel=%.2f, battery=%.1f, stallval=0x%x, control=%d, compass=%d",
+                x, y, th, myLeftVel, myRightVel, myBatteryVoltage, myStallValue, myControl, myCompass);
+    MvrLog::log(MvrLog::Normal, "\tnumSonar=%d, gripstate=%d, anport=%d, analog=%d, digin=0x%x, digout=0x%x, batteryX10=%d, chargestage=%d rotvel=%.2f", 
+                numReadings, (char)myAnalogPortSelected, (char)(myAnalogPortSelected>>8), myAnalog, myDigIn, myDigOut, myRealBatteryVoltage, (int)myChargeState, myRotVel);
+    if(myHasFaultFlags)
+      MvrLog::log(MvrLog::Normal, "\tfaultflags=0x%x", myFaultFlags);
+    else
+      MvrLog::log(MvrLog::Normal, "\tno faultflags");
+    MvrLog::log(MvrLog::Normal, "\tlatvel=%.2f temperature=%d", myLatVel, myTemperature);
+    if(myHaveStateOfCharge)
+      MvrLog::log(MvrLog::Normal, "\tsoc=0x%x", myStateOfCharge);
+    else
+      MvrLog::log(MvrLog::Normal, "\tno soc");
+  }
+
+  /*
+    Okay how this works is like so.  
+
+    We keep around the raw encoder position, because we must use this
+    to find differences between last position and this position.
+    
+    We find the difference in x and y positions (deltaX and deltaY)
+    and keep these around for later use, but we also add these to our
+    raw encoder readings for X and Y.  We also find the change in
+    angle (deltaTh), which is used for inertial corrections, and added
+    to the raw encoder heading to find which the current raw encoder
+    heading.
+
+
+    From here there are two paths:
+
+    Path 1) Have a callback.  If we have a callback it means that we
+    have an inertial nav device of some kind.  If this is the case,
+    then we pass the callback the delta between last position and
+    current position, along with the time of the current position,
+    then the callback gives us back a new delta theta (deltaTh).  We
+    then need to rotate the deltaX and deltaY into our corrected
+    encoder space.  We do this by making a transform that takes the
+    raw encoder heading and transforms it to what our new heading is
+    (adding deltaTh to our current encoder th), and then applying that
+    transform, taking the results as our new deltaX and deltaY.
+
+    Path 2) We have no callback, we just use the heading that came
+    back from the robot as our delta theta (deltaTh);
+
+    From here the two paths unify again.  deltaX and deltaY are added
+    to the encoder pose (this is the corrected encoder pose), and the
+    encoder heading is set to the newTh.
+
+    Note that this leaves a difference between rawEncoder heading and
+    our heading, which is fine, BUT if you are sending heading
+    commands to the robot you need to compenstate for the difference
+    between these. 
+    
+    Note above that we return deltaTh instead of just heading so that
+    we can turn inertial on and off without losing track of where
+    we're at... since we're just adding in deltas from the heading it
+    doesn't matter how we switch around the callback.
+    
+  **/
+
+  myRawEncoderPose.setX(myRawEncoderPose.getX() + deltaX);
+  myRawEncoderPose.setY(myRawEncoderPose.getY() + deltaY);
+  myRawEncoderPose.setTh(myRawEncoderPose.getTh() + deltaTh);
+
+  // check if there is a correction callback, if there is get the new
+  // heading out of it instead of using the raw encoder heading
+  if (myEncoderCorrectionCB != NULL)
+  {
+    MvrPoseWithTime deltaPose(deltaX, deltaY, deltaTh, packet->getTimeReceived());
+    deltaTh = myEncoderCorrectionCB->invokeR(deltaPose);   
+    MvrTransform trans(MvrPose(0, 0, myRawEncoderPose.getTh()),MvrPose(0, 0, MvrMath::addAngle(myEncoderPose.getTh(), deltaTh)));
+
+    MvrPose rotatedDelta = trans.doTransform(MvrPose(deltaX, deltaY, 0));
+
+    deltaX = rotatedDelta.getX();
+    deltaY = rotatedDelta.getY();
+  }
+
+  myEncoderPose.setTime(packet->getTimeReceived());
+  myEncoderPose.setX(myEncoderPose.getX() + deltaX);
+  myEncoderPose.setY(myEncoderPose.getY() + deltaY);
+  myEncoderPose.setTh(MvrMath::addAngle(myEncoderPose.getTh(), deltaTh));
+
+  myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
+
+  double degreesTravelled = fabs(deltaTh);
+  double distTravelled = sqrt(fabs(deltaX * deltaX + deltaY * deltaY));
+
+  myOdometerDegrees += degreesTravelled;
+  myOdometerDistance += distTravelled;
+
+  myTripOdometerDegrees += degreesTravelled;
+  myTripOdometerDistance += distTravelled;
+
+
+  if (myLogMovementReceived && (fabs(deltaX) > .0001 || fabs(deltaY) > .0001 || fabs(deltaTh) > .0001))
+    MvrLog::log(MvrLog::Normal, 
+                "Global: %5.0f %5.0f %7.1f GlobalDelta: %5.0f %5.0f %7.1f uC: %5.0f %5.0f %7.1f uCDelta: %5.0f %5.0f %7.1f RawUC: %5d %5d %5d%s",
+                myGlobalPose.getX(), myGlobalPose.getY(),
+                myGlobalPose.getTh(),
+                myGlobalPose.getX() - myLastGlobalPose.getX(), 
+                myGlobalPose.getY() - myLastGlobalPose.getY(), 
+                MvrMath::subAngle(myGlobalPose.getTh(), myLastGlobalPose.getTh()),
+                myEncoderPose.getX(), myEncoderPose.getY(),
+                myEncoderPose.getTh(),
+                deltaX, deltaY, deltaTh, x, y, th, 
+                movementReceivedTimingStr.c_str());
+
+  myLastGlobalPose = myGlobalPose;
+
+  if (myLogMovementReceived && sqrt(deltaX*deltaX + deltaY*deltaY) > 1000)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot: Travelled over 1000 in a cycle, which is unlikely");
+    MvrLog::logBacktrace(MvrLog::Normal);
+  }
+
+  if (myLogVelocitiesReceived)
+  {
+    if (!hasLatVel())
+      MvrLog::log(MvrLog::Normal, 
+                  "     TransVel: %4.0f RotVel: %4.0f dTh: %4.0f Th: %4.0f TransAcc: %4.0f RotAcc: %4.0f ddTh: %4.0f",
+                  myVel, myRotVel, myLastHeading - getTh(), getTh(), 
+                  myVel - myLastVel, myRotVel - myLastRotVel,
+                  myLastDeltaHeading - (myLastHeading - getTh()));
+    else
+      MvrLog::log(MvrLog::Normal, 
+                  "     TransVel: %4.0f RotVel: %4.0f dTh: %4.0f Th: %4.0f DTrans %4.0f DRot %4.0f ddth: %4.0f LatVel: %4.0f DLat: %4.0f",
+                  myVel, myRotVel, myLastHeading - getTh(), getTh(), 
+                  myVel - myLastVel, myRotVel - myLastRotVel,
+                  myLastDeltaHeading - (myLastHeading - getTh()),
+                  myLatVel, myLatVel - myLastLatVel);
+  }
+  myLastVel = myVel;
+  myLastRotVel = myRotVel;
+  myLastLatVel = myLatVel;
+  myLastHeading = getTh();
+  myLastDeltaHeading = myLastHeading - getTh();
+
+  //MvrLog::log(MvrLog::Terse, "(%.0f %.0f) (%.0f %.0f)", deltaX, deltaY, myGlobalPose.getX(),	     myGlobalPose.getY());
+
+  MvrTime packetTime = packet->getTimeReceived();
+  /// MPL adding this so that each place the pose interpolation is
+  /// used it doesn't have to account for the odometry delay
+  packetTime.addMSec(-myOdometryDelay);
+
+  myConnectionTimeoutMutex.lock();
+  myLastOdometryReceivedTime = packetTime;
+  myConnectionTimeoutMutex.unlock();
+
+  myInterpolation.addReading(packetTime, myGlobalPose);
+  myEncoderInterpolation.addReading(packetTime, myEncoderPose);
+
+  return true;
+}
+/*
+ * This function used to just create more sonar readings if it
+ * didn't have the sonar number that was given (only the case if
+ * that sonar didn't have an entry in the param file), this caused
+ * some silent bugs in other peoples code and so was
+ * removed... especially since we don't know where the sonar are at
+ */
+MVREXPORT void MvrRobot::processNewSonar(char number, int range, MvrTime timeReceived)
+{
+  
+  std::map<int, MvrSensorReading *>::iterator it;
+  MvrSensorReading *sonar;
+  MvrTransform encoderTrans;
+  MvrPose encoderPose;
+
+  if ((it = mySonars.find(number)) != mySonars.end())
+  {
+    sonar = (*it).second;
+    sonar->newData(range, getPose(), getEncoderPose(), getToGlobalTransform(), getCounter(), timeReceived); 
+		 
+    if (myTimeLastSonarPacket != time(NULL)) 
+    {
+      myTimeLastSonarPacket = time(NULL);
+      mySonarPacCount = mySonarPacCurrentCount;
+      mySonarPacCurrentCount = 0;
+    }
+    mySonarPacCurrentCount++;
+  }
+  else if (!myWarnedAboutExtraSonar)
+  {
+    MvrLog::log(MvrLog::Normal, "Robot gave back extra sonar reading!  Either the parameter file for the robot or the firmware needs updating.");
+    myWarnedAboutExtraSonar = true;
+  }
+}
+
+MVREXPORT void MvrRobot::processEncoderPacket(MvrRobotPacket *packet)
+{
+  if (packet->getID() != 0x90)
+    return false;
+  myLeftEncoder  = packet->bufToByte4();
+  myRightEncoder = packet->bufToByte4();
+  return true;
+}
+
+MVREXPORT bool MvrRobot::processIOPacket(MvrRobotPacket *packet)
+{
+  int i, num;
+
+  if (packet->getID() != 0xf0)
+    return false;
+
+  myLastIOPacketReceivedTime = packet->getTimeReceived();
+
+  // number of OrigIn bytes
+  num = packet->bufToUByte();
+  for (i = 0; i < num; ++i)
+    myIODigIn[i] = packet->bufToUByte();
+  myIODigInSize = num;
+
+  // number of DigOut bytes
+  for (i = 0; i < num; ++i)
+    myIODigOut[i] = packet->bufToUByte();
+  myIODigOutSize = num;
+
+  // number of A/D bytes
+  num = packet->bufToUByte();
+  for (i = 0; i < num; ++i)
+    myIOAnalog[i] = packet->bufToUByte2();
+  myIOAnalogSize = num;
+
+  return true;
+}
+
+/**
+ * @param num the sonar number to check, should be between 0 and the number of
+ * sonar, the function won't fail if a bad number is given, will just return -1
+ * @return -1 if the sonar has never returned a reading, otherwise the sonar 
+ * range, which is the distance from the physical sonar disc to where the sonar
+ * bounced back
+ */
+MVREXPORT int MvrRobot::getSonarRange(int num) const
+{
+  std::map<int, MvrSensorReading *>::const_iterator it;
+
+  for ((it = mySonars.find(num)) != mySonars.end())
+    return (*it).second->getRange();
+  else
+    return -1;
+}
+
+/*
+ * @param num the sonar number to check, should be between 0 and the number of
+ * sonar, the function won't fail if a bad number is given, will just return
+ * false
+ * @return false if the sonar reading is old, or if there was no reading from
+ * that sonar, in the current SIP cycle.
+ * For best results, use this function in sync with the SIP cycle, for example,
+ * from a Sensor Interpretation Task Callback (see addSensorInterpTask).
+ */
+MVREXPORT bool MvrRobot::isSonarNew(int num) const
+{
+  std::map<int, MvrSensorReading *>::const_iterator it;
+
+  if ((it = mySonars.find(num)) != mySonars.end())
+    return (*it).second->isNew(getCounter());
+  else
+    return false;
+}
+
+/*
+ * @param num the sonar number to check, should be between 0 and the number of
+ * sonar, the function won't fail if a bad number is given, will just return
+ * false
+ * @return NULL if there is no sonar defined for the given number, otherwise
+ * it returns a pointer to an instance of the MvrSensorReading, note that this 
+ * class retains ownership, so the instance pointed to should not be deleted
+ * and no pointers to it should be stored.  Note that often there will be sonar
+ * defined but no readings for it (since the readings may be created by the 
+ * parameter reader), if there has never been a reading from the sonar then
+ * the range of that sonar will be -1 and its counterTaken value will be 0
+ */
+MVREXPORT MvrSensorReading *MvrRobot::getSonarReading(int num) const
+{
+  std::map<int, MvrSensorReading *>::const_iterator it;
+  
+  if ((it = mySonars.find(num)) != mySonars.end())
+    return (*it).second;
+  else
+    return NULL;
+}
+
+/*
+ * @param command the command number to send
+ * @return whether the command could be sent or not
+ */
+MVREXPORT bool MvrRobot::com(unsigned char command)
+{
+  if (myPacketsSentTracking)
+    MvrLog::log(MvrLog::Normal, "Sent: com(%d)", command);
+  return mySender.com(command);
+}
+
+/*
+ * @param command the command number to send
+ * @param argument the integer argument to send with the command
+ * @return whether the command could be sent or not
+ */
+MVREXPORT bool MvrRobot::comInt(unsigned char command, short int argument)
+{
+  if (myPacketsSentTracking)
+    MvrLog::log(MvrLog::Normal, "Sent: comInt(%d, %d)", command, argument);
+  return mySender.comInt(command, argument);
+}
+
+/*
+ * @param command the command number to send
+ * @param high the high byte to send with the command
+ * @param low the low byte to send with the command
+ * @return whether the command could be sent or not
+ */
+MVREXPORT bool MvrRobot::com2Bytes(unsigned char command, char high, char low)
+{
+  if (myPacketsSentTracking)
+    MvrLog::log(MvrLog::Normal, "Sent: com2Bytes(%d, %d, %d)", command, high, low);
+  return mySender.com2Bytes(command, high, low);
+}
+
+/*
+ * @param command the command number to send
+ * @param argument NULL-terminated string to get data from to send with the command; length to send with packet is determined by strlen
+ * @return whether the command could be sent or not
+ */
+MVREXPORT bool MvrRobot::comStr(unsigned char command, const char *argument)
+{
+  if (myPacketsSentTracking)
+    MvrLog::log(MvrLog::Normal, "Sent: comStr(%d, '%s')", command, argument);
+  return mySender.comStr(command, argument);
+}
+
+/*
+ * Sends a length-prefixed string command to the robot, copying 'size'
+ * bytes of data from 'str' into the packet.
+ * @param command the command number to send
+ * @param str copy data to send from this character array 
+ * @param size length of the string to send; copy this many bytes from 'str'; use this value as the length prefix byte before the sent string. This length must be less than the maximum packet size of 200.
+ * @return whether the command could be sent or not
+ */
+MVREXPORT bool MvrRobot::comStrN(unsigned char command, const char *str, int size)
+{
+  if (myPacketsSentTracking)
+  {
+    char strBuf[512];
+    strncpy(strBuf, str, size);
+    strBuf[size] = '\0';
+    MvrLog::log(MvrLog::Normal, "Sent: comStrN(%d, '%s')(size %d)", command, strBuf, size);
+  }
+  return mySender.comStrN(command, str, size);
+}
+
+MVREXPORT bool MvrRobot::comDataN(unsigned char command, const char* data, int size)
+{
+  if (myPacketsSentTracking)
+    MvrLog::log(MvrLog::Normal, "Sent: comDataN(%d, <data...>) (size %d)", command, size);
+  return mySender.comDataN(command, data, size);
+}
+
+MVREXPORT int MvrRobot::getClosestSonarRange(double startAngle, double endAngle) const
+{
+  int num;
+  num = getClosestSonarNumber(startAngle, endAngle);
+  if (num == 1)
+    return -1;
+  else
+    return getSonarRange(num);
+}
+
+MVREXPORT int MvrRobot::getClosestSonarNumber(double startAngle, double endAngle) const
+{
+  int i;
+  MvrSensorReading *sonar;
+  int closetReading;
+  int closetSonar;
+  bool noReadings = true;
+
+  for (i = 0; i < getNumSonar(); i++)
+  {
+    sonar = getSonarReading(i);
+    if (sonar == NULL)
+    {
+      MvrLog::log(MvrLog::Terse, "Have an empty sonar at number %d, there should be %d sonar", i, getNumSonar());
+      continue;
+    }
+
+    if (MvrMath::angleBetween(sonar->getSensorTh(), startAngle, endAngle))
+    {
+      if (noReadings)
+      {
+        closestReading = sonar->getRange();
+        closestSonar = i;
+        noReadings = false;
+      }
+      else if (sonar->getRange() < closetReading)
+      {
+        closetReading = sonar->getRange();
+        closestSonar = i;
+      }
+    }
+  }
+
+  if (noReadings)
+    return -1;
+  else
+    return closestSonar;
+}
+
+/*
+ * @note It is not neccesary to call this method directly to add a laser (MvrLaser
+ * subclass or MvrSick object) if using MvrLaserConnector or MvrSimpleConnector, those
+ * classes automatically add the laser(s).  (But you may call this method with e.g.
+ * MvrSonarDevice, MvrIRs, MvrBumpers, etc.)
+*/
+MVREXPORT void MvrRobot::addRangeDevice(MvrRangeDevice *device)
+{
+  device->setRobot(this);
+  myRangeDeviceList.push_front(device);
+}
+
+/*
+ *  @param name remove the first device with this name
+ */
+MVREXPORT void MvrRobot::remRangeDevice(const char *name)
+{
+  std::list<MvrRangeDevice *>::iterator it;
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    if (strcmp(name, (*it)->getName()) == 0)
+    {
+      myRangeDeviceList.erase(it);
+      return;
+    }
+  }
+}
+
+/*
+ * @param device remove the first device with this pointer value
+ */
+MVREXPORT void MvrRobot::remRangeDevice(MvrRangeDevice *device)
+{
+  std::list<MvrRangeDevice *>::iterator it;
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    if ((*it) == device)
+    {
+      myRangeDeviceList.erase(it);
+      return;
+    }
+  }
+}
+
+/*
+ * @param name return the first device with this name
+ * @param ignoreCase true to ignore case, false to pay attention to it
+ * @return if found, a range device with the given name, if not found NULL
+ */
+MVREXPORT MvrRangeDevice *MvrRobot::findRangeDevice(const char *name, bool ignoreCase)
+{
+  std::list<MvrRangeDevice *>::iterator it;
+  MvrRangeDevice *device;
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    device = (*it);
+    if ((ignoreCase && strcasecmp(name, device->getName()) == 0) || 
+        (!ignoreCase && strcasecmp(name, device->getName()) == 0))
+    {
+      return device;
+    }
+  }
+  return NULL;
+}
+
+/*
+ * @param name return the first device with this name
+ * @param ignoreCase true to ignore case, false to pay attention to it
+ * @return if found, a range device with the given name, if not found NULL
+ */
+MVREXPORT MvrRangeDevice *MvrRobot::findRangeDevice(const char *name, bool ignoreCase) const
+{
+  std::list<MvrRangeDevice *>::const_iterator it;
+  MvrRangeDevice *device;
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    device = (*it);
+    if ((ignoreCase && strcasecmp(name, device->getName()) == 0) || 
+        (!ignoreCase && strcasecmp(name, device->getName()) == 0))
+    {
+      return device;
+    }
+  }
+  return NULL;
+}
+
+/* 
+ * This gets the list of range devices attached to this robot, do NOT
+ * manipulate this list directly.  If you want to manipulate use the 
+ * appropriate addRangeDevice, or remRangeDevice
+ * @return the list of range dvices attached to this robot
+ */
+MVREXPORT std::list<MvrRangeDevice *> *MvrRobot::getRangeDeviceList(void)
+{
+  return &myRangeDeviceList;
+}
+
+/*
+ * @param device the device to check for
+ */
+MVREXPORT bool MvrRobot::hasRangeDevice(MvrRangeDevice *device) const
+{
+  std::list<MvrRangeDevice *>::const_iterator it;
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    if ((*it) == device)
+      return true;
+  }
+  return false;
+}
+
+/*
+ *  Find the closest reading from any range device's set of current readings
+ *  within a polar region or "slice" defined by the given angle range.
+ *  This function iterates through each registered range device (see 
+ *  addRangeDevice()), calls MvrRangeDevice::lockDevice(), uses
+ *  MvrRangeDevice::currentReadingPolar() to find a reading, then calls
+ *  MvrRangeDevice::unlockDevice().
+ *
+ *  @copydoc MvrRangeDevice::currentReadingPolar()
+ *  @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
+ *  that provided the returned reading is placed in this variable.
+ *  @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
+ */
+MVREXPORT double MvrRobot::checkRangeDevicesCurrentPolar(double startAngle, double endAngle, double *angle, 
+                                                         const MvrRangeDevice **rangeDevice,
+                                                         bool useLocationDependentDevices) const
+{
+  double closest = 32000;
+  double closeAngle, tempDist, tempAngle;
+  std::list<MvrRangeDevice *>::const_iterator it;
+  MvrRangeDevice *device;
+  bool foundOne = false;
+  const MvrRangeDevice *closestRangeDevice = NULL;
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    device = (*it);
+    device->lockDevice();
+    if (!useLocationDependentDevices && device->isLocationDependent())
+    {
+      device->unlockDevice();
+      continue;
+    }
+    if (!foundOne || (tempDist = device->currentReadingPolar(startAngle, endAngle, &tempAngle)) < closest)
+    {
+      if (!foundOne)
+      {
+        closest = device->currentReadingPolar(startAngle, endAngle, &closeAngle);
+        closetRangeDevice = device;
+      }
+    else
+    {
+      closest = tempDist;
+      closeAngle = tempAngle;
+      closestRangeDevice = device;
+    }
+    foundOne = true;
+    }
+  device->unlockDevice();
+  }
+  if (!foundOne)
+    return -1;
+  if (angle != NULL)
+    *angle = closeAngle;
+  if (rangeDevice != NULL)
+    *rangeDevice = closestRangeDevice;
+  return closest;
+}                                                         
