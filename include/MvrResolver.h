@@ -18,6 +18,9 @@
 #include "MvrActionDesired.h"
 #include <string>
 
+class MvrAction;
+class MvrRobot;
+
 class MvrResolver
 {
 public:

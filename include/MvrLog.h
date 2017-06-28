@@ -153,7 +153,7 @@ protected:
   static char ourConfigFileName[1024];
   static bool ourConfigLogTime;
   static bool ourConfigAlsoPrint;
-  static MVREXPORTGlobalRetFunctor<bool> ourConfigProcessFileCB;
+  static MvrGlobalRetFunctor<bool> ourConfigProcessFileCB;
 
 #ifndef MVRINTERFACE
   static char ourAramConfigLogLevel[1024];
@@ -166,7 +166,7 @@ protected:
 
   static bool ourAramDaemonized;
   
-  static MVREXPORTFunctor1<const char *> *ourFunctor;
+  static MvrFunctor1<const char *> *ourFunctor;
 };
 
 #endif  //MVRLOG_H

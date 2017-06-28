@@ -45,7 +45,7 @@ class MvrLaser;
 class MvrBatteryMTX;
 class MvrLCDMTX;
 class MvrSonarMTX;
-class MvrDevieConnection;
+class MvrDeviceConnection;
 
 #ifndef M_PI
 #define M_PI 3.1415927
