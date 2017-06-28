@@ -5376,8 +5376,7 @@ MVREXPORT bool MvrRobot::hasRangeDevice(MvrRangeDevice *device) const
  *  @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
  */
 MVREXPORT double MvrRobot::checkRangeDevicesCurrentPolar(double startAngle, double endAngle, double *angle, 
-                                                         const MvrRangeDevice **rangeDevice,
-                                                         bool useLocationDependentDevices) const
+                                                         const MvrRangeDevice **rangeDevice, bool useLocationDependentDevices) const
 {
   double closest = 32000;
   double closeAngle, tempDist, tempAngle;
@@ -5420,3 +5419,469 @@ MVREXPORT double MvrRobot::checkRangeDevicesCurrentPolar(double startAngle, doub
     *rangeDevice = closestRangeDevice;
   return closest;
 }                                                         
+
+/*
+ * Find the closest reading from any range device's set of cumulative readings
+ * within a polar region or "slice" defined by the given angle range.
+ * This function iterates through each registered range device (see 
+ * addRangeDevice()), calls MvrRangeDevice::lockDevice(), uses
+ * MvrRangeDevice::cumulativeReadingPolar() to find a reading, then calls
+ * MvrRangeDevice::unlockDevice().
+ * @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
+ * that provided the returned reading is placed in this variable.
+ * @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
+ */
+MVREXPORT double MvrRobot::checkRangeDevicesCumulativePolar(double startAngle, double endAngle, double *angle,
+                                                            const MvrRangeDevice **rangeDevice, bool useLocationDependentDevices) const
+{
+  double closest = 32000;
+  double closeAngle, tempDist, tempAngle;
+  std::list<MvrRangeDevice *>::const_iterator it;
+  MvrRangeDevice *device;
+  bool foundOne = false;
+  const MvrRangeDevice *closestRangeDevice = NULL;
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    device = (*it);
+    device->lockDevice();
+    if (!useLocationDependentDevices && device->isLocationDependent())
+    {
+      device->unlockDevice();
+      continue;
+    }
+    if (!foundOne || 
+	(tempDist = device->cumulativeReadingPolar(startAngle, endAngle,
+						 &tempAngle)) < closest)
+    {
+      if (!foundOne)
+      {
+	closest = device->cumulativeReadingPolar(startAngle, endAngle, 
+					      &closeAngle);
+	closestRangeDevice = device;
+      }
+      else
+      {
+	closest = tempDist;
+	closeAngle = tempAngle;
+	closestRangeDevice = device;
+      }
+      foundOne = true;
+    }
+    device->unlockDevice();
+  }
+  if (!foundOne)
+    return -1;
+  if (angle != NULL)
+    *angle = closeAngle;
+  if (rangeDevice != NULL)
+    *rangeDevice = closestRangeDevice;
+  return closest;  
+}                                                            
+
+/**
+ * Gets the closest reading in a region defined by the two points of a 
+ * rectangle.
+ * This goes through all of the registered range devices and locks each,
+ * calls currentReadingBox on it, and then unlocks it.
+
+ * @param x1 the x coordinate of one of the rectangle points
+ * @param y1 the y coordinate of one of the rectangle points
+ * @param x2 the x coordinate of the other rectangle point
+ * @param y2 the y coordinate of the other rectangle point
+ * @param readingPos a pointer to a position in which to store the location of
+ * @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
+ *   that provided the returned reading is placed in this variable.
+ * the closest position
+ * @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
+ * @return If >= 0 then this is the distance to the closest
+ * reading. If < 0 then there were no readings in the given region
+**/
+
+MVREXPORT double MvrRobot::checkRangeDevicesCurrentBox(double x1, double y1, double x2, double y2, MvrPose *readingPos,
+                                                       const MvrRangeDevice **rangeDevice, bool useLocationDependentDevices) const
+{
+
+  double closest = 32000;
+  double tempDist;
+  MvrPose closestPos, tempPos;
+  std::list<MvrRangeDevice *>::const_iterator it;
+  MvrRangeDevice *device;
+  bool foundOne = false;
+  const MvrRangeDevice *closestRangeDevice = NULL;
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    device = (*it);
+    device->lockDevice();
+    if (!useLocationDependentDevices && device->isLocationDependent())
+    {
+      device->unlockDevice();
+      continue;
+    }
+    if (!foundOne || (tempDist = device->currentReadingBox(x1, y1, x2, y2, &tempPos)) < closest)
+    {
+      if (!foundOne)
+      {
+        closest = device->currentReadingBox(x1, y1, x2, y2, &closestPos);
+        closestRangeDevice = device;
+      }
+      else
+      {
+        closest = tempDist;
+        closestPos = tempPos;
+        closestRangeDevice = device;
+      }
+      foundOne = true;
+    }
+    device->unlockDevice();
+  }
+  if (!foundOne)
+    return -1;
+  if (readingPos != NULL)
+    *readingPos = closestPos;
+  if (rangeDevice != NULL)
+    *rangeDevice = closestRangeDevice;
+  return closest;
+}
+
+/*
+ * Gets the closest reading in a region defined by the two points of a 
+ * rectangle.
+ * This goes through all of the registered range devices and locks each,
+ * calls cumulativeReadingBox() on it, and then unlocks it. If a reading was 
+ * found in the box, returns with results.
+
+ * @param x1 the x coordinate of one of the rectangle points
+ * @param y1 the y coordinate of one of the rectangle points
+ * @param x2 the x coordinate of the other rectangle point
+ * @param y2 the y coordinate of the other rectangle point
+ * @param readingPos If not NULL, a pointer to a position in which to store the location of
+ * the closest position
+ * @param rangeDevice If not NULL, a pointer in which to store a pointer to the range device
+ * that provided the closest reading in the box.
+ * @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
+ * @return If  >= 0 then this is the distance to the closest
+ * reading. If < 0 then there were no readings in the given region
+ */
+
+MVREXPORT double MvrRobot::checkRangeDevicesCumulativeBox(double x1, double y1, double x2, double y2, MvrPose *readingPos,
+                                                          const MvrRangeDevice **rangeDevice, bool useLocationDependentDevices) const
+{
+  double closest = 32000;
+  double tempDist;
+  MvrPose closestPos, tempPos;
+  std::list<MvrRangeDevice *>::const_iterator it;
+  MvrRangeDevice *device;
+  bool foundOne = false;
+  const MvrRangeDevice *closestRangeDevice = NULL;
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
+  {
+    device = (*it);
+    device->lockDevice();
+    if (!useLocationDependentDevices && device->isLocationDependent())
+    {
+      device->unlockDevice();
+      continue;
+    }
+    if (!foundOne || (tempDist = device->cumulativeReadingBox(x1, y1, x2, y2, &tempPos)) < closest)
+    {
+      if (!foundOne)
+      {
+        closest = device->cumulativeReadingBox(x1, y1, x2, y2, &closestPos);
+        closestRangeDevice = device;
+      }
+      else
+      {
+        closest = tempDist;
+        closestPos = tempPos;
+        closestRangeDevice = device;
+      }
+      foundOne = true;
+    }
+    device->unlockDevice();
+  }
+  if (!foundOne)
+    return -1;
+  if (readingPos != NULL)
+    *readingPos = closestPos;
+  if (rangeDevice != NULL)
+    *rangeDevice = closestRangeDevice;
+  return closest;
+}
+
+/* 
+ *
+ * The robot-relative positions of the readings of attached range 
+ * devices, plus sonar readings stored in this object, will also be updated.
+ *
+ * @note This simply changes our stored pose value, it does not cause the robot
+ * to drive. Use setVel(), setRotVel(), move(), setHeading(), setDeltaHeading(),
+ * or the actions system.
+ *  @param pose New pose to set (in absolute world coordinates)
+ *  @param doCumulative whether to update the cumulative buffers of range devices 
+ */
+MVREXPORT void MvrRobot::moveTo(MvrPose pose, bool doCumulative)
+{
+  std::list<MvrRangeDevice *>::iterator it;
+  MvrSensorReading *son;
+  int i;
+  
+  // we need to get this one now because chaning the encoder
+  // transform and global pose will change the local transform
+  MvrTransform localTransform;
+  localTransform = getToLocalTransform();
+
+  myEncoderTransform.setTransform(myEncoderPose, pose);
+  myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
+  mySetEncoderTransformCBList.invoke();
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); it++)
+  {
+    (*it)->lockDevice();
+    (*it)->applyTransform(localTransform, doCumulative);
+    (*it)->applyTransform(getToGlobalTransform(), doCumulative);
+    (*it)->unlockDevice();
+  }
+
+  for (i = 0; i < getNumSonar(); i++)
+  {
+    son = getSonarReading();
+    if (son != NULL)
+    {
+      son->applyTransform(localTransform);
+      son->applyTransform(getToGlobalTransform());
+    }
+  }
+}
+
+/*
+ * The robot-relative positions of the readings of attached range 
+ * devices, plus sonar readings stored in this object, will also be updated.
+ * This variant allows you to manually specify a pose to use as the robot's 
+ * old pose when updating range device readings (rather than  * Robot's 
+ * currently stored pose).
+ *
+ * @note This simply changes our stored pose value, it does not cause the robot
+ * to drive. Use setVel(), setRotVel(), move(), setHeading(), setDeltaHeading(),
+ * or the actions system.
+ *
+ * @param poseTo the new absolute real world position 
+ * @param poseFrom the original absolute real world position
+ * @param doCumulative whether to update the cumulative buffers of range devices
+ */
+MVREXPORT void MvrRobot::moveTo(MvrPose poseTo, MvrPose poseFrom, bool doCumulative)
+{
+  std::list<MvrRangeDevice *>::iterator it;
+  MvrSensorReading *son;
+  int i; 
+
+  MvrPose result = myEncoderTransform.doInvTransform(poseFrom);
+
+  // we need to get this one now because chaning the encoder
+  // transform and global pose will change the local transform
+  MvrTransform localTransform;
+  localTransform = getToLocalTransform();
+
+
+  myEncoderTransform.setTransform(result, poseTo);
+  myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
+  mySetEncoderTransformCBList.invoke();
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); it++)
+  {
+    (*it)->lockDevice();
+    (*it)->applyTransform(localTransform, doCumulative);
+    (*it)->applyTransform(getToGlobalTransform(), doCumulative);
+    (*it)->unlockDevice();
+  }
+
+  for (i = 0; i < getNumSonar(); i++)
+  {
+    son = getSonarReading();
+    if (son != NULL)
+    {
+      son->applyTransform(localTransform);
+      son->applyTransform(getToGlobalTransform());
+    }
+  }
+}
+
+/*
+ * This transform is applied to all odometric/encoder poses received. 
+ * If you simply want to transform the robot's final reported pose (as returned
+ * by getPose()) to match an external coordinate system, use moveTo() instead.
+ * @param deadReconPos the dead recon position to transform from
+ * @param globalPos the real world global position to transform to
+ */
+MVREXPORT void MvrRobot::setEncoderTransform(MvrPose deadReconPos, MvrPose globalPos)
+{
+  myEncoderTransform.setTransform(deadReconPos, globalPos);
+  myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
+  mySetEncoderTransformCBList.invoke();
+}
+
+/*
+ * This transform is applied to all odometric/encoder poses received. 
+ * If you simply want to transform the robot's final reported pose (as returned
+ * by getPose()) to match an external coordinate system, use moveTo() instead.
+ * @param transformPos the position to transform to
+ */
+MVREXPORT void MvrRobot::setEncoderTransform(MvrPose transformPos)
+{
+  myEncoderTransform.setTransform(transformPos);
+  myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
+  mySetEncoderTransformCBList.invoke();
+}
+
+/*
+ * This transform is applied to all odometric/encoder poses received. 
+ * If you simply want to transform the robot's final reported pose (as returned
+ * by getPose()) to match an external coordinate system, use moveTo() instead.
+ * @param transformPos the position to transform to
+ */
+MVREXPORT void MvrRobot::setEncoderTransform(MvrPose transform)
+{
+  myEncoderTransform = transform;
+  myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
+  mySetEncoderTransformCBList.invoke();
+}
+
+
+/*
+ * @return the transform from encoder to global coords
+ */
+MVREXPORT MvrTransform MvrRobot::getEncoderTransform(void) const
+{
+  return myEncoderTransform;
+}
+
+/* 
+ * @param pose the position to set the dead recon position to 
+ */
+MVREXPORT void MvrRobot::setDeadReconPose(MvrPose pose)
+{
+  myEncoderPose.setPose(pose);
+  myEncoderTransform.setTransform(myEncoderPose, myGlobalPose);
+  myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
+  mySetEncoderTransformCBList.invoke();  
+}
+
+/*
+ * @return an MvrTransform which can be used for transform a position
+ * in local coordinates to one in global coordinates
+ */
+MVREXPORT MvrTransform MvrRobot::getToGlobalTransform(void) const
+{
+  MvrTransform trans;
+  MvrPose origin(0, 0, 0);
+  MvrPose pose = getPose();
+
+  trans.setTransform(origin, pose);
+  return trans;
+}
+
+/*
+ * @return an MvrTransform which can be used for transform a position
+ * in local coordinates to one in local coordinates
+ */
+MVREXPORT MvrTransform MvrRobot::getToLocalTransform(void) const
+{
+  MvrTransform trans;
+  MvrPose origin(0, 0, 0);
+  MvrPose pose = getPose();
+
+  trans.setTransform(pose, origin);
+  return trans;
+}
+
+/* 
+ * Applies a transform to the range devices and sonar... 
+ * this is mostly useful for
+ * translating to/from local/global coords, but may have other uses
+ * @param trans the transform to apply
+ * @param doCumulative whether to transform the cumulative buffers or not
+ */ 
+MVREXPORT void MvrRobot::applyTransform(MvrTransform trans, bool doCumulative)
+{
+  std::list<MvrRangeDevice *>::iterator it;
+  MvrSensorReading *son;
+  int i;
+
+  for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); it++)
+  {
+      (*it)->lockDevice();
+      (*it)->applyTransform(trans, doCumulative);
+      (*it)->unlockDevice();
+  }
+
+  for (i = 0; i < getNumSonar(); i++)
+  {
+    son = getSonarReading(i);
+    if (son != NULL)
+      son->applyTransform(trans);
+  }  
+}
+
+MVREXPORT const char *MvrRobot::getName(void) const
+{
+  return myName.c_str();
+}
+
+MVREXPORT void MvrRobot::setName(const char *name)
+{
+  std::list<MvrRobot *> *robotList;
+  std::list<MvrRobot *>::iterator it;
+  int i;
+  char buf[1024];
+
+  if (name != NULL)
+    myName = name;
+  else
+  {
+    robotList = Mvria::getRobotList();
+    for (i = 1, it = robotList->begin(); it != robotList->end(); it++, i++)
+    {
+      if (this == (*it))
+      {
+	    if (i == 1)
+			myName = "robot";
+		else
+		{
+			sprintf(buf, "robot%d", i);
+			myName = buf;
+		}
+	    return;
+      }
+    }
+    sprintf(buf, "robot%lu", robotList->size());
+    myName = buf;
+  }
+}
+
+/*
+ * This sets the encoderCorrectionCB, this callback returns the robots
+ * change in heading, it takes in the change in heading, x, and y,
+ * between the previous and current readings.  
+ * 
+ * @param functor an ArRetFunctor1 created as an ArRetFunctor1C, that
+ * will be the callback... call this function NULL to clear the
+ * callback @see getEncoderCorrectionCallback
+ */
+MVREXPORT void MvrRobot::setEncoderCorrectionCallback(MvrRetFunctor<double, MvrPoseWithTime> *functor)
+{
+  myEncoderCorrectionCB = functor;
+}
+
+/**
+ * This gets the encoderCorrectionCB, see setEncoderCorrectionCallback
+ * for details.
+
+ * @return the callback, or NULL if there isn't one
+**/
+AREXPORT ArRetFunctor1<double, ArPoseWithTime> * 
+ArRobot::getEncoderCorrectionCallback(void) const
+{
+  return myEncoderCorrectionCB;
+}
