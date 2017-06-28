@@ -5865,7 +5865,7 @@ MVREXPORT void MvrRobot::setName(const char *name)
  * change in heading, it takes in the change in heading, x, and y,
  * between the previous and current readings.  
  * 
- * @param functor an ArRetFunctor1 created as an ArRetFunctor1C, that
+ * @param functor an MvrRetFunctor1 created as an MvrRetFunctor1C, that
  * will be the callback... call this function NULL to clear the
  * callback @see getEncoderCorrectionCallback
  */
@@ -5877,11 +5877,323 @@ MVREXPORT void MvrRobot::setEncoderCorrectionCallback(MvrRetFunctor<double, MvrP
 /**
  * This gets the encoderCorrectionCB, see setEncoderCorrectionCallback
  * for details.
-
  * @return the callback, or NULL if there isn't one
 **/
-AREXPORT ArRetFunctor1<double, ArPoseWithTime> * 
-ArRobot::getEncoderCorrectionCallback(void) const
+MVREXPORT MvrRetFunctor1<double, MvrPoseWithTime> * MvrRobot::getEncoderCorrectionCallback(void) const
 {
   return myEncoderCorrectionCB;
 }
+
+/**
+ * The direct motion precedence time determines how long actions will be 
+ * ignored after a direct motion command is given.  If the direct motion
+ * precedence time is 0, then direct motion will take precedence over actions 
+ * until a clearDirectMotion command is issued.  This value defaults to 0.
+ * @param mSec the number of milliseconds direct movement should trump actions, 
+ * if a negative number is given, then the value will be 0
+ */
+MVREXPORT void MvrRobot::setDirectMotionPrecedenceTime(int mSec)
+{
+  if (mSec < 0)
+   myDirectPrecedenceTime = 0;
+  else
+   myDirectPrecedenceTime = mSec;
+}
+
+/*
+ * The direct motion precedence time determines how long actions will be 
+ * ignored after a direct motion command is given.  If the direct motion
+ * precedence time is 0, then direct motion will take precedence over actions 
+ * until a clearDirectMotion command is issued.  This value defaults to 0.
+ * @return the number of milliseconds direct movement will trump actions
+ */
+MVREXPORT unsigned int MvrRobot::getDirectMotionPrecedenceTime(void) const
+{
+  return myDirectPrecedenceTime;
+}
+
+/*
+ * This clears the direct motion commands so that actions will be allowed to 
+ * control the robot again.
+ */
+MVREXPORT void MvrRobot::clearDirectMotion(void)
+{
+  myTransType     = TRANS_NONE;
+  myLastTransType = TRANS_NONE;
+  myRotType       = ROT_NONE;
+  myLastRotType   = ROT_NONE;
+  myLatType       = LAT_NONE;
+  myLastLatType   = LAT_NONE;
+  myLastActionTransVal   = 0;
+  myLastActionRotStopped = true;
+  myLastActionRotHeading = false;
+  myLastActionLatVal     = 0;
+}
+
+/*
+ * This stops the state reflection task from sending any motion
+ * commands to the robot (it still receives data from the robot, and it
+ * will still send the PULSE command).  If you later call clearDirectMotion(),
+ * then state reflection will be re-enabled, but the velocity values are reset
+ * to 0.  Similarly, if you later use direct motion commands,
+ * state reflection for those commands will then become active and those
+ * commands will be sent each cycle; other commands will remain disabled.
+ */
+MVREXPORT void MvrRobot::stopStateReflection(void)
+{
+  myTransType     = TRANS_IGNORE;
+  myLastTransType = TRANS_IGNORE;
+  myRotType       = ROT_IGNORE;
+  myLastRotType   = ROT_IGNORE;
+  myLatType       = LAT_IGNORE;
+  myLastLatType   = LAT_IGNORE;
+}
+
+/*
+ * Returns the state of direct motion commands: whether actions are allowed or not
+ */
+MVREXPORT bool MvrRobot::isDirectMotion(void) const
+{
+  if (myTransType ==  TRANS_NONE && myLastTransType == TRANS_NONE &&
+      myRotType == ROT_NONE && myLastRotType == ROT_NONE && 
+      (!hasLatVel() || (hasLatVel() && myLatType == LAT_NONE && myLastLatType == LAT_NONE)))
+    return false;
+  else
+    return true;
+}
+
+/// This command enables the motors on the robot. If it is connected.
+MVREXPORT void MvrRobot::enableMotors(void)
+{
+  comInt(MvrCommands::ENABLE, 1);
+}
+
+/// This command disables the motors on the robot. If it is connected.
+MVREXPORT void MvrRobot::disableMotors(void)
+{
+  comInt(MvrCommands::ENABLE, 0);
+}
+
+/// This command enables the sonars on the robot. If it is connected.
+MVREXPORT void MvrRobot::enableSonar(void)
+{
+  mySonarEnabled = true;
+  myAutonomousDrivingSonarEnabled = false;
+  comInt(MvrCommands::SONAR, 1);
+  
+  int ii;
+  for (ii = 1; ii <= Mvria::getMaxNumSonarBoards(); ii++)
+  {
+    MvrSonarMTX *sonarMTX = findSonar(ii);
+    
+    if (sonarMTX == NULL) 
+      continue;
+
+    sonarMTX->turnOnTransducers();
+  }
+}
+
+/// This command enables the sonars on the robot. If it is connected.
+MVREXPORT void MvrRobot::enableAutonomousDrivingSonar()
+{
+  mySonarEnabled = false;
+  myAutonomousDrivingSonarEnabled = true;
+  comInt(MvrCommands::SONAR, 1);
+  
+  int ii;
+  for (ii = 1; ii <= Mvria::getMaxNumSonarBoards(); ii++)
+  {
+    MvrSonarMTX *sonarMTX = findSonar(ii);
+    
+    if (sonarMTX == NULL) 
+      continue;
+
+    sonarMTX->disableForAutonomousDriving();
+  }
+}
+
+/// This command disables the sonars on the robot. If it is connected.
+MVREXPORT void MvrRobot::disableSonar(void)
+{
+  mySonarEnabled = false;
+  myAutonomousDrivingSonarEnabled = false;
+  comInt(MvrCommands::SONAR, 0);
+  
+  int ii;
+  for (ii = 1; ii <= Mvria::getMaxNumSonarBoards(); ii++)
+  {
+    MvrSonarMTX *sonarMTX = findSonar(ii);
+    
+    if (sonarMTX == NULL) 
+      continue;
+
+    sonarMTX->turnOffTransducers();
+  }
+}
+
+/**
+ * The state reflection refresh time is the number of milliseconds between 
+ * when the state reflector will refresh the robot, if the command hasn't 
+ * changed.  The default is 500 milliseconds.  If this number is less than 
+ * the cyle time, it'll simply happen every cycle.
+ * @param mSec the refresh time, in milliseconds, non-negative, if negative is 
+ * given, then the value will be 0
+ */
+MVREXPORT void MvrRobot::setStateReflectionRefreshTime(int mSec)
+{
+  if (mSec < 0)
+    myStateReflectionRefreshTime = 0;
+  else
+    myStateReflectionRefreshTime = mSec;  
+}
+
+/**
+ * The state reflection refresh time is the number of milliseconds between 
+ * when the state reflector will refresh the robot, if the command hasn't 
+ * changed. The default is 500 milliseconds. If this number is less than 
+ * the cyle time, it'll simply happen every cycle.
+ * @return the state reflection refresh time
+ */
+MVREXPORT int MvrRobot::getStateReflectionRefreshTime(void)
+{
+  return myStateReflectionRefreshTime;
+}
+
+/**
+ * This will attach a key handler to a robot, by putting it into the
+ * robots sensor interp task list (a keyboards a sensor of users will,
+ * right?).  By default exitOnEscape is true, which will cause this
+ * function to add an escape key handler to the key handler, this will
+ * make the program exit when escape is pressed... if you don't like
+ * this you can pass exitOnEscape in as false.
+ * @param keyHandler the key handler to attach
+ * @param exitOnEscape whether to exit when escape is pressed or not
+ * @param useExitNotShutdown if true then Mvria::exit will be called
+ * instead of Mvria::shutdown if it tries to exit
+ */
+MVREXPORT void MvrRobot::attachKeyHandler(MvrKeyHandler *keyHandler, bool exitOnEscape, bool useExitNotShutdown)
+{
+  if (myKeyHandlerCB != NULL)
+    delete myKeyhandlerCB;
+  myKeyHandlerCB = new MvrFunctor<MvrKeyHandler>(keyHandler, &MvrKeyHandler::checkKeys);
+  addSensorInterpTask("Key Handler", 50, myKeyHandlerCB);
+
+  myKeyHandler = keyHandler;
+  myKeyHandlerUseExitNotShutdown = useExitNotShutdown;
+  if (exitOnEscape)
+    keyHandler->addKeyHandler(MvrKeyHandler::ESCAPE, &myKeyHandlerExitCB);
+}
+
+MVREXPORT MvrKeyHandler *MvrRobot::getKeyHandler(void) const
+{ 
+  return myKeyHandler;
+}
+
+MVREXPORT void MvrRobot::keyHandlerExit(void)
+{
+  MvrLog::log(MvrLog::Terse, "Esacape was pressed, program is exiting");
+  // if we're using exit not the keyhandler then call Mvria::exit
+  // instead of shutdown, this call never return
+  if (myKeyHandlerUseExitNotShutdown)
+    Mvria::exit();
+  stopRunning();
+  unlock();
+  Mvria::shutdown();
+}
+
+MVREXPORT void MvrRobot::setPacketsReceivedTracking(bool packetsReceivedTracking)
+{
+  if (packetsReceivedTracking)
+    MvrLog::log(MvrLog::Normal, "MvrRobot:: tracking packets received");
+  else
+    MvrLog::log(MvrLog::Normal, "MvrRobot:: not tracking packets received");
+  myPacketsReceivedTracking = packetsReceivedTracking;
+	myReceiver.setTracking(myPacketsReceivedTracking);
+	myReceiver.setTrackingLogName("MicroController");
+  myPacketsReceivedTrackingCount = 0; 
+  myPacketsReceivedTrackingStarted.setToNow();     
+}
+
+MVREXPORT void MvrRobot::mvriaExitCallback(void)
+{
+  mySyncLoop.stopRunIfNotConnected(false);
+  disconnect();
+}
+
+MVREXPORT MvrRobot::ChargeState MvrRobot::getChargeState(void) const
+{
+  return myChargeState;
+}
+
+MVREXPORT void MvrRobot::setChargeState(MvrRobot::ChargeState chargeState)
+{
+  myOverriddenChargeState = true;
+  myChargeState = chargeState;
+}
+
+MVREXPORT bool MvrRobot::isChargerPowerGood(void) const
+{
+  if (myOverriddenIsChargerPowerGood)
+    return myIsChargerPowerGood;
+  else
+    return (getFlags() & MvrUtil::BIT10);
+}
+
+MVREXPORT void MvrRobot::setIsChargerPowerGood(bool isChargerPowerGood) 
+{
+  myOverriddenIsChargerPowerGood = true;
+  myIsChargerPowerGood = isChargerPowerGood;
+}
+
+MVREXPORT void MvrRobot::resetTripOdometer(void)
+{
+  myTripOdometerDistance = 0;
+  myTripOdometerDegrees = 0;
+  myTripOdometerStart.setToNow();
+}
+
+MVREXPORT void MvrRobot::setStateOfCharge(double stateOfCharge)
+{
+  myHaveStateOfCharge = true;
+  myStateOfCharge = stateOfCharge;
+  myStateOfChargeSetTime.setToNow();
+}
+
+MVREXPORT void MvrRobot::setIgnoreMicroControllerBatteryInfo(
+	bool ignoreMicroControllerBatteryInfo)
+{
+  if (myIgnoreMicroControllerBatteryInfo != ignoreMicroControllerBatteryInfo)
+  {
+    if (ignoreMicroControllerBatteryInfo)
+      MvrLog::log(MvrLog::Normal, "Ignoring battery info from the microcontroller");
+    else
+      MvrLog::log(MvrLog::Normal, "Not ignoring battery info from the microcontroller");
+  }
+  myIgnoreMicroControllerBatteryInfo = ignoreMicroControllerBatteryInfo;
+}
+
+MVREXPORT void MvrRobot::setBatteryInfo(double realBatteryVoltage, 
+				      double normalizedBatteryVoltage,
+				      bool haveStateOfCharge,
+				      double stateOfCharge)
+{
+  myRealBatteryVoltage = realBatteryVoltage;
+  myRealBatteryAverager.add(myRealBatteryVoltage);
+
+  myBatteryVoltage = normalizedBatteryVoltage;
+  myBatteryAverager.add(myBatteryVoltage);
+
+  if (!myHaveStateOfCharge && haveStateOfCharge)
+    myHaveStateOfCharge = true;
+  if (haveStateOfCharge)
+  {
+    myStateOfCharge = stateOfCharge;
+    myStateOfChargeSetTime.setToNow();
+  }  
+}
+
+/*
+ * @note Do not call this method directly 
+ * if using ArLaserConnector, it will automatically add laser(s).
+ * @internal
+*/
