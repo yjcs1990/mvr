@@ -137,8 +137,8 @@ protected:
   MVREXPORT static void invokeFunctor(const char *message);
   MVREXPORT static void checkFileSize(void);
 
-  static MVREXPORTLog *ourLog;
-  static MVREXPORTMutex ourMutex;
+  static MvrLog *ourLog;
+  static MvrMutex ourMutex;
   static LogType ourType;
   static LogLevel ourLevel;
   static bool ourLoggingTime;
