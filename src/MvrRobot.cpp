@@ -4093,4 +4093,173 @@ MVREXPORT void MvrRobot::robotUnlocker(void)
   unlock();
 }
 
-MVREXPORT void
+MVREXPORT void MvrRobot::packetHandler(void)
+{
+  if (myRunningNonThreaded)
+    packetHandlerNonThreaded();
+  else
+    packetHandlerThreadedProcessor();
+}
+
+/*
+ * This is here for use if the robot is running without threading
+ * Reads in all of the packets that are available to read in, then runs through
+ * the list of packet handlers and tries to get each packet handled.
+ */
+MVREXPORT void MvrRobot::packetHandlerNonThreaded(void)
+{
+  MvrRobotPacket *packet;
+  int timeToWait;
+  MvrTime start;
+  bool sipHandled = false;
+
+  if (myAsyncConnectFlag)
+  {
+    lock();
+    asyncConnectHandler(false);
+    unlock();
+    return;
+  }
+
+  if (!isConnected())
+    return;
+  start.setToNow();
+/*
+ * The basic idea is that if we're chained to the sip we run through
+ * and see if we have any packets available now (like if we got
+ * backed up), we only check this for half the cycle time
+ * though... if we know the cycle time of the robot (from config)
+ * then we go for half that, if we don't know the cycle time of the
+ * robot (from config) then we go for half of whatever our cycle time
+ * is set to
+ * 
+ * if we don't have any packets waiting then we chill and wait for
+ * it, if we got one, just get on with it
+ */
+  packet = NULL;
+  // read all the packets that are available
+  while ((packet = myReceiver.receivePacket(0)) != NULL)
+  {
+    if (myPacketsReceivedTracking)
+    {
+      MvrLog::log(MvrLog::Normal, "Rcvd: prePacket (%ld) 0x%x at %ld (%ld)",
+                  myPacketsReceivedTrackingCount,
+                  packet->getID(), start.mSecSince(),
+                  myPacketsReceivedTrackingStarted.mSecSince());
+    }
+    handlePacket(packet);
+    if ((packet->getID() & 0xf0) == 0x30)
+      sipHandled = true;
+    packet = NULL;
+
+    // if we've taken too long here then break
+    if ((getOrigRobotConfig()->hasPacketArrived() && start.mSecSince() > getOrigRobotConfig()->getSipCycleTime() / 2) ||
+	      (!getOrigRobotConfig()->hasPacketArrived() && (unsigned int) start.mSecSince() > myCycleTime / 2))
+    {
+      break;
+    }
+  }
+
+  if (isCycleChained())
+    timeToWait = getCycleTime() * 2 - start.mSecSince();
+
+  // if we didn't get sip and we're chained to the sip, wait for the sip
+  while (isCycleChained() !sipHandled && isRunning() &&  (packet = myReceiver.receivePacket(timeToWait)) != NULL)
+  {
+    if (myPacketsReceivedTracking)
+    {
+      MvrLog::log(MvrLog::Normal, "Revd: Packet (%ld) 0x%x at %ld (%ld)",
+                  myPacketsReceivedTrackingCount, 
+                  packet->getID(), start.mSecSince(), 
+                  myPacketsReceivedTrackingStarted.mSecSince());
+      myPacketsReceivedTrackingCount++;
+    }
+
+    handlePacket(packet);
+    if ((packet->getID() & 0xf0) == 0x30)
+      break;
+    timeToWait = getCycleTime() * 2 - start.mSecSince();
+    if (timeToWait < 0)
+      timeToWait = 0;
+  }
+  
+  myConnectionTimeoutMutex.lock();
+  if (myTimeoutTime > 0 && ((-myLastOdometryReceivedTime.mSecTo()) > myTimeoutTime))
+  {
+    char buf[10000];
+    sprintf(buf, "Losing connection because no odometry received from microcontroller in %ld milliseconds (greater than the timeout of %d).", 
+            (-myLastOdometryReceivedTime.mSecTo()),
+            myTimeoutTime);
+    myConnectionTimeoutMutex.unlock();
+    dropConnection(buf, "because lost connection to microcontroller");
+  }
+  else
+  {
+    myConnectionTimeoutMutex.unlock();
+  }
+
+  myConnectionTimeoutMutex.lock();
+  if (myTimeoutTime > 0 && ((-myLastPacketReceivedTime.mSecTo()) > myTimeoutTime))
+  {
+    char buf[10000];
+    sprintf(buf, "Losing connection because nothing received from robot in %ld milliseconds (greater than the timeout of %d).", 
+            (-myLastPacketReceivedTime.mSecTo()),
+            myTimeoutTime);
+    myConnectionTimeoutMutex.unlock();
+    dropConnection(buf, "because lost connection to microcontroller");
+  }
+  else
+  {
+    myConnectionTimeoutMutex.unlock();
+  }
+
+  if (myPacketsReceivedTracking)
+    MvrLog::log(MvrLog::Normal, "Rcvd(nt): time taken %ld", start.mSecSince());
+}
+
+MVREXPORT void MvrRobot::packetHandlerThreadedProcessor(void)
+{
+  MvrRobotPacket *packet;
+  int timeToWait;
+  MvrTime start;
+  bool sipHandled = false;
+  bool anothersip = false;
+  std::list<MvrRobotPacket *>::iterator it;
+
+  if (myAsyncConnectFlag)
+  {
+    lock();
+    asyncConnectHandler(false);
+    unlock();
+    return;
+  }
+
+  if (!isConnected)
+    return;
+  //MvrLog::log(MvrLog::Normal, "Rcvd: start %ld", myPacketsReceivedTrackingStarted.mSecSince());
+
+  start.setToNow();
+  // read all the packets that are available in our time window (twice
+  // packet cycle), if we get the sip we stop...
+  while (!sipHandled && isRunning())
+  {
+    packet = NULL;
+    anotherSip = false;
+    myPacketMutex.lock();
+    if (!myPacketList.empty())
+    {
+      packet = myPacketList.front();
+      myPacketList.pop_front();
+      // see if there are more sips, since if so we'll keep chugging
+      // throw the list
+      for (it = myPacketList.begin();
+           !anotherSip && it != myPacketList.end();
+           it++)
+      {
+        if (((*it)->getID() & 0xf0) == 0x30)
+          anotherSip = true;
+      }
+      myPacketMutex.unlock();
+    }
+  }
+}
