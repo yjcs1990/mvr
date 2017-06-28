@@ -4802,11 +4802,9 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
 
     if (myPacketsReceivedTracking)
       MvrLog::log(MvrLog::Normal, "MotorPacketTiming: commDiff %lld fpgaNowDiff %2d.%03d fpgaPacketDiff %2d.%03d bytes %d\nFPGA:uC  %6u.%03u.%.03u\nFPGA:lpcNow %6u.%03u.%.03u\nMvrTime:1stByte %6lld.%03lld\nMvrTime:now     %6lld.%.03lld\nFPGA:lpcPacket %6u.%03u.%03u", 
-                  mSecSince, 
-                  ((lpcNowUSec - uCUSec) % 1000000) / 1000, (lpcNowUSec - uCUSec) % 1000,
+                  mSecSince, ((lpcNowUSec - uCUSec) % 1000000) / 1000, (lpcNowUSec - uCUSec) % 1000,
                   ((lpcUSec - uCUSec) % 1000000) / 1000, (lpcUSec - uCUSec) % 1000,		 
                   packet->getLength(),
-                  
                   uCUSec / 1000000, (uCUSec % 1000000) / 1000, uCUSec % 1000,
                   lpcNowUSec / 1000000, (lpcNowUSec % 1000000) / 1000, lpcNowUSec % 1000,
                   packet->getTimeReceived().getSecLL(), 
@@ -4866,7 +4864,7 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
    * to the raw encoder heading to find which the current raw encoder
    * heading.
 
-* From here there are two paths:
+   * From here there are two paths:
 
    * Path 1) Have a callback.  If we have a callback it means that we
    * have an inertial nav device of some kind.  If this is the case,
@@ -5115,7 +5113,6 @@ MVREXPORT bool MvrRobot::isSonarNew(int num) const
 MVREXPORT MvrSensorReading *MvrRobot::getSonarReading(int num) const
 {
   std::map<int, MvrSensorReading *>::const_iterator it;
-  
   if ((it = mySonars.find(num)) != mySonars.end())
     return (*it).second;
   else
@@ -5218,6 +5215,7 @@ MVREXPORT int MvrRobot::getClosestSonarNumber(double startAngle, double endAngle
   for (i = 0; i < getNumSonar(); i++)
   {
     sonar = getSonarReading(i);
+
     if (sonar == NULL)
     {
       MvrLog::log(MvrLog::Terse, "Have an empty sonar at number %d, there should be %d sonar", i, getNumSonar());
@@ -5360,16 +5358,16 @@ MVREXPORT bool MvrRobot::hasRangeDevice(MvrRangeDevice *device) const
 }
 
 /*
- *  Find the closest reading from any range device's set of current readings
- *  within a polar region or "slice" defined by the given angle range.
- *  This function iterates through each registered range device (see 
- *  addRangeDevice()), calls MvrRangeDevice::lockDevice(), uses
- *  MvrRangeDevice::currentReadingPolar() to find a reading, then calls
- *  MvrRangeDevice::unlockDevice().
+ * Find the closest reading from any range device's set of current readings
+ * within a polar region or "slice" defined by the given angle range.
+ * This function iterates through each registered range device (see 
+ * addRangeDevice()), calls MvrRangeDevice::lockDevice(), uses
+ * MvrRangeDevice::currentReadingPolar() to find a reading, then calls
+ * MvrRangeDevice::unlockDevice().
  *
  * @copydoc MvrRangeDevice::currentReadingPolar()
  * @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
- *  that provided the returned reading is placed in this variable.
+ * that provided the returned reading is placed in this variable.
  * @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
  */
 MVREXPORT double MvrRobot::checkRangeDevicesCurrentPolar(double startAngle, double endAngle, double *angle, 
@@ -5447,21 +5445,18 @@ MVREXPORT double MvrRobot::checkRangeDevicesCumulativePolar(double startAngle, d
       device->unlockDevice();
       continue;
     }
-    if (!foundOne || 
-	(tempDist = device->cumulativeReadingPolar(startAngle, endAngle,
-						 &tempAngle)) < closest)
+    if (!foundOne || (tempDist = device->cumulativeReadingPolar(startAngle, endAngle, &tempAngle)) < closest)
     {
       if (!foundOne)
       {
-	closest = device->cumulativeReadingPolar(startAngle, endAngle, 
-					      &closeAngle);
-	closestRangeDevice = device;
+        closest = device->cumulativeReadingPolar(startAngle, endAngle, &closeAngle);
+        closestRangeDevice = device;
       }
       else
       {
-	closest = tempDist;
-	closeAngle = tempAngle;
-	closestRangeDevice = device;
+        closest = tempDist;
+        closeAngle = tempAngle;
+        closestRangeDevice = device;
       }
       foundOne = true;
     }
@@ -5488,7 +5483,7 @@ MVREXPORT double MvrRobot::checkRangeDevicesCumulativePolar(double startAngle, d
  * @param y2 the y coordinate of the other rectangle point
  * @param readingPos a pointer to a position in which to store the location of
  * @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
- *   that provided the returned reading is placed in this variable.
+ * that provided the returned reading is placed in this variable.
  * the closest position
  * @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
  * @return If >= 0 then this is the distance to the closest
