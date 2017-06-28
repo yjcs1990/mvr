@@ -377,7 +377,7 @@ bool MvrSocket::connectTo(const char *host, int port)
   {
     if (gethostname(localhost, sizeof(localhost)) == 1)
     {
-      myErrorStr = "Failure to locale host '";
+      myErrorStr = "Failure to local host '";
       myErrorStr += localhost;
       myErrorStr += "'";
       MvrLog::logErrorFromOS(MvrLog::Normal,
