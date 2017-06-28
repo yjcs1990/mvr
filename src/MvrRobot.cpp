@@ -4,7 +4,7 @@
  > Description  : Central class for communicating with and operating the robot
  > Author       : Yu Jie
  > Create Time  : 2017年05月22日
- > Modify Time  : 2017年06月22日
+ > Modify Time  : 2017年06月28日
 ***************************************************************************************************/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
@@ -1631,8 +1631,8 @@ MVREXPORT void MvrRobot::requestIOPackets(void)
 }
 
 /**
-  @see requestEncoderPackets()
-*/
+ * @see requestEncoderPackets()
+ */
 MVREXPORT void MvrRobot::stopEncoderPackets(void)
 {
   comInt(MvrCommands::ENCODER, 0);
@@ -2141,18 +2141,17 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxTransAccel(double maxAccel)
   return true;
 }
 
-/**
-  This sets the absolute maximum translational deceleration the robot
-  will do... the deceleration can also be set by the actions and by
-  setTransDecel, but it will not be allowed to go higher than this
-  value.  You should not set this very often, if you want to
-  manipulate this value you should use the actions or setTransDecel.
+/*
+ * This sets the absolute maximum translational deceleration the robot
+ * will do... the deceleration can also be set by the actions and by
+ * setTransDecel, but it will not be allowed to go higher than this
+ * value. You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setTransDecel.
+ * @param maxDecel the maximum deceleration to be set, it must be a non-zero
+ * number 
 
-  @param maxDecel the maximum deceleration to be set, it must be a non-zero
-  number 
-
-  @return true if the value is good, false othrewise
- **/
+ * @return true if the value is good, false othrewise
+ */
 
 MVREXPORT bool MvrRobot::setAbsoluteMaxTransDecel(double maxDecel)
 {
@@ -2178,16 +2177,16 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxTransDecel(double maxDecel)
   return true;
 }
 
-/**
-  This sets the absolute maximum velocity the robot will go... the
-  maximum velocity can also be set by the actions and by
-  setRotVelMax, but it will not be allowed to go higher than this
-  value.  You should not set this very often, if you want to
-  manipulate this value you should use the actions or setRotVelMax.
+/*
+ * This sets the absolute maximum velocity the robot will go... the
+ * maximum velocity can also be set by the actions and by
+ * setRotVelMax, but it will not be allowed to go higher than this
+ * value. You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setRotVelMax.
 
-  @param maxVel the maximum velocity to be set, it must be a non-zero number
-  @return true if the value is good, false othrewise
- **/
+ * @param maxVel the maximum velocity to be set, it must be a non-zero number
+ * @return true if the value is good, false othrewise
+ */
 
 MVREXPORT bool MvrRobot::setAbsoluteMaxRotVel(double maxVel)
 {
@@ -2213,18 +2212,18 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxRotVel(double maxVel)
   return true;
 }
 
-/**
-  This sets the absolute maximum rotational acceleration the robot
-  will do... the acceleration can also be set by the actions and by
-  setRotAccel, but it will not be allowed to go higher than this
-  value.  You should not set this very often, if you want to
-  manipulate this value you should use the actions or setRotAccel.
+/*
+ * This sets the absolute maximum rotational acceleration the robot
+ * will do... the acceleration can also be set by the actions and by
+ * setRotAccel, but it will not be allowed to go higher than this
+ * value. You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setRotAccel.
 
-  @param maxAccel the maximum acceleration to be set, it must be a non-zero
-  number 
+ * @param maxAccel the maximum acceleration to be set, it must be a non-zero
+ * number 
 
-  @return true if the value is good, false othrewise
- **/
+ * @return true if the value is good, false othrewise
+ */
 
 MVREXPORT bool MvrRobot::setAbsoluteMaxRotAccel(double maxAccel)
 {
@@ -2250,18 +2249,18 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxRotAccel(double maxAccel)
   return true;
 }
 
-/**
-  This sets the absolute maximum rotational deceleration the robot
-  will do... the deceleration can also be set by the actions and by
-  setRotDecel, but it will not be allowed to go higher than this
-  value.  You should not set this very often, if you want to
-  manipulate this value you should use the actions or setRotDecel.
+/*
+ * This sets the absolute maximum rotational deceleration the robot
+ * will do... the deceleration can also be set by the actions and by
+ * setRotDecel, but it will not be allowed to go higher than this
+ * value. You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setRotDecel.
 
-  @param maxDecel the maximum deceleration to be set, it must be a non-zero
-  number 
+ * @param maxDecel the maximum deceleration to be set, it must be a non-zero
+ * number 
 
-  @return true if the value is good, false othrewise
- **/
+ * @return true if the value is good, false othrewise
+ */
 
 MVREXPORT bool MvrRobot::setAbsoluteMaxRotDecel(double maxDecel)
 {
@@ -2287,19 +2286,19 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxRotDecel(double maxDecel)
   return true;
 }
 
-/**
-  This sets the absolute maximum lateral velocity the robot will
-  go... the maximum velocity can also be set by the actions and by
-  setLatVelMax, but it will not be allowed to go higher than this
+/*
+ * This sets the absolute maximum lateral velocity the robot will
+ * go... the maximum velocity can also be set by the actions and by
+ * setLatVelMax, but it will not be allowed to go higher than this
 
-  value.  You should not set this very often, if you want to
-  manipulate this value you should use the actions or setLatVelMax.
+ * value. You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setLatVelMax.
 
-  @param maxLatVel the maximum velocity to be set, it must be a non-zero
-  number 
+ * @param maxLatVel the maximum velocity to be set, it must be a non-zero
+ * number 
 
-  @return true if the value is good, false othrewise
- **/
+ * @return true if the value is good, false othrewise
+ */
 
 MVREXPORT bool MvrRobot::setAbsoluteMaxLatVel(double maxLatVel)
 {
@@ -2327,18 +2326,18 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxLatVel(double maxLatVel)
   return true;
 }
 
-/**
-  This sets the absolute maximum lateral acceleration the robot
-  will do... the acceleration can also be set by the actions and by
-  setLatAccel, but it will not be allowed to go higher than this
-  value.  You should not set this very often, if you want to
-  manipulate this value you should use the actions or setLatAccel.
+/*
+ * This sets the absolute maximum lateral acceleration the robot
+ * will do... the acceleration can also be set by the actions and by
+ * setLatAccel, but it will not be allowed to go higher than this
+ * value. You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setLatAccel.
 
-  @param maxAccel the maximum acceleration to be set, it must be a non-zero
-  number 
+ * @param maxAccel the maximum acceleration to be set, it must be a non-zero
+ * number 
 
-  @return true if the value is good, false othrewise
- **/
+ * @return true if the value is good, false othrewise
+ */
 
 MVREXPORT bool MvrRobot::setAbsoluteMaxLatAccel(double maxAccel)
 {
@@ -2365,18 +2364,18 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxLatAccel(double maxAccel)
   return true;
 }
 
-/**
-  This sets the absolute maximum lateral deceleration the robot
-  will do... the deceleration can also be set by the actions and by
-  setLatDecel, but it will not be allowed to go higher than this
-  value.  You should not set this very often, if you want to
-  manipulate this value you should use the actions or setLatDecel.
+/*
+ * This sets the absolute maximum lateral deceleration the robot
+ * will do... the deceleration can also be set by the actions and by
+ * setLatDecel, but it will not be allowed to go higher than this
+ * value. You should not set this very often, if you want to
+ * manipulate this value you should use the actions or setLatDecel.
 
-  @param maxDecel the maximum deceleration to be set, it must be a non-zero
-  number 
+ * @param maxDecel the maximum deceleration to be set, it must be a non-zero
+ * number 
 
-  @return true if the value is good, false othrewise
- **/
+ * @return true if the value is good, false othrewise
+ */
 
 MVREXPORT bool MvrRobot::setAbsoluteMaxLatDecel(double maxDecel)
 {
@@ -2462,19 +2461,19 @@ MVREXPORT const MvrRobotConfigPacketReader *MvrRobot::getOrigRobotConfig(void) c
 }
 
 /*
- *  Adds a packet handler.  A packet handler is an MvrRetFunctor1<bool, MvrRobotPacket*>, 
- *  (e.g.  created as an instance of MvrRetFunctor1C.  The return is a boolean, while the functor
- *  takes an MvrRobotPacket pointer as the argument.  This functor is placed in
- *  a list of functors to call when a packet arrives. This list is processed
- *  in order until one of the handlers returns true. Your packet handler
- *  function may be invoked for any packet, so it should test the packet type
- *  ID (see MvrRobotPacket::getID()). If you handler gets data from the packet
- *  (it "handles" it) it should return true, to prevent MvrRobot from invoking
- *  other handlers with the packet (with data removed). If you hander
- *  cannot interpret the packet, it should leave it unmodified and return
- *  false to allow other handlers a chance to receive it.
- *  @param functor the functor to call when the packet comes in
- *  @param position whether to place the functor first or last
+ * Adds a packet handler.  A packet handler is an MvrRetFunctor1<bool, MvrRobotPacket*>, 
+ * (e.g.  created as an instance of MvrRetFunctor1C.  The return is a boolean, while the functor
+ * takes an MvrRobotPacket pointer as the argument.  This functor is placed in
+ * a list of functors to call when a packet arrives. This list is processed
+ * in order until one of the handlers returns true. Your packet handler
+ * function may be invoked for any packet, so it should test the packet type
+ * ID (see MvrRobotPacket::getID()). If you handler gets data from the packet
+ * (it "handles" it) it should return true, to prevent MvrRobot from invoking
+ * other handlers with the packet (with data removed). If you hander
+ * cannot interpret the packet, it should leave it unmodified and return
+ * false to allow other handlers a chance to receive it.
+ * @param functor the functor to call when the packet comes in
+ * @param position whether to place the functor first or last
  */
 MVREXPORT void MvrRobot::addPacketHandler(MvrRetFunctor1<bool, MvrRobotPacket *> *functor,
                                           MvrListPos::Pos position)
@@ -3049,7 +3048,7 @@ MVREXPORT MvrSyncTask *MvrRobot::findTask(MvrFunctor *functor)
  * @param action the action to add 
  * @param priority what importance to give the action; how to order the actions.  High priority actions are evaluated by the action resolvel before lower priority actions.
  * @return true if the action was successfully added, false on error (e.g. the action was NULL)
-*/
+ */
 MVREXPORT bool MvrRobot::addAction(MvrAction *action, int priority)
 {
   if (action == NULL)
@@ -4434,14 +4433,14 @@ MVREXPORT unsigned int MvrRobot::getCycleWarningTime(void) const
   return myCycleWarningTime;
 }
 
-/**
+/* 
  * Sets a time such that if the number of milliseconds between cycles
  * goes over this then there will be an MvrLog::log(MvrLog::Normal)
  * warning.
 
  * @return the number of milliseconds between cycles to warn over, 0
  * means warning is off
-**/
+ */
 MVREXPORT unsigned int MvrRobot::getCycleWarningTime(void)
 {
   return myCycleWarningTime;
@@ -4855,50 +4854,48 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
   }
 
   /*
-    Okay how this works is like so.  
+   * Okay how this works is like so.  
 
-    We keep around the raw encoder position, because we must use this
-    to find differences between last position and this position.
-    
-    We find the difference in x and y positions (deltaX and deltaY)
-    and keep these around for later use, but we also add these to our
-    raw encoder readings for X and Y.  We also find the change in
-    angle (deltaTh), which is used for inertial corrections, and added
-    to the raw encoder heading to find which the current raw encoder
-    heading.
+   * We keep around the raw encoder position, because we must use this
+   * to find differences between last position and this position.
+   * 
+   * We find the difference in x and y positions (deltaX and deltaY)
+   * and keep these around for later use, but we also add these to our
+   * raw encoder readings for X and Y.  We also find the change in
+   * angle (deltaTh), which is used for inertial corrections, and added
+   * to the raw encoder heading to find which the current raw encoder
+   * heading.
 
+* From here there are two paths:
 
-    From here there are two paths:
+   * Path 1) Have a callback.  If we have a callback it means that we
+   * have an inertial nav device of some kind.  If this is the case,
+   * then we pass the callback the delta between last position and
+   * current position, along with the time of the current position,
+   * then the callback gives us back a new delta theta (deltaTh).  We
+   * then need to rotate the deltaX and deltaY into our corrected
+   * encoder space.  We do this by making a transform that takes the
+   * raw encoder heading and transforms it to what our new heading is
+   * (adding deltaTh to our current encoder th), and then applying that
+   * transform, taking the results as our new deltaX and deltaY.
 
-    Path 1) Have a callback.  If we have a callback it means that we
-    have an inertial nav device of some kind.  If this is the case,
-    then we pass the callback the delta between last position and
-    current position, along with the time of the current position,
-    then the callback gives us back a new delta theta (deltaTh).  We
-    then need to rotate the deltaX and deltaY into our corrected
-    encoder space.  We do this by making a transform that takes the
-    raw encoder heading and transforms it to what our new heading is
-    (adding deltaTh to our current encoder th), and then applying that
-    transform, taking the results as our new deltaX and deltaY.
+   * Path 2) We have no callback, we just use the heading that came
+   * back from the robot as our delta theta (deltaTh);
 
-    Path 2) We have no callback, we just use the heading that came
-    back from the robot as our delta theta (deltaTh);
+   * From here the two paths unify again.  deltaX and deltaY are added
+   * to the encoder pose (this is the corrected encoder pose), and the
+   * encoder heading is set to the newTh.
 
-    From here the two paths unify again.  deltaX and deltaY are added
-    to the encoder pose (this is the corrected encoder pose), and the
-    encoder heading is set to the newTh.
-
-    Note that this leaves a difference between rawEncoder heading and
-    our heading, which is fine, BUT if you are sending heading
-    commands to the robot you need to compenstate for the difference
-    between these. 
-    
-    Note above that we return deltaTh instead of just heading so that
-    we can turn inertial on and off without losing track of where
-    we're at... since we're just adding in deltas from the heading it
-    doesn't matter how we switch around the callback.
-    
-  **/
+   * Note that this leaves a difference between rawEncoder heading and
+   * our heading, which is fine, BUT if you are sending heading
+   * commands to the robot you need to compenstate for the difference
+   * between these. 
+   * 
+   * Note above that we return deltaTh instead of just heading so that
+   * we can turn inertial on and off without losing track of where
+   * we're at... since we're just adding in deltas from the heading it
+   * doesn't matter how we switch around the callback.
+   */
 
   myRawEncoderPose.setX(myRawEncoderPose.getX() + deltaX);
   myRawEncoderPose.setY(myRawEncoderPose.getY() + deltaY);
@@ -5254,7 +5251,7 @@ MVREXPORT int MvrRobot::getClosestSonarNumber(double startAngle, double endAngle
  * subclass or MvrSick object) if using MvrLaserConnector or MvrSimpleConnector, those
  * classes automatically add the laser(s).  (But you may call this method with e.g.
  * MvrSonarDevice, MvrIRs, MvrBumpers, etc.)
-*/
+ */
 MVREXPORT void MvrRobot::addRangeDevice(MvrRangeDevice *device)
 {
   device->setRobot(this);
@@ -5262,7 +5259,7 @@ MVREXPORT void MvrRobot::addRangeDevice(MvrRangeDevice *device)
 }
 
 /*
- *  @param name remove the first device with this name
+ * @param name remove the first device with this name
  */
 MVREXPORT void MvrRobot::remRangeDevice(const char *name)
 {
@@ -5370,10 +5367,10 @@ MVREXPORT bool MvrRobot::hasRangeDevice(MvrRangeDevice *device) const
  *  MvrRangeDevice::currentReadingPolar() to find a reading, then calls
  *  MvrRangeDevice::unlockDevice().
  *
- *  @copydoc MvrRangeDevice::currentReadingPolar()
- *  @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
+ * @copydoc MvrRangeDevice::currentReadingPolar()
+ * @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
  *  that provided the returned reading is placed in this variable.
- *  @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
+ * @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
  */
 MVREXPORT double MvrRobot::checkRangeDevicesCurrentPolar(double startAngle, double endAngle, double *angle, 
                                                          const MvrRangeDevice **rangeDevice, bool useLocationDependentDevices) const
@@ -5479,7 +5476,7 @@ MVREXPORT double MvrRobot::checkRangeDevicesCumulativePolar(double startAngle, d
   return closest;  
 }                                                            
 
-/**
+/*
  * Gets the closest reading in a region defined by the two points of a 
  * rectangle.
  * This goes through all of the registered range devices and locks each,
@@ -5496,7 +5493,7 @@ MVREXPORT double MvrRobot::checkRangeDevicesCumulativePolar(double startAngle, d
  * @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
  * @return If >= 0 then this is the distance to the closest
  * reading. If < 0 then there were no readings in the given region
-**/
+ */
 
 MVREXPORT double MvrRobot::checkRangeDevicesCurrentBox(double x1, double y1, double x2, double y2, MvrPose *readingPos,
                                                        const MvrRangeDevice **rangeDevice, bool useLocationDependentDevices) const
@@ -5564,7 +5561,6 @@ MVREXPORT double MvrRobot::checkRangeDevicesCurrentBox(double x1, double y1, dou
  * @return If  >= 0 then this is the distance to the closest
  * reading. If < 0 then there were no readings in the given region
  */
-
 MVREXPORT double MvrRobot::checkRangeDevicesCumulativeBox(double x1, double y1, double x2, double y2, MvrPose *readingPos,
                                                           const MvrRangeDevice **rangeDevice, bool useLocationDependentDevices) const
 {
@@ -5619,8 +5615,8 @@ MVREXPORT double MvrRobot::checkRangeDevicesCumulativeBox(double x1, double y1, 
  * @note This simply changes our stored pose value, it does not cause the robot
  * to drive. Use setVel(), setRotVel(), move(), setHeading(), setDeltaHeading(),
  * or the actions system.
- *  @param pose New pose to set (in absolute world coordinates)
- *  @param doCumulative whether to update the cumulative buffers of range devices 
+ * @param pose New pose to set (in absolute world coordinates)
+ * @param doCumulative whether to update the cumulative buffers of range devices 
  */
 MVREXPORT void MvrRobot::moveTo(MvrPose pose, bool doCumulative)
 {
@@ -5874,11 +5870,11 @@ MVREXPORT void MvrRobot::setEncoderCorrectionCallback(MvrRetFunctor<double, MvrP
   myEncoderCorrectionCB = functor;
 }
 
-/**
+/*
  * This gets the encoderCorrectionCB, see setEncoderCorrectionCallback
  * for details.
  * @return the callback, or NULL if there isn't one
-**/
+ */
 MVREXPORT MvrRetFunctor1<double, MvrPoseWithTime> * MvrRobot::getEncoderCorrectionCallback(void) const
 {
   return myEncoderCorrectionCB;
@@ -6031,7 +6027,7 @@ MVREXPORT void MvrRobot::disableSonar(void)
   }
 }
 
-/**
+/*
  * The state reflection refresh time is the number of milliseconds between 
  * when the state reflector will refresh the robot, if the command hasn't 
  * changed.  The default is 500 milliseconds.  If this number is less than 
@@ -6047,7 +6043,7 @@ MVREXPORT void MvrRobot::setStateReflectionRefreshTime(int mSec)
     myStateReflectionRefreshTime = mSec;  
 }
 
-/**
+/*
  * The state reflection refresh time is the number of milliseconds between 
  * when the state reflector will refresh the robot, if the command hasn't 
  * changed. The default is 500 milliseconds. If this number is less than 
@@ -6059,7 +6055,7 @@ MVREXPORT int MvrRobot::getStateReflectionRefreshTime(void)
   return myStateReflectionRefreshTime;
 }
 
-/**
+/*
  * This will attach a key handler to a robot, by putting it into the
  * robots sensor interp task list (a keyboards a sensor of users will,
  * right?).  By default exitOnEscape is true, which will cause this
@@ -6159,8 +6155,7 @@ MVREXPORT void MvrRobot::setStateOfCharge(double stateOfCharge)
   myStateOfChargeSetTime.setToNow();
 }
 
-MVREXPORT void MvrRobot::setIgnoreMicroControllerBatteryInfo(
-	bool ignoreMicroControllerBatteryInfo)
+MVREXPORT void MvrRobot::setIgnoreMicroControllerBatteryInfo(bool ignoreMicroControllerBatteryInfo)
 {
   if (myIgnoreMicroControllerBatteryInfo != ignoreMicroControllerBatteryInfo)
   {
@@ -6172,10 +6167,8 @@ MVREXPORT void MvrRobot::setIgnoreMicroControllerBatteryInfo(
   myIgnoreMicroControllerBatteryInfo = ignoreMicroControllerBatteryInfo;
 }
 
-MVREXPORT void MvrRobot::setBatteryInfo(double realBatteryVoltage, 
-				      double normalizedBatteryVoltage,
-				      bool haveStateOfCharge,
-				      double stateOfCharge)
+MVREXPORT void MvrRobot::setBatteryInfo(double realBatteryVoltage, double normalizedBatteryVoltage,
+                                        bool haveStateOfCharge, double stateOfCharge)
 {
   myRealBatteryVoltage = realBatteryVoltage;
   myRealBatteryAverager.add(myRealBatteryVoltage);
@@ -6194,6 +6187,591 @@ MVREXPORT void MvrRobot::setBatteryInfo(double realBatteryVoltage,
 
 /*
  * @note Do not call this method directly 
- * if using ArLaserConnector, it will automatically add laser(s).
+ * if using MvrLaserConnector, it will automatically add laser(s).
  * @internal
-*/
+ */
+
+MVREXPORT bool MvrRobot::addLaser(MvrLaser *laser, int laserNumber, bool addAsRangeDevice)
+{
+  std::map<int, MvrLaser *>::iterator it;
+  if (laser == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addLaser: Tried to add NULL laser as laser number %d", laserNumber);
+    return false;
+  }
+  if ((it = myLaserMap.find(laserNumber)) != myLaserMap.end())
+  {
+    if ((*it).second == laser)
+    {
+      MvrLog::log(MvrLog::Verbose, "Tried to add laser %s as number %d (and as a range device) but already have that laser, doing nothing",
+                  laser->getName(), laserNumber);    
+      return true;
+    }
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addLaser: Tried to add laser %s as laser number %d but there is already a laser of that number (called %s)",
+                laser->getName(), laserNumber, (*it).second->getName());
+    return false;
+  }
+  myLaserMap[laserNumber] = laser;
+  if (addAsRangeDevice)
+  {
+    MvrLog::log(MvrLog::Verbose, "Added laser %s as number %d (and as a range device)", laser->getName(), laserNumber);    
+    remRangeDevice(laser);
+    addRangeDevice(laser);
+  }
+  else
+  {
+    MvrLog::log(MvrLog::Verbose, "Added laser %s as number %d (but not a range device)", laser->getName(), laserNumber);    
+  }
+  return true;
+}
+
+/* 
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
+{
+  if (laser == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remLaser: Passed NULL laser to remove");
+    return false;
+  }
+  std::map<int, MvrLaser *>::iterator it;
+  for (it = myLaserMap.begin(); it != myLaserMap.end(); ++it)
+  {
+    if ((*it).second == laser)
+    {
+      if (removeAsRangeDevice)
+      {
+        MvrLog::log(MvrLog::Normal, "MvrRobot::remLaser: Removing laser %s (num %d) (and removing as range device)", 
+                    laser->getName(), (*it).first);
+        remRangeDevice((*it).second);
+      }
+      else 
+      {
+        MvrLog::log(MvrLog::Normal, "MvrRobot::remLaser: Removing laser %s (num %d) (will not remove as range device)", 
+                    laser->getName(), (*it).first);  
+      }
+      myLaserMap.erase(it);
+      return true;
+    }
+  }
+  MvrLog::log(MvrLog::Normal, "MvrRobot::remLaser: Could not find laser %s to remove", 
+              laser->getName());
+  return false;
+}
+
+/*
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
+{
+  std::map<int, MvrLaser *>::iterator it;
+  if ((it = myLaserMap.find(laserNumber)) == myLaserMap.end())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remLaser: Could not find laser %d to remove", laserNumber);
+    return false;
+  }
+
+  if (removeAsRangeDevice)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remLaser: Removing laser %s (num %d) (and removing as range device)", 
+                (*it).second->getName(), (*it).first);  
+    remRangeDevice((*it).second);
+  }
+  else
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remLaser: Removing laser %s (num %d) (will not remove as range device)", 
+                (*it).second->getName(), (*it).first);  
+  }
+    
+  myLaserMap.erase(it);
+  return true;
+}
+
+/* 
+ * @see MvrLaserConnector
+ */
+MVREXPORT const MvrLaser *MvrRobot::findLaser(int laserNumber) const
+{
+  std::map<int, MvrLaser *>::const_iterator it;
+  if ((it = myLaserMap.find(laserNumber)) == myLaserMap.end())
+    return NULL;
+  else
+    return (*it).second;
+}
+
+/* 
+ * @see MvrLaserConnector
+ */
+MVREXPORT MvrLaser *MvrRobot::findLaser(int laserNumber)
+{
+  if (myLaserMap.find(laserNumber) == myLaserMap.end())
+    return NULL;
+  else
+    return myLaserMap[laserNumber];
+}
+
+/* 
+ * @see MvrLaserConnector
+ */
+MVREXPORT const std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) const
+{
+  return &myLaserMap;
+}
+
+
+/* 
+ * @see MvrLaserConnector
+ */
+MVREXPORT std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) 
+{
+  return &myLaserMap;
+}
+
+/* 
+ * @see MvrLaserConnector
+ */
+MVREXPORT bool MvrRobot::hasLaser(MvrLaser *device) const
+{
+  for(std::map<int, MvrLaser*>::const_iterator i = myLaserMap.begin();
+      i != myLaserMap.end();
+      ++i)
+  {
+     if( (*i).second == device ) return true;
+  }
+  return false;
+}
+
+
+/* 
+ * @note Do not call this method directly 
+ * if using MvrBatteryConnector, it will automatically add battery(s).
+ * @internal
+ */
+MVREXPORT bool MvrRobot::addBattery(MvrBatteryMTX *battery, int batteryNumber)
+{
+  std::map<int, MvrBatteryMTX *>::iterator it;
+  if (battery == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addBattery: Tried to add NULL battery as battery number %d",
+                batteryNumber);
+    return false;
+  }
+  if ((it = myBatteryMap.find(batteryNumber)) != myBatteryMap.end())
+  {
+    if ((*it).second == battery)
+    {
+      MvrLog::log(MvrLog::Verbose, "Tried to add battery %s as number %d but already have that battery, doing nothing",
+                  battery->getName(), batteryNumber);    
+      return true;
+    }
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addBattery: Tried to add battery %s as battery number %d but there is already a battery of that number (called %s)",
+                battery->getName(), batteryNumber, (*it).second->getName());
+    return false;
+  }
+  myBatteryMap[batteryNumber] = battery;
+  MvrLog::log(MvrLog::Verbose, "Added battery %s as number %d", battery->getName(), batteryNumber);    
+  return true;
+}
+
+/* 
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remBattery(MvrBatteryMTX *battery)
+{
+  if (battery == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remBattery: Passed NULL battery to remove");
+    return false;
+  }
+  std::map<int, MvrBatteryMTX *>::iterator it;
+  for (it = myBatteryMap.begin(); it != myBatteryMap.end(); ++it)
+  {
+    if ((*it).second == battery)
+    {
+	    MvrLog::log(MvrLog::Normal, "MvrRobot::remBattery: Removing battery %s (num %d)", 
+	                battery->getName(), (*it).first);  
+      myBatteryMap.erase(it);
+      return true;
+    }
+  }
+  MvrLog::log(MvrLog::Normal, "MvrRobot::remBattery: Could not find battery %s to remove", 
+	            battery->getName());
+  return false;
+}
+
+/* 
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remBattery(int batteryNumber)
+{
+  std::map<int, MvrBatteryMTX *>::iterator it;
+  if ((it = myBatteryMap.find(batteryNumber)) == myBatteryMap.end())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remBattery: Could not find battery %d to remove", 
+	              batteryNumber);
+    return false;
+  }
+
+  MvrLog::log(MvrLog::Normal, "MvrRobot::remBattery: Removing battery %s (num %d) ", 
+              (*it).second->getName(), (*it).first);  
+  myBatteryMap.erase(it);
+  return true;
+}
+
+/* 
+ * @see MvrBatteryConnector
+ */
+MVREXPORT const MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber) const
+{
+  std::map<int, MvrBatteryMTX *>::const_iterator it;
+  if ((it = myBatteryMap.find(batteryNumber)) == myBatteryMap.end())
+    return NULL;
+  else
+    return (*it).second;
+}
+
+/* 
+ * @see MvrBatteryConnector
+ */
+MVREXPORT MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber)
+{
+  if (myBatteryMap.find(batteryNumber) == myBatteryMap.end())
+    return NULL;
+  else
+    return myBatteryMap[batteryNumber];
+}
+
+/* 
+ * @see MvrBatteryConnector
+ */
+MVREXPORT const std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) const
+{
+  return &myBatteryMap;
+}
+
+/* 
+ * @see MvrBatteryConnector
+ */
+MVREXPORT std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) 
+{
+  return &myBatteryMap;
+}
+
+/* 
+ * @see MvrBatteryConnector
+ */
+MVREXPORT bool MvrRobot::hasBattery(MvrBatteryMTX *device) const
+{
+  for(std::map<int, MvrBatteryMTX *>::const_iterator i = myBatteryMap.begin();
+      i != myBatteryMap.end();
+      ++i)
+  {
+     if( (*i).second == device ) return true;
+  }
+  return false;
+}
+
+/* 
+ * @note Do not call this method directly 
+ * if using MvrLCDConnector, it will automatically add lcd(s).
+ * @internal
+ */
+MVREXPORT bool MvrRobot::addLCD(MvrLCDMTX *lcd, int lcdNumber)
+{
+  std::map<int, MvrLCDMTX *>::iterator it;
+  if (lcd == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addLCD: Tried to add NULL lcd as lcd number %d", lcdNumber);
+    return false;
+  }
+  if ((it = myLCDMap.find(lcdNumber)) != myLCDMap.end())
+  {
+    if ((*it).second == lcd)
+    {
+      MvrLog::log(MvrLog::Verbose, "Tried to add lcd %s as number %d but already have that lcd, doing nothing",
+		              lcd->getName(), lcdNumber);    
+      return true;
+    }
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addLCD: Tried to add lcd %s as lcd number %d but there is already a lcd of that number (called %s)",
+	              lcd->getName(), lcdNumber,(*it).second->getName());
+    return false;
+  }
+  myLCDMap[lcdNumber] = lcd;
+  MvrLog::log(MvrLog::Verbose, "Added lcd %s as number %d", lcd->getName(), lcdNumber);    
+  return true;
+}
+
+
+/* 
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remLCD(MvrLCDMTX *lcd)
+{
+  if (lcd == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remLCD: Passed NULL lcd to remove");
+    return false;
+  }
+  std::map<int, MvrLCDMTX *>::iterator it;
+  for (it = myLCDMap.begin(); it != myLCDMap.end(); ++it)
+  {
+    if ((*it).second == lcd)
+    {
+      MvrLog::log(MvrLog::Normal, "MvrRobot::remLCD: Removing lcd %s (num %d)", lcd->getName(), (*it).first);  
+      myLCDMap.erase(it);
+      return true;
+    }
+  }
+  MvrLog::log(MvrLog::Normal, "MvrRobot::remLCD: Could not find lcd %s to remove", lcd->getName());
+  return false;
+}
+
+/* 
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remLCD(int lcdNumber)
+{
+  std::map<int, MvrLCDMTX *>::iterator it;
+  if ((it = myLCDMap.find(lcdNumber)) == myLCDMap.end())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remLCD: Could not find lcd %d to remove", lcdNumber);
+    return false;
+  }
+  MvrLog::log(MvrLog::Normal, "MvrRobot::remLCD: Removing lcd %s (num %d) ", (*it).second->getName(), (*it).first);  
+  myLCDMap.erase(it);
+  return true;
+}
+
+/* 
+ * @see MvrLCDConnector
+ */
+MVREXPORT const MvrLCDMTX *MvrRobot::findLCD(int lcdNumber) const
+{
+  std::map<int, MvrLCDMTX *>::const_iterator it;
+  if ((it = myLCDMap.find(lcdNumber)) == myLCDMap.end())
+    return NULL;
+  else
+    return (*it).second;
+}
+
+/* 
+ * @see MvrLCDConnector
+ */
+MVREXPORT MvrLCDMTX *MvrRobot::findLCD(int lcdNumber)
+{
+  if (myLCDMap.find(lcdNumber) == myLCDMap.end())
+    return NULL;
+  else
+    return myLCDMap[lcdNumber];
+}
+
+/* 
+ * @see MvrLCDConnector
+ */
+MVREXPORT const std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) const
+{
+  return &myLCDMap;
+}
+
+/* 
+ * @see MvrLCDConnector
+ */
+MVREXPORT std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) 
+{
+  return &myLCDMap;
+}
+
+/* 
+ * @see MvrLCDConnector
+ */
+MVREXPORT bool MvrRobot::hasLCD(MvrLCDMTX *device) const
+{
+  for(std::map<int, MvrLCDMTX *>::const_iterator i = myLCDMap.begin();
+      i != myLCDMap.end();
+      ++i)
+  {
+     if( (*i).second == device ) return true;
+  }
+  return false;
+}
+
+/* 
+ * @note Do not call this method directly 
+  if using MvrBatteryConnector, it will automatically add battery(s).
+ * @internal
+ */
+MVREXPORT bool MvrRobot::addSonar(MvrSonarMTX *sonar, int sonarNumber)
+{
+  std::map<int, MvrSonarMTX *>::iterator it;
+  if (sonar == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addSonar: Tried to add NULL sonar board as sonar number %d", sonarNumber);
+    return false;
+  }
+  if ((it = mySonarMap.find(sonarNumber)) != mySonarMap.end())
+  {
+    if ((*it).second == sonar)
+    {
+      MvrLog::log(MvrLog::Verbose, "Tried to add sonar board %s as number %d but already have that sonar, doing nothing",
+                  sonar->getName(), sonarNumber);    
+      return true;
+    }
+    MvrLog::log(MvrLog::Normal, "MvrRobot::addSonar: Tried to add sonar board %s as sonar number %d but there is already a sonar of that number (called %s)",
+                sonar->getName(), sonarNumber, (*it).second->getName());
+    return false;
+  }
+  mySonarMap[sonarNumber] = sonar;
+  MvrLog::log(MvrLog::Verbose, "Added sonar board %s as number %d", sonar->getName(), sonarNumber);    
+  return true;
+}
+
+/* 
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remSonar(MvrSonarMTX *sonar)
+{
+  if (sonar == NULL)
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remSonar: Passed NULL sonar board to remove");
+    return false;
+  }
+  std::map<int, MvrSonarMTX *>::iterator it;
+  for (it = mySonarMap.begin(); it != mySonarMap.end(); ++it)
+  {
+    if ((*it).second == sonar)
+    {
+	    MvrLog::log(MvrLog::Normal, "MvrRobot::remSonar: Removing sonar board %s (num %d)", sonar->getName(), (*it).first);  
+      mySonarMap.erase(it);
+      return true;
+    }
+  }
+  MvrLog::log(MvrLog::Normal, "MvrRobot::remSonar: Could not find sonar board %s to remove", sonar->getName());
+  return false;
+}
+
+/* 
+ * @internal
+ */
+MVREXPORT bool MvrRobot::remSonar(int sonarNumber)
+{
+  std::map<int, MvrSonarMTX *>::iterator it;
+  if ((it = mySonarMap.find(sonarNumber)) == mySonarMap.end())
+  {
+    MvrLog::log(MvrLog::Normal, "MvrRobot::remSonar: Could not find sonar board %d to remove", sonarNumber);
+    return false;
+  }
+  MvrLog::log(MvrLog::Normal, "MvrRobot::remSonar: Removing sonar board %s (num %d) ", 
+              (*it).second->getName(), (*it).first);  
+  mySonarMap.erase(it);
+  return true;
+}
+
+/* 
+ * @see MvrSonarConnector
+ */
+MVREXPORT const MvrSonarMTX *MvrRobot::findSonar(int sonarNumber) const
+{
+  std::map<int, MvrSonarMTX *>::const_iterator it;
+  if ((it = mySonarMap.find(sonarNumber)) == mySonarMap.end())
+    return NULL;
+  else
+    return (*it).second;
+}
+
+/* 
+ * @see MvrSonarConnector
+ */
+MVREXPORT MvrSonarMTX *MvrRobot::findSonar(int sonarNumber)
+{
+  if (mySonarMap.find(sonarNumber) == mySonarMap.end())
+    return NULL;
+  else
+    return mySonarMap[sonarNumber];
+}
+
+/* 
+ * @see MvrSonarConnector
+ */
+MVREXPORT const std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) const
+{
+  return &mySonarMap;
+}
+
+
+/* 
+ * @see MvrSonarConnector
+ */
+MVREXPORT std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) 
+{
+  return &mySonarMap;
+}
+
+/* 
+ * @see MvrSonarConnector
+ */
+MVREXPORT bool MvrRobot::hasSonar(MvrSonarMTX *device) const
+{
+  for(std::map<int, MvrSonarMTX *>::const_iterator i = mySonarMap.begin();
+      i != mySonarMap.end();
+      ++i)
+  {
+    if( (*i).second == device ) return true;
+  }
+  return false;
+}
+
+/**
+ * @param from the pose with time to apply the offset from... it applies the encoder mostion from the time on this to the to param
+ * @param to the time to find the offset to
+ * @param result the pose to put the result in
+ * @return This returns the same way that MvrInterpolation::getPose does...
+ * @see MvrInterpolation::getPose
+ */
+MVREXPORT int MvrRobot::applyEncoderOffset(MvrPoseWithTime from, MvrTime to, MvrPose *result)
+{
+
+  MvrPose encoderPoseFrom;
+  MvrPose globalPoseFrom;
+  
+  MvrPose encoderPoseTo;
+  MvrPose globalPoseTo;
+
+  int retFrom;
+  int retTo;
+  if ((retFrom = getEncoderPoseInterpPosition(from.getTime(), &encoderPoseFrom)) >= 0)
+  {
+    if ((retTo = getEncoderPoseInterpPosition(to, &encoderPoseTo)) >= 0)
+    {
+      globalPoseFrom = myEncoderTransform.doTransform(encoderPoseFrom);
+      globalPoseTo = myEncoderTransform.doTransform(encoderPoseTo);
+      MvrPose offset = globalPoseTo - globalPoseFrom;
+      MvrPose retPose;
+      retPose = from + offset;
+      if (result != NULL)
+        *result = retPose;
+      return retTo;
+    }
+    else
+    {
+      MvrLog::log(MvrLog::Verbose, "MvrRobot::applyEncoderOffset: Can't find to offset, ret %d", retTo);
+      return retTo;
+    }
+  }
+  else
+  {
+    MvrLog::log(MvrLog::Verbose, "MvrRobot::applyEncoderOffset: Can't find from (%d ms ago) offset, ret %d",
+                retFrom, from.getTime().mSecSince());
+    return retFrom;
+  }
+
+  return -3;
+}
+
+MVREXPORT void MvrRobot::internalIgnoreNextPacket(void)
+{
+  myIgnoreNextPacket = true;
+  myPacketMutex.lock();
+  myPacketList.clear();
+  myPacketMutex.unlock();
+}
