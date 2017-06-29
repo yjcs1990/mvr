@@ -74,7 +74,7 @@ void MvrDeviceConnection::buildStrMap(void)
 MVREXPORT const char *MvrDeviceConnection::getStatusMessage(int messageNumber) const
 {
   MvrStrMap::const_iterator it;
-  if ((it=ourStrMap.find(messageNumber) != ourStrMap.end()))
+  if ((it=ourStrMap.find(messageNumber)) != ourStrMap.end())
     return (*it).second.c_str();
   else
     return NULL;

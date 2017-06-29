@@ -40,8 +40,8 @@ MVREXPORT MvrDataLogger::MvrDataLogger(MvrRobot *robot, const char *fileName) :
   myAddedToConfig        = false;
   myConfigLogging        = false;
   myConfigLogInterval    = 0;
-  myConfigFileName       = '\0';
-  myOpenedFileName       = '\0';
+  myConfigFileName[0]       = '\0';
+  myOpenedFileName[0]       = '\0';
   myAnalogCount          = 0;
   myAnalogEnabled        = NULL;
   myAnalogVoltageCount   = 0;
@@ -101,7 +101,7 @@ MVREXPORT void MvrDataLogger::addToConfig(MvrConfig *config)
   section = "Data logging";
   myConfig->addParam(MvrConfigArg("DataLog", &myConfigLogging, "True to log data, false not to"),
                      section.c_str(), MvrPriority::NORMAL);
-  myConfig->addParam(MvrConfigArg("DataLogInterval", &myConfigLoggingInterval, "Seconds between logs",0),
+  myConfig->addParam(MvrConfigArg("DataLogInterval", &myConfigLogInterval, "Seconds between logs",0),
                      section.c_str(), MvrPriority::NORMAL);                     
   if (myPermanentFileName.size() == 0)
       myConfig->addParam(MvrConfigArg("DataLogFileName", myConfigFileName, "File to log data into",
@@ -154,14 +154,14 @@ MVREXPORT void MvrDataLogger::addToConfig(MvrConfig *config)
   for (i=0; i<myAnalogCount; i++)
   {
     snprintf(name, sizeof(name), "DataLogAnalog%d",i);
-    snprintf(decs, sizeof(decs), "Logs the value of analog %d as a 10 bit (0-1024) value",i);
+    snprintf(desc, sizeof(desc), "Logs the value of analog %d as a 10 bit (0-1024) value",i);
     myConfig->addParam(MvrConfigArg(name, &myAnalogEnabled[i], desc),
                        section.c_str(), MvrPriority::DETAILED);
   }
   for (i=0; i<myAnalogVoltageCount; i++)
   {
     snprintf(name, sizeof(name), "DataLogAnalogVoltage%d",i);
-    snprintf(decs, sizeof(decs), "Logs the value of analog %d as voltage from 0 to 5",i);
+    snprintf(desc, sizeof(desc), "Logs the value of analog %d as voltage from 0 to 5",i);
     myConfig->addParam(MvrConfigArg(name, &myAnalogVoltageEnabled[i], desc),
                        section.c_str(), MvrPriority::DETAILED);   
   }
@@ -223,9 +223,9 @@ MVREXPORT void MvrDataLogger::connectCallback(void)
   }
   if (myAnalogVoltageCount > 0)
   {
-    myAnalogVoltrageEnabled = new bool[myAnalogVoltageCount];
+    myAnalogVoltageEnabled = new bool[myAnalogVoltageCount];
     for (i=0; i<myAnalogVoltageCount; i++){
-      myAnalogVoltrageEnabled[i] = false;
+      myAnalogVoltageEnabled[i] = false;
     }  
   }
   if (myDigInCount > 0)
@@ -311,10 +311,12 @@ MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer, size_t errorBufferL
   std::map<std::string, bool *, MvrStrCaseCmpOp>::iterator it;
   for (i=0; i<myStringsCount; i++)
   {
-    if (*myStringsEnabled[i]){
+    if (*myStringsEnabled[i])
+    {
       char formatBuf[64];
       sprintf(formatBuf, "\t%%0%ds", myStrings[i]->getMaxLength());
       fprintf(myFile, formatBuf, myStrings[i]->getName());
+    }
   }
   if (myLogVoltage)
     fprintf(myFile, "\tVolt");
@@ -324,7 +326,7 @@ MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer, size_t errorBufferL
     fprintf(myFile, "\t%015s\t%5s", "ChargeStageName", "csNum");
   if (myLogBatteryInfo && myRobot->getBatteryPacketReader() != NULL)
   {
-    myRobot->getBatteryPacketReader()->requestContinuousCellInfoPackets();
+    myRobot->getBatteryPacketReader()->requestContinuousPackets();
     int battery;
     for (battery=1; battery<=myRobot->getBatteryPacketReader()->getNumBatteries(); battery++)
     {
@@ -353,9 +355,9 @@ MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer, size_t errorBufferL
   if (myLogLatVel)
     fprintf(myFile, "\tLatV"); 
   if (myLogLeftStalled)
-    fprintf(myFile, "\LStall"); 
+    fprintf(myFile, "\tLStall"); 
   if (myLogRightStalled)
-    fprintf(myFile, "\RStall");     
+    fprintf(myFile, "\tRStall");     
   if (myLogStallBits)
     fprintf(myFile, "\tStllBts%16s", "");
   if (myLogFlags)
@@ -414,7 +416,7 @@ MVREXPORT void MvrDataLogger::userTask(void)
       char formatBuf[64];
       infoHolder = myStrings[i];
       sprintf(formatBuf, "\t%%0%ds", myStrings[i]->getMaxLength());
-      infoHolder->getFunctor->invoke(buf, inforHolder->getMaxLength());
+      infoHolder->getFunctor()->invoke(buf, infoHolder->getMaxLength());
       fprintf(myFile, formatBuf, buf);
     }
   }
@@ -426,7 +428,7 @@ MVREXPORT void MvrDataLogger::userTask(void)
     fprintf(myFile, "\t%.0f", myRobot->getStateOfCharge());
   if (myLogChargeState)
   {
-    MvrRobot::ChargeState chargeStage = myRobot->getChargeState();
+    MvrRobot::ChargeState chargeState = myRobot->getChargeState();
     std::string chargeString;
     if (chargeState == MvrRobot::CHARGING_UNKNOWN)
       chargeString = "Unknowable";
@@ -448,12 +450,12 @@ MVREXPORT void MvrDataLogger::userTask(void)
   {
     int battery;
     int flags;
-    for (battery=1; battery <= myRobot.getBatteryPacketReader()->getNumBatteries(); battery++)
+    for (battery=1; battery <= myRobot->getBatteryPacketReader()->getNumBatteries(); battery++)
     {
       fprintf(myFile, "\t");
       flags = myRobot->getBatteryPacketReader()->getFlags1(battery);
       for (i = 0, val = 1; i < 8; i++, val *= 2)
-	      printf(myFile, "%d", (bool) (flags & val));
+	      fprintf(myFile, "%d", (bool) (flags & val));
       fprintf(myFile, "   ");
 
       fprintf(myFile, "\t");
@@ -564,7 +566,7 @@ MVREXPORT void MvrDataLogger::addString(const char *name, MvrTypes::UByte2 maxLe
   MvrTypes::UByte2 len;
 
   myMutex.lock();
-  if (maxLength < stlen(name))
+  if (maxLength < strlen(name))
     len = (MvrTypes::UByte2) strlen(name);
   else
     len = maxLength;

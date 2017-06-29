@@ -72,12 +72,12 @@ public:
     WAIT_FAIL         /// < The wait failed due to an error
   }WaitState;
   enum ChargeState {
-    CHMVRGING_UNKNOWN=-1,
-    CHMVRGING_NOT=0,
-    CHMVRGING_BULK=1,
-    CHMVRGING_OVERCHMVRGE=2,
-    CHMVRGING_FLOAT=3,
-    CHMVRGING_BALANCE=4
+    CHARGING_UNKNOWN=-1,
+    CHARGING_NOT=0,
+    CHARGING_BULK=1,
+    CHARGING_OVERCHARGE=2,
+    CHARGING_FLOAT=3,
+    CHARGING_BALANCE=4
   };
   /// Constructor
   MVREXPORT MvrRobot(const char *name=NULL, bool ignored=true,
@@ -441,17 +441,17 @@ public:
   {
     switch(getChargeState())
     {
-      case CHMVRGING_NOT:
+      case CHARGING_NOT:
         return "not charging";
-      case CHMVRGING_BULK:
+      case CHARGING_BULK:
         return "bulk";
-      case CHMVRGING_OVERCHMVRGE:
+      case CHARGING_OVERCHARGE:
         return "overcharge";
-      case CHMVRGING_FLOAT:
+      case CHARGING_FLOAT:
         return "float";
-      case CHMVRGING_BALANCE:
+      case CHARGING_BALANCE:
         return "balance";
-      case CHMVRGING_UNKNOWN:
+      case CHARGING_UNKNOWN:
       default:
         return "unknown";
     }

@@ -77,7 +77,7 @@ MVREXPORT int MvrFileDeviceConnection::open(const char *inFileName,
     myOutFD       = MvrUtil::open(outFileName, O_WRONLY|outFlags);
     if (myInFD == -1)
     {
-      MvrLog::log(MvrLog::Terse, "MvrFileDeviceConnection: error opening output file \"%s\": %s", outfilename, strerror(errno));
+      MvrLog::log(MvrLog::Terse, "MvrFileDeviceConnection: error opening output file \"%s\": %s", outFileName, strerror(errno));
       return errno;      
     }
   }
