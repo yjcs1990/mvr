@@ -31,7 +31,7 @@ public:
     STATUS_FAILED_INIT=1, ///< Failed to initialize
     STATUS_FAILED, ///< General failure
     STATUS_ALREADY_LOCKED ///< Mutex already locked
-  };
+  }Status;
   /// Constructor
   MVREXPORT MvrMutex(bool recursive = true);
   /// Destructor
