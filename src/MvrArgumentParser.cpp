@@ -88,13 +88,13 @@ MVREXPORT bool MvrArgumentParser::checkArgumentVar(const char *argument, ...)
    @return true if either this argument wasn't there or if the
    argument was there with a valid parameter
  */
-MVREXPORT bool MvrArgumentParser::checkParameterArgumentStringVar(const char *argument, 
-                                                                  const char **dest, 
-                                                                  bool *wasReallySet, 
-                                                                  bool returnFirst)
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentString(const char *argument,
+                                                               const char **dest, 
+                                                               bool *wasReallySet, 
+                                                               bool returnFirst)
 {
   char *param;
-  param = checkArgumentVar(argument, returnFirst);
+  param = checkParameterArgument(argument, returnFirst);
 
   if (param == NULL)
   {
@@ -104,7 +104,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentStringVar(const char *ar
   }
   else if (param[0] != '\0')
   {
-    *dest = param;
+    *dest = param;    
     if (wasReallySet)
       *wasReallySet = true;
     return true;
@@ -120,14 +120,14 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentStringVar(const char *ar
  * This is like checkParameterArgument but lets you fail out if the
  * argument is there but the parameter for it is not
  */
-MVREXPORT bool MvrArgumentParser::checkParameterArgumentStringVar(bool *wasReallySet, 
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentBoolVar(bool *wasReallySet, 
                                                                   bool *dest,
                                                                   const char *argument, ...)
 {
   char arg[2048];
   va_list ptr;
   va_start(ptr, argument);
-  vsnprintf(arg, sizeof(arg),argument, prt);
+  vsnprintf(arg, sizeof(arg),argument, ptr);
   va_end(ptr);
   return checkParameterArgumentBool(arg, dest, wasReallySet);
 }                                                                  
@@ -143,44 +143,42 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentBool(const char *argumen
 {
   char *param;
   param = checkParameterArgument(argument, returnFirst);
-
+  
   if (param == NULL)
   {
     if (wasReallySet && !myReallySetOnlyTrue)
-    {
       *wasReallySet = false;
-      return false;
-    }
+    return true;
   }
   else if (param[0] != '\0')
   {
-    if (strcasecmp(param, "true") == 0 || strcasecmp(param, "1") == 0)
+    if (strcasecmp(param, "true") == 0 || strcmp(param, "1") == 0)
     {
       *dest = true;
       if (wasReallySet)
-        *wasReallySet = true;
+	      *wasReallySet = true;
       return true;
     }
-    else if (strcasecmp(param, "false") == 0 || strcasecmp(param, "0") == 0)
+    else if (strcasecmp(param, "false") == 0 || strcmp(param, "0") == 0)
     {
       *dest = false;
       if (wasReallySet)
-        *wasReallySet = true;
+	      *wasReallySet = true;
       return true;
     }
     else
     {
-      MvrLog::log(MvrLog::Normal,
-                  "Argument given to %s was not a bool (true, false, 1, 0) it was the string %s",
-                  argument, param);
+      MvrLog::log(MvrLog::Normal, 
+		              "Argument given to %s was not a bool (true, false, 1, 0) it was the string %s",
+		               argument, param);
       return false;
     }
   }
   else
   {
-  MvrLog::log(MvrLog::Normal,"No argument given to %s", argument);
-  return false;
-  }  
+    MvrLog::log(MvrLog::Normal, "No argument given to %s", argument);
+    return false;
+  }
 }                                                             
 
 /*
@@ -217,7 +215,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentInteger(const char *argu
   }
   else if (param[0] != '\0')
   {
-    intVal = strol(param, &endPtr, 10);
+    intVal = strtol(param, &endPtr, 10);
     if (endPtr[0] == '\0')
     {
       *dest = intVal;
@@ -239,7 +237,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentInteger(const char *argu
   }
 }   
 
-MVREXPORT bool MvrArgumentParser::checkParameterArgumentIntegerVar(bool *wasReallySet, int *dest, const char *argument, ...)
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentFloatVar(bool *wasReallySet, float *dest, const char *argument, ...)
 {
   char arg[2048];
   va_list ptr;
@@ -253,7 +251,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentIntegerVar(bool *wasReal
    This is like checkParameterArgument but lets you fail out if the
    argument is there but the parameter for it is not
 */
-MVREXPORT bool MvrArgumentParser::checkParameterArgumentFloat(const char *argument, int *dest, bool *wasReallySet, bool returnFirst)
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentFloat(const char *argument, float *dest, bool *wasReallySet, bool returnFirst)
 {
   char *param = checkParameterArgument(argument, returnFirst);
 
@@ -296,7 +294,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentDoubleVar(bool *wasReall
   return checkParameterArgumentDouble(arg, dest, wasReallySet);
 }
 
-MVREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(const char *argument, int *dest, bool *wasReallySet, bool returnFirst)
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(const char *argument, double *dest, bool *wasReallySet, bool returnFirst)
 {
   char *param = checkParameterArgument(argument, returnFirst);
 
@@ -337,7 +335,7 @@ MVREXPORT char *MvrArgumentParser::checkParameterArgumentVar(const char *argumen
   va_start(ptr, argument);
   vsnprintf(arg, sizeof(arg), argument, ptr);
   va_end(ptr);
-  return checkParameterArgument(arg));
+  return checkParameterArgument(arg);
 }
 
 MVREXPORT char *MvrArgumentParser::checkParameterArgument(const char *argument, bool returnFirst)
@@ -421,7 +419,7 @@ MVREXPORT char **MvrArgumentParser::getArgv(void) const
   else
     return myArgv;
 }
-MVREXPORT char *MvrArgumentParser::getArg(size_t whichArg) const
+MVREXPORT const char *MvrArgumentParser::getArg(size_t whichArg) const
 {
   if (whichArg >= getArgc())
     return NULL;
@@ -529,7 +527,7 @@ MVREXPORT void MvrArgumentParser::addDefaultArgumentFile(const char *file)
    std::list<std::string>::iterator it;
    std::list<bool>::iterator bIt;
 
-   MvrLog::log(MvrLog:Normal, "Default argument files or environmental variables:");
+   MvrLog::log(MvrLog::Normal, "Default argument files or environmental variables:");
 
   for (it=ourDefaultArgumentLocs.begin(), bIt=ourDefaultArgumentLocIsFile.begin();
        it!=ourDefaultArgumentLocs.end(); 
@@ -575,7 +573,7 @@ MVREXPORT bool MvrArgumentParser::checkHelpAndWarnUnparsed(unsigned int numArgsO
   char buf[2048];
   sprintf(buf, "Unhandled arguments to program:");
   for (i=1+(int)numArgsOkay; i< getArgc(); i++)
-    sprintf(buf, "%s %s", but, getArg(i));
+    sprintf(buf, "%s %s", buf, getArg(i));
   MvrLog::log(MvrLog::Normal, buf);
   MvrLog::log(MvrLog::Normal, "Program will continue but to see the help listing type '%s -help", getArg(0));
 
