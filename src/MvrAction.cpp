@@ -58,7 +58,7 @@ MVREXPORT MvrArg *MvrAction::getArg(int number)
      return NULL;
 }
 
-MVREXPORT MvrArg *MvrAction::getArg(int number) const
+MVREXPORT const MvrArg *MvrAction::getArg(int number) const
 {
   std::map<int, MvrArg>::const_iterator it;
   
@@ -70,9 +70,9 @@ MVREXPORT MvrArg *MvrAction::getArg(int number) const
 }
 
 MVREXPORT void MvrAction::setRobot(MvrRobot *robot)
-{ myRObot = robot; }
+{ myRobot = robot; }
 
-MVREXPORT bool MvrAction::isActive(void)
+MVREXPORT bool MvrAction::isActive(void) const
 { return myIsActive; }
 
 MVREXPORT void MvrAction::activate(void)
@@ -88,7 +88,7 @@ MVREXPORT void MvrAction::log(bool verbose) const
   const MvrArg *arg;
   const MvrActionDesired *desired;
 
-  MvrLog::log(MvrLog::Terser, "Action %s isActive %d", getName(), myIsActive());
+  MvrLog::log(MvrLog::Terse, "Action %s isActive %d", getName(), myIsActive);
   if(myIsActive && (desired = getDesired()) != NULL)
     desired->log();
   if(!verbose)

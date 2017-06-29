@@ -27,7 +27,7 @@
 class MvrThread
 {
 public:
-#if !defined(WIN32) && !defined(MINGW)
+#if defined(WIN32) && !defined(MINGW)
   typedef DWORD ThreadType;
 #else
   typedef pthread_t ThreadType;
