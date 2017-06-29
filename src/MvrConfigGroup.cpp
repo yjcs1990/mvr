@@ -27,21 +27,22 @@ MVREXPORT MvrConfigGroup::~MvrConfigGroup()
 
 MVREXPORT void MvrConfigGroup::addConfig(MvrConfig *config)
 {
-  myConfig.push_back(config);
+  myConfigs.push_back(config);
 }
 
 MVREXPORT void MvrConfigGroup::remConfig(MvrConfig *config)
 {
-  myConfig.remove(config);
+  myConfigs.remove(config);
 }
 
 MVREXPORT bool MvrConfigGroup::parseFile(const char *fileName, bool continueOnError)
 {
   std::list<MvrConfig *>::iterator it;
+  bool ret = true;
 
   myLastFile = fileName;
 
-  for (it = myConfig.begin(); it != myConfig.end(); it++)
+  for (it = myConfigs.begin(); it != myConfigs.end(); it++)
   {
     (*it)->setBaseDirectory(myBaseDirectory.c_str());
   }
