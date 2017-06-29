@@ -53,7 +53,7 @@ MVREXPORT MvrBasePacket::MvrBasePacket(const MvrBasePacket &other) :
           myLength(other.myLength),
           myIsValid(other.myIsValid)
 {
-  if ((myBuffer != NULL) && (other.myBuf != NULL)){
+  if ((myBuf != NULL) && (other.myBuf != NULL)){
     memcpy(myBuf, other.myBuf, myLength);
   }
 }
@@ -87,7 +87,7 @@ MVREXPORT MvrBasePacket &MvrBasePacket::operator=(const MvrBasePacket &other)
 
 MVREXPORT MvrBasePacket::~MvrBasePacket()
 {
-  if (myOwnMyBuf & myBuf != NULL){
+  if (myOwnMyBuf && myBuf != NULL){
     delete [] myBuf;
   }
 }

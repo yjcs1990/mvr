@@ -180,7 +180,7 @@ MVREXPORT int MvrCondition::timedWait(unsigned int msecs)
     {
       MvrLog::logErrorFromOS(MvrLog::Terse, "MvrCondition::timedWait: Unknown error while trying to wait on the condition. Ret %d, %s.  Errno %d, %s.",
                              ret, strerror(ret),
-                             timedWaitError, strerror(timedWaitError));
+                             timedWaitErrno, strerror(timedWaitErrno));
       return STATUS_FAILED;                              
     }
   }
@@ -197,7 +197,7 @@ MVREXPORT int MvrCondition::timedWait(unsigned int msecs)
 MVREXPORT const char *MvrCondition::getError(int messageNumber) const
 {
   MvrStrMap::const_iterator it;
-  if ((it == ourStrMap::find(messageNumber)) != ourStrMap.end())
+  if ((it = ourStrMap.find(messageNumber)) != ourStrMap.end())
     return (*it).second.c_str();
   else
     return NULL;

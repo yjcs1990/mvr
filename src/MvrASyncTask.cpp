@@ -55,7 +55,7 @@ MVREXPORT void *MvrASyncTask::runInThisThread(void *arg)
     MvrLog::log(ourLogLevel, "Running %s thread", myName.c_str());
   }
 
-  addThreadToMap(myTrhead, this);
+  addThreadToMap(myThread, this);
 
   return (runThread(arg));
 }
