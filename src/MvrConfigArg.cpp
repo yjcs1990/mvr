@@ -146,8 +146,8 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, int *pointer,
   set(INT, name, description);
 
   myData.myIntData.myIntType   = INT_INT;
-  myData.myIntData.myMinINT    = minInt;
-  myData.myIntData.myMaxINT    = maxInt;
+  myData.myIntData.myMinInt    = minInt;
+  myData.myIntData.myMaxInt    = maxInt;
   myData.myIntData.myIntPointer= pointer;
 }      
 
@@ -158,8 +158,8 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, short *pointer,
   set(INT, name, description);
 
   myData.myIntData.myIntType   = INT_SHORT;
-  myData.myIntData.myMinINT    = minInt;
-  myData.myIntData.myMaxINT    = maxInt;
+  myData.myIntData.myMinInt    = minInt;
+  myData.myIntData.myMaxInt    = maxInt;
   myData.myIntData.myIntShortPointer= pointer;
 } 
 
@@ -170,8 +170,8 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, unsigned short *pointer,
   set(INT, name, description);
 
   myData.myIntData.myIntType   = INT_UNSIGNED_SHORT;
-  myData.myIntData.myMinINT    = minInt;
-  myData.myIntData.myMaxINT    = maxInt;
+  myData.myIntData.myMinInt    = minInt;
+  myData.myIntData.myMaxInt    = maxInt;
   myData.myIntData.myIntUnsignedShortPointer = pointer;
 } 
 
@@ -182,8 +182,8 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, unsigned char *pointer,
   set(INT, name, description);
 
   myData.myIntData.myIntType   = INT_UNSIGNED_CHAR;
-  myData.myIntData.myMinINT    = minInt;
-  myData.myIntData.myMaxINT    = maxInt;
+  myData.myIntData.myMinInt    = minInt;
+  myData.myIntData.myMaxInt    = maxInt;
   myData.myIntData.myIntUnsignedCharPointer = pointer;
 } 
 
@@ -217,8 +217,8 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, int val,
   set(INT, name, description);
 
   myData.myIntData.myIntType     = INT_INT;
-  myData.myIntData.myMinINT      = minInt;
-  myData.myIntData.myMaxINT      = maxInt;
+  myData.myIntData.myMinInt      = minInt;
+  myData.myIntData.myMaxInt      = maxInt;
 
   myData.myIntData.myIntPointer  = new int;
   *myData.myIntData.myIntPointer = val;
@@ -277,7 +277,7 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, char *str,
   }
   else
   {
-    myData.myStringData.myString = str;
+    myData.myStringData.myStringPointer = str;
     myData.myStringData.myMaxStrLen = maxStrLen;
   }
 } 
@@ -329,7 +329,7 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name,
   set(FUNCTOR, name, description);
 
   myData.myFunctorData.mySetFunctor = setFunctor;
-  myData.myFunctorData.myGetFunctor = setGunctor;
+  myData.myFunctorData.myGetFunctor = getFunctor;
 }                                     
 
 MVREXPORT MvrConfigArg::MvrConfigArg(const char *str, Type type)
@@ -416,7 +416,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
   /// If any type has changed, then set up the union for the new type.
   /// Note that the isDelete flat is set to false beacause pointers
   // may contain bogus information (from the previous type)
-  if ((myType != arg.myType) || ((myType == INT) && (myData.myIntData.myIntType != arg.myData.myIntData.myINtType)))
+  if ((myType != arg.myType) || ((myType == INT) && (myData.myIntData.myIntType != arg.myData.myIntData.myIntType)))
   {
     clear(false, arg.myType, ((arg.myType == INT) ? arg.myData.myIntData.myIntType : INT_NOT), false);
   }
@@ -450,7 +450,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
             }
             break;
 
-          case INT_SHORT;
+          case INT_SHORT:
             {
               if (myOwnPointedTo && arg.myData.myIntData.myIntShortPointer != NULL)
               {
@@ -468,7 +468,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
             {
               if (myOwnPointedTo && arg.myData.myIntData.myIntUnsignedShortPointer != NULL)
               {
-                myData.myIntData.myIntUnsignedShortPointer  = new short;
+                myData.myIntData.myIntUnsignedShortPointer  = new unsigned short;
                 *myData.myIntData.myIntUnsignedShortPointer = *arg.myData.myIntData.myIntUnsignedShortPointer;
               }
               else
@@ -482,7 +482,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
             {
               if (myOwnPointedTo && arg.myData.myIntData.myIntUnsignedCharPointer != NULL)
               {
-                myData.myIntData.myIntUnsignedCharPointer  = new short;
+                myData.myIntData.myIntUnsignedCharPointer  = new unsigned char;
                 *myData.myIntData.myIntUnsignedCharPointer = *arg.myData.myIntData.myIntUnsignedCharPointer;
               }
               else
@@ -492,7 +492,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
             }
             break;  
 
-          case INT_NOE:
+          case INT_NOT:
             {
               MvrLog::log(MvrLog::Normal, "MvrConfig: Internal warning: MvrConfigArg has INT type, but integer subtype is INT_NOT! Can't copy pointer.");
             }                  
@@ -507,12 +507,12 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
       {
         if (myOwnPointedTo && arg.myData.myDoubleData.myDoublePointer != NULL)
         {
-          myData.myIntData.myDoublePointer  = new short;
-          *myData.myIntData.myDoublePointer = *arg.myData.myIntData.myDoublePointer;
+          myData.myDoubleData.myDoublePointer  = new double;
+          *myData.myDoubleData.myDoublePointer = *arg.myData.myDoubleData.myDoublePointer;
         }
         else
         {
-          myData.myIntData.myDoublePointer = arg.myData.myIntData.myDoublePointer;
+          myData.myDoubleData.myDoublePointer = arg.myData.myDoubleData.myDoublePointer;
         }
         myData.myDoubleData.myMinDouble = arg.myData.myDoubleData.myMinDouble;
         myData.myDoubleData.myMaxDouble = arg.myData.myDoubleData.myMaxDouble;
@@ -529,7 +529,8 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
         {
           myData.myStringData.myStringPointer = NULL;
 
-          if (!arg.myOwnPointedTo && (arg.muyData.myStringData.myStringPointer != NULL){
+          if (!arg.myOwnPointedTo && (arg.myData.myStringData.myStringPointer != NULL))
+          {
             if (myData.myStringData.myString)
               delete myData.myStringData.myString;
             myData.myStringData.myString = new std::string(myData.myStringData.myStringPointer);
@@ -555,14 +556,14 @@ void MvrConfigArg::copy(const MvrConfigArg &arg, bool isDetach)
             delete myData.myStringData.myString;
           if (arg.myData.myStringData.myString != NULL)
           {
-            mydata.myStringData.myString = new std::string(*arg.myData.myStringData.myString);
+            myData.myStringData.myString = new std::string(*arg.myData.myStringData.myString);
           }
           else
           {
             myData.myStringData.myString = NULL;
           }
         } 
-        mydata.myStringData.myMaxStrLen  = arg.mydata.myStringData.myMaxStrLen;
+        myData.myStringData.myMaxStrLen  = arg.myData.myStringData.myMaxStrLen;
       }   
       break;
 
@@ -644,10 +645,8 @@ MVREXPORT bool MvrConfigArg::copyTranslation(const MvrConfigArg &arg)
 {
   if (MvrUtil::strcasecmp(getName(), arg.getName()) != 0)
   {
-    MvrLog::log(MvrLogL::Normal,
-                "MvrConfigArg::copyTranslation() names jdo not match this = %s arg = %s",
-                getName(),
-                arg.getName());
+    MvrLog::log(MvrLog::Normal, "MvrConfigArg::copyTranslation() names jdo not match this = %s arg = %s",
+                getName(), arg.getName());
     return false;                
   }
   setDescription(arg.getDescription());
@@ -724,7 +723,7 @@ MVREXPORT MvrConfigArg::~MvrConfigArg()
  * is used when the type of an arg needs to be changed (for example, from a 
  * STRING_HOLDER to a "real" value).
  */
-MVREXPORT MvrConfigArg::clear(bool initial, Type type, IntType intType, isDelete)
+void  MvrConfigArg::clear(bool initial, Type type, IntType intType, bool isDelete)
 {
   if (initial)
   {
@@ -885,7 +884,7 @@ MVREXPORT void MvrConfigArg::replaceSpacesInName(void)
   for (i=0; i<len; i++)
   {
     if (isspace(myName[i]))
-      myName[i] = "_";
+      myName[i] = '_';
   }
 }
 
@@ -908,7 +907,7 @@ void MvrConfigArg::set(MvrConfigArg::Type type,
 /*
  * @param parentArg the MvrConfigArg * to be stroed as the parent
  */
-void MvrConfigArg::setParent(Mvrconfig *parentArg)
+void MvrConfigArg::setParent(MvrConfigArg *parentArg)
 {
   myParentArg = parentArg;
 }
@@ -959,25 +958,25 @@ MVREXPORT int MvrConfigArg::getInt(bool *ok) const
 
   if (myType == INT)
   {
-    switch (myData.myIntDat.myIntType)
+    switch (myData.myIntData.myIntType)
     {
       case INT_NOT:
       case INT_INT:
         // only one of these will be valid
-        if (myData.myIntDat.myIntPointer != NULL)
-          return *myData.myIntDat.myIntPointer;
+        if (myData.myIntData.myIntPointer != NULL)
+          return *myData.myIntData.myIntPointer;
         break;
       case INT_SHORT:
-        if (myData.myIntDat.myIntShortPointer != NULL)
-          return *myData.myIntDat.myIntShortPointer;
+        if (myData.myIntData.myIntShortPointer != NULL)
+          return *myData.myIntData.myIntShortPointer;
         break;     
       case INT_UNSIGNED_SHORT:
-        if (myData.myIntDat.myIntUnsignedShortPointer != NULL)
-          return *myData.myIntDat.myIntUnsignedShortPointer;
+        if (myData.myIntData.myIntUnsignedShortPointer != NULL)
+          return *myData.myIntData.myIntUnsignedShortPointer;
         break;          
       case INT_UNSIGNED_CHAR:
-        if (myData.myIntDat.myIntUnsignedCharPointer != NULL)
-          return *myData.myIntDat.myIntUnsignedCharPointer;
+        if (myData.myIntData.myIntUnsignedCharPointer != NULL)
+          return *myData.myIntData.myIntUnsignedCharPointer;
         break;          
     }
   }
@@ -1026,8 +1025,8 @@ MVREXPORT int MvrConfigArg::getMaxInt(bool *ok) const
   return INT_MAX;
 }
 
-MVREXPORT bool MvrConfigArg::setrInt(int val, char *errorBuffer,
-                                     size_t errorBufferLem, bool doNotSet)
+MVREXPORT bool MvrConfigArg::setInt(int val, char *errorBuffer,
+                                     size_t errorBufferLen, bool doNotSet)
 {
   if (myType != INT)
   {
@@ -1043,7 +1042,7 @@ MVREXPORT bool MvrConfigArg::setrInt(int val, char *errorBuffer,
     MvrLog::log(MvrLog::Normal, "MvrConfigArg of %s: SetInt value %d below range [%d, %d]",
                 getName(), val, myData.myIntData.myMinInt, myData.myIntData.myMaxInt);
     if (errorBuffer != NULL)
-      snprintf(errorBuffer, errorBufferLen, "%s value of %d is below minimum of %d."
+      snprintf(errorBuffer, errorBufferLen, "%s value of %d is below minimum of %d.",
                getName(), val, myData.myIntData.myMinInt);
     return false;
   }
@@ -1052,7 +1051,7 @@ MVREXPORT bool MvrConfigArg::setrInt(int val, char *errorBuffer,
     MvrLog::log(MvrLog::Normal, "MvrConfigArg of %s: SetInt value %d above range [%d, %d]",
                 getName(), val, myData.myIntData.myMinInt, myData.myIntData.myMaxInt);
     if (errorBuffer != NULL)
-      snprintf(errorBuffer, errorBufferLen, "%s value of %d is above maximum of %d."
+      snprintf(errorBuffer, errorBufferLen, "%s value of %d is above maximum of %d.",
                getName(), val, myData.myIntData.myMaxInt);
     return false;    
   }
@@ -1162,7 +1161,7 @@ MVREXPORT bool MvrConfigArg::setDouble(double val, char *errorBuffer,
   {
     MvrLog::log(MvrLog::Normal,
                 "MvrConfigArg of %s: setDouble value %g below range [%g, %g]",
-                getName(), myDoubleData.myMinDouble, myData.myDoubleData.myMaxDouble);
+                getName(), myData.myDoubleData.myMinDouble, myData.myDoubleData.myMaxDouble);
     if (errorBuffer != NULL)
       snprintf(errorBuffer, errorBufferLen, "%s value of %g is below minimum of %g",
                getName(), val, myData.myDoubleData.myMinDouble);
@@ -1172,7 +1171,7 @@ MVREXPORT bool MvrConfigArg::setDouble(double val, char *errorBuffer,
   {
     MvrLog::log(MvrLog::Normal,
                 "MvrConfigArg of %s: setDouble value %g above range [%g, %g]",
-                getName(), myDoubleData.myMinDouble, myData.myDoubleData.myMaxDouble);
+                getName(), myData.myDoubleData.myMinDouble, myData.myDoubleData.myMaxDouble);
     if (errorBuffer != NULL)
       snprintf(errorBuffer, errorBufferLen, "%s value of %g is above maximum of %g",
                getName(), val, myData.myDoubleData.myMaxDouble);
@@ -1204,8 +1203,8 @@ MVREXPORT bool MvrConfigArg::getBool(bool *ok) const
 
   if (myType == BOOL)
   {
-    if (myData.myDoubleData.myBoolPointer != NULL)
-          return *myData.myDoubleData.myBoolPointer;
+    if (myData.myBoolData.myBoolPointer != NULL)
+          return *myData.myBoolData.myBoolPointer;
   }
   return 0;
 }
@@ -1225,7 +1224,7 @@ MVREXPORT bool MvrConfigArg::setBool(bool val, char *errorBuffer,
   if (myData.myBoolData.myBoolPointer == NULL)
   {
     MvrLog::log(MvrLog::Normal,
-                "MvrConfigArg of %s: setBool value called with NULL pointer", getName);
+                "MvrConfigArg of %s: setBool value called with NULL pointer", getName());
     if (errorBuffer != NULL)
       snprintf(errorBuffer, errorBufferLen, "%s pointer is NULL", getName());
     return false;               
@@ -1243,7 +1242,7 @@ MVREXPORT const char *MvrConfigArg::getString(bool *ok) const
 {
   if (ok != NULL)
   {
-    *ok = ((myType == STRING) || (myType == STRING_HOLDER) || (myType == CPPSTRING))
+    *ok = ((myType == STRING) || (myType == STRING_HOLDER) || (myType == CPPSTRING));
   }
   if ((myType == STRING) || (myType == STRING_HOLDER))
   {
@@ -1251,7 +1250,7 @@ MVREXPORT const char *MvrConfigArg::getString(bool *ok) const
     {
       if (myData.myStringData.myString != NULL)
       {
-        return myData.myStringData.myString.c_str();
+        return myData.myStringData.myString->c_str();
       }
       else
       {
@@ -1325,10 +1324,10 @@ MVREXPORT std::string MvrConfigArg::getCppString(bool *ok) const
   }
   if (ok)
     *ok = true;
-  return myData.myCppStringData.myCppStringPtr;
+  return *(myData.myCppStringData.myCppStringPtr);
 }
 
-MVREXPORT std::string MvrConfigArg::setCppString(const std::string &str, char *errorBuffer, 
+MVREXPORT bool MvrConfigArg::setCppString(const std::string &str, char *errorBuffer, 
                                                  size_t errorBufferLen, bool doNotSet)
 {
   if (myType != CPPSTRING)
@@ -1391,7 +1390,7 @@ MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
   MvrConfigArg newChildArg(arg);
 
   MvrConfigArg *existingChildArg = NULL;
-  if (!MvrUtil::isStrEmpty(arg.getName())
+  if (!MvrUtil::isStrEmpty(arg.getName()))
   {
     existingChildArg = findArg(arg.getName());
   }
@@ -1435,14 +1434,14 @@ MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
          {
             MvrLog::log(MvrLog::Normal,
                         "MvrConfigArg::addArg() error removing child %s from %s",
-                        newChildArg->getName(), getName());           
+                        newChildArg.getName(), getName());           
          }
        }
        else
        {
           MvrLog::log(MvrLog::Normal,
                       "MvrConfigArg::addArg() child %s not added to %s, error parsing '%s'",
-                      arg->getName(), getName(),existingChildArg->getString());
+                      arg.getName(), getName(),existingChildArg->getString());
           return false;                                   
        }
     }
@@ -1482,7 +1481,7 @@ MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
 MVREXPORT bool MvrConfigArg::removeArg(const MvrConfigArg &arg)
 {
   // children can only be added to LIST or LIST_HOLDER type parameters
-  if (!isListType)
+  if (!isListType())
   {
     MvrLog::log(MvrLog::Normal,
                 "MvrConfigArg::removeArg() child %s not removed from %s (type %s), type must be %s or %s",
@@ -1580,22 +1579,24 @@ MVREXPORT std::list<MvrConfigArg> MvrConfigArg::getArgs(bool *ok) const
 MVREXPORT const MvrConfigArg *MvrConfigArg::getArg(size_t index) const
 {
   MvrConfigArg *arg = NULL;
-  if ((isListType()) && (myData.myListData.myChildArgList != NULL))
+  if ((isListType()) && (myData.myListData.myChildArgList != NULL)) 
   {
     size_t curIndex = 0;
-    for (std::list<MvrConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
+    for (std::list<MvrConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
          iter != myData.myListData.myChildArgList->end();
-         iter++)
+         iter++, curIndex++) 
     {
-      if (curIndex == index)
+      if (curIndex == index) 
       {
         arg = &(*iter);
         break;
       }
-    }         
+    }
   }
+
   return arg;
-}
+
+} // end method getArg
 
 MVREXPORT MvrConfigArg *MvrConfigArg::getArg(size_t index) 
 {
@@ -1656,7 +1657,7 @@ MVREXPORT const MvrConfigArg *MvrConfigArg::findArg(const char *childParamName) 
   {
     MvrConfigArg &curArg = *iter;
     if (!MvrUtil::isStrEmpty(curArg.getName()) &&
-        (MvrUtil::strcasecmp(childParamName, curAge.getName()) == 0))
+        (MvrUtil::strcasecmp(childParamName, curArg.getName()) == 0))
     {
       child = &curArg;
     }
@@ -1672,7 +1673,7 @@ MVREXPORT const MvrConfigArg *MvrConfigArg::findArg(const char *childParamName) 
  * @return MvrConfigArg * a pointer to the requested child arg; or NULL if not 
  * found.
  */
-MVREXPORT MvrConfigArg *MvrConfig::findArg(const char *childParamName)
+MVREXPORT MvrConfigArg *MvrConfigArg::findArg(const char *childParamName)
 {
   // cannot look up empty name
   if (MvrUtil::isStrEmpty(childParamName))
@@ -1705,7 +1706,7 @@ MVREXPORT MvrConfigArg *MvrConfig::findArg(const char *childParamName)
   {
     MvrConfigArg &curArg = *iter;
     if (!MvrUtil::isStrEmpty(curArg.getName()) &&
-        (MvrUtil::strcasecmp(childParamName, curAge.getName()) == 0))
+        (MvrUtil::strcasecmp(childParamName, curArg.getName()) == 0))
     {
       child = &curArg;
     }
@@ -1713,7 +1714,7 @@ MVREXPORT MvrConfigArg *MvrConfig::findArg(const char *childParamName)
   return child;
 }
 
-MVREXPORT bool MvrConfig::getAncestorList(std::list<MvrConfigArg *> *ancestorListOut)
+MVREXPORT bool MvrConfigArg::getAncestorList(std::list<MvrConfigArg *> *ancestorListOut)
 {
   if (getParentArg() == NULL)
   {
@@ -1762,7 +1763,7 @@ MVREXPORT const std::list<MvrArgumentBuilder *> *MvrConfigArg::getArgsWithFuncto
   if (myType == FUNCTOR)
   {
     if (myData.myFunctorData.myGetFunctor != NULL)
-      return myData.myFunctorData.myGetFunctor;
+      return myData.myFunctorData.myGetFunctor->invokeR();
   }
   return NULL;
 }
@@ -1834,7 +1835,7 @@ MVREXPORT std::list<std::string> MvrConfigArg::splitParentPathName(const char *p
   MvrArgumentBuilder builder(512, separator);
   builder.add(parentPathName);
 
-  for (int c=0; c<builder.getArgc(); c++)
+  for (int c = 0; c < builder.getArgc(); c++)
   {
     IFDEBUG(MvrLog::log(MvrLog::Normal,
                         "MvrConfigArg::splitParentPathName() %s - adding %s to list",
@@ -1894,7 +1895,7 @@ MVREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
   else if (myData.myListData.myChildArgList != NULL)
   {
     for (std::list<MvrConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
-         iter = myData.myListData.myChildArgList->end();
+         iter != myData.myListData.myChildArgList->end();
          iter ++)
     {
       if (!(*iter).addToFileParser(parser, parserCB, logPrefix, isQuiet))
@@ -1912,7 +1913,7 @@ MVREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
  * @return bool true if the arg was successfully parsed; false if an error occurred
  */
 
-MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
+MVREXPORT bool MvrConfigArg::parseArgument(MvrArgumentBuilder *arg,
                                         char *errorBuffer,
                                         size_t errorBufferLen,
                                         const char *logPrefix,
@@ -1942,7 +1943,7 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
 
   switch (getType())
   {
-    case DESCRIPTION_HOLDER::
+    case DESCRIPTION_HOLDER:
     case SEPARATOR:
     case STRING_HOLDER:
     case LIST_HOLDER:
@@ -1975,7 +1976,7 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
           {
             MvrLog::log(MvrLog::Verbose,
                         "%sCould not set parameter '%s' to '%d'",
-                        logPrefix, getName(), valInt));               
+                        logPrefix, getName(), valInt);               
           }
         }
         else
@@ -2015,14 +2016,14 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
           {
             MvrLog::log(MvrLog::Verbose,
                         "%sCould not set parameter '%s' to '%.10f'",
-                        logPrefix, getName(), valDouble));               
+                        logPrefix, getName(), valDouble);               
           }
         }
         else
         {
           MvrLog::log(MvrLog::Terse,
                       "%sparameter '%s' is a double parameter but was given non-double argument of '%s'", 
-                      logPrefix, getName(), arg->getArg(0)));            
+                      logPrefix, getName(), arg->getArg(0));            
           if (errorBuffer != NULL)
           {
             snprintf(errorBuffer, errorBufferLen,
@@ -2239,7 +2240,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
                                             const char *logPrefix,
                                             int indentLevel) const
 {
-  if ((file == NULL) || (lineBuf == NULL) || (lineBufSize < 0) || (logPrefix == NULL) || (indentLvel < 0))
+  if ((file == NULL) || (lineBuf == NULL) || (lineBufSize < 0) || (logPrefix == NULL) || (indentLevel < 0))
   {
     MvrLog::log(MvrLog::Normal,
                 "MvrConfigArg::writeArguments() invalid input");
@@ -2281,7 +2282,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
 
     if (argList != NULL)
     {
-      for (argIt = argList->begin; argIt != argList->end(); argIt++)
+      for (argIt = argList->begin(); argIt != argList->end(); argIt++)
       {
         // if there's a space in the name then quote the param name
         if (strchr(getName(), ' ') != NULL || strchr(getName(), '\t') != NULL)
@@ -2323,7 +2324,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
     
     case BOOL:
       {
-        snprintf(lineBuf, lineBufSize, "%s %s", nameBuf, getBool() ? "true", "false");
+        snprintf(lineBuf, lineBufSize, "%s %s", nameBuf, getBool() ? "true": "false");
       }
       break;
     
@@ -2939,9 +2940,9 @@ MVREXPORT bool MvrConfigArg::writeInfo(MvrSocket *socket, const char *intro) con
   {
     // This was done to match the original "FACTORY" output
     size_t i=0;
-    sizt_t priorityNameLength = strlen(priorityName);
+    size_t priorityNameLength = strlen(priorityName);
 
-    for (; ((i<prioriytNameLength) && (i < sizeof(level))); i++)
+    for (; ((i < priorityNameLength) && (i < sizeof(level))); i++)
     {
       level[i] = ::toupper(priorityName[i]);
     }
@@ -3015,13 +3016,13 @@ MVREXPORT bool MvrConfigArg::writeInfo(MvrSocket *socket, const char *intro) con
                         delimiter);
   }                      
   return true;
-)
+}
 
 /****************************************************************************
                       Resource/Translator Files
 ****************************************************************************/ 
 MVREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg, char *errorBuffer,
-                                           size_t errorBufferLen, const char *logProfix,
+                                           size_t errorBufferLen, const char *logPrefix,
                                            bool isQuiet)
 {
   if (arg == NULL)

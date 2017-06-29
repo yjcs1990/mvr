@@ -18,7 +18,7 @@
 // #if (defined(_DEBUG) && defined(MVRDEBUG_CONFIG))
 #define IFDEBUG(code) {code;}
 #else
-#define IFDBUG(code)
+#define IFDEBUG(code)
 #endif  // MVRDEBUG_CONFIG
 
 const char *MvrConfig::CURRENT_CONFIG_VERSION = "2.0";
@@ -79,17 +79,17 @@ MVREXPORT MvrConfig::MvrConfig(const char *baseDirectory,
                                                    myTranslator(NULL),
                                                    myCsvSeparatorChar('\t'),
                                                    mySection(),
-                                                   mySectionToParse(NULL),
+                                                   mySectionsToParse(NULL),
                                                    mySectionsNotToParse(),
                                                    myHighestPriorityToParse(MvrPriority::FIRST_PRIORITY),
                                                    myLowestPriorityToParse(MvrPriority::LAST_PRIORITY),
 
-                                                   myRestartLevelNeeded(MvrConfigArg::NO_RESTART);
-                                                   myCheckingForRestartLevel(true);
+                                                   myRestartLevelNeeded(MvrConfigArg::NO_RESTART),
+                                                   myCheckingForRestartLevel(true),
 
-                                                   mySectionBroken(false);
-                                                   mySectionIgnored(false);
-                                                   myUsingSections(false);
+                                                   mySectionBroken(false),
+                                                   mySectionIgnored(false),
+                                                   myUsingSections(false),
 
                                                    myParsingListNames(),
                                                    myIsParsingListBroken(false),
@@ -99,7 +99,7 @@ MVREXPORT MvrConfig::MvrConfig(const char *baseDirectory,
 
                                                    myParser(NULL),
 
-                                                   myIgnoreBounds(ignoreBounds);
+                                                   myIgnoreBounds(ignoreBounds),
                                                    myFailOnBadSection(failOnBadSection),
 
                                                    myDuplicateParams(false),
@@ -127,7 +127,7 @@ MVREXPORT MvrConfig::MvrConfig(const char *baseDirectory,
     MvrLog::log(MvrLog::Normal, "Could not add section to file parser, horrific failure");
   }
   */
-  addparserHandlers();
+  addParserHandlers();
 
   myPermissionAllowFactory = true;
   myPermissionSaveUnknown = saveUnknown;
@@ -166,24 +166,24 @@ MVREXPORT MvrConfig::MvrConfig(const MvrConfig &config) :
 
           myArgumentParser(NULL),
           myProcessFileCBList(),
-          myNoBlanksBetweenParams(config.noBlanksBetweenParams),
+          myNoBlanksBetweenParams(config.myNoBlanksBetweenParams),
 
           myConfigVersion(config.myConfigVersion),
           myTranslator(config.myTranslator),
           myCsvSeparatorChar(config.myCsvSeparatorChar),
 
           mySection(config.mySection),
-          mySectionToParse(NULL),
+          mySectionsToParse(NULL),
           mySectionsNotToParse(config.mySectionsNotToParse),
           myHighestPriorityToParse(config.myHighestPriorityToParse),
           myLowestPriorityToParse(config.myLowestPriorityToParse),
 
-          myRestartLevelNeeded(MvrConfigArg::NO_RESTART);
-          myCheckingForRestartLevel(true);
+          myRestartLevelNeeded(MvrConfigArg::NO_RESTART),
+          myCheckingForRestartLevel(true),
 
-          mySectionBroken(config.mySectionBroken);
-          mySectionIgnored(config.mySectionIgnored);
-          myUsingSections(config.myUsingSections);
+          mySectionBroken(config.mySectionBroken),
+          mySectionIgnored(config.mySectionIgnored),
+          myUsingSections(config.myUsingSections),
 
           myParsingListNames(),
           myIsParsingListBroken(false),
@@ -193,7 +193,7 @@ MVREXPORT MvrConfig::MvrConfig(const MvrConfig &config) :
 
           myParser(NULL),
 
-          myIgnoreBounds(config.myIgnoreBounds);
+          myIgnoreBounds(config.myIgnoreBounds),
           myFailOnBadSection(config.myFailOnBadSection),
 
           myDuplicateParams(config.myDuplicateParams),
@@ -232,12 +232,12 @@ MVREXPORT MvrConfig::MvrConfig(const MvrConfig &config) :
   myListEndCB.setName("MvrConfig::parseListEnd");
   myUnknownCB.setName("MvrConfig::parseUnknown");
 
-  myParser.setQuiet(myisQuiet);
+  myParser.setQuiet(myIsQuiet);
   remParserHandlers();
   addParserHandlers();
 }
 
-MVREXPORT MvrConfig &MvrConfig::Operator=(const MvrConfig &config)
+MVREXPORT MvrConfig &MvrConfig::operator=(const MvrConfig &config)
 {
   if (this != &config){
     // Note that the name is not copied ...
@@ -268,13 +268,13 @@ MVREXPORT MvrConfig &MvrConfig::Operator=(const MvrConfig &config)
 
   clearSections();
 
-  stds::list<MvrConfigSection *>::const_iterator it;
-  for (it=config.mySections.begin(); it!=config.mySecitons.end(); it++)
+  std::list<MvrConfigSection *>::const_iterator it;
+  for (it=config.mySections.begin(); it!=config.mySections.end(); it++)
   {
     mySections.push_back(new MvrConfigSection(*(*it)));
   }
 
-  copySectionsToParse(config.mySectionToParse);
+  copySectionsToParse(config.mySectionsToParse);
 
   mySectionsNotToParse = config.mySectionsNotToParse;
 
@@ -296,62 +296,62 @@ MVREXPORT MvrConfig &MvrConfig::Operator=(const MvrConfig &config)
 
 MVREXPORT void MvrConfig::copyAndDetach(const MvrConfig &config)
 {
-  if (this != &config){
+  if (this != &config)
+  {
     // Note than the name is not copied ...
     IFDEBUG(MvrLog::log(MvrLog::Verbose,
                         "%soperator=(from %s) begins",
                         myLogPrefix.c_str(),
                         config.myLogPrefix.c_str()));
 
-  myArgumentParser = NULL;
-  setBaseDirectory(config.getBaseDirectory());
-  myNoBlanksBetweenParams = config.myNoBlanksBetweenParams;
-  myConfigVersion = config.myConfigVersion;
-  myIgnoreBounds = config.myIgnoreBounds;    
-  myFailOnBadSection = config.myFailOnBadSection;
-  mySection = config.mySection;
-  mySectionBroken = config.mySectionBroken;
-  mySectionIgnored = config.mySectionIgnored;
-  myUsingSections = config.myUsingSections;
-  myDuplicateParams = config.myDuplicateParams;
+    myArgumentParser = NULL;
+    setBaseDirectory(config.getBaseDirectory());
+    myNoBlanksBetweenParams = config.myNoBlanksBetweenParams;
+    myConfigVersion = config.myConfigVersion;
+    myIgnoreBounds = config.myIgnoreBounds;    
+    myFailOnBadSection = config.myFailOnBadSection;
+    mySection = config.mySection;
+    mySectionBroken = config.mySectionBroken;
+    mySectionIgnored = config.mySectionIgnored;
+    myUsingSections = config.myUsingSections;
+    myDuplicateParams = config.myDuplicateParams;
 
-  myIsParsingListBroken = config.myIsParsingListBroken;
+    myIsParsingListBroken = config.myIsParsingListBroken;
 
-  myPermissionAllowFactory = config.myPermissionAllowFactory;
-  myPermissionSaveUnknown = config.myPermissionSaveUnknown;
+    myPermissionAllowFactory = config.myPermissionAllowFactory;
+    myPermissionSaveUnknown = config.myPermissionSaveUnknown;
 
-  myCategoryToSectionsMap.clear();
-  myCategoryToSectionsMap = config.myCategoryToSectionsMap;
+    myCategoryToSectionsMap.clear();
+    myCategoryToSectionsMap = config.myCategoryToSectionsMap;
 
-  clearSections();
+    clearSections();
 
-  stds::list<MvrConfigSection *>::const_iterator it;
-  for (it=config.mySections.begin(); it!=config.mySecitons.end(); it++)
-  {
-    MvrConfigSection *sectionCopy = new MvrConfigSection();
-    sectionCopy->setQuiet(myIsQuiet);
-    sectionCopy->copyAndDetach(*(*it));
-    // mySections.push_back(new MvrConfigSection(*(*it)));
-  }
+    std::list<MvrConfigSection *>::const_iterator it;
+    for (it=config.mySections.begin(); it!=config.mySections.end(); it++)
+    {
+      MvrConfigSection *sectionCopy = new MvrConfigSection();
+      sectionCopy->setQuiet(myIsQuiet);
+      sectionCopy->copyAndDetach(*(*it));
+      // mySections.push_back(new MvrConfigSection(*(*it)));
+    }
 
-  copySectionsToParse(config.mySectionToParse);
+    copySectionsToParse(config.mySectionsToParse);
 
-  myHighestPriorityToParse = config.myHighestPriorityToParse;
-  myLowestPriorityToParse  = config.myLowestPriorityToParse;
-  myRestartLevelNeeded     = config.myRestartLevelNeeded;
-  myCheckingForRestartLevel= config.myCheckingForRestartLevel;
-  mySectionsNotToParse     = config.mySectionsNotToParse;
+    myHighestPriorityToParse = config.myHighestPriorityToParse;
+    myLowestPriorityToParse  = config.myLowestPriorityToParse;
+    myRestartLevelNeeded     = config.myRestartLevelNeeded;
+    myCheckingForRestartLevel= config.myCheckingForRestartLevel;
+    mySectionsNotToParse     = config.mySectionsNotToParse;
 
-  remParserHandlers();
-  addParserHandlers();
+    remParserHandlers();
+    addParserHandlers();
 
-  IFDEBUG(MvrLog::log(MvrLog::Verbose,
-                      "%soperator=(from %s) ends",
-                      myLogPrefix.c_str(),
-                      config.myLogPrefix.c_str()));
+    IFDEBUG(MvrLog::log(MvrLog::Verbose,
+                        "%soperator=(from %s) ends",
+                        myLogPrefix.c_str(),
+                        config.myLogPrefix.c_str()));
   }
   // return *this;
-  }
 }
 /*
  * These names are used solely for log messages.
@@ -366,12 +366,14 @@ MVREXPORT void MvrConfig::setConfigName(const char *configName, const char *robo
   myRobotName  = ((robotName != NULL) ? robotName : "");
   myLogPrefix  = "";
 
-  if (!myRobotName.empty()){
+  if (!myRobotName.empty())
+  {
     myLogPrefix = myRobotName + ":";
   }
   myLogPrefix += "MvrConfig";
   
-  if (!myConfigName.empyt()){
+  if (!myConfigName.empty())
+  {
     myLogPrefix += "("+myConfigName + ")";
   }
   myLogPrefix += ": ";
@@ -430,14 +432,16 @@ MVREXPORT void MvrConfig::log(bool isSummary,
 
     // If the section names were specified and the current section isn't in the
     // list, then skip the section...
-    if (sectionNameList != NULL){
-      if (!MvrUtil::isStrInList((*it)->getName(), *setctionNameList)){
+    if (sectionNameList != NULL)
+    {
+      if (!MvrUtil::isStrInList((*it)->getName(), *sectionNameList))
+      {
         continue;
       }
     }
   
     if (params == NULL){
-      MvrLog::log(mvrLog::Normal, "    Section %s has NULL params", (*it)->getName());
+      MvrLog::log(MvrLog::Normal, "    Section %s has NULL params", (*it)->getName());
       continue;
     }
 
@@ -484,11 +488,11 @@ MVREXPORT void MvrConfig::clearAll(void)
   myProcessFileCBList.clear();
 }   
 
-void MvrConfig::addParseHandlers(void)
+void MvrConfig::addParserHandlers(void)
 {
   std::list<MvrConfigSection *>::const_iterator it;
-  std::list<MvrConfigArg> *param;
-  std::list<MvrConfigArg>::iterator it;
+  std::list<MvrConfigArg> *params;
+  std::list<MvrConfigArg>::iterator pit;
 
   if (!myParser.addHandlerWithError(CONFIG_VERSION_TAG, &myVersionCB)){
     if (!myIsQuiet){
@@ -532,12 +536,12 @@ void MvrConfig::addParseHandlers(void)
 
 void MvrConfig::remParserHandlers(void)
 {
-  myParser.remHander(&myParserCB);
-  myParser.remHander(&myVersionCB);
-  myParser.remHander(&mySectionCB);
-  myParser.remHander(&myListBeginCB);
-  myParser.remHander(&myListEndCB);
-  myParser.remHander(&myUnknownCB);
+  myParser.remHandler(&myParserCB);
+  myParser.remHandler(&myVersionCB);
+  myParser.remHandler(&mySectionCB);
+  myParser.remHandler(&myListBeginCB);
+  myParser.remHandler(&myListEndCB);
+  myParser.remHandler(&myUnknownCB);
 }
 
 MVREXPORT bool MvrConfig::addSection(const char *categoryName, const char *sectionName, const char *sectionDescription)
@@ -602,7 +606,7 @@ MVREXPORT bool MvrConfig::addSection(const char *categoryName, const char *secti
   // Make sure that section is not already stored in the category map
   std::list<std::string> *sectionList = NULL;
 
-  std::map<std::string, std::list<std::string> >::iterator catIter=myCategoryToSectionsMap;
+  std::map<std::string, std::list<std::string> >::iterator catIter = myCategoryToSectionsMap.find(categoryName);
   if (catIter != myCategoryToSectionsMap.end()){
     sectionList = &(catIter->second);
   }
@@ -766,8 +770,9 @@ MVREXPORT bool MvrConfig::addParam(const MvrConfigArg &arg,
   {
     MvrConfigSection *curSection = *sectionIt;
 
-    MvrConfig *existingParam = NULL;
-    if (!MvrUtil::isStrEmpty(arg.getName())){
+    MvrConfigArg *existingParam = NULL;
+    if (!MvrUtil::isStrEmpty(arg.getName()))
+    {
       existingParam = curSection->findParam(arg.getName());
     }
 
@@ -776,7 +781,7 @@ MVREXPORT bool MvrConfig::addParam(const MvrConfigArg &arg,
     // duplicates
     if (existingParam != NULL)
     {
-       if (strcasecmp(curSection->getName(), section->getName) != 0){
+       if (strcasecmp(curSection->getName(), section->getName()) != 0){
          MvrLog::log(MvrLog::Verbose,
                      "%sParameter %s (type %s) name duplicated in section %s and %s",
                      myLogPrefix.c_str(),
@@ -811,7 +816,7 @@ MVREXPORT bool MvrConfig::addParam(const MvrConfigArg &arg,
   addListNamesToParser(arg);
 
   // remove any string and list holders for this param
-  section->remStringHolder(arg->getName());
+  section->remStringHolder(arg.getName());
 
   params->push_back(arg);
 
@@ -884,7 +889,7 @@ MVREXPORT bool MvrConfig::parseSection(MvrArgumentBuilder *arg, char *errorBuffe
     if (MvrUtil::strcasecmp(section->getName(), arg->getFullString()) == 0)
     {
       bool isParseSection = true;
-      if (mySectionToParse != NULL){
+      if (mySectionsToParse != NULL){
         isParseSection = false;
         for (std::list<std::string>::iterator sIter = mySectionsToParse->begin(); sIter!=mySectionsToParse->end(); sIter++)
         {
@@ -926,7 +931,7 @@ MVREXPORT bool MvrConfig::parseSection(MvrArgumentBuilder *arg, char *errorBuffe
     mySection = "";
     mySectionBroken = true;
     mySectionIgnored = false;
-    snprintf(errorBuffer, errorBufferLeem, "MvrConfig: Could not find section '%s'",
+    snprintf(errorBuffer, errorBufferLen, "MvrConfig: Could not find section '%s'",
              arg->getFullString());
     MvrLog::log(MvrLog::Terse, "%sCould not find section '%s', failing", myLogPrefix.c_str(), arg->getFullString());
     return false;
@@ -1085,42 +1090,46 @@ MVREXPORT bool MvrConfig::parseListEnd(MvrArgumentBuilder *arg, char *errorBuffe
 MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg, char *errorBuffer, size_t errorBufferLen)
 {
   bool ret = true;
+ 
 
   if (mySectionBroken)
   {
-    MvrLog::log(MvrLog::Verbose,"%sSkipping parameter %s because section broken",
-                myLogPrefix.c_str(),
-                arg->getExtraString());
+    MvrLog::log(MvrLog::Verbose, "%sSkipping parameter %s because section broken",
+               myLogPrefix.c_str(),
+	             arg->getExtraString());
     if (myFailOnBadSection)
     {
-      snprintf(errorBuffer, errorBufferLen,
-               "Failed because broken config section");
+      snprintf(errorBuffer, errorBufferLen, "Failed because broken config section");
       return false;
     }
-    else{
+    else
+    {
       return true;
     }
   }
-  else if (mySectionIgnored){
+  else if (mySectionIgnored) 
+  {
     return true;
   }
 
-  if (myIsParsingListBroken){
-    MvrLog::log(MvrLog::Normal,"%sSkipping parameter %s because list broken",
-                myLogPrefix.c_str(),
-                arg->getExtraString());
+
+  if (myIsParsingListBroken) 
+  {
+
+    MvrLog::log(MvrLog::Normal, "%sSkipping parameter %s because list broken",
+                myLogPrefix.c_str(), arg->getExtraString());
     return true;
+
   }
+
+
   // if we have duplicate params and don't have sections don't trash anything
   if (myDuplicateParams && myUsingSections && mySection.size() <= 0)
   {
-    snprintf(errorBuffer, errorBufferLen,
-             "%s not in section, client needs an upgrade",
-             arg->getExtraString());
-    MvrLog::log(MvrLog::Normal,
-                "%s%s not in a section, client needs an upgrade",
-                myLogPrefix.c_str(),
-                arg->getExtraString());
+    snprintf(errorBuffer, errorBufferLen, "%s not in section, client needs an upgrade", arg->getExtraString());
+
+    MvrLog::log(MvrLog::Normal, "%s%s not in a section, client needs an upgrade",
+                myLogPrefix.c_str(), arg->getExtraString());
     return false;
   }
 
@@ -1129,60 +1138,75 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg, char *errorBuff
 
   if (errorBuffer != NULL)
     errorBuffer[0] = '\0';
-  
+
+
   MvrConfigSection *section = findSection(mySection.c_str());
 
-  if (section != NULL){
-    std::list<MvrConfigArg *> parseParamList;
+  if (section != NULL) 
+  {
+
+    std::list<MvrConfigArg*> parseParamList;
 
     std::list<MvrConfigArg> *paramList = section->getParams();
-
-    if (paramList != NULL){
+    if (paramList != NULL) 
+    {
       for (std::list<MvrConfigArg>::iterator pIter = paramList->begin();
            pIter != paramList->end();
-           pIter++){
+           pIter++) 
+      {
+    
         MvrConfigArg *param = &(*pIter);
         MvrConfigArg *parseParam = NULL;
-
-        if(myParsingListNames.empty()){
-          if (MvrUtil::strcasecmp(param->getName(), arg->getExtraString()) != 0){
+    
+        if (myParsingListNames.empty()) 
+        {
+          if (MvrUtil::strcasecmp(param->getName(),arg->getExtraString()) != 0) 
+          {
             continue;
           }
           parseParamList.push_back(param);
+
         }
-        else{
-          if (MvrUtil::strcasecmp(param->getName(), myParsingListNames.front()) != 0){
+        else { // parameter is in a list
+
+          if (MvrUtil::strcasecmp(param->getName(), myParsingListNames.front()) != 0) 
+          {
             continue;
           }
-          std::list<std::string>::iterator listIter = myParseListNames.begin();
-          listIter++;
+          std::list<std::string>::iterator listIter = myParsingListNames.begin();
+          listIter++; // skip the one already parsed
 
           std::list<MvrConfigArg*> matchParamList;
           matchParamList.push_back(param);
 
           std::list<MvrConfigArg*> tempParamList;
 
-          while (listIter != myParsingListNames.end()) {
+          while (listIter != myParsingListNames.end()) 
+          {
 
             for (std::list<MvrConfigArg*>::iterator mIter = matchParamList.begin();
                  mIter != matchParamList.end();
-                 mIter++) {
+                 mIter++) 
+            {
               MvrConfigArg *matchParam = *mIter;
               if (matchParam == NULL) {
                 continue;
               }
-              for (int i = 0; i < matchParam->getArgCount(); i++) {
+              for (int i = 0; i < matchParam->getArgCount(); i++) 
+              {
             
                 MvrConfigArg *childArg = matchParam->getArg(i);
-                if (childArg == NULL) {
+                if (childArg == NULL) 
+                {
                   continue;
                 }
-                if (MvrUtil::strcasecmp(childArg->getName(), *listIter) != 0) {
+                if (MvrUtil::strcasecmp(childArg->getName(), *listIter) != 0) 
+                {
                   continue;
                 }
                 tempParamList.push_back(childArg);
               }
-            } 
+            } // end for each matching parameter list
 
             matchParamList.clear();
             matchParamList = tempParamList;
@@ -1197,75 +1221,93 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg, char *errorBuff
                matchIter++) {
 
              MvrConfigArg *matchParam = *matchIter;
-             if (matchParam == NULL) {
+             if (matchParam == NULL) 
+             {
                continue;
              }
 
-             for (int i = 0; i < matchParam->getArgCount(); i++) {
+             for (int i = 0; i < matchParam->getArgCount(); i++) 
+             {
             
                 MvrConfigArg *childArg = matchParam->getArg(i);
                 if (childArg == NULL) {
                   continue;
                 }
-                if (MvrUtil::strcasecmp(childArg->getName(), arg->getExtraString()) != 0) {
+                if (MvrUtil::strcasecmp(childArg->getName(), arg->getExtraString()) != 0) 
+                {
                   continue;
                 }
                 parseParamList.push_back(childArg);
-              }
-          }
-        }
+              } // end for each child
+          } // end for each matching parameter 
+        } // end else parameter is in a list
 
 
         for (std::list<MvrConfigArg*>::iterator parseIter = parseParamList.begin();
              parseIter != parseParamList.end();
-             parseIter++) {
+             parseIter++) 
+        {
 
-          MrConfigArg *parseParam = *parseIter;
+          MvrConfigArg *parseParam = *parseIter;
           if (parseParam == NULL) {
             continue;
           }
 
           found = true;
 
+          // Make sure that the parameter is within the specified priority range,
+          // primarily to avoid accidentally overwriting factory and calibration
+          // parameters.  Return true because it is not an error condition.
+          //
           if ((parseParam->getConfigPriority() < myHighestPriorityToParse) ||
-              (parseParam->getConfigPriority() > myLowestPriorityToParse)) {
+              (parseParam->getConfigPriority() > myLowestPriorityToParse)) 
+          {
             return true;
           }
 
-          if ((myPermissionAllowFactory) || (parseParam->getConfigPriority() < MvrPriority::FACTORY))
-           {
+          if ((myPermissionAllowFactory) ||
+              (parseParam->getConfigPriority() < MvrPriority::FACTORY)) 
+          {
       
-	          bool changed = false;
-            if (!parseParam->parseArgument(arg, errorBuffer, errorBufferLen, myLogPrefix.c_str(), myIsQuiet, &changed)) {
+            bool changed = false;
+            if (!parseParam->parseArgument(arg, errorBuffer, errorBufferLen, myLogPrefix.c_str(), myIsQuiet, &changed)) 
+            {
 
               MvrLog::log(MvrLog::Normal,
                          "MvrConfig::parseArgument() error parsing %s",
                          arg->getFullString());
               ret = false;
             }
-            if (changed)
-            {
-              if (parseParam->getRestartLevel() > myRestartLevelNeeded)
-              {
-                myRestartLevelNeeded = parseParam->getRestartLevel();
-                // don't print out the warning if nothings checking for it
-                if (myCheckingForRestartLevel)
-                  MvrLog::log(MvrLog::Normal, 
-                "%sParameter '%s' in section '%s' changed, bumping restart level needed to %s (%d)", 
-                myLogPrefix.c_str(), parseParam->getName(),
-                section->getName(),
-                MvrConfigArg::toString(myRestartLevelNeeded),
-                myRestartLevelNeeded);
-              }
-            }
+	    if (changed)
+	    {
+	      if (parseParam->getRestartLevel() > myRestartLevelNeeded)
+	      {
+		myRestartLevelNeeded = parseParam->getRestartLevel();
+		// don't print out the warning if nothings checking for it
+		if (myCheckingForRestartLevel)
+		  MvrLog::log(MvrLog::Normal, 
+			     "%sParameter '%s' in section '%s' changed, bumping restart level needed to %s (%d)", 
+			     myLogPrefix.c_str(), parseParam->getName(),
+			     section->getName(),
+			     MvrConfigArg::toString(myRestartLevelNeeded),
+			     myRestartLevelNeeded);
+	      }
+	    }
+	      
+	      
           }
-          else {}
-        } 
-      } 
-    } 
-  } 
-  // if we didn't find this param its because its a parameter in another section, 
-  // so pass this off to the parser for unknown things
+          else 
+          { 
+
+          } // end else factory parameter and no permission to change
+        } // end if parameter found
+
+      } // end for each parameter in section
+
+    } // end if parameter list
+  } // end if section found
+
+  // if we didn't find this param its because its a parameter in another section, so pass this off to the parser for unknown things
   if (!found)
   {
     MvrArgumentBuilder unknown;
@@ -1774,7 +1816,7 @@ MVREXPORT bool MvrConfig::parseResourceFile(const char *fileName,
     return false;
   }
 
-  bool isSuccess = true;
+  // bool isSuccess = true;
 
   char *localErrorBuffer = NULL;
   size_t localErrorBufferLen = 0;
@@ -1961,7 +2003,7 @@ MVREXPORT bool MvrConfig::writeResourceFile(const char *fileName,
 
   if ((file = MvrUtil::fopen(realFileName.c_str(), mode.c_str())) == NULL)
   {
-    MvrLog::log(MvLog::Terse, "%sCannot open file '%s' for writing",
+    MvrLog::log(MvrLog::Terse, "%sCannot open file '%s' for writing",
 	              myLogPrefix.c_str(), realFileName.c_str());
     return false;
   }
@@ -2056,11 +2098,11 @@ MVREXPORT void MvrConfig::writeSection(MvrConfigSection *section,
   bool commented = false;
   unsigned int startCommentColumn = 25;
 
+ 
   /// clear out our written ones between sections
   alreadyWritten->clear();
   
-  if (!MvrUtil::isStrEmpty(section->getName())) 
-  {
+  if (!MvrUtil::isStrEmpty(section->getName())) {
     //fprintf(file, "; %s\n", section->getName());
     fprintf(file, "Section %s\n", section->getName());
   }
@@ -2069,14 +2111,11 @@ MVREXPORT void MvrConfig::writeSection(MvrConfigSection *section,
 
   if (!MvrUtil::isStrEmpty(section->getComment())) 
   {
-     MvrConfigArg::writeMultiLineComment(section->getComment(),
-                                         file,
-                                         line,
-                                         sizeof(line),
-                                         "; ");
+     MvrConfigArg::writeMultiLineComment(section->getComment(), file, line, sizeof(line), "; ");
   }
   
-  fprintf(file, ";SectionFlags for %s: %s\n", section->getName(), section->getFlags());
+  fprintf(file, ";SectionFlags for %s: %s\n", 
+	        section->getName(), section->getFlags());
   
   std::list<MvrConfigArg> *params = section->getParams();
   
@@ -2084,7 +2123,9 @@ MVREXPORT void MvrConfig::writeSection(MvrConfigSection *section,
     return;
   }
 
-  for (std::list<MvrConfigArg>::iterator paramIt = params->begin(); paramIt != params->end(); paramIt++)
+  for (std::list<MvrConfigArg>::iterator paramIt = params->begin(); 
+       paramIt != params->end(); 
+       paramIt++)
   {
     commented = false;
     
@@ -2093,29 +2134,28 @@ MVREXPORT void MvrConfig::writeSection(MvrConfigSection *section,
     if (param->getType() == MvrConfigArg::SEPARATOR) {
       continue;
     }
-    if (alreadyWritten != NULL && param->getType() != MvrConfigArg::DESCRIPTION_HOLDER &&
-	      alreadyWritten->find(param->getName()) != alreadyWritten->end()) {
+    if (alreadyWritten != NULL && 
+	      param->getType() != MvrConfigArg::DESCRIPTION_HOLDER &&
+	      alreadyWritten->find(param->getName()) != alreadyWritten->end()) 
+    {
       continue;
     }
-    else if (alreadyWritten != NULL && param->getType() != MvrConfigArg::DESCRIPTION_HOLDER)
+    else if (alreadyWritten != NULL && 
+	           param->getType() != MvrConfigArg::DESCRIPTION_HOLDER)
     {
       alreadyWritten->insert(param->getName());
     }
 
     // If the parameter's priority does not fall in the specified bounds,
     // then do not write it.
-    if ((param->getConfigPriority() < highestPriority) || (param->getConfigPriority() > lowestPriority)) 
-    {
+    if ((param->getConfigPriority() < highestPriority) ||
+        (param->getConfigPriority() > lowestPriority)) {
       continue;
     }
 
     // Write the parameter to the file.
-    param->writeArguments(file,
-                          line,
-                          sizeof(line),
-                          startCommentColumn,
-                          writeExtras,
-                          myLogPrefix.c_str());
+    param->writeArguments(file, line, sizeof(line), startCommentColumn, writeExtras, myLogPrefix.c_str());
+                           
     // now put a blank line between params if we should
     if (!myNoBlanksBetweenParams)
       fprintf(file, "\n");
@@ -2193,7 +2233,7 @@ MVREXPORT void MvrConfig::writeSectionResource(MvrConfigSection *section,
   }
 } // end method writeSectionResource
 
-MVEXPORT void MvrConfig::translateSection(MvrConfigSection *section)
+MVREXPORT void MvrConfig::translateSection(MvrConfigSection *section)
 {
   if ((section == NULL) || (MvrUtil::isStrEmpty(section->getName()))) {
     return;
@@ -2686,7 +2726,7 @@ MVREXPORT void MvrConfig::remSectionNotToParse(const char *section)
 
 MVREXPORT void MvrConfig::clearAllValueSet(void)
 {
-  std::list<<MvrConfigSection *> *sections;
+  std::list<MvrConfigSection *> *sections;
   MvrConfigSection *section;
   std::list<MvrConfigSection *>::iterator sectionIt;
   
@@ -2953,7 +2993,7 @@ MVREXPORT MvrConfigArg *MvrConfigSection::findParam(const char *paramName,
  * if not found
 **/ 
 MVREXPORT MvrConfigArg *MvrConfigSection::findParam(const std::list<std::string> &paramNamePath,
-                                                    bool isAllowHolders)
+                                                  bool isAllowHolders)
 {
   if (paramNamePath.empty()) 
   {
@@ -2973,15 +3013,17 @@ MVREXPORT MvrConfigArg *MvrConfigSection::findParam(const std::list<std::string>
   MvrConfigArg *curParam = topParam;
 
   std::list<std::string>::const_iterator iter = paramNamePath.begin();
-  iter++; // skipping the front one from above
+  iter++;
   
-  for (iter; iter != paramNamePath.end(); iter++) 
-  {
+  for (iter; iter != paramNamePath.end(); iter++) {
     // If curParam is not a LIST type, then findArg will return NULL.
     curParam = curParam->findArg((*iter).c_str());
-  }
+  
+  } // end while not found
+
   return curParam;
-}
+  
+} // end method findParam
 
 
 MVREXPORT MvrConfigArg *MvrConfigSection::findParam(const char **paramNamePath, 

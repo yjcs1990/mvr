@@ -15,7 +15,8 @@
 
 class MvrArgumentParser
 {
-/// Constructor, takes the argc argv
+public:
+  /// Constructor, takes the argc argv
   MVREXPORT MvrArgumentParser(int *argc, char **argv);
   /// Constructor, takes an argument builder
   MVREXPORT MvrArgumentParser(MvrArgumentBuilder *builder);
