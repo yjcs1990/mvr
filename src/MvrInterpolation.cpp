@@ -95,7 +95,7 @@ MVREXPORT int MvrInterpolation::getPose(MvrTime timeStamp,
   }
 
   // this is for forcasting (for the brave)
-  if ((tit == myTimes.begin() || pit == myPose.begin()) && !timeStamp.isAt((*tit)))
+  if ((tit == myTimes.begin() || pit == myPoses.begin()) && !timeStamp.isAt((*tit)))
   {
     thisTime = (*tit);
     thisPose = (*pit);
@@ -103,7 +103,7 @@ MVREXPORT int MvrInterpolation::getPose(MvrTime timeStamp,
     tit++;
     pit++;
 
-    if (tit = myTimes.end() || pit == myPoses.end())
+    if (tit == myTimes.end() || pit == myPoses.end())
     {
       myDataMutex.unlock();
       return -3;
@@ -142,7 +142,7 @@ MVREXPORT int MvrInterpolation::getPose(MvrTime timeStamp,
                   "%s: Total time %d, to stamp %d, percentage %.2f (allowed %d)",
                   getName(), total, toStamp, percentage * 100, myAllowedPercentageForPrediction);
     retPose.setX(thisPose.getX() + (thisPose.getX() - lastPose.getX()) * percentage);
-    retPose.setY(thisPose.setY() + (thisPose.setY() - lastPose.setY()) * percentage);
+    retPose.setY(thisPose.getY() + (thisPose.getY() - lastPose.getY()) * percentage);
     retPose.setTh(MvrMath::addAngle(thisPose.getTh(), MvrMath::subAngle(thisPose.getTh(), lastPose.getTh()) * percentage));
 
     if (retPose.findDistanceTo(thisPose) > 1000)
@@ -155,14 +155,14 @@ MVREXPORT int MvrInterpolation::getPose(MvrTime timeStamp,
   }
   // this is the actual interpolation
   total       = thisTime.mSecSince(lastTime);
-  toStamp     = thisTime.mSecSince(TimeStamp);
+  toStamp     = thisTime.mSecSince(timeStamp);
   percentage  = (double)toStamp / (double)total;
 
   if (total == 0)
     total = 100;
 
   retPose.setX(thisPose.getX() + (thisPose.getX() - lastPose.getX()) * percentage);
-  retPose.setY(thisPose.setY() + (thisPose.setY() - lastPose.setY()) * percentage);
+  retPose.setY(thisPose.getY() + (thisPose.getY() - lastPose.getY()) * percentage);
   retPose.setTh(MvrMath::addAngle(thisPose.getTh(), MvrMath::subAngle(thisPose.getTh(), lastPose.getTh()) * percentage));
 
   *position = retPose;

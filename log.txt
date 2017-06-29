@@ -1,230 +1,102 @@
-src/MvrConfigArg.cpp: In member function ‘void MvrConfigArg::copy(const MvrConfigArg&, bool)’:
-src/MvrConfigArg.cpp:566:9: error: ‘mydata’ was not declared in this scope
-         mydata.myStringData.myMaxStrLen  = arg.mydata.myStringData.myMaxStrLen;
-         ^
-src/MvrConfigArg.cpp:566:48: error: ‘const class MvrConfigArg’ has no member named ‘mydata’
-         mydata.myStringData.myMaxStrLen  = arg.mydata.myStringData.myMaxStrLen;
-                                                ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::copyTranslation(const MvrConfigArg&)’:
-src/MvrConfigArg.cpp:648:17: error: ‘MvrLogL’ has not been declared
-     MvrLog::log(MvrLogL::Normal,
-                 ^
-src/MvrConfigArg.cpp: At global scope:
-src/MvrConfigArg.cpp:728:73: error: ‘isDelete’ has not been declared
- MVREXPORT MvrConfigArg::clear(bool initial, Type type, IntType intType, isDelete)
-                                                                         ^
-src/MvrConfigArg.cpp:728:81: error: ISO C++ forbids declaration of ‘clear’ with no type [-fpermissive]
- MVREXPORT MvrConfigArg::clear(bool initial, Type type, IntType intType, isDelete)
-                                                                                 ^
-src/MvrConfigArg.cpp:728:11: error: prototype for ‘int MvrConfigArg::clear(bool, MvrConfigArg::Type, MvrConfigArg::IntType, int)’ does not match any in class ‘MvrConfigArg’
- MVREXPORT MvrConfigArg::clear(bool initial, Type type, IntType intType, isDelete)
-           ^
-In file included from src/MvrConfigArg.cpp:12:0:
-include/MvrConfigArg.h:636:8: error: candidate is: void MvrConfigArg::clear(bool, MvrConfigArg::Type, MvrConfigArg::IntType, bool)
-   void clear(bool initial, 
-        ^
-include/MvrConfigArg.h:627:7: error: ‘enum MvrConfigArg::IntType’ is private
-  enum IntType {
+src/MvrRobotConfigPacketReader.cpp: In member function ‘std::string MvrRobotConfigPacketReader::buildString() const’:
+src/MvrRobotConfigPacketReader.cpp:304:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i, j;
        ^
-src/MvrConfigArg.cpp:728:56: error: within this context
- MVREXPORT MvrConfigArg::clear(bool initial, Type type, IntType intType, isDelete)
-                                                        ^
-src/MvrConfigArg.cpp: In member function ‘void MvrConfigArg::replaceSpacesInName()’:
-src/MvrConfigArg.cpp:889:17: error: invalid conversion from ‘const char*’ to ‘char’ [-fpermissive]
-       myName[i] = "_";
-                 ^
-src/MvrConfigArg.cpp: At global scope:
-src/MvrConfigArg.cpp:912:30: error: variable or field ‘setParent’ declared void
- void MvrConfigArg::setParent(Mvrconfig *parentArg)
-                              ^
-src/MvrConfigArg.cpp:912:30: error: ‘Mvrconfig’ was not declared in this scope
-src/MvrConfigArg.cpp:912:41: error: ‘parentArg’ was not declared in this scope
- void MvrConfigArg::setParent(Mvrconfig *parentArg)
-                                         ^
-src/MvrConfigArg.cpp: In member function ‘int MvrConfigArg::getInt(bool*) const’:
-src/MvrConfigArg.cpp:963:20: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-     switch (myData.myIntDat.myIntType)
-                    ^
-src/MvrConfigArg.cpp:968:20: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-         if (myData.myIntDat.myIntPointer != NULL)
-                    ^
-src/MvrConfigArg.cpp:969:26: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-           return *myData.myIntDat.myIntPointer;
-                          ^
-src/MvrConfigArg.cpp:972:20: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-         if (myData.myIntDat.myIntShortPointer != NULL)
-                    ^
-src/MvrConfigArg.cpp:973:26: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-           return *myData.myIntDat.myIntShortPointer;
-                          ^
-src/MvrConfigArg.cpp:976:20: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-         if (myData.myIntDat.myIntUnsignedShortPointer != NULL)
-                    ^
-src/MvrConfigArg.cpp:977:26: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-           return *myData.myIntDat.myIntUnsignedShortPointer;
-                          ^
-src/MvrConfigArg.cpp:980:20: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-         if (myData.myIntDat.myIntUnsignedCharPointer != NULL)
-                    ^
-src/MvrConfigArg.cpp:981:26: error: ‘const union MvrConfigArg::MvrConfigArgData’ has no member named ‘myIntDat’
-           return *myData.myIntDat.myIntUnsignedCharPointer;
-                          ^
-src/MvrConfigArg.cpp: At global scope:
-src/MvrConfigArg.cpp:1031:74: error: no ‘bool MvrConfigArg::setrInt(int, char*, size_t, bool)’ member function declared in class ‘MvrConfigArg’
-                                      size_t errorBufferLem, bool doNotSet)
-                                                                          ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::setDouble(double, char*, size_t, bool)’:
-src/MvrConfigArg.cpp:1166:28: error: ‘myDoubleData’ was not declared in this scope
-                 getName(), myDoubleData.myMinDouble, myData.myDoubleData.myMaxDouble);
-                            ^
-src/MvrConfigArg.cpp:1176:28: error: ‘myDoubleData’ was not declared in this scope
-                 getName(), myDoubleData.myMinDouble, myData.myDoubleData.myMaxDouble);
-                            ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::getBool(bool*) const’:
-src/MvrConfigArg.cpp:1208:29: error: ‘const struct MvrConfigArg::MvrConfigDoubleData’ has no member named ‘myBoolPointer’
-     if (myData.myDoubleData.myBoolPointer != NULL)
-                             ^
-src/MvrConfigArg.cpp:1209:39: error: ‘const struct MvrConfigArg::MvrConfigDoubleData’ has no member named ‘myBoolPointer’
-           return *myData.myDoubleData.myBoolPointer;
-                                       ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::setBool(bool, char*, size_t, bool)’:
-src/MvrConfigArg.cpp:1229:86: error: invalid use of member function (did you forget the ‘()’ ?)
-                 "MvrConfigArg of %s: setBool value called with NULL pointer", getName);
-                                                                                      ^
-src/MvrConfigArg.cpp: In member function ‘const char* MvrConfigArg::getString(bool*) const’:
-src/MvrConfigArg.cpp:1248:3: error: expected ‘;’ before ‘}’ token
-   }
+src/MvrRobotConnector.cpp: In constructor ‘MvrRobotConnector::MvrRobotConnector(MvrArgumentParser*, MvrRobot*, bool, bool)’:
+src/MvrRobotConnector.cpp:53:3: error: ‘addParseArgsCB’ is not a member of ‘Mvria’
+   Mvria::addParseArgsCB(&myParseArgsCB, 75);
    ^
-src/MvrConfigArg.cpp:1255:45: error: request for member ‘c_str’ in ‘((const MvrConfigArg*)this)->MvrConfigArg::myData.MvrConfigArg::MvrConfigArgData::myStringData.MvrConfigArg::MvrConfigStringData::myString’, which is of pointer type ‘std::string* const {aka std::basic_string<char>* const}’ (maybe you meant to use ‘->’ ?)
-         return myData.myStringData.myString.c_str();
-                                             ^
-src/MvrConfigArg.cpp: In member function ‘std::string MvrConfigArg::getCppString(bool*) const’:
-src/MvrConfigArg.cpp:1329:33: error: could not convert ‘((const MvrConfigArg*)this)->MvrConfigArg::myData.MvrConfigArg::MvrConfigArgData::myCppStringData.MvrConfigArg::MvrConfigCppStringData::myCppStringPtr’ from ‘std::string* const {aka std::basic_string<char>* const}’ to ‘std::string {aka std::basic_string<char>}’
-   return myData.myCppStringData.myCppStringPtr;
-                                 ^
-src/MvrConfigArg.cpp: At global scope:
-src/MvrConfigArg.cpp:1332:23: error: prototype for ‘std::string MvrConfigArg::setCppString(const string&, char*, size_t, bool)’ does not match any in class ‘MvrConfigArg’
- MVREXPORT std::string MvrConfigArg::setCppString(const std::string &str, char *errorBuffer, 
-                       ^
-In file included from src/MvrConfigArg.cpp:12:0:
-include/MvrConfigArg.h:297:18: error: candidate is: bool MvrConfigArg::setCppString(const string&, char*, size_t, bool)
-   MVREXPORT bool setCppString(const std::string &str,
-                  ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::addArg(const MvrConfigArg&)’:
-src/MvrConfigArg.cpp:1396:3: error: expected ‘)’ before ‘{’ token
-   {
-   ^
-src/MvrConfigArg.cpp:1394:17: warning: unused variable ‘existingChildArg’ [-Wunused-variable]
-   MvrConfigArg *existingChildArg = NULL;
-                 ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::removeArg(const MvrConfigArg&)’:
-src/MvrConfigArg.cpp:1486:8: error: cannot convert ‘MvrConfigArg::isListType’ from type ‘bool (MvrConfigArg::)()const’ to type ‘bool’
-   if (!isListType)
-        ^
-src/MvrConfigArg.cpp:1486:8: error: in argument to unary !
-src/MvrConfigArg.cpp: In member function ‘const MvrConfigArg* MvrConfigArg::getArg(size_t) const’:
-src/MvrConfigArg.cpp:1593:13: error: invalid conversion from ‘const MvrConfigArg*’ to ‘MvrConfigArg*’ [-fpermissive]
-         arg = &(*iter);
-             ^
-src/MvrConfigArg.cpp: In member function ‘const MvrConfigArg* MvrConfigArg::findArg(const char*) const’:
-src/MvrConfigArg.cpp:1660:46: error: ‘curAge’ was not declared in this scope
-         (MvrUtil::strcasecmp(childParamName, curAge.getName()) == 0))
-                                              ^
-src/MvrConfigArg.cpp: At global scope:
-src/MvrConfigArg.cpp:1676:70: error: invalid use of incomplete type ‘class MvrConfig’
- MVREXPORT MvrConfigArg *MvrConfig::findArg(const char *childParamName)
-                                                                      ^
-In file included from src/MvrConfigArg.cpp:11:0:
-include/MvrLog.h:21:7: error: forward declaration of ‘class MvrConfig’
- class MvrConfig;
+src/MvrRobotConnector.cpp:73:95: error: expected primary-expression before ‘,’ token
+     mySonarConnector   = new MvrSonarConnector(myParser, myRobot, this, true,/*autoParseArgs*/, MvrLog::Verbose);
+                                                                                               ^
+src/MvrRobotConnector.cpp:73:112: error: invalid use of incomplete type ‘class MvrSonarConnector’
+     mySonarConnector   = new MvrSonarConnector(myParser, myRobot, this, true,/*autoParseArgs*/, MvrLog::Verbose);
+                                                                                                                ^
+In file included from include/MvrSonarConnector.h:19:0,
+                 from src/MvrRobotConnector.cpp:15:
+include/MvrRobotConnector.h:21:7: error: forward declaration of ‘class MvrSonarConnector’
+ class MvrSonarConnector;
        ^
-src/MvrConfigArg.cpp:1717:85: error: invalid use of incomplete type ‘class MvrConfig’
- MVREXPORT bool MvrConfig::getAncestorList(std::list<MvrConfigArg *> *ancestorListOut)
-                                                                                     ^
-In file included from src/MvrConfigArg.cpp:11:0:
-include/MvrLog.h:21:7: error: forward declaration of ‘class MvrConfig’
- class MvrConfig;
-       ^
-src/MvrConfigArg.cpp: In member function ‘const std::list<MvrArgumentBuilder*>* MvrConfigArg::getArgsWithFunctor(bool*) const’:
-src/MvrConfigArg.cpp:1766:35: error: cannot convert ‘MvrRetFunctor<const std::list<MvrArgumentBuilder*>*>* const’ to ‘const std::list<MvrArgumentBuilder*>*’ in return
-       return myData.myFunctorData.myGetFunctor;
-                                   ^
-src/MvrConfigArg.cpp: In static member function ‘static std::list<std::basic_string<char> > MvrConfigArg::splitParentPathName(const char*, char)’:
-src/MvrConfigArg.cpp:1838:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-   for (int c=0; c<builder.getArgc(); c++)
-                                   ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::addToFileParser(MvrFileParser*, MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder*, char*, long unsigned int>*, const char*, bool) const’:
-src/MvrConfigArg.cpp:1898:55: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
-          iter = myData.myListData.myChildArgList->end();
-                                                       ^
-src/MvrConfigArg.cpp:1898:55: error: could not convert ‘(iter = (* & std::_List_const_iterator<MvrConfigArg>((*(const iterator*)(&((std::list<MvrConfigArg>*)((const MvrConfigArg*)this)->MvrConfigArg::myData.MvrConfigArg::MvrConfigArgData::myListData.MvrConfigArg::MvrConfigListData::myChildArgList)->std::list<_Tp, _Alloc>::end<MvrConfigArg, std::allocator<MvrConfigArg> >())))))’ from ‘std::list<MvrConfigArg>::const_iterator {aka std::_List_const_iterator<MvrConfigArg>}’ to ‘bool’
-src/MvrConfigArg.cpp: At global scope:
-src/MvrConfigArg.cpp:1921:54: error: invalid use of incomplete type ‘class MvrConfig’
-                                         bool *changed)
-                                                      ^
-In file included from src/MvrConfigArg.cpp:11:0:
-include/MvrLog.h:21:7: error: forward declaration of ‘class MvrConfig’
- class MvrConfig;
-       ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeArguments(FILE*, char*, int, int, bool, const char*, int) const’:
-src/MvrConfigArg.cpp:2243:91: error: ‘indentLvel’ was not declared in this scope
-   if ((file == NULL) || (lineBuf == NULL) || (lineBufSize < 0) || (logPrefix == NULL) || (indentLvel < 0))
-                                                                                           ^
-src/MvrConfigArg.cpp:2285:18: error: no match for ‘operator=’ (operand types are ‘std::list<MvrArgumentBuilder*>::const_iterator {aka std::_List_const_iterator<MvrArgumentBuilder*>}’ and ‘<unresolved overloaded function type>’)
-       for (argIt = argList->begin; argIt != argList->end(); argIt++)
-                  ^
-src/MvrConfigArg.cpp:2285:18: note: candidate is:
-In file included from /usr/include/c++/4.8/list:63:0,
-                 from include/mvriaTypedefs.h:16,
-                 from include/MvrLog.h:17,
-                 from src/MvrConfigArg.cpp:11:
-/usr/include/c++/4.8/bits/stl_list.h:200:12: note: std::_List_const_iterator<MvrArgumentBuilder*>& std::_List_const_iterator<MvrArgumentBuilder*>::operator=(const std::_List_const_iterator<MvrArgumentBuilder*>&)
-     struct _List_const_iterator
+src/MvrRobotConnector.cpp: In destructor ‘MvrRobotConnector::~MvrRobotConnector()’:
+src/MvrRobotConnector.cpp:82:12: warning: possible problem detected in invocation of delete operator: [enabled by default]
+     delete mySonarConnector;
             ^
-/usr/include/c++/4.8/bits/stl_list.h:200:12: note:   no known conversion for argument 1 from ‘<unresolved overloaded function type>’ to ‘const std::_List_const_iterator<MvrArgumentBuilder*>&’
-src/MvrConfigArg.cpp:2273:9: warning: unused variable ‘nextChar’ [-Wunused-variable]
-     int nextChar = snprintf(lineBuf, lineBufSize, "; ");
-         ^
-src/MvrConfigArg.cpp:2327:78: warning: left operand of comma operator has no effect [-Wunused-value]
-         snprintf(lineBuf, lineBufSize, "%s %s", nameBuf, getBool() ? "true", "false");
-                                                                              ^
-src/MvrConfigArg.cpp:2327:85: error: expected ‘:’ before ‘)’ token
-         snprintf(lineBuf, lineBufSize, "%s %s", nameBuf, getBool() ? "true", "false");
-                                                                                     ^
-src/MvrConfigArg.cpp:2327:85: error: expected primary-expression before ‘)’ token
-src/MvrConfigArg.cpp:2389:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-   if (strlen(lineBuf) >= startCommentColumn) 
-                          ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeValue(MvrSocket*, const char*) const’:
-src/MvrConfigArg.cpp:2891:37: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-     for (int c = 0; c < getArgCount(); c++) 
-                                     ^
-src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeInfo(MvrSocket*, const char*) const’:
-src/MvrConfigArg.cpp:2937:48: warning: format not a string literal and no format arguments [-Wformat-security]
-     snprintf(level, sizeof(level), priorityName);
-                                                ^
-src/MvrConfigArg.cpp:2937:48: warning: format not a string literal and no format arguments [-Wformat-security]
-src/MvrConfigArg.cpp:2943:5: error: ‘sizt_t’ was not declared in this scope
-     sizt_t priorityNameLength = strlen(priorityName);
-     ^
-src/MvrConfigArg.cpp:2943:12: error: expected ‘;’ before ‘priorityNameLength’
-     sizt_t priorityNameLength = strlen(priorityName);
+src/MvrRobotConnector.cpp:82:12: warning: invalid use of incomplete type ‘class MvrSonarConnector’ [enabled by default]
+In file included from include/MvrSonarConnector.h:19:0,
+                 from src/MvrRobotConnector.cpp:15:
+include/MvrRobotConnector.h:21:7: warning: forward declaration of ‘class MvrSonarConnector’ [enabled by default]
+ class MvrSonarConnector;
+       ^
+src/MvrRobotConnector.cpp:82:12: note: neither the destructor nor the class-specific operator delete will be called, even if they are declared when the class is defined
+     delete mySonarConnector;
             ^
-src/MvrConfigArg.cpp:2945:16: error: ‘prioriytNameLength’ was not declared in this scope
-     for (; ((i<prioriytNameLength) && (i < sizeof(level))); i++)
+src/MvrRobotConnector.cpp: At global scope:
+src/MvrRobotConnector.cpp:140:16: error: ‘ArgRobotConnector’ has not been declared
+ MVREXPORT bool ArgRobotConnector::parseArgs(MvrArgumentParser *parser)
                 ^
-src/MvrConfigArg.cpp:3001:33: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-     for (int c=0; c<getArgCount(); c++)
-                                 ^
-src/MvrConfigArg.cpp:3019:1: error: expected primary-expression before ‘)’ token
- )
- ^
-src/MvrConfigArg.cpp:3019:1: error: expected ‘;’ before ‘)’ token
-src/MvrConfigArg.cpp:4241:1: error: expected ‘}’ at end of input
- }
- ^
-src/MvrConfigArg.cpp: In member function ‘std::string MvrConfigArg::getCppString(bool*) const’:
-src/MvrConfigArg.cpp:1330:1: warning: control reaches end of non-void function [-Wreturn-type]
- }
- ^
-make: *** [obj/MvrConfigArg.o] 错误 1
+src/MvrRobotConnector.cpp: In function ‘bool parseArgs(MvrArgumentParser*)’:
+src/MvrRobotConnector.cpp:142:3: error: ‘myHaveParsedArgs’ was not declared in this scope
+   myHaveParsedArgs = true;
+   ^
+src/MvrRobotConnector.cpp:148:5: error: ‘myRemoteIsSim’ was not declared in this scope
+     myRemoteIsSim = true;
+     ^
+src/MvrRobotConnector.cpp:150:5: error: ‘myRemoteIsNotSim’ was not declared in this scope
+     myRemoteIsNotSim = true;
+     ^
+src/MvrRobotConnector.cpp:153:5: error: ‘myRobotLogPacketsReceived’ was not declared in this scope
+     myRobotLogPacketsReceived = true;
+     ^
+src/MvrRobotConnector.cpp:156:5: error: ‘myRobotLogPacketsSent’ was not declared in this scope
+     myRobotLogPacketsSent = true;
+     ^
+src/MvrRobotConnector.cpp:159:5: error: ‘myRobotLogMovementReceived’ was not declared in this scope
+     myRobotLogMovementReceived = true;
+     ^
+src/MvrRobotConnector.cpp:162:5: error: ‘myRobotLogMovementSent’ was not declared in this scope
+     myRobotLogMovementSent = true;
+     ^
+src/MvrRobotConnector.cpp:165:5: error: ‘myRobotLogVelocitiesReceived’ was not declared in this scope
+     myRobotLogVelocitiesReceived = true;
+     ^
+src/MvrRobotConnector.cpp:168:5: error: ‘myRobotLogActions’ was not declared in this scope
+     myRobotLogActions = true;
+     ^
+src/MvrRobotConnector.cpp:170:61: error: ‘myRemoteHost’ was not declared in this scope
+   if (!parser->checkParameterArgumentString("-remoteHost", &myRemoteHost) || 
+                                                             ^
+src/MvrRobotConnector.cpp:172:60: error: ‘myRobotPort’ was not declared in this scope
+       !parser->checkParameterArgumentString("-robotPort", &myRobotPort) ||
+                                                            ^
+src/MvrRobotConnector.cpp:174:70: error: ‘myRemoteRobotTcpPort’ was not declared in this scope
+       !parser->checkParameterArgumentInteger("-remoteRobotTcpPort", &myRemoteRobotTcpPort) ||
+                                                                      ^
+src/MvrRobotConnector.cpp:176:61: error: ‘myRobotBaud’ was not declared in this scope
+       !parser->checkParameterArgumentInteger("-robotBaud", &myRobotBaud) || 
+                                                             ^
+src/MvrRobotConnector.cpp: At global scope:
+src/MvrRobotConnector.cpp:188:16: error: ‘ArgRobotConnector’ has not been declared
+ MVREXPORT void ArgRobotConnector::logOptions(void) const
+                ^
+src/MvrRobotConnector.cpp:188:52: error: non-member function ‘void logOptions()’ cannot have cv-qualifier
+ MVREXPORT void ArgRobotConnector::logOptions(void) const
+                                                    ^
+src/MvrRobotConnector.cpp: In member function ‘bool MvrRobotConnector::disconnectAll()’:
+src/MvrRobotConnector.cpp:362:30: error: invalid use of incomplete type ‘class MvrSonarConnector’
+     r = r && mySonarConnector->disconnectSonars();
+                              ^
+In file included from include/MvrSonarConnector.h:19:0,
+                 from src/MvrRobotConnector.cpp:15:
+include/MvrRobotConnector.h:21:7: error: forward declaration of ‘class MvrSonarConnector’
+ class MvrSonarConnector;
+       ^
+src/MvrRobotConnector.cpp: In member function ‘bool MvrRobotConnector::connectRobot()’:
+src/MvrRobotConnector.cpp:402:29: error: invalid use of incomplete type ‘class MvrSonarConnector’
+         if(!mySonarConnector->connectSonars())
+                             ^
+In file included from include/MvrSonarConnector.h:19:0,
+                 from src/MvrRobotConnector.cpp:15:
+include/MvrRobotConnector.h:21:7: error: forward declaration of ‘class MvrSonarConnector’
+ class MvrSonarConnector;
+       ^
+make: *** [obj/MvrRobotConnector.o] 错误 1

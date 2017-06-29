@@ -6,65 +6,99 @@
  > Create Time  : 2017年05月23日
  > Modify Time  : 2017年05月23日
 ***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (MVRIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WMVRRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PMVRTICULMVR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute MVRIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of MVRIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #ifndef MVRIAINTERNAL_H
 #define MVRIAINTERNAL_H
+
 
 #include "MvrMutex.h"
 #include "MvrFunctor.h"
 #include "MvrConfig.h"
-#include "MvrDeviceConnection.h"
 
 #ifndef MVRINTERFACE
 #include "MvrStringInfoGroup.h"
-
 class MvrRobot;
 class MvrRobotJoyHandler;
 class MvrSonarMTX;
 class MvrBatteryMTX;
 class MvrLCDMTX;
-#endif  // MVRINTERFACE
+#endif // MVRINTERFACE
 
 class MvrKeyHandler;
 class MvrJoyHandler;
 
+
+/*
+ * Contains global initialization, deinitialization and other global functions
+ */
 class Mvria
 {
 public:
   typedef enum {
-    SIGHANDLE_SINGLE,     ///< Setup signal handler in a global, non-thread way
-    SIGHANDLE_THREAD,     ///< Setup a dedicated signal handler thread
-    SIGHANDLE_NONE        ///< Do no signal handling
+    SIGHANDLE_SINGLE, ///< Setup signal handlers in a global, non-thread way
+    SIGHANDLE_THREAD, ///< Setup a dedicated signal handling thread
+    SIGHANDLE_NONE    ///< Do no signal handling
   } SigHandleMethod;
 
-  /// Initialize Mvria global data struture and perform OS-specific initialization, including adding 
-  /// OS signal handlers on Linux, initializing sockets library on Windows, etc.
-  MVREXPORT static void init(SigHandleMethod method=SIGHANDLE_THREAD,
-                             bool initSocket=true, bool sigHandleExitNotShutdown=true);
-  /// Perform OS-specific deinitialization, used by shutdown() and exit()
+	/// Initialize Mvria global data struture and perform OS-specific initialization, including adding OS signal handlers on Linux, initializing sockets library on Windows, etc.
+  MVREXPORT static void init(SigHandleMethod method = SIGHANDLE_THREAD,
+			    bool initSockets = true, 
+			    bool sigHandleExitNotShutdown = true);
+
+  /// Performs OS-specific deinitialization, used by shutdown() and exit().
   MVREXPORT static void uninit();
 
   /// Adds a callback to call when Mvria is initialized using init()
   MVREXPORT static void addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position);
 
-  /// Adds a callback to call when Mvria is uninitialized using uninit()
-  MVREXPORT static void addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position);
+  /// Adds a callback to call when Mvria is uninititialized using uninit()
+  MVREXPORT static void addUninitCallBack(MvrFunctor *cb,
+					 MvrListPos::Pos position);
 
-  /// Shutdown all Mvria Processes/Threads
+  /// Shutdown all Mvria processes/threads
   MVREXPORT static void shutdown();
 
   /// Shutdown all Mvria processes/threads, call exit callbacks, and exit the program
-  MVREXPORT static void exit(int exitCode=0);
+  MVREXPORT static void exit(int exitCode = 0);
 
   /// Sees if Mvria is still running (mostly for the thread in main)
   MVREXPORT static bool getRunning(void);
 
   /// Sets the directory that MVRIA resides in, to override default
-  MVREXPORT static void setDirectory(const char *directory);
-  
-  /// Parses the arguments for the program (calls all the callbacks added with addParseArgsCB())
-  MVREXPORT static bool parseArgs(void);
+  MVREXPORT static void setDirectory(const char * directory);
 
-  /// Logs all the options for the program (calls all the callbacks added with addLogOptionsCB())
+  /// Gets the directory that MVRIA resides in
+  MVREXPORT static const char *getDirectory(void);
+
+  /// Parses the arguments for the program (calls all the callbacks added with addParseMvrgsCB())
+  MVREXPORT static bool parseMvrgs(void);
+
+  /// Logs all the options for the program (Calls all the callbacks added with addLogOptionsCB())
   MVREXPORT static void logOptions(void);
 
   /// Sets the key handler, so that other classes can find it using getKeyHandler()
@@ -75,23 +109,43 @@ public:
 
   /// Sets the joystick handler, so that other classes can find it using getJoyHandler()
   MVREXPORT static void setJoyHandler(MvrJoyHandler *joyHandler);
-  /// Gets a pointer to the joystick handler if one has been set with setJoyHandler()
+
+  /// Get a pointer to the joystick handler if one has been set with setJoyHandler()
   MVREXPORT static MvrJoyHandler *getJoyHandler(void);
 
   /// Adds a functor to by called before program exit by Mvria::exit()
-  MVREXPORT static void addExitCallback(MvrFunctor *functor, int position=50);
-  /// Adds a callback for when we parse arguments
-  MVREXPORT static void addParseArgsCB(MvrRetFunctor<bool> *functor, int position=50);
+  MVREXPORT static void addExitCallback(MvrFunctor *functor, int position = 50);
+
+  /// Removes a functor to by called before program exit by Mvria::exit()
+  MVREXPORT static void remExitCallback(MvrFunctor *functor);
+
+  /// Sets the log level for the exit callbacks
+  MVREXPORT static void setExitCallbacksLogLevel(MvrLog::LogLevel level);
+
+  /// Force an exit of all Mvria processes/threads (the old way)
+  MVREXPORT static void exitOld(int exitCode = 0);
+
+  /// Internal, the callback for the signal handling
+  MVREXPORT static void signalHandlerCB(int sig);
+
+  /// Internal, calls the exit callbacks
+  MVREXPORT static void callExitCallbacks(void);
+
+  /// Adds a callback for when we parse arguments 
+  MVREXPORT static void addParseMvrgsCB(MvrRetFunctor<bool> *functor, 
+				      int position = 50);
 
   /// Sets the log level for the parsing function
-  MVREXPORT static void setParseArgLogLevel(MvrLog::LogLevel level);
+  MVREXPORT static void setParseMvrgLogLevel(MvrLog::LogLevel level);
 
   /// Adds a callback for when we log options
-  MVREXPORT static void addLogOptionsCB(MvrFunctor *functor, int position=50);
+  MVREXPORT static void addLogOptionsCB(MvrFunctor *functor, int position = 50);
+
   /// Adds a type of deviceConnection for Mvria to be able to create
   MVREXPORT static bool deviceConnectionAddCreator(
-            const char *deviceConnectionType,
-            MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *creator);
+	  const char *deviceConnectionType, 
+	  MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *creator);
+
   /// Gets a list of the possible deviceConnection types
   MVREXPORT static const char *deviceConnectionGetTypes(void);
 
@@ -146,8 +200,8 @@ public:
 
   /// Sets the maximum number of batteries to use
   MVREXPORT static void setMaxNumBatteries(int maxNumBatteries);
-
-  /// Gets the maximum number of lcds to use
+	
+	// Gets the maximum number of lcds to use
   MVREXPORT static int getMaxNumLCDs(void);
 
   /// Sets the maximum number of batteries to use
@@ -268,8 +322,8 @@ protected:
   static MvrMutex ourExitCallbacksMutex;
   static std::multimap<int, MvrFunctor *> ourExitCallbacks;
   static bool ourSigHandleExitNotShutdown;
-  static std::multimap<int, MvrRetFunctor<bool> *> ourParseArgCBs;
-  static MvrLog::LogLevel ourParseArgsLogLevel;
+  static std::multimap<int, MvrRetFunctor<bool> *> ourParseMvrgCBs;
+  static MvrLog::LogLevel ourParseMvrgsLogLevel;
   static std::multimap<int, MvrFunctor *> ourLogOptionsCBs;
   static MvrLog::LogLevel ourExitCallbacksLogLevel;
   static std::map<std::string, MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp> ourDeviceConnectionCreatorMap;
@@ -281,4 +335,6 @@ protected:
   static size_t ourMaxNumPTZs;
 #endif
 };
-#endif  // MVRIAINTERNAL_H
+
+
+#endif // MVRIAINTERNAL_H

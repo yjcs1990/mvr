@@ -130,7 +130,7 @@ public:
   double getMinDistBetweenCurrent(void)
   { return myMinDistBetweenCurrent; }
   /// gets the maximum seconds to keep cumulative readings around
-  double setMaxSecondsToKeepCumulative(int maxSecondsToKeepCumulative)
+  void setMaxSecondsToKeepCumulative(int maxSecondsToKeepCumulative)
   { myMaxSecondsToKeepCumulative = maxSecondsToKeepCumulative; }
   /// gets the maximum seconds to keep current readings around
   int getMaxSecondsToKeepCumulative(void)
@@ -183,12 +183,12 @@ public:
   virtual MvrDrawingData *getCurrentDrawingData(void)
   { return myCurrentDrawingData; }
   /// Gets data used for visualizing the cumulative buffer
-  virtual MvrDradingData *getCumulativeDrawingData(void)
+  virtual MvrDrawingData *getCumulativeDrawingData(void)
   { return myCumulativeDrawingData; }
   /// Sets data for visualizing the current buffer
   MVREXPORT virtual void setCurrentDrawingData(MvrDrawingData *data, bool takeOwnershipOfData);
   /// Sets data for visualizing the cumulative buffer
-  MVREXPORT virtual void setCumulativeDrawingData(MvrDrawing *data, bool takeOwnershipOfData);
+  MVREXPORT virtual void setCumulativeDrawingData(MvrDrawingData *data, bool takeOwnershipOfData);
 
   /// Lock this device
   MVREXPORT virtual int lockDevice() { return(myDeviceMutex.lock()); }

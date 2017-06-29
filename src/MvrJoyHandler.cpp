@@ -24,7 +24,7 @@ MVREXPORT MvrJoyHandler::MvrJoyHandler(bool useOSCal, bool useOld)
   myInitialized = false;
   myUseOSCal    = useOSCal;
   myUseOld      = useOld;
-  myHavaZ       = false;
+  myHaveZ       = false;
   myFirstData   = true;
 }
 
@@ -242,7 +242,7 @@ MVREXPORT void MvrJoyHandler::getUnfiltered(int *x, int *y, int *z)
  */
 MVREXPORT double MvrJoyHandler::getAxis(unsigned int axis)
 {
-  if (axis < 1 || axis > myAxis.size())
+  if (axis < 1 || axis > myAxes.size())
     return 0;
   
   std::map<unsigned int, int>::iterator iter = myAxes.find(axis);
@@ -447,7 +447,4 @@ void MvrJoyHandler::getNewData(void)
     //MvrLog::log(MvrLog::Terse, "MvrJoyHandler::getUnfiltered: Trouble reading data.");
   }
 #endif // ifdef linux 
-}
-
-  
 }

@@ -16,7 +16,7 @@ MVREXPORT MvrModule::MvrModule() :
 
 } 
 
-MVREXPORT MvrModule::~MvrMdule()
+MVREXPORT MvrModule::~MvrModule()
 {
   
 }         

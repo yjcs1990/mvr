@@ -18,11 +18,11 @@
 class MvrActionStop;
 class MvrActionInput;
 class MvrActionJoydrive;
-class MrActionDeceleratingLimiter;
+class MvrActionDeceleratingLimiter;
 class MvrActionRatioInput;
 class MvrRatioInputKeydrive;
 class MvrRatioInputJoydrive;
-class MvrRatioInputRobotJoydrice;
+class MvrRatioInputRobotJoydrive;
 
 class MvrActionGroupInput : public MvrActionGroup
 {

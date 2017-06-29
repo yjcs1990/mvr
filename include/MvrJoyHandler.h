@@ -23,6 +23,7 @@
 #endif  //WIN32
 #ifdef linux
 #include <linux/joystick.h>  // For JS_DATA_TYPEs
+#endif //linux
 
 class MvrJoyHandler
 {

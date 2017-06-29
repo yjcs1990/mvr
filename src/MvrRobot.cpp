@@ -66,9 +66,9 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, bool doSigHandle, 
           myGetNoTimeWarningThisCycleCB(this, &MvrRobot::getNoTimeWarningThisCycle),
           myBatteryAverager(20),
           myRealBatteryAverager(20),
-          myMvriaExitCB(this, &Mvria::mvriaExitCallback),
+          myMvriaExitCB(this, &MvrRobot::mvriaExitCallback),
           myPoseInterpPositionCB(this, &MvrRobot::getPoseInterpPosition),
-          myEncoderPoseInterpPositionCB(this, &MvrRobot::getEncoderPoseInterpPositionCallback)
+          myEncoderPoseInterpPositionCB(this, &MvrRobot::getEncoderPoseInterpPosition)
 {
   myMutex.setLogName("MvrRobot::myMutex");
   myPacketMutex.setLogName("MvrRobot::myPacketMutex");
@@ -80,7 +80,7 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, bool doSigHandle, 
   myGlobalPose.setPose(0, 0, 0);
   mySetEncoderTransformCBList.setName("SetEncoderTransformCBList");
 
-  myParam = new MvrRobotGeneric("");
+  myParams = new MvrRobotGeneric("");
   processParamFile();
 
   myRunningNonThreaded = true;
@@ -129,7 +129,7 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, bool doSigHandle, 
   myConnectionCycleMultiplier = 2;
   myTimeoutTime       = 8000;
   myStabilizingTime   = 0;
-  mycounter           = 1;
+  myCounter           = 1;
   myResolver          = NULL;
   myNumSonar          = 0;
 
@@ -179,7 +179,7 @@ MVREXPORT MvrRobot::~MvrRobot()
 
   stopRunning();
   delete mySyncTaskRoot;
-  MvrUTil::deleteSetPairs(mySonars.begin(), mySonars.end());
+  MvrUtil::deleteSetPairs(mySonars.begin(), mySonars.end());
   Mvria::delRobot(this);
 
   if (myKeyHandlerCB != NULL)
@@ -187,19 +187,19 @@ MVREXPORT MvrRobot::~MvrRobot()
   
   for (it = myActions.begin(); it != myActions.end(); ++it)
   {
-    (*it).second->setRobot();
+    (*it).second->setRobot(NULL);
   }
 }
 
 /*
  * Sets up the packet handlers, sets up the sync list and make the default priority resolver
  */
-MVREXPORT voide MvrRobot::init(void)
+MVREXPORT void MvrRobot::init(void)
 {
   setUpPacketHandlers();
   setUpSyncList();
   myOwnTheResolver = true;
-  myResolution = new MvrPriorityResolver;
+  myResolver = new MvrPriorityResolver;
 }
 
 /*
@@ -220,7 +220,7 @@ MVREXPORT voide MvrRobot::init(void)
  */
 MVREXPORT void MvrRobot::run(bool stopRunIfNotConnected, bool runNonThreaded)
 {
-  if (mySyncLoop.getRunning)
+  if (mySyncLoop.getRunning())
   {
     MvrLog::log(MvrLog::Terse, "The robot is already running, cannot run it again");
     return ;
@@ -258,7 +258,7 @@ MVREXPORT bool MvrRobot::isRunning(void) const
  */
 MVREXPORT void MvrRobot::runAsync(bool stopRunIfNotConnected, bool runNonThreadedPacketReader)
 {
-  if (mySyncLoop.getRunning)
+  if (mySyncLoop.getRunning())
   {
     MvrLog::log(MvrLog::Terse, "The robot is already running, cannot run it again");
     return ;    
@@ -324,7 +324,7 @@ MVREXPORT void MvrRobot::setUpSyncList(void)
 MVREXPORT void MvrRobot::setUpPacketHandlers(void)
 {
   addPacketHandler(&myMotorPacketCB, MvrListPos::FIRST);
-  addPacketHandler(&myEncoderPacketCB, MvrList::LAST);
+  addPacketHandler(&myEncoderPacketCB, MvrListPos::LAST);
   addPacketHandler(&myIOPacketCB, MvrListPos::LAST);
 }
 
@@ -502,14 +502,14 @@ MVREXPORT void MvrRobot::setTransNegVelMax(double negVel)
 {
   if (negVel >= 0)
   {
-    MvrLog::log(MvrLog::Terse, "MvrRobot: setTransNegVelMax of %g is greater than 0, ignoring it",negVelvel);
+    MvrLog::log(MvrLog::Terse, "MvrRobot: setTransNegVelMax of %g is greater than 0, ignoring it",negVel);
     return;
   }
 
   if (negVel < myAbsoluteMaxTransNegVel)
   {
     MvrLog::log(MvrLog::Terse, "MvrRobot: setTransNegVelMax of %g is over the absolute max vel of %g, capping it", negVel, myAbsoluteMaxTransNegVel);
-    negVal = myAbsoluteMaxTransNegVel;
+    negVel = myAbsoluteMaxTransNegVel;
   }
   myTransNegVelMax = negVel; 
 }
@@ -698,7 +698,7 @@ MVREXPORT double MvrRobot::getLatDecel(void) const
  * commands will be sent and packets will be received from
  * @param connection The deviceConnection to use for this robot
  */
- MVREXPORT void MvrRobot::setDeviceConnection(MvrDevieConnection *connection)
+ MVREXPORT void MvrRobot::setDeviceConnection(MvrDeviceConnection *connection)
  {
    myConn = connection;
    myConn->setDeviceName("uC");
@@ -854,7 +854,7 @@ MVREXPORT bool MvrRobot::blockingConnect(void)
   myBlockingConnectRun = true;
   myAsyncConnectState  = -1;
   while ((ret = asyncConnectHandler(true)) == 0 && myBlockingConnectRun)
-    MvrUtil::sleep(MvrUtil::roundInt(getCycleTime() * 0.80));
+    MvrUtil::sleep(MvrMath::roundInt(getCycleTime() * 0.80));
   unlock();
   if (ret == 1)
     return true;
@@ -922,7 +922,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
       MvrLogFileConnection *con = dynamic_cast<MvrLogFileConnection *>(myConn);
       myRobotName = con->myName;
       myRobotType = con->myType;
-      myRobotSubType = con->mySubType;
+      myRobotSubType = con->mySubtype;
       if (con->havePose)      // we know where to move
         moveTo(con->myPose);
       setCycleChained(false); // don't process packets all at once
@@ -964,7 +964,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
 
   if (myAsyncConnectState == 3)
   {
-    if (!myOrigRobotConfig > hasPacketArrived())
+    if (!myOrigRobotConfig -> hasPacketArrived())
     {
       myOrigRobotConfig->requestPacket();
     }
@@ -1325,7 +1325,7 @@ MVREXPORT bool MvrRobot::loadParamFile(const char *fileName)
   if (!myParams->parseFile(fileName, false, true))
   {
     MvrLog::log(MvrLog::Normal,
-                "MvrRobot::loadParamFile: Could not find file '%s' to load", file);
+                "MvrRobot::loadParamFile: Could not find file '%s' to load", fileName);
     return false;
   }
   processParamFile();
@@ -1832,7 +1832,7 @@ MVREXPORT void MvrRobot::stop(void)
 
  * @param velocity the desired translational velocity of the robot (mm/sec)
  */
-MVREXPORT void MvrRobot::setVal(double velocity)
+MVREXPORT void MvrRobot::setVel(double velocity)
 {
   myTransType = TRANS_VEL;
   myTransVal  = velocity;
@@ -1902,7 +1902,7 @@ MVREXPORT void MvrRobot::move(double distance)
   myTransType = TRANS_DIST_NEW;
   myTransDistStart = getPose();
   myTransVal  = distance;
-  mytransval2 = 0;
+  myTransVal2 = 0;
   myTransSetTime.setToNow();
 }
 
@@ -1981,7 +1981,7 @@ MVREXPORT void MvrRobot::setHeading(double heading)
 MVREXPORT void MvrRobot::setRotVel(double velocity)
 {
   myRotVal = velocity;
-  myRotType = ROT_VEL:
+  myRotType = ROT_VEL;
   myRotSetTime.setToNow();
   if (myTransType == TRANS_VEL2)
   {
@@ -2408,7 +2408,7 @@ MVREXPORT bool MvrRobot::setAbsoluteMaxLatDecel(double maxDecel)
  */
 MVREXPORT int MvrRobot::getIOAnalog(int num) const
 {
-  if (num <= getIOAnalog())
+  if (num <= getIOAnalogSize())
     return myIOAnalog[num];
   else
     return 0;
@@ -2430,7 +2430,7 @@ MVREXPORT double MvrRobot::getIOAnalogVoltage(int num) const
 
 MVREXPORT unsigned char MvrRobot::getIODigIn(int num) const
 {
-  if (num <= getIODigInSize)
+  if (num <= getIODigInSize())
     return myIODigIn[num];
   else
     return (unsigned char) 0;
@@ -2438,19 +2438,19 @@ MVREXPORT unsigned char MvrRobot::getIODigIn(int num) const
 
 MVREXPORT unsigned char MvrRobot::getIODigOut(int num) const
 {
-  if (num <= getIODigOutSize)
+  if (num <= getIODigOutSize())
     return myIODigOut[num];
   else
     return (unsigned char) 0;
 }
 
 // @return the MvrRobotParams instance the robot is using for its parameters
-MVREXPORT MvrRobotParams *MvrRobot::getRobotParams(void) const
+MVREXPORT const MvrRobotParams *MvrRobot::getRobotParams(void) const
 {
   return myParams;
 }
 // @return the MvrRobotParams instance the robot is using for its parameters
-MVREXPORT MvrRobotParams *MvrRobot::getRobotParamsInternal(void) const
+MVREXPORT MvrRobotParams *MvrRobot::getRobotParamsInternal(void)
 {
   return myParams;
 }
@@ -2710,7 +2710,7 @@ MVREXPORT MvrRobot::WaitState MvrRobot::waitForConnect(unsigned int msecs)
   
   if (ret == MvrCondition::STATUS_WAIT_INTR)
     return WAIT_INTR;
-  else if (ret == MvrCondition::STATUS_WAIT_TIMEOUT)
+  else if (ret == MvrCondition::STATUS_WAIT_TIMEDOUT)
     return WAIT_CONNECTED;
   else
     return WAIT_FAIL;
@@ -2739,7 +2739,7 @@ MVREXPORT MvrRobot::WaitState MvrRobot::waitForConnectOrConnFail(unsigned int ms
   
   if (ret == MvrCondition::STATUS_WAIT_INTR)
     return WAIT_INTR;
-  else if (ret == MvrCondition::STATUS_WAIT_TIMEOUT)
+  else if (ret == MvrCondition::STATUS_WAIT_TIMEDOUT)
     return WAIT_CONNECTED;
   else if (ret == 0)
   {
@@ -2907,7 +2907,7 @@ MVREXPORT void MvrRobot::remUserTask(MvrFunctor *functor)
  * @param state Optional pointer to external MvrSyncTask state variable; normally not needed
  * and may be NULL or omitted.
  */
-MVREXPORT bool MvrRobot::addSensorInterpTask(const char *name, int position, MvrFunctor *functor, MvrTaskState::State state)
+MVREXPORT bool MvrRobot::addSensorInterpTask(const char *name, int position, MvrFunctor *functor, MvrTaskState::State *state)
 {
   MvrSyncTask *proc;
   if (mySyncTaskRoot == NULL)
@@ -2984,7 +2984,7 @@ MVREXPORT MvrSyncTask *MvrRobot::findUserTask(const char *name)
   
   proc = mySyncTaskRoot->findNonRecursive("User Tasks");
   if (proc == NULL)
-    return NULL:
+    return NULL;
   return proc->find(name);
 }
 
@@ -3001,7 +3001,7 @@ MVREXPORT MvrSyncTask *MvrRobot::findUserTask(MvrFunctor *functor)
   
   proc = mySyncTaskRoot->findNonRecursive("User Tasks");
   if (proc == NULL)
-    return NULL:
+    return NULL;
   return proc->find(functor);
 }
 
@@ -3123,7 +3123,7 @@ MVREXPORT bool MvrRobot::remAction(MvrAction *action)
 MVREXPORT MvrAction *MvrRobot::findAction(const char *actionName)
 {
   MvrResolver::ActionMap::reverse_iterator it;
-  MvrAction *it;
+  MvrAction *act;
 
   for (it = myActions.rbegin(); it != myActions.rend(); ++it)
   {
@@ -3170,9 +3170,9 @@ MVREXPORT void MvrRobot::logActions(bool logDeactivated) const
   const MvrAction *action;
 
   if (logDeactivated)
-    MvrLog::log(MvrLog::Terse, "The action list (%d total);" myActions.size());
+    MvrLog::log(MvrLog::Terse, "The action list (%d total);", myActions.size());
   else
-    MvrLog::log(MvrLog::Terse, "Teh active action list:");
+    MvrLog::log(MvrLog::Terse, "The active action list:");
   for (it = myActions.rbegin(); it != myActions.rend(); ++it)
   {
     action = (*it).second;
@@ -3196,8 +3196,8 @@ MVREXPORT void MvrRobot::setResolver(MvrResolver *resolver)
 {
   if (myOwnTheResolver)
   {
-    delete myOwnTheResolver;
-    myResolver = NULL:
+    delete myResolver;
+    myResolver = NULL;
   }
   myResolver = resolver;
 }
@@ -4038,7 +4038,7 @@ MVREXPORT bool MvrRobot::handlePacket(MvrRobotPacket *packet)
   }
 
   for (handled = false, it = myPacketHandlerList.begin();
-       it != myPacketHandlerList.end() && handled = false;
+       it != myPacketHandlerList.end() && handled == false;
        it++)
   {
     if ((*it) != NULL && (*it)->invokeR(packet))
@@ -4061,7 +4061,7 @@ MVREXPORT bool MvrRobot::handlePacket(MvrRobotPacket *packet)
 /* @note You must first start the encoder packet stream by calling
  * requestEncoderPackets() before this function will return encoder values.
  */
-MVREXPORT long ing MvrRobot::getLeftEncoder()
+MVREXPORT long int MvrRobot::getLeftEncoder()
 {
   return myLeftEncoder;
 }
@@ -4069,7 +4069,7 @@ MVREXPORT long ing MvrRobot::getLeftEncoder()
 /* @note You must first start the encoder packet stream by calling
  * requestEncoderPackets() before this function will return encoder values.
  */
-MVREXPORT long ing MvrRobot::getRightEncoder()
+MVREXPORT long int MvrRobot::getRightEncoder()
 {
   return myRightEncoder;
 }
@@ -4163,7 +4163,7 @@ MVREXPORT void MvrRobot::packetHandlerNonThreaded(void)
     timeToWait = getCycleTime() * 2 - start.mSecSince();
 
   // if we didn't get sip and we're chained to the sip, wait for the sip
-  while (isCycleChained() !sipHandled && isRunning() &&  (packet = myReceiver.receivePacket(timeToWait)) != NULL)
+  while (isCycleChained() && !sipHandled && isRunning() &&  (packet = myReceiver.receivePacket(timeToWait)) != NULL)
   {
     if (myPacketsReceivedTracking)
     {
@@ -4222,7 +4222,7 @@ MVREXPORT void MvrRobot::packetHandlerThreadedProcessor(void)
   int timeToWait;
   MvrTime start;
   bool sipHandled = false;
-  bool anothersip = false;
+  bool anotherSip = false;
   std::list<MvrRobotPacket *>::iterator it;
 
   if (myAsyncConnectFlag)
@@ -4233,7 +4233,7 @@ MVREXPORT void MvrRobot::packetHandlerThreadedProcessor(void)
     return;
   }
 
-  if (!isConnected)
+  if (!isConnected())
     return;
   //MvrLog::log(MvrLog::Normal, "Rcvd: start %ld", myPacketsReceivedTrackingStarted.mSecSince());
 
@@ -4470,9 +4470,9 @@ MVREXPORT void MvrRobot::setCycleTime(unsigned int ms)
 MVREXPORT void MvrRobot::setStabilizingTime(int mSecs)
 {
   if (mSecs > 0)
- *  myStabilizingTime = mSecs;
+    myStabilizingTime = mSecs;
   else
- *  myStabilizingTime = 0;
+    myStabilizingTime = 0;
 }
 
 /*
@@ -5024,7 +5024,7 @@ MVREXPORT void MvrRobot::processNewSonar(char number, int range, MvrTime timeRec
   }
 }
 
-MVREXPORT void MvrRobot::processEncoderPacket(MvrRobotPacket *packet)
+MVREXPORT bool MvrRobot::processEncoderPacket(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0x90)
     return false;
@@ -5072,8 +5072,8 @@ MVREXPORT bool MvrRobot::processIOPacket(MvrRobotPacket *packet)
 MVREXPORT int MvrRobot::getSonarRange(int num) const
 {
   std::map<int, MvrSensorReading *>::const_iterator it;
-
-  for ((it = mySonars.find(num)) != mySonars.end())
+  
+  if ((it = mySonars.find(num)) != mySonars.end())
     return (*it).second->getRange();
   else
     return -1;
@@ -5208,8 +5208,8 @@ MVREXPORT int MvrRobot::getClosestSonarNumber(double startAngle, double endAngle
 {
   int i;
   MvrSensorReading *sonar;
-  int closetReading;
-  int closetSonar;
+  int closestReading;
+  int closestSonar;
   bool noReadings = true;
 
   for (i = 0; i < getNumSonar(); i++)
@@ -5230,9 +5230,9 @@ MVREXPORT int MvrRobot::getClosestSonarNumber(double startAngle, double endAngle
         closestSonar = i;
         noReadings = false;
       }
-      else if (sonar->getRange() < closetReading)
+      else if (sonar->getRange() < closestReading)
       {
-        closetReading = sonar->getRange();
+        closestReading = sonar->getRange();
         closestSonar = i;
       }
     }
@@ -5315,7 +5315,7 @@ MVREXPORT MvrRangeDevice *MvrRobot::findRangeDevice(const char *name, bool ignor
  * @param ignoreCase true to ignore case, false to pay attention to it
  * @return if found, a range device with the given name, if not found NULL
  */
-MVREXPORT MvrRangeDevice *MvrRobot::findRangeDevice(const char *name, bool ignoreCase) const
+MVREXPORT const MvrRangeDevice *MvrRobot::findRangeDevice(const char *name, bool ignoreCase) const
 {
   std::list<MvrRangeDevice *>::const_iterator it;
   MvrRangeDevice *device;
@@ -5394,7 +5394,7 @@ MVREXPORT double MvrRobot::checkRangeDevicesCurrentPolar(double startAngle, doub
       if (!foundOne)
       {
         closest = device->currentReadingPolar(startAngle, endAngle, &closeAngle);
-        closetRangeDevice = device;
+        closestRangeDevice = device;
       }
     else
     {
@@ -5638,7 +5638,7 @@ MVREXPORT void MvrRobot::moveTo(MvrPose pose, bool doCumulative)
 
   for (i = 0; i < getNumSonar(); i++)
   {
-    son = getSonarReading();
+    son = getSonarReading(i);
     if (son != NULL)
     {
       son->applyTransform(localTransform);
@@ -5690,7 +5690,7 @@ MVREXPORT void MvrRobot::moveTo(MvrPose poseTo, MvrPose poseFrom, bool doCumulat
 
   for (i = 0; i < getNumSonar(); i++)
   {
-    son = getSonarReading();
+    son = getSonarReading(i);
     if (son != NULL)
     {
       son->applyTransform(localTransform);
@@ -5732,7 +5732,7 @@ MVREXPORT void MvrRobot::setEncoderTransform(MvrPose transformPos)
  * by getPose()) to match an external coordinate system, use moveTo() instead.
  * @param transformPos the position to transform to
  */
-MVREXPORT void MvrRobot::setEncoderTransform(MvrPose transform)
+MVREXPORT void MvrRobot::setEncoderTransform(MvrTransform transform)
 {
   myEncoderTransform = transform;
   myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
@@ -5860,7 +5860,7 @@ MVREXPORT void MvrRobot::setName(const char *name)
  * will be the callback... call this function NULL to clear the
  * callback @see getEncoderCorrectionCallback
  */
-MVREXPORT void MvrRobot::setEncoderCorrectionCallback(MvrRetFunctor<double, MvrPoseWithTime> *functor)
+MVREXPORT void MvrRobot::setEncoderCorrectionCallback(MvrRetFunctor1<double, MvrPoseWithTime> *functor)
 {
   myEncoderCorrectionCB = functor;
 }
@@ -6045,7 +6045,7 @@ MVREXPORT void MvrRobot::setStateReflectionRefreshTime(int mSec)
  * the cyle time, it'll simply happen every cycle.
  * @return the state reflection refresh time
  */
-MVREXPORT int MvrRobot::getStateReflectionRefreshTime(void)
+MVREXPORT int MvrRobot::getStateReflectionRefreshTime(void) const
 {
   return myStateReflectionRefreshTime;
 }
@@ -6065,8 +6065,8 @@ MVREXPORT int MvrRobot::getStateReflectionRefreshTime(void)
 MVREXPORT void MvrRobot::attachKeyHandler(MvrKeyHandler *keyHandler, bool exitOnEscape, bool useExitNotShutdown)
 {
   if (myKeyHandlerCB != NULL)
-    delete myKeyhandlerCB;
-  myKeyHandlerCB = new MvrFunctor<MvrKeyHandler>(keyHandler, &MvrKeyHandler::checkKeys);
+    delete myKeyHandlerCB;
+  myKeyHandlerCB = new MvrFunctorC<MvrKeyHandler>(keyHandler, &MvrKeyHandler::checkKeys);
   addSensorInterpTask("Key Handler", 50, myKeyHandlerCB);
 
   myKeyHandler = keyHandler;

@@ -271,7 +271,7 @@ MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer, size_t errorBufferL
     std::string fileName;
     if (myPermanentFileName.size() > 0)
     {
-      if ((myFile == MvrUtil::fopen(myPermanentFileName.c_str(), "a")) != NULL)
+      if ((myFile = MvrUtil::fopen(myPermanentFileName.c_str(), "a")) != NULL)
       {
         MvrLog::log(MvrLog::Normal, "Opened data log file '%s'", myPermanentFileName.c_str());
       }
@@ -284,7 +284,7 @@ MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer, size_t errorBufferL
     }
     else
     {
-      if ((myFile == MvrUtil::fopen(myConfigFileName, "w")) != NULL)
+      if ((myFile = MvrUtil::fopen(myConfigFileName, "w")) != NULL)
       {
         strcpy(myOpenedFileName, myConfigFileName);
         MvrLog::log(MvrLog::Normal, "Opened data log file '%s'", myOpenedFileName);

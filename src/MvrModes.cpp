@@ -45,7 +45,7 @@ MVREXPORT void MvrModeTeleop::activate(void)
   if (!baseActivate())
     return;
   addKeyHandler('e', &myEnableMotorsCB);
-  myGroup.activateExcusive();
+  myGroup.activateExclusive();
 }
 
 MVREXPORT void MvrModeTeleop::deactivate(void)
@@ -119,7 +119,7 @@ MVREXPORT void MvrModeTeleop::userTask(void)
 MVREXPORT MvrModeUnguardedTeleop::MvrModeUnguardedTeleop(MvrRobot *robot, const char *name, char key, char key2) :
           MvrMode(robot, name, key, key2),
           myGroup(robot),
-          myEnableMotorsCB(robot, &MvrRobot::enableMotors);
+          myEnableMotorsCB(robot, &MvrRobot::enableMotors)
 {
   myGroup.deactivate();
 }
@@ -134,7 +134,7 @@ MVREXPORT void MvrModeUnguardedTeleop::activate(void)
   if (!baseActivate())
     return;
   addKeyHandler('e', &myEnableMotorsCB);
-  myGroup.activateExcusive();
+  myGroup.activateExclusive();
 }
 
 MVREXPORT void MvrModeUnguardedTeleop::deactivate(void)
@@ -142,7 +142,7 @@ MVREXPORT void MvrModeUnguardedTeleop::deactivate(void)
   remKeyHandler(&myEnableMotorsCB);
   if (!baseDeactivate())
     return;
-  myGroup.deallocate();
+  myGroup.deactivate();
 }
 
 MVREXPORT void MvrModeUnguardedTeleop::help(void)
@@ -271,8 +271,8 @@ MVREXPORT void MvrModeGripper::activate(void)
   addKeyHandler(MvrKeyHandler::RIGHT, &myOpenCB);
   addKeyHandler(MvrKeyHandler::LEFT, &myCloseCB);
   addKeyHandler(MvrKeyHandler::SPACE, &myStopCB);
-  addKeyHandler("e", &myExerciseCB);
-  addKeyHandler("E", &myExerciseCB);
+  addKeyHandler('e', &myExerciseCB);
+  addKeyHandler('E', &myExerciseCB);
 }
 
 MVREXPORT void MvrModeGripper::deactivate(void)
@@ -375,9 +375,9 @@ MVREXPORT void MvrModeGripper::open(void)
   if (myExercising == true)
   {
     myExercising = false;
-    mygripper.gripperHalt();
+    myGripper.gripperHalt();
   }
-  mygripper.gripOpen();
+  myGripper.gripOpen();
 }
 
 MVREXPORT void MvrModeGripper::close(void)
@@ -385,9 +385,9 @@ MVREXPORT void MvrModeGripper::close(void)
   if (myExercising == true)
   {
     myExercising = false;
-    mygripper.gripperHalt();
+    myGripper.gripperHalt();
   }
-  mygripper.gripClose();
+  myGripper.gripClose();
 }
 
 MVREXPORT void MvrModeGripper::up(void)
@@ -395,9 +395,9 @@ MVREXPORT void MvrModeGripper::up(void)
   if (myExercising == true)
   {
     myExercising = false;
-    mygripper.gripperHalt();
+    myGripper.gripperHalt();
   }
-  mygripper.liftUp();
+  myGripper.liftUp();
 }
 
 MVREXPORT void MvrModeGripper::down(void)
@@ -405,9 +405,9 @@ MVREXPORT void MvrModeGripper::down(void)
   if (myExercising == true)
   {
     myExercising = false;
-    mygripper.gripperHalt();
+    myGripper.gripperHalt();
   }
-  mygripper.liftDown();
+  myGripper.liftDown();
 }
 
 MVREXPORT void MvrModeGripper::stop(void)
@@ -415,9 +415,9 @@ MVREXPORT void MvrModeGripper::stop(void)
   if (myExercising == true)
   {
     myExercising = false;
-    mygripper.gripperHalt();
+    myGripper.gripperHalt();
   }
-  mygripper.gripperHalt();
+  myGripper.gripperHalt();
 }
 
 MVREXPORT void MvrModeGripper::exercise(void)
@@ -428,8 +428,8 @@ MVREXPORT void MvrModeGripper::exercise(void)
                 "\nGripper will now be exercised until another command is given.");
     myExercising = true;
     myExerState  = UP_OPEN;
-    mygripper.liftUp();
-    mygripper.gripOpen();
+    myGripper.liftUp();
+    myGripper.gripOpen();
     myLastExer.setToNow();
   }
 }
@@ -455,7 +455,7 @@ MVREXPORT void MvrModeGripper::help(void)
 }
 
 MVREXPORT MvrModeCamera::MvrModeCamera(MvrRobot *robot, const char *name, char key, char key2) :
-          MrMode(robot, name, key, key2),
+          MvrMode(robot, name, key, key2),
           myUpCB(this, &MvrModeCamera::up),
           myDownCB(this, &MvrModeCamera::down),
           myLeftCB(this, &MvrModeCamera::left),
@@ -505,7 +505,7 @@ MVREXPORT void MvrModeCamera::activate(void)
     return;
   // see if there is already a keyhandler, if not something is wrong
   // (since constructor should make one if there isn't one yet)
-  if ((keyHandler == Mvria::getKeyHandler()) == NULL)
+  if ((keyHandler = Mvria::getKeyHandler()) == NULL)
   {
     MvrLog::log(MvrLog::Terse,
                 "MvrModeCamera::activate: There should already be a key handler, but there isn't... mode won't work");
@@ -1162,7 +1162,7 @@ MVREXPORT void MvrModeBumps::help(void)
     printf("%6d", i + 1);
   }
   printf(" |");
-  for (i = 0; i < myRobot->getNumRearBumpers(); i++)
+  for (i = 0; i < myRobot->getNumRearBumper(); i++)
   {
     printf("%6d", i + 1);
   }
@@ -1187,7 +1187,7 @@ MVREXPORT void MvrModeBumps::userTask(void)
   }
   printf(" |");
   val = ((myRobot->getStallValue() & 0xff));
-  for (i = 0, bit = 2; i < myRobot->getNumRearBumpers(); i++, bit *= 2)
+  for (i = 0, bit = 2; i < myRobot->getNumRearBumper(); i++, bit *= 2)
   {
     if (val & bit)
       printf("%6s", "trig");

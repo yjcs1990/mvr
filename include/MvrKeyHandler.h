@@ -68,6 +68,7 @@ public:
   MVREXPORT bool addKeyHandler(int keyToHandler, MvrFunctor *functor);
   /// This removes a key handler, by key
   MVREXPORT bool remKeyHandler(int keyToHandler);
+  MVREXPORT bool remKeyHandler(MvrFunctor *functor);
   
   /// Takes the key control over. For internal or special use, since it's
   /// called in the constructor

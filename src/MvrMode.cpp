@@ -27,7 +27,7 @@ std::list<MvrMode *> MvrMode::ourModes;
 MVREXPORT MvrMode::MvrMode(MvrRobot *robot, const char *name, char key, char key2) :
           myActivateCB(this, &MvrMode::activate),
           myDeactivateCB(this, &MvrMode::deactivate),
-          myUserTaskCB(this, &MvrMode::userTask);
+          myUserTaskCB(this, &MvrMode::userTask)
 {
     MvrKeyHandler *keyHandler;
     myName        = name;
@@ -41,11 +41,9 @@ MVREXPORT MvrMode::MvrMode(MvrRobot *robot, const char *name, char key, char key
     keyHandler = new MvrKeyHandler;
     Mvria::setKeyHandler(keyHandler);
     if (myRobot != NULL)
-      myRobot->attachKeyHandler(handler);
+      myRobot->attachKeyHandler(keyHandler);
     else
-      MvrLog::log(MvrLog::Terse, "MvrMode: No robot to attach a keyHandler to, keyHandling won't work... //
-                  either make your own keyHandler and drive it yourself, make a keyhandler and attach it to a robot, //
-                  or give this a robot to attach to.");
+      MvrLog::log(MvrLog::Terse, "MvrMode: No robot to attach a keyHandler to, keyHandling won't work...either make your own keyHandler and drive it yourself, make a keyhandler and attach it to a robot, or give this a robot to attach to.");
   }
   if (ourHelpCB == NULL)
   {

@@ -128,7 +128,7 @@ public:
   /// Clears what direct motion commands have been given ,so actions work
   MVREXPORT void clearDirectMotion(void);
   /// Returns true if direct motion commands are blocking actions
-  MVREXPORT bool isDerectMotion(void) const;
+  MVREXPORT bool isDirectMotion(void) const;
 
   /// Sets the state reflection to be inactive (until motion or clearDirectMotion)
   /// @see clearDirectMotion
@@ -183,7 +183,7 @@ public:
   MVREXPORT bool isStopped(double stoppedVel=0.0, double stoppedRotVel=0.0, double stoppedLatVel=0.0);
 
   /// Sets the vels required to be stopped
-  MVREXPORT void setStoppedVel(double stoppedVel, double stoppedRotVel, double stoppedLatVel);
+  MVREXPORT void setStoppedVels(double stoppedVel, double stoppedRotVel, double stoppedLatVel);
 
   /// Sets the length of time a direct motion command will take precedence
   /// over actions, in milliseconds
@@ -321,7 +321,7 @@ public:
   /// Gets the robot radius (in mm)
   double getRobotRadius(void) const { return myParams->getRobotRadius(); }
   /// Gets the robot width (in mm)
-  double getRotbotWidth(void) const { return myParams->getRobotWidth(); }
+  double getRobotWidth(void) const { return myParams->getRobotWidth(); }
   /// Gets the robot length (in mm)
   double getRobotLength(void) const { return myParams->getRobotLength(); }
   /// Gets the robot length to the front (in mm)
@@ -553,6 +553,9 @@ public:
   /// Sets the state of charge (percentage) that is considered to be low
   void setStateOfChargeLow(double stateOfChargeLow)
   { myStateOfChargeLow = stateOfChargeLow; }
+  /// Sets the state of charge that will cause a shutdown
+  void setStateOfChargeShutdown(double stateOfChargeShutdown) 
+    { myStateOfChargeShutdown = stateOfChargeShutdown; }
   /// Sets the charge state (for use with setting the state of charge)
   MVREXPORT void setChargeState(MvrRobot::ChargeState chargeState);
   /// Sets if we're on the charger (for use with setting the state of charge)
@@ -1435,7 +1438,7 @@ public:
   MvrRetFunctorC<bool, MvrRobot> myGetNoTimeWarningThisCycleCB;
   /// internal function called when Mvria::exit is called
   /// @internal
-  MVREXPORT void ariaExitCallback(void);
+  MVREXPORT void mvriaExitCallback(void);
   // internal call that will let the robot connect even if it can't find params
   void setConnectWithNoParams(bool connectWithNoParams) 
     { myConnectWithNoParams = connectWithNoParams; }

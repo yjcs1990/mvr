@@ -59,7 +59,7 @@ MvrMutex::MvrMutex(bool recursive) :
 
 MvrMutex::MvrMutex(const MvrMutex &mutex)
 {
-  myLog = myMutex.myLog;
+  myLog = mutex.myLog;
   if (pthread_mutex_init(&myMutex, 0) != 0)
   {
     myFailedInit = true;
@@ -353,13 +353,13 @@ MVREXPORT void MvrMutex::setLogNameVar(const char *logName, ...)
   char arg[2048];
   va_list ptr;
   va_start(ptr, logName);
-  vsnprintf(arg, sizeof(argt), logName, ptr);
+  vsnprintf(arg, sizeof(arg), logName, ptr);
   arg[sizeof(arg)-1] = '\0';
   va_end(ptr);
   return setLogName(arg);
 }
 
-MVREXPORT MvrMutex::initLockTiming(void)
+void MvrMutex::initLockTiming(void)
 {
   myFirstLock = true;
   myLockTime  = new MvrTime;

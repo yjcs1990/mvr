@@ -114,7 +114,7 @@ MVREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
   else if(ourFP)
   {
     int written;
-    if ((writte = fprint(outFP, "%s\n", buf)) >0)
+    if ((written = fprintf(ourFP, "%s\n", buf)) >0)
       ourCharsLogged += written;
     fflush(ourFP);
     checkFileSize();
@@ -238,7 +238,7 @@ MVREXPORT void MvrLog::logErrorFromOS(LogLevel level, const char *str, ...)
   else if(ourFP)
   {
     int written;
-    if ((writte = fprint(outFP, "%s\n", bufWithError)) >0)
+    if ((written = fprintf(ourFP, "%s\n", bufWithError)) >0)
       ourCharsLogged += written;
     fflush(ourFP);
     checkFileSize();
@@ -251,7 +251,7 @@ MVREXPORT void MvrLog::logErrorFromOS(LogLevel level, const char *str, ...)
   if (ourAlsoPrint)
     printf("%s\n", bufWithError);
   
-  invokeFunctor(bufWithErrorbuf);
+  invokeFunctor(bufWithError);
 
 #ifndef MVRINTERFACE
   // check this down here instead of up in the if ourFP so that
@@ -360,7 +360,7 @@ MVREXPORT void MvrLog::logErrorFromOSNoLock(LogLevel level, const char *str,...)
   else if(ourFP)
   {
     int written;
-    if ((writte = fprint(outFP, "%s\n", bufWithError)) >0)
+    if ((written = fprintf(ourFP, "%s\n", bufWithError)) >0)
       ourCharsLogged += written;
     fflush(ourFP);
     checkFileSize();
@@ -373,7 +373,7 @@ MVREXPORT void MvrLog::logErrorFromOSNoLock(LogLevel level, const char *str,...)
   if (ourAlsoPrint)
     printf("%s\n", bufWithError);
   
-  invokeFunctor(bufWithErrorbuf);
+  invokeFunctor(bufWithError);
 
 #ifndef MVRINTERFACE
   // check this down here instead of up in the if ourFP so that
@@ -413,7 +413,7 @@ MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
     close();
   }
 
-  if (type == StdOur)
+  if (type == StdOut)
     ourFP = stdout;
   else if (type == StdErr)
     ourFP = stderr;
@@ -428,7 +428,7 @@ MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
       else
       {
         close();
-        if ((ourFP = MvrUtil::fopen(fileNamem "w")) == NULL)
+        if ((ourFP = MvrUtil::fopen(fileName, "w")) == NULL)
         {
           MvrLog::logNoLock(MvrLog::Terse, "MvrLog::init: Could not open file %s for logging", fileName);
           ourMutex.unlock();
@@ -450,7 +450,7 @@ MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
   {
 
   }
-  ourtype = type;
+  ourType = type;
   ourLevel = level;
   
   // environment variable override level
@@ -482,7 +482,7 @@ MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
 
     if (ourType == StdOut)
       printf(" StdOut\t");
-    else if (ourType == StrErr)
+    else if (ourType == StdErr)
       printf(" StdErr\t");
     else if (ourType == File)
       printf(" File(%s)\t", ourFileName.c_str());
@@ -568,7 +568,7 @@ MVREXPORT void MvrLog::logNoLock(LogLevel level, const char *str, ...)
   va_end(ptr);
 }
 
-MVREXPORT void MvrLog::logBacktrace(logLevel level)
+MVREXPORT void MvrLog::logBacktrace(LogLevel level)
 {
 #ifndef WIN32
   int size = 100;
@@ -584,7 +584,7 @@ MVREXPORT void MvrLog::logBacktrace(logLevel level)
     return;
   int i;
   for (i=0; i<numEntries; i++)
-    MvrLog::log(MvrLog::Normal, "%s", name[i]);
+    MvrLog::log(MvrLog::Normal, "%s", names[i]);
   free(names);
 #endif  // WIN32
 }
@@ -622,38 +622,6 @@ MVREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
   }
 }
 
-MVREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
-{
-  FILE *strFile;
-  unsigned int i;
-  char str[100000];
-
-  str[0] = '\0';
-
-  if ((strFile = MvrUtil::fopen(fileName, "r")) != NULL)
-  {
-    while (fgets(str, sizeof(str), strFile) != NULL)
-    {
-      bool endedLine = false;
-      for (i=0; i<sizeof(str) && !endedLine; i++)
-      {
-        if(str[i]=='\r' || str[i] == '\n' || str[i] == '\0')
-        {
-          str[i] = '\0';
-          MvrLog::log(level, str);
-          endedLine = true;
-        }
-      }
-    }
-    fclose(strFile);
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
 MVREXPORT void MvrLog::addToConfig(MvrConfig *config)
 {
   std::string section = "LogConfig";
@@ -664,7 +632,7 @@ MVREXPORT void MvrLog::addToConfig(MvrConfig *config)
   config->addParam(MvrConfigArg("LogLevel", (int *)&ourConfigLogLevel, 
                    "The type of logging to do, 0 for Terse, 1 for Normal, 2 for Verbose",
                    MvrLog::Terse, MvrLog::Verbose),
-                   section.c_str(), MvrPriority::TRIVIAL);)
+                   section.c_str(), MvrPriority::TRIVIAL);
   config->addParam(MvrConfigArg("LogFileName", ourConfigFileName, 
                    "File to log to", sizeof(ourConfigFileName)),
                    section.c_str(), MvrPriority::TRIVIAL); 
@@ -681,7 +649,7 @@ MVREXPORT void MvrLog::addToConfig(MvrConfig *config)
 MVREXPORT bool MvrLog::processFile(void)
 {
   if (ourConfigLogType != ourType || ourConfigLogLevel != ourLevel ||
-      strcmp(ourConfigFileName, ourFileName.c_str() != 0 ||
+      strcmp(ourConfigFileName, ourFileName.c_str()) != 0 ||
       ourConfigLogTime != ourLoggingTime || ourConfigAlsoPrint != ourAlsoPrint)
   {
     MvrLog::logNoLock(MvrLog::Normal, "Initializing log from config");
@@ -850,7 +818,7 @@ MVREXPORT void MvrLog::info(const char *str, ...)
   ourMutex.unlock();
 }
 
-MVREXPORT void Mvrlog::warning(const char *str, ...)
+MVREXPORT void MvrLog::warning(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -860,7 +828,7 @@ MVREXPORT void Mvrlog::warning(const char *str, ...)
   ourMutex.unlock();
 }
 
-MVREXPORT void Mvrlog::error(const char *str, ...)
+MVREXPORT void MvrLog::error(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -870,7 +838,7 @@ MVREXPORT void Mvrlog::error(const char *str, ...)
   ourMutex.unlock();
 }
 
-MVREXPORT void Mvrlog::debug(const char *str, ...)
+MVREXPORT void MvrLog::debug(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;

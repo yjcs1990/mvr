@@ -120,7 +120,7 @@ MVREXPORT bool MvrKeyHandler::addKeyHandler(int keyToHandle, MvrFunctor *functor
 {
   if (myMap.find(keyToHandle) != myMap.end())
   {
-    if (keyToHandle >= "!" && keyToHandle <= "~")
+    if (keyToHandle >= '!' && keyToHandle <= '~')
       MvrLog::log(MvrLog::Normal, "There is already a key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
     else
       MvrLog::log(MvrLog::Normal, "There is already a key to handle number %d 0x%x", keyToHandle, keyToHandle);

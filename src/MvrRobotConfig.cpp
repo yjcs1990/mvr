@@ -116,7 +116,7 @@ MVREXPORT void MvrRobotConfig::addAnalogGyro(MvrAnalogGyro *gyro)
 {
   myAnalogGyro = gyro;
   if (myRobot->isConnected())
-    connectcallback();
+    connectCallback();
 }
 
 MVREXPORT void MvrRobotConfig::connectCallback(void)
@@ -137,27 +137,27 @@ MVREXPORT void MvrRobotConfig::connectCallback(void)
   if (!myAddedMovementParams)
   {
     myAddedMovementParams = true;
-    Mvria::getConfig()->addParam(MvrConfigMvrg("TransVelMax", &myTransVelMax, 
+    Mvria::getConfig()->addParam(MvrConfigArg("TransVelMax", &myTransVelMax, 
           "maximum translational speed (mm/sec) (0 means use original value)",
           0, (int)myRobot->getAbsoluteMaxTransVel()), section.c_str(), MvrPriority::TRIVIAL);
 
-    Mvria::getConfig()->addParam(MvrConfigMvrg("TransAccel", &myTransAccel, 
+    Mvria::getConfig()->addParam(MvrConfigArg("TransAccel", &myTransAccel, 
           "translational acceleration (mm/sec/sec) (0 means use original value)",
           0, (int)myRobot->getAbsoluteMaxTransAccel()), section.c_str(), MvrPriority::TRIVIAL);
 
-    Mvria::getConfig()->addParam(MvrConfigMvrg("TransDecel", &myTransDecel, 
+    Mvria::getConfig()->addParam(MvrConfigArg("TransDecel", &myTransDecel, 
           "translational deceleration (mm/sec/sec) (0 means use original value)",
           0, (int)myRobot->getAbsoluteMaxTransDecel()), section.c_str(), MvrPriority::TRIVIAL);
 
-    Mvria::getConfig()->addParam(MvrConfigMvrg("RotVelMax", &myRotVelMax, 
+    Mvria::getConfig()->addParam(MvrConfigArg("RotVelMax", &myRotVelMax, 
           "maximum rotational speed (deg/sec) (0 means use original value)",
           0, (int)myRobot->getAbsoluteMaxRotVel()), section.c_str(), MvrPriority::TRIVIAL);
       
-    Mvria::getConfig()->addParam(MvrConfigMvrg("RotAccel", &myRotAccel, 
+    Mvria::getConfig()->addParam(MvrConfigArg("RotAccel", &myRotAccel, 
           "rotational acceleration (deg/sec/sec) (0 means use original value)",
           0, (int)myRobot->getAbsoluteMaxRotAccel()), section.c_str(), MvrPriority::TRIVIAL);
 
-    Mvria::getConfig()->addParam(MvrConfigMvrg("RotDecel", &myRotDecel, 
+    Mvria::getConfig()->addParam(MvrConfigArg("RotDecel", &myRotDecel, 
           "rotational deceleration (deg/sec/sec) (0 means use original value)",
           0, (int)myRobot->getAbsoluteMaxRotDecel()), section.c_str(), MvrPriority::TRIVIAL);
   }
@@ -165,7 +165,7 @@ MVREXPORT void MvrRobotConfig::connectCallback(void)
   if (myAnalogGyro != NULL && !myAddedGyro && myAnalogGyro->haveGottenData())
   {
     myAddedGyro = true;
-    Mvria::getConfig()->addParam(MvrConfigMvrg("UseGyro", &myUseGyro, "True to use the gyro, false not to"),
+    Mvria::getConfig()->addParam(MvrConfigArg("UseGyro", &myUseGyro, "True to use the gyro, false not to"),
 	                                section.c_str(), MvrPriority::TRIVIAL);
   }
 }

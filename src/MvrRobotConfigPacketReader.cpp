@@ -10,7 +10,7 @@
 #include "MvrExport.h"
 #include "MvrRobot.h"
 #include "MvrRobotPacket.h"
-#include "MvrCommand.h"
+#include "MvrCommands.h"
 #include "MvrRobotConfigPacketReader.h"
 
 /*
@@ -29,14 +29,14 @@ MVREXPORT MvrRobotConfigPacketReader::MvrRobotConfigPacketReader(MvrRobot *robot
 {
   myRobot = robot;
   myPacketHandlerCB.setName("MvrRobotConfigPacketReader");
-  myRobot->addPacketHandler(&myPacketHandler);
-  myRobot->addConnectCB(&myConnectCB);
+  myRobot->addPacketHandler(&myPacketHandlerCB);
+  myRobot->addConnectCB(&myConnectedCB);
   myOnlyOneRequest = onlyOneRequest;
   myPacketArrived  = false;
   myPacketArrivedCB = packetedArrivedCB;
 }          
 
-MVREXPORT MvrRobotConfigPacketReader::requestPacket(void)
+MVREXPORT bool MvrRobotConfigPacketReader::requestPacket(void)
 {
   // make sure we haven't already gotten one
   if (myOnlyOneRequest && myPacketArrived)
@@ -142,7 +142,7 @@ MVREXPORT bool MvrRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
   packet->bufToStr(buf, sizeof(buf));
   myFirmwareVersion = buf;
   myGyroCW      = packet->bufToUByte2();
-  myGyroCWW     = packet->bufToUByte2();
+  myGyroCCW     = packet->bufToUByte2();
 
   myKinematicsDelay = packet->bufToUByte();
   myLatVelTop       = packet->bufToUByte2();
@@ -170,7 +170,7 @@ MVREXPORT bool MvrRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
   myGyroFWVersion = packet->bufToUByte2();
 
   if (myPacketArrivedCB != NULL)
-    myPacketArrivedCB->invoke;
+    myPacketArrivedCB->invoke();
   
   return true;  
 }
@@ -240,7 +240,7 @@ MVREXPORT std::string MvrRobotConfigPacketReader::buildString(void) const
   if (myRobot->hasLatVel())
   {
     sprintf(line, "LatVelTop %d LatAccelTop %d\n", getLatVelTop(), getLatAccelTop());
-    ret += lien;
+    ret += line;
   }
   sprintf(line, "PWMMax %d ResetBaud %s\n", getPwmMax(), MvrUtil::convertBool(getResetBaud()));
   ret += line;

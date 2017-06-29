@@ -22,7 +22,7 @@ MVREXPORT MvrLogFileConnection::MvrLogFileConnection()
   stopAfter  = 1;
   strcpy(myName, "random");
   strcpy(myType, "amigo");
-  strcpy(mySubType, "amigo");
+  strcpy(mySubtype, "amigo");
 }
 
 MVREXPORT MvrLogFileConnection::~MvrLogFileConnection()
@@ -111,7 +111,7 @@ MVREXPORT int MvrLogFileConnection::internalOpen(void)
 void MvrLogFileConnection::buildStrMap(void)
 {
   myStrMap[OPEN_FILE_NOT_FOUND] = "File not found.";
-  myStrMap[OPEN_NOT_A_LOG_FILE] = "File is not a log file."
+  myStrMap[OPEN_NOT_A_LOG_FILE] = "File is not a log file.";
 }
 
 MVREXPORT const char *MvrLogFileConnection::getOpenMessage(int messageNumber)

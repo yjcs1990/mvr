@@ -29,7 +29,7 @@ public:
   /// Activates all the actions in this group
   MVREXPORT virtual void activate(void);
   /// Activates all the actions in this group and deactivates all others
-  MVREXPORT virtual void activateExcusive(void);
+  MVREXPORT virtual void activateExclusive(void);
   /// Deactivates all the actions in this group
   MVREXPORT virtual void deactivate(void);
   /// Removes all the actions in this group from the robot
