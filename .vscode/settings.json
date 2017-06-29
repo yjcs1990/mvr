@@ -39,7 +39,8 @@
     "streambuf": "cpp",
     "tuple": "cpp",
     "typeinfo": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "cmakeccompilerid.c": "cpp"
   },
   "line-counter.excludes": [
         "**/.vscode/**",
