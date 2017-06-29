@@ -131,7 +131,7 @@ protected:
   bool *myBoolPointer;
   MvrPose *myPosePointer;
   char *myStringPointer;
-  size_t myMaxString;
+  size_t myMaxStrLen;
   bool myConfigPrioritySet;
   MvrPriority::Priority myConfigPriority;
   MvrRetFunctor1<bool, MvrArgumentBuilder *> *mySetFunctor;
