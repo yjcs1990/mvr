@@ -30,7 +30,7 @@ char * cppstrdup(const char *str)
  * be used to break arguments
  * @param ignoreNormalSpaces a bool set to true if only the extraSpaceChar
  * should be used to separate arguments
- * @param isPreCompresseQuotes a bool set to true if strings enclosed in 
+ * @param isPreCompressQuotes a bool set to true if strings enclosed in 
  * double-quotes should be parsed as a single argument. This should roughly
  * equivalent to calling MvrArgumentBuilder::compressQuoted(false) on the resulting
  * builder. but is more efficient and handles embeded space better. The default value
@@ -38,7 +38,7 @@ char * cppstrdup(const char *str)
  * space-seperated alphanumeric string.
  */
  MVREXPORT MvrArgumentBuilder::MvrArgumentBuilder(size_t argvLen, char extraSpaceChar,
-                                                  bool ignoreNormalSpaces, bool isPreCompresseQuotes)
+                                                  bool ignoreNormalSpaces, bool isPreCompressQuotes)
 {
   myArgc = 0;
   myOrigArgc = 0;
@@ -47,7 +47,7 @@ char * cppstrdup(const char *str)
   myFirstAdd = true;
   myExtraSpace = extraSpaceChar;
   myIgnoreNormalSpaces = ignoreNormalSpaces;
-  myIsPreCompresseQuotes = isPreCompresseQuotes;
+  myIsPreCompressQuotes = isPreCompressQuotes;
   myIsQuiet = false;
 };
 
@@ -63,7 +63,7 @@ MVREXPORT MvrArgumentBuilder::MvrArgumentBuilder(const MvrArgumentBuilder &build
   for (i=0; i<myArgc;i++)
     myArgv[i] = cppstrdup(builder.getArg(i));
   myIsQuiet = builder.myIsQuiet;
-  myExtraSpace = builder.MyExtraSpace;
+  myExtraSpace = builder.myExtraSpace;
   myIgnoreNormalSpaces = builder.myIgnoreNormalSpaces;
   myIsPreCompressQuotes = builder.myIsPreCompressQuotes;
 }
@@ -216,7 +216,7 @@ bool MvrArgumentBuilder::isEndArg(const char *buf, int len, int &index, int endA
  * than 0 means to add at the end, if this number if greater than how
  * many position exist then it will also be added at the end
  */
-MVREXPORT void ArArgumentBuilder::internalAdd(const char *str, int position)
+MVREXPORT void MvrArgumentBuilder::internalAdd(const char *str, int position)
 {
   char buf[10000];
   int i = 0;
@@ -250,8 +250,9 @@ MVREXPORT void ArArgumentBuilder::internalAdd(const char *str, int position)
   // see if we're done
   if (i == len)
   {
-    if (!myIsQuiet) {
-      ArLog::log(ArLog::Verbose, "All white space add for argument builder.");
+    if (!myIsQuiet) 
+    {
+      MvrLog::log(MvrLog::Verbose, "All white space add for argument builder.");
     }
     return;
   }
@@ -292,7 +293,7 @@ MVREXPORT void ArArgumentBuilder::internalAdd(const char *str, int position)
       // see if we have room in our argvLen
       if (myArgc + 1 >= myArgvLen)
       {
-        ArLog::log(ArLog::Terse, "ArArgumentBuilder::Add: could not add argument since argc (%u) has grown beyond the argv given in the constructor (%u)", myArgc, myArgvLen);
+        MvrLog::log(MvrLog::Terse, "MvrArgumentBuilder::Add: could not add argument since argc (%u) has grown beyond the argv given in the constructor (%u)", myArgc, myArgvLen);
       }
       else // room in arg array
       {
@@ -474,7 +475,7 @@ MVREXPORT const char *MvrArgumentBuilder::getFullString(void) const
 { return myFullString.c_str(); }
 
 MVREXPORT const char *MvrArgumentBuilder::getExtraString(void) const
-{ return myExtraSting.c_str(); }
+{ return myExtraString.c_str(); }
 
 MVREXPORT void MvrArgumentBuilder::setExtraString(const char *str)
 { myExtraString = str; }
@@ -505,7 +506,7 @@ MVREXPORT bool MvrArgumentBuilder::isArgBool(size_t whichArg) const
   if ((whichArg > myArgc) || getArg(whichArg) == NULL)
     return NULL;
   if (strcasecmp(getArg(whichArg), "true") == 0 ||
-      strcasecmp(getArg(whichArg), "1") == 0 |
+      strcasecmp(getArg(whichArg), "1") == 0 ||
       strcasecmp(getArg(whichArg), "false") == 0 ||
       strcasecmp(getArg(whichArg), "0") == 0 )
     return true;
@@ -771,8 +772,8 @@ MVREXPORT void MvrArgumentBuilder::rebuildFullString()
   }
 }
 
-MVREXPORT bool MvrArgumentBuilderCompareOp::operator()(MvrArgumentBuilder &arg1,
-                MvrArgumentBuilder &arg2) const
+MVREXPORT bool MvrArgumentBuilderCompareOp::operator()(MvrArgumentBuilder *arg1,
+                MvrArgumentBuilder *arg2) const
 {
   if (arg1 == NULL)
     return true;

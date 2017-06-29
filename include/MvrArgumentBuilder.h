@@ -229,7 +229,7 @@ struct MvrArgumentBuilderCompareOp
 {
 public:
   /// Compares arg1's full string to arg2's.
-  MVREXPORT bool operator() (MvrArgumentBuilder* arg1, MvrArgumentBuilder* arg2) const;
+  MVREXPORT bool operator() (MvrArgumentBuilder *arg1, MvrArgumentBuilder *arg2) const;
 
 }; // end struct MvrArgumentBuilderCompareOp
 
