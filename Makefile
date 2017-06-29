@@ -81,8 +81,6 @@ CFILES:= \
 	MvrArgumentParser.cpp \
 	MvrASyncTask.cpp \
 	MvrBasePacket.cpp \
-	MvrBatteryConnector.cpp \
-	MvrCameraCollection.cpp \
 	MvrCondition.cpp \
 	MvrConfig.cpp \
 	MvrConfigArg.cpp \
