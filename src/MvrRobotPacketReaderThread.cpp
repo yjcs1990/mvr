@@ -24,12 +24,12 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRobotPacketReaderThread.h"
-#include "ArLog.h"
+#include "MvrRobotPacketReaderThread.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 
 AREXPORT ArRobotPacketReaderThread::ArRobotPacketReaderThread() :
@@ -37,7 +37,7 @@ AREXPORT ArRobotPacketReaderThread::ArRobotPacketReaderThread() :
   myStopRunIfNotConnected(false),
   myRobot(0)
 {
-  setThreadName("ArRobotPacketReader");
+  setThreadName("MvrRobotPacketReader");
   myInRun = false;
 }
 
@@ -45,7 +45,7 @@ AREXPORT ArRobotPacketReaderThread::~ArRobotPacketReaderThread()
 {
 }
 
-AREXPORT void ArRobotPacketReaderThread::setRobot(ArRobot *robot)
+AREXPORT void ArRobotPacketReaderThread::setRobot(MvrRobot *robot)
 {
   myRobot=robot;
 }
@@ -61,7 +61,7 @@ AREXPORT void * ArRobotPacketReaderThread::runThread(void *arg)
 
   if (!myRobot)
   {
-    ArLog::log(ArLog::Terse, "ArRobotPacketReaderThread::runThread: Trying to run the robot packet reader without a robot.");
+    ArLog::log(MvrLog::Terse, "MvrRobotPacketReaderThread::runThread: Trying to run the robot packet reader without a robot.");
     return(0);
   }
 

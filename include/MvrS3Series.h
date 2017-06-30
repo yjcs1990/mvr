@@ -29,25 +29,25 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaOSDef.h"
-#include "ArRobotPacket.h"
-#include "ArLaser.h"   
-#include "ArFunctor.h"
+#include "MvrRobotPacket.h"
+#include "MvrLaser.h"   
+#include "MvrFunctor.h"
 
 /** @internal */
-class ArS3SeriesPacket : public ArBasePacket
+class MvrS3SeriesPacket : public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArS3SeriesPacket();
+  AREXPORT MvrS3SeriesPacket();
   /// Destructor
   AREXPORT virtual ~ArS3SeriesPacket();
   
   /// Gets the time the packet was received at
-  AREXPORT ArTime getTimeReceived(void);
+  AREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(ArTime timeReceived);
+  AREXPORT void setTimeReceived(MvrTime timeReceived);
 
-  AREXPORT virtual void duplicatePacket(ArS3SeriesPacket *packet);
+  AREXPORT virtual void duplicatePacket(MvrS3SeriesPacket *packet);
   AREXPORT virtual void empty(void);
   
 
@@ -118,7 +118,7 @@ public:
 
 protected:
 
-  ArTime myTimeReceived;
+  MvrTime myTimeReceived;
 
   // S3S specific
   int myDataLength;
@@ -143,26 +143,26 @@ protected:
 
 /// Given a device connection it receives packets from the sick through it
 /// @internal
-class ArS3SeriesPacketReceiver
+class MvrS3SeriesPacketReceiver
 {
 public:
   /// Constructor with assignment of a device connection
-  AREXPORT ArS3SeriesPacketReceiver();
+  AREXPORT MvrS3SeriesPacketReceiver();
   /// Destructor
   AREXPORT virtual ~ArS3SeriesPacketReceiver();
   
   /// Receives a packet from the robot if there is one available
-  AREXPORT ArS3SeriesPacket *receivePacket(unsigned int msWait = 0,
+  AREXPORT MvrS3SeriesPacket *receivePacket(unsigned int msWait = 0,
 					 bool shortcut = false);
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(ArDeviceConnection *conn);
+  AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  AREXPORT ArDeviceConnection *getDeviceConnection(void);
+  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
   unsigned short CRC16(unsigned char *, int);
 
   // PS - added to pass info to this class
-  AREXPORT void	setInfoLogLevel(ArLog::LogLevel infoLogLevel)
+  AREXPORT void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
   AREXPORT void setIsS300(bool isS300)
   { myIsS300 = isS300; }
@@ -170,30 +170,30 @@ public:
   { strcpy(myName, name); }
 
 protected:
-  ArDeviceConnection *myConn;
-  ArS3SeriesPacket myPacket;
+  MvrDeviceConnection *myConn;
+  MvrS3SeriesPacket myPacket;
   
   char myName[1024];
   unsigned int myNameLength;
   unsigned char myReadBuf[100000];
   int myReadCount;
   bool myIsS300;
-  ArLog::LogLevel myInfoLogLevel;
+  MvrLog::LogLevel myInfoLogLevel;
 
 
 
 };
 
 /**
-  @since Aria 2.7.4
-  @see ArLaserConnector
-  Use ArLaserConnector to connect to a laser, determining type based on robot and program configuration  parameters.
+  @since Mvria 2.7.4
+  @see MvrLaserConnector
+  Use MvrLaserConnector to connect to a laser, determining type based on robot and program configuration  parameters.
 */
-class ArS3Series : public ArLaser
+class MvrS3Series : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT ArS3Series(int laserNumber,
+  AREXPORT MvrS3Series(int laserNumber,
 		 const char *name = "S3Series");
   /// Destructor
   AREXPORT ~ArS3Series();
@@ -229,11 +229,11 @@ public:
 protected:
   AREXPORT virtual void laserSetName(const char *name);
   AREXPORT virtual void * runThread(void *arg);
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   void sensorInterp(void);
   void failedToConnect(void);
   void clear(void);
-  AREXPORT bool packetHandler(ArRobotPacket *packet);
+  AREXPORT bool packetHandler(MvrRobotPacket *packet);
   bool myIsConnected;
   bool myTryingToConnect;
   bool myStartConnect;
@@ -244,21 +244,21 @@ protected:
 	int myMonitoringData;
   bool mySendFakeMonitoringData;
 
-  ArLog::LogLevel myLogLevel;
+  MvrLog::LogLevel myLogLevel;
 
-  ArS3SeriesPacketReceiver myReceiver;
+  MvrS3SeriesPacketReceiver myReceiver;
 
-  ArMutex myPacketsMutex;
-  ArMutex myDataMutex;
+  MvrMutex myPacketsMutex;
+  MvrMutex myDataMutex;
 
-  ArMutex mySafetyDebuggingTimeMutex;
-  ArTime mySafetyDebuggingTime;
+  MvrMutex mySafetyDebuggingTimeMutex;
+  MvrTime mySafetyDebuggingTime;
 
   std::list<ArS3SeriesPacket *> myPackets;
 
-  ArFunctorC<ArS3Series> mySensorInterpTask;
-  ArRetFunctorC<bool, ArS3Series> myAriaExitCB;
-  ArRetFunctor1C<bool, ArS3Series, ArRobotPacket *> myPacketHandlerCB;
+  MvrFunctorC<ArS3Series> mySensorInterpTask;
+  MvrRetFunctorC<bool, MvrS3Series> myAriaExitCB;
+  MvrRetFunctor1C<bool, MvrS3Series, MvrRobotPacket *> myPacketHandlerCB;
 };
 
 #endif 

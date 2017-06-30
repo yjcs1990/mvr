@@ -27,20 +27,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARFILECONNECTION_H
 #define ARFILECONNECTION_H
 
-#include "ArDeviceConnection.h"
+#include "MvrDeviceConnection.h"
 #include <string>
 
 #include "ariaTypedefs.h"
-#include "ArSocket.h"
+#include "MvrSocket.h"
 
 /// Reads/writes data to a plain file or character device. Used occasionally
-/// by certain tests/debugging.  For real connections, use ArSerialConnection or
-/// ArFileDeviceConnection instead.
-class ArFileDeviceConnection: public ArDeviceConnection
+/// by certain tests/debugging.  For real connections, use MvrSerialConnection or
+/// MvrFileDeviceConnection instead.
+class MvrFileDeviceConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT ArFileDeviceConnection();
+  AREXPORT MvrFileDeviceConnection();
   /// Destructor also closes connection
   AREXPORT virtual ~ArFileDeviceConnection();
 
@@ -53,7 +53,7 @@ class ArFileDeviceConnection: public ArDeviceConnection
   AREXPORT virtual int write(const char *data, unsigned int size);
   virtual int getStatus() { return myStatus; }
   AREXPORT virtual const char *getOpenMessage(int err);
-  AREXPORT virtual ArTime getTimeRead(int index);
+  AREXPORT virtual MvrTime getTimeRead(int index);
   AREXPORT virtual bool isTimeStamping(void);
 
   /// If >0 then only read at most this many bytes during read(), regardless of supplied size argument

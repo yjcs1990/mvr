@@ -25,10 +25,10 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLog.h"
-#include "ArConfig.h"
+#include "MvrLog.h"
+#include "MvrConfig.h"
 #include <time.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -48,39 +48,39 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define HAVEATL 1
 #endif // ifdef _ATL_VER
 
-ArMutex ArLog::ourMutex;
-ArLog::LogType ArLog::ourType=StdOut;
-ArLog::LogLevel ArLog::ourLevel=ArLog::Normal;
-FILE * ArLog::ourFP=0;
-int ArLog::ourCharsLogged = 0;
-std::string ArLog::ourFileName;
-int ArLog::ourColbertStream = -1;
-bool ArLog::ourLoggingTime = false;
-bool ArLog::ourAlsoPrint = false;
-AREXPORT void (* ArLog::colbertPrint)(int i, const char *str);
+ArMutex MvrLog::ourMutex;
+ArLog::LogType MvrLog::ourType=StdOut;
+ArLog::LogLevel MvrLog::ourLevel=ArLog::Normal;
+FILE * MvrLog::ourFP=0;
+int MvrLog::ourCharsLogged = 0;
+std::string MvrLog::ourFileName;
+int MvrLog::ourColbertStream = -1;
+bool MvrLog::ourLoggingTime = false;
+bool MvrLog::ourAlsoPrint = false;
+AREXPORT void (* MvrLog::colbertPrint)(int i, const char *str);
 
-ArLog::LogType ArLog::ourConfigLogType = ArLog::StdOut;
-ArLog::LogLevel ArLog::ourConfigLogLevel = ArLog::Normal;
-char ArLog::ourConfigFileName[1024] = "log.txt";
-bool ArLog::ourConfigLogTime = false;
-bool ArLog::ourConfigAlsoPrint = false;
-ArGlobalRetFunctor<bool> ArLog::ourConfigProcessFileCB(&ArLog::processFile);
+ArLog::LogType MvrLog::ourConfigLogType = MvrLog::StdOut;
+ArLog::LogLevel MvrLog::ourConfigLogLevel = MvrLog::Normal;
+char MvrLog::ourConfigFileName[1024] = "log.txt";
+bool MvrLog::ourConfigLogTime = false;
+bool MvrLog::ourConfigAlsoPrint = false;
+ArGlobalRetFunctor<bool> MvrLog::ourConfigProcessFileCB(&ArLog::processFile);
 
 #ifndef ARINTERFACE
-char ArLog::ourAramConfigLogLevel[1024] = "Normal";
-double ArLog::ourAramConfigLogSize = 10;
-bool ArLog::ourUseAramBehavior = false;
-double ArLog::ourAramLogSize = 0;
-ArGlobalRetFunctor<bool> ArLog::ourAramConfigProcessFileCB(
+char MvrLog::ourAramConfigLogLevel[1024] = "Normal";
+double MvrLog::ourAramConfigLogSize = 10;
+bool MvrLog::ourUseAramBehavior = false;
+double MvrLog::ourAramLogSize = 0;
+ArGlobalRetFunctor<bool> MvrLog::ourAramConfigProcessFileCB(
 	&ArLog::aramProcessFile);
-std::string ArLog::ourAramPrefix = "";
+std::string MvrLog::ourAramPrefix = "";
 #endif
-bool ArLog::ourAramDaemonized = false;
+bool MvrLog::ourAramDaemonized = false;
 
 ArFunctor1<const char *> *ArLog::ourFunctor;
 
 
-AREXPORT void ArLog::logPlain(LogLevel level, const char *str)
+AREXPORT void MvrLog::logPlain(LogLevel level, const char *str)
 {
   log(level, str);
 }
@@ -91,7 +91,7 @@ AREXPORT void ArLog::logPlain(LogLevel level, const char *str)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void ArLog::log(LogLevel level, const char *str, ...)
+AREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -175,7 +175,7 @@ AREXPORT void ArLog::log(LogLevel level, const char *str, ...)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void ArLog::logErrorFromOSPlain(LogLevel level, const char *str)
+AREXPORT void MvrLog::logErrorFromOSPlain(LogLevel level, const char *str)
 {
   logErrorFromOS(level, str);
 }
@@ -187,7 +187,7 @@ AREXPORT void ArLog::logErrorFromOSPlain(LogLevel level, const char *str)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void ArLog::logErrorFromOS(LogLevel level, const char *str, ...)
+AREXPORT void MvrLog::logErrorFromOS(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -305,7 +305,7 @@ AREXPORT void ArLog::logErrorFromOS(LogLevel level, const char *str, ...)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void ArLog::logErrorFromOSPlainNoLock(LogLevel level, const char *str)
+AREXPORT void MvrLog::logErrorFromOSPlainNoLock(LogLevel level, const char *str)
 {
   logErrorFromOSNoLock(level, str);
 }
@@ -317,7 +317,7 @@ AREXPORT void ArLog::logErrorFromOSPlainNoLock(LogLevel level, const char *str)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void ArLog::logErrorFromOSNoLock(LogLevel level, const char *str, ...)
+AREXPORT void MvrLog::logErrorFromOSNoLock(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -435,10 +435,10 @@ AREXPORT void ArLog::logErrorFromOSNoLock(LogLevel level, const char *str, ...)
    @param alsoPrint if this is true then in addition to whatever other logging (to a file for instance) the results will also be printed
    @param printThisCall if this is true the new settings will be printed otherwise they won't
 */
-AREXPORT bool ArLog::init(LogType type, LogLevel level, const char *fileName,
+AREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
 			  bool logTime, bool alsoPrint, bool printThisCall)
 {
-  ourMutex.setLogName("ArLog::ourMutex");
+  ourMutex.setLogName("MvrLog::ourMutex");
 
   ourMutex.lock();
   
@@ -458,14 +458,14 @@ AREXPORT bool ArLog::init(LogType type, LogLevel level, const char *fileName,
     {
       if (strcmp(ourFileName.c_str(), fileName) == 0)
       {
-	ArLog::logNoLock(ArLog::Terse, "ArLog::init: Continuing to log to the same file.");
+	ArLog::logNoLock(MvrLog::Terse, "MvrLog::init: Continuing to log to the same file.");
       }
       else
       {
 	close();
-	if ((ourFP = ArUtil::fopen(fileName, "w")) == NULL)
+	if ((ourFP = MvrUtil::fopen(fileName, "w")) == NULL)
 	{
-	  ArLog::logNoLock(ArLog::Terse, "ArLog::init: Could not open file %s for logging.", fileName);
+	  MvrLog::logNoLock(MvrLog::Terse, "MvrLog::init: Could not open file %s for logging.", fileName);
 	  ourMutex.unlock();
 	  return(false);
 	}
@@ -513,7 +513,7 @@ AREXPORT bool ArLog::init(LogType type, LogLevel level, const char *fileName,
 
   if (printThisCall)
   {
-    printf("ArLog::init: ");
+    printf("MvrLog::init: ");
     
     if (ourType == StdOut)
       printf(" StdOut\t");
@@ -551,7 +551,7 @@ AREXPORT bool ArLog::init(LogType type, LogLevel level, const char *fileName,
   return(true);
 }
 
-AREXPORT void ArLog::close()
+AREXPORT void MvrLog::close()
 {
   if (ourFP && (ourType == File))
   {
@@ -561,7 +561,7 @@ AREXPORT void ArLog::close()
   }
 }
 
-AREXPORT void ArLog::logNoLock(LogLevel level, const char *str, ...)
+AREXPORT void MvrLog::logNoLock(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -614,7 +614,7 @@ AREXPORT void ArLog::logNoLock(LogLevel level, const char *str, ...)
   va_end(ptr);
 }
 
-AREXPORT void ArLog::logBacktrace(LogLevel level)
+AREXPORT void MvrLog::logBacktrace(LogLevel level)
 {
 #ifndef WIN32
   int size = 100;
@@ -623,7 +623,7 @@ AREXPORT void ArLog::logBacktrace(LogLevel level)
   char **names;
   
   numEntries = backtrace(buffer, size);
-  ArLog::log(ArLog::Normal, "Backtrace %d levels", numEntries);
+  MvrLog::log(MvrLog::Normal, "Backtrace %d levels", numEntries);
   
   names = backtrace_symbols(buffer, numEntries);
   if (names == NULL)
@@ -631,14 +631,14 @@ AREXPORT void ArLog::logBacktrace(LogLevel level)
   
   int i;
   for (i = 0; i < numEntries; i++)
-    ArLog::log(ArLog::Normal, "%s", names[i]);
+    MvrLog::log(MvrLog::Normal, "%s", names[i]);
   
   free(names);
 #endif
 }
 
 /// Log a file if it exists
-AREXPORT bool ArLog::logFileContents(LogLevel level, const char *fileName)
+AREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
 {
   FILE *strFile;
   unsigned int i;
@@ -646,7 +646,7 @@ AREXPORT bool ArLog::logFileContents(LogLevel level, const char *fileName)
   
   str[0] = '\0';
   
-  if ((strFile = ArUtil::fopen(fileName, "r")) != NULL)
+  if ((strFile = MvrUtil::fopen(fileName, "r")) != NULL)
   {
     while (fgets(str, sizeof(str), strFile) != NULL)
     {
@@ -656,7 +656,7 @@ AREXPORT bool ArLog::logFileContents(LogLevel level, const char *fileName)
 	if (str[i] == '\r' || str[i] == '\n' || str[i] == '\0')
 	{
 	  str[i] = '\0';
-	  ArLog::log(level, str);
+	  MvrLog::log(level, str);
 	  endedLine = true;
 	}
       }
@@ -670,50 +670,50 @@ AREXPORT bool ArLog::logFileContents(LogLevel level, const char *fileName)
   }
 }
 
-AREXPORT void ArLog::addToConfig(ArConfig *config)
+AREXPORT void MvrLog::addToConfig(MvrConfig *config)
 {
   std::string section = "LogConfig";
   config->addParam(
-	  ArConfigArg("LogType", (int *)&ourConfigLogType,
+	  MvrConfigArg("LogType", (int *)&ourConfigLogType,
 		      "The type of log we'll be using, 0 for StdOut, 1 for StdErr, 2 for File (and give it a file name), 3 for colbert (don't use that), and 4 for None", 
-		      ArLog::StdOut, ArLog::None), 
-	  section.c_str(), ArPriority::TRIVIAL);
+		      MvrLog::StdOut, MvrLog::None), 
+	  section.c_str(), MvrPriority::TRIVIAL);
   config->addParam(
-	  ArConfigArg("LogLevel", (int *)&ourConfigLogLevel,
+	  MvrConfigArg("LogLevel", (int *)&ourConfigLogLevel,
 		      "The level of logging to do, 0 for Terse, 1 for Normal, and 2 for Verbose", 
-		      ArLog::Terse, ArLog::Verbose), 
-	  section.c_str(), ArPriority::TRIVIAL);
+		      MvrLog::Terse, MvrLog::Verbose), 
+	  section.c_str(), MvrPriority::TRIVIAL);
   config->addParam(
-	  ArConfigArg("LogFileName", ourConfigFileName,
+	  MvrConfigArg("LogFileName", ourConfigFileName,
 		      "File to log to", sizeof(ourConfigFileName)),
-	  section.c_str(), ArPriority::TRIVIAL);
+	  section.c_str(), MvrPriority::TRIVIAL);
   config->addParam(
-	  ArConfigArg("LogTime", &ourConfigLogTime,
+	  MvrConfigArg("LogTime", &ourConfigLogTime,
 		      "True to prefix log messages with time and date, false not to"),
-	  section.c_str(), ArPriority::TRIVIAL);
+	  section.c_str(), MvrPriority::TRIVIAL);
   config->addParam(
-	  ArConfigArg("LogAlsoPrint", &ourConfigAlsoPrint,
+	  MvrConfigArg("LogAlsoPrint", &ourConfigAlsoPrint,
 		      "True to also printf the message, false not to"),	  
-	  section.c_str(), ArPriority::TRIVIAL);
-  ourConfigProcessFileCB.setName("ArLog");
+	  section.c_str(), MvrPriority::TRIVIAL);
+  ourConfigProcessFileCB.setName("MvrLog");
   config->addProcessFileCB(&ourConfigProcessFileCB, 200);
 }
 
-AREXPORT bool ArLog::processFile(void)
+AREXPORT bool MvrLog::processFile(void)
 {
   if (ourConfigLogType != ourType || ourConfigLogLevel != ourLevel ||
       strcmp(ourConfigFileName, ourFileName.c_str()) != 0 || 
       ourConfigLogTime != ourLoggingTime || ourConfigAlsoPrint != ourAlsoPrint)
   {
-    ArLog::logNoLock(ArLog::Normal, "Initializing log from config");
-    return ArLog::init(ourConfigLogType, ourConfigLogLevel, ourConfigFileName, 
+    MvrLog::logNoLock(MvrLog::Normal, "Initializing log from config");
+    return MvrLog::init(ourConfigLogType, ourConfigLogLevel, ourConfigFileName, 
 		       ourConfigLogTime, ourConfigAlsoPrint, true);
   }
   return true;
 }
 
 #ifndef ARINTERFACE
-AREXPORT void ArLog::aramInit(const char *prefix, ArLog::LogLevel defaultLevel,
+AREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLevel,
 			      double defaultSize, bool daemonized)
 {
   if (prefix == NULL || prefix[0] == '\0')
@@ -726,39 +726,39 @@ AREXPORT void ArLog::aramInit(const char *prefix, ArLog::LogLevel defaultLevel,
   }
   
   std::string section = "Log Config";
-  Aria::getConfig()->addParam(
-	  ArConfigArg("Level", ourAramConfigLogLevel,
+  Mvria::getConfig()->addParam(
+	  MvrConfigArg("Level", ourAramConfigLogLevel,
 		      "The level of logging type of log we'll be using", sizeof(ourAramConfigLogLevel)),
-	  section.c_str(), ArPriority::TRIVIAL, 
+	  section.c_str(), MvrPriority::TRIVIAL, 
 	  "Choices:Terse;;Normal;;Verbose");
-  Aria::getConfig()->addParam(
-	  ArConfigArg("LogFileSize", &ourAramConfigLogSize,
+  Mvria::getConfig()->addParam(
+	  MvrConfigArg("LogFileSize", &ourAramConfigLogSize,
 		      "The maximum size of the log files (6 files are rotated through), 0 means no maximum", 0, 20000),
-	  section.c_str(), ArPriority::TRIVIAL);
+	  section.c_str(), MvrPriority::TRIVIAL);
 
   ourUseAramBehavior = true;
-  ourAramConfigProcessFileCB.setName("ArLogAram");
-  Aria::getConfig()->addProcessFileCB(&ourAramConfigProcessFileCB, 210);
+  ourAramConfigProcessFileCB.setName("MvrLogAram");
+  Mvria::getConfig()->addProcessFileCB(&ourAramConfigProcessFileCB, 210);
 
-  if (defaultLevel == ArLog::Terse)
+  if (defaultLevel == MvrLog::Terse)
     sprintf(ourAramConfigLogLevel, "Terse");
-  else if (defaultLevel == ArLog::Normal)
+  else if (defaultLevel == MvrLog::Normal)
     sprintf(ourAramConfigLogLevel, "Normal");
-  if (defaultLevel == ArLog::Verbose)
+  if (defaultLevel == MvrLog::Verbose)
     sprintf(ourAramConfigLogLevel, "Verbose");
 
   ourAramDaemonized = daemonized;
 
   char buf[2048];
   snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
-  ArLog::init(ArLog::File, defaultLevel, buf, true, !daemonized, true);
+  MvrLog::init(MvrLog::File, defaultLevel, buf, true, !daemonized, true);
 
   if (ourAramDaemonized)
   {
 
     if (dup2(fileno(ourFP), fileno(stderr)) < 0)
-      ArLog::logErrorFromOSNoLock(
-	      ArLog::Normal, "ArLog: Error redirecting stderr to log file.");
+      MvrLog::logErrorFromOSNoLock(
+	      MvrLog::Normal, "MvrLog: Error redirecting stderr to log file.");
     
     // this is is taken out since if you set this flag, the file gets
     //closed twice, then really weird stuff happens after the exec
@@ -771,25 +771,25 @@ AREXPORT void ArLog::aramInit(const char *prefix, ArLog::LogLevel defaultLevel,
 
     if (dup2(fileno(ourFP), fileno(stdout)) < 0)
 
-      ArLog::logErrorFromOSNoLock(
-	      ArLog::Normal, "ArLog: Error redirecting stdout to log file.");
+      MvrLog::logErrorFromOSNoLock(
+	      MvrLog::Normal, "MvrLog: Error redirecting stdout to log file.");
 
     // this is is taken out since if you set this flag, the file gets
     //closed twice, then really weird stuff happens after the exec
-    ArUtil::setFileCloseOnExec(fileno(stdout), true);
+    MvrUtil::setFileCloseOnExec(fileno(stdout), true);
 
     fprintf(stdout, "Stdout...\n");
     */
   }
 
   ourAramConfigLogSize  = defaultSize;  // even megabytes
-  ourAramLogSize = ArMath::roundInt(ourAramConfigLogSize * 1000000);  // even megabytes
+  ourAramLogSize = MvrMath::roundInt(ourAramConfigLogSize * 1000000);  // even megabytes
 }
 
-AREXPORT bool ArLog::aramProcessFile(void)
+AREXPORT bool MvrLog::aramProcessFile(void)
 {
   ourMutex.lock();
-  ourAramLogSize = ArMath::roundInt(ourAramConfigLogSize * 1000000);  // even megabytes
+  ourAramLogSize = MvrMath::roundInt(ourAramConfigLogSize * 1000000);  // even megabytes
   if (strcasecmp(ourAramConfigLogLevel, "Terse") == 0)
     ourLevel = Terse;
   else if (strcasecmp(ourAramConfigLogLevel, "Verbose") == 0)
@@ -798,8 +798,8 @@ AREXPORT bool ArLog::aramProcessFile(void)
     ourLevel = Normal;
   else 
   {
-    ArLog::logNoLock(ArLog::Normal, 
-	       "ArLog: Bad log level '%s' defaulting to Normal", 
+    MvrLog::logNoLock(MvrLog::Normal, 
+	       "MvrLog: Bad log level '%s' defaulting to Normal", 
 	       ourAramConfigLogLevel);
     ourLevel = Normal;
   }
@@ -807,9 +807,9 @@ AREXPORT bool ArLog::aramProcessFile(void)
   return true;
 }
 
-AREXPORT void ArLog::filledAramLog(void)
+AREXPORT void MvrLog::filledAramLog(void)
 {
-  ArLog::logNoLock(ArLog::Normal, "ArLog: Log filled, starting new file");
+  MvrLog::logNoLock(MvrLog::Normal, "MvrLog: Log filled, starting new file");
 
   fclose(ourFP);
 
@@ -823,11 +823,11 @@ AREXPORT void ArLog::filledAramLog(void)
   }
 
   snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
-  if ((ourFP = ArUtil::fopen(ourFileName.c_str(), "w")) == NULL)
+  if ((ourFP = MvrUtil::fopen(ourFileName.c_str(), "w")) == NULL)
   {
     ourType = StdOut;
-    ArLog::logNoLock(ArLog::Normal, 
-	       "ArLog: Couldn't reopen file '%s', failing back to stdout",
+    MvrLog::logNoLock(MvrLog::Normal, 
+	       "MvrLog: Couldn't reopen file '%s', failing back to stdout",
 	       ourFileName.c_str());
   }
   ourCharsLogged = 0;
@@ -836,8 +836,8 @@ AREXPORT void ArLog::filledAramLog(void)
   {
 
     if (dup2(fileno(ourFP), fileno(stderr)) < 0)
-      ArLog::logErrorFromOSNoLock(
-	      ArLog::Normal, "ArLog: Error redirecting stderr to log file.");
+      MvrLog::logErrorFromOSNoLock(
+	      MvrLog::Normal, "MvrLog: Error redirecting stderr to log file.");
 
     // this is is taken out since if you set this flag, the file gets
     //closed twice, then really weird stuff happens after the exec
@@ -849,12 +849,12 @@ AREXPORT void ArLog::filledAramLog(void)
      * wound up at the end of the file, which got really strange
 
     if (dup2(fileno(ourFP), fileno(stdout)) < 0)
-      ArLog::logErrorFromOSNoLock(
-	      ArLog::Normal, "ArLog: Error redirecting stdout to log file.");
+      MvrLog::logErrorFromOSNoLock(
+	      MvrLog::Normal, "MvrLog: Error redirecting stdout to log file.");
 
     // this is is taken out since if you set this flag, the file gets
     //closed twice, then really weird stuff happens after the exec
-    ArUtil::setFileCloseOnExec(fileno(stdout), true);
+    MvrUtil::setFileCloseOnExec(fileno(stdout), true);
 
     fprintf(stdout, "Stdout...\n");
     */
@@ -863,30 +863,30 @@ AREXPORT void ArLog::filledAramLog(void)
 
 #endif // ARINTERFACE
 
-AREXPORT void ArLog::setFunctor(ArFunctor1<const char *> *functor)
+AREXPORT void MvrLog::setFunctor(MvrFunctor1<const char *> *functor)
 {
   ourFunctor = functor;
 }
 
-AREXPORT void ArLog::clearFunctor()
+AREXPORT void MvrLog::clearFunctor()
 {
   ourFunctor = NULL;
 }
 
-AREXPORT void ArLog::invokeFunctor(const char *message)
+AREXPORT void MvrLog::invokeFunctor(const char *message)
 {
-  ArFunctor1<const char *> *functor;
+  MvrFunctor1<const char *> *functor;
   functor = ourFunctor;
   if (functor != NULL)
     functor->invoke(message);
 }
 
-AREXPORT void ArLog::checkFileSize(void)
+AREXPORT void MvrLog::checkFileSize(void)
 {
   if (ourAramDaemonized)
   {
     long size;
-    size = ArUtil::sizeFile(ourFileName);
+    size = MvrUtil::sizeFile(ourFileName);
     if (size > 0 && size > ourCharsLogged)
     {
       ourCharsLogged = size;
@@ -894,13 +894,13 @@ AREXPORT void ArLog::checkFileSize(void)
   }
 }
 
-AREXPORT void ArLog::internalForceLockup(void)
+AREXPORT void MvrLog::internalForceLockup(void)
 {
-  ArLog::log(ArLog::Terse, "ArLog: forcing internal lockup");
+  MvrLog::log(MvrLog::Terse, "MvrLog: forcing internal lockup");
   ourMutex.lock();
 }
 
-AREXPORT void ArLog::log_v(LogLevel level, const char *prefix, const char *str, va_list ptr)
+AREXPORT void MvrLog::log_v(LogLevel level, const char *prefix, const char *str, va_list ptr)
 {
   char buf[1024];
   strncpy(buf, prefix, sizeof(buf));
@@ -911,7 +911,7 @@ AREXPORT void ArLog::log_v(LogLevel level, const char *prefix, const char *str, 
 }
 
 
-AREXPORT void ArLog::info(const char *str, ...)
+AREXPORT void MvrLog::info(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -921,7 +921,7 @@ AREXPORT void ArLog::info(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void ArLog::warning(const char *str, ...)
+AREXPORT void MvrLog::warning(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -931,7 +931,7 @@ AREXPORT void ArLog::warning(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void ArLog::error(const char *str, ...)
+AREXPORT void MvrLog::error(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -941,7 +941,7 @@ AREXPORT void ArLog::error(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void ArLog::debug(const char *str, ...)
+AREXPORT void MvrLog::debug(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -951,7 +951,7 @@ AREXPORT void ArLog::debug(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void ArLog::setLogLevel(LogLevel level) {
+AREXPORT void MvrLog::setLogLevel(LogLevel level) {
 	ourMutex.lock();
 	ourLevel = level;
 	ourMutex.unlock();

@@ -33,28 +33,28 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /// Perform transforms between different coordinates
 /** @ingroup UtilityClasses
 */
-class ArTransform
+class MvrTransform
 {
 public:
   /// Constructor
-  ArTransform() 
+  MvrTransform() 
     { 
       myX = 0;
       myY = 0; 
       myTh = 0;
-      myCos = ArMath::cos(myTh);
-      mySin = ArMath::sin(myTh);
+      myCos = MvrMath::cos(myTh);
+      mySin = MvrMath::sin(myTh);
     }
   /// Constructor, Sets the transform so points in this coord system
   /// transform to abs world coords
 
-  ArTransform(ArPose pose) 
+  MvrTransform(MvrPose pose) 
     { 
       setTransform(pose);
     }
   /// Constructor, sets the transform so that pose1 will be
   /// transformed to pose2
-  ArTransform(ArPose pose1, ArPose pose2)
+  MvrTransform(MvrPose pose1, MvrPose pose2)
     {
       setTransform(pose1, pose2);
     }
@@ -67,12 +67,12 @@ public:
       @param source the parameter to transform
       @return the source transformed into absolute coordinates
   */
-  ArPose doTransform(ArPose source)
+  MvrPose doTransform(MvrPose source)
     {
-      ArPose ret;
+      MvrPose ret;
       ret.setX(myX + myCos * source.getX() + mySin * source.getY());
       ret.setY(myY + myCos * source.getY() - mySin * source.getX());
-      ret.setTh(ArMath::addAngle(source.getTh(),myTh));      
+      ret.setTh(MvrMath::addAngle(source.getTh(),myTh));      
       return ret;
     }
   /// Take the source pose and run the transform on it to put it into abs 
@@ -81,12 +81,12 @@ public:
       @param source the parameter to transform
       @return the source transformed into absolute coordinates
   */
-  ArPoseWithTime doTransform(ArPoseWithTime source)
+  MvrPoseWithTime doTransform(MvrPoseWithTime source)
     {
-      ArPoseWithTime ret;
+      MvrPoseWithTime ret;
       ret.setX(myX + myCos * source.getX() + mySin * source.getY());
       ret.setY(myY + myCos * source.getY() - mySin * source.getX());
-      ret.setTh(ArMath::addAngle(source.getTh(),myTh));      
+      ret.setTh(MvrMath::addAngle(source.getTh(),myTh));      
       ret.setTime(source.getTime());
       return ret;
     }
@@ -98,14 +98,14 @@ public:
       @param source the parameter to transform
       @return the source transformed from absolute into local coords
   */
-  ArPose doInvTransform(ArPose source)
+  MvrPose doInvTransform(MvrPose source)
     {
-      ArPose ret;
+      MvrPose ret;
       double tx = source.getX() - myX;
       double ty = source.getY() - myY;
       ret.setX(myCos * tx - mySin * ty);
       ret.setY(myCos * ty + mySin * tx);
-      ret.setTh(ArMath::subAngle(source.getTh(),myTh));      
+      ret.setTh(MvrMath::subAngle(source.getTh(),myTh));      
       return ret;
     }
 
@@ -116,14 +116,14 @@ public:
       @param source the parameter to transform
       @return the source transformed from absolute into local coords
   */
-  ArPoseWithTime doInvTransform(ArPoseWithTime source)
+  MvrPoseWithTime doInvTransform(MvrPoseWithTime source)
     {
-      ArPoseWithTime ret;
+      MvrPoseWithTime ret;
       double tx = source.getX() - myX;
       double ty = source.getY() - myY;
       ret.setX(myCos * tx - mySin * ty);
       ret.setY(myCos * ty + mySin * tx);
-      ret.setTh(ArMath::subAngle(source.getTh(),myTh));      
+      ret.setTh(MvrMath::subAngle(source.getTh(),myTh));      
       ret.setTime(source.getTime());
       return ret;
     }
@@ -134,9 +134,9 @@ public:
   /// Take a std::list of sensor readings and do the transform on it
   AREXPORT void doTransform(std::list<ArPoseWithTime *> *poseList);
   /// Sets the transform so points in this coord system transform to abs world coords
-  AREXPORT void setTransform(ArPose pose);
+  AREXPORT void setTransform(MvrPose pose);
   /// Sets the transform so that pose1 will be transformed to pose2
-  AREXPORT void setTransform(ArPose pose1, ArPose pose2);
+  AREXPORT void setTransform(MvrPose pose1, MvrPose pose2);
   /// Gets the transform x value (mm)
   double getX() { return myX; }
   /// Gets the transform y value (mm)

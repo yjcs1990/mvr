@@ -26,19 +26,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include <stdarg.h>
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLaserLogger.h"
-#include "ArRobot.h"
-#include "ArLaser.h"
-#include "ArJoyHandler.h"
-#include "ArRobotJoyHandler.h"
+#include "MvrLaserLogger.h"
+#include "MvrRobot.h"
+#include "MvrLaser.h"
+#include "MvrJoyHandler.h"
+#include "MvrRobotJoyHandler.h"
 #include "ariaInternal.h"
 
 
 /** @page LaserLogFileFormat Laser Scan Log File Format 
  *
- *  A log of raw laser and robot data can be created using an ArLaserLogger
+ *  A log of raw laser and robot data can be created using an MvrLaserLogger
  *  object and driving the robot manually with a joystick or other means. 
  *  This log file can then be futher processed, for example by loading it into
  *  Mapper3 or MobilePlanner, which corrects errors and creates a more accurate
@@ -88,7 +88,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *  the file.)
  *
  *  If you are generating a laser scan log file with software other than
- *  ArLaserLogger, then you may replace the message in the comment 
+ *  MvrLaserLogger, then you may replace the message in the comment 
  *  in the second line, for example: <code>\#Created by my custom laser scan
  *  logger</code>.  This comment is for informational purposes only.
  *
@@ -163,7 +163,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @note A packet handler will be added for a packet with ID 0x96, but will
    will not indicate the packet was handled.  This will result in warnings
    printed to the log unless another packet handler handles this packet.
-   ArServerHandlerMapping does this, but standalone use, such as in
+   MvrServerHandlerMapping does this, but standalone use, such as in
    sickLogger.cpp, does not.  This is done so that multiple packet handlers
    may receive 0x96.  (This packet is used for an advanced feature of
    mapping with some MobileRobots products but which isn't usually needed
@@ -180,7 +180,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param fileName the file name in which to put the log 
 
    @param addGoals whether to add goals automatically. if true
-   then ArLaserLogger adds a handler for the 'g' key to any ArKeyHandler 
+   then MvrLaserLogger adds a handler for the 'g' key to any MvrKeyHandler 
    that has been previously created, and will also monitor the robot
    joystick for the goal button pressed, and register a handler to
    @a joyHandler if provided as well.
@@ -197,22 +197,22 @@ output log file
   @param extraLasers if given, include data from these lasers in the laser log in addition
 to the primary laser @a laser.
 **/
-AREXPORT ArLaserLogger::ArLaserLogger(
-	ArRobot *robot, ArLaser *laser, 
+AREXPORT MvrLaserLogger::ArLaserLogger(
+	ArRobot *robot, MvrLaser *laser, 
 	double distDiff, double degDiff, 
-	const char *fileName, bool addGoals, ArJoyHandler *joyHandler,
+	const char *fileName, bool addGoals, MvrJoyHandler *joyHandler,
 	const char *baseDirectory, bool useReflectorValues,
 	ArRobotJoyHandler *robotJoyHandler,
 	const std::map<std::string, 
-		       ArRetFunctor3<int, ArTime, ArPose *, ArPoseWithTime *> *, 
-		       ArStrCaseCmpOp> *extraLocationData,
+		       MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *, 
+		       MvrStrCaseCmpOp> *extraLocationData,
 	std::list<ArLaser *> *extraLasers) :
   mySectors(18), 
   myTaskCB(this, &ArLaserLogger::robotTask),
   myGoalKeyCB(this, &ArLaserLogger::goalKeyCallback), 
   myLoopPacketHandlerCB(this, &ArLaserLogger::loopPacketHandler)
 {
-  ArKeyHandler *keyHandler;
+  MvrKeyHandler *keyHandler;
 
   myOldReadings = false;
   myNewReadings = true;
@@ -246,12 +246,12 @@ AREXPORT ArLaserLogger::ArLaserLogger(
 
 
 
-  myFile = ArUtil::fopen(realFileName.c_str(), "w+");
+  myFile = MvrUtil::fopen(realFileName.c_str(), "w+");
 
   if (laser->getLaserNumber() != 1 && 
       extraLasers != NULL && !extraLasers->empty())
   {
-    ArLog::log(ArLog::Terse, "ArLaserLogger cannot work because the primary laser has a number other than 1 and there are extra lasers");
+    MvrLog::log(MvrLog::Terse, "MvrLaserLogger cannot work because the primary laser has a number other than 1 and there are extra lasers");
     return;
   }
 
@@ -267,10 +267,10 @@ AREXPORT ArLaserLogger::ArLaserLogger(
       
   if (myFile != NULL)
   {
-    //const ArRobotParams *params;
+    //const MvrRobotParams *params;
     //params = robot->getRobotParams();
     fprintf(myFile, "LaserOdometryLog\n");
-    fprintf(myFile, "#Created by ArLaserLogger\n");
+    fprintf(myFile, "#Created by MvrLaserLogger\n");
     fprintf(myFile, "version: 4\n");
 
     std::list<ArLaser *>::iterator laserIt;
@@ -288,8 +288,8 @@ AREXPORT ArLaserLogger::ArLaserLogger(
     if (myIncludeRawEncoderPose)
       available += " robotRaw";
 
-    std::map<std::string, ArRetFunctor3<int, ArTime, ArPose *, 
-    ArPoseWithTime *> *, ArStrCaseCmpOp>::iterator it;
+    std::map<std::string, MvrRetFunctor3<int, MvrTime, MvrPose *, 
+    MvrPoseWithTime *> *, MvrStrCaseCmpOp>::iterator it;
     for (it = myExtraLocationData.begin(); 
 	 it != myExtraLocationData.end(); 
 	 it++)
@@ -299,7 +299,7 @@ AREXPORT ArLaserLogger::ArLaserLogger(
   }
   else
   {
-    ArLog::log(ArLog::Terse, "ArLaserLogger cannot write to file %s", 
+    MvrLog::log(MvrLog::Terse, "MvrLaserLogger cannot write to file %s", 
 	       myFileName.c_str());
     return;
   }
@@ -317,8 +317,8 @@ AREXPORT ArLaserLogger::ArLaserLogger(
   uCFileName[18] = '\0';
   myRobot->comStr(94, uCFileName);
 
-  myLoopPacketHandlerCB.setName("ArLaserLogger");
-  myRobot->addPacketHandler(&myLoopPacketHandlerCB, ArListPos::FIRST);
+  myLoopPacketHandlerCB.setName("MvrLaserLogger");
+  myRobot->addPacketHandler(&myLoopPacketHandlerCB, MvrListPos::FIRST);
 
   myAddGoals = addGoals;
   myJoyHandler = joyHandler;
@@ -333,19 +333,19 @@ AREXPORT ArLaserLogger::ArLaserLogger(
   myNumGoal = 1;
   myLastLoops = 0;
   // only add goals from the keyboard if there's already a keyboard handler
-  if (myAddGoals && (keyHandler = Aria::getKeyHandler()) != NULL)
+  if (myAddGoals && (keyHandler = Mvria::getKeyHandler()) != NULL)
   {
     // now that we have a key handler, add our keys as callbacks, print out big
     // warning messages if they fail
     if (!keyHandler->addKeyHandler('g', &myGoalKeyCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for g, sick logger goal handling will not work correctly.");
+      MvrLog::log(MvrLog::Terse, "The key handler already has a key for g, sick logger goal handling will not work correctly.");
     if (!keyHandler->addKeyHandler('G', &myGoalKeyCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for g, sick logger goal handling will not work correctly.");
+      MvrLog::log(MvrLog::Terse, "The key handler already has a key for g, sick logger goal handling will not work correctly.");
   }
 
 }
 
-AREXPORT ArLaserLogger::~ArLaserLogger()
+AREXPORT MvrLaserLogger::~ArLaserLogger()
 {
   myRobot->remUserTask(&myTaskCB);
   myRobot->remPacketHandler(&myLoopPacketHandlerCB);
@@ -357,7 +357,7 @@ AREXPORT ArLaserLogger::~ArLaserLogger()
   }
 }
 
-void ArLaserLogger::internalPrintLaserPoseAndConf(ArLaser *laser, int laserNumber)
+void MvrLaserLogger::internalPrintLaserPoseAndConf(MvrLaser *laser, int laserNumber)
 {
   if (myFile == NULL)
     return;
@@ -372,14 +372,14 @@ void ArLaserLogger::internalPrintLaserPoseAndConf(ArLaser *laser, int laserNumbe
 
   if (!readings->empty())
   {
-    firstAngle = ArMath::subAngle(readings->front()->getSensorTh(),
+    firstAngle = MvrMath::subAngle(readings->front()->getSensorTh(),
 				  laser->getSensorPositionTh());
-    lastAngle = ArMath::subAngle(readings->back()->getSensorTh(),
+    lastAngle = MvrMath::subAngle(readings->back()->getSensorTh(),
 				 laser->getSensorPositionTh());
   }
   else
   {
-    ArLog::log(ArLog::Normal, "ArLaserLogger: Apparently there are no readings for %s...", laser->getName());
+    MvrLog::log(MvrLog::Normal, "MvrLaserLogger: Apparently there are no readings for %s...", laser->getName());
   }
 
   // probably shouldn't have sick1pose and scan1pose, but it's a lot
@@ -415,7 +415,7 @@ void ArLaserLogger::internalPrintLaserPoseAndConf(ArLaser *laser, int laserNumbe
 	  laser->getName());  
 }
   
-AREXPORT bool ArLaserLogger::loopPacketHandler(ArRobotPacket *packet)
+AREXPORT bool MvrLaserLogger::loopPacketHandler(MvrRobotPacket *packet)
 {
   unsigned char loops;
   if (packet->getID() != 0x96)
@@ -430,18 +430,18 @@ AREXPORT bool ArLaserLogger::loopPacketHandler(ArRobotPacket *packet)
       if ((loops & bit) && !(myLastLoops & bit))
       {
 	addTagToLog("loop: start %d", num);
-	ArLog::log(ArLog::Normal, "Starting loop %d", num);
+	ArLog::log(MvrLog::Normal, "Starting loop %d", num);
       }
       else if (!(loops & bit) && (myLastLoops & bit))
       {
 	addTagToLog("loop: stop %d", num);
-	ArLog::log(ArLog::Normal, "Stopping loop %d", num);
+	ArLog::log(MvrLog::Normal, "Stopping loop %d", num);
       }
     }
   }
   myLastLoops = loops;
   // we return this as false so multiple sick loggers can snag the
-  // data... the ArServerHandlerMapping will return true for it so
+  // data... the MvrServerHandlerMapping will return true for it so
   // that it doesn't get logged
   return false;
 }
@@ -454,7 +454,7 @@ AREXPORT bool ArLaserLogger::loopPacketHandler(ArRobotPacket *packet)
    along with a tag as to where the robot was and when in the mapping
    it was
 **/
-AREXPORT void ArLaserLogger::addTagToLogPlain(const char *str)
+AREXPORT void MvrLaserLogger::addTagToLogPlain(const char *str)
 {
   myTags.push_back(str);
 }
@@ -471,7 +471,7 @@ AREXPORT void ArLaserLogger::addTagToLogPlain(const char *str)
    @swigomit
    @sa addTagToLogPlain()
 **/
-AREXPORT void ArLaserLogger::addTagToLog(const char *str, ...)
+AREXPORT void MvrLaserLogger::addTagToLog(const char *str, ...)
 {
   char buf[2048];
   va_list ptr;
@@ -491,7 +491,7 @@ AREXPORT void ArLaserLogger::addTagToLog(const char *str, ...)
    itself
 **/
 
-AREXPORT void ArLaserLogger::addInfoToLogPlain(const char *str)
+AREXPORT void MvrLaserLogger::addInfoToLogPlain(const char *str)
 {
   myInfos.push_back(str);
 }
@@ -503,7 +503,7 @@ AREXPORT void ArLaserLogger::addInfoToLogPlain(const char *str)
    This function takes the given tag and puts it into the log file by
    itself
 **/
-AREXPORT void ArLaserLogger::addInfoToLog(const char *str, ...)
+AREXPORT void MvrLaserLogger::addInfoToLog(const char *str, ...)
 {
   char buf[2048];
   va_list ptr;
@@ -513,12 +513,12 @@ AREXPORT void ArLaserLogger::addInfoToLog(const char *str, ...)
   va_end(ptr);
 }
 
-void ArLaserLogger::goalKeyCallback(void)
+void MvrLaserLogger::goalKeyCallback(void)
 {
   myAddGoalKeyboard = true;
 }
 
-void ArLaserLogger::internalAddGoal(void)
+void MvrLaserLogger::internalAddGoal(void)
 {
   bool joyButton;
   bool robotJoyButton;
@@ -534,7 +534,7 @@ void ArLaserLogger::internalAddGoal(void)
 		   myJoyHandler->getButton(3) || 
 		   myJoyHandler->getButton(4));
   else
-    joyButton = (myRobot->getFlags() & ArUtil::BIT9);
+    joyButton = (myRobot->getFlags() & MvrUtil::BIT9);
   
   if (myRobotJoyHandler != NULL)
     robotJoyButton = myRobotJoyHandler->getButton2();
@@ -557,7 +557,7 @@ void ArLaserLogger::internalAddGoal(void)
     // call addTagToLog not do it directly so we get additional info
     // needed
     addTagToLog("cairn: GoalWithHeading \"\" ICON_GOALWITHHEADING \"goal%d\"", myNumGoal);
-    ArLog::log(ArLog::Normal, "Goal %d taken", myNumGoal);
+    MvrLog::log(MvrLog::Normal, "Goal %d taken", myNumGoal);
     myNumGoal++;
   }
   myLastAddGoalKeyboard = myAddGoalKeyboard;
@@ -569,7 +569,7 @@ void ArLaserLogger::internalAddGoal(void)
   myAddGoalKeyboard = false;
 }
 
-void ArLaserLogger::internalWriteTags(void)
+void MvrLaserLogger::internalWriteTags(void)
 {
   time_t msec;
 
@@ -601,7 +601,7 @@ void ArLaserLogger::internalWriteTags(void)
   }
 }
 
-void ArLaserLogger::internalTakeReading(void)
+void MvrLaserLogger::internalTakeReading(void)
 {
   time_t msec;
 
@@ -614,7 +614,7 @@ void ArLaserLogger::internalTakeReading(void)
   if (myRobot->isConnected() && 
       (!myFirstTaken || myTakeReadingExplicit || 
        myLast.findDistanceTo(myRobot->getEncoderPose()) > myDistDiff ||
-       fabs(ArMath::subAngle(myLast.getTh(), 
+       fabs(MvrMath::subAngle(myLast.getTh(), 
 			     myRobot->getEncoderPose().getTh())) > myDegDiff ||
        (((myLastVel < 0 && myRobot->getVel() > 0) ||
 	 (myLastVel > 0 && myRobot->getVel() < 0)) && 
@@ -630,9 +630,9 @@ void ArLaserLogger::internalTakeReading(void)
 	    myRobot->getVel(), myRobot->getRotVel(), myRobot->getLatVel());
 
     std::list<ArLaser *>::iterator laserIt;
-    std::multimap<ArTime, ArLaser *> lasersToLog;
-    std::multimap<ArTime, ArLaser *>::reverse_iterator lasersToLogIt;
-    ArLaser * laser;
+    std::multimap<ArTime, MvrLaser *> lasersToLog;
+    std::multimap<ArTime, MvrLaser *>::reverse_iterator lasersToLogIt;
+    MvrLaser * laser;
     
     for (laserIt = myLasers.begin(); laserIt != myLasers.end(); laserIt++)
     {
@@ -641,7 +641,7 @@ void ArLaserLogger::internalTakeReading(void)
       if (laser->getRawReadings() != NULL && 
 	  !laser->getRawReadings()->empty())
 	lasersToLog.insert(
-		std::pair<ArTime, ArLaser *>(
+		std::pair<ArTime, MvrLaser *>(
 			laser->getRawReadings()->front()->getTimeTaken(),
 			laser));
     }
@@ -667,15 +667,15 @@ void ArLaserLogger::internalTakeReading(void)
   }
 }
 
-void ArLaserLogger::internalTakeLaserReading(ArLaser *laser, int laserNumber)
+void MvrLaserLogger::internalTakeLaserReading(MvrLaser *laser, int laserNumber)
 {
   const std::list<ArSensorReading *> *readings;
   std::list<ArSensorReading *>::const_iterator it;
   std::list<ArSensorReading *>::const_reverse_iterator rit;
-  ArPose encoderPoseTaken;
-  ArPose globalPoseTaken;
-  ArTime timeTaken;
-  ArSensorReading *reading;
+  MvrPose encoderPoseTaken;
+  MvrPose globalPoseTaken;
+  MvrTime timeTaken;
+  MvrSensorReading *reading;
   bool usingAdjustedReadings;
 
   //laser->lockDevice();
@@ -697,11 +697,11 @@ void ArLaserLogger::internalTakeLaserReading(ArLaser *laser, int laserNumber)
     return;
   }
   if (usingAdjustedReadings)
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "Taking adjusted readings from the %d laser values", 
 	       readings->size());
   else
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "Taking readings from the %d laser values", 
 	       readings->size());
   encoderPoseTaken = (*readings->begin())->getEncoderPoseTaken();
@@ -765,10 +765,10 @@ void ArLaserLogger::internalTakeLaserReading(ArLaser *laser, int laserNumber)
   {
     fprintf(myFile, "scan%d: ", laserNumber);
     
-    ArTransform sensorTransform;
+    MvrTransform sensorTransform;
     sensorTransform.setTransform(laser->getSensorPosition(),
-				 ArPose(0, 0, 0));
-    ArPose pose;
+				 MvrPose(0, 0, 0));
+    MvrPose pose;
     
     for (it = readings->begin(); it != readings->end(); it++)
     {
@@ -786,8 +786,8 @@ void ArLaserLogger::internalTakeLaserReading(ArLaser *laser, int laserNumber)
 
 }
 
-void ArLaserLogger::internalPrintPos(ArPose encoderPoseTaken, 
-				    ArPose globalPoseTaken, ArTime timeTaken)
+void MvrLaserLogger::internalPrintPos(MvrPose encoderPoseTaken, 
+				    MvrPose globalPoseTaken, MvrTime timeTaken)
 {
   if (myFile == NULL)
     return;
@@ -812,11 +812,11 @@ void ArLaserLogger::internalPrintPos(ArPose encoderPoseTaken,
 
   if (myIncludeRawEncoderPose)
   {
-    ArPose encoderPose = myRobot->getEncoderPose();
-    ArPose rawEncoderPose = myRobot->getRawEncoderPose();
-    ArTransform normalToRaw(rawEncoderPose, encoderPose);
+    MvrPose encoderPose = myRobot->getEncoderPose();
+    MvrPose rawEncoderPose = myRobot->getRawEncoderPose();
+    MvrTransform normalToRaw(rawEncoderPose, encoderPose);
     
-    ArPose rawPose;
+    MvrPose rawPose;
     rawPose = normalToRaw.doInvTransform(encoderPoseTaken);
     fprintf(myFile, "robotRaw: %.0f %.0f %.2f\n", 
 	    rawPose.getX(), 
@@ -824,13 +824,13 @@ void ArLaserLogger::internalPrintPos(ArPose encoderPoseTaken,
 	    rawPose.getTh());
   }
   
-  std::map<std::string, ArRetFunctor3<int, ArTime, ArPose *, ArPoseWithTime *> *, 
-	   ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *, 
+	   MvrStrCaseCmpOp>::iterator it;
   for (it = myExtraLocationData.begin(); it != myExtraLocationData.end(); it++)
   {
-    ArPose pose;
+    MvrPose pose;
     int ret;
-    ArPoseWithTime mostRecent;
+    MvrPoseWithTime mostRecent;
     if ((ret = (*it).second->invokeR(timeTaken, &pose, &mostRecent)) >= 0)
     {
       fprintf(myFile, "%s: %.0f %.0f %.2f\n", 
@@ -841,7 +841,7 @@ void ArLaserLogger::internalPrintPos(ArPose encoderPoseTaken,
     }
     else
     {
-      ArLog::log(ArLog::Verbose, "Could not use %s it returned %d",
+      MvrLog::log(MvrLog::Verbose, "Could not use %s it returned %d",
 		 (*it).first.c_str(), ret);
       fprintf(myFile, "%s: \n", 
 	      (*it).first.c_str());
@@ -849,7 +849,7 @@ void ArLaserLogger::internalPrintPos(ArPose encoderPoseTaken,
   }
 }
 
-AREXPORT void ArLaserLogger::robotTask(void)
+AREXPORT void MvrLaserLogger::robotTask(void)
 {
 
   // call our function to check goals

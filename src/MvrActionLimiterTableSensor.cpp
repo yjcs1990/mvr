@@ -24,24 +24,24 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 
 #include "ariaOSDef.h"
-#include "ArActionLimiterTableSensor.h"
-#include "ArRobot.h"
+#include "MvrActionLimiterTableSensor.h"
+#include "MvrRobot.h"
 
-AREXPORT ArActionLimiterTableSensor::ArActionLimiterTableSensor(
+AREXPORT MvrActionLimiterTableSensor::ArActionLimiterTableSensor(
 	const char *name) :
-  ArAction(name, "Limits speed to 0 if a table is seen")
+  MvrAction(name, "Limits speed to 0 if a table is seen")
 {
 
 }
 
-AREXPORT ArActionLimiterTableSensor::~ArActionLimiterTableSensor()
+AREXPORT MvrActionLimiterTableSensor::~ArActionLimiterTableSensor()
 {
 }
 
-AREXPORT ArActionDesired *ArActionLimiterTableSensor::fire(
+AREXPORT MvrActionDesired *ArActionLimiterTableSensor::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

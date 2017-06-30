@@ -25,11 +25,11 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArExport.h"
-#include "ArRobot.h"
-#include "ArConfig.h"
-#include "ArDataLogger.h"
-#include "ArRobotBatteryPacketReader.h"
+#include "MvrExport.h"
+#include "MvrRobot.h"
+#include "MvrConfig.h"
+#include "MvrDataLogger.h"
+#include "MvrRobotBatteryPacketReader.h"
 #include <vector>
 
 /**
@@ -42,13 +42,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    separate this by runs you need to do it on your own by removing or
    moving the file)
  **/
-AREXPORT ArDataLogger::ArDataLogger(ArRobot *robot, const char *fileName) :
+AREXPORT MvrDataLogger::ArDataLogger(MvrRobot *robot, const char *fileName) :
   myAddStringFunctor(this, &ArDataLogger::addString),
   myConnectCB(this, &ArDataLogger::connectCallback),
   myProcessFileCB(this, &ArDataLogger::processFile),
   myUserTaskCB(this, &ArDataLogger::userTask)
 {
-  myMutex.setLogName("ArDataLogger::myMutex");
+  myMutex.setLogName("MvrDataLogger::myMutex");
   myRobot = robot;
   if (fileName == NULL || fileName[0] == '\0')
     myPermanentFileName = "";
@@ -96,12 +96,12 @@ AREXPORT ArDataLogger::ArDataLogger(ArRobot *robot, const char *fileName) :
   myFile = NULL;
 }
 
-AREXPORT ArDataLogger::~ArDataLogger(void)
+AREXPORT MvrDataLogger::~ArDataLogger(void)
 {
 
 }
 
-AREXPORT void ArDataLogger::addToConfig(ArConfig *config)
+AREXPORT void MvrDataLogger::addToConfig(MvrConfig *config)
 {
   if (config == NULL || myAddedToConfig)
     return;
@@ -118,7 +118,7 @@ AREXPORT void ArDataLogger::addToConfig(ArConfig *config)
   }
 
   myAddedToConfig = true;
-  ArLog::log(ArLog::Verbose, "ArDataLogger::addToConfig");
+  MvrLog::log(MvrLog::Verbose, "MvrDataLogger::addToConfig");
   std::string section;
   char name[512];
   char desc[512];
@@ -126,87 +126,87 @@ AREXPORT void ArDataLogger::addToConfig(ArConfig *config)
   section = "Data logging";
   // add everything to the config
   myConfig->addParam(
-	  ArConfigArg("DataLog", &myConfigLogging, "True to log data, false not to"),
-	  section.c_str(), ArPriority::NORMAL);
+	  MvrConfigArg("DataLog", &myConfigLogging, "True to log data, false not to"),
+	  section.c_str(), MvrPriority::NORMAL);
 
   myConfig->addParam(
-	  ArConfigArg("DataLogInterval", &myConfigLogInterval, "Seconds between logs", 0),
-	  section.c_str(), ArPriority::NORMAL);
+	  MvrConfigArg("DataLogInterval", &myConfigLogInterval, "Seconds between logs", 0),
+	  section.c_str(), MvrPriority::NORMAL);
 
   if (myPermanentFileName.size() == 0)
     myConfig->addParam(
-	    ArConfigArg("DataLogFileName", myConfigFileName, 
+	    MvrConfigArg("DataLogFileName", myConfigFileName, 
 			"File to log data into", sizeof(myConfigFileName)),
-	    section.c_str(), ArPriority::NORMAL);
+	    section.c_str(), MvrPriority::NORMAL);
   
   for (i = 0; i < myStringsCount; i++)
   {
     snprintf(name, sizeof(name), "DataLog%s", myStrings[i]->getName());
     snprintf(desc, sizeof(desc), "Logs %s", myStrings[i]->getName());
     myConfig->addParam(
-	    ArConfigArg(name, myStringsEnabled[i], desc),
-	    "Custom data logging", ArPriority::NORMAL);
+	    MvrConfigArg(name, myStringsEnabled[i], desc),
+	    "Custom data logging", MvrPriority::NORMAL);
   }
 
   myConfig->addParam(
-	  ArConfigArg("DataLogBatteryVoltage", &myLogVoltage, "True to log battery voltage"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogBatteryVoltage", &myLogVoltage, "True to log battery voltage"),
+	  section.c_str(), MvrPriority::DETAILED);
   if (myRobot->haveStateOfCharge())
     myConfig->addParam(
-	    ArConfigArg("DataLogStateOfCharge", &myLogStateOfCharge, "True to log state of charge"),
-	    section.c_str(), ArPriority::DETAILED);
+	    MvrConfigArg("DataLogStateOfCharge", &myLogStateOfCharge, "True to log state of charge"),
+	    section.c_str(), MvrPriority::DETAILED);
   
   myConfig->addParam(
-	  ArConfigArg("DataLogChargeState", &myLogChargeState, 
+	  MvrConfigArg("DataLogChargeState", &myLogChargeState, 
 		      "True to log charge state"),
-	  section.c_str(), ArPriority::DETAILED);
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogBatteryInfo", &myLogBatteryInfo, 
+	  MvrConfigArg("DataLogBatteryInfo", &myLogBatteryInfo, 
 		      "True to log battery info (if available)"),
-	  section.c_str(), ArPriority::DETAILED);
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogPose", &myLogPose, "True to log robot's pose"),
-	  section.c_str(), ArPriority::NORMAL);
+	  MvrConfigArg("DataLogPose", &myLogPose, "True to log robot's pose"),
+	  section.c_str(), MvrPriority::NORMAL);
   myConfig->addParam(
-	  ArConfigArg("DataLogEncoderPose", &myLogEncoderPose, "True to log robot's raw encoder pose"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogEncoderPose", &myLogEncoderPose, "True to log robot's raw encoder pose"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogCorrectedEncoderPose", &myLogCorrectedEncoderPose, "True to log robot's corrected (by gyro, etc) encoder pose"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogCorrectedEncoderPose", &myLogCorrectedEncoderPose, "True to log robot's corrected (by gyro, etc) encoder pose"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogEncoders", &myLogEncoders, "True to log the raw encoder readings"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogEncoders", &myLogEncoders, "True to log the raw encoder readings"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogLeftVel", &myLogLeftVel, "True to log left wheel velocity"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogLeftVel", &myLogLeftVel, "True to log left wheel velocity"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogRightVel", &myLogRightVel, "True to log right wheel velocity"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogRightVel", &myLogRightVel, "True to log right wheel velocity"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogTransVel", &myLogTransVel, "True to log translational wheel velocity"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogTransVel", &myLogTransVel, "True to log translational wheel velocity"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogRotVel", &myLogRotVel, "True to log rotational wheel velocity"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogRotVel", &myLogRotVel, "True to log rotational wheel velocity"),
+	  section.c_str(), MvrPriority::DETAILED);
   if (myRobot->hasLatVel())
     myConfig->addParam(
-	    ArConfigArg("DataLogLatVel", &myLogRotVel, "True to log lateral wheel velocity"),
-	  section.c_str(), ArPriority::DETAILED);
+	    MvrConfigArg("DataLogLatVel", &myLogRotVel, "True to log lateral wheel velocity"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogLeftStalled", &myLogLeftStalled, "True to log if the left wheel is stalled"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogLeftStalled", &myLogLeftStalled, "True to log if the left wheel is stalled"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogRightStalled", &myLogRightStalled, "True to log if the right wheel is stalled"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogRightStalled", &myLogRightStalled, "True to log if the right wheel is stalled"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogStallBits", &myLogStallBits, "True to log all the stall bits is stalled"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogStallBits", &myLogStallBits, "True to log all the stall bits is stalled"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogFlags", &myLogFlags, "True to log all the flags"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogFlags", &myLogFlags, "True to log all the flags"),
+	  section.c_str(), MvrPriority::DETAILED);
   myConfig->addParam(
-	  ArConfigArg("DataLogFaultFlags", &myLogFaultFlags, "True to log all the fault flags"),
-	  section.c_str(), ArPriority::DETAILED);
+	  MvrConfigArg("DataLogFaultFlags", &myLogFaultFlags, "True to log all the fault flags"),
+	  section.c_str(), MvrPriority::DETAILED);
 
   for (i = 0; i < myAnalogCount; i++)
   {
@@ -215,8 +215,8 @@ AREXPORT void ArDataLogger::addToConfig(ArConfig *config)
 	     "Logs the value of analog %d as a 10 bit (0-1024) value",
 	     i);
     myConfig->addParam(
-	    ArConfigArg(name, &myAnalogEnabled[i], desc),
-	    section.c_str(), ArPriority::DETAILED);
+	    MvrConfigArg(name, &myAnalogEnabled[i], desc),
+	    section.c_str(), MvrPriority::DETAILED);
   }
   for (i = 0; i < myAnalogVoltageCount; i++)
   {
@@ -225,33 +225,33 @@ AREXPORT void ArDataLogger::addToConfig(ArConfig *config)
 	     "Logs the value of analog %d as voltage from 0 to 5",
 	     i);
     myConfig->addParam(
-	    ArConfigArg(name, &myAnalogVoltageEnabled[i], desc),
-	    section.c_str(), ArPriority::DETAILED);
+	    MvrConfigArg(name, &myAnalogVoltageEnabled[i], desc),
+	    section.c_str(), MvrPriority::DETAILED);
   }
   for (i = 0; i < myDigInCount; i++)
   {
     snprintf(name, sizeof(name), "DataLogDigIn%d", i);
     snprintf(desc, sizeof(desc), "Logs digital in %d", i);
     myConfig->addParam(
-	    ArConfigArg(name, &myDigInEnabled[i], desc),
-	    section.c_str(), ArPriority::DETAILED);
+	    MvrConfigArg(name, &myDigInEnabled[i], desc),
+	    section.c_str(), MvrPriority::DETAILED);
   }
   for (i = 0; i < myDigOutCount; i++)
   {
     snprintf(name, sizeof(name), "DataLogDigOut%d", i);
     snprintf(desc, sizeof(desc), "Logs digital out %d", i);
     myConfig->addParam(
-	    ArConfigArg(name, &myDigOutEnabled[i], desc),
-	    section.c_str(), ArPriority::DETAILED);
+	    MvrConfigArg(name, &myDigOutEnabled[i], desc),
+	    section.c_str(), MvrPriority::DETAILED);
   }
-  myProcessFileCB.setName("ArDataLogger");
+  myProcessFileCB.setName("MvrDataLogger");
   myConfig->addProcessFileWithErrorCB(&myProcessFileCB, 100);
 }
 
-AREXPORT void ArDataLogger::connectCallback(void)
+AREXPORT void MvrDataLogger::connectCallback(void)
 {
   int i;
-  ArLog::log(ArLog::Verbose, "ArDataLogger::connectCallback");
+  MvrLog::log(MvrLog::Verbose, "MvrDataLogger::connectCallback");
   // out with the old memory
   if (myAnalogEnabled != NULL)
   {
@@ -327,7 +327,7 @@ AREXPORT void ArDataLogger::connectCallback(void)
   }
 }
 
-AREXPORT bool ArDataLogger::processFile(char *errorBuffer, 
+AREXPORT bool MvrDataLogger::processFile(char *errorBuffer, 
 					size_t errorBufferLen)
 {
   myMutex.lock();
@@ -337,7 +337,7 @@ AREXPORT bool ArDataLogger::processFile(char *errorBuffer,
        myPermanentFileName.size() == 0) ||
        (myFile != NULL && !myConfigLogging))
   {
-    ArLog::log(ArLog::Normal, "Closed data log file '%s'", myOpenedFileName);
+    MvrLog::log(MvrLog::Normal, "Closed data log file '%s'", myOpenedFileName);
     fclose(myFile);
     myFile = NULL;
   }
@@ -346,21 +346,21 @@ AREXPORT bool ArDataLogger::processFile(char *errorBuffer,
   {
     if (myPermanentFileName.size() == 0  && strlen(myConfigFileName) == 0)
     {
-      ArLog::log(ArLog::Verbose, "ArDataLogger: no log file to open");
+      MvrLog::log(MvrLog::Verbose, "MvrDataLogger: no log file to open");
       myMutex.unlock();
       return true;
     }
     std::string fileName;
     if (myPermanentFileName.size() > 0)
     {
-      if ((myFile = ArUtil::fopen(myPermanentFileName.c_str(), "a")) != NULL)
+      if ((myFile = MvrUtil::fopen(myPermanentFileName.c_str(), "a")) != NULL)
       {
-	ArLog::log(ArLog::Normal, "Opened data log file '%s'", 
+	ArLog::log(MvrLog::Normal, "Opened data log file '%s'", 
 		   myPermanentFileName.c_str());
       }
       else
       {
-	ArLog::log(ArLog::Normal, "Could not open data log file '%s'", 
+	ArLog::log(MvrLog::Normal, "Could not open data log file '%s'", 
 		   myPermanentFileName.c_str());
 	myMutex.unlock();
 	return true;
@@ -369,15 +369,15 @@ AREXPORT bool ArDataLogger::processFile(char *errorBuffer,
     else
     {
       // if we couldn't open it fail
-      if ((myFile = ArUtil::fopen(myConfigFileName, "w")) != NULL)
+      if ((myFile = MvrUtil::fopen(myConfigFileName, "w")) != NULL)
       {
 	strcpy(myOpenedFileName, myConfigFileName);
-	ArLog::log(ArLog::Normal, "Opened data log file '%s'", 
+	ArLog::log(MvrLog::Normal, "Opened data log file '%s'", 
 		   myOpenedFileName);
       }
       else
       {
-	ArLog::log(ArLog::Normal, "Could not open data log file '%s'", 
+	ArLog::log(MvrLog::Normal, "Could not open data log file '%s'", 
 		   myConfigFileName);
 	myMutex.unlock();
 	if (errorBuffer != NULL)
@@ -394,7 +394,7 @@ AREXPORT bool ArDataLogger::processFile(char *errorBuffer,
   int i;
   // if we could then dump in the header
   fprintf(myFile, ";%12s", "Time");
-  std::map<std::string, bool *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, bool *, MvrStrCaseCmpOp>::iterator it;
   for (i = 0; i < myStringsCount; i++)
   {
     if (*(myStringsEnabled[i]))
@@ -480,7 +480,7 @@ AREXPORT bool ArDataLogger::processFile(char *errorBuffer,
   return true;
 }
 
-AREXPORT void ArDataLogger::userTask(void)
+AREXPORT void MvrDataLogger::userTask(void)
 {
   myMutex.lock();
   // if we don't need to do anything just return
@@ -497,7 +497,7 @@ AREXPORT void ArDataLogger::userTask(void)
 
   char *buf;
   buf = new char[myMaxMaxLength];
-  ArStringInfoHolder *infoHolder;
+  MvrStringInfoHolder *infoHolder;
   for (i = 0; i < myStringsCount; i++)
   {
     if (*(myStringsEnabled[i]))
@@ -507,7 +507,7 @@ AREXPORT void ArDataLogger::userTask(void)
       sprintf(formatBuf, "\t%%0%ds", myStrings[i]->getMaxLength());
       infoHolder->getFunctor()->invoke(buf, infoHolder->getMaxLength());
       /*
-      ArLog::log(ArLog::Normal, "For '%s' want to log with format '%s' and buf '%s' (max %d) (max max %d)",
+      MvrLog::log(MvrLog::Normal, "For '%s' want to log with format '%s' and buf '%s' (max %d) (max max %d)",
 		 infoHolder->getName(), formatBuf, buf, 
 		 infoHolder->getMaxLength(), 
 		 myMaxMaxLength);
@@ -523,19 +523,19 @@ AREXPORT void ArDataLogger::userTask(void)
     fprintf(myFile, "\t%.0f", myRobot->getStateOfCharge());
   if (myLogChargeState)
   {  
-    ArRobot::ChargeState chargeState = myRobot->getChargeState();
+    MvrRobot::ChargeState chargeState = myRobot->getChargeState();
     std::string chargeString;
-    if (chargeState == ArRobot::CHARGING_UNKNOWN)
+    if (chargeState == MvrRobot::CHARGING_UNKNOWN)
       chargeString = "Unknowable";
-    else if (chargeState == ArRobot::CHARGING_NOT)
+    else if (chargeState == MvrRobot::CHARGING_NOT)
       chargeString = "Not";
-    else if (chargeState == ArRobot::CHARGING_BULK)
+    else if (chargeState == MvrRobot::CHARGING_BULK)
       chargeString = "Bulk";
-    else if (chargeState == ArRobot::CHARGING_OVERCHARGE)
+    else if (chargeState == MvrRobot::CHARGING_OVERCHARGE)
       chargeString = "Overcharge";
-    else if (chargeState == ArRobot::CHARGING_FLOAT)
+    else if (chargeState == MvrRobot::CHARGING_FLOAT)
       chargeString = "Float";
-    else if (chargeState == ArRobot::CHARGING_BALANCE)
+    else if (chargeState == MvrRobot::CHARGING_BALANCE)
       chargeString = "Balance";
     else
       chargeString = "Unknown";
@@ -658,21 +658,21 @@ AREXPORT void ArDataLogger::userTask(void)
 }
 
 
-AREXPORT void ArDataLogger::addString(
-	const char *name, ArTypes::UByte2 maxLength,
-	ArFunctor2<char *, ArTypes::UByte2> *functor)
+AREXPORT void MvrDataLogger::addString(
+	const char *name, MvrTypes::UByte2 maxLength,
+	ArFunctor2<char *, MvrTypes::UByte2> *functor)
 {
-  ArTypes::UByte2 len;
+  MvrTypes::UByte2 len;
 
   myMutex.lock();
   if (maxLength < strlen(name))
-    len = (ArTypes::UByte2) strlen(name);
+    len = (MvrTypes::UByte2) strlen(name);
   else
     len = maxLength;  
   if (myMaxMaxLength < len)
     myMaxMaxLength = len;
 
-  myStrings.push_back(new ArStringInfoHolder(name, len, functor));
+  myStrings.push_back(new MvrStringInfoHolder(name, len, functor));
   bool *boolPtr;
   boolPtr = new bool;
   // if we've added to config we default to true

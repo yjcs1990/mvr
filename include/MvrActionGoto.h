@@ -29,12 +29,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
-/// This action goes to a given ArPose very naively
+/// This action goes to a given MvrPose very naively
 
 /**
-   This action naively drives straight towards a given ArPose. the
+   This action naively drives straight towards a given MvrPose. the
    action stops when it gets to be a certain distance (closeDist) 
    from the goal pose.  It travels at the given speed (mm/sec). 
 
@@ -50,11 +50,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 **/
 
 
-class ArActionGoto : public ArAction
+class MvrActionGoto : public MvrAction
 {
 public:
-  AREXPORT ArActionGoto(const char *name = "goto", 
-			ArPose goal = ArPose(0.0, 0.0, 0.0), 
+  AREXPORT MvrActionGoto(const char *name = "goto", 
+			ArPose goal = MvrPose(0.0, 0.0, 0.0), 
 			double closeDist = 100, double speed = 400,
 			double speedToTurnAt = 150, double turnAmount = 7);
   AREXPORT virtual ~ArActionGoto();
@@ -66,16 +66,16 @@ public:
 
   /** Cancels the goal; this action will stop requesting movement. However,
    *  any currently requested motion (either previously requested by this
-   *  action or by another action) will continue to be used. Use an ArActionStop
+   *  action or by another action) will continue to be used. Use an MvrActionStop
    *  action (activate it, or set it at a lower priority) to stop the robot.
    */
   AREXPORT void cancelGoal(void);
 
   /// Sets a new goal and sets the action to go there
-  AREXPORT void setGoal(ArPose goal);
+  AREXPORT void setGoal(MvrPose goal);
 
   /// Gets the goal the action has
-  AREXPORT ArPose getGoal(void) { return myGoal; }
+  AREXPORT MvrPose getGoal(void) { return myGoal; }
 
   /// Set the distance which is close enough to the goal (mm);
   AREXPORT void setCloseDist(double closeDist) { myCloseDist = closeDist; }
@@ -90,26 +90,26 @@ public:
    *  have one. 
    *  @param currentDesired Current desired action from the resolver
    */
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
 
   /** Used by the action resolvel; return current desired action. */
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
-  ArPose myGoal;
+  MvrPose myGoal;
   double myCloseDist;
   double mySpeed;
   double mySpeedToTurnAt;
   double myDirectionToTurn;
   double myCurTurnDir;
   double myTurnAmount;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
   bool myTurnedBack;
   bool myPrinting;
-  ArPose myOldGoal;
+  MvrPose myOldGoal;
   
   enum State
   {

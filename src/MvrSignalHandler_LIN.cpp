@@ -24,9 +24,9 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
-#include "ArSignalHandler.h"
-#include "ArLog.h"
+#include "MvrExport.h"
+#include "MvrSignalHandler.h"
+#include "MvrLog.h"
 #include "ariaInternal.h"
 
 ArSignalHandler *ArSignalHandler::ourSignalHandler=0;
@@ -40,14 +40,14 @@ void ArSignalHandler::signalCB(int sig)
 {
   std::list<ArFunctor1<int>*>::iterator iter;
 
-  ArLog::log(ArLog::Verbose,
-	     "ArSignalHandler::runThread: Received signal '%s' Number %d ",
+  ArLog::log(MvrLog::Verbose,
+	     "MvrSignalHandler::runThread: Received signal '%s' Number %d ",
 	     ourSigMap[sig].c_str(), sig);
   for (iter=ourHandlerList.begin(); iter != ourHandlerList.end(); ++iter)
     (*iter)->invoke(sig);
   if (ourHandlerList.begin() == ourHandlerList.end())
-    ArLog::log(ArLog::Terse,
-  "ArSignalHandler::runThread: No handler function. Unhandled signal '%s' Number %d", 
+    ArLog::log(MvrLog::Terse,
+  "MvrSignalHandler::runThread: No handler function. Unhandled signal '%s' Number %d", 
 	       ourSigMap[sig].c_str(), sig);
 }  
 
@@ -165,7 +165,7 @@ AREXPORT void ArSignalHandler::unhandle(Signal sig)
    function to call.
    @param position whether to place the functor first or last
 */
-AREXPORT void ArSignalHandler::addHandlerCB(ArFunctor1<int> *func,
+AREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
 					    ArListPos::Pos position)
 {
 
@@ -174,8 +174,8 @@ AREXPORT void ArSignalHandler::addHandlerCB(ArFunctor1<int> *func,
   else if (position == ArListPos::LAST)
     ourHandlerList.push_back(func);
   else
-    ArLog::log(ArLog::Terse, 
-	       "ArSignalHandler::addHandler: Invalid position.");
+    ArLog::log(MvrLog::Terse, 
+	       "MvrSignalHandler::addHandler: Invalid position.");
 }
 
 /**
@@ -183,7 +183,7 @@ AREXPORT void ArSignalHandler::addHandlerCB(ArFunctor1<int> *func,
    @param func functor created from ArFunctorC1<int> which refers to the 
    function to call.
 */
-AREXPORT void ArSignalHandler::delHandlerCB(ArFunctor1<int> *func)
+AREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 {
   ourHandlerList.remove(func);
 }
@@ -241,7 +241,7 @@ AREXPORT void ArSignalHandler::blockAllThisThread()
 ArSignalHandler::ArSignalHandler() :
   ourIgnoreQUIT(false)
 {
-  setThreadName("ArSignalHandler");
+  setThreadName("MvrSignalHandler");
   initSigMap();
 }
 
@@ -251,7 +251,7 @@ ArSignalHandler::~ArSignalHandler()
 
 AREXPORT void * ArSignalHandler::runThread(void *arg)
 {
-  setThreadName("ArSignalHandler");
+  setThreadName("MvrSignalHandler");
   threadStarted();
 
   // I think the old code was broken in that it didn't block all the
@@ -339,5 +339,5 @@ AREXPORT void ArSignalHandler::logThread(void)
   if (ourSignalHandler != NULL)
     ourSignalHandler->logThreadInfo();
   else
-    ArLog::log(ArLog::Normal, "No signal handler thread running");
+    ArLog::log(MvrLog::Normal, "No signal handler thread running");
 }

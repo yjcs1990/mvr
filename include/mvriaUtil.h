@@ -54,17 +54,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include <time.h>
 #include "ariaTypedefs.h"
-#include "ArLog.h"
-#include "ArFunctor.h"
-#include "ArArgumentParser.h"
+#include "MvrLog.h"
+#include "MvrFunctor.h"
+#include "MvrArgumentParser.h"
 //#include "ariaInternal.h"
 #include "ariaOSDef.h"
 
-class ArLaser;
-class ArBatteryMTX;
-class ArLCDMTX;
-class ArSonarMTX;
-class ArDeviceConnection;
+class MvrLaser;
+class MvrBatteryMTX;
+class MvrLCDMTX;
+class MvrSonarMTX;
+class MvrDeviceConnection;
 
 #ifndef M_PI
 #define M_PI 3.1415927
@@ -74,7 +74,7 @@ class ArDeviceConnection;
 /** @ingroup UtilityClasses
     @ingroup ImportantClasses
 */
-class ArUtil
+class MvrUtil
 {
 public:
   /// Values for the bits from 0 to 16
@@ -243,7 +243,7 @@ public:
   /// Compares two strings (ignoring case and surrounding quotes)
   /**
    * This helper method is primarily used to ignore surrounding quotes 
-   * when comparing ArArgumentBuilder args.
+   * when comparing MvrArgumentBuilder args.
    * @return int set to 0 if the two strings are equivalent, a negative 
    * number if str1 is "less than" str2, and a postive number if it is
    * "greater than".
@@ -297,10 +297,10 @@ public:
       @param ... Additional arguments are values to interpolate into @a formatstr to generate the final string passed as the argument in the functor invocation.
       @swigomit
   */
-  AREXPORT static void functorPrintf(ArFunctor1<const char *> *functor,
+  AREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
 				     const char *formatstr, ...);
   /// @deprecated format string should be a const char*
-  AREXPORT static void functorPrintf(ArFunctor1<const char *> *functor,
+  AREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
 				     char *formatstr, ...);
 #endif
 
@@ -410,14 +410,14 @@ public:
    *  Example:
    *  @code
    *  struct tm t;
-   *  ArUtil::localtime(time(NULL), &t);
-   *  ArLog::log("Current month is %d.\n", t.tm_mon);
+   *  MvrUtil::localtime(time(NULL), &t);
+   *  MvrLog::log("Current month is %d.\n", t.tm_mon);
    *  @endcode
    */
   AREXPORT static bool localtime(const time_t *timep, struct tm *result);
 
    
-  /** Call ArUtil::localtime(const time_t*, struct tm *) with the current time obtained by calling
+  /** Call MvrUtil::localtime(const time_t*, struct tm *) with the current time obtained by calling
    * time(NULL).
    *  @return false on error (e.g. invalid input), otherwise true.
    */
@@ -497,8 +497,8 @@ private:
   static const char OTHER_SEPARATOR_CHAR;
 
 #ifdef WIN32
-  // Used on Windows to make ArUtil::localtime() function threadsafe
-  static ArMutex ourLocaltimeMutex;
+  // Used on Windows to make MvrUtil::localtime() function threadsafe
+  static MvrMutex ourLocaltimeMutex;
 #endif
 };
 
@@ -506,10 +506,10 @@ private:
     @ingroup UtilityClasses
     @ingroup easy
 */
-class ArMath
+class MvrMath
 {
 private:
-  /* see ArMath::epsilon() */
+  /* see MvrMath::epsilon() */
   static const double ourEpsilon; 
 
   // see getRandMax())
@@ -593,7 +593,7 @@ public:
      @see sin
      @ingroup easy
   */
-  static double cos(double angle) { return ::cos(ArMath::degToRad(angle)); }
+  static double cos(double angle) { return ::cos(MvrMath::degToRad(angle)); }
 
   /// Finds the sin, from angles in degrees
   /**
@@ -602,7 +602,7 @@ public:
      @see cos
      @ingroup easy
   */
-  static double sin(double angle) { return ::sin(ArMath::degToRad(angle)); }
+  static double sin(double angle) { return ::sin(MvrMath::degToRad(angle)); }
 
   /// Finds the tan, from angles in degrees
   /**
@@ -610,7 +610,7 @@ public:
      @return the tan of the angle
      @ingroup easy
   */
-  static double tan(double angle) { return ::tan(ArMath::degToRad(angle)); }
+  static double tan(double angle) { return ::tan(MvrMath::degToRad(angle)); }
 
   /// Finds the arctan of the given y/x pair
   /**
@@ -620,7 +620,7 @@ public:
      @ingroup easy
   */
   static double atan2(double y, double x) 
-    { return ArMath::radToDeg(::atan2(y, x)); }
+    { return MvrMath::radToDeg(::atan2(y, x)); }
 
   /// Finds if one angle is between two other angles
   /// @ingroup easy
@@ -697,7 +697,7 @@ public:
     }
   
   /** Returns a random number between 0 and RAND_MAX on Windows, 2^31 on Linux
-   * (see ArUtil::getRandMax()). On Windows, rand() is used, on Linux, lrand48(). */
+   * (see MvrUtil::getRandMax()). On Windows, rand() is used, on Linux, lrand48(). */
   static long random(void)
     {
 #ifdef WIN32
@@ -790,7 +790,7 @@ public:
   }
 
 
-}; // end class ArMath
+}; // end class MvrMath
 
 /// Represents an x, y position with an orientation
 /** 
@@ -801,9 +801,9 @@ public:
 
   @ingroup UtilityClasses
   @ingroup easy
-  @sa ArPoseWithTime
+  @sa MvrPoseWithTime
 */
-class ArPose
+class MvrPose
 {
 public:
 
@@ -818,14 +818,14 @@ public:
       @param y the double to set the y position to, default of 0
       @param th the double value for the pose's heading (or th), default of 0
   */
-  ArPose(double x = 0, double y = 0, double th = 0) :
+  MvrPose(double x = 0, double y = 0, double th = 0) :
     myX(x),
     myY(y),
-    myTh(ArMath::fixAngle(th))
+    myTh(MvrMath::fixAngle(th))
   {}
     
   /// Copy Constructor
-  ArPose(const ArPose &pose) : 
+  MvrPose(const MvrPose &pose) : 
     myX(pose.myX), myY(pose.myY), myTh(pose.myTh) {}
 
   /// Destructor
@@ -842,7 +842,7 @@ public:
     { setX(x); setY(y); setTh(th); }
   /// Sets the position equal to the given position
   /** @param position the position value this instance should be set to */
-  virtual void setPose(ArPose position)
+  virtual void setPose(MvrPose position)
     {
       setX(position.getX());
       setY(position.getY());
@@ -853,9 +853,9 @@ public:
   /// Sets the y position
   void setY(double y) { myY = y; }
   /// Sets the heading
-  void setTh(double th) { myTh = ArMath::fixAngle(th); }
+  void setTh(double th) { myTh = MvrMath::fixAngle(th); }
   /// Sets the heading, using radians
-  void setThRad(double th) { myTh = ArMath::fixAngle(ArMath::radToDeg(th)); }
+  void setThRad(double th) { myTh = MvrMath::fixAngle(MvrMath::radToDeg(th)); }
   /// Gets the x position
   double getX(void) const { return myX; }
   /// Gets the y position
@@ -863,7 +863,7 @@ public:
   /// Gets the heading
   double getTh(void) const { return myTh; }
   /// Gets the heading, in radians
-  double getThRad(void) const { return ArMath::degToRad(myTh); }
+  double getThRad(void) const { return MvrMath::degToRad(myTh); }
   /// Gets the whole position in one function call
   /**
      Gets the whole position at once, by giving it 2 or 3 pointers to 
@@ -889,9 +889,9 @@ public:
      @param position the position to find the distance to
      @return the distance to the position from this instance
   */
-  virtual double findDistanceTo(ArPose position) const
+  virtual double findDistanceTo(MvrPose position) const
     {
-      return ArMath::distanceBetween(getX(), getY(), 
+      return MvrMath::distanceBetween(getX(), getY(), 
 				     position.getX(), 
 				     position.getY());
     }
@@ -904,9 +904,9 @@ public:
      @param position the position to find the distance to
      @return the distance to the position from this instance 
   **/
-  virtual double squaredFindDistanceTo(ArPose position) const
+  virtual double squaredFindDistanceTo(MvrPose position) const
     {
-      return ArMath::squaredDistanceBetween(getX(), getY(), 
+      return MvrMath::squaredDistanceBetween(getX(), getY(), 
 					    position.getX(), 
 					    position.getY());
     }
@@ -915,80 +915,80 @@ public:
       @param position the position to find the angle to
       @return the angle to the given position from this instance, in degrees
   */
-  virtual double findAngleTo(ArPose position) const
+  virtual double findAngleTo(MvrPose position) const
     {
-      return ArMath::radToDeg(atan2(position.getY() - getY(),
+      return MvrMath::radToDeg(atan2(position.getY() - getY(),
 				                            position.getX() - getX()));
     }
-  /// Logs the coordinates using ArLog
+  /// Logs the coordinates using MvrLog
   virtual void log(void) const
-    { ArLog::log(ArLog::Terse, "%.0f %.0f %.1f", myX, myY, myTh); }
+    { MvrLog::log(MvrLog::Terse, "%.0f %.0f %.1f", myX, myY, myTh); }
 
   /// Add the other pose's X, Y and theta to this pose's X, Y, and theta (sum in theta will be normalized to (-180,180)), and return the result
-  virtual ArPose operator+(const ArPose& other) const
+  virtual MvrPose operator+(const MvrPose& other) const
   {
-    return ArPose( myX + other.getX(), 
+    return MvrPose( myX + other.getX(), 
                    myY + other.getY(), 
-                   ArMath::fixAngle(myTh + other.getTh()) );
+                   MvrMath::fixAngle(myTh + other.getTh()) );
   }
 
   /// Substract the other pose's X, Y, and theta from this pose's X, Y, and theta (difference in theta will be normalized to (-180,180)), and return the result
 
-  virtual ArPose operator-(const ArPose& other) const
+  virtual MvrPose operator-(const MvrPose& other) const
   {
-    return ArPose( myX - other.getX(), 
+    return MvrPose( myX - other.getX(), 
                    myY - other.getY(), 
-                   ArMath::fixAngle(myTh - other.getTh()) );
+                   MvrMath::fixAngle(myTh - other.getTh()) );
   }
   
   /** Adds the given pose to this one.
    *  @swigomit
    */
-	ArPose & operator+= ( const ArPose & other)
+	ArPose & operator+= ( const MvrPose & other)
   {
     myX += other.myX;
     myY += other.myY;
-    myTh = ArMath::fixAngle(myTh + other.myTh);
+    myTh = MvrMath::fixAngle(myTh + other.myTh);
     return *this;
   }
 
 	/** Subtracts the given pose from this one.
      *  @swigomit
      */
-	ArPose & operator-= ( const ArPose & other)
+	ArPose & operator-= ( const MvrPose & other)
   {
     myX -= other.myX;
     myY -= other.myY;
-    myTh = ArMath::fixAngle(myTh - other.myTh);
+    myTh = MvrMath::fixAngle(myTh - other.myTh);
     return *this;
   }
 
   /// Equality operator (for sets)
-  virtual bool operator==(const ArPose& other) const
+  virtual bool operator==(const MvrPose& other) const
   {
-    return ((fabs(myX - other.myX) < ArMath::epsilon()) &&
-            (fabs(myY - other.myY) < ArMath::epsilon()) &&
-            (fabs(myTh - other.myTh) < ArMath::epsilon()));
+    return ((fabs(myX - other.myX) < MvrMath::epsilon()) &&
+            (fabs(myY - other.myY) < MvrMath::epsilon()) &&
+            (fabs(myTh - other.myTh) < MvrMath::epsilon()));
   }
 
-  virtual bool operator!=(const ArPose& other) const
+  virtual bool operator!=(const MvrPose& other) const
   {
-    return ((fabs(myX - other.myX) > ArMath::epsilon()) ||
-            (fabs(myY - other.myY) > ArMath::epsilon()) ||
-            (fabs(myTh - other.myTh) > ArMath::epsilon()));
+    return ((fabs(myX - other.myX) > MvrMath::epsilon()) ||
+            (fabs(myY - other.myY) > MvrMath::epsilon()) ||
+            (fabs(myTh - other.myTh) > MvrMath::epsilon()));
   }
 
   /// Less than operator (for sets)
-  virtual bool operator<(const ArPose& other) const
+  virtual bool operator<(const MvrPose& other) const
   {
 
-    if (fabs(myX - other.myX) > ArMath::epsilon()) {
+    if (fabs(myX - other.myX) > MvrMath::epsilon()) {
       return myX < other.myX;
     }
-    else if (fabs(myY - other.myY) > ArMath::epsilon()) {
+    else if (fabs(myY - other.myY) > MvrMath::epsilon()) {
       return myY < other.myY;  
     }
-    else if (fabs(myTh - other.myTh) > ArMath::epsilon()) {
+    else if (fabs(myTh - other.myTh) > MvrMath::epsilon()) {
       return myTh < other.myTh;
     }
     // Otherwise... x, y, and th are equal
@@ -1004,15 +1004,15 @@ public:
      @param pose2 the second coords
      @return the distance between the poses
   **/
-  static double distanceBetween(ArPose pose1, ArPose pose2)
-    { return ArMath::distanceBetween(pose1.getX(), pose1.getY(), 
+  static double distanceBetween(MvrPose pose1, MvrPose pose2)
+    { return MvrMath::distanceBetween(pose1.getX(), pose1.getY(), 
 				     pose2.getX(), pose2.getY()); }
 
   /// Return true if the X value of p1 is less than the X value of p2
-  static bool compareX(const ArPose& p1, const ArPose &p2)
+  static bool compareX(const MvrPose& p1, const MvrPose &p2)
     { return (p1.getX() < p2.getX()); } 
   /// Return true if the Y value of p1 is less than the X value of p2
-  static bool compareY(const ArPose& p1, const ArPose &p2)
+  static bool compareY(const MvrPose& p1, const MvrPose &p2)
     { return (p1.getY() < p2.getY()); } 
 
   bool isInsidePolygon(const std::vector<ArPose>& vertices) const
@@ -1052,8 +1052,8 @@ protected:
     The recommended methods to use are setToNow() to reset the time,
     mSecSince() to obtain the number of milliseconds elapsed since it was
     last reset (or secSince() if you don't need millisecond precision), and
-    mSecSince(ArTime) or secSince(ArTime) to find the difference between 
-    two ArTime objects.
+    mSecSince(MvrTime) or secSince(MvrTime) to find the difference between 
+    two MvrTime objects.
 
     On systems where it is supported this will use a monotonic clock,
     this is an ever increasing system that is not dependent on what
@@ -1061,31 +1061,31 @@ protected:
     used, but if the time is changed forwards or backwards then bad
     things can happen.  Windows uses a time since bootup, which
     functions the same as the monotonic clock anyways.  You can use
-    ArTime::usingMonotonicClock() to see if this is being used.  Note
-    that an ArTime will have had to have been set to for this to be a
-    good value... Aria::init does this however, so that should not be
+    MvrTime::usingMonotonicClock() to see if this is being used.  Note
+    that an MvrTime will have had to have been set to for this to be a
+    good value... Mvria::init does this however, so that should not be
     an issue.  It looks like the monotonic clocks won't work on linux
     kernels before 2.6.
 
   @ingroup UtilityClasses
 */
 
-class ArTime
+class MvrTime
 {
 public:
   /// Constructor. Time is initialized to the current time.
   /// @ingroup easy
-  ArTime() { setToNow(); }
+  MvrTime() { setToNow(); }
 
   /// Copy constructor
   //
-  ArTime(const ArTime &other) :
+  MvrTime(const MvrTime &other) :
     mySec(other.mySec),
     myMSec(other.myMSec)
   {}
 
   /// Assignment operator 
-  ArTime &operator=(const ArTime &other) 
+  MvrTime &operator=(const MvrTime &other) 
   {
     if (this != &other) {
       mySec = other.mySec;
@@ -1100,7 +1100,7 @@ public:
   
   /// Gets the number of milliseconds since the given timestamp to this one
   /// @ingroup easy
-  long mSecSince(ArTime since) const 
+  long mSecSince(MvrTime since) const 
     {
       long long ret = mSecSinceLL(since);
       if (ret > INT_MAX)
@@ -1117,7 +1117,7 @@ public:
       */
     }
   /// Gets the number of milliseconds since the given timestamp to this one
-  long long mSecSinceLL(ArTime since) const 
+  long long mSecSinceLL(MvrTime since) const 
     {
       long long timeSince, timeThis;
 
@@ -1127,12 +1127,12 @@ public:
     }
   /// Gets the number of seconds since the given timestamp to this one
   /// @ingroup easy
-  long secSince(ArTime since) const
+  long secSince(MvrTime since) const
     {
       return mSecSince(since)/1000;
     }
   /// Gets the number of seconds since the given timestamp to this one
-  long long secSinceLL(ArTime since) const
+  long long secSinceLL(MvrTime since) const
     {
       return mSecSinceLL(since)/1000;
     }
@@ -1140,14 +1140,14 @@ public:
   /// @ingroup easy
   long mSecTo(void) const
     {
-      ArTime now;
+      MvrTime now;
       now.setToNow();
       return -mSecSince(now);
     }
   /// Finds the number of millisecs from when this timestamp is set to to now (the inverse of mSecSince())
   long long mSecToLL(void) const
     {
-      ArTime now;
+      MvrTime now;
       now.setToNow();
       return -mSecSinceLL(now);
     }
@@ -1165,14 +1165,14 @@ public:
   /// Finds the number of milliseconds from this timestamp to now
   long mSecSince(void) const
     {
-      ArTime now;
+      MvrTime now;
       now.setToNow();
       return mSecSince(now);
     }
   /// Finds the number of milliseconds from this timestamp to now
   long long mSecSinceLL(void) const
     {
-      ArTime now;
+      MvrTime now;
       now.setToNow();
       return mSecSinceLL(now);
     }
@@ -1188,7 +1188,7 @@ public:
     }
   /// returns whether the given time is before this one or not
   /// @ingroup easy
-  bool isBefore(ArTime testTime) const
+  bool isBefore(MvrTime testTime) const
     {
       if (mSecSince(testTime) < 0)
 	return true;
@@ -1196,7 +1196,7 @@ public:
 	return false;
     }
   /// returns whether the given time is equal to this time or not
-  bool isAt(ArTime testTime) const
+  bool isAt(MvrTime testTime) const
     {
       if (mSecSince(testTime) == 0)
 	return true;
@@ -1205,7 +1205,7 @@ public:
     }
   /// returns whether the given time is after this one or not
   /// @ingroup easy
-  bool isAfter(ArTime testTime) const
+  bool isAfter(MvrTime testTime) const
     {
       if (mSecSince(testTime) > 0)
 	return true;
@@ -1224,7 +1224,7 @@ public:
       //if (ms < 0 && (unsigned)abs(ms) > timeThis)
       if (ms < 0 && -ms > timeThis)
       {
-        ArLog::log(ArLog::Terse, "ArTime::addMSec: tried to subtract too many milliseconds, would result in a negative time.");
+        MvrLog::log(MvrLog::Terse, "MvrTime::addMSec: tried to subtract too many milliseconds, would result in a negative time.");
         mySec = 0;
         myMSec = 0;
         return false;
@@ -1247,7 +1247,7 @@ public:
       //if (ms < 0 && (unsigned)abs(ms) > timeThis)
       if (ms < 0 && -ms > timeThis)
       {
-        ArLog::log(ArLog::Terse, "ArTime::addMSec: tried to subtract too many milliseconds, would result in a negative time.");
+        MvrLog::log(MvrLog::Terse, "MvrTime::addMSec: tried to subtract too many milliseconds, would result in a negative time.");
         mySec = 0;
         myMSec = 0;
         return false;
@@ -1282,7 +1282,7 @@ public:
   /// Logs the time
   /// @ingroup easy
   void log(const char *prefix = NULL) const
-    { ArLog::log(ArLog::Terse, 
+    { MvrLog::log(MvrLog::Terse, 
                  "%sTime: %lld.%lld", 
                  ((prefix != NULL) ? prefix : ""),
                  mySec, 
@@ -1300,25 +1300,25 @@ public:
     }
   
   /// Equality operator (for sets)
-  bool operator==(const ArTime& other) const
+  bool operator==(const MvrTime& other) const
   {
     return isAt(other);
   }
 
-  bool operator!=(const ArTime& other) const
+  bool operator!=(const MvrTime& other) const
   {
     return (!isAt(other));
   }
  
   // Less than operator for sets
   /// @ingroup easy
-  bool operator<(const ArTime& other) const
+  bool operator<(const MvrTime& other) const
   {
     return isBefore(other);
   } // end operator <
 
   /// @ingroup easy
-  bool operator>(const ArTime& other) const
+  bool operator>(const MvrTime& other) const
   {
     return isAfter(other);
   }
@@ -1330,29 +1330,29 @@ protected:
   static bool ourMonotonicClock;
 #endif 
 
-}; // end class ArTime
+}; // end class MvrTime
 
 
 
 
-/// A subclass of ArPose that also stores a timestamp (ArTime) 
+/// A subclass of MvrPose that also stores a timestamp (MvrTime) 
 /**
   @ingroup UtilityClasses
  */
-class ArPoseWithTime : public ArPose
+class MvrPoseWithTime : public MvrPose
 {
 public:
-  ArPoseWithTime(double x = 0, double y = 0, double th = 0,
-	 ArTime thisTime = ArTime()) : ArPose(x, y, th)
+  MvrPoseWithTime(double x = 0, double y = 0, double th = 0,
+	 MvrTime thisTime = MvrTime()) : MvrPose(x, y, th)
     { myTime = thisTime; }
   /// Copy Constructor
-  ArPoseWithTime(const ArPose &pose) : ArPose(pose) {}
+  MvrPoseWithTime(const MvrPose &pose) : MvrPose(pose) {}
   virtual ~ArPoseWithTime() {}
-  void setTime(ArTime newTime) { myTime = newTime; }
+  void setTime(MvrTime newTime) { myTime = newTime; }
   void setTimeToNow(void) { myTime.setToNow(); }
-  ArTime getTime(void) const { return myTime; }
+  MvrTime getTime(void) const { return myTime; }
 protected:
-  ArTime myTime;
+  MvrTime myTime;
 };
 
 /// A class for keeping track of if a complete revolution has been attained
@@ -1364,11 +1364,11 @@ protected:
    quadrants have been done.
   @ingroup UtilityClasses
 */
-class ArSectors
+class MvrSectors
 {
 public:
   /// Constructor
-  ArSectors(int numSectors = 8) 
+  MvrSectors(int numSectors = 8) 
     { 
       mySectorSize = 360/numSectors;
       mySectors = new int[numSectors]; 
@@ -1388,7 +1388,7 @@ public:
   void update(double angle)
     {
       int angleInt;
-      angleInt = ArMath::roundInt(ArMath::fixAngle(angle) + 180);
+      angleInt = MvrMath::roundInt(MvrMath::fixAngle(angle) + 180);
       mySectors[angleInt / mySectorSize] = true;
     }
   /// Returns true if the all of the quadrants have been gone through
@@ -1412,19 +1412,19 @@ protected:
 /// Represents geometry of a line in two-dimensional space.
 /**
    Note this the theoretical line, i.e. it goes infinitely. 
-   For a line segment with endpoints, use ArLineSegment.
-   @sa ArLineSegment
+   For a line segment with endpoints, use MvrLineSegment.
+   @sa MvrLineSegment
   @ingroup UtilityClasses
 **/
-class ArLine
+class MvrLine
 {
 public:
   ///// Empty constructor
-  ArLine() {}
+  MvrLine() {}
   /// Constructor with parameters
-  ArLine(double a, double b, double c) { newParameters(a, b, c); }
+  MvrLine(double a, double b, double c) { newParameters(a, b, c); }
   /// Constructor with endpoints
-  ArLine(double x1, double y1, double x2, double y2) 
+  MvrLine(double x1, double y1, double x2, double y2) 
   { newParametersFromEndpoints(x1, y1, x2, y2); }
   /// Destructor
   virtual ~ArLine() {}
@@ -1446,7 +1446,7 @@ public:
       @param pose if the lines intersect, the pose is set to the location
       @return true if they intersect, false if they do not 
   **/
-  bool intersects(const ArLine *line, ArPose *pose) const
+  bool intersects(const MvrLine *line, MvrPose *pose) const
     {
       double x, y;
       double n;
@@ -1463,7 +1463,7 @@ public:
       return true;
     }
   /// Makes the given line perpendicular to this one through the given pose
-  void makeLinePerp(const ArPose *pose, ArLine *line) const
+  void makeLinePerp(const MvrPose *pose, MvrLine *line) const
     {
       line->newParameters(getB(), -getA(), 
 			  (getA() * pose->getY()) - (getB() * pose->getX()));
@@ -1476,10 +1476,10 @@ public:
      if the pose intersects the segment it will return the distance to
      the intersection
   **/
-  virtual double getPerpDist(const ArPose &pose) const
+  virtual double getPerpDist(const MvrPose &pose) const
     {
-      ArPose perpPose;
-      ArLine perpLine;
+      MvrPose perpPose;
+      MvrLine perpLine;
       makeLinePerp(&pose, &perpLine);
       if (!intersects(&perpLine, &perpPose))
 	return -1;
@@ -1493,10 +1493,10 @@ public:
      if the pose intersects the segment it will return the distance to
      the intersection
   **/
-  virtual double getPerpSquaredDist(const ArPose &pose) const
+  virtual double getPerpSquaredDist(const MvrPose &pose) const
     {
-      ArPose perpPose;
-      ArLine perpLine;
+      MvrPose perpPose;
+      MvrLine perpLine;
       makeLinePerp(&pose, &perpLine);
       if (!intersects(&perpLine, &perpPose))
 	return -1;
@@ -1510,27 +1510,27 @@ public:
      @return true if an intersection was found and perpPoint was modified, false otherwise.
      @swigomit
   **/
-  bool getPerpPoint(const ArPose &pose, ArPose *perpPoint) const
+  bool getPerpPoint(const MvrPose &pose, MvrPose *perpPoint) const
     {
-      ArLine perpLine;
+      MvrLine perpLine;
       makeLinePerp(&pose, &perpLine);
       return intersects(&perpLine, perpPoint);
     }
 
   /// Equality operator
-  virtual bool operator==(const ArLine &other) const
+  virtual bool operator==(const MvrLine &other) const
   {
 
-    return ((fabs(myA - other.myA) <= ArMath::epsilon()) &&
-            (fabs(myB - other.myB) <= ArMath::epsilon()) &&
-            (fabs(myC - other.myC) <= ArMath::epsilon()));
+    return ((fabs(myA - other.myA) <= MvrMath::epsilon()) &&
+            (fabs(myB - other.myB) <= MvrMath::epsilon()) &&
+            (fabs(myC - other.myC) <= MvrMath::epsilon()));
   }
   /// Inequality operator
-  virtual bool operator!=(const ArLine &other) const
+  virtual bool operator!=(const MvrLine &other) const
   {
-    return ((fabs(myA - other.myA) > ArMath::epsilon()) ||
-            (fabs(myB - other.myB) > ArMath::epsilon()) ||
-            (fabs(myC - other.myC) > ArMath::epsilon()));
+    return ((fabs(myA - other.myA) > MvrMath::epsilon()) ||
+            (fabs(myB - other.myB) > MvrMath::epsilon()) ||
+            (fabs(myC - other.myC) > MvrMath::epsilon()));
 
   }
 
@@ -1542,20 +1542,20 @@ protected:
 /** The segment is defined by the coordinates of each endpoint. 
   @ingroup UtilityClasses
 */
-class ArLineSegment
+class MvrLineSegment
 {
 public:
 #ifndef SWIG
   /** @swigomit */
-  ArLineSegment() {}
+  MvrLineSegment() {}
   /** @brief Constructor with endpoints
    *  @swigomit
    */
-  ArLineSegment(double x1, double y1, double x2, double y2)
+  MvrLineSegment(double x1, double y1, double x2, double y2)
     { 	newEndPoints(x1, y1, x2, y2); }
 #endif // SWIG
-  /// Constructor with endpoints as ArPose objects. Only X and Y components of the poses will be used.
-  ArLineSegment(ArPose pose1, ArPose pose2)
+  /// Constructor with endpoints as MvrPose objects. Only X and Y components of the poses will be used.
+  MvrLineSegment(MvrPose pose1, MvrPose pose2)
     { 	newEndPoints(pose1.getX(), pose1.getY(), pose2.getX(), pose2.getY()); }
   virtual ~ArLineSegment() {}
   /// Set new end points for this line segment
@@ -1565,23 +1565,23 @@ public:
       myLine.newParametersFromEndpoints(myX1, myY1, myX2, myY2);
     }
   /// Set new end points for this line segment
-  void newEndPoints(const ArPose& pt1, const ArPose& pt2)
+  void newEndPoints(const MvrPose& pt1, const MvrPose& pt2)
     {
       newEndPoints(pt1.getX(), pt1.getY(), pt2.getX(), pt2.getY());
     }
   /// Get the first endpoint (X1, Y1)
-  ArPose getEndPoint1(void) const { return ArPose(myX1, myY1); }
+  MvrPose getEndPoint1(void) const { return MvrPose(myX1, myY1); }
   /// Get the second endpoint of (X2, Y2)
-  ArPose getEndPoint2(void) const { return ArPose(myX2, myY2); }
+  MvrPose getEndPoint2(void) const { return MvrPose(myX2, myY2); }
   /// Determine where a line intersects this line segment
   /**
       @param line Line to check for intersection against this line segment.
       @param pose if the lines intersect, the X and Y components of this pose are set to the point of intersection.
       @return true if they intersect, false if they do not 
    **/
-  bool intersects(const ArLine *line, ArPose *pose) const
+  bool intersects(const MvrLine *line, MvrPose *pose) const
     {
-      ArPose intersection;
+      MvrPose intersection;
       // see if it intersects, then make sure its in the coords of this line
       if (myLine.intersects(line, &intersection) &&
 	  linePointIsInSegment(&intersection))
@@ -1593,10 +1593,10 @@ public:
 	return false;
     }
 
-  /** @copydoc intersects(const ArLine *line, ArPose *pose) const */
-  bool intersects(ArLineSegment *line, ArPose *pose) const
+  /** @copydoc intersects(const MvrLine *line, MvrPose *pose) const */
+  bool intersects(MvrLineSegment *line, MvrPose *pose) const
     {
-      ArPose intersection;
+      MvrPose intersection;
       // see if it intersects, then make sure its in the coords of this line
       if (myLine.intersects(line->getLine(), &intersection) &&
 	  linePointIsInSegment(&intersection) &&
@@ -1617,21 +1617,21 @@ public:
      @return true if an intersection was found and perpPoint was modified, false otherwise.
      @swigomit
   **/
-  bool getPerpPoint(const ArPose &pose, ArPose *perpPoint) const
+  bool getPerpPoint(const MvrPose &pose, MvrPose *perpPoint) const
     {
-      ArLine perpLine;
+      MvrLine perpLine;
       myLine.makeLinePerp(&pose, &perpLine);
       return intersects(&perpLine, perpPoint);
     }
 #endif
-  /** @copydoc getPerpPoint(const ArPose&, ArPose*)  const
+  /** @copydoc getPerpPoint(const MvrPose&, MvrPose*)  const
    *  (This version simply allows you to pass the first pose as a pointer, in
    *  time-critical situations where a full copy of the object would impact
    *  performance.)
   */
-  bool getPerpPoint(const ArPose *pose, ArPose *perpPoint) const
+  bool getPerpPoint(const MvrPose *pose, MvrPose *perpPoint) const
     {
-      ArLine perpLine;
+      MvrLine perpLine;
       myLine.makeLinePerp(pose, &perpLine);
       return intersects(&perpLine, perpPoint);
     }
@@ -1643,10 +1643,10 @@ public:
      if the pose intersects the segment it will return the distance to
      the intersection
   **/
-  virtual double getPerpDist(const ArPose &pose) const
+  virtual double getPerpDist(const MvrPose &pose) const
     {
-      ArPose perpPose;
-      ArLine perpLine;
+      MvrPose perpPose;
+      MvrLine perpLine;
       myLine.makeLinePerp(&pose, &perpLine);
       if (!intersects(&perpLine, &perpPose))
 	return -1;
@@ -1660,10 +1660,10 @@ public:
      if the pose intersects the segment it will return the distance to
      the intersection
   **/
-  virtual double getPerpSquaredDist(const ArPose &pose) const
+  virtual double getPerpSquaredDist(const MvrPose &pose) const
     {
-      ArPose perpPose;
-      ArLine perpLine;
+      MvrPose perpPose;
+      MvrLine perpLine;
       myLine.makeLinePerp(&pose, &perpLine);
       if (!intersects(&perpLine, &perpPose))
 	      return -1;
@@ -1678,16 +1678,16 @@ public:
    * endpoint.
      @param pose the pointer of the pose to find the distance to
   **/
-  double getDistToLine(const ArPose &pose) const
+  double getDistToLine(const MvrPose &pose) const
     {
-      ArPose perpPose;
-      ArLine perpLine;
+      MvrPose perpPose;
+      MvrLine perpLine;
       myLine.makeLinePerp(&pose, &perpLine);
       if (!intersects(&perpLine, &perpPose))
       {
-	      return ArUtil::findMin(
-		                    ArMath::roundInt(getEndPoint1().findDistanceTo(pose)),
-		                    ArMath::roundInt(getEndPoint2().findDistanceTo(pose)));
+	      return MvrUtil::findMin(
+		                    MvrMath::roundInt(getEndPoint1().findDistanceTo(pose)),
+		                    MvrMath::roundInt(getEndPoint2().findDistanceTo(pose)));
       }
       return (perpPose.findDistanceTo(pose));
     }
@@ -1695,13 +1695,13 @@ public:
   /// Determines the length of the line segment
   double getLengthOf() const
   {
-    return ArMath::distanceBetween(myX1, myY1, myX2, myY2);
+    return MvrMath::distanceBetween(myX1, myY1, myX2, myY2);
   }
 
   /// Determines the mid point of the line segment
-  ArPose getMidPoint() const
+  MvrPose getMidPoint() const
   {
-    return ArPose(((myX1 + myX2) / 2.0),
+    return MvrPose(((myX1 + myX2) / 2.0),
                   ((myY1 + myY2) / 2.0));
   }
 
@@ -1714,18 +1714,18 @@ public:
   double getX2(void) const { return myX2; }
   /// Gets the y coordinate of the second endpoint
   double getY2(void) const { return myY2; }
-  /// Gets the A line parameter (see ArLine)
+  /// Gets the A line parameter (see MvrLine)
   double getA(void) const { return myLine.getA(); }
-  /// Gets the B line parameter (see ArLine)
+  /// Gets the B line parameter (see MvrLine)
   double getB(void) const { return myLine.getB(); }
-  /// Gets the C line parameter (see ArLine)
+  /// Gets the C line parameter (see MvrLine)
   double getC(void) const { return myLine.getC(); }
 
   /// Internal function for seeing if a point on our line is within our segment
-  bool linePointIsInSegment(ArPose *pose) const
+  bool linePointIsInSegment(MvrPose *pose) const
     {
-      bool isVertical = (ArMath::fabs(myX1 - myX2) < ArMath::epsilon());
-      bool isHorizontal = (ArMath::fabs(myY1 - myY2) < ArMath::epsilon());
+      bool isVertical = (MvrMath::fabs(myX1 - myX2) < MvrMath::epsilon());
+      bool isHorizontal = (MvrMath::fabs(myY1 - myY2) < MvrMath::epsilon());
 
       if (!isVertical || !isHorizontal) {
 
@@ -1738,47 +1738,47 @@ public:
       }
       else { // single point segment
 
-        return ((ArMath::fabs(myX1 - pose->getX()) < ArMath::epsilon()) &&
-                (ArMath::fabs(myY1 - pose->getY()) < ArMath::epsilon()));
+        return ((MvrMath::fabs(myX1 - pose->getX()) < MvrMath::epsilon()) &&
+                (MvrMath::fabs(myY1 - pose->getY()) < MvrMath::epsilon()));
 
       } // end else single point segment
     }
 
-  const ArLine *getLine(void) const { return &myLine; }
+  const MvrLine *getLine(void) const { return &myLine; }
 
   /// Equality operator (for sets)
-  virtual bool operator==(const ArLineSegment& other) const
+  virtual bool operator==(const MvrLineSegment& other) const
   {
 
-    return ((fabs(myX1 - other.myX1) < ArMath::epsilon()) &&
-            (fabs(myY1 - other.myY1) < ArMath::epsilon()) &&
-            (fabs(myX2 - other.myX2) < ArMath::epsilon()) &&
-            (fabs(myY2 - other.myY2) < ArMath::epsilon()));
+    return ((fabs(myX1 - other.myX1) < MvrMath::epsilon()) &&
+            (fabs(myY1 - other.myY1) < MvrMath::epsilon()) &&
+            (fabs(myX2 - other.myX2) < MvrMath::epsilon()) &&
+            (fabs(myY2 - other.myY2) < MvrMath::epsilon()));
   }
 
-  virtual bool operator!=(const ArLineSegment& other) const
+  virtual bool operator!=(const MvrLineSegment& other) const
   {
-    return ((fabs(myX1 - other.myX1) > ArMath::epsilon()) ||
-            (fabs(myY1 - other.myY1) > ArMath::epsilon()) ||
-            (fabs(myX2 - other.myX2) > ArMath::epsilon()) ||
-            (fabs(myY2 - other.myY2) > ArMath::epsilon()));
+    return ((fabs(myX1 - other.myX1) > MvrMath::epsilon()) ||
+            (fabs(myY1 - other.myY1) > MvrMath::epsilon()) ||
+            (fabs(myX2 - other.myX2) > MvrMath::epsilon()) ||
+            (fabs(myY2 - other.myY2) > MvrMath::epsilon()));
 
   }
 
   /// Less than operator (for sets)
-  virtual bool operator<(const ArLineSegment& other) const
+  virtual bool operator<(const MvrLineSegment& other) const
   {
 
-    if (fabs(myX1 - other.myX1) > ArMath::epsilon()) {
+    if (fabs(myX1 - other.myX1) > MvrMath::epsilon()) {
       return myX1 < other.myX1;
     }
-    else if (fabs(myY1 - other.myY1) > ArMath::epsilon()) {
+    else if (fabs(myY1 - other.myY1) > MvrMath::epsilon()) {
       return myY1 < other.myY1;  
     }
-    if (fabs(myX2 - other.myX2) > ArMath::epsilon()) {
+    if (fabs(myX2 - other.myX2) > MvrMath::epsilon()) {
       return myX2 < other.myX2;
     }
-    else if (fabs(myY2 - other.myY2) > ArMath::epsilon()) {
+    else if (fabs(myY2 - other.myY2) > MvrMath::epsilon()) {
       return myY2 < other.myY2;
     }
     // Otherwise... all coords are equal
@@ -1787,18 +1787,18 @@ public:
 
 protected:
   double myX1, myY1, myX2, myY2;
-  ArLine myLine;
+  MvrLine myLine;
 };
 
 /**
    @brief Use for computing a running average of a number of elements
    @ingroup UtilityClasses
 */
-class ArRunningAverage
+class MvrRunningAverage
 {
 public:
   /// Constructor, give it the number of elements to store to compute the average
-  AREXPORT ArRunningAverage(size_t numToAverage);
+  AREXPORT MvrRunningAverage(size_t numToAverage);
   /// Destructor
   AREXPORT ~ArRunningAverage();
   /// Gets the average
@@ -1827,11 +1827,11 @@ protected:
 
 /// This is a class for computing a root mean square average of a number of elements
 /// @ingroup UtilityClasses
-class ArRootMeanSquareCalculator
+class MvrRootMeanSquareCalculator
 {
 public:
   /// Constructor
-  AREXPORT ArRootMeanSquareCalculator();
+  AREXPORT MvrRootMeanSquareCalculator();
   /// Destructor
   AREXPORT ~ArRootMeanSquareCalculator();
   /// Gets the average
@@ -1853,10 +1853,10 @@ protected:
 };
 
 
-//class ArStrCaseCmpOp :  public std::binary_function <const std::string&, const std::string&, bool> 
+//class MvrStrCaseCmpOp :  public std::binary_function <const std::string&, const std::string&, bool> 
 /// strcasecmp for sets
 /// @ingroup UtilityClasses
-struct ArStrCaseCmpOp 
+struct MvrStrCaseCmpOp 
 {
 public:
   bool operator() (const std::string &s1, const std::string &s2) const
@@ -1865,12 +1865,12 @@ public:
   }
 };
 
-/// ArPose less than comparison for sets
+/// MvrPose less than comparison for sets
 /// @ingroup UtilityClasses
-struct ArPoseCmpOp
+struct MvrPoseCmpOp
 {
 public:
-  bool operator() (const ArPose &pose1, const ArPose &pose2) const
+  bool operator() (const MvrPose &pose1, const MvrPose &pose2) const
   {
     return (pose1 < pose2);
 
@@ -1879,13 +1879,13 @@ public:
   }
 };
 
-/// ArLineSegment less than comparison for sets
+/// MvrLineSegment less than comparison for sets
 /// @ingroup UtilityClasses
-struct ArLineSegmentCmpOp
+struct MvrLineSegmentCmpOp
 {
 public:
-  bool operator() (const ArLineSegment &line1, 
-		               const ArLineSegment &line2) const
+  bool operator() (const MvrLineSegment &line1, 
+		               const MvrLineSegment &line2) const
   {
     return (line1 < line2);
 
@@ -1902,11 +1902,11 @@ public:
   @ingroup UtilityClasses
   @ingroup OptionalClasses
  */
-class ArDaemonizer
+class MvrDaemonizer
 {
 public:
   /// Constructor that sets up for daemonizing if arg checking
-  AREXPORT ArDaemonizer(int *argc, char **argv, bool closeStdErrAndStdOut);
+  AREXPORT MvrDaemonizer(int *argc, char **argv, bool closeStdErrAndStdOut);
   /// Destructor
   AREXPORT ~ArDaemonizer();
   /// Daemonizes if asked too by arguments
@@ -1918,17 +1918,17 @@ public:
   /// Returns if we're daemonized or not
   bool isDaemonized(void) { return myIsDaemonized; }
 protected:
-  ArArgumentParser myParser;
+  MvrArgumentParser myParser;
   bool myIsDaemonized;
   bool myCloseStdErrAndStdOut;
-  ArConstFunctorC<ArDaemonizer> myLogOptionsCB;
+  MvrConstFunctorC<ArDaemonizer> myLogOptionsCB;
 };
 #endif // !win32 && !swig
 
 
 
-/// Contains enumeration of four user-oriented priority levels (used primarily by ArConfig)
-class ArPriority
+/// Contains enumeration of four user-oriented priority levels (used primarily by MvrConfig)
+class MvrPriority
 {
 public:
   enum Priority 
@@ -1975,92 +1975,92 @@ protected:
   /// Map of priorities to displayable text
   static std::map<Priority, std::string> ourPriorityNames;
   /// Map of displayable text to priorities
-  static std::map<std::string, ArPriority::Priority, ArStrCaseCmpOp> ourNameToPriorityMap;
+  static std::map<std::string, MvrPriority::Priority, MvrStrCaseCmpOp> ourNameToPriorityMap;
 
   /// Display text used when a priority's displayable text has not been defined
   static std::string ourUnknownPriorityName;
 };
 
-/// holds information about ArStringInfo component strings (it's a helper class for other things)
+/// holds information about MvrStringInfo component strings (it's a helper class for other things)
 /**
    This class holds information for about different strings that are available 
  **/
-class ArStringInfoHolder
+class MvrStringInfoHolder
 {
 public:
   /// Constructor
-  ArStringInfoHolder(const char *name, ArTypes::UByte2 maxLength, 
-		     ArFunctor2<char *, ArTypes::UByte2> *functor)
+  MvrStringInfoHolder(const char *name, MvrTypes::UByte2 maxLength, 
+		     MvrFunctor2<char *, MvrTypes::UByte2> *functor)
     { myName = name; myMaxLength = maxLength; myFunctor = functor; }
   /// Destructor
   virtual ~ArStringInfoHolder() {}
   /// Gets the name of this piece of info
   const char *getName(void) { return myName.c_str(); }
   /// Gets the maximum length of this piece of info
-  ArTypes::UByte2 getMaxLength(void) { return myMaxLength; }
+  MvrTypes::UByte2 getMaxLength(void) { return myMaxLength; }
   /// Gets the function that will fill in this piece of info
-  ArFunctor2<char *, ArTypes::UByte2> *getFunctor(void) { return myFunctor; }
+  MvrFunctor2<char *, MvrTypes::UByte2> *getFunctor(void) { return myFunctor; }
 protected:
   std::string myName;
-  ArTypes::UByte2 myMaxLength;
-  ArFunctor2<char *, ArTypes::UByte2> *myFunctor;
+  MvrTypes::UByte2 myMaxLength;
+  MvrFunctor2<char *, MvrTypes::UByte2> *myFunctor;
 };
 
-/// This class just holds some helper functions for the ArStringInfoHolder 
-class ArStringInfoHolderFunctions
+/// This class just holds some helper functions for the MvrStringInfoHolder 
+class MvrStringInfoHolderFunctions
 {
 public:
-  static void intWrapper(char * buffer, ArTypes::UByte2 bufferLen, 
-			 ArRetFunctor<int> *functor, const char *format)
+  static void intWrapper(char * buffer, MvrTypes::UByte2 bufferLen, 
+			 MvrRetFunctor<int> *functor, const char *format)
     { snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
     buffer[bufferLen-1] = '\0'; }
-  static void doubleWrapper(char * buffer, ArTypes::UByte2 bufferLen, 
-			    ArRetFunctor<double> *functor, const char *format)
+  static void doubleWrapper(char * buffer, MvrTypes::UByte2 bufferLen, 
+			    MvrRetFunctor<double> *functor, const char *format)
     { snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
     buffer[bufferLen-1] = '\0'; }
-  static void boolWrapper(char * buffer, ArTypes::UByte2 bufferLen, 
-			  ArRetFunctor<bool> *functor, const char *format)
+  static void boolWrapper(char * buffer, MvrTypes::UByte2 bufferLen, 
+			  MvrRetFunctor<bool> *functor, const char *format)
     { snprintf(buffer, bufferLen - 1, format, 
-	       ArUtil::convertBool(functor->invokeR())); 
+	       MvrUtil::convertBool(functor->invokeR())); 
     buffer[bufferLen-1] = '\0'; }
-  static void stringWrapper(char * buffer, ArTypes::UByte2 bufferLen, 
-			    ArRetFunctor<const char *> *functor, 
+  static void stringWrapper(char * buffer, MvrTypes::UByte2 bufferLen, 
+			    MvrRetFunctor<const char *> *functor, 
 			    const char *format)
   { snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
   buffer[bufferLen-1] = '\0'; }
 
-  static void cppStringWrapper(char *buffer, ArTypes::UByte2 bufferLen, 
-          ArRetFunctor<std::string> *functor)
+  static void cppStringWrapper(char *buffer, MvrTypes::UByte2 bufferLen, 
+          MvrRetFunctor<std::string> *functor)
   { 
     snprintf(buffer, bufferLen - 1, "%s", functor->invokeR().c_str());
     buffer[bufferLen-1] = '\0'; 
   }
 
-  static void unsignedLongWrapper(char * buffer, ArTypes::UByte2 bufferLen, 
-			 ArRetFunctor<unsigned long> *functor, const char *format)
+  static void unsignedLongWrapper(char * buffer, MvrTypes::UByte2 bufferLen, 
+			 MvrRetFunctor<unsigned long> *functor, const char *format)
     { snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
     buffer[bufferLen-1] = '\0'; }
-  static void longWrapper(char * buffer, ArTypes::UByte2 bufferLen, 
-			 ArRetFunctor<long> *functor, const char *format)
+  static void longWrapper(char * buffer, MvrTypes::UByte2 bufferLen, 
+			 MvrRetFunctor<long> *functor, const char *format)
     { snprintf(buffer, bufferLen - 1, format, functor->invokeR()); 
     buffer[bufferLen-1] = '\0'; }
 };
 
-/** @see ArCallbackList */
+/** @see MvrCallbackList */
 template<class GenericFunctor> 
-class ArGenericCallbackList
+class MvrGenericCallbackList
 {
 public:
   /// Constructor
-  ArGenericCallbackList(const char *name = "", 
-				 ArLog::LogLevel logLevel = ArLog::Verbose,
+  MvrGenericCallbackList(const char *name = "", 
+				 MvrLog::LogLevel logLevel = MvrLog::Verbose,
 				 bool singleShot = false)
     {
       myName = name;
       mySingleShot = singleShot;
       setLogLevel(logLevel);
       std::string mutexName;
-      mutexName = "ArGenericCallbackList::";
+      mutexName = "MvrGenericCallbackList::";
       mutexName += name;
       mutexName += "::myDataMutex";
       myDataMutex.setLogName(mutexName.c_str());
@@ -2119,7 +2119,7 @@ public:
     }
 #endif
   /// Sets the log level
-  void setLogLevel(ArLog::LogLevel logLevel)
+  void setLogLevel(MvrLog::LogLevel logLevel)
     {
       myDataMutex.lock();
       myLogLevel = logLevel;
@@ -2137,30 +2137,30 @@ public:
     myLogging = on;
   }
 protected:
-  ArMutex myDataMutex;
-  ArLog::LogLevel myLogLevel;
+  MvrMutex myDataMutex;
+  MvrLog::LogLevel myLogLevel;
   std::string myName;
   std::multimap<int, GenericFunctor> myList;
   bool mySingleShot;
   bool myLogging;
 };
 
-/** Stores a list of ArFunctor objects together.
-    invoke() will invoke each of the ArFunctor objects.
-    The functors added to the list must be pointers to the same ArFunctor subclass.
-    Use ArCallbackList for ArFunctor objects with no arguments.
-    Use ArCallbackList1 for ArFunctor1 objects with 1 argument.
-    Use ArCallbackList2 for ArFunctor2 objects with 2 arguments.
-    Use ArCallbackList3 for ArFunctor3 objects with 3 arguments.
-    Use ArCallbackListp for ArFunctor4 objects with 4 arguments.
+/** Stores a list of MvrFunctor objects together.
+    invoke() will invoke each of the MvrFunctor objects.
+    The functors added to the list must be pointers to the same MvrFunctor subclass.
+    Use MvrCallbackList for MvrFunctor objects with no arguments.
+    Use MvrCallbackList1 for MvrFunctor1 objects with 1 argument.
+    Use MvrCallbackList2 for MvrFunctor2 objects with 2 arguments.
+    Use MvrCallbackList3 for MvrFunctor3 objects with 3 arguments.
+    Use MvrCallbackListp for MvrFunctor4 objects with 4 arguments.
 
     Example: Declare a callback list for callbacks accepting one argument like this:
     @code
-      ArCallbackList1<int> callbackList;
+      MvrCallbackList1<int> callbackList;
     @endcode
     then add a functor like this:
     @code
-      ArFunctor1C<MyClass, int> func;
+      MvrFunctor1C<MyClass, int> func;
       ...
       callbackList.addCallback(&func);
     @endcode
@@ -2169,26 +2169,26 @@ protected:
       callbackList.invoke(23);
     @endcode
 
-    A "singleShot" flag may be set, in which case the ArFunctor objects are removed
+    A "singleShot" flag may be set, in which case the MvrFunctor objects are removed
     from the list after being invoked.
-    This list is threadsafe: the list contains a mutex (ArMutex), which is locked when 
-    modifying the list and when invoking the ArFunctor objects.  Set singleShot
+    This list is threadsafe: the list contains a mutex (MvrMutex), which is locked when 
+    modifying the list and when invoking the MvrFunctor objects.  Set singleShot
     in the constructor or call setSingleShot().
 
     Call setLogging() to enable more detailed logging including names of
-    ArFunctor objects being invoked (if the ArFunctor objects have been given
-    names.) Call setLogLevel() to select ArLog log level.
+    MvrFunctor objects being invoked (if the MvrFunctor objects have been given
+    names.) Call setLogLevel() to select MvrLog log level.
 
     @ingroup UtilityClasses
 **/
-class ArCallbackList : public ArGenericCallbackList<ArFunctor *>
+class MvrCallbackList : public MvrGenericCallbackList<ArFunctor *>
 {
 public:
   /// Constructor
-  ArCallbackList(const char *name = "", 
-			  ArLog::LogLevel logLevel = ArLog::Verbose,
+  MvrCallbackList(const char *name = "", 
+			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
-    ArGenericCallbackList<ArFunctor *>(name, logLevel, singleShot)
+    MvrGenericCallbackList<ArFunctor *>(name, logLevel, singleShot)
     {
     }
   /// Destructor
@@ -2200,11 +2200,11 @@ public:
     {
       myDataMutex.lock();
       
-      std::multimap<int, ArFunctor *>::iterator it;
-      ArFunctor *functor;
+      std::multimap<int, MvrFunctor *>::iterator it;
+      MvrFunctor *functor;
       
       if(myLogging)
-        ArLog::log( myLogLevel,  "%s: Starting calls to %d functors", myName.c_str(), myList.size());
+        MvrLog::log( myLogLevel,  "%s: Starting calls to %d functors", myName.c_str(), myList.size());
       
       for (it = myList.begin(); 
 	   it != myList.end(); 
@@ -2217,10 +2217,10 @@ public:
 	if(myLogging)
 	{
 	  if (functor->getName() != NULL && functor->getName()[0] != '\0')
-	    ArLog::log(myLogLevel, "%s: Calling functor '%s' at %d",
+	    MvrLog::log(myLogLevel, "%s: Calling functor '%s' at %d",
 		       myName.c_str(), functor->getName(), -(*it).first);
 	  else
-	    ArLog::log(myLogLevel, "%s: Calling unnamed functor at %d", 
+	    MvrLog::log(myLogLevel, "%s: Calling unnamed functor at %d", 
 		       myName.c_str(), -(*it).first);
 	}
 	functor->invoke();
@@ -2232,7 +2232,7 @@ public:
       if (mySingleShot)
       {
 	if(myLogging)
-	  ArLog::log(myLogLevel, "%s: Clearing callbacks", myName.c_str());
+	  MvrLog::log(myLogLevel, "%s: Clearing callbacks", myName.c_str());
 	myList.clear();
       }
       myDataMutex.unlock();
@@ -2240,16 +2240,16 @@ public:
 protected:
 };
 
-/** @copydoc ArCallbackList */
+/** @copydoc MvrCallbackList */
 template<class P1>
-class ArCallbackList1 : public ArGenericCallbackList<ArFunctor1<P1> *>
+class MvrCallbackList1 : public MvrGenericCallbackList<ArFunctor1<P1> *>
 {
 public:
   /// Constructor
-  ArCallbackList1(const char *name = "", 
-			  ArLog::LogLevel logLevel = ArLog::Verbose,
+  MvrCallbackList1(const char *name = "", 
+			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
-    ArGenericCallbackList<ArFunctor1<P1> *>(name, logLevel, singleShot)
+    MvrGenericCallbackList<ArFunctor1<P1> *>(name, logLevel, singleShot)
     {
     }
   /// Destructor
@@ -2259,68 +2259,68 @@ public:
   /// Calls the callback list
   void invoke(P1 p1)
     {
-      ArGenericCallbackList<ArFunctor1<P1> *>::myDataMutex.lock();
+      MvrGenericCallbackList<ArFunctor1<P1> *>::myDataMutex.lock();
       
-      typename std::multimap<int, ArFunctor1<P1> *>::iterator it;
-      ArFunctor1<P1> *functor;
+      typename std::multimap<int, MvrFunctor1<P1> *>::iterator it;
+      MvrFunctor1<P1> *functor;
       
-      if(ArGenericCallbackList<ArFunctor1<P1> *>::myLogging)
+      if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
 	ArLog::log(
 		ArGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
 		"%s: Starting calls to %d functors", 
 		ArGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(),
-    ArGenericCallbackList<ArFunctor1<P1> *>::myList.size());
+    MvrGenericCallbackList<ArFunctor1<P1> *>::myList.size());
       
-      for (it = ArGenericCallbackList<ArFunctor1<P1> *>::myList.begin(); 
-	   it != ArGenericCallbackList<ArFunctor1<P1> *>::myList.end(); 
+      for (it = MvrGenericCallbackList<ArFunctor1<P1> *>::myList.begin(); 
+	   it != MvrGenericCallbackList<ArFunctor1<P1> *>::myList.end(); 
 	   it++)
       {
 	functor = (*it).second;
 	if (functor == NULL) 
 	  continue;
 	
-	if(ArGenericCallbackList<ArFunctor1<P1> *>::myLogging)
+	if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
 	{
 	  if (functor->getName() != NULL && functor->getName()[0] != '\0')
-	    ArLog::log(ArGenericCallbackList<ArFunctor1<P1> *>::myLogLevel,
+	    MvrLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel,
 		       "%s: Calling functor '%s' at %d",
-		       ArGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(), 
+		       MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(), 
 		       functor->getName(), -(*it).first);
 	  else
-	    ArLog::log(ArGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
+	    MvrLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
 		       "%s: Calling unnamed functor at %d", 
-		       ArGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(), 
+		       MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(), 
 		       -(*it).first);
 	}
 	functor->invoke(p1);
       }
       
-      if(ArGenericCallbackList<ArFunctor1<P1> *>::myLogging)
-	ArLog::log(ArGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, "%s: Ended calls", ArGenericCallbackList<ArFunctor1<P1> *>::myName.c_str());
+      if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
+	ArLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, "%s: Ended calls", MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str());
       
-      if (ArGenericCallbackList<ArFunctor1<P1> *>::mySingleShot)
+      if (MvrGenericCallbackList<ArFunctor1<P1> *>::mySingleShot)
       {
-	if(ArGenericCallbackList<ArFunctor1<P1> *>::myLogging)
-	  ArLog::log(ArGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
+	if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
+	  MvrLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
 		     "%s: Clearing callbacks", 
-		     ArGenericCallbackList<ArFunctor1<P1> *>::myName.c_str());
+		     MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str());
 	ArGenericCallbackList<ArFunctor1<P1> *>::myList.clear();
       }
-      ArGenericCallbackList<ArFunctor1<P1> *>::myDataMutex.unlock();
+      MvrGenericCallbackList<ArFunctor1<P1> *>::myDataMutex.unlock();
     }
 protected:
 };
 
-/** @copydoc ArCallbackList */
+/** @copydoc MvrCallbackList */
 template<class P1, class P2>
-class ArCallbackList2 : public ArGenericCallbackList<ArFunctor2<P1, P2> *>
+class MvrCallbackList2 : public MvrGenericCallbackList<ArFunctor2<P1, P2> *>
 {
 public:
-  typedef ArFunctor2<P1, P2> FunctorType;
-  typedef ArGenericCallbackList<FunctorType*> Super;
+  typedef MvrFunctor2<P1, P2> FunctorType;
+  typedef MvrGenericCallbackList<FunctorType*> Super;
 
-  ArCallbackList2(const char *name = "", 
-			  ArLog::LogLevel logLevel = ArLog::Verbose,
+  MvrCallbackList2(const char *name = "", 
+			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
     Super(name, logLevel, singleShot)
   {
@@ -2334,7 +2334,7 @@ public:
     FunctorType *functor;
       
     if(Super::myLogging)
-      ArLog::log(Super::myLogLevel, "%s: Starting calls to %d functors", Super::myName.c_str(), Super::myList.size());
+      MvrLog::log(Super::myLogLevel, "%s: Starting calls to %d functors", Super::myName.c_str(), Super::myList.size());
       
     for (it = Super::myList.begin(); it != Super::myList.end(); ++it)
     {
@@ -2345,36 +2345,36 @@ public:
       if(Super::myLogging)
       {
         if (functor->getName() != NULL && functor->getName()[0] != '\0')
-          ArLog::log(Super::myLogLevel, "%s: Calling functor '%s' at %d", Super::myName.c_str(), functor->getName(), -(*it).first);
+          MvrLog::log(Super::myLogLevel, "%s: Calling functor '%s' at %d", Super::myName.c_str(), functor->getName(), -(*it).first);
         else
-          ArLog::log(Super::myLogLevel, "%s: Calling unnamed functor at %d", Super::myName.c_str(), -(*it).first);
+          MvrLog::log(Super::myLogLevel, "%s: Calling unnamed functor at %d", Super::myName.c_str(), -(*it).first);
       }
       functor->invoke(p1, p2);
     }
           
     if(Super::myLogging)
-      ArLog::log(Super::myLogLevel, "%s: Ended calls", Super::myName.c_str());
+      MvrLog::log(Super::myLogLevel, "%s: Ended calls", Super::myName.c_str());
           
     if (Super::mySingleShot)
     {
       if(Super::myLogging)
-        ArLog::log(Super::myLogLevel, "%s: Clearing callbacks", Super::myName.c_str()); Super::myList.clear();
+        MvrLog::log(Super::myLogLevel, "%s: Clearing callbacks", Super::myName.c_str()); Super::myList.clear();
     }
     Super::myDataMutex.unlock();
   }
 };
 
 
-/** @copydoc ArCallbackList */
+/** @copydoc MvrCallbackList */
 template<class P1, class P2, class P3>
-class ArCallbackList3 : public ArGenericCallbackList<ArFunctor3<P1, P2, P3> *>
+class MvrCallbackList3 : public MvrGenericCallbackList<ArFunctor3<P1, P2, P3> *>
 {
 public:
-  typedef ArFunctor3<P1, P2, P3> FunctorType;
-  typedef ArGenericCallbackList<FunctorType*> Super;
+  typedef MvrFunctor3<P1, P2, P3> FunctorType;
+  typedef MvrGenericCallbackList<FunctorType*> Super;
 
-  ArCallbackList3(const char *name = "", 
-			  ArLog::LogLevel logLevel = ArLog::Verbose,
+  MvrCallbackList3(const char *name = "", 
+			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
     Super(name, logLevel, singleShot)
   {
@@ -2388,7 +2388,7 @@ public:
     FunctorType *functor;
       
     if(Super::myLogging)
-      ArLog::log(Super::myLogLevel, "%s: Starting calls to %d functors", Super::myName.c_str(), Super::myList.size());
+      MvrLog::log(Super::myLogLevel, "%s: Starting calls to %d functors", Super::myName.c_str(), Super::myList.size());
       
     for (it = Super::myList.begin(); it != Super::myList.end(); ++it)
     {
@@ -2399,35 +2399,35 @@ public:
       if(Super::myLogging)
       {
         if (functor->getName() != NULL && functor->getName()[0] != '\0')
-          ArLog::log(Super::myLogLevel, "%s: Calling functor '%s' at %d", Super::myName.c_str(), functor->getName(), -(*it).first);
+          MvrLog::log(Super::myLogLevel, "%s: Calling functor '%s' at %d", Super::myName.c_str(), functor->getName(), -(*it).first);
         else
-          ArLog::log(Super::myLogLevel, "%s: Calling unnamed functor at %d", Super::myName.c_str(), -(*it).first);
+          MvrLog::log(Super::myLogLevel, "%s: Calling unnamed functor at %d", Super::myName.c_str(), -(*it).first);
       }
       functor->invoke(p1, p2, p3);
     }
           
     if(Super::myLogging)
-      ArLog::log(Super::myLogLevel, "%s: Ended calls", Super::myName.c_str());
+      MvrLog::log(Super::myLogLevel, "%s: Ended calls", Super::myName.c_str());
           
     if (Super::mySingleShot)
     {
       if(Super::myLogging)
-        ArLog::log(Super::myLogLevel, "%s: Clearing callbacks", Super::myName.c_str()); Super::myList.clear();
+        MvrLog::log(Super::myLogLevel, "%s: Clearing callbacks", Super::myName.c_str()); Super::myList.clear();
     }
     Super::myDataMutex.unlock();
   }
 };
 
 
-/** @copydoc ArCallbackList */
+/** @copydoc MvrCallbackList */
 template<class P1, class P2, class P3, class P4>
-class ArCallbackList4 : public ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4>*>
+class MvrCallbackList4 : public MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4>*>
 {
 public:
-  ArCallbackList4(const char *name = "", 
-			  ArLog::LogLevel logLevel = ArLog::Verbose,
+  MvrCallbackList4(const char *name = "", 
+			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
-    ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>(name, logLevel, singleShot)
+    MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>(name, logLevel, singleShot)
     {
     }
   virtual ~ArCallbackList4()
@@ -2436,20 +2436,20 @@ public:
   void invoke(P1 p1, P2 p2, P3 p3, P4 p4)
     {
       // references to members of parent class for clarity below
-      ArMutex &mutex = ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myDataMutex;
-      ArLog::LogLevel &loglevel = ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myLogLevel;
-      const char *name = ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myName.c_str();
-	    std::multimap< int, ArFunctor4<P1, P2, P3, P4>* > &list = ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myList; 
-      bool &singleshot = ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::mySingleShot;
-      bool &logging = ArGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myLogging;
+      MvrMutex &mutex = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myDataMutex;
+      MvrLog::LogLevel &loglevel = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myLogLevel;
+      const char *name = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myName.c_str();
+	    std::multimap< int, MvrFunctor4<P1, P2, P3, P4>* > &list = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myList; 
+      bool &singleshot = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::mySingleShot;
+      bool &logging = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myLogging;
       
       mutex.lock();
       
-      typename std::multimap<int, ArFunctor4<P1, P2, P3, P4> *>::iterator it;
-      ArFunctor4<P1, P2, P3, P4> *functor;
+      typename std::multimap<int, MvrFunctor4<P1, P2, P3, P4> *>::iterator it;
+      MvrFunctor4<P1, P2, P3, P4> *functor;
       
       if(logging)
-        ArLog::log( loglevel,  "%s: Starting calls to %d functors", name, list.size());
+        MvrLog::log( loglevel,  "%s: Starting calls to %d functors", name, list.size());
       
       for (it = list.begin();  it != list.end(); ++it)
       {
@@ -2460,20 +2460,20 @@ public:
         if(logging)
         {
           if (functor->getName() != NULL && functor->getName()[0] != '\0')
-            ArLog::log(loglevel, "%s: Calling functor '%s' (0x%x) at %d", name, functor->getName(), functor, -(*it).first);
+            MvrLog::log(loglevel, "%s: Calling functor '%s' (0x%x) at %d", name, functor->getName(), functor, -(*it).first);
           else
-            ArLog::log(loglevel, "%s: Calling unnamed functor (0x%x) at %d", name, functor, -(*it).first);
+            MvrLog::log(loglevel, "%s: Calling unnamed functor (0x%x) at %d", name, functor, -(*it).first);
         }
         functor->invoke(p1, p2, p3, p4);
       }
       
       if(logging)
-        ArLog::log(loglevel, "%s: Ended calls", name);
+        MvrLog::log(loglevel, "%s: Ended calls", name);
       
       if (singleshot)
       {
         if(logging)
-          ArLog::log(loglevel, "%s: Clearing callbacks", name);
+          MvrLog::log(loglevel, "%s: Clearing callbacks", name);
         list.clear();
       }
 
@@ -2486,94 +2486,94 @@ public:
 #ifndef ARINTERFACE
 #ifndef SWIG
 /// @internal
-class ArLaserCreatorHelper
+class MvrLaserCreatorHelper
 {
 public:
-  /// Creates an ArLMS2xx
-  static ArLaser *createLMS2xx(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArLMS2xx
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateLMS2xxCB(void);
-  /// Creates an ArUrg
-  static ArLaser *createUrg(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArUrg
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateUrgCB(void);
-  /// Creates an ArLMS1XX
-  static ArLaser *createLMS1XX(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArLMS1XX
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateLMS1XXCB(void);
+  /// Creates an MvrLMS2xx
+  static MvrLaser *createLMS2xx(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLMS2xx
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateLMS2xxCB(void);
+  /// Creates an MvrUrg
+  static MvrLaser *createUrg(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrUrg
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateUrgCB(void);
+  /// Creates an MvrLMS1XX
+  static MvrLaser *createLMS1XX(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLMS1XX
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateLMS1XXCB(void);
 
-  /// Creates an ArUrg using SCIP 2.0
-  static ArLaser *createUrg_2_0(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArUrg
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateUrg_2_0CB(void);
-  /// Creates an ArS3Series
-  static ArLaser *createS3Series(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArS3Series
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateS3SeriesCB(void);
-  /// Creates an ArLMS5XX
-  static ArLaser *createLMS5XX(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArLMS5XX
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateLMS5XXCB(void);
-  /// Creates an ArTiM3XX
-  static ArLaser *createTiM3XX(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArTiM3XX
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateTiM3XXCB(void);
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateTiM551CB(void);
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateTiM561CB(void);
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateTiM571CB(void);
-  /// Creates an ArSZSeries
-  static ArLaser *createSZSeries(int laserNumber, const char *logPrefix);
-  /// Gets functor for creating an ArSZSeries
-  static ArRetFunctor2<ArLaser *, int, const char *> *getCreateSZSeriesCB(void);
+  /// Creates an MvrUrg using SCIP 2.0
+  static MvrLaser *createUrg_2_0(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrUrg
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateUrg_2_0CB(void);
+  /// Creates an MvrS3Series
+  static MvrLaser *createS3Series(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrS3Series
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateS3SeriesCB(void);
+  /// Creates an MvrLMS5XX
+  static MvrLaser *createLMS5XX(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLMS5XX
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateLMS5XXCB(void);
+  /// Creates an MvrTiM3XX
+  static MvrLaser *createTiM3XX(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrTiM3XX
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM3XXCB(void);
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM551CB(void);
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM561CB(void);
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM571CB(void);
+  /// Creates an MvrSZSeries
+  static MvrLaser *createSZSeries(int laserNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrSZSeries
+  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateSZSeriesCB(void);
 
 protected:
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS2xxCB;
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourUrgCB;
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS1XXCB;
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourUrg_2_0CB;
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourS3SeriesCB;
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS5XXCB;
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourTiM3XXCB;
-  static ArGlobalRetFunctor2<ArLaser *, int, const char *> ourSZSeriesCB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS2xxCB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourUrgCB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS1XXCB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourUrg_2_0CB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourS3SeriesCB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS5XXCB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourTiM3XXCB;
+  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourSZSeriesCB;
 };
 
 /// @internal
-class ArBatteryMTXCreatorHelper
+class MvrBatteryMTXCreatorHelper
 {
 public:
-  /// Creates an ArBatteryMTX
-  static ArBatteryMTX *createBatteryMTX(int batteryNumber, const char *logPrefix);
-  /// Gets functor for creating an ArBatteryMTX
-  static ArRetFunctor2<ArBatteryMTX *, int, const char *> *getCreateBatteryMTXCB(void);
+  /// Creates an MvrBatteryMTX
+  static MvrBatteryMTX *createBatteryMTX(int batteryNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrBatteryMTX
+  static MvrRetFunctor2<ArBatteryMTX *, int, const char *> *getCreateBatteryMTXCB(void);
 
 protected:
-  static ArGlobalRetFunctor2<ArBatteryMTX *, int, const char *> ourBatteryMTXCB;
+  static MvrGlobalRetFunctor2<ArBatteryMTX *, int, const char *> ourBatteryMTXCB;
 };
 
 /// @internal
-class ArLCDMTXCreatorHelper
+class MvrLCDMTXCreatorHelper
 {
 public:
-  /// Creates an ArLCDMTX
-  static ArLCDMTX *createLCDMTX(int lcdNumber, const char *logPrefix);
-  /// Gets functor for creating an ArLCDMTX
-  static ArRetFunctor2<ArLCDMTX *, int, const char *> *getCreateLCDMTXCB(void);
+  /// Creates an MvrLCDMTX
+  static MvrLCDMTX *createLCDMTX(int lcdNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrLCDMTX
+  static MvrRetFunctor2<ArLCDMTX *, int, const char *> *getCreateLCDMTXCB(void);
 
 protected:
-  static ArGlobalRetFunctor2<ArLCDMTX *, int, const char *> ourLCDMTXCB;
+  static MvrGlobalRetFunctor2<ArLCDMTX *, int, const char *> ourLCDMTXCB;
 };
 
 /// @internal
-class ArSonarMTXCreatorHelper
+class MvrSonarMTXCreatorHelper
 {
 public:
-  /// Creates an ArSonarMTX
-  static ArSonarMTX *createSonarMTX(int sonarNumber, const char *logPrefix);
-  /// Gets functor for creating an ArSonarMTX
-  static ArRetFunctor2<ArSonarMTX *, int, const char *> *getCreateSonarMTXCB(void);
+  /// Creates an MvrSonarMTX
+  static MvrSonarMTX *createSonarMTX(int sonarNumber, const char *logPrefix);
+  /// Gets functor for creating an MvrSonarMTX
+  static MvrRetFunctor2<ArSonarMTX *, int, const char *> *getCreateSonarMTXCB(void);
 
 protected:
-  static ArGlobalRetFunctor2<ArSonarMTX *, int, const char *> ourSonarMTXCB;
+  static MvrGlobalRetFunctor2<ArSonarMTX *, int, const char *> ourSonarMTXCB;
 };
 
 #endif // SWIG
@@ -2581,65 +2581,65 @@ protected:
 
 #ifndef SWIG
 /// @internal
-class ArDeviceConnectionCreatorHelper
+class MvrDeviceConnectionCreatorHelper
 {
 public:
-  /// Creates an ArSerialConnection
-  static ArDeviceConnection *createSerialConnection(
+  /// Creates an MvrSerialConnection
+  static MvrDeviceConnection *createSerialConnection(
 	  const char *port, const char *defaultInfo, const char *logPrefix);
-  /// Gets functor for creating an ArSerialConnection
-  static ArRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  /// Gets functor for creating an MvrSerialConnection
+  static MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, 
 		       const char *> *getCreateSerialCB(void);
 
-  /// Creates an ArTcpConnection
-  static ArDeviceConnection *createTcpConnection(
+  /// Creates an MvrTcpConnection
+  static MvrDeviceConnection *createTcpConnection(
 	  const char *port, const char *defaultInfo, const char *logPrefix);
-  /// Gets functor for creating an ArTcpConnection
-  static ArRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  /// Gets functor for creating an MvrTcpConnection
+  static MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, 
 		       const char *> *getCreateTcpCB(void);
 
-  /// Creates an ArSerialConnection for RS422
-  static ArDeviceConnection *createSerial422Connection(
+  /// Creates an MvrSerialConnection for RS422
+  static MvrDeviceConnection *createSerial422Connection(
 	  const char *port, const char *defaultInfo, const char *logPrefix);
-  /// Gets functor for creating an ArSerialConnection
-  static ArRetFunctor3<ArDeviceConnection *, const char *, const char *,
+  /// Gets functor for creating an MvrSerialConnection
+  static MvrRetFunctor3<ArDeviceConnection *, const char *, const char *,
 		       const char *> *getCreateSerial422CB(void);
 
   /// Sets the success log level
-  static void setSuccessLogLevel(ArLog::LogLevel successLogLevel);
+  static void setSuccessLogLevel(MvrLog::LogLevel successLogLevel);
   /// Sets the success log level
-  static ArLog::LogLevel setSuccessLogLevel(void);
+  static MvrLog::LogLevel setSuccessLogLevel(void);
 protected:
-  /// Internal Create ArSerialConnection
-  static ArDeviceConnection *internalCreateSerialConnection(
+  /// Internal Create MvrSerialConnection
+  static MvrDeviceConnection *internalCreateSerialConnection(
 	  const char *port, const char *defaultInfo, const char *logPrefix, bool is422);
-  static ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  static MvrGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, 
 			     const char *> ourSerialCB;
-  static ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  static MvrGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, 
 			     const char *> ourTcpCB;
-  static ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *,
+  static MvrGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *,
 			     const char *> ourSerial422CB;
-  static ArLog::LogLevel ourSuccessLogLevel;
+  static MvrLog::LogLevel ourSuccessLogLevel;
 };
 #endif // SWIG
 
 /// Class for finding robot bounds from the basic measurements
-class ArPoseUtil
+class MvrPoseUtil
 {
 public:
   AREXPORT static std::list<ArPose> findCornersFromRobotBounds(
 	  double radius, double widthLeft, double widthRight, 
 	  double lengthFront, double lengthRear, bool fastButUnsafe);
-  AREXPORT static std::list<ArPose> breakUpDistanceEvenly(ArPose start, ArPose end, 
+  AREXPORT static std::list<ArPose> breakUpDistanceEvenly(MvrPose start, MvrPose end, 
 						 int resolution);
 };
 
 /// class for checking if something took too long and logging it
-class ArTimeChecker
+class MvrTimeChecker
 {
 public:
   /// Constructor
-  AREXPORT ArTimeChecker(const char *name = "Unknown", int defaultMSecs = 100);
+  AREXPORT MvrTimeChecker(const char *name = "Unknown", int defaultMSecs = 100);
   /// Destructor
   AREXPORT virtual ~ArTimeChecker();
   /// Sets the name
@@ -2653,12 +2653,12 @@ public:
   /// Finishes the check
   AREXPORT void finish(void);
   /// Gets the last time a check happened (a start counts as a check too)
-  ArTime getLastCheckTime() { return myLastCheck; }
+  MvrTime getLastCheckTime() { return myLastCheck; }
 protected:
   std::string myName;
   int myMSecs;
-  ArTime myStarted;
-  ArTime myLastCheck;
+  MvrTime myStarted;
+  MvrTime myLastCheck;
 };
 
 #endif // ARIAUTIL_H

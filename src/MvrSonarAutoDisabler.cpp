@@ -25,12 +25,12 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArCommands.h"
-#include "ArExport.h"
-#include "ArSonarAutoDisabler.h"
-#include "ArRobot.h"
+#include "MvrCommands.h"
+#include "MvrExport.h"
+#include "MvrSonarAutoDisabler.h"
+#include "MvrRobot.h"
 
-AREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(ArRobot *robot) :
+AREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(MvrRobot *robot) :
   myUserTaskCB(this, &ArSonarAutoDisabler::userTask),
   mySupressCB(this, &ArSonarAutoDisabler::supress),
   myUnsupressCB(this, &ArSonarAutoDisabler::unsupress),
@@ -49,7 +49,7 @@ AREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(ArRobot *robot) :
   }
   else
   {
-    ArLog::log(ArLog::Normal, "ArSonarAutoDisabler not active since there are no sonar");
+    ArLog::log(MvrLog::Normal, "MvrSonarAutoDisabler not active since there are no sonar");
   }
 }
 
@@ -63,7 +63,7 @@ AREXPORT void ArSonarAutoDisabler::userTask(void)
   if (mySupressed && (myRobot->areSonarsEnabled() || 
 		      myRobot->areAutonomousDrivingSonarsEnabled()))
   {
-    ArLog::log(ArLog::Normal, "SonarAutoDisabler: Supression turning off sonar");
+    ArLog::log(MvrLog::Normal, "SonarAutoDisabler: Supression turning off sonar");
     myRobot->disableSonar();
   }
   
@@ -98,7 +98,7 @@ AREXPORT void ArSonarAutoDisabler::userTask(void)
     if (!myAutonomousDriving && !myRobot->areSonarsEnabled() && 
 	myRobot->areMotorsEnabled())
     {
-      ArLog::log(ArLog::Normal, 
+      ArLog::log(MvrLog::Normal, 
 		 "SonarAutoDisabler: Turning on all sonar (%d %.0f %.0f)",
 		 myRobot->isTryingToMove(), fabs(myRobot->getVel()),
 		 fabs(myRobot->getRotVel()));
@@ -110,7 +110,7 @@ AREXPORT void ArSonarAutoDisabler::userTask(void)
 	!myRobot->areAutonomousDrivingSonarsEnabled() && 
 	myRobot->areMotorsEnabled())
     {
-      ArLog::log(ArLog::Normal, 
+      ArLog::log(MvrLog::Normal, 
  "SonarAutoDisabler: Turning on sonar for autonomous driving (%d %.0f %.0f)",
 		 myRobot->isTryingToMove(), fabs(myRobot->getVel()),
 		 fabs(myRobot->getRotVel()));
@@ -125,7 +125,7 @@ AREXPORT void ArSonarAutoDisabler::userTask(void)
 	 myRobot->areAutonomousDrivingSonarsEnabled()) && 
 	myLastMoved.mSecSince() > 1000)
     {
-      ArLog::log(ArLog::Normal, "SonarAutoDisabler: Turning off sonar");
+      ArLog::log(MvrLog::Normal, "SonarAutoDisabler: Turning off sonar");
       myRobot->disableSonar();
     }
   }

@@ -24,24 +24,24 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionStop.h"
-#include "ArRobot.h"
+#include "MvrActionStop.h"
+#include "MvrRobot.h"
 
 /**
    @param name name of the action
 */
-AREXPORT ArActionStop::ArActionStop(const char *name) :
-    ArAction(name, "Stops the robot")
+AREXPORT MvrActionStop::ArActionStop(const char *name) :
+    MvrAction(name, "Stops the robot")
 {
 }
 
-AREXPORT ArActionStop::~ArActionStop()
+AREXPORT MvrActionStop::~ArActionStop()
 {
 }
 
-AREXPORT ArActionDesired *ArActionStop::fire(
+AREXPORT MvrActionDesired *ArActionStop::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

@@ -25,21 +25,21 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRobotJoyHandler.h"
-#include "ArRobot.h"
-#include "ArCommands.h"
+#include "MvrRobotJoyHandler.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
 #include "ariaInternal.h"
 
-AREXPORT ArRobotJoyHandler::ArRobotJoyHandler(ArRobot *robot) : 
+AREXPORT ArRobotJoyHandler::ArRobotJoyHandler(MvrRobot *robot) : 
     myHandleJoystickPacketCB(this, &ArRobotJoyHandler::handleJoystickPacket),
     myConnectCB(this, &ArRobotJoyHandler::connectCallback),
     myStopPacketsCB(this, &ArRobotJoyHandler::stopPackets)
 {
   myRobot = robot;
 
-  myHandleJoystickPacketCB.setName("ArRobotJoyHandler");
+  myHandleJoystickPacketCB.setName("MvrRobotJoyHandler");
   myRobot->addConnectCB(&myConnectCB);
   myRobot->addPacketHandler(&myHandleJoystickPacketCB, ArListPos::FIRST);
   if (myRobot->isConnected())
@@ -75,15 +75,15 @@ AREXPORT void ArRobotJoyHandler::connectCallback(void)
 {
   myRobot->addDisconnectNormallyCB(&myStopPacketsCB);
   Aria::addExitCallback(&myStopPacketsCB);
-  myRobot->comInt(ArCommands::JOYINFO, 2);
+  myRobot->comInt(MvrCommands::JOYINFO, 2);
 }
 
 void ArRobotJoyHandler::stopPackets()
 {
-  myRobot->comInt(ArCommands::JOYINFO, 0);
+  myRobot->comInt(MvrCommands::JOYINFO, 0);
 }
 
-AREXPORT bool ArRobotJoyHandler::handleJoystickPacket(ArRobotPacket *packet)
+AREXPORT bool ArRobotJoyHandler::handleJoystickPacket(MvrRobotPacket *packet)
 {
 
   if (packet->getID() != 0xF8)
@@ -144,7 +144,7 @@ AREXPORT bool ArRobotJoyHandler::handleJoystickPacket(ArRobotPacket *packet)
   //%10d.%03d ago 
   //myStarted.secSince(), myStarted.mSecSince() % 1000, 
   /*
-  ArLog::log(ArLog::Normal, 
+  ArLog::log(MvrLog::Normal, 
 	     "%6.3f %6.3f %5.3f %d %d raw %4d %4d %4d center %4d %4d", 
 	     myJoyX, myJoyY, myThrottle, myButton1, myButton2, 
 	     myRawX, myRawY, myRawThrottle, myJoyXCenter, myJoyYCenter);
@@ -152,7 +152,7 @@ AREXPORT bool ArRobotJoyHandler::handleJoystickPacket(ArRobotPacket *packet)
   //  printf("%d %d %g %g %g\n", myButton1, myButton2, myJoyX, myJoyY, myThrottle);
   if (!myGotData)
   {
-    ArLog::log(ArLog::Verbose, "Received joystick information from the robot");
+    ArLog::log(MvrLog::Verbose, "Received joystick information from the robot");
     myGotData = true;
   }
   return true;
@@ -168,10 +168,10 @@ AREXPORT void ArRobotJoyHandler::getDoubles(double *x, double *y, double *z)
     *z = myThrottle;
 }
 
-AREXPORT void ArRobotJoyHandler::addToConfig(ArConfig *config, 
+AREXPORT void ArRobotJoyHandler::addToConfig(MvrConfig *config, 
 					     const char *section)
 {
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, ArPriority::NORMAL);
   config->addParam(
 	  ArConfigArg("JoyXCenter", &myJoyXCenter,
 		      "The X center", 0.0, 1024.0),
@@ -181,5 +181,5 @@ AREXPORT void ArRobotJoyHandler::addToConfig(ArConfig *config,
 	  ArConfigArg("JoyYCenter", &myJoyYCenter,
 		      "The Y center", 0.0, 1024.0),
 	  section, ArPriority::NORMAL);
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);  
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, ArPriority::NORMAL);  
 }

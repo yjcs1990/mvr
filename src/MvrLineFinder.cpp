@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 
 #include "ariaOSDef.h"
-#include "ArLineFinder.h"
-#include "ArConfig.h"
+#include "MvrLineFinder.h"
+#include "MvrConfig.h"
 
-AREXPORT ArLineFinder::ArLineFinder(ArRangeDevice *rangeDevice) 
+AREXPORT MvrLineFinder::ArLineFinder(MvrRangeDevice *rangeDevice) 
 {
   myRangeDevice = rangeDevice;
   myPrinting = false;
@@ -39,7 +39,7 @@ AREXPORT ArLineFinder::ArLineFinder(ArRangeDevice *rangeDevice)
   myNonLinePoints = NULL;
   myFlippedFound = false;
 
-  mySinMultiplier = (ArMath::sin(1) / ArMath::sin(5));
+  mySinMultiplier = (MvrMath::sin(1) / MvrMath::sin(5));
 
   setLineCreationParams();
   setLineCombiningParams();
@@ -48,12 +48,12 @@ AREXPORT ArLineFinder::ArLineFinder(ArRangeDevice *rangeDevice)
   setMaxDistBetweenPoints();
 }
 
-AREXPORT ArLineFinder::~ArLineFinder()
+AREXPORT MvrLineFinder::~ArLineFinder()
 {
 
 }
 
-AREXPORT std::map<int, ArLineFinderSegment *> *ArLineFinder::getLines(void)
+AREXPORT std::map<int, MvrLineFinderSegment *> *ArLineFinder::getLines(void)
 {
   // fill the laser readings into myPoints
   fillPointsFromLaser();
@@ -69,10 +69,10 @@ AREXPORT std::map<int, ArLineFinderSegment *> *ArLineFinder::getLines(void)
   return myLines;
 }
 
-AREXPORT std::map<int, ArPose> *ArLineFinder::getNonLinePoints(void)
+AREXPORT std::map<int, MvrPose> *ArLineFinder::getNonLinePoints(void)
 {
-  std::map<int, ArLineFinderSegment *>::iterator lineIt;
-  ArLineFinderSegment *segment;
+  std::map<int, MvrLineFinderSegment *>::iterator lineIt;
+  MvrLineFinderSegment *segment;
   int i;
 
   getLines();
@@ -83,7 +83,7 @@ AREXPORT std::map<int, ArPose> *ArLineFinder::getNonLinePoints(void)
   if (myNonLinePoints != NULL)
     delete myNonLinePoints;
 
-  myNonLinePoints = new std::map<int, ArPose>;
+  myNonLinePoints = new std::map<int, MvrPose>;
 
   *myNonLinePoints = *myPoints;
 
@@ -99,18 +99,18 @@ AREXPORT std::map<int, ArPose> *ArLineFinder::getNonLinePoints(void)
 }
 
 
-AREXPORT void ArLineFinder::fillPointsFromLaser(void)
+AREXPORT void MvrLineFinder::fillPointsFromLaser(void)
 {
   const std::list<ArSensorReading *> *readings;
   std::list<ArSensorReading *>::const_iterator it;
   std::list<ArSensorReading *>::const_reverse_iterator rit;
-  ArSensorReading *reading;
+  MvrSensorReading *reading;
   int pointCount = 0;
 
   if (myPoints != NULL)
     delete myPoints;
 
-  myPoints = new std::map<int, ArPose>;
+  myPoints = new std::map<int, MvrPose>;
   
   myRangeDevice->lockDevice();
   readings = myRangeDevice->getRawReadings();
@@ -126,13 +126,13 @@ AREXPORT void ArLineFinder::fillPointsFromLaser(void)
       for (int i = 0; i < 10 && i < size / 2; i++)
 	it++;
       // see if we're flipped
-      if (ArMath::subAngle((*(readings->begin()))->getSensorTh(), 
+      if (MvrMath::subAngle((*(readings->begin()))->getSensorTh(), 
 			   (*it)->getSensorTh()) > 0)
 	myFlipped = true;
       else
 	myFlipped = false;
       myFlippedFound = true;
-      //printf("@@@ LINE %d %.0f\n", myFlipped, ArMath::subAngle((*(readings->begin()))->getSensorTh(), (*it)->getSensorTh()));
+      //printf("@@@ LINE %d %.0f\n", myFlipped, MvrMath::subAngle((*(readings->begin()))->getSensorTh(), (*it)->getSensorTh()));
 
       
     }
@@ -173,7 +173,7 @@ AREXPORT void ArLineFinder::fillPointsFromLaser(void)
   myRangeDevice->unlockDevice();
 }
 
-AREXPORT void ArLineFinder::findLines(void)
+AREXPORT void MvrLineFinder::findLines(void)
 {
   int start = 0;
   int pointsLen = myPoints->size();
@@ -181,22 +181,22 @@ AREXPORT void ArLineFinder::findLines(void)
 
   if (myLines != NULL)
   {
-    ArUtil::deleteSetPairs(myLines->begin(), myLines->end());
+    MvrUtil::deleteSetPairs(myLines->begin(), myLines->end());
     delete myLines;
     myLines = NULL;
   }
-  myLines = new std::map<int, ArLineFinderSegment *>;
+  myLines = new std::map<int, MvrLineFinderSegment *>;
   int numLines = 0;
 
   FILE *lineFile = NULL;
   /*
-  if ((lineFile = ArUtil::fopen("firstLines", "w+")) == NULL)
+  if ((lineFile = MvrUtil::fopen("firstLines", "w+")) == NULL)
   {
     printf("Couldn't open 'lines' for writing\n");
     return;
   }
   */
-  ArLineFinderSegment *newLine;
+  MvrLineFinderSegment *newLine;
   double totalDistFromLine = 0;
   double dist;
   int i;
@@ -235,7 +235,7 @@ AREXPORT void ArLineFinder::findLines(void)
       if (maxDistTriggered)
       {
 	if (myPrinting)
-	  ArLog::log(ArLog::Normal, "too great a distance between some points on the line %d %d", start, end);
+	  MvrLog::log(MvrLog::Normal, "too great a distance between some points on the line %d %d", start, end);
       }
       // see if its too far between these line segments
       else if ((*myPoints)[start].findDistanceTo((*myPoints)[end]) <
@@ -247,7 +247,7 @@ AREXPORT void ArLineFinder::findLines(void)
 		  (*myPoints)[end].getX() - (*myPoints)[start].getX(),
 		  (*myPoints)[end].getY() - (*myPoints)[start].getY());
 	
-	newLine = new ArLineFinderSegment(
+	newLine = new MvrLineFinderSegment(
 		(*myPoints)[start].getX(), 
 		(*myPoints)[start].getY(),
 		(*myPoints)[end].getX(),
@@ -269,7 +269,7 @@ AREXPORT void ArLineFinder::findLines(void)
       else
       {
 	if (myPrinting)
-	  ArLog::log(ArLog::Normal, "too great a distance between the two line points %d %d", start, end);
+	  MvrLog::log(MvrLog::Normal, "too great a distance between the two line points %d %d", start, end);
       }
     }
     
@@ -282,20 +282,20 @@ AREXPORT void ArLineFinder::findLines(void)
     fclose(lineFile);
 }
 
-AREXPORT bool ArLineFinder::combineLines(void)
+AREXPORT bool MvrLineFinder::combineLines(void)
 {
   int start = 0;
   int len = myLines->size();
   // this is the min line distance
-  std::map<int, ArLineFinderSegment *> *newLines;
+  std::map<int, MvrLineFinderSegment *> *newLines;
   int numNewLines = 0;
   int numNewMerges = 0;
-  ArLineFinderSegment *newLine;
+  MvrLineFinderSegment *newLine;
   
-  newLines = new std::map<int, ArLineFinderSegment *>;
+  newLines = new std::map<int, MvrLineFinderSegment *>;
 
   if (myPrinting)
-    ArLog::log(ArLog::Normal, "new iteration\n");
+    MvrLog::log(MvrLog::Normal, "new iteration\n");
   
   bool nextMerged = false;
   for (start = 0; start < len; start++)
@@ -309,11 +309,11 @@ AREXPORT bool ArLineFinder::combineLines(void)
     if (start + 1 == len)
     {
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "inserted last one %g",
- 	     ArPose((*myLines)[start]->getX1(), 
+	ArLog::log(MvrLog::Normal, "inserted last one %g",
+ 	     MvrPose((*myLines)[start]->getX1(), 
 		    (*myLines)[start]->getY1()).findDistanceTo(
-		  ArPose((*myLines)[start]->getX2(), (*myLines)[start]->getY2())));
-      (*newLines)[numNewLines] = new ArLineFinderSegment(*((*myLines)[start]));
+		  MvrPose((*myLines)[start]->getX2(), (*myLines)[start]->getY2())));
+      (*newLines)[numNewLines] = new MvrLineFinderSegment(*((*myLines)[start]));
       numNewLines++;
       continue;
     }
@@ -323,7 +323,7 @@ AREXPORT bool ArLineFinder::combineLines(void)
     {
       
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "merged %g %g to %g", 
+	ArLog::log(MvrLog::Normal, "merged %g %g to %g", 
 		   (*myLines)[start]->getLength(),
 		   (*myLines)[start+1]->getLength(),
 		   newLine->getLength());
@@ -335,9 +335,9 @@ AREXPORT bool ArLineFinder::combineLines(void)
     else
     {
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "inserted anyways %g", 
+	ArLog::log(MvrLog::Normal, "inserted anyways %g", 
 		   (*myLines)[start]->getLength());
-      (*newLines)[numNewLines] = new ArLineFinderSegment(*((*myLines)[start]));
+      (*newLines)[numNewLines] = new MvrLineFinderSegment(*((*myLines)[start]));
       numNewLines++;
     }
     
@@ -346,7 +346,7 @@ AREXPORT bool ArLineFinder::combineLines(void)
   // move the new lines over and delete the old ones
   if (myLines != NULL && myLines->begin() != myLines->end())
   {
-    ArUtil::deleteSetPairs(myLines->begin(), myLines->end());
+    MvrUtil::deleteSetPairs(myLines->begin(), myLines->end());
     delete myLines;
     myLines = NULL;
   } 
@@ -364,7 +364,7 @@ AREXPORT bool ArLineFinder::combineLines(void)
   return combineLines();
 }
 
-AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
+AREXPORT MvrLineFinderSegment *ArLineFinder::averageSegments(
 	ArLineFinderSegment *line1,
 	ArLineFinderSegment *line2)
 {
@@ -372,9 +372,9 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
   // the angles can be myCombiningAngleTol diff but if its more than myCombiningAngleTol / 2
   // then the resulting line angle should be between the other two
   if (myPrinting)
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
 	       "%3.0f %5.0f    %3.0f %3.0f      (%5.0f %5.0f) <%d %d> (%5.0f %5.0f) <%d %d>", 
-	   ArMath::subAngle(line1->getLineAngle(),
+	   MvrMath::subAngle(line1->getLineAngle(),
 			    line2->getLineAngle()),
 	       line1->getEndPoint2().findDistanceTo(line2->getEndPoint1()),
 	       line1->getLineAngle(), line2->getLineAngle(),
@@ -388,7 +388,7 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
        myMaxDistBetweenPoints))
   {
     if (myPrinting)
-      ArLog::log(ArLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "distance between the two line end points greater than maxDistBetweenPoints");
     return NULL;
   }
@@ -398,25 +398,25 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
       line1->getEndPoint2().findDistanceTo(myPoseTaken) * mySinMultiplier)
   {
     if (myPrinting)
-      ArLog::log(ArLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "too great a distance between the two line points");
     return NULL;
   }
   // make sure they're pointing in the same direction at least
   double angleOff;
-  if ((angleOff = ArMath::fabs(
-	  ArMath::subAngle(line1->getLineAngle(),
+  if ((angleOff = MvrMath::fabs(
+	  MvrMath::subAngle(line1->getLineAngle(),
 			   line2->getLineAngle()))) > myCombiningAngleTol)
   {
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "greater than angle tolerance");
+      MvrLog::log(MvrLog::Normal, "greater than angle tolerance");
     return NULL;	
   }
 
-  ArPose endPose2(line2->getX2(), line2->getY2());
-  ArPose intersection1;
-  ArLine line1Line(*(line1->getLine()));
-  ArLine perpLine1;
+  MvrPose endPose2(line2->getX2(), line2->getY2());
+  MvrPose intersection1;
+  MvrLine line1Line(*(line1->getLine()));
+  MvrLine perpLine1;
 
   // make sure that the lines are close to each other
   line1Line.makeLinePerp(&endPose2, &perpLine1);
@@ -426,14 +426,14 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
     //printf("e1 %d %.0f\n", line1Line.intersects(&perpLine1, &intersection1), intersection1.findDistanceTo(endPose2));
     
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "endPose2 too far from line1");
+      MvrLog::log(MvrLog::Normal, "endPose2 too far from line1");
     return NULL;
   }
 
-  ArPose endPose1(line1->getX1(), line1->getY1());
-  ArPose intersection2;
-  ArLine line2Line(*(line2->getLine()));
-  ArLine perpLine2;
+  MvrPose endPose1(line1->getX1(), line1->getY1());
+  MvrPose intersection2;
+  MvrLine line2Line(*(line2->getLine()));
+  MvrLine perpLine2;
 
 
   // make sure that the lines are close to each other
@@ -443,15 +443,15 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
   {
     //printf("e2 %d %.0f\n", line2Line.intersects(&perpLine2, &intersection2), 	   intersection2.findDistanceTo(endPose1));
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "endPose1 too far from line2");
+      MvrLog::log(MvrLog::Normal, "endPose1 too far from line2");
     return NULL;
   }
 
 
 
-  ArLineFinderSegment *newLine;
+  MvrLineFinderSegment *newLine;
   /*
-  newLine = new ArLineFinderSegment((endPose1.getX() + intersection2.getX()) / 2,
+  newLine = new MvrLineFinderSegment((endPose1.getX() + intersection2.getX()) / 2,
 			      (endPose1.getY() + intersection2.getY()) / 2,
 			      (endPose2.getX() + intersection1.getX()) / 2,
 			      (endPose2.getY() + intersection1.getY()) / 2,
@@ -461,7 +461,7 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
   // many points are in each line
   int l1C = line1->getNumPoints();
   int l2C = line2->getNumPoints();
-  newLine = new ArLineFinderSegment((endPose1.getX() * l1C +
+  newLine = new MvrLineFinderSegment((endPose1.getX() * l1C +
 				     intersection2.getX() * l2C) / (l1C + l2C),
 				    (endPose1.getY() * l1C + 
 				     intersection2.getY() * l2C) / (l1C + l2C),
@@ -487,7 +487,7 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
 	i != newLine->getEndPoint())
     {
       if (myPrinting)
-	ArLog::log(ArLog::Normal, 
+	ArLog::log(MvrLog::Normal, 
 		   "Had a point %d that was to far from our line at %.0f (max %d)",
 		   i, dist, myValidMaxDistFromLine);
 
@@ -503,7 +503,7 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
   if (newLine->getAveDistFromLine() > myValidMaxAveFromLine)
   {
     if (myPrinting)
-      ArLog::log(ArLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "Ave dist from line was too great at %.0f (max %d)",
 		 newLine->getAveDistFromLine(), myValidMaxDistFromLine);
     
@@ -514,7 +514,7 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
 				       line2->getAveDistFromLine()) * 1.25)
   {
     if (myPrinting)
-      ArLog::log(ArLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "Ave dist from line greater than component lines at %.0f (component lines %.0f %.0f)",
 		 newLine->getAveDistFromLine(), 
 		 line1->getAveDistFromLine(), 
@@ -529,33 +529,33 @@ AREXPORT ArLineFinderSegment *ArLineFinder::averageSegments(
     return newLine;
 
   // if the new angle is in between the two lines and within myCombiningAngleTol we're ok
-  if ((ArMath::subAngle(newLine->getLineAngle(), line2->getLineAngle()) > 0 &&
-       ArMath::subAngle(line1->getLineAngle(), newLine->getLineAngle()) > 0) ||
-      (ArMath::subAngle(newLine->getLineAngle(), line1->getLineAngle()) > 0 &&
-       ArMath::subAngle(line2->getLineAngle(), newLine->getLineAngle()) > 0))
+  if ((MvrMath::subAngle(newLine->getLineAngle(), line2->getLineAngle()) > 0 &&
+       MvrMath::subAngle(line1->getLineAngle(), newLine->getLineAngle()) > 0) ||
+      (MvrMath::subAngle(newLine->getLineAngle(), line1->getLineAngle()) > 0 &&
+       MvrMath::subAngle(line2->getLineAngle(), newLine->getLineAngle()) > 0))
     return newLine;
   
   //printf("%g\n", newLine->getLineAngle());
   if (myPrinting)
-    ArLog::log(ArLog::Normal, "angles wonky");
+    MvrLog::log(MvrLog::Normal, "angles wonky");
   // if we got down here hte line didn't work
   delete newLine;
   return NULL; 
 }
 
-AREXPORT void ArLineFinder::filterLines(void)
+AREXPORT void MvrLineFinder::filterLines(void)
 {
   int start = 0;
   int len = myLines->size();
 
   // this is the min line distance
-  std::map<int, ArLineFinderSegment *> *newLines;
+  std::map<int, MvrLineFinderSegment *> *newLines;
   int numNewLines = 0;
 
-  newLines = new std::map<int, ArLineFinderSegment *>;
+  newLines = new std::map<int, MvrLineFinderSegment *>;
 
   if (myPrinting)
-    ArLog::log(ArLog::Normal, "filtering lines\n");
+    MvrLog::log(MvrLog::Normal, "filtering lines\n");
   
   for (start = 0; start < len; start++)
   {
@@ -564,16 +564,16 @@ AREXPORT void ArLineFinder::filterLines(void)
 		(*myLines)[start]->getEndPoint2()) > myFilteringMinLineLength)
     {
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "kept %g (%d points)", 
+	ArLog::log(MvrLog::Normal, "kept %g (%d points)", 
 		   (*myLines)[start]->getLength(),
 		   (*myLines)[start]->getNumPoints());
-      (*newLines)[numNewLines] = new ArLineFinderSegment(*((*myLines)[start]));
+      (*newLines)[numNewLines] = new MvrLineFinderSegment(*((*myLines)[start]));
       numNewLines++;
     }
     else
     {
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "Clipped %g (%d points)",
+	ArLog::log(MvrLog::Normal, "Clipped %g (%d points)",
 		   (*myLines)[start]->getLength(),
 		   (*myLines)[start]->getNumPoints());
     }
@@ -583,7 +583,7 @@ AREXPORT void ArLineFinder::filterLines(void)
   // move the new lines over and delete the old ones
   if (myLines != NULL && myLines->begin() != myLines->end())
   {
-    ArUtil::deleteSetPairs(myLines->begin(), myLines->end());
+    MvrUtil::deleteSetPairs(myLines->begin(), myLines->end());
     delete myLines;
     myLines = NULL;
   } 
@@ -603,15 +603,15 @@ AREXPORT void ArLineFinder::filterLines(void)
    current directory and saves the "lines" file with the final lines
    in the current directory.
 **/
-AREXPORT void ArLineFinder::saveLast(void)
+AREXPORT void MvrLineFinder::saveLast(void)
 {
   int len = myPoints->size();
   int i;
   
   FILE *points;
-  if ((points = ArUtil::fopen("points", "w+")) == NULL)
+  if ((points = MvrUtil::fopen("points", "w+")) == NULL)
   {
-    ArLog::log(ArLog::Terse, "ArLineFinder::log: Could not open 'points' file for output");
+    MvrLog::log(MvrLog::Terse, "MvrLineFinder::log: Could not open 'points' file for output");
     return;
   }
   for (i = 0; i < len; i++)
@@ -625,9 +625,9 @@ AREXPORT void ArLineFinder::saveLast(void)
   len = myLines->size();
   
   FILE *lines;
-  if ((lines = ArUtil::fopen("lines", "w+")) == NULL)
+  if ((lines = MvrUtil::fopen("lines", "w+")) == NULL)
   {
-    ArLog::log(ArLog::Terse, "ArLineFinder::log: Could not open 'lines' file for output");
+    MvrLog::log(MvrLog::Terse, "MvrLineFinder::log: Could not open 'lines' file for output");
     return;
   }
   for (i = 0; i < len; i++)
@@ -639,90 +639,90 @@ AREXPORT void ArLineFinder::saveLast(void)
   }
   fclose(lines);
 
-  ArLog::log(ArLog::Normal, "Saved points and lines");
+  MvrLog::log(MvrLog::Normal, "Saved points and lines");
 }
 
-AREXPORT void ArLineFinder::getLinesAndSaveThem(void)
+AREXPORT void MvrLineFinder::getLinesAndSaveThem(void)
 {
   getLines();
   saveLast();
 }
 
-AREXPORT void ArLineFinder::addToConfig(ArConfig *config,
+AREXPORT void MvrLineFinder::addToConfig(MvrConfig *config,
 					const char *section)
 {
   
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section,
-		     ArPriority::NORMAL);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section,
+		     MvrPriority::NORMAL);
   config->addParam(
-	  ArConfigArg("CreatingMinLineLength", &myMakingMinLen,
+	  MvrConfigArg("CreatingMinLineLength", &myMakingMinLen,
 		      "The minimum possible line length for creating lines", 0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
   config->addParam(
-	  ArConfigArg("CreatingMinLinePoints", &myMakingMinPoints,
+	  MvrConfigArg("CreatingMinLinePoints", &myMakingMinPoints,
 		      "The minimum number of points in a line for creating lines", 0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
   config->addParam(
-	  ArConfigArg("CreatingMaxDistBetweenPoints", 
+	  MvrConfigArg("CreatingMaxDistBetweenPoints", 
 		      &myMaxDistBetweenPoints,
 		      "The max dist between points for creating lines", 
 		      0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
 
   config->addParam(
-	  ArConfigArg("CombiningAngleTol", &myCombiningAngleTol,
+	  MvrConfigArg("CombiningAngleTol", &myCombiningAngleTol,
 		      "The angle tolerance when combining lines", 0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
   config->addParam(
-	  ArConfigArg("CombiningCloseEnough", &myCombiningLinesCloseEnough,
+	  MvrConfigArg("CombiningCloseEnough", &myCombiningLinesCloseEnough,
 		      "How far apart lines can be when combining lines", 0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
   config->addParam(
-	  ArConfigArg("FilteringMinPointsInLine", &myFilteringMinPointsInLine,
+	  MvrConfigArg("FilteringMinPointsInLine", &myFilteringMinPointsInLine,
 		      "How many points need to be in a line when filtering", 
 		      0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
   config->addParam(
-	  ArConfigArg("FilteringMinLineLength", &myFilteringMinLineLength,
+	  MvrConfigArg("FilteringMinLineLength", &myFilteringMinLineLength,
 		      "How many points are needed in a line when filtering", 
 		      0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
   config->addParam(
-	  ArConfigArg("ValidMaxDistFromLine", &myValidMaxDistFromLine,
+	  MvrConfigArg("ValidMaxDistFromLine", &myValidMaxDistFromLine,
 		      "For the validation phase, the max dist from line", 
 		      0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
   config->addParam(
-	  ArConfigArg("ValidMaxAveDistFromLine", &myValidMaxAveFromLine,
+	  MvrConfigArg("ValidMaxAveDistFromLine", &myValidMaxAveFromLine,
 		      "For the validation phase, the max ave dist from line", 
 		      0),
-	  section, ArPriority::TRIVIAL);
+	  section, MvrPriority::TRIVIAL);
 
 }
 
-AREXPORT std::set<ArLineFinderSegment*> ArLineFinder::getLinesAsSet()
+AREXPORT std::set<ArLineFinderSegment*> MvrLineFinder::getLinesAsSet()
 {
-  std::map<int, ArLineFinderSegment*> *lines = getLines();
+  std::map<int, MvrLineFinderSegment*> *lines = getLines();
   std::set<ArLineFinderSegment*> lineSegPtrs;
-  for(std::map<int, ArLineFinderSegment*>::const_iterator i = lines->begin(); i != lines->end(); ++i)
+  for(std::map<int, MvrLineFinderSegment*>::const_iterator i = lines->begin(); i != lines->end(); ++i)
   {
     lineSegPtrs.insert( (*i).second );
   }
   return lineSegPtrs;
 }
 
-AREXPORT std::set<ArPose> ArLineFinder::getNonLinePointsAsSet()
+AREXPORT std::set<ArPose> MvrLineFinder::getNonLinePointsAsSet()
 {
-  std::map<int, ArPose> *pointsPtr = getNonLinePoints();
+  std::map<int, MvrPose> *pointsPtr = getNonLinePoints();
   std::set<ArPose> points;
-  for(std::map<int, ArPose>::const_iterator i = pointsPtr->begin(); i != pointsPtr->end(); ++i)
+  for(std::map<int, MvrPose>::const_iterator i = pointsPtr->begin(); i != pointsPtr->end(); ++i)
   {
     points.insert( (*i).second );
   }

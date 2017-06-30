@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRVisionPTZ.h"
-#include "ArRobot.h"
-#include "ArCommands.h"
+#include "MvrRVisionPTZ.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
 
-AREXPORT ArRVisionPacket::ArRVisionPacket(ArTypes::UByte2 bufferSize) :
+AREXPORT ArRVisionPacket::ArRVisionPacket(MvrTypes::UByte2 bufferSize) :
   ArBasePacket(bufferSize)
 {
 
@@ -41,22 +41,22 @@ AREXPORT ArRVisionPacket::~ArRVisionPacket()
 
 }
 
-AREXPORT void ArRVisionPacket::uByteToBuf(ArTypes::UByte val)
+AREXPORT void ArRVisionPacket::uByteToBuf(MvrTypes::UByte val)
 {
   if (myLength + 1 > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArRVisionPacket::uByteToBuf: Trying to add beyond length of buffer.");
+    ArLog::log(MvrLog::Terse, "MvrRVisionPacket::uByteToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = val;
   ++myLength;
 }
 
-AREXPORT void ArRVisionPacket::byte2ToBuf(ArTypes::Byte2 val)
+AREXPORT void ArRVisionPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 4) > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    ArLog::log(MvrLog::Terse, "MvrRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = (val & 0xf000) >> 12;
@@ -79,14 +79,14 @@ AREXPORT void ArRVisionPacket::byte2ToBuf(ArTypes::Byte2 val)
    @param val the Byte2 to put into the packet
    @param pose the position in the packets array to put the value
 */
-AREXPORT void ArRVisionPacket::byte2ToBufAtPos(ArTypes::Byte2 val,
+AREXPORT void ArRVisionPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 					    ArTypes::UByte2 pose)
 {
   ArTypes::Byte2 prevLength = myLength;
 
   if ((pose + 4) > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    ArLog::log(MvrLog::Terse, "MvrRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myLength = pose;
@@ -95,11 +95,11 @@ AREXPORT void ArRVisionPacket::byte2ToBufAtPos(ArTypes::Byte2 val,
 }
 
 
-AREXPORT ArRVisionPTZ::ArRVisionPTZ(ArRobot *robot) :
+AREXPORT ArRVisionPTZ::ArRVisionPTZ(MvrRobot *robot) :
   ArPTZ(NULL),
   myPacket(255), 
   myZoomPacket(9),
-  mySerialPort(ArUtil::COM4)
+  mySerialPort(MvrUtil::COM4)
 {
   //myRobot = robot;
   initializePackets();
@@ -166,18 +166,18 @@ AREXPORT bool ArRVisionPTZ::init(void)
   // send command to power on camera on seekur
   if(myRobot)
   {
-	  ArLog::log(ArLog::Normal, "ArRVisionPTZ: turning camera power on ...");
+	  ArLog::log(MvrLog::Normal, "MvrRVisionPTZ: turning camera power on ...");
 	  myRobot->com2Bytes(116, 12, 1);
   }
   
   myConn = getDeviceConnection();
   if(!myConn)
   {
-     ArLog::log(ArLog::Normal, "ArRVisionPTZ: new connection to camera on %s...", mySerialPort);
+     ArLog::log(MvrLog::Normal, "MvrRVisionPTZ: new connection to camera on %s...", mySerialPort);
      ArSerialConnection *ser = new ArSerialConnection();
      if(ser->open(mySerialPort) != 0)
      {
-	ArLog::log(ArLog::Terse, "ArRVisionPTZ: error opening %s for camera PTZ control, initialization failed.", mySerialPort);
+	ArLog::log(MvrLog::Terse, "MvrRVisionPTZ: error opening %s for camera PTZ control, initialization failed.", mySerialPort);
         myConn = NULL;
         return false;
      }
@@ -197,7 +197,7 @@ AREXPORT bool ArRVisionPTZ::init(void)
 
   if (!sendPacket(&myPacket))
   {
-    ArLog::log(ArLog::Terse, "ArRVisionPTZ: Error sending initialization packet to RVision camera!");
+    ArLog::log(MvrLog::Terse, "MvrRVisionPTZ: Error sending initialization packet to RVision camera!");
     return false;
   }
   if (!panTilt(0, 0))
@@ -221,8 +221,8 @@ AREXPORT bool ArRVisionPTZ::panTilt_i(double degreesPan, double degreesTilt)
     degreesTilt = MIN_TILT;
   myTilt = degreesTilt;
 
-  myPanTiltPacket.byte2ToBufAtPos(ArMath::roundInt((myPan+myPanOffsetInDegrees) * myDegToPan), 6);
-  myPanTiltPacket.byte2ToBufAtPos(ArMath::roundInt((myTilt+myTiltOffsetInDegrees) * myDegToTilt), 10);
+  myPanTiltPacket.byte2ToBufAtPos(MvrMath::roundInt((myPan+myPanOffsetInDegrees) * myDegToPan), 6);
+  myPanTiltPacket.byte2ToBufAtPos(MvrMath::roundInt((myTilt+myTiltOffsetInDegrees) * myDegToTilt), 10);
   return sendPacket(&myPanTiltPacket);
 }
 
@@ -253,14 +253,14 @@ AREXPORT bool ArRVisionPTZ::tiltRel_i(double degrees)
 
 AREXPORT bool ArRVisionPTZ::zoom(int zoomValue)
 {
-  //printf("ArRVision::zoom(%d)\n", zoomValue);
+  //printf("MvrRVision::zoom(%d)\n", zoomValue);
   if (zoomValue > MAX_ZOOM)
     zoomValue = MAX_ZOOM;
   if (zoomValue < MIN_ZOOM)
     zoomValue = MIN_ZOOM;
   myZoom = zoomValue;
     
-  myZoomPacket.byte2ToBufAtPos(ArMath::roundInt(myZoom), 4);
+  myZoomPacket.byte2ToBufAtPos(MvrMath::roundInt(myZoom), 4);
   return sendPacket(&myZoomPacket);
 }
 
@@ -270,7 +270,7 @@ AREXPORT bool ArRVisionPTZ::zoomRel(int zoomValue)
 }
 
 /*
-AREXPORT bool ArRVisionPTZ::packetHandler(ArRobotPacket *packet)
+AREXPORT bool ArRVisionPTZ::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xE0)
     return false;
@@ -280,7 +280,7 @@ AREXPORT bool ArRVisionPTZ::packetHandler(ArRobotPacket *packet)
 */
 
 #define ARRVISION_MAX_RESPONSE_BYTES 16
-//AREXPORT bool ArRVisionPTZ::packetHandler(ArBasePacket *packet)
+//AREXPORT bool ArRVisionPTZ::packetHandler(MvrBasePacket *packet)
 ArBasePacket * ArRVisionPTZ::readPacket(void)
 {
   unsigned char data[ARRVISION_MAX_RESPONSE_BYTES];
@@ -294,11 +294,11 @@ ArBasePacket * ArRVisionPTZ::readPacket(void)
     }
     else if (byte == 0x90) {
       data[0] = byte;
-      //printf("ArRVisionPTZ::packetHandler:  got 0x%x, expecting packet\n", byte);
+      //printf("MvrRVisionPTZ::packetHandler:  got 0x%x, expecting packet\n", byte);
       break;
     }
     else {
-      //printf("ArRVisionPTZ::packetHandler:  got 0x%x, skipping\n", byte);
+      //printf("MvrRVisionPTZ::packetHandler:  got 0x%x, skipping\n", byte);
     }
   }
   // we got the header
@@ -306,7 +306,7 @@ ArBasePacket * ArRVisionPTZ::readPacket(void)
     if (myConn->read((char *) &byte, 1, 1) <= 0) {
       // there are no more bytes, so check the last byte for the footer
       if (data[num-1] != 0xFF) {
-	//printf("ArRVisionPTZ::packetHandler: should have gotten 0xFF, got 0x%x\n", data[num-1]);
+	//printf("MvrRVisionPTZ::packetHandler: should have gotten 0xFF, got 0x%x\n", data[num-1]);
 	return NULL;
       }
       else {
@@ -319,7 +319,7 @@ ArBasePacket * ArRVisionPTZ::readPacket(void)
     }
   }
   // print the data for now
-  //printf("ArRVisionPTZ::packetHandler: got packet!\n");
+  //printf("MvrRVisionPTZ::packetHandler: got packet!\n");
   //for (int i=0; i <= num; i++) {
   //printf("\t[%d]: 0x%x\n", i, data[i]);
   //}

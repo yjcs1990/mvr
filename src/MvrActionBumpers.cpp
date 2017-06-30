@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ArExport.h"
-#include "ariaOSDef.h"
-#include "ArActionBumpers.h"
-#include "ArRobot.h"
+#include "MvrExport.h"
+#include "mvriaOSDef.h"
+#include "MvrActionBumpers.h"
+#include "MvrRobot.h"
 
 /**
    @param name name of the action instance
@@ -36,27 +10,27 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param turnTime number of milisecons to alow for turn (msec)
    @param setMaximums if true, set desired maximum translation velocity limits to backOffSpeed while performing the action; if false, retain existing limits.
 */
-AREXPORT ArActionBumpers::ArActionBumpers(const char *name, 
+AREXPORT MvrActionBumpers::MvrActionBumpers(const char *name, 
 					  double backOffSpeed,
 					  int backOffTime, int turnTime,
 					  bool setMaximums) :
-  ArAction(name, "Reacts to the bumpers triggering")
+  MvrAction(name, "Reacts to the bumpers triggering")
 {
-  setNextArgument(ArArg("back off speed", &myBackOffSpeed, 
+  setNextArgument(MvrArg("back off speed", &myBackOffSpeed, 
 			"Speed at which to back away (mm/sec)"));
   myBackOffSpeed = backOffSpeed;
 
-  setNextArgument(ArArg("back off time", &myBackOffTime,
+  setNextArgument(MvrArg("back off time", &myBackOffTime,
 			"Number of msec to back up for (msec)"));
   myBackOffTime = backOffTime;
 
   //myStopTime = 1000;
 
-  setNextArgument(ArArg("turn time", &myTurnTime,
+  setNextArgument(MvrArg("turn time", &myTurnTime,
 			"Number of msec to allow for turn (msec)"));
   myTurnTime = turnTime;
 
-  setNextArgument(ArArg("set maximums", &mySetMaximums,
+  setNextArgument(MvrArg("set maximums", &mySetMaximums,
 			"Whether to set maximum vels or not (bool)"));
   mySetMaximums = setMaximums;
   
@@ -65,22 +39,22 @@ AREXPORT ArActionBumpers::ArActionBumpers(const char *name,
   myHeading = 0.0;
 
   // MPL I wrote this code, but checking for BIT8 makes no sense, BIT0 is the stall, BIT8 would be beyond this data
-  myBumpMask = (ArUtil::BIT1 | ArUtil::BIT2 | ArUtil::BIT3 | ArUtil::BIT4 | 
-		ArUtil::BIT5 | ArUtil::BIT6 | ArUtil::BIT7 | ArUtil::BIT8); 
+  myBumpMask = (MvrUtil::BIT1 | MvrUtil::BIT2 | MvrUtil::BIT3 | MvrUtil::BIT4 | 
+		MvrUtil::BIT5 | MvrUtil::BIT6 | MvrUtil::BIT7 | MvrUtil::BIT8); 
 }
 
-AREXPORT ArActionBumpers::~ArActionBumpers()
+AREXPORT MvrActionBumpers::~MvrActionBumpers()
 {
 
 }
 
-AREXPORT void ArActionBumpers::activate(void)
+AREXPORT void MvrActionBumpers::activate(void)
 {
   myFiring = false;
-  ArAction::activate();
+  MvrAction::activate();
 }
 
-AREXPORT double ArActionBumpers::findDegreesToTurn(int bumpValue, int whichBumper)
+AREXPORT double MvrActionBumpers::findDegreesToTurn(int bumpValue, int whichBumper)
 {
   double totalTurn = 0;
   int numTurn = 0;
@@ -94,14 +68,14 @@ AREXPORT double ArActionBumpers::findDegreesToTurn(int bumpValue, int whichBumpe
   for (int i = 0; i < numBumpers; i++)
     {
       // MPL I wrote this code, but checking for BIT8 makes no sense, BIT0 is  the stall, BIT8 would be beyond this data
-      if((i == 0 && (bumpValue & ArUtil::BIT1)) || 
-	 (i == 1 && (bumpValue & ArUtil::BIT2)) ||
-	 (i == 2 && (bumpValue & ArUtil::BIT3)) || 
-	 (i == 3 && (bumpValue & ArUtil::BIT4)) ||
-	 (i == 4 && (bumpValue & ArUtil::BIT5)) || 
-	 (i == 5 && (bumpValue & ArUtil::BIT6)) ||
-	 (i == 6 && (bumpValue & ArUtil::BIT7)) || 
-	 (i == 7 && (bumpValue & ArUtil::BIT8)))
+      if((i == 0 && (bumpValue & MvrUtil::BIT1)) || 
+	 (i == 1 && (bumpValue & MvrUtil::BIT2)) ||
+	 (i == 2 && (bumpValue & MvrUtil::BIT3)) || 
+	 (i == 3 && (bumpValue & MvrUtil::BIT4)) ||
+	 (i == 4 && (bumpValue & MvrUtil::BIT5)) || 
+	 (i == 5 && (bumpValue & MvrUtil::BIT6)) ||
+	 (i == 6 && (bumpValue & MvrUtil::BIT7)) || 
+	 (i == 7 && (bumpValue & MvrUtil::BIT8)))
 	{
 	  totalTurn = totalTurn +  (i * (turnRange / (double)numBumpers) + 
 				    ((turnRange / (double)numBumpers) / 2) - (turnRange / 2));
@@ -117,7 +91,7 @@ AREXPORT double ArActionBumpers::findDegreesToTurn(int bumpValue, int whichBumpe
   return totalTurn;
 }
 
-AREXPORT ArActionDesired *ArActionBumpers::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *MvrActionBumpers::fire(MvrActionDesired currentDesired)
 {
   int frontBump;
   int rearBump;
@@ -133,9 +107,9 @@ AREXPORT ArActionDesired *ArActionBumpers::fire(ArActionDesired currentDesired)
     rearBump = 0;
 
   if (frontBump != 0)
-    ArLog::log(ArLog::Verbose, "########## Front bump %x\n", frontBump);
+    MvrLog::log(MvrLog::Verbose, "########## Front bump %x\n", frontBump);
   if (rearBump != 0)
-    ArLog::log(ArLog::Verbose, "########## Rear bump %x\n", rearBump);
+    MvrLog::log(MvrLog::Verbose, "########## Rear bump %x\n", rearBump);
 
 
   myDesired.reset();
@@ -159,7 +133,7 @@ AREXPORT ArActionDesired *ArActionBumpers::fire(ArActionDesired currentDesired)
       return &myDesired;
     }
     else if (myStartBack.mSecSince() < myBackOffTime + myTurnTime &&
-	     ArMath::fabs(ArMath::subAngle(myRobot->getTh(), myHeading)) > 3)
+	     MvrMath::fabs(MvrMath::subAngle(myRobot->getTh(), myHeading)) > 3)
     {
       //printf("0 %.0f\n", myHeading);
       myDesired.setVel(0);
@@ -175,7 +149,7 @@ AREXPORT ArActionDesired *ArActionBumpers::fire(ArActionDesired currentDesired)
       }
     */
     myFiring = false;
-    ArLog::log(ArLog::Normal, "Bumpers: done");
+    MvrLog::log(MvrLog::Normal, "Bumpers: done");
   }
   
   if (myRobot->getVel() > 25)
@@ -183,10 +157,10 @@ AREXPORT ArActionDesired *ArActionBumpers::fire(ArActionDesired currentDesired)
     if (frontBump == 0)
       return NULL;
     whichBumper = 1;
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "Bumpers: Bumped a forward bumper while going forward, turning %.0f",
 	       findDegreesToTurn(frontBump, whichBumper));
-    myHeading = ArMath::addAngle(myRobot->getTh(), 
+    myHeading = MvrMath::addAngle(myRobot->getTh(), 
 				 findDegreesToTurn(frontBump, whichBumper));
     mySpeed = -myBackOffSpeed;
     myStartBack.setToNow();
@@ -196,10 +170,10 @@ AREXPORT ArActionDesired *ArActionBumpers::fire(ArActionDesired currentDesired)
     if (rearBump == 0)
       return NULL;
     whichBumper = 2;
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "Bumpers: Bumped a rear bumper while going backwards, turning %.0f \n",
 	       findDegreesToTurn(rearBump, whichBumper));
-    myHeading = ArMath::subAngle(myRobot->getTh(), 
+    myHeading = MvrMath::subAngle(myRobot->getTh(), 
 				 findDegreesToTurn(rearBump, whichBumper));
     mySpeed = myBackOffSpeed;
     myStartBack.setToNow();

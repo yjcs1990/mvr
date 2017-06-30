@@ -25,22 +25,22 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArCommands.h"
-#include "ArExport.h"
-#include "ArAnalogGyro.h"
-#include "ArRobot.h"
-#include "ArRobotConfigPacketReader.h"
+#include "MvrCommands.h"
+#include "MvrExport.h"
+#include "MvrAnalogGyro.h"
+#include "MvrRobot.h"
+#include "MvrRobotConfigPacketReader.h"
 
 /**
 **/
-AREXPORT ArAnalogGyro::ArAnalogGyro(ArRobot *robot) : 
+AREXPORT MvrAnalogGyro::ArAnalogGyro(MvrRobot *robot) : 
   myHandleGyroPacketCB(this, &ArAnalogGyro::handleGyroPacket),
   myEncoderCorrectCB(this, &ArAnalogGyro::encoderCorrect),
   myStabilizingCB(this, &ArAnalogGyro::stabilizingCallback),
   myUserTaskCB(this, &ArAnalogGyro::userTaskCallback)
 {
   myRobot = robot;
-  myHandleGyroPacketCB.setName("ArAnalogGyro");
+  myHandleGyroPacketCB.setName("MvrAnalogGyro");
   myRobot->addStabilizingCB(&myStabilizingCB);
   // this scaling factor now comes from the parameter file
   myScalingFactor = 0;
@@ -67,20 +67,20 @@ AREXPORT ArAnalogGyro::ArAnalogGyro(ArRobot *robot) :
   myGyroWorking = true;
   if (myRobot->isConnected())
     stabilizingCallback();
-  myUserTaskCB.setName("ArAnalogGyro");
-  myRobot->addUserTask("ArAnalogGyro", 50, &myUserTaskCB);
+  myUserTaskCB.setName("MvrAnalogGyro");
+  myRobot->addUserTask("MvrAnalogGyro", 50, &myUserTaskCB);
   
 }
 
-AREXPORT ArAnalogGyro::~ArAnalogGyro()
+AREXPORT MvrAnalogGyro::~ArAnalogGyro()
 {
-  myRobot->comInt(ArCommands::GYRO, 0);
+  myRobot->comInt(MvrCommands::GYRO, 0);
   myRobot->remPacketHandler(&myHandleGyroPacketCB);
   myRobot->remStabilizingCB(&myStabilizingCB);
   myRobot->setEncoderCorrectionCallback(NULL);
 }
 
-AREXPORT void ArAnalogGyro::stabilizingCallback(void)
+AREXPORT void MvrAnalogGyro::stabilizingCallback(void)
 {
   if (myRobot->getOrigRobotConfig() != NULL &&
       myRobot->getOrigRobotConfig()->getHasGyro() == 1)
@@ -96,10 +96,10 @@ AREXPORT void ArAnalogGyro::stabilizingCallback(void)
     myScalingFactor = myRobot->getRobotParams()->getGyroScaler();  
     
     if (!myRobot->isConnected())
-      ArLog::log(ArLog::Normal, "Stabilizing gyro");
+      MvrLog::log(MvrLog::Normal, "Stabilizing gyro");
     if (!myRobot->isConnected() && myRobot->getStabilizingTime() < 3000)
       myRobot->setStabilizingTime(3000);
-    myRobot->comInt(ArCommands::GYRO, 1);
+    myRobot->comInt(MvrCommands::GYRO, 1);
   }
   else if (myRobot->getOrigRobotConfig() != NULL &&
 	   myRobot->getOrigRobotConfig()->getGyroType() >= 2)
@@ -109,7 +109,7 @@ AREXPORT void ArAnalogGyro::stabilizingCallback(void)
     myHasNoData = true;
     myHaveGottenData = true;
     if (!myRobot->isConnected())
-      ArLog::log(ArLog::Normal, "Stabilizing microcontroller gyro");
+      MvrLog::log(MvrLog::Normal, "Stabilizing microcontroller gyro");
     myRobot->setStabilizingTime(2000);
     // only set this if it isn't already set (since this now comes in
     // the config packet so its variable per connection/robot)
@@ -118,14 +118,14 @@ AREXPORT void ArAnalogGyro::stabilizingCallback(void)
   }
 }
 
-AREXPORT bool ArAnalogGyro::handleGyroPacket(ArRobotPacket *packet)
+AREXPORT bool MvrAnalogGyro::handleGyroPacket(MvrRobotPacket *packet)
 {
   int numReadings;
   int i;
   double reading;
   int temperature;
   double rate;
-  ArTime now;
+  MvrTime now;
 
   if (packet->getID() != 0x98)
     return false;
@@ -186,7 +186,7 @@ AREXPORT bool ArAnalogGyro::handleGyroPacket(ArRobotPacket *packet)
     myHeading += rate * .025;
     //printf("rate %6.3f, reading %6.3f heading %6.3f\n", rate, reading, myHeading);
 
-    myHeading = ArMath::fixAngle(myHeading);
+    myHeading = MvrMath::fixAngle(myHeading);
 
     if (myTimeLastPacket != time(NULL)) 
     {
@@ -202,9 +202,9 @@ AREXPORT bool ArAnalogGyro::handleGyroPacket(ArRobotPacket *packet)
   return true;
 }
 
-AREXPORT double ArAnalogGyro::encoderCorrect(ArPoseWithTime deltaPose)
+AREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
 {
-  ArPose ret;
+  MvrPose ret;
 
   // variables
   double inertialVariance;
@@ -215,33 +215,33 @@ AREXPORT double ArAnalogGyro::encoderCorrect(ArPoseWithTime deltaPose)
   double deltaTh;
 
   /*
-  ArPose lastPose;
+  MvrPose lastPose;
   double lastTh;
-  ArPose thisPose;
+  MvrPose thisPose;
   double thisTh;
   */
-  ArPoseWithTime zero(0.0, 0.0, 0.0);
+  MvrPoseWithTime zero(0.0, 0.0, 0.0);
 
 
   // if we didn't get a reading this take what we got at face value
   if (!myReadingThisCycle)
   {
-    //ArLog::log(ArLog::Verbose, "ArAnalogGyro: no inertial reading, using encoder");
+    //ArLog::log(MvrLog::Verbose, "MvrAnalogGyro: no inertial reading, using encoder");
     myAccumulatedDelta += deltaPose.getTh();
     //printf("adding %f\n", myAccumulatedDelta);
     return deltaPose.getTh();
   }
 
   // 6/20/05 MPL added this fix
-  robotDeltaTh = ArMath::fixAngle(myAccumulatedDelta + deltaPose.getTh());
+  robotDeltaTh = MvrMath::fixAngle(myAccumulatedDelta + deltaPose.getTh());
   //printf("using %f %f %f\n", robotDeltaTh, myAccumulatedDelta, deltaPose.getTh());
 
   inertialVariance = (myGyroSigma * myGyroSigma * 10);
   // was: deltaPose.getTime().mSecSince(myLastAsked)/10.0);
 
 
-  //printf("@ %10f %10f %10f %10f\n", multiplier, ArMath::subAngle(thisTh, lastTh), thisTh, lastTh);
-  inertialDeltaTh = ArMath::subAngle(myHeading, myLastHeading);
+  //printf("@ %10f %10f %10f %10f\n", multiplier, MvrMath::subAngle(thisTh, lastTh), thisTh, lastTh);
+  inertialDeltaTh = MvrMath::subAngle(myHeading, myLastHeading);
 
   inertialVariance += fabs(inertialDeltaTh) * myInertialVarianceModel;
   encoderVariance = (fabs(deltaPose.getTh()) * myRotVarianceModel +
@@ -255,14 +255,14 @@ AREXPORT double ArAnalogGyro::encoderCorrect(ArPoseWithTime deltaPose)
 
     }
     else if (fabs(robotDeltaTh) < 1 && fabs(inertialDeltaTh) > 2)
-      ArLog::log(ArLog::Normal, "ArAnalogGyro::anomaly: Gyro (%.1f) moved but encoder (%.1f) didn't, using gyro", inertialDeltaTh, robotDeltaTh);
+      MvrLog::log(MvrLog::Normal, "MvrAnalogGyro::anomaly: Gyro (%.1f) moved but encoder (%.1f) didn't, using gyro", inertialDeltaTh, robotDeltaTh);
     else if ((inertialDeltaTh < -1 && robotDeltaTh > 1) ||
 	     (robotDeltaTh < -1 && inertialDeltaTh > 1))
-      ArLog::log(ArLog::Normal, "ArAnalogGyro::anomaly: gyro (%.1f) moved opposite of robot (%.1f)", inertialDeltaTh, robotDeltaTh);
+      MvrLog::log(MvrLog::Normal, "MvrAnalogGyro::anomaly: gyro (%.1f) moved opposite of robot (%.1f)", inertialDeltaTh, robotDeltaTh);
     else if (fabs(robotDeltaTh) < fabs(inertialDeltaTh * .66666))
-      ArLog::log(ArLog::Normal, "ArAnalogGyro::anomaly: robot (%.1f) moved less than gyro (%.1f)", robotDeltaTh, inertialDeltaTh);
+      MvrLog::log(MvrLog::Normal, "MvrAnalogGyro::anomaly: robot (%.1f) moved less than gyro (%.1f)", robotDeltaTh, inertialDeltaTh);
     else if (fabs(inertialDeltaTh) < fabs(robotDeltaTh * .66666))
-      ArLog::log(ArLog::Normal, "ArAnalogGyro::anomaly: gyro (%.1f) moved less than robot (%.1f)", inertialDeltaTh, robotDeltaTh);
+      MvrLog::log(MvrLog::Normal, "MvrAnalogGyro::anomaly: gyro (%.1f) moved less than robot (%.1f)", inertialDeltaTh, robotDeltaTh);
   }
 
 
@@ -272,9 +272,9 @@ AREXPORT double ArAnalogGyro::encoderCorrect(ArPoseWithTime deltaPose)
   // if we get no encoder readings, but we get gyro readings, just
   // believe the gyro (this case is new 6/20/05 MPL)
   else if (fabs(robotDeltaTh) < 1 && fabs(inertialDeltaTh) > 2)
-    deltaTh = ArMath::fixAngle(inertialDeltaTh);
+    deltaTh = MvrMath::fixAngle(inertialDeltaTh);
   else
-    deltaTh = ArMath::fixAngle(
+    deltaTh = MvrMath::fixAngle(
 	    (robotDeltaTh * 
 	     (inertialVariance / (inertialVariance + encoderVariance))) +
 	    (inertialDeltaTh *
@@ -296,53 +296,53 @@ AREXPORT double ArAnalogGyro::encoderCorrect(ArPoseWithTime deltaPose)
 }
 
 
-AREXPORT void ArAnalogGyro::activate(void)
+AREXPORT void MvrAnalogGyro::activate(void)
 { 
   if (!myIsActive || myIsGyroOnlyActive)
-    ArLog::log(ArLog::Normal, "Activating gyro"); 
+    MvrLog::log(MvrLog::Normal, "Activating gyro"); 
   myIsActive = true; 
   myIsGyroOnlyActive = false;
   if (myGyroType == GYRO_ANALOG_CONTROLLER)
-    myRobot->comInt(ArCommands::GYRO, 1);
+    myRobot->comInt(MvrCommands::GYRO, 1);
 }
 
-AREXPORT void ArAnalogGyro::deactivate(void)
+AREXPORT void MvrAnalogGyro::deactivate(void)
 { 
   if (myIsActive || myIsGyroOnlyActive)
-    ArLog::log(ArLog::Normal, "Dectivating gyro"); 
+    MvrLog::log(MvrLog::Normal, "Dectivating gyro"); 
   myIsActive = false; 
   myIsGyroOnlyActive = false;
   if (myGyroType == GYRO_ANALOG_CONTROLLER)
-    myRobot->comInt(ArCommands::GYRO, 0);
+    myRobot->comInt(MvrCommands::GYRO, 0);
 }
 
-AREXPORT void ArAnalogGyro::activateGyroOnly(void)
+AREXPORT void MvrAnalogGyro::activateGyroOnly(void)
 { 
   if (!myHasGyroOnlyMode)
   {
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "An attempt was made (and rejected) to set gyro only mode on a gyro that cannot do that mode"); 
     return;
   }
   if (!myIsActive || !myIsGyroOnlyActive)
-    ArLog::log(ArLog::Normal, "Activating gyro only"); 
+    MvrLog::log(MvrLog::Normal, "Activating gyro only"); 
   myIsActive = false; 
   myIsGyroOnlyActive = true;
   if (myGyroType == GYRO_ANALOG_CONTROLLER)
-    myRobot->comInt(ArCommands::GYRO, 2);
+    myRobot->comInt(MvrCommands::GYRO, 2);
 }
 
-AREXPORT void ArAnalogGyro::userTaskCallback(void)
+AREXPORT void MvrAnalogGyro::userTaskCallback(void)
 {
-  if ((myRobot->getFaultFlags() & ArUtil::BIT4) && myGyroWorking)
+  if ((myRobot->getFaultFlags() & MvrUtil::BIT4) && myGyroWorking)
   {
-    ArLog::log(ArLog::Normal, "ArAnalogGyro: Gyro failed");
+    MvrLog::log(MvrLog::Normal, "MvrAnalogGyro: Gyro failed");
     myGyroWorking = false;
   }
 
-  if (!(myRobot->getFaultFlags() & ArUtil::BIT4) && !myGyroWorking)
+  if (!(myRobot->getFaultFlags() & MvrUtil::BIT4) && !myGyroWorking)
   {
-    ArLog::log(ArLog::Normal, "ArAnalogGyro: Gyro recovered");
+    MvrLog::log(MvrLog::Normal, "MvrAnalogGyro: Gyro recovered");
     myGyroWorking = true;
   }
 }

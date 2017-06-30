@@ -24,20 +24,20 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionJoydrive.h"
-#include "ArRobot.h"
+#include "MvrActionJoydrive.h"
+#include "MvrRobot.h"
 #include "ariaInternal.h"
 
 /**
    This action is for driving around the robot with a joystick, you
    must hold in a button on the joystick and then lean the joytsick
    over to have it drive.  You may need to calibrate the joystick for
-   it to work right, for details about this see ArJoyHandler.  If the
-   Aria static class already has a joyhandler this class will use that
+   it to work right, for details about this see MvrJoyHandler.  If the
+   Mvria static class already has a joyhandler this class will use that
    otherwise it'll make and initialize one and use that (setting it in
-   the Aria class)
+   the Mvria class)
 
    @param name the name of this action
 
@@ -57,64 +57,64 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    be used. Default is true.
 
 
-   @see ArJoyHandler::setUseOSCal()
+   @see MvrJoyHandler::setUseOSCal()
 **/
 
-AREXPORT ArActionJoydrive::ArActionJoydrive(const char *name, 
+AREXPORT MvrActionJoydrive::ArActionJoydrive(const char *name, 
 					    double transVelMax, 
 					    double turnAmountMax,
 					    bool stopIfNoButtonPressed,
 					    bool useOSCalForJoystick) :
-  ArAction(name, "This action reads the joystick and sets the translational and rotational velocities based on this.")
+  MvrAction(name, "This action reads the joystick and sets the translational and rotational velocities based on this.")
 {
-  if ((myJoyHandler = Aria::getJoyHandler()) == NULL)
+  if ((myJoyHandler = Mvria::getJoyHandler()) == NULL)
   {
-    myJoyHandler = new ArJoyHandler;
+    myJoyHandler = new MvrJoyHandler;
     myJoyHandler->init();
-    Aria::setJoyHandler(myJoyHandler);
+    Mvria::setJoyHandler(myJoyHandler);
   }
 
   setSpeeds(transVelMax, turnAmountMax);
 
-  setNextArgument(ArArg("trans vel max", &myTransVelMax, "The full speed to go when the joystick is maxed forwards/backwards (mm/sec)"));
+  setNextArgument(MvrArg("trans vel max", &myTransVelMax, "The full speed to go when the joystick is maxed forwards/backwards (mm/sec)"));
   
-  setNextArgument(ArArg("turn amount max", &myTurnAmountMax, "The full amount to turn if the joystick is pushed all the way right/left (deg)"));
+  setNextArgument(MvrArg("turn amount max", &myTurnAmountMax, "The full amount to turn if the joystick is pushed all the way right/left (deg)"));
 
-  setNextArgument(ArArg("stop if no button pressed", &myStopIfNoButtonPressed, "If this is true, then joydrive will stop the robot if there is no button pressed, otherwise it will just let whatever lower priority things go."));
+  setNextArgument(MvrArg("stop if no button pressed", &myStopIfNoButtonPressed, "If this is true, then joydrive will stop the robot if there is no button pressed, otherwise it will just let whatever lower priority things go."));
   myStopIfNoButtonPressed = stopIfNoButtonPressed;
 
-  setNextArgument(ArArg("use os calibration for joystick", &myUseOSCal, "If this is true then the os calibration for the joystick will be used, otherwise autocalibration will be used."));
+  setNextArgument(MvrArg("use os calibration for joystick", &myUseOSCal, "If this is true then the os calibration for the joystick will be used, otherwise autocalibration will be used."));
   myUseOSCal = useOSCalForJoystick;
   myPreviousUseOSCal = myUseOSCal;
 
   myUseThrottle = false;
 }
 
-AREXPORT ArActionJoydrive::~ArActionJoydrive()
+AREXPORT MvrActionJoydrive::~ArActionJoydrive()
 {
 
 }
 
-AREXPORT void ArActionJoydrive::setStopIfNoButtonPressed(
+AREXPORT void MvrActionJoydrive::setStopIfNoButtonPressed(
 	bool stopIfNoButtonPressed)
 {
   myStopIfNoButtonPressed = stopIfNoButtonPressed;
 }
 
-AREXPORT bool ArActionJoydrive::getStopIfNoButtonPressed(void)
+AREXPORT bool MvrActionJoydrive::getStopIfNoButtonPressed(void)
 {
   return myStopIfNoButtonPressed;
 }
 
-AREXPORT bool ArActionJoydrive::joystickInited(void)
+AREXPORT bool MvrActionJoydrive::joystickInited(void)
 {
   return myJoyHandler->haveJoystick();
 }
 
 /**
-   @see ArJoyHandler::setUseOSCal
+   @see MvrJoyHandler::setUseOSCal
 **/
-AREXPORT void ArActionJoydrive::setUseOSCal(bool useOSCal)
+AREXPORT void MvrActionJoydrive::setUseOSCal(bool useOSCal)
 {
   myUseOSCal = useOSCal;
   myPreviousUseOSCal = useOSCal;
@@ -122,28 +122,28 @@ AREXPORT void ArActionJoydrive::setUseOSCal(bool useOSCal)
 }
 
 /**
-   @see ArJoyHandler::getUseOSCal
+   @see MvrJoyHandler::getUseOSCal
 **/
-AREXPORT bool ArActionJoydrive::getUseOSCal(void)
+AREXPORT bool MvrActionJoydrive::getUseOSCal(void)
 {
   return myUseOSCal;
 }
 
-AREXPORT void ArActionJoydrive::setSpeeds(double transVelMax, 
+AREXPORT void MvrActionJoydrive::setSpeeds(double transVelMax, 
 					  double turnAmountMax)
 {
   myTransVelMax = transVelMax;
   myTurnAmountMax = turnAmountMax;
 }
 
-AREXPORT void ArActionJoydrive::setThrottleParams(double lowSpeed, double highSpeed)
+AREXPORT void MvrActionJoydrive::setThrottleParams(double lowSpeed, double highSpeed)
 {
   myUseThrottle = true;
   myLowThrottle = lowSpeed;
   myHighThrottle = highSpeed;
 }
 
-AREXPORT ArActionDesired *ArActionJoydrive::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *ArActionJoydrive::fire(MvrActionDesired currentDesired)
 {
   double rot, trans, throttle;
 

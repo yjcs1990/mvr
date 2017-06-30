@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLMS2xxPacketReceiver.h"
-#include "ArLog.h"
+#include "MvrLMS2xxPacketReceiver.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
 
 
@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    packet (false)... most everything should use false as this will help prevent
    many memory leaks or corruptions
 */
-AREXPORT ArLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
+AREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
 	unsigned char receivingAddress, bool allocatePackets,
 	bool useBase0Address) 
 {
@@ -53,7 +53,7 @@ AREXPORT ArLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
    packet (false)... most everything should use false as this will help prevent
    many memory leaks or corruptions
 */
-AREXPORT ArLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
+AREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
 	ArDeviceConnection *deviceConnection, 
 	unsigned char receivingAddress, bool allocatePackets,
 	bool useBase0Address)
@@ -64,18 +64,18 @@ AREXPORT ArLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
   myUseBase0Address = useBase0Address;
 }
 
-AREXPORT ArLMS2xxPacketReceiver::~ArLMS2xxPacketReceiver() 
+AREXPORT MvrLMS2xxPacketReceiver::~ArLMS2xxPacketReceiver() 
 {
   
 }
 
-AREXPORT void ArLMS2xxPacketReceiver::setDeviceConnection(
+AREXPORT void MvrLMS2xxPacketReceiver::setDeviceConnection(
 	ArDeviceConnection *deviceConnection)
 {
   myDeviceConn = deviceConnection;
 }
 
-AREXPORT ArDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
+AREXPORT MvrDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
 {
   return myDeviceConn;
 }
@@ -89,10 +89,10 @@ AREXPORT ArDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
     this packet, the packet must be used and done with by the time this 
     method is called again
 */
-AREXPORT ArLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
+AREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
 	unsigned int msWait)
 {
-  ArLMS2xxPacket *packet;
+  MvrLMS2xxPacket *packet;
   unsigned char c;
   char buf[2048];
   long count = 0;
@@ -102,14 +102,14 @@ AREXPORT ArLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
   //unsigned int curTime;
   long timeToRunFor;
   long packetLength;
-  ArTime timeDone;
-  ArTime lastDataRead;
-  ArTime packetReceived;
+  MvrTime timeDone;
+  MvrTime lastDataRead;
+  MvrTime packetReceived;
   int numRead;
 
 
   if (myDeviceConn == NULL || 
-      myDeviceConn->getStatus() != ArDeviceConnection::STATUS_OPEN)
+      myDeviceConn->getStatus() != MvrDeviceConnection::STATUS_OPEN)
   {
     myDeviceConn->debugEndPacket(false, -10);
     return NULL;
@@ -117,8 +117,8 @@ AREXPORT ArLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
   
   timeDone.setToNow();
   if (!timeDone.addMSec(msWait)) {
-    ArLog::log(ArLog::Normal,
-               "ArLMS2xxPacketReceiver::receivePacket() error adding msecs (%i)",
+    MvrLog::log(MvrLog::Normal,
+               "MvrLMS2xxPacketReceiver::receivePacket() error adding msecs (%i)",
                msWait);
   }
   do
@@ -184,8 +184,8 @@ AREXPORT ArLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
       }
       else // go back to beginning, packet hosed
       {
-	ArLog::log(ArLog::Terse, 
-		   "ArLMS2xxPacketReceiver::receivePacket: wrong address (0x%x instead of 0x%x)", c, (unsigned) 0x80 + myReceivingAddress);
+	ArLog::log(MvrLog::Terse, 
+		   "MvrLMS2xxPacketReceiver::receivePacket: wrong address (0x%x instead of 0x%x)", c, (unsigned) 0x80 + myReceivingAddress);
 	state = STATE_START;
       }
       break;
@@ -206,8 +206,8 @@ AREXPORT ArLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
       if (packetLength > ((long)myPacket.getMaxLength() -
 			  (long)myPacket.getHeaderLength()))
       {
-	ArLog::log(ArLog::Normal, 
-	   "ArLMS2xxPacketReceiver::receivePacket: packet too long, it is %d long while the maximum is %d.", packetLength, myPacket.getMaxLength());
+	ArLog::log(MvrLog::Normal, 
+	   "MvrLMS2xxPacketReceiver::receivePacket: packet too long, it is %d long while the maximum is %d.", packetLength, myPacket.getMaxLength());
 	state = STATE_START;
 	//myPacket.log();
 	break;
@@ -244,7 +244,7 @@ AREXPORT ArLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
 	//myPacket.log();
 	if (myAllocatePackets)
 	{
-	  packet = new ArLMS2xxPacket;
+	  packet = new MvrLMS2xxPacket;
 	  packet->duplicatePacket(&myPacket);
 	  return packet;
 	}
@@ -253,8 +253,8 @@ AREXPORT ArLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
       }
       else 
       {
-	ArLog::log(ArLog::Normal, 
-	   "ArLMS2xxPacketReceiver::receivePacket: bad packet, bad checksum");
+	ArLog::log(MvrLog::Normal, 
+	   "MvrLMS2xxPacketReceiver::receivePacket: bad packet, bad checksum");
 	state = STATE_START;
 	//myPacket.log();
 	break;

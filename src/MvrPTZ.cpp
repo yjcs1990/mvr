@@ -24,25 +24,25 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArPTZ.h"
-#include "ArRobot.h"
-#include "ArRobotPacket.h"
-#include "ArCommands.h"
-#include "ArDeviceConnection.h"
+#include "MvrPTZ.h"
+#include "MvrRobot.h"
+#include "MvrRobotPacket.h"
+#include "MvrCommands.h"
+#include "MvrDeviceConnection.h"
 
 /**
    @param robot The robot this camera is attached to, can be NULL
 **/
-AREXPORT ArPTZ::ArPTZ(ArRobot *robot) :
+AREXPORT ArPTZ::ArPTZ(MvrRobot *robot) :
   myRobot(robot),
   myConn(NULL),
   myConnectCB(this, &ArPTZ::connectHandler),
   mySensorInterpCB(this, &ArPTZ::sensorInterpHandler),
   myAuxPort(1),
-  myAuxTxCmd(ArCommands::TTY2),
-  myAuxRxCmd(ArCommands::GETAUX),
+  myAuxTxCmd(MvrCommands::TTY2),
+  myAuxRxCmd(MvrCommands::GETAUX),
   myRobotPacketHandlerCB(this, &ArPTZ::robotPacketHandler),
   myInverted(false),
   myMaxPosPan(90),
@@ -52,7 +52,7 @@ AREXPORT ArPTZ::ArPTZ(ArRobot *robot) :
   myMaxZoom(100),
   myMinZoom(0)
 {
-  myRobotPacketHandlerCB.setName("ArPTZ");
+  myRobotPacketHandlerCB.setName("MvrPTZ");
   if (myRobot != NULL)
   {
     myRobot->addConnectCB(&myConnectCB, ArListPos::LAST);
@@ -76,7 +76,7 @@ AREXPORT ArPTZ::~ArPTZ()
    @return true if the packet could be sent, false otherwise
 **/
    
-AREXPORT bool ArPTZ::sendPacket(ArBasePacket *packet)
+AREXPORT bool ArPTZ::sendPacket(MvrBasePacket *packet)
 {
   packet->finalizePacket();
   if (myConn != NULL)
@@ -88,7 +88,7 @@ AREXPORT bool ArPTZ::sendPacket(ArBasePacket *packet)
     return false;
 }
 
-AREXPORT bool ArPTZ::robotPacketHandler(ArRobotPacket *packet)
+AREXPORT bool ArPTZ::robotPacketHandler(MvrRobotPacket *packet)
 {
   //printf("%x\n", packet->getID());
   if ((packet->getID() == 0xb0 && myAuxPort == 1) ||
@@ -123,7 +123,7 @@ AREXPORT void ArPTZ::sensorInterpHandler(void)
    @return true if the serial port is opened or can be opened, false
    otherwise
 **/
-AREXPORT bool ArPTZ::setDeviceConnection(ArDeviceConnection *connection,
+AREXPORT bool ArPTZ::setDeviceConnection(MvrDeviceConnection *connection,
 					 bool driveFromRobotLoop)
 {
   if (myRobot != NULL)

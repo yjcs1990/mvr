@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 
 
 #include "ariaOSDef.h"
-#include "ArRobotParams.h"
+#include "MvrRobotParams.h"
 #include "ariaInternal.h"
 #include <sstream>
 
@@ -41,8 +41,8 @@ void ArRobotParams::internalSetUseDefaultBehavior(bool useDefaultBehavior,
   ourUseDefaultBehavior = useDefaultBehavior;
   ourPowerOutputDisplayHint = powerOutputDisplayHint;
 
-  ArLog::log(ArLog::Normal, 
-	     "ArRobotParams: Setting use default behavior to %s, with power output display hint '%s'", 
+  ArLog::log(MvrLog::Normal, 
+	     "MvrRobotParams: Setting use default behavior to %s, with power output display hint '%s'", 
 	     ArUtil::convertBool(ourUseDefaultBehavior),
 	     ourPowerOutputDisplayHint.c_str());
 }
@@ -154,99 +154,99 @@ void ArRobotParams::internalAddToConfigDefault(void)
   //addComment("General settings");
   std::string section;
   section = "General settings";
-  addParam(ArConfigArg("Class", myClass, "general type of robot", 
+  addParam(MvrConfigArg("Class", myClass, "general type of robot", 
 		 sizeof(myClass)), section.c_str(), ArPriority::TRIVIAL);
-  addParam(ArConfigArg("Subclass", mySubClass, "specific type of robot", 
+  addParam(MvrConfigArg("Subclass", mySubClass, "specific type of robot", 
 		       sizeof(mySubClass)), section.c_str(), 
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("RobotRadius", &myRobotRadius, "radius in mm"), 
+  addParam(MvrConfigArg("RobotRadius", &myRobotRadius, "radius in mm"), 
 	   section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("RobotDiagonal", &myRobotDiagonal, 
+  addParam(MvrConfigArg("RobotDiagonal", &myRobotDiagonal, 
 		 "half-height to diagonal of octagon"), "General settings",
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("RobotWidth", &myRobotWidth, "width in mm"), 
+  addParam(MvrConfigArg("RobotWidth", &myRobotWidth, "width in mm"), 
 	   section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("RobotLength", &myRobotLength, "length in mm of the whole robot"),
+  addParam(MvrConfigArg("RobotLength", &myRobotLength, "length in mm of the whole robot"),
 	   section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("RobotLengthFront", &myRobotLengthFront, "length in mm to the front of the robot (if this is 0 (or non existent) this value will be set to half of RobotLength)"),
+  addParam(MvrConfigArg("RobotLengthFront", &myRobotLengthFront, "length in mm to the front of the robot (if this is 0 (or non existent) this value will be set to half of RobotLength)"),
 	   section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("RobotLengthRear", &myRobotLengthRear, "length in mm to the rear of the robot (if this is 0 (or non existent) this value will be set to half of RobotLength)"), 
+  addParam(MvrConfigArg("RobotLengthRear", &myRobotLengthRear, "length in mm to the rear of the robot (if this is 0 (or non existent) this value will be set to half of RobotLength)"), 
 	   section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("Holonomic", &myHolonomic, "turns in own radius"), 
+  addParam(MvrConfigArg("Holonomic", &myHolonomic, "turns in own radius"), 
 	   section.c_str(), ArPriority::TRIVIAL);
-  addParam(ArConfigArg("MaxRVelocity", &myAbsoluteMaxRVelocity, 
+  addParam(MvrConfigArg("MaxRVelocity", &myAbsoluteMaxRVelocity, 
 		       "absolute maximum degrees / sec"), section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("MaxVelocity", &myAbsoluteMaxVelocity, 
+  addParam(MvrConfigArg("MaxVelocity", &myAbsoluteMaxVelocity, 
 		 "absolute maximum mm / sec"), section.c_str(), 
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("MaxLatVelocity", &myAbsoluteMaxLatVelocity, 
+  addParam(MvrConfigArg("MaxLatVelocity", &myAbsoluteMaxLatVelocity, 
 		 "absolute lateral maximum mm / sec"), section.c_str(), 
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("HasMoveCommand", &myHaveMoveCommand, 
+  addParam(MvrConfigArg("HasMoveCommand", &myHaveMoveCommand, 
 		 "has built in move command"), section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("RequestIOPackets", &myRequestIOPackets,
+  addParam(MvrConfigArg("RequestIOPackets", &myRequestIOPackets,
 		 "automatically request IO packets"), section.c_str(),
 	   ArPriority::NORMAL);
-  addParam(ArConfigArg("RequestEncoderPackets", &myRequestEncoderPackets,
+  addParam(MvrConfigArg("RequestEncoderPackets", &myRequestEncoderPackets,
 		       "automatically request encoder packets"), 
 	   section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("SwitchToBaudRate", &mySwitchToBaudRate, 
+  addParam(MvrConfigArg("SwitchToBaudRate", &mySwitchToBaudRate, 
 		 "switch to this baud if non-0 and supported on robot"), 
 	   section.c_str(), ArPriority::IMPORTANT);
   
   section = "Conversion factors";
-  addParam(ArConfigArg("AngleConvFactor", &myAngleConvFactor,
+  addParam(MvrConfigArg("AngleConvFactor", &myAngleConvFactor,
 		     "radians per angular unit (2PI/4096)"), section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("DistConvFactor", &myDistConvFactor,
+  addParam(MvrConfigArg("DistConvFactor", &myDistConvFactor,
 		       "multiplier to mm from robot units"), section.c_str(),
 	   ArPriority::IMPORTANT);
-  addParam(ArConfigArg("VelConvFactor", &myVelConvFactor,
+  addParam(MvrConfigArg("VelConvFactor", &myVelConvFactor,
 		     "multiplier to mm/sec from robot units"), 
 	   section.c_str(),
 	   ArPriority::NORMAL);
-  addParam(ArConfigArg("RangeConvFactor", &myRangeConvFactor, 
+  addParam(MvrConfigArg("RangeConvFactor", &myRangeConvFactor, 
 		       "multiplier to mm from sonar units"), section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("DiffConvFactor", &myDiffConvFactor, 
+  addParam(MvrConfigArg("DiffConvFactor", &myDiffConvFactor, 
 		     "ratio of angular velocity to wheel velocity (unused in newer firmware that calculates and returns this)"), 
 	   section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("Vel2Divisor", &myVel2Divisor, 
+  addParam(MvrConfigArg("Vel2Divisor", &myVel2Divisor, 
 		       "divisor for VEL2 commands"), section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("GyroScaler", &myGyroScaler, 
+  addParam(MvrConfigArg("GyroScaler", &myGyroScaler, 
 		     "Scaling factor for gyro readings"), section.c_str(),
 	   ArPriority::IMPORTANT);
 
   section = "Accessories the robot has";
-  addParam(ArConfigArg("TableSensingIR", &myTableSensingIR,
+  addParam(MvrConfigArg("TableSensingIR", &myTableSensingIR,
 		       "if robot has upwards facing table sensing IR"), 
 	   section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("NewTableSensingIR", &myNewTableSensingIR,
+  addParam(MvrConfigArg("NewTableSensingIR", &myNewTableSensingIR,
 		 "if table sensing IR are sent in IO packet"), 
 	   section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("FrontBumpers", &myFrontBumpers, 
+  addParam(MvrConfigArg("FrontBumpers", &myFrontBumpers, 
 		 "if robot has a front bump ring"), section.c_str(),
 	   ArPriority::IMPORTANT);
-  addParam(ArConfigArg("NumFrontBumpers", &myNumFrontBumpers,
+  addParam(MvrConfigArg("NumFrontBumpers", &myNumFrontBumpers,
 		     "number of front bumpers on the robot"), 
 	   section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("RearBumpers", &myRearBumpers,
+  addParam(MvrConfigArg("RearBumpers", &myRearBumpers,
 		       "if the robot has a rear bump ring"), section.c_str(),
 	   ArPriority::IMPORTANT);
-  addParam(ArConfigArg("NumRearBumpers", &myNumRearBumpers,
+  addParam(MvrConfigArg("NumRearBumpers", &myNumRearBumpers,
 		       "number of rear bumpers on the robot"), section.c_str(),
 	   ArPriority::TRIVIAL);
 
   section = "IR parameters";
-  addParam(ArConfigArg("IRNum", &myNumIR, "number of IRs on the robot"), section.c_str(), ArPriority::NORMAL);
-   addParam(ArConfigArg("IRUnit", &myIRUnitSetFunctor, &myIRUnitGetFunctor,
+  addParam(MvrConfigArg("IRNum", &myNumIR, "number of IRs on the robot"), section.c_str(), ArPriority::NORMAL);
+   addParam(MvrConfigArg("IRUnit", &myIRUnitSetFunctor, &myIRUnitGetFunctor,
 			"IRUnit <IR Number> <IR Type> <Persistance, cycles> <x position, mm> <y position, mm>"), 
 	    section.c_str(), ArPriority::TRIVIAL);
 
@@ -254,51 +254,51 @@ void ArRobotParams::internalAddToConfigDefault(void)
     
   section = "Movement control parameters";
   setSectionComment(section.c_str(), "if these are 0 the parameters from robot flash will be used, otherwise these values will be used");
-  addParam(ArConfigArg("SettableVelMaxes", &mySettableVelMaxes, "if TransVelMax and RotVelMax can be set"), section.c_str(),
+  addParam(MvrConfigArg("SettableVelMaxes", &mySettableVelMaxes, "if TransVelMax and RotVelMax can be set"), section.c_str(),
 	   ArPriority::TRIVIAL);
-  addParam(ArConfigArg("TransVelMax", &myTransVelMax, "maximum desired translational velocity for the robot"), section.c_str(), 
+  addParam(MvrConfigArg("TransVelMax", &myTransVelMax, "maximum desired translational velocity for the robot"), section.c_str(), 
 	   ArPriority::IMPORTANT);
-  addParam(ArConfigArg("RotVelMax", &myRotVelMax, "maximum desired rotational velocity for the robot"), section.c_str(),
+  addParam(MvrConfigArg("RotVelMax", &myRotVelMax, "maximum desired rotational velocity for the robot"), section.c_str(),
 	   ArPriority::IMPORTANT);
-  addParam(ArConfigArg("SettableAccsDecs", &mySettableAccsDecs, "if the accel and decel parameters can be set"), section.c_str(), ArPriority::TRIVIAL);
-  addParam(ArConfigArg("TransAccel", &myTransAccel, "translational acceleration"), 
+  addParam(MvrConfigArg("SettableAccsDecs", &mySettableAccsDecs, "if the accel and decel parameters can be set"), section.c_str(), ArPriority::TRIVIAL);
+  addParam(MvrConfigArg("TransAccel", &myTransAccel, "translational acceleration"), 
 	   section.c_str(), ArPriority::IMPORTANT);
-  addParam(ArConfigArg("TransDecel", &myTransDecel, "translational deceleration"), 
+  addParam(MvrConfigArg("TransDecel", &myTransDecel, "translational deceleration"), 
 	   section.c_str(), ArPriority::IMPORTANT);
-  addParam(ArConfigArg("RotAccel", &myRotAccel, "rotational acceleration"), 
+  addParam(MvrConfigArg("RotAccel", &myRotAccel, "rotational acceleration"), 
 	   section.c_str());
-  addParam(ArConfigArg("RotDecel", &myRotDecel, "rotational deceleration"),
+  addParam(MvrConfigArg("RotDecel", &myRotDecel, "rotational deceleration"),
 	   section.c_str(), ArPriority::IMPORTANT);
 
-  addParam(ArConfigArg("HasLatVel", &myHasLatVel, "if the robot has lateral velocity"), section.c_str(), ArPriority::TRIVIAL);
+  addParam(MvrConfigArg("HasLatVel", &myHasLatVel, "if the robot has lateral velocity"), section.c_str(), ArPriority::TRIVIAL);
 
-  addParam(ArConfigArg("LatVelMax", &myLatVelMax, "maximum desired lateral velocity for the robot"), section.c_str(), 
+  addParam(MvrConfigArg("LatVelMax", &myLatVelMax, "maximum desired lateral velocity for the robot"), section.c_str(), 
 	   ArPriority::IMPORTANT);
-  addParam(ArConfigArg("LatAccel", &myLatAccel, "lateral acceleration"), 
+  addParam(MvrConfigArg("LatAccel", &myLatAccel, "lateral acceleration"), 
 	   section.c_str(), ArPriority::IMPORTANT);
-  addParam(ArConfigArg("LatDecel", &myLatDecel, "lateral deceleration"), 
+  addParam(MvrConfigArg("LatDecel", &myLatDecel, "lateral deceleration"), 
 	   section.c_str(), ArPriority::IMPORTANT);
 
   section = "GPS parameters";
     // Yes, there is a "P" in the middle of the position parameters. Don't remove it if
     // you think it's irrelevant, it will break all robot parameter files.
-  addParam(ArConfigArg("GPSPX", &myGPSX, "x location of gps receiver antenna on robot, mm"), section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("GPSPY", &myGPSY, "y location of gps receiver antenna on robot, mm"), section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("GPSType", myGPSType, "type of gps receiver (trimble, novatel, standard)", sizeof(myGPSType)), section.c_str(), ArPriority::IMPORTANT);
-  addParam(ArConfigArg("GPSPort", myGPSPort, "port the gps is on", sizeof(myGPSPort)), section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("GPSBaud", &myGPSBaud, "gps baud rate (9600, 19200, 38400, etc.)"), section.c_str(), ArPriority::NORMAL);
+  addParam(MvrConfigArg("GPSPX", &myGPSX, "x location of gps receiver antenna on robot, mm"), section.c_str(), ArPriority::NORMAL);
+  addParam(MvrConfigArg("GPSPY", &myGPSY, "y location of gps receiver antenna on robot, mm"), section.c_str(), ArPriority::NORMAL);
+  addParam(MvrConfigArg("GPSType", myGPSType, "type of gps receiver (trimble, novatel, standard)", sizeof(myGPSType)), section.c_str(), ArPriority::IMPORTANT);
+  addParam(MvrConfigArg("GPSPort", myGPSPort, "port the gps is on", sizeof(myGPSPort)), section.c_str(), ArPriority::NORMAL);
+  addParam(MvrConfigArg("GPSBaud", &myGPSBaud, "gps baud rate (9600, 19200, 38400, etc.)"), section.c_str(), ArPriority::NORMAL);
 
   section = "Compass parameters";
-  addParam(ArConfigArg("CompassType", myCompassType, "type of compass: robot (typical configuration), or serialTCM (computer serial port)", sizeof(myCompassType)), section.c_str(), ArPriority::NORMAL);
-  addParam(ArConfigArg("CompassPort", myCompassPort, "serial port name, if CompassType is serialTCM", sizeof(myCompassPort)), section.c_str(), ArPriority::NORMAL);
+  addParam(MvrConfigArg("CompassType", myCompassType, "type of compass: robot (typical configuration), or serialTCM (computer serial port)", sizeof(myCompassType)), section.c_str(), ArPriority::NORMAL);
+  addParam(MvrConfigArg("CompassPort", myCompassPort, "serial port name, if CompassType is serialTCM", sizeof(myCompassPort)), section.c_str(), ArPriority::NORMAL);
 
 
   section = "Sonar parameters";
-  addParam(ArConfigArg("SonarNum", &myNumSonar, 
+  addParam(MvrConfigArg("SonarNum", &myNumSonar, 
 		     "Number of sonars on the robot."), section.c_str(),
 	   ArPriority::NORMAL);
 
-  addParam(ArConfigArg("SonarUnit", &mySonarUnitSetFunctor, &mySonarUnitGetFunctor,
+  addParam(MvrConfigArg("SonarUnit", &mySonarUnitSetFunctor, &mySonarUnitGetFunctor,
 		       "SonarUnit <sonarNumber> <x position, mm> <y position, mm> <heading of disc, degrees> <MTX sonar board> <MTX sonar board unit position> <MTX gain> <MTX detection threshold> <MTX max range> <autonomous driving sensor flag>"), section.c_str(), ArPriority::TRIVIAL);
 
   int i;
@@ -328,12 +328,12 @@ void ArRobotParams::internalAddToConfigDefault(void)
     addLCDToConfig(i, this, ourUseDefaultBehavior);
 
   /** PTZ parameters here too */
-  myPTZParams.resize(Aria::getMaxNumPTZs());
+  myPTZParams.resize(Mvria::getMaxNumPTZs());
   for(size_t i = 0; i < Aria::getMaxNumPTZs(); ++i)
     addPTZToConfig(i, this);
 
   /* Parameters used by ArVideo library */
-  myVideoParams.resize(Aria::getMaxNumVideoDevices());
+  myVideoParams.resize(Mvria::getMaxNumVideoDevices());
   for(size_t i = 0; i < Aria::getMaxNumVideoDevices(); ++i)
     addVideoToConfig(i, this);
 }
@@ -353,7 +353,7 @@ AREXPORT void ArRobotParams::addLaserToConfig(
   else 
     restartLevel = ArConfigArg::RESTART_SOFTWARE;
 
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
                      section,
                      "Information about the connection to this laser and its position on the vehicle.");
 
@@ -380,7 +380,7 @@ AREXPORT void ArRobotParams::addLaserToConfig(
 	  section, ArPriority::FACTORY, 
 	  displayHintCustom.c_str(), restartLevel);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section, ArPriority::FACTORY);
 
   config->addParam(
@@ -420,7 +420,7 @@ AREXPORT void ArRobotParams::addLaserToConfig(
 	  section, ArPriority::FACTORY, 
 	  displayHintCheckbox.c_str(), restartLevel);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section, ArPriority::FACTORY);
 
   displayHintCustom = displayHintPlain + "&&" + Aria::laserGetChoices();
@@ -477,7 +477,7 @@ AREXPORT void ArRobotParams::addLaserToConfig(
 	  section, ArPriority::FACTORY, 
 	  displayHintPlain.c_str(), restartLevel);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section, ArPriority::FACTORY);
 
   if (!useDefaultBehavior)
@@ -564,7 +564,7 @@ AREXPORT void ArRobotParams::addBatteryToConfig(
   std::string section = buf;
   std::string batteryName = buf;
  
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
                      section.c_str(),
                      "Information about the connection to this battery.");
 
@@ -591,7 +591,7 @@ AREXPORT void ArRobotParams::addBatteryToConfig(
 	  section.c_str(), ArPriority::FACTORY,
 	  displayHintCustom.c_str(), restartLevel);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section.c_str(), ArPriority::FACTORY);
 
   displayHintCustom = displayHintPlain + "&&" + Aria::batteryGetChoices();
@@ -649,7 +649,7 @@ AREXPORT void ArRobotParams::addLCDToConfig(
   std::string section = buf;
   std::string lcdName = buf;
 
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
                      section.c_str(),
                      "The physical definition of this LCD.");
   
@@ -689,7 +689,7 @@ AREXPORT void ArRobotParams::addLCDToConfig(
 	  section.c_str(), ArPriority::FACTORY,
 	  displayHintCheckbox.c_str(), restartLevel);
   
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section.c_str(), ArPriority::FACTORY);
 
   displayHintCustom = displayHintPlain + "&&" + Aria::lcdGetChoices();
@@ -760,7 +760,7 @@ AREXPORT void ArRobotParams::addSonarBoardToConfig(
 
   std::string displayHintCustom;
   
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
                      section.c_str(),
                      "Information about the connection to this Sonar Board.");
 
@@ -786,7 +786,7 @@ AREXPORT void ArRobotParams::addSonarBoardToConfig(
 	  section.c_str(), ArPriority::FACTORY,
 	  displayHintCustom.c_str(), restartLevel);
   
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section.c_str(), ArPriority::FACTORY);
 
   displayHintCustom = displayHintPlain + "&&" + Aria::sonarGetChoices();
@@ -883,7 +883,7 @@ AREXPORT void ArRobotParams::addSonarBoardToConfig(
 
   
 /*
-  ArLog::log(ArLog::Normal, "ArRobotParams: added sonar board %d with params %s %s %s %d %d %d",
+  ArLog::log(MvrLog::Normal, "MvrRobotParams: added sonar board %d with params %s %s %s %d %d %d",
   i, &sonarMTXBoardData->mySonarMTXBoardType[0], sonarMTXBoardData->mySonarMTXBoardPortType, 
   sonarMTXBoardData->mySonarMTXBoardPort, sonarMTXBoardData->mySonarMTXBoardBaud, 
   sonarMTXBoardData->mySonarMTXBoardAutoConn, 
@@ -897,14 +897,14 @@ void ArRobotParams::addPTZToConfig(int i, ArConfig *config)
   std::stringstream sectionStream;
   sectionStream << "PTZ " << i+1 << " parameters";
   std::string section = sectionStream.str();
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL, section.c_str(), "Information about the connection to a pan/tilt unit (PTU) or pan/tilt/zoom control (PTZ) of a camera");
-  config->addParam(ArConfigArg("PTZAutoConnect", &(myPTZParams[i].connect), "If true, connect to this PTZ by default."), section.c_str());
-  config->addParam(ArConfigArg("PTZType", &(myPTZParams[i].type), "PTZ or PTU type"), section.c_str());
-  config->addParam(ArConfigArg("PTZInverted", &(myPTZParams[i].inverted), "If unit is mounted inverted (upside-down)"), section.c_str());
-  config->addParam(ArConfigArg("PTZSerialPort", &(myPTZParams[i].serialPort), "serial port, or none if not using serial port communication"), section.c_str());
-  config->addParam(ArConfigArg("PTZRobotAuxSerialPort", &(myPTZParams[i].robotAuxPort), "Pioneer aux.  serial port, or -1 if not using aux.  serial port for communication."), section.c_str());
-  config->addParam(ArConfigArg("PTZAddress", &(myPTZParams[i].address), "IP address or hostname, or none if not using network communication."), section.c_str());
-  config->addParam(ArConfigArg("PTZTCPPort", &(myPTZParams[i].tcpPort), "TCP Port to use for HTTP network connection"), section.c_str());
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL, section.c_str(), "Information about the connection to a pan/tilt unit (PTU) or pan/tilt/zoom control (PTZ) of a camera");
+  config->addParam(MvrConfigArg("PTZAutoConnect", &(myPTZParams[i].connect), "If true, connect to this PTZ by default."), section.c_str());
+  config->addParam(MvrConfigArg("PTZType", &(myPTZParams[i].type), "PTZ or PTU type"), section.c_str());
+  config->addParam(MvrConfigArg("PTZInverted", &(myPTZParams[i].inverted), "If unit is mounted inverted (upside-down)"), section.c_str());
+  config->addParam(MvrConfigArg("PTZSerialPort", &(myPTZParams[i].serialPort), "serial port, or none if not using serial port communication"), section.c_str());
+  config->addParam(MvrConfigArg("PTZRobotAuxSerialPort", &(myPTZParams[i].robotAuxPort), "Pioneer aux.  serial port, or -1 if not using aux.  serial port for communication."), section.c_str());
+  config->addParam(MvrConfigArg("PTZAddress", &(myPTZParams[i].address), "IP address or hostname, or none if not using network communication."), section.c_str());
+  config->addParam(MvrConfigArg("PTZTCPPort", &(myPTZParams[i].tcpPort), "TCP Port to use for HTTP network connection"), section.c_str());
 }
 
 
@@ -913,20 +913,20 @@ void ArRobotParams::addVideoToConfig(int i, ArConfig *config)
   std::stringstream sectionStream;
   sectionStream << "Video " << i+1 << " parameters";
   std::string section = sectionStream.str();
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL, section.c_str(), "Information about the connection to a video acquisition device, framegrabber, or camera");
-  config->addParam(ArConfigArg("VideoAutoConnect", &(myVideoParams[i].connect), "If true, connect to this device by default."), section.c_str());
-  config->addParam(ArConfigArg("VideoType", &(myVideoParams[i].type), "Device type"), section.c_str());
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL, section.c_str(), "Information about the connection to a video acquisition device, framegrabber, or camera");
+  config->addParam(MvrConfigArg("VideoAutoConnect", &(myVideoParams[i].connect), "If true, connect to this device by default."), section.c_str());
+  config->addParam(MvrConfigArg("VideoType", &(myVideoParams[i].type), "Device type"), section.c_str());
   //if (i == 0)
   //  printf("XXX added VideoType param for Video 1, its target is 0x%x, initial value is %s\n", &(myVideoParams[i].type), myVideoParams[i].type.c_str());
-  config->addParam(ArConfigArg("VideoInverted", &(myVideoParams[i].inverted), "If image should be flipped (for cameras mounted inverted/upside-down)"), section.c_str());
-  config->addParam(ArConfigArg("VideoWidth", &(myVideoParams[i].imageWidth), "Desired width of image, or -1 for default"), section.c_str());
-  addParam(ArConfigArg("VideoHeight", &(myVideoParams[i].imageHeight), "Desired height of image, or -1 for default"), section.c_str());
-  addParam(ArConfigArg("VideoDeviceIndex", &(myVideoParams[i].deviceIndex), "Device index, or -1 for default"), section.c_str());
-  config->addParam(ArConfigArg("VideoDeviceName", &(myVideoParams[i].deviceName), "Device name (overrides VideoDeviceIndex)"), section.c_str());
-  config->addParam(ArConfigArg("VideoChannel", &(myVideoParams[i].channel), "Input channel, or -1 for default"), section.c_str());
-  addParam(ArConfigArg("VideoAnalogSignalFormat", &(myVideoParams[i].analogSignalFormat), "NTSC or PAL, or empty for default. Only used for analog framegrabbers."), section.c_str(), ArPriority::NORMAL, "Choices:NTSC;;PAL");
-  config->addParam(ArConfigArg("VideoAddress", &(myVideoParams[i].address), "IP address or hostname, or none if not using network communication."), section.c_str());
-  config->addParam(ArConfigArg("VideoTCPPort", &(myVideoParams[i].tcpPort), "TCP Port to use for HTTP network connection"), section.c_str());
+  config->addParam(MvrConfigArg("VideoInverted", &(myVideoParams[i].inverted), "If image should be flipped (for cameras mounted inverted/upside-down)"), section.c_str());
+  config->addParam(MvrConfigArg("VideoWidth", &(myVideoParams[i].imageWidth), "Desired width of image, or -1 for default"), section.c_str());
+  addParam(MvrConfigArg("VideoHeight", &(myVideoParams[i].imageHeight), "Desired height of image, or -1 for default"), section.c_str());
+  addParam(MvrConfigArg("VideoDeviceIndex", &(myVideoParams[i].deviceIndex), "Device index, or -1 for default"), section.c_str());
+  config->addParam(MvrConfigArg("VideoDeviceName", &(myVideoParams[i].deviceName), "Device name (overrides VideoDeviceIndex)"), section.c_str());
+  config->addParam(MvrConfigArg("VideoChannel", &(myVideoParams[i].channel), "Input channel, or -1 for default"), section.c_str());
+  addParam(MvrConfigArg("VideoAnalogSignalFormat", &(myVideoParams[i].analogSignalFormat), "NTSC or PAL, or empty for default. Only used for analog framegrabbers."), section.c_str(), ArPriority::NORMAL, "Choices:NTSC;;PAL");
+  config->addParam(MvrConfigArg("VideoAddress", &(myVideoParams[i].address), "IP address or hostname, or none if not using network communication."), section.c_str());
+  config->addParam(MvrConfigArg("VideoTCPPort", &(myVideoParams[i].tcpPort), "TCP Port to use for HTTP network connection"), section.c_str());
 }
 
 
@@ -949,7 +949,7 @@ AREXPORT void ArRobotParams::internalSetSonar(int num, int x, int y, int th,
 {
   if(num < 0) 
   {
-    ArLog::log(ArLog::Terse, "ArRobotParams::internalSetSonar: Error: Invalid SonarUnit # %d (must be > 0).", num);
+    ArLog::log(MvrLog::Terse, "MvrRobotParams::internalSetSonar: Error: Invalid SonarUnit # %d (must be > 0).", num);
     return;
   }
   mySonarMap[num][SONAR_X] = x;
@@ -985,7 +985,7 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void
 }
 #endif
 
-AREXPORT bool ArRobotParams::parseSonarUnit (ArArgumentBuilder *builder)
+AREXPORT bool ArRobotParams::parseSonarUnit (MvrArgumentBuilder *builder)
 {
 	// If only three values given, then its pre-MTX style. If more, then its for MTX.
 	if (builder->getArgc() == 4) {
@@ -995,14 +995,14 @@ AREXPORT bool ArRobotParams::parseSonarUnit (ArArgumentBuilder *builder)
 		if (builder->getArgc() != 4 || !builder->isArgInt (0) ||
 		    !builder->isArgInt (1) || !builder->isArgInt (2) ||
 		    !builder->isArgInt (3)) {
-			ArLog::log (ArLog::Terse, "ArRobotParams: SonarUnit parameters invalid");
+			ArLog::log (MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid");
 			return false;
 		}
 
 		const int num = builder->getArgInt(0);
 		if(num < 0) 
 		{
-		  ArLog::log(ArLog::Terse, "ArRobotParams: Error: Invalid SonarUnit # %d (must be > 0).", num);
+		  ArLog::log(MvrLog::Terse, "MvrRobotParams: Error: Invalid SonarUnit # %d (must be > 0).", num);
 		  return false;
 		}
 
@@ -1010,7 +1010,7 @@ AREXPORT bool ArRobotParams::parseSonarUnit (ArArgumentBuilder *builder)
 		mySonarMap[num][SONAR_Y] = builder->getArgInt (2);
 		mySonarMap[num][SONAR_TH] = builder->getArgInt (3);
 
-		ArLog::log(ArLog::Verbose, "ArRobotParams::parseSonarUnit done parsing");
+		ArLog::log(MvrLog::Verbose, "MvrRobotParams::parseSonarUnit done parsing");
 		
 		return true;
 	} else {
@@ -1021,7 +1021,7 @@ AREXPORT bool ArRobotParams::parseSonarUnit (ArArgumentBuilder *builder)
 	}
 }
 
-AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
+AREXPORT bool ArRobotParams::parseMTXSonarUnit(MvrArgumentBuilder *builder)
 {
   // there has to be at least 5 arguments, 1st 5 are ints
   // fix for bug 1959
@@ -1031,7 +1031,7 @@ AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
       !builder->isArgInt(3) || !builder->isArgInt(4) ||
       !builder->isArgInt(5))
 	{
-		ArLog::log(ArLog::Normal, "ArRobotParams: SonarUnit parameters invalid, must include at least 5 integer values (MTX-style SonarUnit).",
+		ArLog::log(MvrLog::Normal, "MvrRobotParams: SonarUnit parameters invalid, must include at least 5 integer values (MTX-style SonarUnit).",
 								builder->getArgc());
 		return false;
 	}
@@ -1040,7 +1040,7 @@ AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
   myNumSonarUnits = ArUtil::findMax(myNumSonarUnits, (num+1));
   if(num < 0) 
   {
-    ArLog::log(ArLog::Terse, "ArRobotParams: Error: Invalid SonarUnit # %d (must be > 0).", num);
+    ArLog::log(MvrLog::Terse, "MvrRobotParams: Error: Invalid SonarUnit # %d (must be > 0).", num);
     return false;
   }
   mySonarMap[num][SONAR_X] = builder->getArgInt(1);
@@ -1055,7 +1055,7 @@ AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
 	  sonarMTXBoardData->myNumSonarTransducers = ArUtil::findMax(sonarMTXBoardData->myNumSonarTransducers,  mySonarMap[num][SONAR_BOARDUNITPOSITION]);
   else
   {
-    ArLog::log(ArLog::Terse, "ArRobotParams: Error: Invalid MTX sonar board # %d in SonarUnit # %d.", boardnum, num);
+    ArLog::log(MvrLog::Terse, "MvrRobotParams: Error: Invalid MTX sonar board # %d in SonarUnit # %d.", boardnum, num);
     return false;
   }
 	
@@ -1075,7 +1075,7 @@ AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
     }
     else
     {
-      ArLog::log(ArLog::Terse, "ArRobotParams: SonarUnit parameters invalid, 7th value (gain) must be an integer value.");
+      ArLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 7th value (gain) must be an integer value.");
       return false;
     }
   }
@@ -1087,7 +1087,7 @@ AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
     }
     else
     {
-      ArLog::log(ArLog::Terse, "ArRobotParams: SonarUnit parameters invalid, 8th value (detect. thresh.) must be an integer value.");
+      ArLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 8th value (detect. thresh.) must be an integer value.");
       return false;
     }
   }
@@ -1098,7 +1098,7 @@ AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
     }
     else
     {
-      ArLog::log(ArLog::Terse, "ArRobotParams: SonarUnit parameters invalid, 9th value (max range) must be an integer value.");
+      ArLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 9th value (max range) must be an integer value.");
       return false;
     }
   }
@@ -1109,7 +1109,7 @@ AREXPORT bool ArRobotParams::parseMTXSonarUnit(ArArgumentBuilder *builder)
     }
     else
     {
-     ArLog::log(ArLog::Terse, "ArRobotParams: SonarUnit parameters invalid, 10th value (use for autonomous) must be a boolean value.");
+     ArLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 10th value (use for autonomous) must be a boolean value.");
 
      return false;
     }
@@ -1123,13 +1123,13 @@ if (builder->getArgc() > 10) {
     }
     else
     {
-      ArLog::log(ArLog::Terse, "ArRobotParams: SonarUnit parameters invalid, 11th value (noise floor) must be an integer value.");
+      ArLog::log(MvrLog::Terse, "MvrRobotParams: SonarUnit parameters invalid, 11th value (noise floor) must be an integer value.");
       return false;
     }
   }
 */
 
-  ArLog::log(ArLog::Verbose, "ArRobotParams::parseSonarUnit() parsed unit %d %d %d ", myNumSonarUnits,
+  ArLog::log(MvrLog::Verbose, "MvrRobotParams::parseSonarUnit() parsed unit %d %d %d ", myNumSonarUnits,
 	     mySonarMap[builder->getArgInt(0)][SONAR_BOARD],
 	     mySonarMap[builder->getArgInt(0)][SONAR_BOARDUNITPOSITION]);
 
@@ -1144,7 +1144,7 @@ if (builder->getArgc() > 10) {
 AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void)
 //AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getMTXSonarUnits(void)
 {
-//  ArLog::log(ArLog::Normal, "Saving sonar units?");
+//  ArLog::log(MvrLog::Normal, "Saving sonar units?");
 
   std::map<int, std::map<int, int> >::iterator it;
   int unitNum, x, y, th, boardNum, boardUnitPosition, gain, /*noiseDelta,*/ detectionThreshold, numEchoSamples;
@@ -1184,13 +1184,13 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void
 }
 
 
-AREXPORT bool ArRobotParams::parseIRUnit(ArArgumentBuilder *builder)
+AREXPORT bool ArRobotParams::parseIRUnit(MvrArgumentBuilder *builder)
 {
   if (builder->getArgc() != 5 || !builder->isArgInt(0) || 
       !builder->isArgInt(1) || !builder->isArgInt(2) || 
       !builder->isArgInt(3) || !builder->isArgInt(4))
   {
-    ArLog::log(ArLog::Terse, "ArRobotParams: IRUnit parameters invalid");
+    ArLog::log(MvrLog::Terse, "MvrRobotParams: IRUnit parameters invalid");
     return false;
   }
   myIRMap[builder->getArgInt(0)][IR_TYPE] = builder->getArgInt(1);
@@ -1240,7 +1240,7 @@ AREXPORT bool ArRobotParams::save(void)
 void ArRobotParams::internalAddToConfigCommercial(
 	ArConfig *config)
 {
-  ArLog::log(ArLog::Normal, "ArRobotParams: Adding to config");
+  ArLog::log(MvrLog::Normal, "MvrRobotParams: Adding to config");
   
   // initialize some values
   myCommercialConfig = config;
@@ -1267,7 +1267,7 @@ void ArRobotParams::internalAddToConfigCommercial(
 
   // now add the normal config
   std::string section = "General";
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
                      section.c_str(),
                      "The general definition of this vehicle");
 
@@ -1289,7 +1289,7 @@ void ArRobotParams::internalAddToConfigCommercial(
 	  section.c_str(), ArPriority::FACTORY, "",
 	  ArConfigArg::RESTART_SOFTWARE);
 
-  myCommercialConfig->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section.c_str(), ArPriority::FACTORY);
 
   myCommercialConfig->addParam(
@@ -1321,7 +1321,7 @@ void ArRobotParams::internalAddToConfigCommercial(
 	  section.c_str(), ArPriority::FACTORY, 
 	  "", ArConfigArg::RESTART_SOFTWARE);
 
-  myCommercialConfig->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section.c_str(), ArPriority::FACTORY);
 
 
@@ -1331,7 +1331,7 @@ void ArRobotParams::internalAddToConfigCommercial(
 	  section.c_str(), ArPriority::CALIBRATION,
 	  "", ArConfigArg::RESTART_SOFTWARE);
 
-  myCommercialConfig->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section.c_str(), ArPriority::FACTORY);
 
   myCommercialConfig->addParam(
@@ -1346,7 +1346,7 @@ void ArRobotParams::internalAddToConfigCommercial(
 	  "SpinBox", ArConfigArg::RESTART_SOFTWARE);
   
   myCommercialConfig->addParam(
-	  ArConfigArg(ArConfigArg::SEPARATOR),
+	  ArConfigArg(MvrConfigArg::SEPARATOR),
 	  section.c_str(), ArPriority::FACTORY);
 
   myCommercialConfig->addParam(
@@ -1380,7 +1380,7 @@ void ArRobotParams::internalAddToConfigCommercial(
 	  "SpinBox&&Visible:Generation!=Legacy", 
 	  ArConfigArg::RESTART_SOFTWARE);
 
-  myCommercialConfig->addParam(ArConfigArg(ArConfigArg::SEPARATOR),
+  myCommercialConfig->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR),
 		   section.c_str(), ArPriority::FACTORY);
 
 }
@@ -1399,13 +1399,13 @@ AREXPORT bool ArRobotParams::commercialProcessFile(void)
 
   if (!myCommercialAddedConnectables)
   {
-    ArLog::log(ArLog::Normal, "ArRobotParams: Adding connectables");
+    ArLog::log(MvrLog::Normal, "MvrRobotParams: Adding connectables");
 
     myCommercialAddedConnectables = true;
     Aria::setMaxNumLasers(myCommercialMaxNumberOfLasers);
 
     // if it's an MTX set the types
-    if (ArUtil::strcasecmp(myClass, "Legacy") != 0)
+    if (MvrUtil::strcasecmp(myClass, "Legacy") != 0)
     {
       Aria::setMaxNumBatteries(myCommercialMaxNumberOfBatteries);
       Aria::setMaxNumLCDs(myCommercialMaxNumberOfLCDs);
@@ -1444,44 +1444,44 @@ AREXPORT bool ArRobotParams::commercialProcessFile(void)
 }
 
 
-void ArRobotParams::addSonarToConfigCommercial(ArConfig *config, 
+void ArRobotParams::addSonarToConfigCommercial(MvrConfig *config, 
 					       bool isMTXSonar)
 {
   std::string section = "Sonar";
 
   int maxSonar = 64;
   
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
                      section.c_str(),
                      "Definition of the sonar on this vehicle.");
 
-  config->addParam(ArConfigArg("NumSonar", &myCommercialNumSonar, "Number of sonars on this robot.", 0, maxSonar),
+  config->addParam(MvrConfigArg("NumSonar", &myCommercialNumSonar, "Number of sonars on this robot.", 0, maxSonar),
 		   section.c_str(), ArPriority::FACTORY,
 		   "SpinBox", ArConfigArg::RESTART_SOFTWARE);
   
-  ArConfigArg sonar(ArConfigArg::LIST, "Sonar", "Definition of this single sonar transducer.");
-  sonar.setConfigPriority(ArPriority::FACTORY);
-  sonar.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+  ArConfigArg sonar(MvrConfigArg::LIST, "Sonar", "Definition of this single sonar transducer.");
+  sonar.setConfigPriority(MvrPriority::FACTORY);
+  sonar.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
 
   ArConfigArg sonarX("X", 0, 
 		     "Location (in mm) of this sonar transducer in X (+ front, - back) relative to the robot's idealized center of rotation.");
-  sonarX.setConfigPriority(ArPriority::FACTORY);
-  sonarX.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+  sonarX.setConfigPriority(MvrPriority::FACTORY);
+  sonarX.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
   myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_X;
   sonar.addArg(sonarX);
 
   ArConfigArg sonarY("Y", 0, 
 		     "Location (in mm) of this sonar transducer in Y (+ left, - right) relative to the robot's idealized center of rotation.");
-  sonarY.setConfigPriority(ArPriority::FACTORY);
-  sonarY.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+  sonarY.setConfigPriority(MvrPriority::FACTORY);
+  sonarY.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
   myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_Y;
   sonar.addArg(sonarY);
 
   ArConfigArg sonarTh("Th", 0, 
 		     "Rotation (in deg) of this sonar transducer (+ counterclockwise, - clockwise).", 
 		     -180, 180);
-  sonarTh.setConfigPriority(ArPriority::FACTORY);
-  sonarTh.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+  sonarTh.setConfigPriority(MvrPriority::FACTORY);
+  sonarTh.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
   myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_TH;
   sonar.addArg(sonarTh);
 
@@ -1490,54 +1490,54 @@ void ArRobotParams::addSonarToConfigCommercial(ArConfig *config,
     ArConfigArg sonarBoard("SonarBoard", 0, 
 			   "Sonar board that is used by this transducer. 0 means that it is not yet configured.",
 			   0, Aria::getMaxNumSonarBoards());
-    sonarBoard.setConfigPriority(ArPriority::FACTORY);
-    sonarBoard.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+    sonarBoard.setConfigPriority(MvrPriority::FACTORY);
+    sonarBoard.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
     myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_BOARD;
     sonar.addArg(sonarBoard);
 
     ArConfigArg sonarBoardUnitPosition("SonarBoardUnitPosition", 0, 
           "Position of the transducer on the sonar board. 0 means that it is not yet configured.",
 				       0, 8);
-    sonarBoardUnitPosition.setConfigPriority(ArPriority::FACTORY);
-    sonarBoardUnitPosition.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+    sonarBoardUnitPosition.setConfigPriority(MvrPriority::FACTORY);
+    sonarBoardUnitPosition.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
     myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_BOARDUNITPOSITION;
     sonar.addArg(sonarBoardUnitPosition);
     
     ArConfigArg sonarGain("Gain", 0, 
 			  "Sonar gain to be used by this transducer. 0 to use the board default.", 0, 31);
 
-    sonarGain.setConfigPriority(ArPriority::FACTORY);
-    sonarGain.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+    sonarGain.setConfigPriority(MvrPriority::FACTORY);
+    sonarGain.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
     myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_GAIN;
     sonar.addArg(sonarGain);
 
 		/*
     ArConfigArg sonarNoiseDelta("NoiseDelta", 0, 
 				"Sonar noise delta to be used by this transducer. 0 to use the board default.", 0, 65535);
-    sonarNoiseDelta.setConfigPriority(ArPriority::FACTORY);
-    sonarNoiseDelta.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+    sonarNoiseDelta.setConfigPriority(MvrPriority::FACTORY);
+    sonarNoiseDelta.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
     myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_NOISE_DELTA;
     sonar.addArg(sonarNoiseDelta);
 		*/
 
     ArConfigArg sonarDetectionThreshold("DetectionThreshold", 0, 
 					"Sonar detection threshold to be used by this transducer. 0 to use the board default.", 0, 65535);
-    sonarDetectionThreshold.setConfigPriority(ArPriority::FACTORY);
-    sonarDetectionThreshold.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+    sonarDetectionThreshold.setConfigPriority(MvrPriority::FACTORY);
+    sonarDetectionThreshold.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
     myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_DETECTION_THRESHOLD;
     sonar.addArg(sonarDetectionThreshold);
 
     ArConfigArg sonarMaxRange("MaxRange", 0, 
 			      "Maximum range for this transducer. 0 to use the board default.", 0, 17*255);
-    sonarMaxRange.setConfigPriority(ArPriority::FACTORY);
-    sonarMaxRange.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+    sonarMaxRange.setConfigPriority(MvrPriority::FACTORY);
+    sonarMaxRange.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
     myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_MAX_RANGE;
     sonar.addArg(sonarMaxRange);
 
     ArConfigArg sonarUseForAutonomousDriving("UseForAutonomousDriving", true, 
 					"Checked means use for Autonomous Driving (aka Path Planning) as well as all other driving.  Not checked means use the sonar will still be used by all other driving.");
-    sonarUseForAutonomousDriving.setConfigPriority(ArPriority::FACTORY);
-    sonarUseForAutonomousDriving.setRestartLevel(ArConfigArg::RESTART_SOFTWARE);
+    sonarUseForAutonomousDriving.setConfigPriority(MvrPriority::FACTORY);
+    sonarUseForAutonomousDriving.setRestartLevel(MvrConfigArg::RESTART_SOFTWARE);
     sonarUseForAutonomousDriving.setDisplayHint("Checkbox");
     myCommercialSonarFieldMap[sonar.getArgCount()] = SONAR_USE_FOR_AUTONOMOUS_DRIVING;
     sonar.addArg(sonarUseForAutonomousDriving);
@@ -1566,7 +1566,7 @@ void ArRobotParams::addSonarToConfigCommercial(ArConfig *config,
   
 }
 
-void ArRobotParams::processSonarCommercial(ArConfig *config)
+void ArRobotParams::processSonarCommercial(MvrConfig *config)
 {
   int ii;
 
@@ -1576,8 +1576,8 @@ void ArRobotParams::processSonarCommercial(ArConfig *config)
   ArConfigSection *section = NULL;
   if ((section = Aria::getConfig()->findSection(configSection.c_str())) == NULL)
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArRobotParams:processSonarCommercial: Can't find section '%s'", 
+    ArLog::log(MvrLog::Normal, 
+	       "MvrRobotParams:processSonarCommercial: Can't find section '%s'", 
 	       configSection.c_str());
     return;
   }
@@ -1596,8 +1596,8 @@ void ArRobotParams::processSonarCommercial(ArConfig *config)
     ArConfigArg *argFromConfig = NULL;
     if ((argFromConfig = section->findParam(nameBuf)) == NULL)
     {
-      ArLog::log(ArLog::Normal, 
-	       "ArRobotParams:processSonarCommercial: Can't find parameter '%s' in section '%s'", 
+      ArLog::log(MvrLog::Normal, 
+	       "MvrRobotParams:processSonarCommercial: Can't find parameter '%s' in section '%s'", 
 		 nameBuf, configSection.c_str());
       continue;
     }
@@ -1622,15 +1622,15 @@ void ArRobotParams::processSonarCommercial(ArConfig *config)
 
 AREXPORT void ArVideoParams::merge(const ArVideoParams& other)
 {
-//  printf("ArVideoParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
+//  printf("MvrVideoParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
   if(other.type != "unknown" && other.type != "none" && other.type != "")
   {
-    //printf("ArVideoParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
+    //printf("MvrVideoParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
     type = other.type;
   }
   if(other.connectSet)
   {
- //   printf("ArVideoParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
+ //   printf("MvrVideoParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
     connect = other.connect;
     connectSet = true;
   }
@@ -1658,10 +1658,10 @@ AREXPORT void ArVideoParams::merge(const ArVideoParams& other)
   {
     analogSignalFormat = other.analogSignalFormat;
   }
-  //printf("ArVideoParams::merge: this address is %s, other address is %s\n", address.c_str(), other.address.c_str());
+  //printf("MvrVideoParams::merge: this address is %s, other address is %s\n", address.c_str(), other.address.c_str());
   if(other.address != "none" && other.address != "")
   {
-	  //printf("ArVideoParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
+	  //printf("MvrVideoParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
     address = other.address;
   }
   if(other.tcpPortSet)
@@ -1671,7 +1671,7 @@ AREXPORT void ArVideoParams::merge(const ArVideoParams& other)
   }
   if(other.invertedSet)
   {
-    //printf("ArVideoParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
+    //printf("MvrVideoParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
     inverted = other.inverted;
     invertedSet = true;
   }
@@ -1679,43 +1679,43 @@ AREXPORT void ArVideoParams::merge(const ArVideoParams& other)
 
 void ArPTZParams::merge(const ArPTZParams& other)
 {
-  //printf("ArPTZParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
+  //printf("MvrPTZParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
   if(other.type != "unknown" && other.type != "none" && other.type != "")
   {
-    //printf("ArPTZParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
+    //printf("MvrPTZParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
     type = other.type;
   }
   if(other.connectSet)
   {
-    //pgintf("ArPTZParams::merge: replacing this connect %d with other %d\n", connect, other.connect);
-    //printf("ArPTZParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
+    //pgintf("MvrPTZParams::merge: replacing this connect %d with other %d\n", connect, other.connect);
+    //printf("MvrPTZParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
     connect = other.connect;
     connectSet = true;
   }
   if(other.serialPort != "none" && other.serialPort != "")
   {
-    //printf("ArPTZParams::merge: replacing this serialPort %s with other %s\n", serialPort.c_str(), other.serialPort.c_str());
+    //printf("MvrPTZParams::merge: replacing this serialPort %s with other %s\n", serialPort.c_str(), other.serialPort.c_str());
     serialPort = other.serialPort;
   }
   if(other.robotAuxPort != -1)
   {
-    //printf("ArPTZParams::merge: replacing this robotAuxPort %d with other %d\n", robotAuxPort, other.robotAuxPort);
+    //printf("MvrPTZParams::merge: replacing this robotAuxPort %d with other %d\n", robotAuxPort, other.robotAuxPort);
     robotAuxPort = other.robotAuxPort;
   }
   if(other.address != "none")
   {
-    //printf("ArPTZParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
+    //printf("MvrPTZParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
     address = other.address;
   }
   if(other.tcpPortSet)
   {
-    //printf("ArPTZParams::merge: replacing this tcpPort %d with other %d\n", tcpPort, other.tcpPort);
+    //printf("MvrPTZParams::merge: replacing this tcpPort %d with other %d\n", tcpPort, other.tcpPort);
     tcpPort = other.tcpPort;
     tcpPortSet = true;
   }
   if(other.invertedSet)
   {
-    //printf("ArPTZParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
+    //printf("MvrPTZParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
     inverted = other.inverted;
     invertedSet = true;
   }

@@ -31,16 +31,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaUtil.h"
 
 /** 
-    Store a buffer of positions (ArPose objects) with associated timestamps, can
+    Store a buffer of positions (MvrPose objects) with associated timestamps, can
     be queried to interpolate (or optionally extrapolate) a pose for any arbitrary
     timestamp.  
 
     Will work best when positions are stored frequenly and regularly.
 
-    ArRobot maintains an ArInterpolation object which can be accessed by
-    ArRobot::getPoseInterpPosition(), ArRobot::getPoseInterpNumReadings(),
-    ArRobot::setPoseInterpNumReadings(), and ArRobot::getPoseInterpolation().
-    Or, you could use your own ArInterpolation object; use an ArRobot
+    MvrRobot maintains an MvrInterpolation object which can be accessed by
+    MvrRobot::getPoseInterpPosition(), MvrRobot::getPoseInterpNumReadings(),
+    MvrRobot::setPoseInterpNumReadings(), and MvrRobot::getPoseInterpolation().
+    Or, you could use your own MvrInterpolation object; use an MvrRobot
     "sensor-interpretation" task to store each robot pose received. 
 
     This class takes care of storing in readings of position vs time, and then
@@ -64,18 +64,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
     @ingroup UtilityClasses
 **/
-class ArInterpolation
+class MvrInterpolation
 {
 public:
   /// Constructor
-  AREXPORT ArInterpolation(size_t numberOfReadings = 100);
+  AREXPORT MvrInterpolation(size_t numberOfReadings = 100);
   /// Destructor
   AREXPORT virtual ~ArInterpolation();
   /// Adds a new reading
-  AREXPORT bool addReading(ArTime timeOfReading, ArPose position);
+  AREXPORT bool addReading(MvrTime timeOfReading, MvrPose position);
   /// Finds a position
-  AREXPORT int getPose(ArTime timeStamp, ArPose *position, 
-		       ArPoseWithTime *lastData = NULL);
+  AREXPORT int getPose(MvrTime timeStamp, MvrPose *position, 
+		       MvrPoseWithTime *lastData = NULL);
   /// Sets the name
   AREXPORT void setName(const char *name);
   /// Gets the name
@@ -99,7 +99,7 @@ public:
   /// Empties the interpolated positions
   AREXPORT void reset(void);
 protected:
-  ArMutex myDataMutex;
+  MvrMutex myDataMutex;
   std::string myName;
   std::list<ArTime> myTimes;
   std::list<ArPose> myPoses;

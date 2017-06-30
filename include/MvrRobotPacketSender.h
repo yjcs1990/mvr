@@ -28,24 +28,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARROBOTPACKETSENDER_H
 
 #include "ariaTypedefs.h"
-#include "ArRobotPacket.h"
+#include "MvrRobotPacket.h"
 
-class ArDeviceConnection;
+class MvrDeviceConnection;
 
 /// Given a device connection this sends commands through it to the robot
 
-class ArRobotPacketSender
+class MvrRobotPacketSender
 {
 public:
   /// Constructor without an already assigned device connection
-  AREXPORT ArRobotPacketSender(unsigned char sync1 = 0xfa,
+  AREXPORT MvrRobotPacketSender(unsigned char sync1 = 0xfa,
 			       unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection
-  AREXPORT ArRobotPacketSender(ArDeviceConnection *deviceConnection,
+  AREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
 			       unsigned char sync1 = 0xfa,
 			       unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection and tracking
-  AREXPORT ArRobotPacketSender(ArDeviceConnection *deviceConnection,
+  AREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
 			       unsigned char sync1,
 			       unsigned char sync2,
 						bool tracking,
@@ -65,18 +65,18 @@ public:
   AREXPORT bool comStrN(unsigned char command, const char *str, int size);
   /// Sends a command containing exactly the data in the given buffer as argument
   AREXPORT bool comDataN(unsigned char command, const char *data, int size);
-  /// Sends a ArRobotPacket
-  AREXPORT bool sendPacket(ArRobotPacket *packet);
+  /// Sends a MvrRobotPacket
+  AREXPORT bool sendPacket(MvrRobotPacket *packet);
   
   /// Sets the device this instance sends commands to
-  AREXPORT void setDeviceConnection(ArDeviceConnection *deviceConnection);
+  AREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
   /// Gets the device this instance sends commands to
-  AREXPORT ArDeviceConnection *getDeviceConnection(void);
+  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
   /// Sets the callback that gets called with the finalized version of
   /// every packet set... this is ONLY for very internal very
   /// specialized use
-  AREXPORT void setPacketSentCallback(ArFunctor1<ArRobotPacket *> *functor);
+  AREXPORT void setPacketSentCallback(MvrFunctor1<ArRobotPacket *> *functor);
 
   void setTracking(bool v = true)
   {
@@ -88,15 +88,15 @@ public:
   }
 protected:
   bool connValid(void);
-  ArDeviceConnection * myDeviceConn;
-  ArRobotPacket myPacket;
+  MvrDeviceConnection * myDeviceConn;
+  MvrRobotPacket myPacket;
 
 	bool myTracking;
 	std::string myTrackingLogName;
 
-  ArMutex mySendingMutex;
+  MvrMutex mySendingMutex;
 
-  ArFunctor1<ArRobotPacket *> *myPacketSentCallback;
+  MvrFunctor1<ArRobotPacket *> *myPacketSentCallback;
 
   enum { INTARG = 0x3B, NINTARG = 0x1B, STRARG = 0x2B };
 };

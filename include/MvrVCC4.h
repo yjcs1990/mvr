@@ -28,11 +28,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARVCC4_H
 
 #include "ariaTypedefs.h"
-#include "ArBasePacket.h"
-#include "ArPTZ.h"
+#include "MvrBasePacket.h"
+#include "MvrPTZ.h"
 #include "ariaUtil.h"
-#include "ArCommands.h"
-#include "ArSerialConnection.h"
+#include "MvrCommands.h"
+#include "MvrSerialConnection.h"
 
 // maximum number of bytes expected for a response from the camera
 #define MAX_RESPONSE_BYTES 14
@@ -56,33 +56,33 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 // sent to the camera.
 #define TOLERANCE .1
 
-/** @class ArVCC4
+/** @class MvrVCC4
  *  Control the pan, tilt, and zoom mechanisms of the Canon VC-C4 and VC-C50i cameras.
  *
- *  An ArVCC4 object can be used to control the pan, tilt, zoom and some
+ *  An MvrVCC4 object can be used to control the pan, tilt, zoom and some
  *  other aspects of the Canon VC-C4 camera.  Since the camera is 
  *  typically connected to the robot microcontroller's auxilliary serial
- *  port, and also uses ArRobot task cycle callbacks, a connected and
- *  running ArRobot object is required. 
+ *  port, and also uses MvrRobot task cycle callbacks, a connected and
+ *  running MvrRobot object is required. 
  *
  *  Communication with the camera can operate in two modes or directions. 
  *  In unidirectional mode(COMM_UNIDIRECTIONAL),
- *  ArVCC4 simply sends commands to the camera, and waits for
+ *  MvrVCC4 simply sends commands to the camera, and waits for
  *  some time to allow the camera to process it. However, it will have
  *  no way of verifying that a command was successfully received by the 
- *  cameral. In bidirectional mode (COMM_BIDIRECTIONAL), ArVCC4 waits for a 
+ *  cameral. In bidirectional mode (COMM_BIDIRECTIONAL), MvrVCC4 waits for a 
  *  response from the camera. Bidirectinal mode requires that the CTS 
  *  line (pin 2 on the VISCA port) be connected. 
- *  When you create an ArVCC4 object, you can request a specific mode, 
- *  or you can specify COMM_UNKNOWN, and ArVCC4 will switch into
+ *  When you create an MvrVCC4 object, you can request a specific mode, 
+ *  or you can specify COMM_UNKNOWN, and MvrVCC4 will switch into
  *  bidirectional mode if it receives any responses from the camera.
  *
  *  Programmer's manuals for the VC-C45 and VC-C50i, detailing the
- *  communications protocol (including commands not implemented by ArVCC4),
+ *  communications protocol (including commands not implemented by MvrVCC4),
  *  as well as user manuals containing specifications and hardware information,
  *  are available at <a href="http://robots.mobilerobots.com">http://robots.mobilerobots.com</a>. 
- *  ArVCC4 sends commands to the camera using the ArVCC4Packet class to construct the command, and
- *  using either the ArRobot pointer or an internal ArDeviceConnection,
+ *  MvrVCC4 sends commands to the camera using the MvrVCC4Packet class to construct the command, and
+ *  using either the MvrRobot pointer or an internal MvrDeviceConnection,
  *  depending on whether the camera is connected to the robot 
  *  microcontroller's auxilliary serial port (the usual connection method for
  *  most robots) or a computer serial port.
@@ -95,7 +95,7 @@ This camera has a reponse mechanism, whereby each packet sent to the camera gene
 
 In order for the the reponses to work, the CTS line on the camera must be high.  This is pin 2 on the visca port.  If your camera is not wired in such a fashion, then no answers will be sent to the computer, and the computer will not know whether or not the last packet was processed correctly.  Because of this, systems operating without the answer feature will need to run with delays between sending packets.  Otherwise, packets will be ignored, but you will have no way of knowing that.  To achieve this, there are two types of communication modes that this class will operate under - COMM_UNIDIRECTIONAL or COMM_BIDIRECTIONAL.  The default is COMM_UNKNOWN, in which it will use bidirectional commuication if a response is received.
 
-To handle the states and packet processing, this class runs as a user-task, different than the other pan/tilt devices.  Because of this, it must have a valid robot connection and a valid serial connection if using a computer serial port.  Note that the computer port must be set independently of this class.  The aux port can be selected via setAuxPort from the ArPTZ class.
+To handle the states and packet processing, this class runs as a user-task, different than the other pan/tilt devices.  Because of this, it must have a valid robot connection and a valid serial connection if using a computer serial port.  Note that the computer port must be set independently of this class.  The aux port can be selected via setAuxPort from the MvrPTZ class.
 
 \section VCC4UnitConversions Unit Conversions:
 
@@ -109,8 +109,8 @@ NEW - There is now limited support for the night-mode version of the C50i.  To e
 This camera has a digital zoom as well as the optical one.  There is an additional function for handling the digital.  There is also limited support for the auto-focus mechanism, which may need to be elaborated on for better night-vision.  In addition to the focus, there are also gain and backlight adjustments that can be made, but are not yet implemented in this class.
 */
 
-/// Used by the ArVCC4 class
-class ArVCC4Commands
+/// Used by the MvrVCC4 class
+class MvrVCC4Commands
 {
 public:
   enum Command {
@@ -145,28 +145,28 @@ public:
 
 };
 
-/// Used by ArVCC4 to construct command packets
+/// Used by MvrVCC4 to construct command packets
 /** 
     There are only a few functioning ways to put things into this packet, you
     MUST use thse, if you use anything else your commands won't work.  You 
-    must use only byteToBuf() and byte2ToBuf(), no other ArBasePacket methods.
+    must use only byteToBuf() and byte2ToBuf(), no other MvrBasePacket methods.
 */
-class ArVCC4Packet: public ArBasePacket
+class MvrVCC4Packet: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArVCC4Packet(ArTypes::UByte2 bufferSize = 30);
+  AREXPORT MvrVCC4Packet(MvrTypes::UByte2 bufferSize = 30);
   /// Destructor
   AREXPORT virtual ~ArVCC4Packet();
 
-  AREXPORT virtual void byte2ToBuf(ArTypes::Byte4 val);
+  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte4 val);
 
   AREXPORT virtual void finalizePacket(void);
 
 protected:
 };
 
-class ArVCC4 : public ArPTZ
+class MvrVCC4 : public MvrPTZ
 {
 public:
   // the states for communication
@@ -182,20 +182,20 @@ public:
   };
 
   /// Constructor
-  AREXPORT ArVCC4(ArRobot *robot, bool inverted = false, CommState commDirection = COMM_UNKNOWN, bool autoUpdate = true, bool disableLED = false, CameraType cameraType = CAMERA_VCC4);
+  AREXPORT MvrVCC4(MvrRobot *robot, bool inverted = false, CommState commDirection = COMM_UNKNOWN, bool autoUpdate = true, bool disableLED = false, CameraType cameraType = CAMERA_VCC4);
   /// Destructor
   AREXPORT virtual ~ArVCC4();
 
   AREXPORT virtual bool power(bool state) { myPowerStateDesired = state; return true; }
   AREXPORT bool getPower(void) { return myPowerState; }
   AREXPORT virtual bool init(void) { myInitRequested = true; return true; }
-  AREXPORT virtual void reset(void) { ArPTZ::reset(); init(); }
+  AREXPORT virtual void reset(void) { MvrPTZ::reset(); init(); }
   AREXPORT virtual const char  *getTypeName() { return "vcc4"; }
 
   /// Returns true if the camera has been initialized
    bool isInitted(void) { return myCameraIsInitted; }
   AREXPORT virtual void connectHandler(void);
-  AREXPORT virtual bool packetHandler(ArBasePacket *packet);
+  AREXPORT virtual bool packetHandler(MvrBasePacket *packet);
 
 protected:
    virtual bool pan_i(double deg) { return panTilt_i(deg, myTiltDesired); }
@@ -241,10 +241,10 @@ public:
   /// Adds an error callback to a list of callbacks to be called when there
   /// is a serious error in communicating - either the parameters were incorrect,
   /// the mode was incorrect, or there was an unknown error.
-  AREXPORT void addErrorCB(ArFunctor *functor, ArListPos::Pos position);
+  AREXPORT void addErrorCB(MvrFunctor *functor, MvrListPos::Pos position);
 
   /// Remove an error callback from the callback list
-  AREXPORT void remErrorCB(ArFunctor *functor);
+  AREXPORT void remErrorCB(MvrFunctor *functor);
 
   /// Halts all pan-tilt movement
   AREXPORT bool haltPanTilt(void) { myHaltPanTiltRequested = true; return true; }
@@ -258,7 +258,7 @@ public:
   bool canSetPanTiltSlew() { return true; }
 
   /// Adds device ID and delimeter to packet buffer
-  AREXPORT void preparePacket(ArVCC4Packet *packet);
+  AREXPORT void preparePacket(MvrVCC4Packet *packet);
 
 protected:
   AREXPORT virtual double getPan_i(void) const { return myPanDesired; }
@@ -406,15 +406,15 @@ protected:
   // the camera name.  "C50i" for C50i, and "VC-C" for VC-C4
   std::string myProductName;
 
-  ArRobot *myRobot;
-  ArDeviceConnection *myConn;
-  ArBasePacket *newPacket;
-  ArVCC4Packet myPacket;
+  MvrRobot *myRobot;
+  MvrDeviceConnection *myConn;
+  MvrBasePacket *newPacket;
+  MvrVCC4Packet myPacket;
 
   // timers for watching for timeouts
-  ArTime myStateTime;
-  ArTime myPacketTime;
-  ArTime myIdleTime;
+  MvrTime myStateTime;
+  MvrTime myPacketTime;
+  MvrTime myIdleTime;
 
   // gets set to true if using an aux port vs computer serial port
   bool myUsingAuxPort;
@@ -426,10 +426,10 @@ protected:
   CommState myCommType;
 
   // used to read data if the camera is attached directly to a computer
-  virtual ArBasePacket* readPacket(void);
+  virtual MvrBasePacket* readPacket(void);
 
   // the functor to add as a usertask
-  ArFunctorC<ArVCC4> myTaskCB;
+  MvrFunctorC<ArVCC4> myTaskCB;
 
   // the actual task to be added as a usertask
   void camTask(void);
@@ -594,17 +594,17 @@ protected:
   // the list of error callbacks to step through when a error occurs
   std::list<ArFunctor *> myErrorCBList;
 
-  /// Used by ArPTZConnector to create an ArVCC4 object based on robot parameters and program options.
+  /// Used by MvrPTZConnector to create an MvrVCC4 object based on robot parameters and program options.
   /// @since 2.7.6
   /// @internal
-  static ArPTZ* create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot);
-  /// Used by ArPTZConnector to create an ArVCC4 object based on robot parameters and program options.
+  static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
+  /// Used by MvrPTZConnector to create an MvrVCC4 object based on robot parameters and program options.
   /// @since 2.7.6
   /// @internal
-  static ArPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
+  static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 public:
 #ifndef SWIG
-  static void registerPTZType(); ///<@internal Called by Aria::init() toregister this class with ArPTZConnector for vcc4 and vcc50i PTZ types. @since 2.7.6
+  static void registerPTZType(); ///<@internal Called by Mvria::init() toregister this class with MvrPTZConnector for vcc4 and vcc50i PTZ types. @since 2.7.6
 #endif
 };
 

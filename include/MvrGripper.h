@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARGRIPPER_H
 
 #include "ariaTypedefs.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 /// Contains gripper command numbers
 /**
@@ -38,7 +38,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    start with LIFT are the for the lift, and the ones which start with GRIPPER
    are for the entire unit.
 */
-class ArGripperCommands
+class MvrGripperCommands
 {
 public:
   enum Commands {
@@ -74,11 +74,11 @@ public:
 /// Provides an interface to the Pioneer gripper device
 ///  @ingroup OptionalClasses
 ///  @ingroup DeviceClasses
-class ArGripper
+class MvrGripper
 {
 public:
   /// Constructor
-  AREXPORT ArGripper(ArRobot *robot, int gripperType = QUERYTYPE);
+  AREXPORT MvrGripper(MvrRobot *robot, int gripperType = QUERYTYPE);
   /// Destructor
   AREXPORT virtual ~ArGripper();
   /// Opens the gripper paddles
@@ -126,7 +126,7 @@ public:
   /// logs the gripper state
   AREXPORT void logState(void) const;
   /// Parses the gripper packet
-  AREXPORT bool packetHandler(ArRobotPacket *packet);
+  AREXPORT bool packetHandler(MvrRobotPacket *packet);
   /// The handler for when the robot connects
   AREXPORT void connectHandler(void);
   /// These are the types for the gripper
@@ -138,14 +138,14 @@ public:
     NOGRIPPER ///< There isn't a gripper
   }; 
 protected:
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
   int myType;
   unsigned char myState;
   unsigned char mySwitches;
   unsigned char myGraspTime;
-  ArTime myLastDataTime;
-  ArFunctorC<ArGripper> myConnectCB;
-  ArRetFunctor1C<bool, ArGripper, ArRobotPacket *> myPacketHandlerCB;
+  MvrTime myLastDataTime;
+  MvrFunctorC<ArGripper> myConnectCB;
+  MvrRetFunctor1C<bool, MvrGripper, MvrRobotPacket *> myPacketHandlerCB;
 };
 
 

@@ -25,14 +25,14 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArExport.h"
-#include "ArConfig.h"
-#include "ArRobotConfig.h"
-#include "ArRobot.h"
-#include "ArAnalogGyro.h"
+#include "MvrExport.h"
+#include "MvrConfig.h"
+#include "MvrRobotConfig.h"
+#include "MvrRobot.h"
+#include "MvrAnalogGyro.h"
 #include "ariaInternal.h"
 
-AREXPORT ArRobotConfig::ArRobotConfig(ArRobot *robot) : 
+AREXPORT ArRobotConfig::ArRobotConfig(MvrRobot *robot) : 
   myConnectCB(this, &ArRobotConfig::connectCallback),
   myProcessFileCB(this, &ArRobotConfig::processFile)
 {
@@ -59,8 +59,8 @@ AREXPORT ArRobotConfig::ArRobotConfig(ArRobot *robot) :
   myUseGyro = true;
   myAddedGyro = false;
 
-  myConnectCB.setName("ArRobotConfig");
-  myProcessFileCB.setName("ArRobotConfig");
+  myConnectCB.setName("MvrRobotConfig");
+  myProcessFileCB.setName("MvrRobotConfig");
 
   myRobot->addConnectCB(&myConnectCB, ArListPos::FIRST);
   Aria::getConfig()->addProcessFileCB(&myProcessFileCB, 98);
@@ -109,12 +109,12 @@ AREXPORT bool ArRobotConfig::processFile(void)
   {
     if (myUseGyro && !myAnalogGyro->isActive())
     {
-      ArLog::log(ArLog::Normal, "Gyro(analog) activated");
+      ArLog::log(MvrLog::Normal, "Gyro(analog) activated");
       myAnalogGyro->activate();
     }
     else if (!myUseGyro && myAnalogGyro->isActive())
     {
-      ArLog::log(ArLog::Normal, "Gyro(analog) deactivated");
+      ArLog::log(MvrLog::Normal, "Gyro(analog) deactivated");
       myAnalogGyro->deactivate();
     }
   }
@@ -122,7 +122,7 @@ AREXPORT bool ArRobotConfig::processFile(void)
   return true;
 }
 
-AREXPORT void ArRobotConfig::addAnalogGyro(ArAnalogGyro *gyro)
+AREXPORT void ArRobotConfig::addAnalogGyro(MvrAnalogGyro *gyro)
 {
   myAnalogGyro = gyro;
   if (myRobot->isConnected())

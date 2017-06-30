@@ -28,32 +28,32 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSICKLINEFINDER_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
+#include "MvrRangeDevice.h"
 #include "ariaUtil.h"
 #include <vector>
 
-class ArLineFinderSegment;
-class ArConfig;
+class MvrLineFinderSegment;
+class MvrConfig;
 
 /** This class finds lines out of any range device with raw readings (lasers for instance)
  @ingroup OptionalClasses
  @ingroup UtilityClasses
 */
-class ArLineFinder
+class MvrLineFinder
 {
 public:
   /// Constructor
-  AREXPORT ArLineFinder(ArRangeDevice *dev);
+  AREXPORT MvrLineFinder(MvrRangeDevice *dev);
   /// Destructor
   AREXPORT virtual ~ArLineFinder();
 
 #ifndef SWIG
-  /// Finds the lines and returns a pointer to ArLineFinder's map of them 
+  /// Finds the lines and returns a pointer to MvrLineFinder's map of them 
   /** @swigomit */
-  AREXPORT std::map<int, ArLineFinderSegment *> *getLines(void);
-  /// Finds the lines, but then returns a pointer to ArLineFinder's map of the points that AREN'T in lines
+  AREXPORT std::map<int, MvrLineFinderSegment *> *getLines(void);
+  /// Finds the lines, but then returns a pointer to MvrLineFinder's map of the points that AREN'T in lines
   /** @swigomit */
-  AREXPORT std::map<int, ArPose> *getNonLinePoints(void);
+  AREXPORT std::map<int, MvrPose> *getNonLinePoints(void);
 #endif
   /// Finds the lines, then copies @b pointers to them them into a new set
   AREXPORT std::set<ArLineFinderSegment*> getLinesAsSet();
@@ -62,7 +62,7 @@ public:
 
   /// Gets the robot pose at which the data from the range device (provided in
   /// constructor) was received
-  ArPose getLinesTakenPose(void) { return myPoseTaken; }
+  MvrPose getLinesTakenPose(void) { return myPoseTaken; }
   /// Logs all the points and lines from the last getLines
   AREXPORT void saveLast(void);
   /// Gets the lines, then prints them
@@ -97,16 +97,16 @@ public:
   void setMaxDistBetweenPoints(int maxDistBetweenPoints = 0)
     { myMaxDistBetweenPoints = maxDistBetweenPoints; }
 
-  /// Add this ArLineFinder's parameters to the given ArConfig object.
-  AREXPORT void addToConfig(ArConfig *config,
+  /// Add this MvrLineFinder's parameters to the given MvrConfig object.
+  AREXPORT void addToConfig(MvrConfig *config,
 			    const char *section);
 protected:
   // where the readings were taken
-  ArPose myPoseTaken;
+  MvrPose myPoseTaken;
   // our points
-  std::map<int, ArPose> *myPoints;
-  std::map<int, ArLineFinderSegment *> *myLines;
-  std::map<int, ArPose> *myNonLinePoints;
+  std::map<int, MvrPose> *myPoints;
+  std::map<int, MvrLineFinderSegment *> *myLines;
+  std::map<int, MvrPose> *myNonLinePoints;
   // fills up the myPoints variable from sick laser
   AREXPORT void fillPointsFromLaser(void);
   // fills up the myLines variable from the myPoints
@@ -114,8 +114,8 @@ protected:
   // cleans the lines and puts them into myLines 
   AREXPORT bool combineLines();
   // takes two segments and sees if it can average them
-  AREXPORT ArLineFinderSegment *averageSegments(ArLineFinderSegment *line1, 
-					  ArLineFinderSegment *line2);
+  AREXPORT MvrLineFinderSegment *averageSegments(MvrLineFinderSegment *line1, 
+					  MvrLineFinderSegment *line2);
   // removes lines that don't have enough points added in
   AREXPORT void filterLines();
 
@@ -132,24 +132,24 @@ protected:
   int myMaxDistBetweenPoints;
   double mySinMultiplier;
   bool myPrinting;
-  ArRangeDevice *myRangeDevice;
+  MvrRangeDevice *myRangeDevice;
 };
 
-/// Class for ArLineFinder to hold more info than an ArLineSegment
-class ArLineFinderSegment : public ArLineSegment
+/// Class for MvrLineFinder to hold more info than an MvrLineSegment
+class MvrLineFinderSegment : public MvrLineSegment
 {
 public:
-  ArLineFinderSegment() {}
-  ArLineFinderSegment(double x1, double y1, double x2, double y2, 
+  MvrLineFinderSegment() {}
+  MvrLineFinderSegment(double x1, double y1, double x2, double y2, 
 		      int numPoints = 0, int startPoint = 0, int endPoint = 0)
     { newEndPoints(x1, y1, x2, y2, numPoints, startPoint, endPoint); }
   virtual ~ArLineFinderSegment() {}
   void newEndPoints(double x1, double y1, double x2, double y2, 
 		    int numPoints = 0, int startPoint = 0, int endPoint = 0)
     {
-      ArLineSegment::newEndPoints(x1, y1, x2, y2);
-      myLineAngle = ArMath::atan2(y2 - y1, x2 - x1);
-      myLength = ArMath::distanceBetween(x1, y1, x2, y2);
+      MvrLineSegment::newEndPoints(x1, y1, x2, y2);
+      myLineAngle = MvrMath::atan2(y2 - y1, x2 - x1);
+      myLength = MvrMath::distanceBetween(x1, y1, x2, y2);
       myNumPoints = numPoints;
       myStartPoint = startPoint;
       myEndPoint = endPoint;

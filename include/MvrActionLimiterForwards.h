@@ -28,9 +28,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONSPEEDLIMITER_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
-class ArRangeDevice;
+class MvrRangeDevice;
 
 /// Action to limit the forwards motion of the robot based on range sensor readings.
 /**
@@ -39,21 +39,21 @@ class ArRangeDevice;
    this action requests that the robot decelerate or stop.
    @ingroup ActionClasses
 */
-class ArActionLimiterForwards : public ArAction
+class MvrActionLimiterForwards : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionLimiterForwards(const char *name = "speed limiter", 
+  AREXPORT MvrActionLimiterForwards(const char *name = "speed limiter", 
 				   double stopDistance = 250,
 				   double slowDistance = 1000,
 				   double slowSpeed = 200,
 				   double widthRatio = 1);
   /// Destructor
   AREXPORT virtual ~ArActionLimiterForwards();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   AREXPORT void setParameters(double stopDistance = 250,
@@ -62,17 +62,17 @@ public:
 			      double widthRatio = 1);
 
   bool getStopped() const { return myLastStopped; } 
-  ArPose getLastSensorReadingPos() const { return myLastSensorReadingPos; } 
-  const ArRangeDevice* getLastSensorReadingDevice() const { return myLastSensorReadingDev; } 
+  MvrPose getLastSensorReadingPos() const { return myLastSensorReadingPos; } 
+  const MvrRangeDevice* getLastSensorReadingDevice() const { return myLastSensorReadingDev; } 
 protected:
   bool myLastStopped;
   double myStopDist;
   double mySlowDist;
   double mySlowSpeed;
   double myWidthRatio;
-  ArActionDesired myDesired;
-  ArPose myLastSensorReadingPos;
-  const ArRangeDevice *myLastSensorReadingDev;
+  MvrActionDesired myDesired;
+  MvrPose myLastSensorReadingPos;
+  const MvrRangeDevice *myLastSensorReadingDev;
 };
 
 #endif // ARACTIONSPEEDLIMITER_H

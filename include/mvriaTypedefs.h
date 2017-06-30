@@ -61,10 +61,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif // linux
 
 
-typedef std::map<int, std::string> ArStrMap;
+typedef std::map<int, std::string> MvrStrMap;
 
 /// has enum for position in list
-class ArListPos
+class MvrListPos
 {
 public:
   typedef enum {
@@ -74,7 +74,7 @@ public:
 };
 
 /// Contains platform independent sized variable types
-class ArTypes
+class MvrTypes
 {
 public:
   /// A single signed byte

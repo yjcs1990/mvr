@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 #include "ariaUtil.h"
-#include "ArIRs.h"
+#include "MvrIRs.h"
 
  /**
    @param currentBufferSize The number of readings to store in the current Buffer
@@ -37,18 +37,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param maxSecondsToKeepCurrent How long to keep readings in the current buffer
 */
 
-AREXPORT ArIRs::ArIRs(size_t currentBufferSize, size_t cumulativeBufferSize, 
+AREXPORT MvrIRs::ArIRs(size_t currentBufferSize, size_t cumulativeBufferSize, 
 		      const char *name, int maxSecondsToKeepCurrent) :
-  ArRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000, maxSecondsToKeepCurrent), 
+  MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000, maxSecondsToKeepCurrent), 
   myProcessCB(this, &ArIRs::processReadings)
 {
-  setCurrentDrawingData(new ArDrawingData("polyArrows", ArColor(255, 255, 0),
+  setCurrentDrawingData(new MvrDrawingData("polyArrows", MvrColor(255, 255, 0),
 					  120, // mm diameter of dots
 					  80), // layer above sick and sonar below bumpers
 			true);
 }
 
-AREXPORT ArIRs::~ArIRs()
+AREXPORT MvrIRs::~ArIRs()
 {
   if (myRobot != NULL)
     {
@@ -57,14 +57,14 @@ AREXPORT ArIRs::~ArIRs()
     }
 }
 
-AREXPORT void ArIRs::setRobot(ArRobot *robot)
+AREXPORT void MvrIRs::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
     myRobot->addSensorInterpTask(myName.c_str(), 10, &myProcessCB);
-  ArRangeDevice::setRobot(robot);
+  MvrRangeDevice::setRobot(robot);
 
-  const ArRobotParams *params;
+  const MvrRobotParams *params;
   params = myRobot->getRobotParams();
   myParams = *params;
 
@@ -75,9 +75,9 @@ AREXPORT void ArIRs::setRobot(ArRobot *robot)
 /**
    This function is called every 100 milliseconds.
 */
-AREXPORT void ArIRs::processReadings(void)
+AREXPORT void MvrIRs::processReadings(void)
 {
-  ArUtil::BITS bit;
+  MvrUtil::BITS bit;
   if(myParams.haveTableSensingIR())
     {
       for (int i = 0; i < myParams.getNumIR(); ++i)
@@ -85,28 +85,28 @@ AREXPORT void ArIRs::processReadings(void)
 	  switch(i)
 	    {
 	    case 0:
-	      bit = ArUtil::BIT0;
+	      bit = MvrUtil::BIT0;
 	      break;
 	    case 1:
-	      bit = ArUtil::BIT1;
+	      bit = MvrUtil::BIT1;
 	      break;
 	    case 2:
-	      bit = ArUtil::BIT2;
+	      bit = MvrUtil::BIT2;
 	      break;
 	    case 3:
-	      bit = ArUtil::BIT3;
+	      bit = MvrUtil::BIT3;
 	      break;
 	    case 4:
-	      bit = ArUtil::BIT4;
+	      bit = MvrUtil::BIT4;
 	      break;
 	    case 5:
-	      bit = ArUtil::BIT5;
+	      bit = MvrUtil::BIT5;
 	      break;
 	    case 6:
-	      bit = ArUtil::BIT6;
+	      bit = MvrUtil::BIT6;
 	      break;
 	    case 7:
-	      bit = ArUtil::BIT7;
+	      bit = MvrUtil::BIT7;
 	      break;
 	    }
 
@@ -122,11 +122,11 @@ AREXPORT void ArIRs::processReadings(void)
 		  else
 		    {
 		      cycleCounters[i] = 1;
-		      ArPose pose;
+		      MvrPose pose;
 		      pose.setX(myParams.getIRX(i));
 		      pose.setY(myParams.getIRY(i));
 		      
-		      ArTransform global = myRobot->getToGlobalTransform();
+		      MvrTransform global = myRobot->getToGlobalTransform();
 		      pose = global.doTransform(pose);
 		      
 		      myCurrentBuffer.addReading(pose.getX(), pose.getY());
@@ -149,11 +149,11 @@ AREXPORT void ArIRs::processReadings(void)
 		    {
 		      cycleCounters[i] = 1;
 		      
-		      ArPose pose;
+		      MvrPose pose;
 		      pose.setX(myParams.getIRX(i));
 		      pose.setY(myParams.getIRY(i));
 		      
-		      ArTransform global = myRobot->getToGlobalTransform();
+		      MvrTransform global = myRobot->getToGlobalTransform();
 		      pose = global.doTransform(pose);
 		      
 		      myCurrentBuffer.addReading(pose.getX(), pose.getY());

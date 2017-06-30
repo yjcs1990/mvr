@@ -28,23 +28,23 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARRATIOINPUTKEYDRIVE_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
-#include "ArFunctor.h"
-#include "ArActionRatioInput.h"
+#include "MvrAction.h"
+#include "MvrFunctor.h"
+#include "MvrActionRatioInput.h"
 
 
-/// This will use the keyboard arrow keys and the ArActionRatioInput to drive the robot
+/// This will use the keyboard arrow keys and the MvrActionRatioInput to drive the robot
 /**
-   You have to make an ArActionRatioInput and add it to the robot like
+   You have to make an MvrActionRatioInput and add it to the robot like
    a normal action for this to work.
 
   @ingroup OptionalClasses
 **/
-class ArRatioInputKeydrive 
+class MvrRatioInputKeydrive 
 {
 public:
   /// Constructor
-  AREXPORT ArRatioInputKeydrive(ArRobot *robot, ArActionRatioInput *input, 
+  AREXPORT MvrRatioInputKeydrive(MvrRobot *robot, MvrActionRatioInput *input, 
 				int priority = 25, double velIncrement = 5);
   /// Destructor
   AREXPORT virtual ~ArRatioInputKeydrive();
@@ -67,18 +67,18 @@ public:
   /// Internal, callback for space key
   AREXPORT void space(void);
   /// Internal, gets our firecb
-  AREXPORT ArFunctor *getFireCB(void) { return &myFireCB; }
+  AREXPORT MvrFunctor *getFireCB(void) { return &myFireCB; }
 protected:
   AREXPORT void activate(void);
   AREXPORT void deactivate(void);
   AREXPORT void fireCallback(void);
-  ArFunctorC<ArRatioInputKeydrive> myUpCB;
-  ArFunctorC<ArRatioInputKeydrive> myDownCB;
-  ArFunctorC<ArRatioInputKeydrive> myLeftCB;
-  ArFunctorC<ArRatioInputKeydrive> myRightCB;
-  ArFunctorC<ArRatioInputKeydrive> myZCB;
-  ArFunctorC<ArRatioInputKeydrive> myXCB;
-  ArFunctorC<ArRatioInputKeydrive> mySpaceCB;
+  MvrFunctorC<ArRatioInputKeydrive> myUpCB;
+  MvrFunctorC<ArRatioInputKeydrive> myDownCB;
+  MvrFunctorC<ArRatioInputKeydrive> myLeftCB;
+  MvrFunctorC<ArRatioInputKeydrive> myRightCB;
+  MvrFunctorC<ArRatioInputKeydrive> myZCB;
+  MvrFunctorC<ArRatioInputKeydrive> myXCB;
+  MvrFunctorC<ArRatioInputKeydrive> mySpaceCB;
 
   double myPrinting;
   double myTransRatio;
@@ -86,14 +86,14 @@ protected:
   double myThrottle;
   double myLatRatio;
 
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
   bool myHaveKeys;
   double myVelIncrement;
   double myLatVelIncrement;
-  ArActionRatioInput *myInput;
-  ArFunctorC<ArRatioInputKeydrive> myFireCB;
-  ArFunctorC<ArRatioInputKeydrive> myActivateCB;
-  ArFunctorC<ArRatioInputKeydrive> myDeactivateCB;
+  MvrActionRatioInput *myInput;
+  MvrFunctorC<ArRatioInputKeydrive> myFireCB;
+  MvrFunctorC<ArRatioInputKeydrive> myActivateCB;
+  MvrFunctorC<ArRatioInputKeydrive> myDeactivateCB;
 };
 
 

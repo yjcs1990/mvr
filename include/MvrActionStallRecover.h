@@ -28,9 +28,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONSTALLRECOVER_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
-class ArResolver;
+class MvrResolver;
 
 /// Action to recover from a stall
 /**
@@ -38,24 +38,24 @@ class ArResolver;
    series of actions it tries in order to get out of the stall.
    @ingroup ActionClasses
 */
-class ArActionStallRecover : public ArAction
+class MvrActionStallRecover : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionStallRecover(const char * name = "stall recover", 
+  AREXPORT MvrActionStallRecover(const char * name = "stall recover", 
 				double obstacleDistance = 225, int cyclesToMove = 50, 
 				double speed = 150, double degreesToTurn = 45,
 				bool enabled = true);
   /// Destructor
   AREXPORT virtual ~ArActionStallRecover();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) 
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) 
     { return &myActionDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                    { return &myActionDesired; }
 #endif
-  AREXPORT void addToConfig(ArConfig* config, const char* sectionName, ArPriority::Priority priority = ArPriority::NORMAL);
+  AREXPORT void addToConfig(MvrConfig* config, const char* sectionName, MvrPriority::Priority priority = MvrPriority::NORMAL);
   AREXPORT virtual void activate(void);
 protected:
   // these are internal things, don't touch unless you know what you are doing
@@ -94,9 +94,9 @@ protected:
   int myCyclesToTurn;
   double myDegreesToTurn;
   double myDesiredHeading;
-  ArActionDesired myActionDesired;
+  MvrActionDesired myActionDesired;
   
-  ArResolver *myResolver;
+  MvrResolver *myResolver;
 };
 
 #endif //ARACTIONSTALLRECOVER_H

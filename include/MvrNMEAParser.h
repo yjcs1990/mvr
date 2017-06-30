@@ -29,9 +29,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARNMEAPARSER_H
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 #include "ariaUtil.h"
-#include "ArDeviceConnection.h"
+#include "MvrDeviceConnection.h"
 #include <string>
 #include <vector>
 
@@ -40,14 +40,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *
  *  Parses NMEA input data and calls callbacks for certain messages with message
  *  parts.   NMEA is a standard output data protocol used by GPS devices and
- *  others (e.g. compass, altimiter, etc.)   This class is used internally by ArNMEAParser and
- *  subclasses, and by ArTCMCompassDirect.
+ *  others (e.g. compass, altimiter, etc.)   This class is used internally by MvrNMEAParser and
+ *  subclasses, and by MvrTCMCompassDirect.
  */
-class ArNMEAParser {
+class MvrNMEAParser {
 
 public:
     /** @param name Used in log messages */
-    AREXPORT ArNMEAParser(const char *name = "NMEA Parser");
+    AREXPORT MvrNMEAParser(const char *name = "NMEA Parser");
 
     /** @brief Flags to indicates what the parse() method did. 
      *  i.e. If nothing was done, then the
@@ -73,10 +73,10 @@ public:
     typedef struct {
       /** The parts of the message, including initial message ID (but excluding
        * checksum) */
-      ArNMEAParser::MessageVector* message;
+      MvrNMEAParser::MessageVector* message;
       /** Timestamp when the beginning of this message was recieved and parsing
        * began. */
-      ArTime timeParseStarted;
+      MvrTime timeParseStarted;
       /// Message ID (first word minus talker prefix)
       std::string id;
       /// Talker-ID prefix, may indicate type of receiver or what kind of GPS system is in use
@@ -85,16 +85,16 @@ public:
       
 
     /** NMEA message handler type.  */
-    typedef ArFunctor1<ArNMEAParser::Message> Handler;
+    typedef MvrFunctor1<ArNMEAParser::Message> Handler;
 
 
     /** Set a handler for an NMEA message. Mostly for internal use or to be used
      * by related classes, but you could use for ususual or custom messages
-     * emitted by a device that you wish to be handled outside of the ArNMEAParser
+     * emitted by a device that you wish to be handled outside of the MvrNMEAParser
      * class. 
      * @param messageID ID of NMEA sentence/message, without two-letter "talker" prefix.
      */
-    AREXPORT void addHandler(const char *messageID, ArNMEAParser::Handler *handler);
+    AREXPORT void addHandler(const char *messageID, MvrNMEAParser::Handler *handler);
     AREXPORT void removeHandler(const char *messageID);
 
     /* Read a chunk of input text from the given device connection and 
@@ -102,14 +102,14 @@ public:
      * connection is determined by the internal buffer size in this class
      * (probably a few hundred bytes limit).
      * @return a result code from ParseFlags
-     * @note You should only use one stream of data with ArNMEAParser, and in a
+     * @note You should only use one stream of data with MvrNMEAParser, and in a
      * continuous fashion, since it will store partially recieved messages for
      * the next call to one of the parse() methods.
      */
-    AREXPORT int parse(ArDeviceConnection *dev);
+    AREXPORT int parse(MvrDeviceConnection *dev);
 
     /* Parse a chunk of input text. Call message handlers as complete NMEA
-     * messages are parsed.  Parsing state is stored in this ArNMEAParser object.
+     * messages are parsed.  Parsing state is stored in this MvrNMEAParser object.
      * @return a result code from ParseFlags
      */
     AREXPORT int parse(const char *buf, int n);
@@ -120,16 +120,16 @@ public:
     
 public:
     /* Map of message identifiers to handler functors */
-    typedef std::map<std::string, ArNMEAParser::Handler*> HandlerMap;
+    typedef std::map<std::string, MvrNMEAParser::Handler*> HandlerMap;
 
 private:
-    /* NMEA message handlers used by ArNMEAParser */
+    /* NMEA message handlers used by MvrNMEAParser */
     HandlerMap myHandlers;
 
     std::map<std::string, std::string> myLastPrefix;
 
 public:
-    const ArNMEAParser::HandlerMap& getHandlersRef() const { return myHandlers; }
+    const MvrNMEAParser::HandlerMap& getHandlersRef() const { return myHandlers; }
 
 private:
 
@@ -148,7 +148,7 @@ private:
     bool ignoreChecksum;
 
     MessageVector currentMessage;
-    ArTime currentMessageStarted;
+    MvrTime currentMessageStarted;
     std::string currentField;
     char checksumBuf[3];
     short checksumBufOffset;
@@ -163,7 +163,7 @@ private:
     void nextField();
     void beginChecksum();
 
-    /* Data buffer used by handleInput(ArDeviceConnection*).
+    /* Data buffer used by handleInput(MvrDeviceConnection*).
      * This should be enough to hold several NMEA messages. 
      * Most NMEA messages should be less than 50 bytes or so; 
      * 256 then allows a minumum of 5 messages parsed per 

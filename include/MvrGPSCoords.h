@@ -31,56 +31,56 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 
-class Ar3DPoint;
-class ArLLACoords;
-class ArECEFCoords;
-class ArENUCoords;
-class ArWGS84;
+class Mvr3DPoint;
+class MvrLLACoords;
+class MvrECEFCoords;
+class MvrENUCoords;
+class MvrWGS84;
 
 /** Base class for points in 3 dimensional cartesian space. 
   @ingroup UtilityClasses
 */
-class Ar3DPoint 
+class Mvr3DPoint 
 {
   public:
 
-  Ar3DPoint(void) : myX(0), myY(0), myZ(0) {}
-  Ar3DPoint(double x, double y, double z) : myX(x), myY(y), myZ(z) {}
+  Mvr3DPoint(void) : myX(0), myY(0), myZ(0) {}
+  Mvr3DPoint(double x, double y, double z) : myX(x), myY(y), myZ(z) {}
   /// Destructor.
   ~Ar3DPoint() {}
   /// Add
-  Ar3DPoint operator+(Ar3DPoint c)
+  Mvr3DPoint operator+(Mvr3DPoint c)
   {
-    Ar3DPoint sum(myX + c.myX, 
+    Mvr3DPoint sum(myX + c.myX, 
 		  myY + c.myY,
 		  myZ + c.myZ);
     
     return sum;
   }
   /// Diff
-  Ar3DPoint operator-(Ar3DPoint c)
+  Mvr3DPoint operator-(Mvr3DPoint c)
   {
-    Ar3DPoint dif(myX - c.myX, 
+    Mvr3DPoint dif(myX - c.myX, 
 		  myY - c.myY,
 		  myZ - c.myZ);
     return dif;
   }
   /// Diff
-  Ar3DPoint operator*(double c)
+  Mvr3DPoint operator*(double c)
   {
-    Ar3DPoint pro(myX*c, myY*c, myZ*c);
+    Mvr3DPoint pro(myX*c, myY*c, myZ*c);
     return pro;
   }
   /// Dot product
-  double dot(Ar3DPoint c)
+  double dot(Mvr3DPoint c)
   {
     double dotP(myX * c.myX + myY * c.myY + myZ * c.myZ);
     return dotP;
   }
   /// Cross product
-  Ar3DPoint cross(Ar3DPoint c)
+  Mvr3DPoint cross(Mvr3DPoint c)
   {
-    Ar3DPoint crossP(myY * c.myZ - myZ * c.myY, 
+    Mvr3DPoint crossP(myY * c.myZ - myZ * c.myY, 
 		     myZ * c.myX - myX * c.myZ, 
 		     myX * c.myY - myY * c.myX);
     return crossP;
@@ -116,10 +116,10 @@ protected:
  * All the constants defined by the World Geodetic System 1984.
  * @ingroup UtilityClasses
  */
-class ArWGS84
+class MvrWGS84
 {
   public:
-  ArWGS84(void) {}
+  MvrWGS84(void) {}
   
   static double getE()     {return mye;}
   static double getA()     {return mya;}
@@ -148,25 +148,25 @@ private:
  * Earth Centered Earth Fixed Coordinates.
    @ingroup UtilityClasses
  */
-class ArECEFCoords : public Ar3DPoint
+class MvrECEFCoords : public Mvr3DPoint
 {
   public:
-  ArECEFCoords(double x, double y, double z) : Ar3DPoint(x, y, z) {}
-  AREXPORT ArLLACoords ECEF2LLA(void);
-  AREXPORT ArENUCoords ECEF2ENU(ArECEFCoords ref);
+  MvrECEFCoords(double x, double y, double z) : Mvr3DPoint(x, y, z) {}
+  AREXPORT MvrLLACoords ECEF2LLA(void);
+  AREXPORT MvrENUCoords ECEF2ENU(MvrECEFCoords ref);
 };
 
 /**
  * Latitude, Longitude and Altitude Coordinates.
  * @ingroup UtilityClasses
  */
-class ArLLACoords : public Ar3DPoint
+class MvrLLACoords : public Mvr3DPoint
 {
   public:
-  ArLLACoords(void) : Ar3DPoint(0, 0, 0) {}
-  ArLLACoords(double x, double y, double z) : Ar3DPoint(x, y, z) {}
-  ArLLACoords(ArPose pos, double alt) : Ar3DPoint(pos.getX(), pos.getY(), alt) {}
-  AREXPORT ArECEFCoords LLA2ECEF(void);
+  MvrLLACoords(void) : Mvr3DPoint(0, 0, 0) {}
+  MvrLLACoords(double x, double y, double z) : Mvr3DPoint(x, y, z) {}
+  MvrLLACoords(MvrPose pos, double alt) : Mvr3DPoint(pos.getX(), pos.getY(), alt) {}
+  AREXPORT MvrECEFCoords LLA2ECEF(void);
   double getLatitude(void) const {return getX();}
   double getLongitude(void) const {return getY();}
   double getAltitude(void) const {return getZ();}
@@ -179,11 +179,11 @@ class ArLLACoords : public Ar3DPoint
  * East North Up coordinates.
    @ingroup UtilityClasses
  */
-class ArENUCoords : public Ar3DPoint
+class MvrENUCoords : public Mvr3DPoint
 {
   public:
-  ArENUCoords(double x, double y, double z) : Ar3DPoint(x, y, z) {}
-  AREXPORT ArECEFCoords ENU2ECEF(ArLLACoords ref);
+  MvrENUCoords(double x, double y, double z) : Mvr3DPoint(x, y, z) {}
+  AREXPORT MvrECEFCoords ENU2ECEF(MvrLLACoords ref);
   double getEast(void) const {return getX();}
   double getNorth(void) const {return getY();}
   double getUp(void) const {return getZ();}
@@ -197,36 +197,36 @@ class ArENUCoords : public Ar3DPoint
  * methods from LLA to ENU and from ENU to LLA coordinates.
  * @ingroup UtilityClasses
  */
-class ArMapGPSCoords : public ArENUCoords
+class MvrMapGPSCoords : public MvrENUCoords
 {
   public:
-  ArMapGPSCoords(ArLLACoords org) : ArENUCoords(0.0, 0.0, 0.0), myOriginECEF(0), myOriginLLA(0), myOriginSet(false) 
+  MvrMapGPSCoords(MvrLLACoords org) : MvrENUCoords(0.0, 0.0, 0.0), myOriginECEF(0), myOriginLLA(0), myOriginSet(false) 
   {
     setOrigin(org);
   }
-  ArMapGPSCoords() : ArENUCoords(0, 0, 0), myOriginECEF(0), myOriginLLA(0), myOriginSet(false)
+  MvrMapGPSCoords() : MvrENUCoords(0, 0, 0), myOriginECEF(0), myOriginLLA(0), myOriginSet(false)
   {
   }
   AREXPORT bool convertMap2LLACoords(const double ea, const double no, const double up,
 			    double& lat, double& lon, double& alt) const;
   AREXPORT bool convertLLA2MapCoords(const double lat, const double lon, const double alt,
 			    double& ea, double& no, double& up) const;
-  bool convertLLA2MapCoords(const ArLLACoords& lla, double& ea, double& no, double& up)
+  bool convertLLA2MapCoords(const MvrLLACoords& lla, double& ea, double& no, double& up)
 {
     return convertLLA2MapCoords(lla.getLatitude(), lla.getLongitude(), lla.getAltitude(), ea, no, up);
   }
-  void setOrigin(ArLLACoords org) {
+  void setOrigin(MvrLLACoords org) {
     if(myOriginLLA)
       delete myOriginLLA;
     if(myOriginECEF)
       delete myOriginECEF;
     myOriginSet = true;
-    myOriginLLA = new ArLLACoords(org);
-    myOriginECEF = new ArECEFCoords(myOriginLLA->LLA2ECEF());
+    myOriginLLA = new MvrLLACoords(org);
+    myOriginECEF = new MvrECEFCoords(myOriginLLA->LLA2ECEF());
   }
      
-  ArECEFCoords* myOriginECEF;
-  ArLLACoords* myOriginLLA;
+  MvrECEFCoords* myOriginECEF;
+  MvrLLACoords* myOriginLLA;
   bool myOriginSet;
 };
 

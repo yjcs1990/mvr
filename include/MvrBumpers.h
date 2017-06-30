@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARBUMPERS_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
+#include "MvrRangeDevice.h"
 
 
 /// A class that treats the robot's bumpers as a range device.
@@ -40,23 +40,23 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    @ingroup DeviceClasses
 */
-class ArBumpers : public ArRangeDevice
+class MvrBumpers : public MvrRangeDevice
 {
 public:
-  AREXPORT ArBumpers(size_t currentBufferSize = 30, 
+  AREXPORT MvrBumpers(size_t currentBufferSize = 30, 
 		     size_t cumulativeBufferSize = 30,
 		     const char *name = "bumpers",
 		     int maxSecondsToKeepCurrent = 15,
 		     double angleRange = 135);
   AREXPORT virtual ~ArBumpers(void);
 
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   AREXPORT void processReadings(void);
   AREXPORT void addBumpToBuffer(int bumpValue, int whichBumper);
 
 protected:
-  ArFunctorC<ArBumpers> myProcessCB;
-  ArRobot *myRobot;
+  MvrFunctorC<ArBumpers> myProcessCB;
+  MvrRobot *myRobot;
   int myBumpMask;
   double myAngleRange;
 };

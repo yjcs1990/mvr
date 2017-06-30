@@ -25,18 +25,18 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArGPSConnector.h"
-#include "ArGPS.h"
-#include "ArDeviceConnection.h"
-#include "ArSerialConnection.h"
-#include "ArTcpConnection.h"
-#include "ArRobot.h"
+#include "MvrGPSConnector.h"
+#include "MvrGPS.h"
+#include "MvrDeviceConnection.h"
+#include "MvrSerialConnection.h"
+#include "MvrTcpConnection.h"
+#include "MvrRobot.h"
 #include "ariaInternal.h"
 
-#include "ArNovatelGPS.h"
-#include "ArTrimbleGPS.h"
+#include "MvrNovatelGPS.h"
+#include "MvrTrimbleGPS.h"
 
 #include <iostream>
 
@@ -44,10 +44,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 // default values to use if no value is given in robot parameters or command
 // line:
 const int ARGPS_DEFAULT_SERIAL_BAUD = 9600;
-const char* const ARGPS_DEFAULT_SERIAL_PORT = ArUtil::COM2;
+const char* const ARGPS_DEFAULT_SERIAL_PORT = MvrUtil::COM2;
 const int ARGPS_DEFAULT_REMOTE_TCP_PORT = 8103;
 
-AREXPORT ArGPSConnector::ArGPSConnector(ArArgumentParser *argParser) :
+AREXPORT MvrGPSConnector::ArGPSConnector(MvrArgumentParser *argParser) :
   myDeviceCon(NULL),
   myArgParser(argParser),
   myParseArgsCallback(this, &ArGPSConnector::parseArgs),
@@ -58,21 +58,21 @@ AREXPORT ArGPSConnector::ArGPSConnector(ArArgumentParser *argParser) :
   myTCPPort(8103),
   myDeviceType(Invalid)
 {
-  myParseArgsCallback.setName("ArGPSConnector");
-  myLogArgsCallback.setName("ArGPSConnector");
-  Aria::addParseArgsCB(&myParseArgsCallback);
-  Aria::addLogOptionsCB(&myLogArgsCallback);
+  myParseArgsCallback.setName("MvrGPSConnector");
+  myLogArgsCallback.setName("MvrGPSConnector");
+  Mvria::addParseArgsCB(&myParseArgsCallback);
+  Mvria::addLogOptionsCB(&myLogArgsCallback);
 }
 
 
-AREXPORT ArGPSConnector::~ArGPSConnector()
+AREXPORT MvrGPSConnector::~ArGPSConnector()
 {
   if(myDeviceCon) delete myDeviceCon;
 }
 
-// Called by Aria::parseArgs() to set parameter values from command line
+// Called by Mvria::parseArgs() to set parameter values from command line
 // options, if present
-AREXPORT bool ArGPSConnector::parseArgs() 
+AREXPORT bool MvrGPSConnector::parseArgs() 
 {
   if (!myArgParser) return false;
   if (!myArgParser->checkParameterArgumentString("-gpsPort", &myPort)) return false;
@@ -85,7 +85,7 @@ AREXPORT bool ArGPSConnector::parseArgs()
   return true;
 }
 
-ArGPSConnector::GPSType ArGPSConnector::deviceTypeFromString(const char *str)
+ArGPSConnector::GPSType MvrGPSConnector::deviceTypeFromString(const char *str)
 {
   if (strcasecmp(str, "novatel") == 0)
   {
@@ -109,27 +109,27 @@ ArGPSConnector::GPSType ArGPSConnector::deviceTypeFromString(const char *str)
   }
   else
   {
-    ArLog::log(ArLog::Terse, "GPSConnector: Error: unrecognized GPS type.");
+    MvrLog::log(MvrLog::Terse, "GPSConnector: Error: unrecognized GPS type.");
     return Invalid;
   }
 }
 
-void ArGPSConnector::logOptions()
+void MvrGPSConnector::logOptions()
 {
-  ArLog::log(ArLog::Terse, "GPS options:"); 
-  ArLog::log(ArLog::Terse, "-gpsType <standard|novatel|novatelspan|trimble|sim>\tSelect GPS device type (default: standard)");
-  ArLog::log(ArLog::Terse, "-gpsPort <gpsSerialPort>\tUse the given serial port (default: %s)", ARGPS_DEFAULT_SERIAL_PORT);
-  ArLog::log(ArLog::Terse, "-gpsBaud <gpsSerialBaudRate>\tUse the given serial Baud rate (default: %d)", ARGPS_DEFAULT_SERIAL_BAUD);
-  ArLog::log(ArLog::Terse, "-remoteGpsTcpHost <host>\tUse a TCP connection instead of serial, and connect to remote host <host>");
-  ArLog::log(ArLog::Terse, "-remoteGpsTcpPort <host>\tUse the given port number for TCP connection, if using TCP. (default %d)", ARGPS_DEFAULT_REMOTE_TCP_PORT);
+  MvrLog::log(MvrLog::Terse, "GPS options:"); 
+  MvrLog::log(MvrLog::Terse, "-gpsType <standard|novatel|novatelspan|trimble|sim>\tSelect GPS device type (default: standard)");
+  MvrLog::log(MvrLog::Terse, "-gpsPort <gpsSerialPort>\tUse the given serial port (default: %s)", ARGPS_DEFAULT_SERIAL_PORT);
+  MvrLog::log(MvrLog::Terse, "-gpsBaud <gpsSerialBaudRate>\tUse the given serial Baud rate (default: %d)", ARGPS_DEFAULT_SERIAL_BAUD);
+  MvrLog::log(MvrLog::Terse, "-remoteGpsTcpHost <host>\tUse a TCP connection instead of serial, and connect to remote host <host>");
+  MvrLog::log(MvrLog::Terse, "-remoteGpsTcpPort <host>\tUse the given port number for TCP connection, if using TCP. (default %d)", ARGPS_DEFAULT_REMOTE_TCP_PORT);
 }
 
 
 
-// Create an ArGPS object. If some options were obtained from command-line
+// Create an MvrGPS object. If some options were obtained from command-line
 // parameters by parseArgs(), use those, otherwise get values from robot
 // parameters (the .p file) if we have a valid robot with valid parameters.
-AREXPORT ArGPS* ArGPSConnector::createGPS(ArRobot *robot)
+AREXPORT MvrGPS* MvrGPSConnector::createGPS(MvrRobot *robot)
 {
   // If we have a robot with parameters (i.e. have connected and read the .p
   // file), use those values unless already set by parseArgs() from command-line 
@@ -138,13 +138,13 @@ AREXPORT ArGPS* ArGPSConnector::createGPS(ArRobot *robot)
     if(myPort == NULL) {
       myPort = robot->getRobotParams()->getGPSPort();
       if(strcmp(myPort, "COM1") == 0)
-        myPort = ArUtil::COM1;
+        myPort = MvrUtil::COM1;
       if(strcmp(myPort, "COM2") == 0)
-        myPort = ArUtil::COM2;
+        myPort = MvrUtil::COM2;
       if(strcmp(myPort, "COM3") == 0)
-        myPort = ArUtil::COM3;
+        myPort = MvrUtil::COM3;
       if(strcmp(myPort, "COM4") == 0)
-        myPort = ArUtil::COM4;
+        myPort = MvrUtil::COM4;
     }
     if(myBaud == -1) {
       myBaud = robot->getRobotParams()->getGPSBaud();
@@ -163,34 +163,34 @@ AREXPORT ArGPS* ArGPSConnector::createGPS(ArRobot *robot)
   // If simulator, create simulated GPS and return
   if(robot && strcmp(robot->getRobotName(), "MobileSim") == 0)
   {
-    ArLog::log(ArLog::Normal, "ArGPSConnector: Using simulated GPS");
+    MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Using simulated GPS");
     myDeviceType = Simulator;
-    return new ArSimulatedGPS(robot);
+    return new MvrSimulatedGPS(robot);
   }
 
   // Create gps and connect to serial port or tcp port for device data stream:
-  ArGPS* newGPS = NULL;
+  MvrGPS* newGPS = NULL;
   switch (myDeviceType)
   {
     case Novatel:
-      ArLog::log(ArLog::Normal, "ArGPSConnector: Using Novatel GPS");
-      newGPS = new ArNovatelGPS;
+      MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Using Novatel GPS");
+      newGPS = new MvrNovatelGPS;
       break;
     case Trimble:
-      ArLog::log(ArLog::Normal, "ArGPSConnector: Using Trimble GPS");
-      newGPS = new ArTrimbleGPS;
+      MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Using Trimble GPS");
+      newGPS = new MvrTrimbleGPS;
       break;
     case NovatelSPAN:
-      ArLog::log(ArLog::Normal, "ArGPSConnector: Using Novatel SPAN GPS");
-      newGPS = new ArNovatelSPAN;
+      MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Using Novatel SPAN GPS");
+      newGPS = new MvrNovatelSPAN;
       break;
     case Simulator:
-      ArLog::log(ArLog::Normal, "ArGPSConnector: Using simulated GPS");
-      newGPS = new ArSimulatedGPS(robot);
+      MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Using simulated GPS");
+      newGPS = new MvrSimulatedGPS(robot);
       break;
     default:
-      ArLog::log(ArLog::Normal, "ArGPSConnector: Using standard NMEA GPS");
-      newGPS = new ArGPS;
+      MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Using standard NMEA GPS");
+      newGPS = new MvrGPS;
       break;
   }
 
@@ -199,11 +199,11 @@ AREXPORT ArGPS* ArGPSConnector::createGPS(ArRobot *robot)
     if (myTCPHost == NULL)
     {
       // Setup serial connection
-      ArSerialConnection *serialCon = new ArSerialConnection;
-      ArLog::log(ArLog::Normal, "ArGPSConnector: Connecting to GPS on port %s at %d baud...", myPort, myBaud);
+      MvrSerialConnection *serialCon = new MvrSerialConnection;
+      MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Connecting to GPS on port %s at %d baud...", myPort, myBaud);
       if (!serialCon->setBaud(myBaud)) { delete serialCon; return NULL; }
       if (serialCon->open(myPort) != 0) {
-        ArLog::log(ArLog::Terse, "ArGPSConnector: Error: could not open GPS serial port %s.", myPort);
+        MvrLog::log(MvrLog::Terse, "MvrGPSConnector: Error: could not open GPS serial port %s.", myPort);
         delete serialCon;
         return NULL;
       }
@@ -213,11 +213,11 @@ AREXPORT ArGPS* ArGPSConnector::createGPS(ArRobot *robot)
     else
     {
       // Setup TCP connection
-      ArTcpConnection *tcpCon = new ArTcpConnection;
-      ArLog::log(ArLog::Normal, "ArGPSConnector: Opening TCP connection to %s:%d...", myTCPHost, myTCPPort);
+      MvrTcpConnection *tcpCon = new MvrTcpConnection;
+      MvrLog::log(MvrLog::Normal, "MvrGPSConnector: Opening TCP connection to %s:%d...", myTCPHost, myTCPPort);
       int openState = tcpCon->open(myTCPHost, myTCPPort);
       if (openState != 0) {
-        ArLog::log(ArLog::Terse, "ArGPSConnector: Error: could not open TCP connection to %s port %d: %s", tcpCon->getOpenMessage(openState));
+        MvrLog::log(MvrLog::Terse, "MvrGPSConnector: Error: could not open TCP connection to %s port %d: %s", tcpCon->getOpenMessage(openState));
         delete tcpCon;
         return NULL;
       }

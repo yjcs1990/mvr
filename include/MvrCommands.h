@@ -33,7 +33,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    robot operations manual for more detailed descriptions.
  @ingroup OptionalClasses
 */
-class ArCommands
+class MvrCommands
 {
 public:
   enum Commands { 
@@ -161,9 +161,9 @@ public:
   SIM_LRF_SET_FOV_END = 232,  ///< int Set angle (degrees from center) at which the simulated laser takes its last reading (normally 90).
   SIM_LRF_SET_RES = 233,  ///< int Set the number of degrees between laser readings (in combination with FOV, determines the number of readings per sweep) (normally 1)
   SIM_CTRL = 236,         ///< int,..., Send a simulator meta-command (an operation on the simulator itself). The initial 2-byte integer argument selects the operation. See simulator documentation.
-  SIM_STAT = 237,         ///< none, Request that the simulator reply with a SIMSTAT (0x62) packet. You must have a packet handler registered with ArRobot to receive its output. See simulator documentation.
-  SIM_MESSAGE = 238,      ///< string, Display a log message in the simulator. Argument is a length-prefixed ASCII byte string.
-  SIM_EXIT = 239          ///< int, Exit the simulator. Argument is the exit code (use 0 for a "normal" exit).
+  SIM_STAT = 237,         ///< none, Request that the simulator reply with a SIMSTAT (0x62) packet. You must have a packet handler registered with MvrRobot to receive its output. See simulator documentation.
+  SIM_MESSAGE = 238,      ///< string, Display a log message in the simulator. Mvrgument is a length-prefixed ASCII byte string.
+  SIM_EXIT = 239          ///< int, Exit the simulator. Mvrgument is the exit code (use 0 for a "normal" exit).
   };
   
 };

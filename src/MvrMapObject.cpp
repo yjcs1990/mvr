@@ -25,8 +25,8 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
-#include "ArMapObject.h"
+#include "MvrExport.h"
+#include "MvrMapObject.h"
 
 //#define ARDEBUG_MAP_OBJECT
 #ifdef ARDEBUG_MAP_OBJECT
@@ -35,11 +35,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define IFDEBUG(code)
 #endif 
 
-AREXPORT ArMapObject *ArMapObject::createMapObject(ArArgumentBuilder *arg)
+AREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() < 7) {
-    ArLog::log(ArLog::Terse, 
-	             "ArMapObject: 'Cairn:' insufficient arguments '%s'", 
+    ArLog::log(MvrLog::Terse, 
+	             "MvrMapObject: 'Cairn:' insufficient arguments '%s'", 
                arg->getFullString());
     return NULL;
   } // end if enough args
@@ -107,8 +107,8 @@ AREXPORT ArMapObject *ArMapObject::createMapObject(ArArgumentBuilder *arg)
   
      if (!ArUtil::stripQuotes(fileBuffer, fileArg, fileBufferLen))
      {
-       ArLog::log(ArLog::Terse, 
-	                "ArMapObjects: 'Cairn:' couldn't strip quotes from fileName '%s'", 
+       ArLog::log(MvrLog::Terse, 
+	                "MvrMapObjects: 'Cairn:' couldn't strip quotes from fileName '%s'", 
 	                fileArg);
        isSuccess = false;
     } // end if error stripping quotes
@@ -122,8 +122,8 @@ AREXPORT ArMapObject *ArMapObject::createMapObject(ArArgumentBuilder *arg)
   
     if (!ArUtil::stripQuotes(nameBuffer, nameArg, nameBufferLen))
     {
-      ArLog::log(ArLog::Terse, 
-	               "ArMapObjects: 'Cairn:' couldn't strip quotes from name '%s'", 
+      ArLog::log(MvrLog::Terse, 
+	               "MvrMapObjects: 'Cairn:' couldn't strip quotes from name '%s'", 
 	               nameArg);
       isSuccess = false;
     } // end if error stripping quotes
@@ -161,7 +161,7 @@ AREXPORT ArMapObject *ArMapObject::createMapObject(ArArgumentBuilder *arg)
 } // end method createMapObject
 
 
-bool ArMapObject::setObjectDescription(ArMapObject *object,
+bool ArMapObject::setObjectDescription(MvrMapObject *object,
                                        ArArgumentBuilder *arg)
 {
   if ((object == NULL) || (arg == NULL)) {
@@ -181,8 +181,8 @@ bool ArMapObject::setObjectDescription(ArMapObject *object,
 
    if (!ArUtil::stripQuotes(descBuffer, arg->getArg(descArg), descLen))
    {
-      ArLog::log(ArLog::Terse, 
-	        "ArMap: 'Cairn:' couldn't strip quotes from desc '%s'", 
+      ArLog::log(MvrLog::Terse, 
+	        "MvrMap: 'Cairn:' couldn't strip quotes from desc '%s'", 
 	        arg->getArg(descArg));
       delete [] descBuffer;
       return false;
@@ -230,14 +230,14 @@ AREXPORT ArMapObject::ArMapObject(const char *type,
   } // end else pose
 
   IFDEBUG(
-  ArLog::log(ArLog::Normal, 
-             "ArMapObject::ctor() created %s (%s)",
+  ArLog::log(MvrLog::Normal, 
+             "MvrMapObject::ctor() created %s (%s)",
              myName.c_str(), myType.c_str());
   );
 
 } // end ctor
 
-AREXPORT void ArMapObject::setFromTo(ArPose fromPose, ArPose toPose)
+AREXPORT void ArMapObject::setFromTo(MvrPose fromPose, ArPose toPose)
 {
     double angle = myPose.getTh();
     double sa = ArMath::sin(angle);
@@ -251,10 +251,10 @@ AREXPORT void ArMapObject::setFromTo(ArPose fromPose, ArPose toPose)
     ArPose P2((tx*ca - ty*sa), (tx*sa + ty*ca));
     ArPose P3((fx*ca - ty*sa), (fx*sa + ty*ca));
     myFromToSegments.clear();
-    myFromToSegments.push_back(ArLineSegment(P0, P1));
-    myFromToSegments.push_back(ArLineSegment(P1, P2));
-    myFromToSegments.push_back(ArLineSegment(P2, P3));
-    myFromToSegments.push_back(ArLineSegment(P3, P0));
+    myFromToSegments.push_back(MvrLineSegment(P0, P1));
+    myFromToSegments.push_back(MvrLineSegment(P1, P2));
+    myFromToSegments.push_back(MvrLineSegment(P2, P3));
+    myFromToSegments.push_back(MvrLineSegment(P3, P0));
     myFromToSegment.newEndPoints(fromPose, toPose);
     myFromPose = fromPose;
     myToPose = toPose;
@@ -403,7 +403,7 @@ AREXPORT void ArMapObject::log(const char *intro) const {
   }
   introString += "Cairn:";
 
-  ArLog::log(ArLog::Terse, 
+  ArLog::log(MvrLog::Terse, 
  	           "%s%s",
              introString.c_str(),
              toString());
@@ -583,8 +583,8 @@ AREXPORT bool ArMapObject::operator<(const ArMapObject& other) const
     return false;
   }
 
-  ArLog::log(ArLog::Normal,
-             "ArMapObject::operator<() two nearly identical objects cannot compare");
+  ArLog::log(MvrLog::Normal,
+             "MvrMapObject::operator<() two nearly identical objects cannot compare");
 
   IFDEBUG(log("this"));
   IFDEBUG(log("other")); 
@@ -608,10 +608,10 @@ AREXPORT  std::vector<ArPose> ArMapObject::getRegionVertices() const
   const double tx = getToPose().getX();
   const double ty = getToPose().getY();
   v.reserve(4);
-  v.push_back(ArPose((fx*ca - fy*sa), (fx*sa + fy*ca)));
-  v.push_back(ArPose((tx*ca - fy*sa), (tx*sa + fy*ca)));
-  v.push_back(ArPose((tx*ca - ty*sa), (tx*sa + ty*ca)));
-  v.push_back(ArPose((fx*ca - ty*sa), (fx*sa + ty*ca)));
+  v.push_back(MvrPose((fx*ca - fy*sa), (fx*sa + fy*ca)));
+  v.push_back(MvrPose((tx*ca - fy*sa), (tx*sa + fy*ca)));
+  v.push_back(MvrPose((tx*ca - ty*sa), (tx*sa + ty*ca)));
+  v.push_back(MvrPose((fx*ca - ty*sa), (fx*sa + ty*ca)));
   return v;
 }
 

@@ -24,12 +24,12 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaInternal.h"
 #include "ariaOSDef.h"
 #include "ariaUtil.h"
-#include "ArSystemStatus.h"
-#include "ArASyncTask.h"
+#include "MvrSystemStatus.h"
+#include "MvrASyncTask.h"
 #include <stdio.h>
 
 
@@ -79,10 +79,10 @@ void ArSystemStatus::refreshCPU()
 	FILE* statfp = ArUtil::fopen("/proc/stat", "r");
 	FILE* uptimefp = ArUtil::fopen("/proc/uptime", "r");
 	if (!statfp) {
-		ArLog::log(ArLog::Terse, "ArSystemStatus: Error: Failed to open /proc/stat!");
+		ArLog::log(MvrLog::Terse, "MvrSystemStatus: Error: Failed to open /proc/stat!");
 	}
 	if (!uptimefp) {
-		ArLog::log(ArLog::Terse, "ArSystemStatus: Error: Failed to open /proc/uptime!");
+		ArLog::log(MvrLog::Terse, "MvrSystemStatus: Error: Failed to open /proc/uptime!");
 	}
 	if (!statfp || !uptimefp)
 	{
@@ -136,7 +136,7 @@ public:
 	ArSystemStatusRefreshThread(int refreshFrequency) :
 		myRefreshFrequency(refreshFrequency)
 	{
-		setThreadName("ArSystemStatusRefreshThread");
+		setThreadName("MvrSystemStatusRefreshThread");
 	}
 	void runAsync() { create(false); }
 	void setRefreshFreq(int freq) { myRefreshFrequency = freq; }
@@ -145,7 +145,7 @@ private:
 	virtual void* runThread(void* arg)
 	{
 		threadStarted();
-		while (Aria::getRunning() && getRunning())
+		while (Mvria::getRunning() && getRunning())
 		{
 			ArSystemStatus::invalidate();
 			ArUtil::sleep(myRefreshFrequency);
@@ -159,8 +159,8 @@ private:
 
 AREXPORT void ArSystemStatus::startPeriodicUpdate(int refreshFrequency, ArLog::LogLevel logLevel)
 {
-	ourCPUMutex.setLogName("ArSystemStatusRefreshThread::ourCPUMutex");
-	ourWirelessMutex.setLogName("ArSystemStatusRefreshThread::ourWirelessMutex");
+	ourCPUMutex.setLogName("MvrSystemStatusRefreshThread::ourCPUMutex");
+	ourWirelessMutex.setLogName("MvrSystemStatusRefreshThread::ourWirelessMutex");
 
 	if (ourPeriodicUpdateThread) {
 		// If we already have a thread, just change its refresh frequency
@@ -289,7 +289,7 @@ void ArSystemStatus::refreshWireless()
 	FILE* fp = ArUtil::fopen("/proc/net/wireless", "r");
 	if (!fp)
 	{
-		ArLog::log(ArLog::Terse, "ArSystemStatus: Error: Failed to open /proc/net/wireless!");
+		ArLog::log(MvrLog::Terse, "MvrSystemStatus: Error: Failed to open /proc/net/wireless!");
 		ourShouldRefreshWireless = false;
 		return;
 	}
@@ -318,7 +318,7 @@ void ArSystemStatus::refreshWireless()
 		&disc_frag, &disc_retry, &disc_misc, &missed);
 	fclose(fp);
 	if (r < 11)
-		ArLog::log(ArLog::Verbose, "ArSystemStatus: Warning: Failed to parse /proc/net/wireless (only %d out of 11 values parsed).", r);
+		ArLog::log(MvrLog::Verbose, "MvrSystemStatus: Warning: Failed to parse /proc/net/wireless (only %d out of 11 values parsed).", r);
 	if (ourDiscardedConflict == -1 || ourDiscardedDecrypt == -1)
 		ourDiscardedTotal = -1;
 	else
@@ -341,7 +341,7 @@ void ArSystemStatus::refreshMTXWireless()
 
 	if ((!fpIp) || (!fpLink) || (!fpQuality))
 	{
-		ArLog::log(ArLog::Terse, "ArSystemStatus: Error: Failed to open /mnt/status/network/wireless/ files!");
+		ArLog::log(MvrLog::Terse, "MvrSystemStatus: Error: Failed to open /mnt/status/network/wireless/ files!");
 		ourShouldRefreshMTXWireless = false;
 		return;
 	}
@@ -396,7 +396,7 @@ void ArSystemStatus::refreshMTXWireless()
 
 
 	/*
-	ArLog::log(ArLog::Normal, "ArSystemStatus: %d.%d.%d.%d %d %d ",
+	ArLog::log(MvrLog::Normal, "MvrSystemStatus: %d.%d.%d.%d %d %d ",
 	ourMTXIp1, ourMTXIp2, ourMTXIp3, ourMTXIp4, ourMTXLinkQuality, ourMTXLinkSignal);
 	*/
 

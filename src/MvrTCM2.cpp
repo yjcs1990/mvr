@@ -25,13 +25,13 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #include "ariaInternal.h"
 #include "ariaUtil.h"
-#include "ArTCM2.h"
-#include "ArTCMCompassDirect.h"
-#include "ArTCMCompassRobot.h"
+#include "MvrTCM2.h"
+#include "MvrTCMCompassDirect.h"
+#include "MvrTCMCompassRobot.h"
 
 AREXPORT ArTCM2::ArTCM2() :
   myHeading(0.0),
@@ -64,7 +64,7 @@ AREXPORT ArTCM2::ArTCM2() :
 AREXPORT bool ArTCM2::connect() { return true; }
 AREXPORT bool ArTCM2::blockingConnect(unsigned long) { return true; }
 
-AREXPORT ArCompassConnector::ArCompassConnector(ArArgumentParser *argParser) :
+AREXPORT ArCompassConnector::ArCompassConnector(MvrArgumentParser *argParser) :
   myArgParser(argParser),
   myParseArgsCallback(this, &ArCompassConnector::parseArgs),
   myLogArgsCallback(this, &ArCompassConnector::logOptions),
@@ -73,8 +73,8 @@ AREXPORT ArCompassConnector::ArCompassConnector(ArArgumentParser *argParser) :
   mySerialTCMReadFunctor(NULL),
   myRobot(NULL)
 {
-  myParseArgsCallback.setName("ArCompassConnector");
-  myLogArgsCallback.setName("ArCompassConnector");
+  myParseArgsCallback.setName("MvrCompassConnector");
+  myLogArgsCallback.setName("MvrCompassConnector");
   Aria::addParseArgsCB(&myParseArgsCallback);
   Aria::addLogOptionsCB(&myLogArgsCallback);
 }
@@ -104,7 +104,7 @@ bool ArCompassConnector::parseArgs()
       myDeviceType = SerialTCM;
     else
     {
-      ArLog::log(ArLog::Terse, "ArCompassConnector: Error: unrecognized -compassType option: %s. Valid values are robot and serialTCM.", deviceType);
+      ArLog::log(MvrLog::Terse, "MvrCompassConnector: Error: unrecognized -compassType option: %s. Valid values are robot and serialTCM.", deviceType);
       return false;
     }
   }
@@ -113,12 +113,12 @@ bool ArCompassConnector::parseArgs()
 
 void ArCompassConnector::logOptions()
 {
-  ArLog::log(ArLog::Terse, "Compass options:");
-  ArLog::log(ArLog::Terse, "-compassType <robot|serialTCM>\tSelect compass device type (default: robot)");
-  ArLog::log(ArLog::Terse, "-compassPort <port>\tSerial port for \"serialTCM\" type compass. (default: %s)", ARTCM2_DEFAULT_SERIAL_PORT);
+  ArLog::log(MvrLog::Terse, "Compass options:");
+  ArLog::log(MvrLog::Terse, "-compassType <robot|serialTCM>\tSelect compass device type (default: robot)");
+  ArLog::log(MvrLog::Terse, "-compassPort <port>\tSerial port for \"serialTCM\" type compass. (default: %s)", ARTCM2_DEFAULT_SERIAL_PORT);
 }
 
-AREXPORT ArTCM2 *ArCompassConnector::create(ArRobot *robot)
+AREXPORT ArTCM2 *ArCompassConnector::create(MvrRobot *robot)
 {
   if(myDeviceType == None)
   {
@@ -140,7 +140,7 @@ AREXPORT ArTCM2 *ArCompassConnector::create(ArRobot *robot)
       }
       else
       {
-        ArLog::log(ArLog::Terse, "ArCompassConnector: Error: invalid compass type \"%s\" in robot parameters.", type);
+        ArLog::log(MvrLog::Terse, "MvrCompassConnector: Error: invalid compass type \"%s\" in robot parameters.", type);
         return NULL;
       }
     }
@@ -153,15 +153,15 @@ AREXPORT ArTCM2 *ArCompassConnector::create(ArRobot *robot)
   switch(myDeviceType)
   {
     case Robot:
-      ArLog::log(ArLog::Verbose, "ArCompassConnector: Using robot compass");
+      ArLog::log(MvrLog::Verbose, "MvrCompassConnector: Using robot compass");
       return new ArTCMCompassRobot(robot);
     case SerialTCM:
       {
-        ArLog::log(ArLog::Verbose, "ArCompassConnector: Using TCM2 compass on serial port %s", mySerialPort);
+        ArLog::log(MvrLog::Verbose, "MvrCompassConnector: Using TCM2 compass on serial port %s", mySerialPort);
         ArTCMCompassDirect *newDirectTCM = new ArTCMCompassDirect(mySerialPort);
         mySerialTCMReadFunctor = new ArRetFunctor1C<int, ArTCMCompassDirect, unsigned int>(newDirectTCM, &ArTCMCompassDirect::read, 1);
         robot->lock();
-        robot->addSensorInterpTask("ArTCMCompassDirect read", 200, mySerialTCMReadFunctor);
+        robot->addSensorInterpTask("MvrTCMCompassDirect read", 200, mySerialTCMReadFunctor);
         myRobot = robot;
         robot->unlock();
         return newDirectTCM;
@@ -171,11 +171,11 @@ AREXPORT ArTCM2 *ArCompassConnector::create(ArRobot *robot)
       // break out of switch and print warning there
       break;
   }
-  ArLog::log(ArLog::Terse, "ArCompassConnector: Error: No compass type selected.");
+  ArLog::log(MvrLog::Terse, "MvrCompassConnector: Error: No compass type selected.");
   return NULL;
 }
 
-AREXPORT bool ArCompassConnector::connect(ArTCM2 *compass) const
+AREXPORT bool ArCompassConnector::connect(MvrTCM2 *compass) const
 {
   return compass->blockingConnect();
 }

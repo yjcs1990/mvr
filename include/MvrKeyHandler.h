@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARKEYHANDLER_H
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 #include <map>
 #include <stdio.h>
 
@@ -42,20 +42,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
    This class is used for handling input from the keyboard.
    Use addKeyHandler() to associate a functor with a keyboard key.
-   ArKeyHandler will call that functor when the key is pressed.
+   MvrKeyHandler will call that functor when the key is pressed.
 
-   You should also register the keyhandler with Aria::setKeyHandler(),
+   You should also register the keyhandler with Mvria::setKeyHandler(),
    and before you create a key handler you should see if one is
-   already there with Aria::getKeyHandler().  Only one key handler
+   already there with Mvria::getKeyHandler().  Only one key handler
    can be created in a program, and this lets independent parts
    of a program use the same key handler.
    
    You can attach a key handler to a robot with
-   ArRobot::attachKeyHandler() which will put a task into the robots
+   MvrRobot::attachKeyHandler() which will put a task into the robots
    list of tasks to check for new keyboard input in each cycle, and which
    will also add a handler to end the robot's task cycle when Escape is pressed
    (you can override this by replacing it with your own handler).
-   If you have mulitple ArRobot objects, only create one key handler and attach
+   If you have mulitple MvrRobot objects, only create one key handler and attach
    it to one robot.
 
    Alternatively, you can call checkKeys() periodically to check for new key input.
@@ -63,12 +63,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   @ingroup OptionalClasses
 **/
 
-class ArKeyHandler
+class MvrKeyHandler
 {
 public:
   /// This object will take over key capture when constructed, and release
   /// key capture when destroyed.
-  AREXPORT ArKeyHandler(bool blocking = false, bool addAriaExitCB = true, 
+  AREXPORT MvrKeyHandler(bool blocking = false, bool addAriaExitCB = true, 
 			FILE *stream = NULL, 
 			bool takeKeysInConstructor = true);
 
@@ -110,12 +110,12 @@ public:
   };
 
   /// This adds a keyhandler, when the keyToHandle is hit, functor will fire
-  AREXPORT bool addKeyHandler(int keyToHandle, ArFunctor *functor);
+  AREXPORT bool addKeyHandler(int keyToHandle, MvrFunctor *functor);
 
   /// This removes a key handler, by key
   AREXPORT bool remKeyHandler(int keyToHandler);
   /// This removes a key handler, by key
-  AREXPORT bool remKeyHandler(ArFunctor *functor);
+  AREXPORT bool remKeyHandler(MvrFunctor *functor);
 
   /// Takes the key control over. For internal or special use, since it's
   /// called in the constructor.
@@ -127,9 +127,9 @@ public:
   AREXPORT void restore(void);
 
   ///  Checks for keys and handles them. This is automatically done in an
-  /// ArRobot task if a keyhandler attached to ArRobot with
-  /// ArRobot::attachKeyHandler() or Aria::setKeyHandler(), in which case 
-  /// you do not need to call it.  If not using or running an ArRobot 
+  /// MvrRobot task if a keyhandler attached to MvrRobot with
+  /// MvrRobot::attachKeyHandler() or Mvria::setKeyHandler(), in which case 
+  /// you do not need to call it.  If not using or running an MvrRobot 
   /// task cycle, call this instead.
   AREXPORT void checkKeys(void);
   
@@ -142,11 +142,11 @@ protected:
   int getChar(void);
 #endif 
 
-  std::map<int, ArFunctor *> myMap;
+  std::map<int, MvrFunctor *> myMap;
   bool myBlocking;
   
   bool myRestored;
-  ArFunctorC<ArKeyHandler> myAriaExitCB;
+  MvrFunctorC<ArKeyHandler> myAriaExitCB;
 #ifndef WIN32
   struct termios myOriginalTermios;
 #endif

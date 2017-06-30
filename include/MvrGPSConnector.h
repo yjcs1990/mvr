@@ -33,31 +33,31 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
-#include "ArGPS.h"
+#include "MvrFunctor.h"
+#include "MvrGPS.h"
 
-class ArDeviceConnection;
-class ArRobot;
+class MvrDeviceConnection;
+class MvrRobot;
 
 /** 
  *  @brief Factory for creating GPS interface object (for any kind of GPS supported by ARIA) based on robot parameter file and command-line arguments.
  *
- *  First, create an ArGPSConnector object before 
- *  calling Aria::parseArgs().  After connecting to the robot, call
- *  Aria::parseArgs().  Then, call createGPS() to create the GPS object.
+ *  First, create an MvrGPSConnector object before 
+ *  calling Mvria::parseArgs().  After connecting to the robot, call
+ *  Mvria::parseArgs().  Then, call createGPS() to create the GPS object.
  *  
- *  ArGPSConnector can connect to a Novatel GPS ("novatel" type), Trimble AgGPS
+ *  MvrGPSConnector can connect to a Novatel GPS ("novatel" type), Trimble AgGPS
  *  ("trimble" type), or any GPS
  *  supporting the NMEA standard protocol ("standard" type), if that GPS does not need any special
  *  commands to initialize.
  *
  *  @note The device connection object created by 
- *  ArGPSConnector is destroyed  when ArGPSConnector is 
- *  destroyed. Therefore, you must not destroy an ArGPSConnector
- *  while its associated ArGPS is in use.
+ *  MvrGPSConnector is destroyed  when MvrGPSConnector is 
+ *  destroyed. Therefore, you must not destroy an MvrGPSConnector
+ *  while its associated MvrGPS is in use.
  *
  * The following command-line arguments are checked:
- * @verbinclude ArGPSConnector_options
+ * @verbinclude MvrGPSConnector_options
  *
  * Only one GPS device may be configured and connected to by this object.
  *
@@ -65,17 +65,17 @@ class ArRobot;
    @ingroup DeviceClasses
 */
 
-class ArGPSConnector {
+class MvrGPSConnector {
 public:
-  AREXPORT ArGPSConnector(ArArgumentParser* argParser);
+  AREXPORT MvrGPSConnector(MvrArgumentParser* argParser);
   AREXPORT ~ArGPSConnector();
 
   /** Gets command line arguments */
   AREXPORT bool parseArgs();
 
 
-  /** Create a new GPS object (may be an ArGPS subclass based on device type)
-   * and a device connection for that GPS. Use ArGPS::blockingConnect() to open the connection.
+  /** Create a new GPS object (may be an MvrGPS subclass based on device type)
+   * and a device connection for that GPS. Use MvrGPS::blockingConnect() to open the connection.
    *
    * @param robot If not NULL, obtain default values for GPS type, port and baud
    * from this robot's parameters (given in parameter file), for any of these
@@ -85,9 +85,9 @@ public:
    * creating and opening its device connection. Otherwise, return the new GPS
    * object.  
    */
-  AREXPORT ArGPS* createGPS(ArRobot *robot = NULL);
+  AREXPORT MvrGPS* createGPS(MvrRobot *robot = NULL);
   /** @copydoc createGPS() */
-  AREXPORT ArGPS* create(ArRobot *robot = NULL) { return createGPS(robot); }
+  AREXPORT MvrGPS* create(MvrRobot *robot = NULL) { return createGPS(robot); }
 
 #if 0  
 
@@ -95,36 +95,36 @@ public:
   /** Try to establish a device connection between @a gps (created by calling
    * createGPS() and the GPS receiver.
    */
-  AREXPORT bool connectGPS(ArGPS *gps);
+  AREXPORT bool connectGPS(MvrGPS *gps);
   /** @copydoc connectGPS() */
-  AREXPORT bool connect(ArGPS *gps) { return connectGPS(gps) ; }
+  AREXPORT bool connect(MvrGPS *gps) { return connectGPS(gps) ; }
 #endif
 
   /** @brief Device type identifiers */
   typedef enum {
-      /// For a standard NMEA GPS device (no extra initialization or interpretation needed) accessible using ArGPS 
+      /// For a standard NMEA GPS device (no extra initialization or interpretation needed) accessible using MvrGPS 
       Standard, 
-      /// For a Novatel device accessible using ArNovatelGPS 
+      /// For a Novatel device accessible using MvrNovatelGPS 
       Novatel,
-      /// For a Trimble device accessible using ArTrimbleGPS
+      /// For a Trimble device accessible using MvrTrimbleGPS
       Trimble,
       /// Not set or invalid
       Invalid,
       /// Novatel SPAN
-      /// @since Aria 2.7.2
+      /// @since Mvria 2.7.2
       NovatelSPAN,
       /// Simulated (program must set dummy positions)
-      /// @since Aria 2.7.6
+      /// @since Mvria 2.7.6
       Simulator
   } GPSType;
 
   AREXPORT GPSType getGPSType() const { return myDeviceType; }
 
 protected:
-  ArDeviceConnection *myDeviceCon;
-  ArArgumentParser *myArgParser;
-  ArRetFunctorC<bool, ArGPSConnector> myParseArgsCallback;
-  ArFunctorC<ArGPSConnector> myLogArgsCallback;
+  MvrDeviceConnection *myDeviceCon;
+  MvrArgumentParser *myArgParser;
+  MvrRetFunctorC<bool, MvrGPSConnector> myParseArgsCallback;
+  MvrFunctorC<ArGPSConnector> myLogArgsCallback;
   int myBaud;
   const char *myPort;
   const char *myTCPHost;

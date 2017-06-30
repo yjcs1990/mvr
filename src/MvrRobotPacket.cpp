@@ -24,9 +24,9 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRobotPacket.h"
+#include "MvrRobotPacket.h"
 #include "stdio.h"
 
 /**
@@ -87,7 +87,7 @@ AREXPORT ArTypes::UByte ArRobotPacket::getID(void)
     return 0;
 }
 
-AREXPORT void ArRobotPacket::setID(ArTypes::UByte id)
+AREXPORT void ArRobotPacket::setID(MvrTypes::UByte id)
 {
   myBuf[3] = id;
 }
@@ -158,7 +158,7 @@ AREXPORT ArTime ArRobotPacket::getTimeReceived(void)
   return myTimeReceived;
 }
 
-AREXPORT void ArRobotPacket::setTimeReceived(ArTime timeReceived)
+AREXPORT void ArRobotPacket::setTimeReceived(MvrTime timeReceived)
 {
   myTimeReceived = timeReceived;
 }
@@ -166,9 +166,9 @@ AREXPORT void ArRobotPacket::setTimeReceived(ArTime timeReceived)
 AREXPORT void ArRobotPacket::log()
 {
   int i;
-  ArLog::log(ArLog::Normal, "Robot Packet: (length = %i)", myLength);
+  ArLog::log(MvrLog::Normal, "Robot Packet: (length = %i)", myLength);
   for (i = 0; i < myLength; i++)
-    ArLog::log(ArLog::Terse, "  [%03i] % 5d\t0x%x\t%c\t%s", i,
+    ArLog::log(MvrLog::Terse, "  [%03i] % 5d\t0x%x\t%c\t%s", i,
         (unsigned char) myBuf[i],
         (unsigned char) myBuf[i],
         (myBuf[i] >= ' ' && myBuf[i] <= '~') ? (unsigned char) myBuf[i] : ' ',
@@ -180,6 +180,6 @@ AREXPORT void ArRobotPacket::log()
                   i == (myLength - 1) ? "[second checksum byte]" :
                     ""
     );
-  ArLog::log(ArLog::Terse, "\n");
+  ArLog::log(MvrLog::Terse, "\n");
 }
 

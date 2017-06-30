@@ -27,14 +27,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARP2ARM_H
 #define ARP2ARM_H
 
-#include "ArRobot.h"
+#include "MvrRobot.h"
 #include "ariaTypedefs.h"
-#include "ArSerialConnection.h"
+#include "MvrSerialConnection.h"
 #include "ariaOSDef.h"
 
-// P2 Arm classes: ArP2Arm for control and ArP2ArmJoints for P2 Arm joint data
+// P2 Mvrm classes: MvrP2Arm for control and MvrP2ArmJoints for P2 Mvrm joint data
 
-/// P2 Arm joint info
+/// P2 Mvrm joint info
 class P2ArmJoint
 {
 public:
@@ -42,43 +42,43 @@ public:
   AREXPORT P2ArmJoint();
   AREXPORT virtual ~P2ArmJoint();
 
-  ArTypes::UByte myPos;
-  ArTypes::UByte myVel;
-  ArTypes::UByte myHome;
-  ArTypes::UByte myMin;
-  ArTypes::UByte myCenter;
-  ArTypes::UByte myMax;
-  ArTypes::UByte myTicksPer90;
+  MvrTypes::UByte myPos;
+  MvrTypes::UByte myVel;
+  MvrTypes::UByte myHome;
+  MvrTypes::UByte myMin;
+  MvrTypes::UByte myCenter;
+  MvrTypes::UByte myMax;
+  MvrTypes::UByte myTicksPer90;
 };
 
 /**
-   ArP2Arm is the interface to the AROS/P2OS-based Pioneer 2 Arm servers,
+   MvrP2Arm is the interface to the AROS/P2OS-based Pioneer 2 Mvrm servers,
    by means of which the robot microcontroller firmware can control the
-   original 5-DOF Pioneer 2 Arm manipulator.
-   The P2 Arm is attached to the robot's microcontroller via an auxiliary
+   original 5-DOF Pioneer 2 Mvrm manipulator.
+   The P2 Mvrm is attached to the robot's microcontroller via an auxiliary
    serial port.
 
-   To use ArmP2, you must first set up an ArRobot and have it connect
-   with the robot. The ArRobot needs to be run so that it reads and writes
-   packets to and from server. The easiest way is ArRobot::runAsync()
-   which runs the ArRobot in its own thread.
+   To use MvrmP2, you must first set up an MvrRobot and have it connect
+   with the robot. The MvrRobot needs to be run so that it reads and writes
+   packets to and from server. The easiest way is MvrRobot::runAsync()
+   which runs the MvrRobot in its own thread.
 
-   Then call ArP2Arm::setRobot() with ArRobot, and finally initialized
-   with ArmP2::init().  Once initialized, use the various ArP2Arm
-   methods to power the P2 Arm servos, move joints, and so on.
+   Then call MvrP2Arm::setRobot() with MvrRobot, and finally initialized
+   with MvrmP2::init().  Once initialized, use the various MvrP2Arm
+   methods to power the P2 Mvrm servos, move joints, and so on.
 
-   For simple examples on how to use ArP2Arm, look in the Aria/examples
+   For simple examples on how to use MvrP2Arm, look in the Mvria/examples
    directory for P2ArmSimple.cpp and P2ArmJoydrive.cpp.
 
-   For additional information about the original 5-DOF Pioneer 2 Arm,
+   For additional information about the original 5-DOF Pioneer 2 Mvrm,
    see the robot operations manual and the arm manual, available at
    <a href="http://robots.mobilerobots.com">http://robots.mobilerobots.com</a>.
 
    @ingroup DeviceClasses
    @ingroup OptionalClasses
 **/
-/// Arm Control class
-class ArP2Arm
+/// Mvrm Control class
+class MvrP2Arm
 {
 public:
 
@@ -87,7 +87,7 @@ public:
     SUCCESS, ///< Succeded
     ALREADY_INITED, ///< The class is already initialized
     NOT_INITED, ///< The class is not initialized
-    ROBOT_NOT_SETUP, ///< The ArRobot class is not setup properly
+    ROBOT_NOT_SETUP, ///< The MvrRobot class is not setup properly
     NO_ARM_FOUND, ///< The arm can not be found
     COMM_FAILED, ///< Communications has failed
     COULD_NOT_OPEN_PORT, ///< Could not open the communications port
@@ -98,13 +98,13 @@ public:
     INVALID_POSITION ///< Invalid position specified
     } State;
 
-  /// Type of arm packet identifiers. Used in ArP2Arm::setPacketCB().
+  /// Type of arm packet identifiers. Used in MvrP2Arm::setPacketCB().
   typedef enum {
     StatusPacket, ///< The status packet type
     InfoPacket ///< The info packet type
   } PacketType;
 
-  /// Type of status packets to request for. Used in ArP2Arm::requestStatus()
+  /// Type of status packets to request for. Used in MvrP2Arm::requestStatus()
   typedef enum
   {
     StatusOff=0, ///< Stop sending status packets
@@ -113,36 +113,36 @@ public:
   } StatusType;
 
   /// Bit for joint 1 in arm status byte
-  AREXPORT static const int ArmJoint1;
+  AREXPORT static const int MvrmJoint1;
   /// Bit for joint 2 in arm status byte
-  AREXPORT static const int ArmJoint2;
+  AREXPORT static const int MvrmJoint2;
   /// Bit for joint 3 in arm status byte
-  AREXPORT static const int ArmJoint3;
+  AREXPORT static const int MvrmJoint3;
   /// Bit for joint 4 in arm status byte
-  AREXPORT static const int ArmJoint4;
+  AREXPORT static const int MvrmJoint4;
   /// Bit for joint 5 in arm status byte
-  AREXPORT static const int ArmJoint5;
+  AREXPORT static const int MvrmJoint5;
   /// Bit for joint 6 in arm status byte
-  AREXPORT static const int ArmJoint6;
+  AREXPORT static const int MvrmJoint6;
   /// Bit for arm good state in arm status byte
-  AREXPORT static const int ArmGood;
+  AREXPORT static const int MvrmGood;
   /// Bit for arm initialized in arm status byte
-  AREXPORT static const int ArmInited;
+  AREXPORT static const int MvrmInited;
   /// Bit for arm powered on in arm status byte
-  AREXPORT static const int ArmPower;
+  AREXPORT static const int MvrmPower;
   /// Bit for arm homing in arm status byte
-  AREXPORT static const int ArmHoming;
+  AREXPORT static const int MvrmHoming;
   /// Number of joints that the arm has
   AREXPORT static int NumJoints;
 
   /// Constructor
-  AREXPORT ArP2Arm();
+  AREXPORT MvrP2Arm();
 
   /// Destructor
   AREXPORT virtual ~ArP2Arm();
 
   /// Set the robot to use to talk to the arm
-  AREXPORT void setRobot(ArRobot *robot) {myRobot=robot;}
+  AREXPORT void setRobot(MvrRobot *robot) {myRobot=robot;}
 
   /// Init the arm class
   AREXPORT virtual State init();
@@ -199,10 +199,10 @@ public:
   AREXPORT virtual State setGripperParkTimer(int waitSecs);
 
   /// Set the arm stopped callback
-  AREXPORT virtual void setStoppedCB(ArFunctor *func) {myStoppedCB=func;}
+  AREXPORT virtual void setStoppedCB(MvrFunctor *func) {myStoppedCB=func;}
 
   /// set the arm packet callback
-  AREXPORT virtual void setPacketCB(ArFunctor1<PacketType> *func)
+  AREXPORT virtual void setPacketCB(MvrFunctor1<PacketType> *func)
     {myPacketCB=func;}
 
   /// Get the arm version
@@ -227,10 +227,10 @@ public:
   AREXPORT virtual int getStatus() {return(myStatus);}
 
   /// Get when the last arm status packet came in
-  AREXPORT virtual ArTime getLastStatusTime() {return(myLastStatusTime);}
+  AREXPORT virtual MvrTime getLastStatusTime() {return(myLastStatusTime);}
 
   /// Get the robot that the arm is on
-  AREXPORT virtual ArRobot * getRobot() {return(myRobot);}
+  AREXPORT virtual MvrRobot * getRobot() {return(myRobot);}
 
   /// Get the joints data structure
   AREXPORT virtual P2ArmJoint * getJoint(int joint);
@@ -275,22 +275,22 @@ protected:
   bool comArmAutoPark(int waitSecs);
   bool comArmGripperPark(int waitSecs);
 
-  bool armPacketHandler(ArRobotPacket *packet);
+  bool armPacketHandler(MvrRobotPacket *packet);
 
   bool myInited;
-  ArRobot *myRobot;
-  //  ArmP2Model myModel;
-  ArTime myLastStatusTime;
-  ArTime myLastInfoTime;
+  MvrRobot *myRobot;
+  //  MvrmP2Model myModel;
+  MvrTime myLastStatusTime;
+  MvrTime myLastInfoTime;
   std::string myVersion;
   StatusType myStatusRequest;
-  ArTypes::UByte2 myLastStatus;
-  ArTypes::UByte2 myStatus;
-  ArSerialConnection myCon;
-  ArRetFunctorC<State, ArP2Arm> myAriaUninitCB;
-  ArRetFunctor1C<bool, ArP2Arm, ArRobotPacket*> myArmPacketHandler;
-  ArFunctor1<PacketType> *myPacketCB;
-  ArFunctor *myStoppedCB;
+  MvrTypes::UByte2 myLastStatus;
+  MvrTypes::UByte2 myStatus;
+  MvrSerialConnection myCon;
+  MvrRetFunctorC<State, MvrP2Arm> myAriaUninitCB;
+  MvrRetFunctor1C<bool, MvrP2Arm, MvrRobotPacket*> myArmPacketHandler;
+  MvrFunctor1<PacketType> *myPacketCB;
+  MvrFunctor *myStoppedCB;
 
   // We have 6 joints. Including the gripper. It's here so that we can
   // store its position even though its not really a joint.

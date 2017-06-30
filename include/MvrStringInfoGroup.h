@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSTRINGINFOGROUP_H
 
 #include "ariaUtil.h"
-#include "ArMutex.h"
+#include "MvrMutex.h"
 #include <string>
 #include <set>
 #include <list>
@@ -40,64 +40,64 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
   @ingroup OptionalClasses
  **/
-class ArStringInfoGroup
+class MvrStringInfoGroup
 {
 public:
   /// Constructor
-  AREXPORT ArStringInfoGroup();
+  AREXPORT MvrStringInfoGroup();
   /// Destructor
   AREXPORT virtual ~ArStringInfoGroup();
   /// Adds a string to the list in the raw format
-  AREXPORT bool addString(const char *name, ArTypes::UByte2 maxLen, 
-			  ArFunctor2<char *, ArTypes::UByte2> *functor);
+  AREXPORT bool addString(const char *name, MvrTypes::UByte2 maxLen, 
+			  MvrFunctor2<char *, MvrTypes::UByte2> *functor);
 
   /// Adds an int to the list in the helped way
-  AREXPORT bool addStringInt(const char *name, ArTypes::UByte2 maxLen, 
-			     ArRetFunctor<int> *functor, 
+  AREXPORT bool addStringInt(const char *name, MvrTypes::UByte2 maxLen, 
+			     MvrRetFunctor<int> *functor, 
 			     const char *format = "%d");
 
   /// Adds a double to the list in the helped way
-  AREXPORT bool addStringDouble(const char *name, ArTypes::UByte2 maxLen, 
+  AREXPORT bool addStringDouble(const char *name, MvrTypes::UByte2 maxLen, 
 				ArRetFunctor<double> *functor, 
 				const char *format = "%g");
 
   /// Adds a bool to the list in the helped way
-  AREXPORT bool addStringBool(const char *name, ArTypes::UByte2 maxLen, 
-			      ArRetFunctor<bool> *functor,
+  AREXPORT bool addStringBool(const char *name, MvrTypes::UByte2 maxLen, 
+			      MvrRetFunctor<bool> *functor,
 			      const char *format = "%s");
 
   /// Adds a string to the list in the helped way
-  AREXPORT bool addStringString(const char *name, ArTypes::UByte2 maxLen, 
-			      ArRetFunctor<const char *> *functor,
+  AREXPORT bool addStringString(const char *name, MvrTypes::UByte2 maxLen, 
+			      MvrRetFunctor<const char *> *functor,
 			      const char *format = "%s");
 
   /// Adds a std::string to the list. std::string::c_str() will be used to  
-  AREXPORT bool addStringString(const char *name, ArTypes::UByte2 maxLen,
-            ArRetFunctor<std::string> *functor);
+  AREXPORT bool addStringString(const char *name, MvrTypes::UByte2 maxLen,
+            MvrRetFunctor<std::string> *functor);
 
   /// Adds an int to the list in the helped way
   AREXPORT bool addStringUnsignedLong(const char *name, 
-				      ArTypes::UByte2 maxLen, 
-				      ArRetFunctor<unsigned long> *functor, 
+				      MvrTypes::UByte2 maxLen, 
+				      MvrRetFunctor<unsigned long> *functor, 
 				      const char *format = "%lu");
 
   /// Adds an int to the list in the helped way
   AREXPORT bool addStringLong(const char *name, 
-			      ArTypes::UByte2 maxLen, 
-			      ArRetFunctor<long> *functor, 
+			      MvrTypes::UByte2 maxLen, 
+			      MvrRetFunctor<long> *functor, 
 			      const char *format = "%ld");
 
   /// This is the function to add a callback to be called by addString
   AREXPORT void addAddStringCallback(
-	  ArFunctor3<const char *, ArTypes::UByte2,
-	  ArFunctor2<char *, ArTypes::UByte2> *> *functor,
-	  ArListPos::Pos position = ArListPos::LAST);
+	  MvrFunctor3<const char *, MvrTypes::UByte2,
+	  MvrFunctor2<char *, MvrTypes::UByte2> *> *functor,
+	  MvrListPos::Pos position = MvrListPos::LAST);
 
 protected:
-  ArMutex myDataMutex;
-  std::set<std::string, ArStrCaseCmpOp> myAddedStrings;
-  std::list<ArFunctor3<const char *, ArTypes::UByte2,
-	      ArFunctor2<char *, ArTypes::UByte2> *> *> myAddStringCBList;
+  MvrMutex myDataMutex;
+  std::set<std::string, MvrStrCaseCmpOp> myAddedStrings;
+  std::list<ArFunctor3<const char *, MvrTypes::UByte2,
+	      MvrFunctor2<char *, MvrTypes::UByte2> *> *> myAddStringCBList;
 };
 
 

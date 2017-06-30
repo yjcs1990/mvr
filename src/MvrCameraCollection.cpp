@@ -26,27 +26,27 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaUtil.h"
 
-#include "ArCameraCollection.h"
+#include "MvrCameraCollection.h"
 
-AREXPORT ArCameraCollection::ArCameraCollection() :
+AREXPORT MvrCameraCollection::ArCameraCollection() :
   myMutex(),
 	myCameraToInfoMap()
 {
-  myMutex.setLogName("ArCameraCollection::myMutex");
+  myMutex.setLogName("MvrCameraCollection::myMutex");
 } // end ctor
 
-AREXPORT ArCameraCollection::~ArCameraCollection()
+AREXPORT MvrCameraCollection::~ArCameraCollection()
 {
-  ArUtil::deleteSetPairs(myCameraToInfoMap.begin(),
+  MvrUtil::deleteSetPairs(myCameraToInfoMap.begin(),
                          myCameraToInfoMap.end());
   myCameraToInfoMap.clear();
 
 } // end dtor
 
-AREXPORT bool ArCameraCollection::addCamera(const char *cameraName,
+AREXPORT bool MvrCameraCollection::addCamera(const char *cameraName,
 											                      const char *cameraType,
 											                      const char *displayName,
 											                      const char *displayType)
@@ -77,7 +77,7 @@ AREXPORT bool ArCameraCollection::addCamera(const char *cameraName,
 } // end method addCamera
 
 
-AREXPORT bool ArCameraCollection::removeCamera(const char *cameraName)
+AREXPORT bool MvrCameraCollection::removeCamera(const char *cameraName)
 {
   if (cameraName == NULL) {
     return false;
@@ -105,7 +105,7 @@ AREXPORT bool ArCameraCollection::removeCamera(const char *cameraName)
 } // end method removeCamera
 
 
-AREXPORT bool ArCameraCollection::addCameraCommand(const char *cameraName,
+AREXPORT bool MvrCameraCollection::addCameraCommand(const char *cameraName,
 												                           const char *command,
 												                           const char *cameraCommandName,
                                                    int requestInterval)
@@ -143,7 +143,7 @@ AREXPORT bool ArCameraCollection::addCameraCommand(const char *cameraName,
 } // end method addCameraCommand
 
 
-AREXPORT bool ArCameraCollection::removeCameraCommand(const char *cameraName,
+AREXPORT bool MvrCameraCollection::removeCameraCommand(const char *cameraName,
 													                            const char *command)
 {
   lock();
@@ -175,9 +175,9 @@ AREXPORT bool ArCameraCollection::removeCameraCommand(const char *cameraName,
 } // end method removeCameraCommand
 
 
-AREXPORT bool ArCameraCollection::addParameter(const char *cameraName,
-                                              ArCameraParameterSource *source,
-                                              const ArConfigArg &param)
+AREXPORT bool MvrCameraCollection::addParameter(const char *cameraName,
+                                              MvrCameraParameterSource *source,
+                                              const MvrConfigArg &param)
 {
   lock();
   CameraInfo *camInfo = findCameraInfo(cameraName);
@@ -204,7 +204,7 @@ AREXPORT bool ArCameraCollection::addParameter(const char *cameraName,
 } // end method addParameter
 
 
-AREXPORT bool ArCameraCollection::removeParameter(const char *cameraName,
+AREXPORT bool MvrCameraCollection::removeParameter(const char *cameraName,
                                                   const char *paramName)
 {
   lock();
@@ -230,7 +230,7 @@ AREXPORT bool ArCameraCollection::removeParameter(const char *cameraName,
 } // end method removeParameter 
 
 
-AREXPORT void ArCameraCollection::getCameraNames(std::list<std::string> &outList)
+AREXPORT void MvrCameraCollection::getCameraNames(std::list<std::string> &outList)
 {
   lock();
   outList.clear();
@@ -298,7 +298,7 @@ AREXPORT const char *ArCameraCollection::getDisplayType(const char *cameraName)
 } // end method getDisplayType
 
 
-AREXPORT void ArCameraCollection::getCameraCommands(const char *cameraName,
+AREXPORT void MvrCameraCollection::getCameraCommands(const char *cameraName,
                                                     std::list<std::string> &outList)
 {
   lock();
@@ -338,7 +338,7 @@ AREXPORT const char *ArCameraCollection::getCommandName(const char *cameraName,
 } // end method getCommandName
 
 
-AREXPORT int ArCameraCollection::getRequestInterval(const char *cameraName,
+AREXPORT int MvrCameraCollection::getRequestInterval(const char *cameraName,
 														                        const char *command)
 {
   int interval = -1;
@@ -357,7 +357,7 @@ AREXPORT int ArCameraCollection::getRequestInterval(const char *cameraName,
 } // end method getRequestInterval
 
 
-AREXPORT void ArCameraCollection::getParameterNames
+AREXPORT void MvrCameraCollection::getParameterNames
                                       (const char *cameraName,
                                        std::list<std::string> &outList)
 {
@@ -378,9 +378,9 @@ AREXPORT void ArCameraCollection::getParameterNames
 
 } // end method getParameterNames
 
-AREXPORT bool ArCameraCollection::getParameter(const char *cameraName,
+AREXPORT bool MvrCameraCollection::getParameter(const char *cameraName,
                                                const char *parameterName,
-                                               ArConfigArg &paramOut)
+                                               MvrConfigArg &paramOut)
 {
   lock();
 
@@ -398,8 +398,8 @@ AREXPORT bool ArCameraCollection::getParameter(const char *cameraName,
 
 
   
-AREXPORT bool ArCameraCollection::setParameter(const char *cameraName,
-                                               const ArConfigArg &param)
+AREXPORT bool MvrCameraCollection::setParameter(const char *cameraName,
+                                               const MvrConfigArg &param)
 {
   lock();
 
@@ -420,7 +420,7 @@ AREXPORT bool ArCameraCollection::setParameter(const char *cameraName,
 } // end method changeParameter
 
 
-AREXPORT bool ArCameraCollection::exists(const char *cameraName)
+AREXPORT bool MvrCameraCollection::exists(const char *cameraName)
 {
   lock();
 
@@ -433,7 +433,7 @@ AREXPORT bool ArCameraCollection::exists(const char *cameraName)
 } // end method exists
 
 
-AREXPORT bool ArCameraCollection::exists(const char *cameraName,
+AREXPORT bool MvrCameraCollection::exists(const char *cameraName,
 				         const char *command)
 {
   if ((cameraName == NULL) || (command == NULL)) {
@@ -451,7 +451,7 @@ AREXPORT bool ArCameraCollection::exists(const char *cameraName,
 } // end method exists
   
 
-AREXPORT bool ArCameraCollection::parameterExists(const char *cameraName,
+AREXPORT bool MvrCameraCollection::parameterExists(const char *cameraName,
 					          const char *paramName)
 {
   if ((cameraName == NULL) || (paramName == NULL)) {
@@ -468,7 +468,7 @@ AREXPORT bool ArCameraCollection::parameterExists(const char *cameraName,
 }
 
 
-AREXPORT void ArCameraCollection::startUpdate()
+AREXPORT void MvrCameraCollection::startUpdate()
 {
   lock();
   myIsUpdatesEnabled = false;
@@ -477,7 +477,7 @@ AREXPORT void ArCameraCollection::startUpdate()
 } // end method startUpdate
 
 
-AREXPORT void ArCameraCollection::endUpdate()
+AREXPORT void MvrCameraCollection::endUpdate()
 {
   lock();
   myIsUpdatesEnabled = true;
@@ -489,8 +489,8 @@ AREXPORT void ArCameraCollection::endUpdate()
 } // end method endUpdate
 
 
-AREXPORT bool ArCameraCollection::addModifiedCB(ArFunctor *functor,
-                                                ArListPos::Pos position)
+AREXPORT bool MvrCameraCollection::addModifiedCB(MvrFunctor *functor,
+                                                MvrListPos::Pos position)
 {
   if (functor == NULL) {
     return false;
@@ -500,18 +500,18 @@ AREXPORT bool ArCameraCollection::addModifiedCB(ArFunctor *functor,
   lock();
 
   switch (position) {
-  case ArListPos::FIRST:
+  case MvrListPos::FIRST:
     myModifiedCBList.push_front(functor);
     break;
 
-  case ArListPos::LAST:
+  case MvrListPos::LAST:
     myModifiedCBList.push_back(functor);
     break;
 
   default:
     isSuccess = false;
-    ArLog::log(ArLog::Terse, 
-               "ArCameraCollection::addModifiedCB: Unrecognized position = %i.", 
+    MvrLog::log(MvrLog::Terse, 
+               "MvrCameraCollection::addModifiedCB: Unrecognized position = %i.", 
                position);
     break;
   }
@@ -523,7 +523,7 @@ AREXPORT bool ArCameraCollection::addModifiedCB(ArFunctor *functor,
 } // end method addModifiedCB
 
 
-AREXPORT bool ArCameraCollection::removeModifiedCB(ArFunctor *functor)
+AREXPORT bool MvrCameraCollection::removeModifiedCB(MvrFunctor *functor)
 {
   if (functor == NULL) {
     return false;
@@ -607,14 +607,14 @@ ArCameraCollection::ParamInfo *ArCameraCollection::findParamInfo
 
 
 
-void ArCameraCollection::setModified()
+void MvrCameraCollection::setModified()
 {
   myIsModified = true;
   notifyModifiedListeners();
 }
 
 
-void ArCameraCollection::notifyModifiedListeners()
+void MvrCameraCollection::notifyModifiedListeners()
 {
   if (!myIsUpdatesEnabled || !myIsModified) {
     return;
@@ -638,7 +638,7 @@ ArCameraCollection::CameraInfo::CameraInfo() :
 
 ArCameraCollection::CameraInfo::~CameraInfo()
 {
-  ArUtil::deleteSetPairs(myCommandToInfoMap.begin(), 
+  MvrUtil::deleteSetPairs(myCommandToInfoMap.begin(), 
                          myCommandToInfoMap.end());
   myCommandToInfoMap.clear();
 }

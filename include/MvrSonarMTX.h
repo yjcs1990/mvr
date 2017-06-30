@@ -28,10 +28,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSONARMTX_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
-#include "ArFunctor.h"
-#include "ArRobot.h"
-#include "ArRobotPacket.h"
+#include "MvrRangeDevice.h"
+#include "MvrFunctor.h"
+#include "MvrRobot.h"
+#include "MvrRobotPacket.h"
 
 
 
@@ -120,36 +120,36 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 /// Receives sonar data from an MTX robot
-/// Use ArSonarConnector to establish the connection and create and initiate the ArSonarMTX thread.
+/// Use MvrSonarConnector to establish the connection and create and initiate the MvrSonarMTX thread.
 /// @since 2.8.0
-class ArSonarMTX : public ArASyncTask
+class MvrSonarMTX : public MvrASyncTask
 {
 public:
   /// Constructor
-  AREXPORT ArSonarMTX( 
+  AREXPORT MvrSonarMTX( 
 			  int sonarBoardNum = 0,
-				const char * name = "MTXSonar", ArDeviceConnection *conn = NULL,
-			 ArRobot *robot = NULL);
+				const char * name = "MTXSonar", MvrDeviceConnection *conn = NULL,
+			 MvrRobot *robot = NULL);
   /// Destructor
   AREXPORT virtual ~ArSonarMTX();
 
   /// Sets the robot pointer, also attaches its process function to the
   /// robot as a Sensor Interpretation task.
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
 
 	int getBoardNum(void)
 		{ return myBoardNum; }
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(ArDeviceConnection *conn);
+  AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  AREXPORT ArDeviceConnection *getDeviceConnection(void);
+  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
   /// Very Internal call that gets the packet sender, shouldn't be used
-  ArRobotPacketSender *getPacketSender(void)
+  MvrRobotPacketSender *getPacketSender(void)
     { return mySender; }
   /// Very Internal call that gets the packet sender, shouldn't be used
-  ArRobotPacketReceiver *getPacketReceiver(void)
+  MvrRobotPacketReceiver *getPacketReceiver(void)
     { return myReceiver; }
 
   AREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
@@ -180,7 +180,7 @@ public:
 
   AREXPORT virtual const char *getNameWithBoard(void) const;
 
-  void	setInfoLogLevel(ArLog::LogLevel infoLogLevel)
+  void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
 
   /// Gets the default port type for the sonar
@@ -191,7 +191,7 @@ public:
 
   /// Sets the numter of seconds without a response until connection assumed lost
   virtual void setConnectionTimeoutSeconds(double seconds)
-    { ArLog::log(ArLog::Normal, 
+    { MvrLog::log(MvrLog::Normal, 
 		 "%s::setConnectionTimeoutSeconds: Setting timeout to %g secs", 
 		 getName(), seconds);
       myLastReading.setToNow(); myTimeoutSeconds = seconds; }
@@ -203,7 +203,7 @@ public:
 	/// disconnect 
 	AREXPORT void disconnectOnError(void);
   /// Gets the time data was last receieved
-  ArTime getLastReadingTime(void) { return myLastReading; }
+  MvrTime getLastReadingTime(void) { return myLastReading; }
   /// Gets the number of sonar readings received in the last second
   AREXPORT int getReadingCount(void);
   // Function called in sensorInterp to indicate that a
@@ -245,12 +245,12 @@ protected:
 
 public:
   /// Adds a callback for when disconnection happens because of an error
-  void addDisconnectOnErrorCB(ArFunctor *functor, 
+  void addDisconnectOnErrorCB(MvrFunctor *functor, 
 			     int position = 51) 
     { myDisconnectOnErrorCBList.addCallback(functor, position); }
 
   /// Removes a callback for when disconnection happens because of an error
-  void remDisconnectOnErrorCB(ArFunctor *functor)
+  void remDisconnectOnErrorCB(MvrFunctor *functor)
     { myDisconnectOnErrorCBList.remCallback(functor); }
 
   /// Number of Transducers from board query
@@ -465,7 +465,7 @@ enum Headers {
 
 
 protected:
-  ArDeviceConnection *myConn;
+  MvrDeviceConnection *myConn;
 
   std::string myName;
   char myNameWithBoard[100];
@@ -477,17 +477,17 @@ protected:
 
 	bool myTransducersAreOn;
 
-  ArTime myLastReading;
+  MvrTime myLastReading;
 
   // packet count
   time_t myTimeLastReading;
   int myReadingCurrentCount;
   int myReadingCount;
 
-  ArCallbackList myDisconnectOnErrorCBList;
+  MvrCallbackList myDisconnectOnErrorCBList;
 	
 	ArRobot *myRobot;
-  ArFunctorC<ArSonarMTX> myProcessCB;
+  MvrFunctorC<ArSonarMTX> myProcessCB;
 
   AREXPORT virtual void sonarSetName(const char *name);
   AREXPORT virtual void * runThread(void *arg);
@@ -574,23 +574,23 @@ enum Commands {
   bool mySendTrackingSet;
   bool myRecvTrackingSet;
 
-  ArRobotPacketReceiver *myReceiver;
-  ArRobotPacketSender *mySender;
+  MvrRobotPacketReceiver *myReceiver;
+  MvrRobotPacketSender *mySender;
 
-  ArMutex myPacketsMutex;
-  ArMutex myDataMutex;
+  MvrMutex myPacketsMutex;
+  MvrMutex myDataMutex;
 	ArMutex myDeviceMutex;
 	
-  ArLog::LogLevel myInfoLogLevel;
+  MvrLog::LogLevel myInfoLogLevel;
 
   std::list<ArRobotPacket *> myPackets;
 
 	int myFirmwareVersion;
 
-  ArTime myPrevSensorIntTime;
+  MvrTime myPrevSensorIntTime;
 
-  ArFunctorC<ArSonarMTX> mySensorInterpTask;
-  ArRetFunctorC<bool, ArSonarMTX> myAriaExitCB;
+  MvrFunctorC<ArSonarMTX> mySensorInterpTask;
+  MvrRetFunctorC<bool, MvrSonarMTX> myAriaExitCB;
 
 };
 

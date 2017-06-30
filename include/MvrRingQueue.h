@@ -55,12 +55,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *  @ingroup UtilityClasses
  */
 template<class T> 
-class ArRingQueue {
+class MvrRingQueue {
 public:
   /** @param capacity Initial capacity of the ring queue. 
    *  @param init_value Initial value for new, unused items in the queue. 
    *  */
-  ArRingQueue(int capacity, T init_value)
+  MvrRingQueue(int capacity, T init_value)
     : ring(capacity, init_value), curSize(0), initval(init_value)
   {
     back_it = ring.begin(); 
@@ -96,7 +96,7 @@ public:
   typename std::list<T>::iterator back() {
     if(front_it == back_it)
     {
-      //std::cerr << "ArRingQueue: back(): 0-capacity or full, returning nil.\n";
+      //std::cerr << "MvrRingQueue: back(): 0-capacity or full, returning nil.\n";
       return nil();
     }
     return back_it;
@@ -125,10 +125,10 @@ public:
       // debugging:
       /*
       if(empty()) {
-        std::cerr << "ArRingQueue: advance_back(): queue is *empty*, can't advance back.\n";
+        std::cerr << "MvrRingQueue: advance_back(): queue is *empty*, can't advance back.\n";
         return;
       }
-      std::cerr << "ArRingQueue: advance_back(): queue is full, can't advance back.\n";
+      std::cerr << "MvrRingQueue: advance_back(): queue is full, can't advance back.\n";
       */
       return;
     }

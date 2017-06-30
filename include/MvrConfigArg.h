@@ -31,36 +31,36 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
-class ArArgumentBuilder;
-class ArFileParser;
-class ArSocket;
+class MvrArgumentBuilder;
+class MvrFileParser;
+class MvrSocket;
 
-/// Argument class for ArConfig
+/// Mvrgument class for MvrConfig
 /** 
-    ArConfigArg stores information about a parameter (name, description, type),
+    MvrConfigArg stores information about a parameter (name, description, type),
     and a pointer to the variable that will actually store the value. This
     variable is normally stored and used by whatever class or module has added the
-    parameter to ArConfig.  (In addition, there are some special types of
-    ArConfigArg that behave differently such as the "holder" types and separator,
+    parameter to MvrConfig.  (In addition, there are some special types of
+    MvrConfigArg that behave differently such as the "holder" types and separator,
     these are used internally or in special cases.)
 
-    Which constructor you use determines the value type of the ArConfigArg object.
+    Which constructor you use determines the value type of the MvrConfigArg object.
   
     Example:
     @code
-    config->addParam(ArConfigArg("MyParameter", &myTarget, "Example Parameter"), "Example Section");
+    config->addParam(MvrConfigArg("MyParameter", &myTarget, "Example Parameter"), "Example Section");
     @endcode
 
-    Where: <tt>config</tt> is a pointer to an ArConfig object or subclass (e.g.  use
-    <tt>ArConfig* config = Aria::getConfig()</tt> to use the global Aria ArConfig
+    Where: <tt>config</tt> is a pointer to an MvrConfig object or subclass (e.g.  use
+    <tt>ArConfig* config = Mvria::getConfig()</tt> to use the global Mvria MvrConfig
     object);
     <tt>myTarget</tt> is a variable (e.g. int) that is a class member whose instance will not
     be destroyed before the end of the program, or which will remove the parameter
-    from ArConfig before being destroyed (the pointer to <tt>myTarget</tt> that is stored
-    in ArConfig must not become invalid.)  The ArConfigArg object passed to
-    addParam() will be copied and stored in ArConfig.  The type of the target
+    from MvrConfig before being destroyed (the pointer to <tt>myTarget</tt> that is stored
+    in MvrConfig must not become invalid.)  The MvrConfigArg object passed to
+    addParam() will be copied and stored in MvrConfig.  The type of the target
     variable (<tt>myTarget</tt>) determines the type of the parameter.
 
 
@@ -68,30 +68,30 @@ class ArSocket;
      based on most target langugages types, so you must use subclasses
      defined for various types. Or, use the constructor that accepts 
      functors for dealing with arguments.  Also, Swig cannot use pointers
-     to change variables, so you must create ArConfigArg objects, passing
+     to change variables, so you must create MvrConfigArg objects, passing
      in default values, and retain references to those objects,
-     in addition to passing them to ArConfig, and read new values from those
-     objects if ArConfig changes; or pass functors to ArConfigArg instead
+     in addition to passing them to MvrConfig, and read new values from those
+     objects if MvrConfig changes; or pass functors to MvrConfigArg instead
      of the initial value.
 
     Special features:
 
-    You can add a separator line to the section by adding an ArConfigArg with type SEPARATOR: 
+    You can add a separator line to the section by adding an MvrConfigArg with type SEPARATOR: 
     @code
-      config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), "My Section");
+      config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), "My Section");
     @endcode
 
     You can specify a list of possible values by setting a "display hint".  For
     example, for a string parameter with possible values "A", "B" and "C":
     @code
-      ArConfigArg arg("Example", exampleString, "Example string parameter");
+      MvrConfigArg arg("Example", exampleString, "Example string parameter");
       arg.setDisplayHint("Choices:A;;B;;C");
       config->addParam(arg);
     @endcode
     This information is provided to clients, but you should still verify the
     value is not unexpected when it changes or when you use the value.
 */
-class ArConfigArg
+class MvrConfigArg
 {
 public:
 
@@ -102,8 +102,8 @@ public:
     DOUBLE, ///< Double argument
     STRING, ///< String argument
     BOOL, ///< Boolean argument
-    FUNCTOR, ///< Argument that handles things with functors
-    DESCRIPTION_HOLDER, ///< Argument that just holds a description
+    FUNCTOR, ///< Mvrgument that handles things with functors
+    DESCRIPTION_HOLDER, ///< Mvrgument that just holds a description
     STRING_HOLDER, ///< this one is for holding strings and reading them in and writing them out but not really letting them get sent anywhere (its for unknown config parameters (so they don't get lost if a feature is turned off)
     SEPARATOR, ///< Empty argument that merely acts as a separator within a (large) section.
     CPPSTRING, ///< Pointer to std::string, use like STRING.
@@ -166,9 +166,9 @@ public:
 
 
 
-  /// Keyword that indicates the start of an ArConfigArg LIST object, for ArFileParser.
+  /// Keyword that indicates the start of an MvrConfigArg LIST object, for MvrFileParser.
   AREXPORT static const char *LIST_BEGIN_TAG;
-  /// Keyword that indicates the end of an ArConfigArg LIST object, for ArFileParser.
+  /// Keyword that indicates the end of an MvrConfigArg LIST object, for MvrFileParser.
   AREXPORT static const char *LIST_END_TAG;
 
   /// Resource file keyword that indicates an empty string (cannot write empty for csv).
@@ -196,31 +196,31 @@ public:
 
 
   /// Returns the section name contained in the given resource arg.
-  AREXPORT static std::string parseResourceSectionName(ArArgumentBuilder *arg, 
+  AREXPORT static std::string parseResourceSectionName(MvrArgumentBuilder *arg, 
                                                        const char *logPrefix = "");
 
   /// Returns the param name contained in the given resource arg.
-  AREXPORT static std::string parseResourceArgName(ArArgumentBuilder *arg, 
+  AREXPORT static std::string parseResourceArgName(MvrArgumentBuilder *arg, 
                                                    const char *logPrefix = "");
 
   /// Returns the arg type contained in the given resource arg.
-  AREXPORT static Type parseResourceType(ArArgumentBuilder *arg, 
+  AREXPORT static Type parseResourceType(MvrArgumentBuilder *arg, 
                                          const char *logPrefix = "");
 
   /// Returns true if the given resource arg is "top-level", i.e. not a list member.
-  AREXPORT static bool isResourceTopLevel(ArArgumentBuilder *arg, 
+  AREXPORT static bool isResourceTopLevel(MvrArgumentBuilder *arg, 
                                           const char *logPrefix = "");
 
   /// Returns the parent path contained in the resource arg for list members.
-  AREXPORT static std::list<std::string> parseResourceParentPath(ArArgumentBuilder *arg,
+  AREXPORT static std::list<std::string> parseResourceParentPath(MvrArgumentBuilder *arg,
                                                                  char separator = '|',
                                                                  const char *logPrefix = "");
   
   /// Returns the description contained in the given resource arg.
-  AREXPORT static std::string parseResourceDescription(ArArgumentBuilder *arg, 
+  AREXPORT static std::string parseResourceDescription(MvrArgumentBuilder *arg, 
                                                        const char *logPrefix = "");
   /// Returns the extra explanation contained in the given resource arg.
-  AREXPORT static std::string parseResourceExtra(ArArgumentBuilder *arg, 
+  AREXPORT static std::string parseResourceExtra(MvrArgumentBuilder *arg, 
                                                        const char *logPrefix = "");
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -228,109 +228,109 @@ public:
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /// Default empty contructor
-  AREXPORT ArConfigArg();
+  AREXPORT MvrConfigArg();
   /// Constructor for making an integer argument by pointer (4 bytes)
-  AREXPORT ArConfigArg(const char * name, int *pointer, 
+  AREXPORT MvrConfigArg(const char * name, int *pointer, 
 		       const char * description = "", 
 		       int minInt = INT_MIN, 
 		       int maxInt = INT_MAX); 
   /// Constructor for making an int argument thats a short (2 bytes)
-  AREXPORT ArConfigArg(const char * name, short *pointer, 
+  AREXPORT MvrConfigArg(const char * name, short *pointer, 
 		       const char * description = "", 
 		       int minInt = SHRT_MIN, 
 		       int maxInt = SHRT_MAX); 
   /// Constructor for making an int argument thats a ushort (2 bytes)
-  AREXPORT ArConfigArg(const char * name, unsigned short *pointer, 
+  AREXPORT MvrConfigArg(const char * name, unsigned short *pointer, 
 		       const char * description = "", 
 		       int minInt = 0, 
 		       int maxInt = USHRT_MAX); 
   /// Constructor for making an char (1 byte) argument by pointer (treated as int)
-  AREXPORT ArConfigArg(const char * name, unsigned char *pointer, 
+  AREXPORT MvrConfigArg(const char * name, unsigned char *pointer, 
 		       const char * description = "", 
 		       int minInt = 0,
 		       int maxInt = 255); 
   /// Constructor for making a double argument by pointer
-  AREXPORT ArConfigArg(const char * name, 
+  AREXPORT MvrConfigArg(const char * name, 
                        double *pointer,
 		                   const char * description = "", 
 		                   double minDouble = -HUGE_VAL,
 		                   double maxDouble = HUGE_VAL,
                        int precision = DEFAULT_DOUBLE_PRECISION); 
   /// Constructor for making a boolean argument by pointer
-  AREXPORT ArConfigArg(const char * name, bool *pointer,
+  AREXPORT MvrConfigArg(const char * name, bool *pointer,
 		       const char * description = ""); 
   /// Constructor for making an argument of a string by pointer (see details)
-  AREXPORT ArConfigArg(const char *name, char *str, 
+  AREXPORT MvrConfigArg(const char *name, char *str, 
 		       const char *description,
 		       size_t maxStrLen);
   /// Constructor for making an argument of a string by pointer (see details)
-  AREXPORT ArConfigArg(const char *name, const char *str, 
+  AREXPORT MvrConfigArg(const char *name, const char *str, 
 		       const char *description);
 
   /// Constructor for making an argument of a C++ std::string 
-  AREXPORT ArConfigArg(const char *name, std::string *str, const char *description);
+  AREXPORT MvrConfigArg(const char *name, std::string *str, const char *description);
   
   /// Constructor for making an integer argument
-  AREXPORT ArConfigArg(const char * name, int val, 
+  AREXPORT MvrConfigArg(const char * name, int val, 
 		       const char * description = "", 
 		       int minInt = INT_MIN, 
 		       int maxInt = INT_MAX); 
   /// Constructor for making a double argument
-  AREXPORT ArConfigArg(const char * name, 
+  AREXPORT MvrConfigArg(const char * name, 
                        double val,
 		                   const char * description = "", 
 		                   double minDouble = -HUGE_VAL,
 		                   double maxDouble = HUGE_VAL,
                        int precision = DEFAULT_DOUBLE_PRECISION); 
   /// Constructor for making a boolean argument
-  AREXPORT ArConfigArg(const char * name, bool val,
+  AREXPORT MvrConfigArg(const char * name, bool val,
 		       const char * description = ""); 
   /// Constructor for making an argument that has functors to handle things
-  AREXPORT ArConfigArg(const char *name, 
-		 ArRetFunctor1<bool, ArArgumentBuilder *> *setFunctor, 
-		 ArRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
+  AREXPORT MvrConfigArg(const char *name, 
+		 MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
+		 MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
 		 const char *description);
 
-  /// Constructor for just holding a description (for ArConfig)
-  AREXPORT ArConfigArg(const char *str, Type type = DESCRIPTION_HOLDER);
+  /// Constructor for just holding a description (for MvrConfig)
+  AREXPORT MvrConfigArg(const char *str, Type type = DESCRIPTION_HOLDER);
   /// Constructor for holding an unknown argument (STRING_HOLDER)
-  AREXPORT ArConfigArg(const char *name, const char *str);
+  AREXPORT MvrConfigArg(const char *name, const char *str);
 
   /// Constructs a new named argument of the specified type.
-  AREXPORT ArConfigArg(Type type,
+  AREXPORT MvrConfigArg(Type type,
                        const char *name, 
 		                   const char *description);
 
   /// Constructs a new argument of the specified type.
-  AREXPORT ArConfigArg(Type type);
+  AREXPORT MvrConfigArg(Type type);
 
   /// Destructor
   AREXPORT virtual ~ArConfigArg();
 
   /// Copy constructor that allows a new name to be assigned
-  AREXPORT ArConfigArg(const char *argName,
-                       const ArConfigArg & arg);
+  AREXPORT MvrConfigArg(const char *argName,
+                       const MvrConfigArg & arg);
 
   /// Copy constructor
-  AREXPORT ArConfigArg(const ArConfigArg & arg);
+  AREXPORT MvrConfigArg(const MvrConfigArg & arg);
   /// Assignment operator
-  AREXPORT ArConfigArg &operator=(const ArConfigArg &arg);
+  AREXPORT MvrConfigArg &operator=(const MvrConfigArg &arg);
 
   /// Copies the given arg to this one, detaching any pointers so they are not shared
-  AREXPORT void copyAndDetach(const ArConfigArg &arg);
+  AREXPORT void copyAndDetach(const MvrConfigArg &arg);
 
 
   /// Copies the translation data from given arg to this one.
-  AREXPORT bool copyTranslation(const ArConfigArg &arg);
+  AREXPORT bool copyTranslation(const MvrConfigArg &arg);
 
   /// Converts a list holder argument to an actual list and copies the children from arg.
-  AREXPORT bool promoteList(const ArConfigArg &arg);
+  AREXPORT bool promoteList(const MvrConfigArg &arg);
   
   /// Whether the arg type is LIST or LIST_HOLDER
   AREXPORT bool isListType() const;
 
   /// Gets the type of the argument
-  AREXPORT ArConfigArg::Type getType(void) const;
+  AREXPORT MvrConfigArg::Type getType(void) const;
   /// Gets the name of the argument
   AREXPORT const char *getName(void) const;
   /// Gets the brief description of the argument
@@ -371,7 +371,7 @@ public:
                           bool doNotSet = false);
 
   /// Sets the argument by calling the setFunctor callback
-  AREXPORT bool setArgWithFunctor(ArArgumentBuilder *argument, 
+  AREXPORT bool setArgWithFunctor(MvrArgumentBuilder *argument, 
 				  char *errorBuffer = NULL,
 				  size_t errorBufferLen = 0,
 				  bool doNotSet = false);
@@ -416,10 +416,10 @@ public:
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /// Adds a child arg to this arg.  Valid only for LIST type; otherwise returns false.
-  AREXPORT bool addArg(const ArConfigArg &arg); 
+  AREXPORT bool addArg(const MvrConfigArg &arg); 
 
   /// Removes the child arg that has the same name as the specified one. Valid only for LIST type.
-  AREXPORT bool removeArg(const ArConfigArg  &arg);
+  AREXPORT bool removeArg(const MvrConfigArg  &arg);
 
   /// Returns whether the list contains child args. Valid only for LIST type; otherwise returns false.
   AREXPORT bool hasArgs() const;
@@ -438,41 +438,41 @@ public:
   AREXPORT std::list<ArConfigArg> getArgs(bool *ok = NULL) const;
 
   /// Returns the child arg at the specified index (between 0 and getArgCount()).
-  AREXPORT const ArConfigArg *getArg(size_t index) const;
+  AREXPORT const MvrConfigArg *getArg(size_t index) const;
 
   /// Returns the child arg at the specified index (between 0 and getArgCount()).
-  AREXPORT ArConfigArg *getArg(size_t index);
+  AREXPORT MvrConfigArg *getArg(size_t index);
 
   /// Finds the specified child arg.  Valid only for LIST type; otherwise returns NULL.
-  AREXPORT const ArConfigArg *findArg(const char *childParamName) const;
+  AREXPORT const MvrConfigArg *findArg(const char *childParamName) const;
 
   /// Finds the specified child arg.  Valid only for LIST type; otherwise returns NULL.
-  AREXPORT ArConfigArg *findArg(const char *childParamName);
+  AREXPORT MvrConfigArg *findArg(const char *childParamName);
 
   /// If the arg is a list member, returns all ancestors in order.
   AREXPORT bool getAncestorList(std::list<ArConfigArg*> *ancestorListOut);
 
   /// If the arg is a list member, returns the top-most arg. Otherwise, returns this.
-  AREXPORT const ArConfigArg *getTopLevelArg() const;
+  AREXPORT const MvrConfigArg *getTopLevelArg() const;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Miscellaneous Attributes
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-  /// Gets the priority (only used by ArConfig)
-  AREXPORT ArPriority::Priority getConfigPriority(void) const;
-  /// Sets the priority (only used by ArConfig)
-  AREXPORT void setConfigPriority(ArPriority::Priority priority);
+  /// Gets the priority (only used by MvrConfig)
+  AREXPORT MvrPriority::Priority getConfigPriority(void) const;
+  /// Sets the priority (only used by MvrConfig)
+  AREXPORT void setConfigPriority(MvrPriority::Priority priority);
 
   /// Returns the display hint for this arg, or NULL if none is defined.
   AREXPORT const char *getDisplayHint() const;
   /// Sets the display hint for this arg.
   AREXPORT void setDisplayHint(const char *hintText);
 
-  /// Gets the restart level of this parameter (only used by ArConfig)
+  /// Gets the restart level of this parameter (only used by MvrConfig)
   AREXPORT RestartLevel getRestartLevel() const;
-  /// Sets the restart level of this parameter (only used by ArConfig)
+  /// Sets the restart level of this parameter (only used by MvrConfig)
   AREXPORT void setRestartLevel(RestartLevel level);
 
   /// Gets if notifications of changes are suppressed (for the central
@@ -490,13 +490,13 @@ public:
   AREXPORT void setSerializable(bool isSerializable);
 
 
-  /// Returns a pointer to the immediate parent arg.  If this is not a child ArConfigArg, then returns NULL.
-  AREXPORT ArConfigArg *getParentArg() const;
+  /// Returns a pointer to the immediate parent arg.  If this is not a child MvrConfigArg, then returns NULL.
+  AREXPORT MvrConfigArg *getParentArg() const;
 
   /// If getParentArg() is not null, then returns the path to the top level, as a single string
   AREXPORT std::string getParentPathName(char separator = '|') const;
 
-  /// Given a parent path, as a single string, splits it in a format useable by ArConfigSection findParam
+  /// Given a parent path, as a single string, splits it in a format useable by MvrConfigSection findParam
   AREXPORT static std::list<std::string> splitParentPathName(const char *parentPathName,
                                                              char separator = '|');
 
@@ -528,10 +528,10 @@ public:
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /// Adds given parserCB handler for the appropriate keyword(s) to the given file parser.
-  AREXPORT bool addToFileParser(ArFileParser *parser,
-                                ArRetFunctor3C<bool, 
-                                               ArConfig, 
-                                               ArArgumentBuilder *, 
+  AREXPORT bool addToFileParser(MvrFileParser *parser,
+                                MvrRetFunctor3C<bool, 
+                                               MvrConfig, 
+                                               MvrArgumentBuilder *, 
                                                char *, 
                                                size_t> *parserCB,                              
                                 const char *logPrefix = "",
@@ -539,8 +539,8 @@ public:
 
 
 
-  /// Sets the value of this arg to the data described in the given ArArgumentBuilder
-  AREXPORT bool parseArgument(ArArgumentBuilder *arg, 
+  /// Sets the value of this arg to the data described in the given MvrArgumentBuilder
+  AREXPORT bool parseArgument(MvrArgumentBuilder *arg, 
 				                      char *errorBuffer,
 				                      size_t errorBufferLen,
                               const char *logPrefix = "",
@@ -577,7 +577,7 @@ public:
   /**
    * The given args are formatted according to the SocketIndices defined above.
   **/
-  AREXPORT bool parseSocket(const ArArgumentBuilder &args,
+  AREXPORT bool parseSocket(const MvrArgumentBuilder &args,
                             char *errorBuffer,
                             size_t errorBufferLen);
 
@@ -587,7 +587,7 @@ public:
    *  output string is:
    *     <i>intro</i> <i>paramName</i> <i>paramValue</i>
   **/
-  AREXPORT bool writeValue(ArSocket *socket,
+  AREXPORT bool writeValue(MvrSocket *socket,
                            const char *intro) const;
 
   /// Writes the definition of this parameter, and all child parameters, to the given text socket.
@@ -596,7 +596,7 @@ public:
    * output string is:
    *    <i>intro</i> <i>type</i> <i>paramName</i> <i>priority</i> <i>min</i> <i>max</i> <i>description</i> <i>displayHint</i> <i>listDelimiter</i>
   **/
-  AREXPORT bool writeInfo(ArSocket *socket,
+  AREXPORT bool writeInfo(MvrSocket *socket,
                           const char *intro) const;
   
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -609,7 +609,7 @@ public:
                     const char *logPrefix = "") const;
 
   /// Checks only the name, type, and value attributes and returns whether they are equal.
-  AREXPORT bool isValueEqual(const ArConfigArg &other) const;
+  AREXPORT bool isValueEqual(const MvrConfigArg &other) const;
   
   /// If the given source is of the same type, copies its value to this arg
   /**
@@ -617,14 +617,14 @@ public:
    * types (i.e. int, bool, etc.).  It doesn't copy functors or description
    * holders.
    *
-   * @param source the ArConfigArg whose value is to be copied to this arg
+   * @param source the MvrConfigArg whose value is to be copied to this arg
    * @param isVerifyArgNames a bool set to true if the argument value should
    * be set only if the given source has the same name as this argument;
    * the default value is false
    * @return bool true if the value was copied; false if the source was of a 
    * different (or non-copyable) type
   **/
-  AREXPORT bool setValue(const ArConfigArg &source,
+  AREXPORT bool setValue(const MvrConfigArg &source,
                          bool isVerifyArgNames = false);
 
   /// Gets whether this value has been set since it was last cleared or not
@@ -648,8 +648,8 @@ public:
     MAX_RESOURCE_ARG_TEXT_LENGTH = 1024
   };
 
-  /// Sets the value of this arg to the resource data described in the given ArArgumentBuilder
-  AREXPORT bool parseResource(ArArgumentBuilder *arg, 
+  /// Sets the value of this arg to the resource data described in the given MvrArgumentBuilder
+  AREXPORT bool parseResource(MvrArgumentBuilder *arg, 
                               char *errorBuffer,
 				                      size_t errorBufferLen,
                               const char *logPrefix = "",
@@ -693,8 +693,8 @@ public:
 
 protected:
 
-  // Giving ArConfig access to the write method
-  friend class ArConfig;
+  // Giving MvrConfig access to the write method
+  friend class MvrConfig;
 
   /// Writes the given comment to the specified file, spanning multiple lines as necessary.
   AREXPORT static bool writeMultiLineComment(const char *comment,
@@ -721,15 +721,15 @@ private:
              bool isDelete = true);
 
   /// Copies the given arg to this one, optionally detaching any internal pointer
-  void copy(const ArConfigArg &arg, bool isDetach = false);
+  void copy(const MvrConfigArg &arg, bool isDetach = false);
   
-  void set(ArConfigArg::Type type,
+  void set(MvrConfigArg::Type type,
            const char *name,
            const char *description,
            IntType intType = INT_NOT);
 
   /// Sets the parent pointer of this arg.
-  void setParent(ArConfigArg *parentArg);
+  void setParent(MvrConfigArg *parentArg);
 
 
 // KMC 7/11/12 Changed from protected to private so future changes are less
@@ -739,10 +739,10 @@ private:
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /// Data applicable to INT args
-  struct ArConfigIntData {
+  struct MvrConfigIntData {
 
     // int data
-    ArConfigArg::IntType myIntType;
+    MvrConfigArg::IntType myIntType;
 
     // If unions need to be avoided for some reason, then this can simply 
     // be turned into a struct.
@@ -759,33 +759,33 @@ private:
     int myMinInt;
     int myMaxInt;
 
-  }; // end struct ArConfigIntData
+  }; // end struct MvrConfigIntData
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /// Data applicable to DOUBLE args
-  struct ArConfigDoubleData {
+  struct MvrConfigDoubleData {
    
     double *myDoublePointer;
     double  myMinDouble;
     double  myMaxDouble;
     int     myPrecision;
 
-  }; // end struct ArConfigDoubleData
+  }; // end struct MvrConfigDoubleData
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /// Data applicable to BOOL args
-  struct ArConfigBoolData {
+  struct MvrConfigBoolData {
     
     bool *myBoolPointer;
 
-  }; // end struct ArConfigBoolData
+  }; // end struct MvrConfigBoolData
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /// Data applicable to STRING and STRING_HOLDER args
-  struct ArConfigStringData {
+  struct MvrConfigStringData {
 
     // string data
     char *myStringPointer;
@@ -796,31 +796,31 @@ private:
     // bool myUsingOwnedString;
     std::string *myString; ///< Used if myOwnedString is true. (Union member cannot have a copy constructor so using a pointer)
 
-  }; // end struct ArConfigStringData
+  }; // end struct MvrConfigStringData
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /// Data applicable to CPPSTRING
-  struct ArConfigCppStringData {
+  struct MvrConfigCppStringData {
     std::string *myCppStringPtr;
   };
   
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /// Data applicable to LIST args
-  struct ArConfigListData {
+  struct MvrConfigListData {
 
     std::list<ArConfigArg> *myChildArgList;
 
-  }; // end struct ArConfigListData
+  }; // end struct MvrConfigListData
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   /// Data applicable to FUNCTOR args
-  struct ArConfigFunctorData {
+  struct MvrConfigFunctorData {
 
-    ArRetFunctor1<bool, ArArgumentBuilder *> *mySetFunctor;
-    ArRetFunctor<const std::list<ArArgumentBuilder *> *> *myGetFunctor;
+    MvrRetFunctor1<bool, MvrArgumentBuilder *> *mySetFunctor;
+    MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *myGetFunctor;
 
-  }; // end struct ArConfigFunctorData
+  }; // end struct MvrConfigFunctorData
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -829,14 +829,14 @@ private:
   // be turned into a struct.
   //
   /// Data that varies according to type of arg
-  union ArConfigArgData { // begin union (based on myType)
-    ArConfigIntData     myIntData;
-    ArConfigDoubleData  myDoubleData;
-    ArConfigBoolData    myBoolData;
-    ArConfigStringData  myStringData;
-    ArConfigListData    myListData;
-    ArConfigFunctorData myFunctorData;
-    ArConfigCppStringData myCppStringData;
+  union MvrConfigArgData { // begin union (based on myType)
+    MvrConfigIntData     myIntData;
+    MvrConfigDoubleData  myDoubleData;
+    MvrConfigBoolData    myBoolData;
+    MvrConfigStringData  myStringData;
+    MvrConfigListData    myListData;
+    MvrConfigFunctorData myFunctorData;
+    MvrConfigCppStringData myCppStringData;
   }; // end union (based on myType)
   
 
@@ -845,11 +845,11 @@ private:
   /// Number of spaces to indent each level of list contents
   static int ourIndentSpaceCount;
 
-  static std::map<std::string, Type, ArStrCaseCmpOp> *ourTextToTypeMap;
-  static std::map<std::string, RestartLevel, ArStrCaseCmpOp> *ourTextToRestartLevelMap;
+  static std::map<std::string, Type, MvrStrCaseCmpOp> *ourTextToTypeMap;
+  static std::map<std::string, RestartLevel, MvrStrCaseCmpOp> *ourTextToRestartLevelMap;
 
   /// Type of this arg
-  ArConfigArg::Type myType;
+  MvrConfigArg::Type myType;
   /// Name of this arg (may be empty for SEPARATOR args)
   std::string myName;
   /// Brief description of this arg
@@ -860,17 +860,17 @@ private:
   /// Name to be displayed in client applications. (Not yet supported.)
   std::string myDisplayName;
   
-  ArConfigArgData myData;
+  MvrConfigArgData myData;
 
   /// Priority of this arg
-  ArPriority::Priority myConfigPriority;
+  MvrPriority::Priority myConfigPriority;
   /// Optional display hint used by clients
   std::string myDisplayHint;
   /// Indicates whether modifying the arg will result in a system restart
   RestartLevel myRestartLevel;
 
   /// Pointer to the parent arg, or NULL if this arg is not a member of a LIST 
-  ArConfigArg *myParentArg;
+  MvrConfigArg *myParentArg;
 
   /// Whether this arg "owns" its data, i.e. does not point to a member of another object
   bool myOwnPointedTo : 1;
@@ -885,6 +885,6 @@ private:
   /// Whether this arg should be written to the configuration file
   bool myIsSerializable : 1;
 
-}; // end class ArConfigArg
+}; // end class MvrConfigArg
 
 #endif // ARCONFIGARG_H

@@ -24,15 +24,15 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 // ArThread.cc -- Thread classes
 
 
 #include "ariaOSDef.h"
 #include <errno.h>
 #include <list>
-#include "ArThread.h"
-#include "ArLog.h"
+#include "MvrThread.h"
+#include "MvrLog.h"
 
 
 ArMutex ArThread::ourThreadsMutex;
@@ -119,7 +119,7 @@ AREXPORT ArThread::ArThread(ThreadType thread, bool joinable,
 {
 }
 
-AREXPORT ArThread::ArThread(ArFunctor *func, bool joinable,
+AREXPORT ArThread::ArThread(MvrFunctor *func, bool joinable,
 			    bool blockAllSignals) :
   myRunning(false),
   myJoinable(false),

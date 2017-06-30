@@ -24,22 +24,22 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSick.h"
-#include "ArLaserReflectorDevice.h"
-#include "ArRobot.h"
+#include "MvrSick.h"
+#include "MvrLaserReflectorDevice.h"
+#include "MvrRobot.h"
 
-AREXPORT ArLaserReflectorDevice::ArLaserReflectorDevice(ArRangeDevice *laser,
+AREXPORT MvrLaserReflectorDevice::ArLaserReflectorDevice(MvrRangeDevice *laser,
 							ArRobot *robot,
 							const char *name) :
   /*
-  ArRangeDevice(laser->getCurrentRangeBuffer()->getSize(), 
+  MvrRangeDevice(laser->getCurrentRangeBuffer()->getSize(), 
 		laser->getCumulativeRangeBuffer()->getSize(), name,
 		laser->getMaxRange()), */
   // MPL 12/11/12 this is how it was... but the part I'm putting in was above commented out, so this may go wrong
   //ArRangeDevice(361, 361, name, 32000),
-  ArRangeDevice(laser->getCurrentRangeBuffer()->getSize(), 
+  MvrRangeDevice(laser->getCurrentRangeBuffer()->getSize(), 
 		laser->getCumulativeRangeBuffer()->getSize(), name,
 		laser->getMaxRange()), 
   myProcessCB(this, &ArLaserReflectorDevice::processReadings)
@@ -48,8 +48,8 @@ AREXPORT ArLaserReflectorDevice::ArLaserReflectorDevice(ArRangeDevice *laser,
   myRobot = robot;
   if (myRobot != NULL)
     myRobot->addSensorInterpTask(myName.c_str(), 10, &myProcessCB);
-  setCurrentDrawingData(new ArDrawingData("polyDots", 
-                                          ArColor(0xb0, 0xb0, 0xff), 
+  setCurrentDrawingData(new MvrDrawingData("polyDots", 
+                                          MvrColor(0xb0, 0xb0, 0xff), 
                                           60,  // mm length of arrow
                                           77,  // above the normal laser
 					  200, // default refresh
@@ -58,37 +58,37 @@ AREXPORT ArLaserReflectorDevice::ArLaserReflectorDevice(ArRangeDevice *laser,
   myReflectanceThreshold = 31;
 }
 
-AREXPORT ArLaserReflectorDevice::~ArLaserReflectorDevice()
+AREXPORT MvrLaserReflectorDevice::~ArLaserReflectorDevice()
 {
   if (myRobot != NULL)
     myRobot->remSensorInterpTask(&myProcessCB);
 }
 
-AREXPORT void ArLaserReflectorDevice::setRobot(ArRobot *robot)
+AREXPORT void MvrLaserReflectorDevice::setRobot(MvrRobot *robot)
 {
   // specifically do nothing since this is just here for debugging
 }
 
-AREXPORT void ArLaserReflectorDevice::addToConfig(ArConfig *config, 
+AREXPORT void MvrLaserReflectorDevice::addToConfig(MvrConfig *config, 
 						  const char *section)
 {
 
-  config->addSection(ArConfig::CATEGORY_ROBOT_PHYSICAL,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_PHYSICAL,
                      section,
                      "Settings for using the reflector readings from this laser");
 
   config->addParam(
-	  ArConfigArg("ReflectanceThreshold", &myReflectanceThreshold,
+	  MvrConfigArg("ReflectanceThreshold", &myReflectanceThreshold,
 		      "The threshold to start showing reflector readings at (normalized from 0 to 255, 31 is the default)", 
 		      0, 255),
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 		      
 }
 
-AREXPORT void ArLaserReflectorDevice::processReadings(void)
+AREXPORT void MvrLaserReflectorDevice::processReadings(void)
 {
   //int i;
-  ArSensorReading *reading;
+  MvrSensorReading *reading;
   myLaser->lockDevice();
   lockDevice();
   

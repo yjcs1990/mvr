@@ -30,42 +30,42 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /** @cond INCLUDE_SWIG_ONLY_CLASSES */
 
-/* ArConfigArg subclasses for specific types, since for some target languages
+/* MvrConfigArg subclasses for specific types, since for some target languages
  * (Python) Swig can't differentiate booleans, integers, short integers,
- * unsigned integers, etc.  Furthermore, ArConfig can't change program variables
+ * unsigned integers, etc.  Furthermore, MvrConfig can't change program variables
  * via pointers in most languages, so you need to only use the constructors that take
  * an initial value for an internally held variable instead of pointers anyway.
  */
 
-class ArConfigArg_Bool : public ArConfigArg
+class MvrConfigArg_Bool : public MvrConfigArg
 {
 public:
-  ArConfigArg_Bool(const char *name, bool b, const char *desc = "") :
-    ArConfigArg(name, b, desc)
+  MvrConfigArg_Bool(const char *name, bool b, const char *desc = "") :
+    MvrConfigArg(name, b, desc)
   { }
 };
 
-class ArConfigArg_Int : public ArConfigArg
+class MvrConfigArg_Int : public MvrConfigArg
 {
 public:
-  ArConfigArg_Int(const char *name, int i, const char *desc = "", int min = INT_MIN, int max = INT_MAX) :
-    ArConfigArg(name, i, desc, min, max)
+  MvrConfigArg_Int(const char *name, int i, const char *desc = "", int min = INT_MIN, int max = INT_MAX) :
+    MvrConfigArg(name, i, desc, min, max)
   { }
 };
 
-class ArConfigArg_Double : public ArConfigArg
+class MvrConfigArg_Double : public MvrConfigArg
 {
 public:
-  ArConfigArg_Double(const char *name, double d, const char *desc = "", double min = -HUGE_VAL, double max = HUGE_VAL) :
-    ArConfigArg(name, d, desc, min, max)
+  MvrConfigArg_Double(const char *name, double d, const char *desc = "", double min = -HUGE_VAL, double max = HUGE_VAL) :
+    MvrConfigArg(name, d, desc, min, max)
   { }
 };
 
-class ArConfigArg_String : public ArConfigArg
+class MvrConfigArg_String : public MvrConfigArg
 {
 public:
-  ArConfigArg_String(const char *name, char *str, const char *desc) :
-    ArConfigArg(name, str, desc, 0)
+  MvrConfigArg_String(const char *name, char *str, const char *desc) :
+    MvrConfigArg(name, str, desc, 0)
   { 
   }
 };

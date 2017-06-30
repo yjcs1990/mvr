@@ -25,11 +25,11 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArTCMCompassDirect.h"
-#include "ArDeviceConnection.h"
-#include "ArSerialConnection.h"
+#include "MvrTCMCompassDirect.h"
+#include "MvrDeviceConnection.h"
+#include "MvrSerialConnection.h"
 #include "ariaUtil.h"
 
 //#define DEBUG_ARTCMCOMPASSDIRECT 1
@@ -39,9 +39,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 void ArTCMCompassDirect_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
 #endif
 
-AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(ArDeviceConnection *devCon) :
+AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(MvrDeviceConnection *devCon) :
   myDeviceConnection(devCon), myCreatedOwnDeviceConnection(false),
-  myNMEAParser("ArTCMCompassDirect"),
+  myNMEAParser("MvrTCMCompassDirect"),
   myHCHDMHandler(this, &ArTCMCompassDirect::handleHCHDM)
 {
   myNMEAParser.addHandler("HCHDM", &myHCHDMHandler);
@@ -49,7 +49,7 @@ AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(ArDeviceConnection *devCon) :
 
 AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(const char *serialPortName) :
   myCreatedOwnDeviceConnection(true),
-  myNMEAParser("ArTCMCompassDirect"),
+  myNMEAParser("MvrTCMCompassDirect"),
   myHCHDMHandler(this, &ArTCMCompassDirect::handleHCHDM)
 {
   ArSerialConnection *newSerialCon = new ArSerialConnection();
@@ -82,14 +82,14 @@ AREXPORT bool ArTCMCompassDirect::blockingConnect(unsigned long connectTimeout)
   ArTime start;
   start.setToNow();
   if(!connect()) return false;
-  ArLog::log(ArLog::Normal, "ArTCMCompassDirect: Opened connection, waiting for initial data...");
+  ArLog::log(MvrLog::Normal, "MvrTCMCompassDirect: Opened connection, waiting for initial data...");
   while((unsigned long)start.mSecSince() <= connectTimeout)
   {
     if(read(0) > 0)
       return true;
     ArUtil::sleep(100);
   }
-  ArLog::log(ArLog::Terse, "ArTCMCompassDirect: Error: No response from compass after %dms.", connectTimeout);
+  ArLog::log(MvrLog::Terse, "MvrTCMCompassDirect: Error: No response from compass after %dms.", connectTimeout);
   return false;
 }
 
@@ -158,7 +158,7 @@ AREXPORT int ArTCMCompassDirect::read(unsigned int msWait)
   return myNMEAParser.parse(myDeviceConnection);
 }
 
-void ArTCMCompassDirect::handleHCHDM(ArNMEAParser::Message m)
+void ArTCMCompassDirect::handleHCHDM(MvrNMEAParser::Message m)
 {
   myHeading = ArMath::fixAngle(atof((*m.message)[1].c_str()));
 #ifdef DEBUG_ARTCMCOMPASSDIRECT 

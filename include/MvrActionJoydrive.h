@@ -28,12 +28,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONJOYDRIVE_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
-#include "ArJoyHandler.h"
+#include "MvrAction.h"
+#include "MvrJoyHandler.h"
 
 /// This action will use the joystick for input to drive the robot
 /**
-   This class creates its own ArJoyHandler to get input from the
+   This class creates its own MvrJoyHandler to get input from the
    joystick.  Then it will scale the speed between 0 and the given max
    for velocity and turning, up and down on the joystick go
    forwards/backwards while right and left go right and left.  You
@@ -49,18 +49,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    @ingroup ActionClasses
 **/
-class ArActionJoydrive : public ArAction
+class MvrActionJoydrive : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionJoydrive(const char * name = "joydrive", 
+  AREXPORT MvrActionJoydrive(const char * name = "joydrive", 
 			    double transVelMax = 400, 
 			    double turnAmountMax = 15, 
 			    bool stopIfNoButtonPressed = true,
 			    bool useOSCalForJoystick = true);
   /// Destructor
   AREXPORT virtual ~ArActionJoydrive();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
   /// Whether the joystick is initalized or not
   AREXPORT bool joystickInited(void);
   /// Set Speeds
@@ -76,19 +76,19 @@ public:
   /// Gets whether OSCalibration is being used for the joystick or not
   AREXPORT bool getUseOSCal(void);
   /// Gets the joyHandler
-  AREXPORT ArJoyHandler *getJoyHandler(void) { return myJoyHandler; }
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT MvrJoyHandler *getJoyHandler(void) { return myJoyHandler; }
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const { return &myDesired; }
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const { return &myDesired; }
 #endif
 protected:
   bool myUseThrottle;
   double myLowThrottle;
   double myHighThrottle;
   // action desired
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
   // joystick handler
-  ArJoyHandler *myJoyHandler;
+  MvrJoyHandler *myJoyHandler;
   // full spped
   double myTransVelMax;
   // full amount to turn

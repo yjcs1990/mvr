@@ -28,13 +28,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARDPPTU_H
 
 #include "ariaTypedefs.h"
-#include "ArRobot.h"
-#include "ArPTZ.h"
+#include "MvrRobot.h"
+#include "MvrPTZ.h"
 #include <vector>
 
-class ArBasePacket;
+class MvrBasePacket;
 
-/** Interface to Directed Perception pan/tilt unit, implementing and extending the ArPTZ
+/** Interface to Directed Perception pan/tilt unit, implementing and extending the MvrPTZ
  * interface.
 
 Functions such as pan(), tilt(), etc.
@@ -42,25 +42,25 @@ send requests to the PTU.  By default, a new motion command will interrupt the
 previous command, but the awaitExec() function sends a command instructing the
 PTU to wait for the previous motion to finish. 
 
-Incoming data sent from the PTU is read every ArRobot task cycle (10hz). If this
+Incoming data sent from the PTU is read every MvrRobot task cycle (10hz). If this
 data contains a message giving the current measured position of the pan and
 tilt axes, then this is stored as the current pan and tilt positions, and a request for
 the next positions is sent. (This means that the pan and tilt positions are
 received as fast as the PTU can send them, but no faster than the robot task
-cycle.)  If no pan and tilt positions have been received, then ArDPPTU defaults
+cycle.)  If no pan and tilt positions have been received, then MvrDPPTU defaults
 to providing as pan and tilt position whatever the last *requested* positions
 are (from the last use of pan(), tilt() or panTilt()).  (This is the standard
-behavior specified by the ArPTZ interface, and lets you deal with different
+behavior specified by the MvrPTZ interface, and lets you deal with different
 kinds of PTUs, some of which cannot measure their own position.)  You can also
 always check the last pan or tilt request with getLastPanRequest() and
 getLastTiltRequest().
 
-To use ArDPPTU you must set the appropriate device connection (usually an
+To use MvrDPPTU you must set the appropriate device connection (usually an
 ArSerialConnection), open this connection, then call the init() method on the
 ArDPPTU object.  Then, you can use resetCalib() to have the unit perform a self
 calibration routine, configure power modes, set speeds, etc.  
 
-The ArDPPTU constructor will switch on power to the PTU when on a Seekur or
+The MvrDPPTU constructor will switch on power to the PTU when on a Seekur or
 Seekur Jr. robot.  The shutdown() method (and destructor) will switch off power.
 
 If a specific DPPTU type was given in the constructor, then some internal
@@ -89,7 +89,7 @@ href="http://robots.mobilerobots.com">http://robots.mobilerobots.com</a>
 */
 
 /// A class with the commands for the DPPTU
-class ArDPPTUCommands
+class MvrDPPTUCommands
 {
 public:
 
@@ -119,16 +119,16 @@ public:
 
 /// A class for for making commands to send to the DPPTU
 /** 
-    Note, You must use byteToBuf() and byte2ToBuf(), no other ArBasePacket methods are
-    implemented for ArDPPTU. 
-    Each ArDPPTUPacket represents a single command.
+    Note, You must use byteToBuf() and byte2ToBuf(), no other MvrBasePacket methods are
+    implemented for MvrDPPTU. 
+    Each MvrDPPTUPacket represents a single command.
     The packet is finalized by adding the delimiter (CR"") before being sent.
 */
-class ArDPPTUPacket: public ArBasePacket
+class MvrDPPTUPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArDPPTUPacket(ArTypes::UByte2 bufferSize = 30);
+  AREXPORT MvrDPPTUPacket(MvrTypes::UByte2 bufferSize = 30);
   /// Destructor
   AREXPORT virtual ~ArDPPTUPacket();
 
@@ -140,7 +140,7 @@ protected:
 };
 
 /// Driver for the DPPTU
-class ArDPPTU : public ArPTZ
+class MvrDPPTU : public MvrPTZ
 {
 public:
   enum DeviceType {
@@ -155,7 +155,7 @@ public:
   };
 
   /// Constructor
-  AREXPORT ArDPPTU(ArRobot *robot, DeviceType deviceType = PANTILT_DEFAULT, int deviceIndex = -1);
+  AREXPORT MvrDPPTU(MvrRobot *robot, DeviceType deviceType = PANTILT_DEFAULT, int deviceIndex = -1);
   /// Destructor
   AREXPORT virtual ~ArDPPTU();
 
@@ -347,7 +347,7 @@ public:
   /// Sets the rate the unit tilts at, relative to current slew
   AREXPORT bool tiltSlewRel(double deg) { return tiltSlew(myTiltSlew+deg); }
 
-  /// called automatically by Aria::init()
+  /// called automatically by Mvria::init()
   ///@since 2.7.6
   ///@internal
 #ifndef SWIG
@@ -393,8 +393,8 @@ public:
   AREXPORT void query(); // called from robot sensor interpretation task, or can be done seperately
 
 protected:
-  ArRobot *myRobot;
-  ArDPPTUPacket myPacket;
+  MvrRobot *myRobot;
+  MvrDPPTUPacket myPacket;
   void preparePacket(void); ///< adds on extra delim in front to work on H8
   double myPanSent;  ///< Last pan command sent
   double myTiltSent; ///< Last tilt command sent
@@ -431,19 +431,19 @@ protected:
   bool myCanGetRealPanTilt;
 
   bool myInit;
-  //AREXPORT virtual bool packetHandler(ArBasePacket *pkt);
-  AREXPORT virtual ArBasePacket *readPacket();
-  ArFunctorC<ArDPPTU> myQueryCB;
+  //AREXPORT virtual bool packetHandler(MvrBasePacket *pkt);
+  AREXPORT virtual MvrBasePacket *readPacket();
+  MvrFunctorC<ArDPPTU> myQueryCB;
   char *myDataBuf;
   
 
-  ArFunctorC<ArDPPTU> myShutdownCB;
+  MvrFunctorC<ArDPPTU> myShutdownCB;
   int myDeviceIndex;
   void shutdown();
 
-  ArTime myLastPositionMessageHandled;
+  MvrTime myLastPositionMessageHandled;
   bool myWarnedOldPositionData;
-  ArTime myLastQuerySent;
+  MvrTime myLastQuerySent;
 
   std::vector<char> myPowerPorts;
 
@@ -451,9 +451,9 @@ protected:
   bool myGotTiltRes;
 
   ///@since 2.7.6
-  static ArPTZ* create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot);
+  static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
   ///@since 2.7.6
-  static ArPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
+  static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 };
 
 #endif // ARDPPTU_H

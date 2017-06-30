@@ -31,16 +31,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <map>
 #include <string>
 
-#include "ArConfigArg.h"
-#include "ArFunctor.h"
-#include "ArMutex.h"
+#include "MvrConfigArg.h"
+#include "MvrFunctor.h"
+#include "MvrMutex.h"
 
-class ArCameraCollectionItem;
-class ArCameraParameterSource;
+class MvrCameraCollectionItem;
+class MvrCameraParameterSource;
 
 /// Maintains information about all of the robot's cameras.
 /**
- * ArCameraCollection is a repository for information about each of the 
+ * MvrCameraCollection is a repository for information about each of the 
  * cameras that are installed on the robot.  It enables clients to adjust
  * to robots with varying camera configurations.
  * <p>
@@ -59,7 +59,7 @@ class ArCameraParameterSource;
  * each generic command. (The "camera command name", for example, 
  * may be used as a network packet name.  It must be unique across 
  * <em>all</em> of the robot's cameras.)  Commands which are commonly
- * supported are defined in ArCameraCommands, but additional ones may 
+ * supported are defined in MvrCameraCommands, but additional ones may 
  * be added.</li>
  *
  * <li> Parameter Information: Parameters, or settings, may be defined
@@ -74,16 +74,16 @@ class ArCameraParameterSource;
  * cameras, commands, or parameters are added or removed. (The editing
  * of parameters is merely passed to the parameter source.)
  * <p>
- * ArCameraCollection is thread-safe.  
+ * MvrCameraCollection is thread-safe.  
 
   @ingroup OptionalClasses
 **/
-class ArCameraCollection
+class MvrCameraCollection
 {
 public:
 	
   /// Constructor
-  AREXPORT ArCameraCollection();
+  AREXPORT MvrCameraCollection();
 
   /// Destructor
 	AREXPORT virtual ~ArCameraCollection();
@@ -122,7 +122,7 @@ public:
    * installed in the collection via the addCamera() method.
    * @param command the char * identifier of the command that is being 
    * added.  Common commands (currently recognized by MobileEyes)
-   * are defined in ArCameraCommands.
+   * are defined in MvrCameraCommands.
    * @param cameraCommandName the corresponding char * command 
    * (i.e. network packet) name that is actually handled by the 
    * camera.  The cameraCommandName must be non-NULL and unique
@@ -157,17 +157,17 @@ public:
    * @param cameraName the char * name of the camera to which the 
    * parameter is to be added.  The camera must have already been 
    * installed in the collection via the addCamera() method.
-   * @param source the ArCameraParameterSource * that is to be notified
+   * @param source the MvrCameraParameterSource * that is to be notified
    * when the parameter value is changed; if NULL, then no notification
-   * @param param the ArConfigArg parameter to be added; the parameter
+   * @param param the MvrConfigArg parameter to be added; the parameter
    * name must be unique for this camera.  (Parameter names may be 
    * reused across different cameras though.)
    * @return bool true if the parameter was successfully added to the 
    * camera; false if an error occurred
   **/
   AREXPORT virtual bool addParameter(const char *cameraName,
-                                     ArCameraParameterSource *source,
-                                     const ArConfigArg &param);
+                                     MvrCameraParameterSource *source,
+                                     const MvrConfigArg &param);
 
 
   /// Removes the specified parameter from the camera.
@@ -262,22 +262,22 @@ public:
   /**
    * @param cameraName the unique char * name of the camera
    * @param parameterName the unique char * name of the parameter to be retrieved
-   * @param paramOut the ArConfigArg into which the parameter is copied
+   * @param paramOut the MvrConfigArg into which the parameter is copied
    * @return bool true if the parameter was successfully found; false, otherwise.
   **/
   AREXPORT virtual bool getParameter(const char *cameraName,
                                      const char *parameterName,
-                                     ArConfigArg &paramOut);
+                                     MvrConfigArg &paramOut);
   
   /// Updates the specified camera parameter.
   /**
    * @param cameraName the unique char * name of the camera
-   * @param param the ArConfigArg to be set; the parameter must have been
+   * @param param the MvrConfigArg to be set; the parameter must have been
    * previously added to the camera with the addParameter() method
    * @return bool true if the parameter was found and set; false, otherwise.
   **/
   AREXPORT virtual bool setParameter(const char *cameraName,
-                                     const ArConfigArg &param);
+                                     const MvrConfigArg &param);
  
   // ---------------------------------------------------------------------------
 
@@ -296,21 +296,21 @@ public:
 
   /// Adds a callback to be invoked when the camera collection has been modified.
   /**
-   * @param functor the ArFunctor * to be invoked when the collection has been
+   * @param functor the MvrFunctor * to be invoked when the collection has been
    * modified; must be non-NULL
-   * @param position the ArListPos::Pos at which to put the callback
+   * @param position the MvrListPos::Pos at which to put the callback
    * (beginning or end)
    * @return bool true if the callback was succesfully added; false, otherwise.
   **/
-  AREXPORT virtual bool addModifiedCB(ArFunctor *functor,
-                                      ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT virtual bool addModifiedCB(MvrFunctor *functor,
+                                      MvrListPos::Pos position = MvrListPos::LAST);
 
   /// Removes a callback from the modified notification list.
   /**
-   * @param functor the ArFunctor * to be removed from the notification list
+   * @param functor the MvrFunctor * to be removed from the notification list
    * @return bool true if the callback was succesfully removed; false, otherwise.
   **/
-  AREXPORT virtual bool removeModifiedCB(ArFunctor *functor);
+  AREXPORT virtual bool removeModifiedCB(MvrFunctor *functor);
 
 
   /// Starts an update to the collection.
@@ -372,9 +372,9 @@ protected:
   struct ParamInfo {
 
     /// Source of the parameter (to be notified when the parameter changes)
-    ArCameraParameterSource *mySource;
+    MvrCameraParameterSource *mySource;
     /// The parameter
-    ArConfigArg myParam;
+    MvrConfigArg myParam;
   
     /// Constructor
     ParamInfo();
@@ -427,14 +427,14 @@ protected:
 
 private:
   /// Disabled copy ctor
-  ArCameraCollection(const ArCameraCollection &);
+  MvrCameraCollection(const MvrCameraCollection &);
   /// Disabled assignment operator
-	ArCameraCollection &operator=(const ArCameraCollection &);
+	ArCameraCollection &operator=(const MvrCameraCollection &);
 
 protected:
 
   /// Mutex for multi-threaded access
-  ArMutex myMutex;
+  MvrMutex myMutex;
   /// Map of camera names to the associated camera information
   std::map<std::string, CameraInfo*> myCameraToInfoMap;
   /// Whether updates are currently enabled
@@ -444,25 +444,25 @@ protected:
   /// List of callbacks to be notified when the collection is modified
   std::list<ArFunctor *> myModifiedCBList;
 
-}; // end class ArCameraCollection
+}; // end class MvrCameraCollection
 
 // -----------------------------------------------------------------------------
 
 /// Interface for items that add information to the camera collection.
 /**
- * ArCameraCollectionItem is a simple interface whose primary purpose is to 
+ * MvrCameraCollectionItem is a simple interface whose primary purpose is to 
  * identify classes that support some aspect of a camera's functionality.
  * It defines two methods: one to identify the associated camera, and one
  * that adds the information about the supported functionality to the collection.
  * (Note that the addToCameraCollection() method is not automatically invoked.
  * Its only purpose in life is to suggest consistency between different items.)
 **/
-class ArCameraCollectionItem 
+class MvrCameraCollectionItem 
 {
 public:
 
   /// Constructor
-  ArCameraCollectionItem() {};
+  MvrCameraCollectionItem() {};
   /// Destructor
   virtual ~ArCameraCollectionItem() {};
 
@@ -470,38 +470,38 @@ public:
   virtual const char *getCameraName() = 0;
 
   /// Adds this item to the given camera collection.
-  virtual void addToCameraCollection(ArCameraCollection &collection) = 0;
+  virtual void addToCameraCollection(MvrCameraCollection &collection) = 0;
 
-}; // end class ArCameraCollectionItem
+}; // end class MvrCameraCollectionItem
 
 // -----------------------------------------------------------------------------
 
 /// Interface for collection items that also access the camera's parameters.
 /**
- * ArCameraParameterSource is a special collection item that provides the ability
+ * MvrCameraParameterSource is a special collection item that provides the ability
  * to read and modify some of the camera's parameters.  In general, the 
  * addToCameraCollection() method should add the parameters to the collection.
  * The collection will then invoke the getParameter() and setParameter() methods as
- * callers make changes to the parameters; the ArCameraParameterSource is reponsible 
+ * callers make changes to the parameters; the MvrCameraParameterSource is reponsible 
  * for propagating the changes to the camera hardware.
 **/
-class ArCameraParameterSource : public ArCameraCollectionItem
+class MvrCameraParameterSource : public MvrCameraCollectionItem
 {
 public:
 
   /// Constructor
-  ArCameraParameterSource() {};
+  MvrCameraParameterSource() {};
   /// Destructor
   ~ArCameraParameterSource() {};
 
   /// Gets the specified camera parameter.
   virtual bool getParameter(const char *paramName,
-                                     ArConfigArg &paramOut) = 0;
+                                     MvrConfigArg &paramOut) = 0;
 
   /// Sets the given camera parameter.
-  virtual bool setParameter(const ArConfigArg &param) = 0;
+  virtual bool setParameter(const MvrConfigArg &param) = 0;
 
-}; // end class ArCameraParameterSource
+}; // end class MvrCameraParameterSource
 
 
 #endif // ARCAMERACOLLECTION_H

@@ -31,33 +31,33 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include <list>
 
-class ArRobot;
-class ArAction;
+class MvrRobot;
+class MvrAction;
 
-/// Group a set of ArAction objects together 
+/// Group a set of MvrAction objects together 
 /**
-   This class is used to collect a group of related ArActions together, 
+   This class is used to collect a group of related MvrActions together, 
    and easily turn them on and off in aggregate. The group list may also
    be retrieved for performing any other operation you wish (e.g. to delete 
    or get information about them.)
    
    @see @ref actions overview
-   @see ArAction
+   @see MvrAction
    @see @ref actionGroupExample.cpp
   @ingroup OptionalClasses
   @ingroup ActionClasses
 **/
-class ArActionGroup
+class MvrActionGroup
 {
 public:
   /// Constructor
-  AREXPORT ArActionGroup(ArRobot * robot);
+  AREXPORT MvrActionGroup(MvrRobot * robot);
   /// Destructor, it also deletes the actions in its group
   AREXPORT virtual ~ArActionGroup();
   /// Adds an action to this group's robot, and associates the action with this group.
-  AREXPORT virtual void addAction(ArAction *action, int priority);
+  AREXPORT virtual void addAction(MvrAction *action, int priority);
   /// Removes the action from this group's robot and dissasociates it from this group.
-  AREXPORT virtual void remAction(ArAction *action);
+  AREXPORT virtual void remAction(MvrAction *action);
   /// Activates all the actions in this group
   AREXPORT virtual void activate(void);
   /// Activates all the actions in this group and deactivates all others
@@ -72,7 +72,7 @@ public:
   AREXPORT virtual std::list<ArAction *> *getActionList(void);
 protected:
   std::list<ArAction *> myActions;
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
 };
 
 #endif // ARACTIONGROUP_H

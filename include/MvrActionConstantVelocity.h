@@ -28,30 +28,30 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONCONSTANTVELOCITY_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action for going straight at a constant velocity
 /**
    This action simply goes straight at a constant velocity.
   @ingroup ActionClasses
 */
-class ArActionConstantVelocity : public ArAction
+class MvrActionConstantVelocity : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionConstantVelocity(const char *name = "Constant Velocity", 
+  AREXPORT MvrActionConstantVelocity(const char *name = "Constant Velocity", 
 			   double velocity = 400);
   /// Destructor
   AREXPORT virtual ~ArActionConstantVelocity();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
   double myVelocity;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 };
 
 #endif // ARACTIONCONSTANTVELOCITY_H

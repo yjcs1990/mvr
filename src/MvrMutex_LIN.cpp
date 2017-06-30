@@ -28,15 +28,15 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /* Need to define this to get pthread_mutexattr_settype when using GCC 2.96 */
 #define _XOPEN_SOURCE 500
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include <errno.h>
 #include "ariaOSDef.h"
-#include "ArMutex.h"
-#include "ArLog.h"
-#include "ArThread.h"
+#include "MvrMutex.h"
+#include "MvrLog.h"
+#include "MvrThread.h"
 #include "ariaUtil.h"
 #include "ariaInternal.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
 #include <sys/types.h>
 #include <unistd.h>     // for getpid()
@@ -63,7 +63,7 @@ ArMutex::ArMutex(bool recursive) :
   if (pthread_mutex_init(&myMutex, &attr) != 0)
   {
     myFailedInit=true;
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::ArMutex: Failed to initialize mutex");
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::ArMutex: Failed to initialize mutex");
   }
   // MPL took this out when I made it recursive since otherwise we'd
   //get warnings on the unlock
@@ -90,12 +90,12 @@ ArMutex::~ArMutex()
   if (!myFailedInit && (ret = pthread_mutex_destroy(&myMutex)) != 0)
   {
     if (ret == EBUSY)
-      ArLog::logNoLock(ArLog::Verbose, 
-		       "ArMutex::~ArMutex: Failed to destroy mutex %s. A thread is currently blocked waiting for this mutex.", 
+      ArLog::logNoLock(MvrLog::Verbose, 
+		       "MvrMutex::~ArMutex: Failed to destroy mutex %s. A thread is currently blocked waiting for this mutex.", 
 		       myLogName.c_str());
     else
-      ArLog::logNoLock(ArLog::Terse, 
-	     "ArMutex::~ArMutex: Failed to destroy mutex %s. Unknown error.",
+      ArLog::logNoLock(MvrLog::Terse, 
+	     "MvrMutex::~ArMutex: Failed to destroy mutex %s. Unknown error.",
 		       myLogName.c_str());
   }      
   uninitLockTiming();
@@ -107,7 +107,7 @@ ArMutex::ArMutex(const ArMutex &mutex)
   if (pthread_mutex_init(&myMutex, 0) != 0)
   {
     myFailedInit=true;
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::ArMutex: Failed to initialize mutex");
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::ArMutex: Failed to initialize mutex");
   }
   else
     unlock();
@@ -132,17 +132,17 @@ int ArMutex::lock()
   if(ourLockWarningMS > 0) startLockTimer();
 
   if (myLog)
-    ArLog::logNoLock(ArLog::Terse, "Locking '%s' from thread '%s' %d pid %d", 
+    ArLog::logNoLock(MvrLog::Terse, "Locking '%s' from thread '%s' %d pid %d", 
 	       myLogName.c_str(),
 	       ArThread::getThisThreadName(), 
 	       ArThread::getThisThread(), getpid());
 
   if (myFailedInit)
   {
-      ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Initialization of mutex '%s' from thread ('%s' %d pid %d) failed, failed lock", 
+      ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Initialization of mutex '%s' from thread ('%s' %d pid %d) failed, failed lock", 
 		       myLogName.c_str(), ArThread::getThisThreadName(),
 		       ArThread::getThisThread(), getpid());
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Initialization of mutex failed, failed lock");
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Initialization of mutex failed, failed lock");
     return(STATUS_FAILED_INIT);
   }
 
@@ -151,14 +151,14 @@ int ArMutex::lock()
   {
     if (ret == EDEADLK)
     {
-      ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Trying to lock mutex '%s' from thread ('%s' %d pid %d) which is already locked by this thread", 
+      ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Trying to lock mutex '%s' from thread ('%s' %d pid %d) which is already locked by this thread", 
 		       myLogName.c_str(), ArThread::getThisThreadName(),
 		       ArThread::getThisThread(), getpid());
       return(STATUS_ALREADY_LOCKED);
     }
     else
     {
-      ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Failed to lock mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error", 
+      ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Failed to lock mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error", 
 		       myLogName.c_str(), ArThread::getThisThreadName(),
 		       ArThread::getThisThread(), getpid());
       return(STATUS_FAILED);
@@ -172,23 +172,23 @@ int ArMutex::lock()
       
       if (ourNonRecursiveDeadlockFunctor != NULL)
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, invoking functor '%s'", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, invoking functor '%s'", 
 			 myLogName.c_str(), 
 			 ArThread::getThisThreadName(),
 			 ArThread::getThisThread(), getpid(),
 			 ourNonRecursiveDeadlockFunctor->getName());
-	ArLog::logBacktrace(ArLog::Normal);
+	ArLog::logBacktrace(MvrLog::Normal);
 	ourNonRecursiveDeadlockFunctor->invoke();
 	exit(255);
       }
       else
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, calling Aria::shutdown", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, calling Aria::shutdown", 
 			 myLogName.c_str(), ArThread::getThisThreadName(), 
 			 ArThread::getThisThread(), getpid());
-	ArLog::logBacktrace(ArLog::Normal);
+	ArLog::logBacktrace(MvrLog::Normal);
 	Aria::shutdown();
 	exit(255);
       }
@@ -214,14 +214,14 @@ int ArMutex::tryLock()
 {
   if (myFailedInit)
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::trylock: Initialization of mutex '%s' from thread ('%s' %d pid %d) failed, failed trylock",
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::trylock: Initialization of mutex '%s' from thread ('%s' %d pid %d) failed, failed trylock",
 		     myLogName.c_str(), ArThread::getThisThreadName(),
 		     ArThread::getThisThread(), getpid());
     return(STATUS_FAILED_INIT);
   }
 
   if (myLog)
-    ArLog::logNoLock(ArLog::Terse, "Try locking %s from thread %s %d pid %d", 
+    ArLog::logNoLock(MvrLog::Terse, "Try locking %s from thread %s %d pid %d", 
 	       myLogName.c_str(),
 	       ArThread::getThisThreadName(), 
 	       ArThread::getThisThread(), getpid());
@@ -232,12 +232,12 @@ int ArMutex::tryLock()
     if (ret == EBUSY)
     {
       if(myLog)
-        ArLog::logNoLock(ArLog::Terse, "ArMutex::tryLock: Mutex %s is already locked", myLogName.c_str());
+        ArLog::logNoLock(MvrLog::Terse, "MvrMutex::tryLock: Mutex %s is already locked", myLogName.c_str());
       return(STATUS_ALREADY_LOCKED);
     }
     else
     {
-      ArLog::logNoLock(ArLog::Terse, "ArMutex::trylock: Failed to trylock a mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error", 
+      ArLog::logNoLock(MvrLog::Terse, "MvrMutex::trylock: Failed to trylock a mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error", 
 		       myLogName.c_str(), ArThread::getThisThreadName(),
 		       ArThread::getThisThread(), getpid());
       return(STATUS_FAILED);
@@ -251,23 +251,23 @@ int ArMutex::tryLock()
       
       if (ourNonRecursiveDeadlockFunctor != NULL)
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, invoking functor '%s'", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, invoking functor '%s'", 
 			 myLogName.c_str(), 
 			 ArThread::getThisThreadName(),
 			 ArThread::getThisThread(), getpid(),
 			 ourNonRecursiveDeadlockFunctor->getName());
-	ArLog::logBacktrace(ArLog::Normal);
+	ArLog::logBacktrace(MvrLog::Normal);
 	ourNonRecursiveDeadlockFunctor->invoke();
 	exit(255);
       }
       else
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, calling Aria::shutdown", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d pid %d, calling Aria::shutdown", 
 			 myLogName.c_str(), ArThread::getThisThreadName(), 
 			 ArThread::getThisThread(), getpid());
-	ArLog::logBacktrace(ArLog::Normal);
+	ArLog::logBacktrace(MvrLog::Normal);
 	Aria::shutdown();
 	exit(255);
       }
@@ -277,7 +277,7 @@ int ArMutex::tryLock()
   }
 
   if (myLog)
-    ArLog::logNoLock(ArLog::Terse, 
+    ArLog::logNoLock(MvrLog::Terse, 
 		     "Try locked '%s' from thread '%s' %d pid %d", 
 		     myLogName.c_str(),
 		     ArThread::getThisThreadName(), 
@@ -289,7 +289,7 @@ int ArMutex::tryLock()
 int ArMutex::unlock() 
 {
   if (myLog)
-    ArLog::logNoLock(ArLog::Terse, 
+    ArLog::logNoLock(MvrLog::Terse, 
 		     "Unlocking '%s' from thread '%s' %d pid %d", 
 		     myLogName.c_str(),
 		     ArThread::getThisThreadName(), 
@@ -299,7 +299,7 @@ int ArMutex::unlock()
 
   if (myFailedInit)
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::unlock: Initialization of mutex '%s' from thread '%s' %d pid %d failed, failed unlock", 		       
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::unlock: Initialization of mutex '%s' from thread '%s' %d pid %d failed, failed unlock", 		       
 		     myLogName.c_str(), ArThread::getThisThreadName(),
 		     ArThread::getThisThread(), getpid());
     return(STATUS_FAILED_INIT);
@@ -310,14 +310,14 @@ int ArMutex::unlock()
   {
     if (ret == EPERM)
     {
-      ArLog::logNoLock(ArLog::Terse, "ArMutex::unlock: Trying to unlock a mutex ('%s') which this thread ('%s' %d pid %d) does not own", 
+      ArLog::logNoLock(MvrLog::Terse, "MvrMutex::unlock: Trying to unlock a mutex ('%s') which this thread ('%s' %d pid %d) does not own", 
 		       myLogName.c_str(), ArThread::getThisThreadName(),
 		       ArThread::getThisThread(), getpid());
       return(STATUS_ALREADY_LOCKED);
     }
     else
     {
-      ArLog::logNoLock(ArLog::Terse, "ArMutex::unlock: Failed to unlock mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error", 
+      ArLog::logNoLock(MvrLog::Terse, "MvrMutex::unlock: Failed to unlock mutex ('%s') from thread ('%s' %d pid %d) due to an unknown error", 
 		       myLogName.c_str(), ArThread::getThisThreadName(),
 		       ArThread::getThisThread(), getpid());
       return(STATUS_FAILED);

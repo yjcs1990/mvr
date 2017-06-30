@@ -28,27 +28,27 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARMODES_H
 
 #include "ariaTypedefs.h"
-#include "ArMode.h"
-#include "ArActionGroups.h"
-#include "ArGripper.h"
-#include "ArTcpConnection.h"
-#include "ArSerialConnection.h"
-#include "ArPTZ.h"
-#include "ArTCMCompassRobot.h"
-#include "ArRobotConfigPacketReader.h"
+#include "MvrMode.h"
+#include "MvrActionGroups.h"
+#include "MvrGripper.h"
+#include "MvrTcpConnection.h"
+#include "MvrSerialConnection.h"
+#include "MvrPTZ.h"
+#include "MvrTCMCompassRobot.h"
+#include "MvrRobotConfigPacketReader.h"
 
-class ArTCMCompassRobot;
-class ArACTS_1_2;
-class ArRobotPacket;
-class ArSick;
-class ArAnalogGyro;
+class MvrTCMCompassRobot;
+class MvrACTS_1_2;
+class MvrRobotPacket;
+class MvrSick;
+class MvrAnalogGyro;
 
 /// Mode for teleoping the robot with joystick + keyboard
-class ArModeTeleop : public ArMode
+class MvrModeTeleop : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeTeleop(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrModeTeleop(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
   AREXPORT virtual ~ArModeTeleop();
   AREXPORT virtual void activate(void);
@@ -58,16 +58,16 @@ public:
 protected:
   //ArActionGroupTeleop myGroup;
   // use our new ratio drive instead
-  ArActionGroupRatioDrive myGroup;
-  ArFunctorC<ArRobot> myEnableMotorsCB;
+  MvrActionGroupRatioDrive myGroup;
+  MvrFunctorC<ArRobot> myEnableMotorsCB;
 };
 
 /// Mode for teleoping the robot with joystick + keyboard
-class ArModeUnguardedTeleop : public ArMode
+class MvrModeUnguardedTeleop : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeUnguardedTeleop(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrModeUnguardedTeleop(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
   AREXPORT virtual ~ArModeUnguardedTeleop();
   AREXPORT virtual void activate(void);
@@ -77,16 +77,16 @@ public:
 protected:
   //ArActionGroupUnguardedTeleop myGroup;
   // use our new ratio drive instead
-  ArActionGroupRatioDriveUnsafe myGroup;
-  ArFunctorC<ArRobot> myEnableMotorsCB;
+  MvrActionGroupRatioDriveUnsafe myGroup;
+  MvrFunctorC<ArRobot> myEnableMotorsCB;
 };
 
 /// Mode for wandering around
-class ArModeWander : public ArMode
+class MvrModeWander : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeWander(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrModeWander(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
   AREXPORT virtual ~ArModeWander();
   AREXPORT virtual void activate(void);
@@ -94,15 +94,15 @@ public:
   AREXPORT virtual void help(void);
   AREXPORT virtual void userTask(void);
 protected:
-  ArActionGroupWander myGroup;
+  MvrActionGroupWander myGroup;
 };
 
 /// Mode for controlling the gripper
-class ArModeGripper : public ArMode
+class MvrModeGripper : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeGripper(ArRobot *robot, const char *name, char key,
+  AREXPORT MvrModeGripper(MvrRobot *robot, const char *name, char key,
 			 char key2);
   /// Destructor
   AREXPORT virtual ~ArModeGripper();
@@ -123,25 +123,25 @@ protected:
     DOWN_CLOSE,
     DOWN_OPEN
   };
-  ArGripper myGripper;
+  MvrGripper myGripper;
   bool myExercising;
   ExerState myExerState;
-  ArTime myLastExer;
-  ArFunctorC<ArModeGripper> myOpenCB;
-  ArFunctorC<ArModeGripper> myCloseCB;
-  ArFunctorC<ArModeGripper> myUpCB;
-  ArFunctorC<ArModeGripper> myDownCB;
-  ArFunctorC<ArModeGripper> myStopCB;
-  ArFunctorC<ArModeGripper> myExerciseCB;
+  MvrTime myLastExer;
+  MvrFunctorC<ArModeGripper> myOpenCB;
+  MvrFunctorC<ArModeGripper> myCloseCB;
+  MvrFunctorC<ArModeGripper> myUpCB;
+  MvrFunctorC<ArModeGripper> myDownCB;
+  MvrFunctorC<ArModeGripper> myStopCB;
+  MvrFunctorC<ArModeGripper> myExerciseCB;
   
 };
 
 /// Mode for controlling the camera
-class ArModeCamera : public ArMode
+class MvrModeCamera : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeCamera(ArRobot *robot, const char *name, char key,
+  AREXPORT MvrModeCamera(MvrRobot *robot, const char *name, char key,
 			 char key2);
   /// Destructor
   AREXPORT virtual ~ArModeCamera();
@@ -211,50 +211,50 @@ protected:
   bool myExercising;
   State myState;
   ExerState myExerState;
-  ArTime myLastExer;
+  MvrTime myLastExer;
   bool myExerZoomedIn;
-  ArTime myLastExerZoomed;
-  ArSerialConnection myConn;
-  ArPTZ *myCam;
-  ArFunctorC<ArModeCamera> myUpCB;
-  ArFunctorC<ArModeCamera> myDownCB;
-  ArFunctorC<ArModeCamera> myLeftCB;
-  ArFunctorC<ArModeCamera> myRightCB;
-  ArFunctorC<ArModeCamera> myCenterCB;
-  ArFunctorC<ArModeCamera> myZoomInCB;
-  ArFunctorC<ArModeCamera> myZoomOutCB;
-  ArFunctorC<ArModeCamera> myExerciseCB;
-  ArFunctorC<ArModeCamera> mySonyCB;
-  ArFunctorC<ArModeCamera> myCanonCB;
-  ArFunctorC<ArModeCamera> myDpptuCB;
-  ArFunctorC<ArModeCamera> myAmptuCB;
-  ArFunctorC<ArModeCamera> myCanonInvertedCB;
-  ArFunctorC<ArModeCamera> mySonySerialCB;
-  ArFunctorC<ArModeCamera> myCanonSerialCB;
-  ArFunctorC<ArModeCamera> myDpptuSerialCB;
-  ArFunctorC<ArModeCamera> myAmptuSerialCB;
-  ArFunctorC<ArModeCamera> myCanonInvertedSerialCB;
-  ArFunctorC<ArModeCamera> myRVisionSerialCB;
-  ArFunctorC<ArModeCamera> myCom1CB;
-  ArFunctorC<ArModeCamera> myCom2CB;
-  ArFunctorC<ArModeCamera> myCom3CB;
-  ArFunctorC<ArModeCamera> myCom4CB;
-  ArFunctorC<ArModeCamera> myUSBCom0CB;
-  ArFunctorC<ArModeCamera> myUSBCom9CB;
-  ArFunctorC<ArModeCamera> myAux1CB;
-  ArFunctorC<ArModeCamera> myAux2CB;
+  MvrTime myLastExerZoomed;
+  MvrSerialConnection myConn;
+  MvrPTZ *myCam;
+  MvrFunctorC<ArModeCamera> myUpCB;
+  MvrFunctorC<ArModeCamera> myDownCB;
+  MvrFunctorC<ArModeCamera> myLeftCB;
+  MvrFunctorC<ArModeCamera> myRightCB;
+  MvrFunctorC<ArModeCamera> myCenterCB;
+  MvrFunctorC<ArModeCamera> myZoomInCB;
+  MvrFunctorC<ArModeCamera> myZoomOutCB;
+  MvrFunctorC<ArModeCamera> myExerciseCB;
+  MvrFunctorC<ArModeCamera> mySonyCB;
+  MvrFunctorC<ArModeCamera> myCanonCB;
+  MvrFunctorC<ArModeCamera> myDpptuCB;
+  MvrFunctorC<ArModeCamera> myAmptuCB;
+  MvrFunctorC<ArModeCamera> myCanonInvertedCB;
+  MvrFunctorC<ArModeCamera> mySonySerialCB;
+  MvrFunctorC<ArModeCamera> myCanonSerialCB;
+  MvrFunctorC<ArModeCamera> myDpptuSerialCB;
+  MvrFunctorC<ArModeCamera> myAmptuSerialCB;
+  MvrFunctorC<ArModeCamera> myCanonInvertedSerialCB;
+  MvrFunctorC<ArModeCamera> myRVisionSerialCB;
+  MvrFunctorC<ArModeCamera> myCom1CB;
+  MvrFunctorC<ArModeCamera> myCom2CB;
+  MvrFunctorC<ArModeCamera> myCom3CB;
+  MvrFunctorC<ArModeCamera> myCom4CB;
+  MvrFunctorC<ArModeCamera> myUSBCom0CB;
+  MvrFunctorC<ArModeCamera> myUSBCom9CB;
+  MvrFunctorC<ArModeCamera> myAux1CB;
+  MvrFunctorC<ArModeCamera> myAux2CB;
   const int myPanAmount;
   const int myTiltAmount;
   bool myAutoFocusOn;
-  ArFunctorC<ArModeCamera> myToggleAutoFocusCB;
+  MvrFunctorC<ArModeCamera> myToggleAutoFocusCB;
 };
 
 /// Mode for displaying the sonar
-class ArModeSonar : public ArMode
+class MvrModeSonar : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeSonar(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrModeSonar(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
   AREXPORT virtual ~ArModeSonar();
   AREXPORT virtual void activate(void);
@@ -276,17 +276,17 @@ protected:
     STATE_FOURTH
   };
   State myState;
-  ArFunctorC<ArModeSonar> myAllSonarCB;
-  ArFunctorC<ArModeSonar> myFirstSonarCB;
-  ArFunctorC<ArModeSonar> mySecondSonarCB;
-  ArFunctorC<ArModeSonar> myThirdSonarCB;
-  ArFunctorC<ArModeSonar> myFourthSonarCB;
+  MvrFunctorC<ArModeSonar> myAllSonarCB;
+  MvrFunctorC<ArModeSonar> myFirstSonarCB;
+  MvrFunctorC<ArModeSonar> mySecondSonarCB;
+  MvrFunctorC<ArModeSonar> myThirdSonarCB;
+  MvrFunctorC<ArModeSonar> myFourthSonarCB;
 };
 
-class ArModeBumps : public ArMode
+class MvrModeBumps : public MvrMode
 {
 public:
-  AREXPORT ArModeBumps(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrModeBumps(MvrRobot *robot, const char *name, char key, char key2);
   AREXPORT ~ArModeBumps();
   AREXPORT virtual void activate(void);
   AREXPORT virtual void deactivate(void);
@@ -294,11 +294,11 @@ public:
   AREXPORT virtual void help(void);
 };
 
-class ArModePosition : public ArMode
+class MvrModePosition : public MvrMode
 {
 public:
-  AREXPORT ArModePosition(ArRobot *robot, const char *name, char key,
-			  char key2, ArAnalogGyro *gyro = NULL);
+  AREXPORT MvrModePosition(MvrRobot *robot, const char *name, char key,
+			  char key2, MvrAnalogGyro *gyro = NULL);
   AREXPORT ~ArModePosition();
   AREXPORT virtual void activate(void);
   AREXPORT virtual void deactivate(void);
@@ -316,7 +316,7 @@ public:
   AREXPORT void decDistance(void);
 protected:
   enum Mode { MODE_BOTH, MODE_EITHER };
-  ArAnalogGyro *myGyro;
+  MvrAnalogGyro *myGyro;
   double myGyroZero;
   double myRobotZero;
   Mode myMode;
@@ -324,22 +324,22 @@ protected:
   bool myInHeadingMode;
   double myHeading;
   double myDistance;
-  ArFunctorC<ArModePosition> myUpCB;
-  ArFunctorC<ArModePosition> myDownCB;
-  ArFunctorC<ArModePosition> myLeftCB;
-  ArFunctorC<ArModePosition> myRightCB;
-  ArFunctorC<ArModePosition> myStopCB;  
-  ArFunctorC<ArModePosition> myResetCB;  
-  ArFunctorC<ArModePosition> myModeCB;
-  ArFunctorC<ArModePosition> myGyroCB;
-  ArFunctorC<ArModePosition> myIncDistCB;
-  ArFunctorC<ArModePosition> myDecDistCB;
+  MvrFunctorC<ArModePosition> myUpCB;
+  MvrFunctorC<ArModePosition> myDownCB;
+  MvrFunctorC<ArModePosition> myLeftCB;
+  MvrFunctorC<ArModePosition> myRightCB;
+  MvrFunctorC<ArModePosition> myStopCB;  
+  MvrFunctorC<ArModePosition> myResetCB;  
+  MvrFunctorC<ArModePosition> myModeCB;
+  MvrFunctorC<ArModePosition> myGyroCB;
+  MvrFunctorC<ArModePosition> myIncDistCB;
+  MvrFunctorC<ArModePosition> myDecDistCB;
 };
 
-class ArModeIO : public ArMode
+class MvrModeIO : public MvrMode
 {
 public:
-  AREXPORT ArModeIO(ArRobot *robot, const char *name, char key,
+  AREXPORT MvrModeIO(MvrRobot *robot, const char *name, char key,
 			  char key2);
   AREXPORT ~ArModeIO();
   AREXPORT virtual void activate(void);
@@ -349,17 +349,17 @@ public:
 protected:
   bool myExplanationReady;
   bool myExplained;
-  ArTime myLastPacketTime;
+  MvrTime myLastPacketTime;
   char myExplanation[1024];
   char myOutput[1024];
-  ArFunctorC<ArModeIO> myProcessIOCB;
+  MvrFunctorC<ArModeIO> myProcessIOCB;
 };
 
-class ArModeLaser : public ArMode
+class MvrModeLaser : public MvrMode
 {
 public:
-  AREXPORT ArModeLaser(ArRobot *robot, const char *name, char key,
-		       char key2, ArSick *obsolete = NULL);
+  AREXPORT MvrModeLaser(MvrRobot *robot, const char *name, char key,
+		       char key2, MvrSick *obsolete = NULL);
   AREXPORT ~ArModeLaser();
   AREXPORT virtual void activate(void);
   AREXPORT virtual void deactivate(void);
@@ -378,24 +378,24 @@ protected:
   };
   
   State myState;
-  ArLaser *myLaser;
+  MvrLaser *myLaser;
   int myLaserNumber;
 
   bool myPrintMiddle;
 
-  ArFunctorC<ArModeLaser> myTogMiddleCB;
+  MvrFunctorC<ArModeLaser> myTogMiddleCB;
 
-  std::map<int, ArLaser *> myLasers;
-  std::map<int, ArFunctor1C<ArModeLaser, int> *> myLaserCallbacks;
+  std::map<int, MvrLaser *> myLasers;
+  std::map<int, MvrFunctor1C<ArModeLaser, int> *> myLaserCallbacks;
 };
 
 /// Mode for following a color blob using ACTS
-class ArModeActs : public ArMode
+class MvrModeActs : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeActs(ArRobot *robot, const char *name, char key, char key2,
-		      ArACTS_1_2 *acts = NULL);
+  AREXPORT MvrModeActs(MvrRobot *robot, const char *name, char key, char key2,
+		      MvrACTS_1_2 *acts = NULL);
   /// Destructor
   AREXPORT virtual ~ArModeActs();
   AREXPORT virtual void activate(void);
@@ -415,28 +415,28 @@ public:
   AREXPORT virtual void toggleAcquire(void);
   
 protected:
-  ArActionGroupColorFollow *myGroup;
-  ArPTZ *camera;
-  ArACTS_1_2 *myActs;
-  ArRobot *myRobot;
+  MvrActionGroupColorFollow *myGroup;
+  MvrPTZ *camera;
+  MvrACTS_1_2 *myActs;
+  MvrRobot *myRobot;
 
-  ArFunctorC<ArModeActs> myChannel1CB;
-  ArFunctorC<ArModeActs> myChannel2CB;
-  ArFunctorC<ArModeActs> myChannel3CB;
-  ArFunctorC<ArModeActs> myChannel4CB;
-  ArFunctorC<ArModeActs> myChannel5CB;
-  ArFunctorC<ArModeActs> myChannel6CB;
-  ArFunctorC<ArModeActs> myChannel7CB;
-  ArFunctorC<ArModeActs> myChannel8CB;
-  ArFunctorC<ArModeActs> myStopCB;
-  ArFunctorC<ArModeActs> myStartCB;
-  ArFunctorC<ArModeActs> myToggleAcquireCB;
+  MvrFunctorC<ArModeActs> myChannel1CB;
+  MvrFunctorC<ArModeActs> myChannel2CB;
+  MvrFunctorC<ArModeActs> myChannel3CB;
+  MvrFunctorC<ArModeActs> myChannel4CB;
+  MvrFunctorC<ArModeActs> myChannel5CB;
+  MvrFunctorC<ArModeActs> myChannel6CB;
+  MvrFunctorC<ArModeActs> myChannel7CB;
+  MvrFunctorC<ArModeActs> myChannel8CB;
+  MvrFunctorC<ArModeActs> myStopCB;
+  MvrFunctorC<ArModeActs> myStartCB;
+  MvrFunctorC<ArModeActs> myToggleAcquireCB;
 };
 
-class ArModeCommand : public ArMode
+class MvrModeCommand : public MvrMode
 {
 public:
-  AREXPORT ArModeCommand(ArRobot *robot, const char *name, char key,
+  AREXPORT MvrModeCommand(MvrRobot *robot, const char *name, char key,
 			  char key2);
   AREXPORT ~ArModeCommand();
   AREXPORT virtual void activate(void);
@@ -449,29 +449,29 @@ protected:
   void finishParsing(void);
   void reset(bool print = true);
   char myCommandString[70];
-  ArFunctor1C<ArModeCommand, int> my0CB;
-  ArFunctor1C<ArModeCommand, int> my1CB;
-  ArFunctor1C<ArModeCommand, int> my2CB;
-  ArFunctor1C<ArModeCommand, int> my3CB;
-  ArFunctor1C<ArModeCommand, int> my4CB;
-  ArFunctor1C<ArModeCommand, int> my5CB;
-  ArFunctor1C<ArModeCommand, int> my6CB;
-  ArFunctor1C<ArModeCommand, int> my7CB;
-  ArFunctor1C<ArModeCommand, int> my8CB;
-  ArFunctor1C<ArModeCommand, int> my9CB;
-  ArFunctor1C<ArModeCommand, int> myMinusCB;
-  ArFunctor1C<ArModeCommand, int> myBackspaceCB;
-  ArFunctor1C<ArModeCommand, int> mySpaceCB;
-  ArFunctorC<ArModeCommand> myEnterCB;
+  MvrFunctor1C<ArModeCommand, int> my0CB;
+  MvrFunctor1C<ArModeCommand, int> my1CB;
+  MvrFunctor1C<ArModeCommand, int> my2CB;
+  MvrFunctor1C<ArModeCommand, int> my3CB;
+  MvrFunctor1C<ArModeCommand, int> my4CB;
+  MvrFunctor1C<ArModeCommand, int> my5CB;
+  MvrFunctor1C<ArModeCommand, int> my6CB;
+  MvrFunctor1C<ArModeCommand, int> my7CB;
+  MvrFunctor1C<ArModeCommand, int> my8CB;
+  MvrFunctor1C<ArModeCommand, int> my9CB;
+  MvrFunctor1C<ArModeCommand, int> myMinusCB;
+  MvrFunctor1C<ArModeCommand, int> myBackspaceCB;
+  MvrFunctor1C<ArModeCommand, int> mySpaceCB;
+  MvrFunctorC<ArModeCommand> myEnterCB;
 
 };
 
 /// Mode for following a color blob using ACTS
-class ArModeTCM2 : public ArMode
+class MvrModeTCM2 : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeTCM2(ArRobot *robot, const char *name, char key, char key2, ArTCM2 *tcm2 = NULL);
+  AREXPORT MvrModeTCM2(MvrRobot *robot, const char *name, char key, char key2, MvrTCM2 *tcm2 = NULL);
   /// Destructor
   AREXPORT virtual ~ArModeTCM2();
   AREXPORT virtual void activate(void);
@@ -481,35 +481,35 @@ public:
   
 protected:
   void init();
-  ArTCM2 *myTCM2;
-  ArCompassConnector *connector;
-  ArRobot *myRobot;
-  ArFunctorC<ArTCM2> *myOffCB;
-  ArFunctorC<ArTCM2> *myCompassCB;
-  ArFunctorC<ArTCM2> *myOnePacketCB;
-  ArFunctorC<ArTCM2> *myContinuousPacketsCB;
-  ArFunctorC<ArTCM2> *myUserCalibrationCB;
-  ArFunctorC<ArTCM2> *myAutoCalibrationCB;
-  ArFunctorC<ArTCM2> *myStopCalibrationCB;
-  ArFunctorC<ArTCM2> *myResetCB;
+  MvrTCM2 *myTCM2;
+  MvrCompassConnector *connector;
+  MvrRobot *myRobot;
+  MvrFunctorC<ArTCM2> *myOffCB;
+  MvrFunctorC<ArTCM2> *myCompassCB;
+  MvrFunctorC<ArTCM2> *myOnePacketCB;
+  MvrFunctorC<ArTCM2> *myContinuousPacketsCB;
+  MvrFunctorC<ArTCM2> *myUserCalibrationCB;
+  MvrFunctorC<ArTCM2> *myAutoCalibrationCB;
+  MvrFunctorC<ArTCM2> *myStopCalibrationCB;
+  MvrFunctorC<ArTCM2> *myResetCB;
 
 };
 
 
 /// Mode for requesting config packet
-class ArModeConfig : public ArMode
+class MvrModeConfig : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT ArModeConfig(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrModeConfig(MvrRobot *robot, const char *name, char key, char key2);
   AREXPORT virtual void activate(void);
   AREXPORT virtual void deactivate(void);
   AREXPORT virtual void help(void);
   
 protected:
-  ArRobot *myRobot;
-  ArRobotConfigPacketReader myConfigPacketReader;
-  ArFunctorC<ArModeConfig> myGotConfigPacketCB;
+  MvrRobot *myRobot;
+  MvrRobotConfigPacketReader myConfigPacketReader;
+  MvrFunctorC<ArModeConfig> myGotConfigPacketCB;
 
   void gotConfigPacket();
 };
@@ -517,32 +517,32 @@ protected:
 
 
 /// Mode for displaying status and diagnostic info
-class ArModeRobotStatus : public ArMode
+class MvrModeRobotStatus : public MvrMode
 {
 public:
-  AREXPORT ArModeRobotStatus(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrModeRobotStatus(MvrRobot *robot, const char *name, char key, char key2);
   AREXPORT virtual void activate();
   AREXPORT virtual void deactivate();
   AREXPORT virtual void help();
   AREXPORT virtual void userTask();
   
 protected:
-  ArRobot *myRobot;
-  ArRetFunctor1C<bool, ArModeRobotStatus, ArRobotPacket*> myDebugMessageCB;
-  ArRetFunctor1C<bool, ArModeRobotStatus, ArRobotPacket*> mySafetyStateCB;
-  ArRetFunctor1C<bool, ArModeRobotStatus, ArRobotPacket*> mySafetyWarningCB;
+  MvrRobot *myRobot;
+  MvrRetFunctor1C<bool, MvrModeRobotStatus, MvrRobotPacket*> myDebugMessageCB;
+  MvrRetFunctor1C<bool, MvrModeRobotStatus, MvrRobotPacket*> mySafetyStateCB;
+  MvrRetFunctor1C<bool, MvrModeRobotStatus, MvrRobotPacket*> mySafetyWarningCB;
 
   void printFlags();
   void printFlagsHeader();
 
   std::string byte_as_bitstring(unsigned char byte);
-  std::string int16_as_bitstring(ArTypes::Byte2 n);
-  std::string int32_as_bitstring(ArTypes::Byte4 n);
+  std::string int16_as_bitstring(MvrTypes::Byte2 n);
+  std::string int32_as_bitstring(MvrTypes::Byte4 n);
 
-  bool handleDebugMessage(ArRobotPacket *p);
-  bool handleSafetyStatePacket(ArRobotPacket *p);
+  bool handleDebugMessage(MvrRobotPacket *p);
+  bool handleSafetyStatePacket(MvrRobotPacket *p);
   const char *safetyStateName(int state);
-  bool handleSafetyWarningPacket(ArRobotPacket *p);
+  bool handleSafetyWarningPacket(MvrRobotPacket *p);
 
 };
 

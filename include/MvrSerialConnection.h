@@ -29,34 +29,34 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include <string>
 #include "ariaTypedefs.h"
-#include "ArDeviceConnection.h"
+#include "MvrDeviceConnection.h"
 
 /// Utility for connecting to and communicating with devices through a serial port
 /** @ingroup UtilityClasses
   @ingroup DeviceClasses
 */
-class ArSerialConnection: public ArDeviceConnection
+class MvrSerialConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT ArSerialConnection(bool is422 = false);
+  AREXPORT MvrSerialConnection(bool is422 = false);
   /// Destructor also closes the connection
   AREXPORT virtual ~ArSerialConnection();
 
   /** Opens the serial port
    *  @return 0 on success. Return one of the error codes in the 
-   *          ArSerialConnection::Open enumeration on error.
-   *  @sa ArUtil::COM1, ArUtil::COM2, ArUtil::COM3, ArUtil::COM4
+   *          MvrSerialConnection::Open enumeration on error.
+   *  @sa MvrUtil::COM1, MvrUtil::COM2, MvrUtil::COM3, MvrUtil::COM4
    */
   AREXPORT int open(const char * port = NULL);
 
   /** Sets the port this connection will use
-   *  @sa ArUtil::COM1, ArUtil::COM2, ArUtil::COM3, ArUtil::COM4
+   *  @sa MvrUtil::COM1, MvrUtil::COM2, MvrUtil::COM3, MvrUtil::COM4
    */
   AREXPORT void setPort(const char *port = NULL);
 
   /** Gets the port this is using
-   *  @sa ArUtil::COM1, ArUtil::COM2, ArUtil::COM3, ArUtil::COM4
+   *  @sa MvrUtil::COM1, MvrUtil::COM2, MvrUtil::COM3, MvrUtil::COM4
    */
   AREXPORT const char * getPort(void);
   
@@ -105,7 +105,7 @@ class ArSerialConnection: public ArDeviceConnection
       OPEN_COULD_NOT_SET_BAUD, ///< Baud rate valid, but could not set it
       OPEN_ALREADY_OPEN ///< Connection was already open
   };
-  AREXPORT virtual ArTime getTimeRead(int index);
+  AREXPORT virtual MvrTime getTimeRead(int index);
   AREXPORT virtual bool isTimeStamping(void);
 
  protected:
@@ -120,7 +120,7 @@ class ArSerialConnection: public ArDeviceConnection
   bool myTakingTimeStamps;
 #endif
     
-  ArStrMap myStrMap;
+  MvrStrMap myStrMap;
   std::string myPortName;
   int myBaudRate;
   int myStatus;

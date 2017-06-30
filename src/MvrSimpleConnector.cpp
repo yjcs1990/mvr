@@ -24,12 +24,12 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSimpleConnector.h"
-#include "ArRobot.h"
-#include "ArLaser.h"
-#include "ArSick.h"
+#include "MvrSimpleConnector.h"
+#include "MvrRobot.h"
+#include "MvrLaser.h"
+#include "MvrSick.h"
 #include "ariaInternal.h"
 
 AREXPORT ArSimpleConnector::ArSimpleConnector(int *argc, char **argv) 
@@ -42,7 +42,7 @@ AREXPORT ArSimpleConnector::ArSimpleConnector(int *argc, char **argv)
 /** @warning do not delete @a builder during the lifetime of this
  * ArSimpleConnector, which may need to access its contents later.
  */
-AREXPORT ArSimpleConnector::ArSimpleConnector(ArArgumentBuilder *builder)
+AREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentBuilder *builder)
 {
   myParser = new ArArgumentParser(builder);
   myOwnParser = true;
@@ -52,7 +52,7 @@ AREXPORT ArSimpleConnector::ArSimpleConnector(ArArgumentBuilder *builder)
 /** @warning do not delete @a parser during the lifetime of this
  * ArSimpleConnector, which may need to access its contents later.
  */
-AREXPORT ArSimpleConnector::ArSimpleConnector(ArArgumentParser *parser) 
+AREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentParser *parser) 
 {
   myParser = parser;
   myOwnParser = false;
@@ -168,7 +168,7 @@ AREXPORT bool ArSimpleConnector::parseArgs(void)
 
  **/
 
-AREXPORT bool ArSimpleConnector::parseArgs(ArArgumentParser *parser)
+AREXPORT bool ArSimpleConnector::parseArgs(MvrArgumentParser *parser)
 {
   return myRobotConnector->parseArgs() && myLaserConnector->parseArgs();
 }
@@ -197,7 +197,7 @@ AREXPORT void ArSimpleConnector::logOptions(void) const
  * @return false if -remoteHost was given and there was an error connecting to
  * the remote host, true otherwise.
  **/
-AREXPORT bool ArSimpleConnector::setupRobot(ArRobot *robot)
+AREXPORT bool ArSimpleConnector::setupRobot(MvrRobot *robot)
 {
   return myRobotConnector->setupRobot(robot);
 }
@@ -207,7 +207,7 @@ AREXPORT bool ArSimpleConnector::setupRobot(ArRobot *robot)
  * If you wish to simply prepare the ArRobot object, but not begin
  * the connection, then use setupRobot().
  */
-AREXPORT bool ArSimpleConnector::connectRobot(ArRobot *robot)
+AREXPORT bool ArSimpleConnector::connectRobot(MvrRobot *robot)
 {
   return myRobotConnector->connectRobot(robot);
 }
@@ -224,7 +224,7 @@ AREXPORT bool ArSimpleConnector::connectRobot(ArRobot *robot)
    that argument is given.
 **/
 
-AREXPORT bool ArSimpleConnector::setupLaser(ArSick *laser)
+AREXPORT bool ArSimpleConnector::setupLaser(MvrSick *laser)
 {
   return myLaserConnector->setupLaser(laser, 1);
 }
@@ -236,12 +236,12 @@ AREXPORT bool ArSimpleConnector::setupLaser(ArSick *laser)
    the main or from ArArgumentBuilder.  Similarly, a tcp connection must
    be explicitly defined with the --remoteLaserTcpPort2 argument.
 **/
-AREXPORT bool ArSimpleConnector::setupSecondLaser(ArSick *laser)
+AREXPORT bool ArSimpleConnector::setupSecondLaser(MvrSick *laser)
 {
   return myLaserConnector->setupLaser(laser, 2);
 }
 
-AREXPORT bool ArSimpleConnector::setupLaserArbitrary(ArSick *laser,
+AREXPORT bool ArSimpleConnector::setupLaserArbitrary(MvrSick *laser,
 						    int laserNumber)
 {
   return myLaserConnector->setupLaser(laser, laserNumber);
@@ -253,7 +253,7 @@ AREXPORT bool ArSimpleConnector::setupLaserArbitrary(ArSick *laser,
    wanted.
 **/
 
-AREXPORT bool ArSimpleConnector::connectLaser(ArSick *laser)
+AREXPORT bool ArSimpleConnector::connectLaser(MvrSick *laser)
 {
   return myLaserConnector->connectLaser(laser, 1, false);
 }
@@ -263,7 +263,7 @@ AREXPORT bool ArSimpleConnector::connectLaser(ArSick *laser)
    was given to do so or simply return true if no connection was
    requested.
 **/
-AREXPORT bool ArSimpleConnector::connectSecondLaser(ArSick *laser)
+AREXPORT bool ArSimpleConnector::connectSecondLaser(MvrSick *laser)
 {
   return myLaserConnector->connectLaser(laser, 1, false);
 }

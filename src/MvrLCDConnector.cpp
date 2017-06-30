@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLCDConnector.h"
-#include "ArRobot.h"
-#include "ArLCDMTX.h"
+#include "MvrLCDConnector.h"
+#include "MvrRobot.h"
+#include "MvrLCDMTX.h"
 #include "ariaInternal.h"
-#include "ArCommands.h"
-#include "ArRobotConfigPacketReader.h"
+#include "MvrCommands.h"
+#include "MvrRobotConfigPacketReader.h"
 
 #include <sys/types.h>
 
@@ -44,7 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <ctype.h>
 
 /** @warning do not delete @a parser during the lifetime of this
- ArLCDConnector, which may need to access its contents later.
+ MvrLCDConnector, which may need to access its contents later.
  @param parser the parser with the arguments to parse
  @param robot the robot these lcds are attached to (or NULL for none)
  @param robotConnector the connector used for connecting to the robot
@@ -55,12 +55,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  lcds and such, this is also passed to all the lcds created as
  their infoLogLevel too
  */
-AREXPORT ArLCDConnector::ArLCDConnector (
-  ArArgumentParser *parser, ArRobot *robot,
-  ArRobotConnector *robotConnector, bool autoParseArgs,
-  ArLog::LogLevel infoLogLevel,
-  ArRetFunctor1<bool, const char *> *turnOnPowerOutputCB,
-  ArRetFunctor1<bool, const char *> *turnOffPowerOutputCB) :
+AREXPORT MvrLCDConnector::ArLCDConnector (
+  MvrArgumentParser *parser, MvrRobot *robot,
+  MvrRobotConnector *robotConnector, bool autoParseArgs,
+  MvrLog::LogLevel infoLogLevel,
+  MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB,
+  MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB) :
   myParseArgsCB (this, &ArLCDConnector::parseArgs),
   myLogOptionsCB (this, &ArLCDConnector::logOptions),
 	myTurnOnPowerCB(this, &ArLCDConnector::turnOnPowerCB),
@@ -80,29 +80,29 @@ AREXPORT ArLCDConnector::ArLCDConnector (
   myTurnOnPowerOutputCB = turnOnPowerOutputCB;
   myTurnOffPowerOutputCB = turnOffPowerOutputCB;
 
-	myParseArgsCB.setName ("ArLCDConnector");
+	myParseArgsCB.setName ("MvrLCDConnector");
 	Aria::addParseArgsCB (&myParseArgsCB, 60);
-	myLogOptionsCB.setName ("ArLCDConnector");
+	myLogOptionsCB.setName ("MvrLCDConnector");
 	Aria::addLogOptionsCB (&myLogOptionsCB, 80);
 }
-AREXPORT ArLCDConnector::~ArLCDConnector (void)
+AREXPORT MvrLCDConnector::~ArLCDConnector (void)
 {
-//  Aria::remParseArgsCB(&myParseArgsCB);
-//  Aria::remLogOptionsCB(&myLogOptionsCB);
+//  Mvria::remParseArgsCB(&myParseArgsCB);
+//  Mvria::remLogOptionsCB(&myLogOptionsCB);
 }
 /**
- * Parse command line arguments using the ArArgumentParser given in the ArLCDConnector constructor.
+ * Parse command line arguments using the MvrArgumentParser given in the MvrLCDConnector constructor.
  *
- * See parseArgs(ArArgumentParser*) for details about argument parsing.
+ * See parseArgs(MvrArgumentParser*) for details about argument parsing.
  *
   @return true if the arguments were parsed successfully false if not
  **/
-AREXPORT bool ArLCDConnector::parseArgs (void)
+AREXPORT bool MvrLCDConnector::parseArgs (void)
 {
 	return parseArgs (myParser);
 }
 /**
- * Parse command line arguments held by the given ArArgumentParser.
+ * Parse command line arguments held by the given MvrArgumentParser.
  *
   @return true if the arguments were parsed successfully false if not
 
@@ -121,7 +121,7 @@ AREXPORT bool ArLCDConnector::parseArgs (void)
     <dd>Explicitly request that the client program connect to a lcd, if it does not always do so</dd>
   </dl>
  **/
-AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
+AREXPORT bool MvrLCDConnector::parseArgs (MvrArgumentParser *parser)
 {
 
 	if (myParsedArgs)
@@ -136,7 +136,7 @@ AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
 	bool wasReallySetOnlyTrue = parser->getWasReallySetOnlyTrue();
 	parser->setWasReallySetOnlyTrue (true);
 
-	for (i = 1; i <= Aria::getMaxNumLCDs(); i++) {
+	for (i = 1; i <= Mvria::getMaxNumLCDs(); i++) {
 		if (i == 1)
 			buf[0] = '\0';
 		else
@@ -147,8 +147,8 @@ AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
 		    "-lcdType%s", buf) ||
 		    !parser->checkParameterArgumentStringVar (&typeReallySet, &type,
 		        "-lcdt%s", buf)) {
-			ArLog::log (ArLog::Normal,
-			            "ArLCDConnector: Bad lcd type given for lcd number %d",
+			ArLog::log (MvrLog::Normal,
+			            "MvrLCDConnector: Bad lcd type given for lcd number %d",
 			            i);
 			parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 			return false;
@@ -158,7 +158,7 @@ AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
 		if (!typeReallySet)
 			continue;
 		if ( (it = myLCDs.find (i)) != myLCDs.end()) {
-			ArLog::log (ArLog::Normal, "ArLCDConnector: A lcd already exists for lcd number %d, replacing it with a new one of type %s",
+			ArLog::log (MvrLog::Normal, "MvrLCDConnector: A lcd already exists for lcd number %d, replacing it with a new one of type %s",
 			            i, type);
 			lcdData = (*it).second;
 			delete lcdData;
@@ -167,16 +167,16 @@ AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
 
 		if (typeReallySet && type != NULL) {
 			ArLCDMTX *lcd = NULL;
-			if ( (lcd = Aria::lcdCreate (type, i, "ArLCDConnector: ")) != NULL) {
+			if ( (lcd = Mvria::lcdCreate (type, i, "MvrLCDConnector: ")) != NULL) {
 				ArLog::log (myInfoLogLevel,
-				            "ArLCDConnector: Created %s as lcd %d from arguments",
+				            "MvrLCDConnector: Created %s as lcd %d from arguments",
 				            lcd->getName(), i);
 				myLCDs[i] = new LCDData (i, lcd);
 				lcd->setInfoLogLevel (myInfoLogLevel);
 			} else {
-				ArLog::log (ArLog::Normal,
+				ArLog::log (MvrLog::Normal,
 				            "Unknown lcd type %s for lcd %d, choices are %s",
-				            type, i, Aria::lcdGetTypes());
+				            type, i, Mvria::lcdGetTypes());
 				parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 				return false;
 			}
@@ -193,13 +193,13 @@ AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
 
 	// go through the robot param list and add the lcds defined
 	// in the parameter file.
-	const ArRobotParams *params = NULL;
+	const MvrRobotParams *params = NULL;
 	if (myRobot != NULL) {
 		params = myRobot->getRobotParams();
 		if (params != NULL) {
 
 
-			for (i = 1; i <= Aria::getMaxNumLCDs(); i++) {
+			for (i = 1; i <= Mvria::getMaxNumLCDs(); i++) {
 				// if we already have a lcd for this then don't add one from
 				// the param file, since it was added either explicitly by a
 				// program or from the command line
@@ -216,23 +216,23 @@ AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
 
 				ArLCDMTX *lcd = NULL;
 				if ( (lcd =
-				        Aria::lcdCreate (type, i, "ArLCDConnector: ")) != NULL) {
+				        Mvria::lcdCreate (type, i, "MvrLCDConnector: ")) != NULL) {
 
 					ArLog::log (myInfoLogLevel,
-					            "ArLCDConnector::parseArgs() Created %s as lcd %d from parameter file",
+					            "MvrLCDConnector::parseArgs() Created %s as lcd %d from parameter file",
 					            lcd->getName(), i);
 					myLCDs[i] = new LCDData (i, lcd);
 					lcd->setInfoLogLevel (myInfoLogLevel);
 				} else {
-					ArLog::log (ArLog::Normal,
-					            "ArLCDConnector::parseArgs() Unknown lcd type %s for lcd %d from the .p file, choices are %s",
-					            type, i, Aria::lcdGetTypes());
+					ArLog::log (MvrLog::Normal,
+					            "MvrLCDConnector::parseArgs() Unknown lcd type %s for lcd %d from the .p file, choices are %s",
+					            type, i, Mvria::lcdGetTypes());
 					parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 					return false;
 				}
 			}
 		} else {
-			ArLog::log (ArLog::Normal, "ArLCDConnector::parseArgs() Have robot, but robot has NULL params, so cannot configure its lcd");
+			ArLog::log (MvrLog::Normal, "MvrLCDConnector::parseArgs() Have robot, but robot has NULL params, so cannot configure its lcd");
 		}
 	}
 	// now go through and parse the args for any lcd that we have
@@ -250,17 +250,17 @@ AREXPORT bool ArLCDConnector::parseArgs (ArArgumentParser *parser)
 
 } // end parseArgs
 
-AREXPORT bool ArLCDConnector::parseLCDArgs (ArArgumentParser *parser,
+AREXPORT bool MvrLCDConnector::parseLCDArgs (MvrArgumentParser *parser,
     LCDData *lcdData)
 {
 	char buf[512];
 	if (lcdData == NULL) {
-		ArLog::log (ArLog::Terse, "ArLCDConnector::parseLCDArgs() Was given NULL lcd");
+		ArLog::log (MvrLog::Terse, "MvrLCDConnector::parseLCDArgs() Was given NULL lcd");
 		return false;
 	}
 	if (lcdData->myLCD == NULL) {
-		ArLog::log (ArLog::Normal,
-		            "ArLCDConnector::parseLCDArgs() There is no lcd for lcd number %d but there should be",
+		ArLog::log (MvrLog::Normal,
+		            "MvrLCDConnector::parseLCDArgs() There is no lcd for lcd number %d but there should be",
 		            lcdData->myNumber);
 		return false;
 	}
@@ -324,34 +324,34 @@ AREXPORT bool ArLCDConnector::parseLCDArgs (ArArgumentParser *parser,
 } // end parseLCDArgs
 
 
-bool ArLCDConnector::internalConfigureLCD (
+bool MvrLCDConnector::internalConfigureLCD (
   LCDData *lcdData)
 {
 	ArLCDMTX *lcd = lcdData->myLCD;
 	if (lcd == NULL) {
-		ArLog::log (ArLog::Terse, "ArLCDConnector::internalConfigureLCD() No lcd for number %d",
+		ArLog::log (MvrLog::Terse, "MvrLCDConnector::internalConfigureLCD() No lcd for number %d",
 		            lcdData->myNumber);
 		return false;
 	}
 	// the rest handles all the connection stuff
-	const ArRobotParams *params;
+	const MvrRobotParams *params;
 	char portBuf[1024];
 	if (lcdData->myLCD == NULL) {
-		ArLog::log (ArLog::Terse, "ArLCDConnector::internalConfigureLCD() There is no lcd, cannot connect");
+		ArLog::log (MvrLog::Terse, "MvrLCDConnector::internalConfigureLCD() There is no lcd, cannot connect");
 		return false;
 	}
 	sprintf (portBuf, "%d", lcdData->myLCD->getDefaultTcpPort());
 	if (myRobotConnector == NULL) {
-		ArLog::log (ArLog::Terse, "ArLCDConnector::internalConfigureLCD() No ArRobotConnector is passed in so simulators and remote hosts will not work correctly");
+		ArLog::log (MvrLog::Terse, "MvrLCDConnector::internalConfigureLCD() No MvrRobotConnector is passed in so simulators and remote hosts will not work correctly");
 	}
 	if ( (lcdData->myPort == NULL || strlen (lcdData->myPort) == 0) &&
 	     (lcdData->myPortType != NULL && strlen (lcdData->myPortType) > 0)) {
-		ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() There is a lcd port type given ('%s') for lcd %d (%s), but no lcd port given, cannot configure lcd",
+		ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() There is a lcd port type given ('%s') for lcd %d (%s), but no lcd port given, cannot configure lcd",
 		            lcdData->myPortType, lcdData->myNumber, lcd->getName());
 		return false;
 	}
 
-	ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() command line lcd #%d type= %s port=%s portType=%s baud=%d autoconnect=%d disconnectonfailure=%d ",
+	ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() command line lcd #%d type= %s port=%s portType=%s baud=%d autoconnect=%d disconnectonfailure=%d ",
 							lcdData->myNumber, 
 							lcdData->myType,
 							lcdData->myPort,
@@ -363,12 +363,12 @@ bool ArLCDConnector::internalConfigureLCD (
 
 	if ( (lcdData->myPort != NULL && strlen (lcdData->myPort) > 0) &&
 	     (lcdData->myPortType != NULL && strlen (lcdData->myPortType) > 0)) {
-		ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() Connection type and port given for lcd %d (%s), so overriding everything and using that information",
+		ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() Connection type and port given for lcd %d (%s), so overriding everything and using that information",
 		            lcdData->myNumber, lcd->getName());
 		
-		if ( (lcdData->myConn = Aria::deviceConnectionCreate (
+		if ( (lcdData->myConn = Mvria::deviceConnectionCreate (
 		                              lcdData->myPortType, lcdData->myPort, portBuf,
-		                              "ArLCDConnector:")) == NULL) {
+		                              "MvrLCDConnector:")) == NULL) {
 			return false;
 		}
 		lcd->setDeviceConnection (lcdData->myConn);
@@ -379,40 +379,40 @@ bool ArLCDConnector::internalConfigureLCD (
 		if (myRobot != NULL && (params = myRobot->getRobotParams()) != NULL) {
 			if (params->getLCDMTXBoardPortType (lcdData->myNumber) != NULL &&
 			    params->getLCDMTXBoardPortType (lcdData->myNumber) [0] != '\0') {
-				ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() There is a port given, but no port type given so using the robot parameters port type");
-				if ( (lcdData->myConn = Aria::deviceConnectionCreate (
+				ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() There is a port given, but no port type given so using the robot parameters port type");
+				if ( (lcdData->myConn = Mvria::deviceConnectionCreate (
 				                              params->getLCDMTXBoardPortType (lcdData->myNumber),
 				                              lcdData->myPort, portBuf,
-				                              "ArLCDConnector: ")) == NULL) {
+				                              "MvrLCDConnector: ")) == NULL) {
 					return false;
 				}
 			} else if (lcd->getDefaultPortType() != NULL &&
 			           lcd->getDefaultPortType() [0] != '\0') {
-				ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() There is a port given for lcd %d (%s), but no port type given and no robot parameters port type so using the lcd's default port type", lcdData->myNumber, lcd->getName());
-				if ( (lcdData->myConn = Aria::deviceConnectionCreate (
+				ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() There is a port given for lcd %d (%s), but no port type given and no robot parameters port type so using the lcd's default port type", lcdData->myNumber, lcd->getName());
+				if ( (lcdData->myConn = Mvria::deviceConnectionCreate (
 				                              lcd->getDefaultPortType(),
 				                              lcdData->myPort, portBuf,
-				                              "ArLCDConnector: ")) == NULL) {
+				                              "MvrLCDConnector: ")) == NULL) {
 					return false;
 				}
 			} else {
-				ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() There is a port given for lcd %d (%s), but no port type given, no robot parameters port type, and no lcd default port type, so using serial",
+				ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() There is a port given for lcd %d (%s), but no port type given, no robot parameters port type, and no lcd default port type, so using serial",
 				            lcdData->myNumber, lcd->getName());
-				if ( (lcdData->myConn = Aria::deviceConnectionCreate (
+				if ( (lcdData->myConn = Mvria::deviceConnectionCreate (
 				                              "serial",
 				                              lcdData->myPort, portBuf,
-				                              "ArLCDConnector: ")) == NULL) {
+				                              "MvrLCDConnector: ")) == NULL) {
 					return false;
 				}
 			}
 			lcd->setDeviceConnection (lcdData->myConn);
 			return true;
 		} else {
-			ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() There is a lcd port given ('%s') for lcd %d (%s), but no lcd port type given and there are no robot params to find the information in, so assuming serial",
+			ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() There is a lcd port given ('%s') for lcd %d (%s), but no lcd port type given and there are no robot params to find the information in, so assuming serial",
 			            lcdData->myPort, lcdData->myNumber, lcd->getName());
-			if ( (lcdData->myConn = Aria::deviceConnectionCreate (
+			if ( (lcdData->myConn = Mvria::deviceConnectionCreate (
 			                              lcdData->myPortType, lcdData->myPort, portBuf,
-			                              "ArLCDConnector: ")) == NULL) {
+			                              "MvrLCDConnector: ")) == NULL) {
 				return false;
 			}
 			lcd->setDeviceConnection (lcdData->myConn);
@@ -421,11 +421,11 @@ bool ArLCDConnector::internalConfigureLCD (
 	}
 	// if we get down here there was no information provided by the command line or in a lcd connector, so see if we have params... if not then fail, if so then use those
 	if (myRobot == NULL || (params = myRobot->getRobotParams()) == NULL) {
-		ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() No robot params are available, and no command line information given on how to connect to the lcd %d (%s), so cannot connect", lcdData->myNumber, lcd->getName());
+		ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() No robot params are available, and no command line information given on how to connect to the lcd %d (%s), so cannot connect", lcdData->myNumber, lcd->getName());
 		return false;
 	}
 
-	ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() .p lcd #%d type= %s port=%s portType=%s baud=%d autoconnect=%d disconnectonfailure=%d",
+	ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() .p lcd #%d type= %s port=%s portType=%s baud=%d autoconnect=%d disconnectonfailure=%d",
 							lcdData->myNumber, 
 							params->getLCDMTXBoardType (lcdData->myNumber),
 							params->getLCDMTXBoardPort (lcdData->myNumber),
@@ -441,28 +441,28 @@ bool ArLCDConnector::internalConfigureLCD (
 		lcdData->myConnectReallySet = true;
 	}
 
-	ArLog::log (ArLog::Normal, "ArLCDConnector::internalConfigureLCD() Using robot params for connecting to lcd %d (%s)", lcdData->myNumber, lcd->getName());
+	ArLog::log (MvrLog::Normal, "MvrLCDConnector::internalConfigureLCD() Using robot params for connecting to lcd %d (%s)", lcdData->myNumber, lcd->getName());
 
-	if ( (lcdData->myConn = Aria::deviceConnectionCreate (
+	if ( (lcdData->myConn = Mvria::deviceConnectionCreate (
 	                              params->getLCDMTXBoardPortType (lcdData->myNumber),
 	                              params->getLCDMTXBoardPort (lcdData->myNumber), portBuf,
-	                              "ArLCDConnector: ")) == NULL) {
+	                              "MvrLCDConnector: ")) == NULL) {
 		return false;
 	}
 	lcd->setDeviceConnection (lcdData->myConn);
 	return true;
 }
-AREXPORT void ArLCDConnector::logOptions (void) const
+AREXPORT void MvrLCDConnector::logOptions (void) const
 {
-	ArLog::log (ArLog::Terse, "Options for ArLCDConnector:");
-  ArLog::log(ArLog::Terse, "-lcdLogPacketsReceived");
-  ArLog::log(ArLog::Terse, "-lcdlpr");
-  ArLog::log(ArLog::Terse, "-lcdLogPacketsSent");
-  ArLog::log(ArLog::Terse, "-lcdlps");
-	ArLog::log (ArLog::Terse, "\nOptions shown are for currently set up lcds.  Activate lcds with -lcdType<N> option");
-	ArLog::log (ArLog::Terse, "to see options for that lcd (e.g. \"-help -lcdType1 lcdMTX\").");
-	ArLog::log (ArLog::Terse, "Valid lcd types are: %s", Aria::lcdGetTypes());
-	ArLog::log (ArLog::Terse, "\nSee docs for details.");
+	ArLog::log (MvrLog::Terse, "Options for MvrLCDConnector:");
+  MvrLog::log(MvrLog::Terse, "-lcdLogPacketsReceived");
+  MvrLog::log(MvrLog::Terse, "-lcdlpr");
+  MvrLog::log(MvrLog::Terse, "-lcdLogPacketsSent");
+  MvrLog::log(MvrLog::Terse, "-lcdlps");
+	ArLog::log (MvrLog::Terse, "\nOptions shown are for currently set up lcds.  Activate lcds with -lcdType<N> option");
+	ArLog::log (MvrLog::Terse, "to see options for that lcd (e.g. \"-help -lcdType1 lcdMTX\").");
+	ArLog::log (MvrLog::Terse, "Valid lcd types are: %s", Mvria::lcdGetTypes());
+	ArLog::log (MvrLog::Terse, "\nSee docs for details.");
 	std::map<int, LCDData *>::const_iterator it;
 	LCDData *lcdData;
 	for (it = myLCDs.begin(); it != myLCDs.end(); it++) {
@@ -470,18 +470,18 @@ AREXPORT void ArLCDConnector::logOptions (void) const
 		logLCDOptions (lcdData);
 	}
 }
-AREXPORT void ArLCDConnector::logLCDOptions (
+AREXPORT void MvrLCDConnector::logLCDOptions (
   LCDData *lcdData, bool header, bool metaOpts) const
 {
 	char buf[512];
 	if (lcdData == NULL) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "Tried to log lcd options with NULL lcd data");
 		return;
 	}
 	if (lcdData->myLCD == NULL) {
-		ArLog::log (ArLog::Normal,
-		            "ArLCDConnector: There is no lcd for lcd number %d but there should be",
+		ArLog::log (MvrLog::Normal,
+		            "MvrLCDConnector: There is no lcd for lcd number %d but there should be",
 		            lcdData->myNumber);
 		return;
 	}
@@ -491,33 +491,33 @@ AREXPORT void ArLCDConnector::logLCDOptions (
 	else
 		sprintf (buf, "%d", lcdData->myNumber);
 	if (header) {
-		ArLog::log (ArLog::Terse, "");
-		ArLog::log (ArLog::Terse, "LCD%s: (\"%s\")", buf, lcd->getName());
+		ArLog::log (MvrLog::Terse, "");
+		ArLog::log (MvrLog::Terse, "LCD%s: (\"%s\")", buf, lcd->getName());
 	}
 	if (metaOpts) {
-		ArLog::log (ArLog::Terse, "-lcdType%s <%s>", buf, Aria::lcdGetTypes());
-		ArLog::log (ArLog::Terse, "-lcdt%s <%s>", buf, Aria::lcdGetTypes());
-		ArLog::log (ArLog::Terse, "-connectLCD%s", buf);
-		ArLog::log (ArLog::Terse, "-clcd%s", buf);
+		ArLog::log (MvrLog::Terse, "-lcdType%s <%s>", buf, Mvria::lcdGetTypes());
+		ArLog::log (MvrLog::Terse, "-lcdt%s <%s>", buf, Mvria::lcdGetTypes());
+		ArLog::log (MvrLog::Terse, "-connectLCD%s", buf);
+		ArLog::log (MvrLog::Terse, "-clcd%s", buf);
 	}
-	ArLog::log (ArLog::Terse, "-lcdPort%s <lcdPort>", buf);
-	ArLog::log (ArLog::Terse, "-lcdp%s <lcdPort>", buf);
-	ArLog::log (ArLog::Terse, "-lcdPortType%s <%s>", buf, Aria::deviceConnectionGetTypes());
-	ArLog::log (ArLog::Terse, "-lcdpt%s <%s>", buf, Aria::deviceConnectionGetTypes());
-	ArLog::log (ArLog::Terse, "-remoteLCDTcpPort%s <remoteLCDTcpPort>", buf);
-	ArLog::log (ArLog::Terse, "-rbtp%s <remoteLCDTcpPort>", buf);
+	ArLog::log (MvrLog::Terse, "-lcdPort%s <lcdPort>", buf);
+	ArLog::log (MvrLog::Terse, "-lcdp%s <lcdPort>", buf);
+	ArLog::log (MvrLog::Terse, "-lcdPortType%s <%s>", buf, Mvria::deviceConnectionGetTypes());
+	ArLog::log (MvrLog::Terse, "-lcdpt%s <%s>", buf, Mvria::deviceConnectionGetTypes());
+	ArLog::log (MvrLog::Terse, "-remoteLCDTcpPort%s <remoteLCDTcpPort>", buf);
+	ArLog::log (MvrLog::Terse, "-rbtp%s <remoteLCDTcpPort>", buf);
 }
 /**
    Normally adding lcds is done from the .p file, you can use this
    if you want to add them explicitly in a program (which will
    override the .p file, and may cause some problems).
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArLCDConnector::connectLCDs.()
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrLCDConnector::connectLCDs.()
    @internal
 **/
-AREXPORT bool ArLCDConnector::addLCD (
-  ArLCDMTX *lcd, int lcdNumber)
+AREXPORT bool MvrLCDConnector::addLCD (
+  MvrLCDMTX *lcd, int lcdNumber)
 {
 	std::map<int, LCDData *>::iterator it;
 	LCDData *lcdData = NULL;
@@ -525,12 +525,12 @@ AREXPORT bool ArLCDConnector::addLCD (
 		lcdData = (*it).second;
 	if (lcdData != NULL) {
 		if (lcdData->myLCD != NULL)
-			ArLog::log (ArLog::Terse,
-			            "ArLCDConnector::addLCD: Already have lcd for number #%d of type %s but a replacement lcd of type %s was passed in",
+			ArLog::log (MvrLog::Terse,
+			            "MvrLCDConnector::addLCD: Already have lcd for number #%d of type %s but a replacement lcd of type %s was passed in",
 			            lcdNumber, lcdData->myLCD->getName(), lcd->getName());
 		else
-			ArLog::log (ArLog::Terse,
-			            "ArLCDConnector::addLCD: Already have lcd for number #%d but a replacement lcd of type %s was passed in",
+			ArLog::log (MvrLog::Terse,
+			            "MvrLCDConnector::addLCD: Already have lcd for number #%d but a replacement lcd of type %s was passed in",
 			            lcdNumber, lcd->getName());
 		delete lcdData;
 		myLCDs.erase (lcdNumber);
@@ -538,7 +538,7 @@ AREXPORT bool ArLCDConnector::addLCD (
 	myLCDs[lcdNumber] = new LCDData (lcdNumber, lcd);
 	return true;
 }
-AREXPORT ArLCDMTX *ArLCDConnector::getLCD (int lcdNumber)
+AREXPORT MvrLCDMTX *ArLCDConnector::getLCD (int lcdNumber)
 {
 	std::map<int, LCDData *>::iterator it;
 	LCDData *lcdData = NULL;
@@ -550,8 +550,8 @@ AREXPORT ArLCDMTX *ArLCDConnector::getLCD (int lcdNumber)
 	// otherwise, return the lcd
 	return lcdData->myLCD;
 }
-AREXPORT bool ArLCDConnector::replaceLCD (
-  ArLCDMTX *lcd, int lcdNumber)
+AREXPORT bool MvrLCDConnector::replaceLCD (
+  MvrLCDMTX *lcd, int lcdNumber)
 {
 	std::map<int, LCDData *>::iterator it;
 	LCDData *lcdData = NULL;
@@ -562,42 +562,42 @@ AREXPORT bool ArLCDConnector::replaceLCD (
 		return false;
 	if (lcdData->myLCD != NULL)
 		ArLog::log (myInfoLogLevel,
-		            "ArLCDConnector::replaceLCD: Already have lcd for number #%d of type %s but a replacement lcd of type %s was passed in",
+		            "MvrLCDConnector::replaceLCD: Already have lcd for number #%d of type %s but a replacement lcd of type %s was passed in",
 		            lcdNumber, lcdData->myLCD->getName(), lcd->getName());
 	else
-		ArLog::log (ArLog::Normal,
-		            "ArLCDConnector::replaceLCD: Replacing a non existant lcd number #%d with a lcd of type %s passed in",
+		ArLog::log (MvrLog::Normal,
+		            "MvrLCDConnector::replaceLCD: Replacing a non existant lcd number #%d with a lcd of type %s passed in",
 		            lcdNumber, lcd->getName());
 	lcdData->myLCD = lcd;
 	return true;
 }
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArLCDConnector::connectLCDs().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrLCDConnector::connectLCDs().
    @internal
 **/
-AREXPORT bool ArLCDConnector::setupLCD (ArLCDMTX *lcd,
+AREXPORT bool MvrLCDConnector::setupLCD (MvrLCDMTX *lcd,
     int lcdNumber)
 {
 	if (myRobot == NULL && myRobotConnector != NULL)
 		myRobot = myRobotConnector->getRobot();
 	std::map<int, LCDData *>::iterator it;
 	LCDData *lcdData = NULL;
-	//const ArRobotParams *params;
+	//const MvrRobotParams *params;
 	if ( (it = myLCDs.find (lcdNumber)) != myLCDs.end())
 		lcdData = (*it).second;
 	if (lcdData == NULL && lcd == NULL) {
-		ArLog::log (ArLog::Terse, "ArLCDConnector::setupLCD: Do not have lcd #%d", lcdNumber) ;
+		ArLog::log (MvrLog::Terse, "MvrLCDConnector::setupLCD: Do not have lcd #%d", lcdNumber) ;
 		return false;
 	}
 	if (lcdData != NULL && lcd != NULL &&
 	    lcdData->myLCD != lcd) {
 		if (lcdData->myLCD != NULL)
-			ArLog::log (ArLog::Terse, "ArLCDConnector::setupLCD: Already have lcd for number #%d (%s) but a replacement lcd (%s) was passed in, this will replace all of the command line arguments for that lcd",
+			ArLog::log (MvrLog::Terse, "MvrLCDConnector::setupLCD: Already have lcd for number #%d (%s) but a replacement lcd (%s) was passed in, this will replace all of the command line arguments for that lcd",
 			            lcdNumber, lcdData->myLCD->getName(), lcd->getName());
 		else
-			ArLog::log (ArLog::Terse, "ArLCDConnector::setupLCD: Already have lcd for number #%d but a replacement lcd (%s) was passed in, this will replace all of the command line arguments for that lcd",
+			ArLog::log (MvrLog::Terse, "MvrLCDConnector::setupLCD: Already have lcd for number #%d but a replacement lcd (%s) was passed in, this will replace all of the command line arguments for that lcd",
 			            lcdNumber, lcd->getName());
 		delete lcdData;
 		myLCDs.erase (lcdNumber);
@@ -607,7 +607,7 @@ AREXPORT bool ArLCDConnector::setupLCD (ArLCDMTX *lcd,
 		lcdData = new LCDData (lcdNumber, lcd);
 		myLCDs[lcdNumber] = lcdData;
 		if (myAutoParseArgs && !parseLCDArgs (myParser, lcdData)) {
-			ArLog::log (ArLog::Verbose, "ArLCDConnector: Auto parsing args for lcd %s (num %d)", lcdData->myLCD->getName(), lcdNumber);
+			ArLog::log (MvrLog::Verbose, "MvrLCDConnector: Auto parsing args for lcd %s (num %d)", lcdData->myLCD->getName(), lcdNumber);
 			return false;
 		}
 	}
@@ -627,17 +627,17 @@ AREXPORT bool ArLCDConnector::setupLCD (ArLCDMTX *lcd,
 		myRobot->addLCD (lcd, lcdNumber);
 		//myRobot->addRangeDevice(lcd);
 	} else {
-		ArLog::log (ArLog::Normal, "ArLCDConnector::setupLCD: No robot, so lcd cannot be added to robot");
+		ArLog::log (MvrLog::Normal, "MvrLCDConnector::setupLCD: No robot, so lcd cannot be added to robot");
 	}
 	return true;
 }
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArLCDConnector::connectLCDs().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrLCDConnector::connectLCDs().
    @internal
 **/
-AREXPORT bool ArLCDConnector::connectLCD (ArLCDMTX *lcd,
+AREXPORT bool MvrLCDConnector::connectLCD (MvrLCDMTX *lcd,
     int lcdNumber,
     bool forceConnection)
 {
@@ -653,7 +653,7 @@ AREXPORT bool ArLCDConnector::connectLCD (ArLCDMTX *lcd,
 	if ( (it = myLCDs.find (lcdNumber)) != myLCDs.end())
 		lcdData = (*it).second;
 	if (lcdData == NULL) {
-		ArLog::log (ArLog::Normal, "ArLCDConnector::connectLCD: Some horrendous error in connectLCD with lcd number %d", lcdNumber);
+		ArLog::log (MvrLog::Normal, "MvrLCDConnector::connectLCD: Some horrendous error in connectLCD with lcd number %d", lcdNumber);
 		return false;
 	}
 	// see if we want to connect
@@ -664,7 +664,7 @@ AREXPORT bool ArLCDConnector::connectLCD (ArLCDMTX *lcd,
 												&myTurnOnPowerCB, &myTurnOffPowerCB);
 
 }
-AREXPORT bool ArLCDConnector::connectLCDs (
+AREXPORT bool MvrLCDConnector::connectLCDs (
   bool continueOnFailedConnect, bool addConnectedLCDsToRobot,
   bool addAllLCDsToRobot, bool turnOnLCDs,
   bool powerCycleLCDOnFailedConnect)
@@ -672,30 +672,30 @@ AREXPORT bool ArLCDConnector::connectLCDs (
 	std::map<int, LCDData *>::iterator it;
 	LCDData *lcdData = NULL;
 	ArLog::log (myInfoLogLevel,
-	            "ArLCDConnector::connectLCDs() Connecting lcds");
+	            "MvrLCDConnector::connectLCDs() Connecting lcds");
 	if (myAutoParseArgs && !myParsedArgs) {
-		ArLog::log (ArLog::Verbose,
-		            "ArLCDConnector::connectLCDs() Auto parsing args for lcds");
+		ArLog::log (MvrLog::Verbose,
+		            "MvrLCDConnector::connectLCDs() Auto parsing args for lcds");
 		if (!parseArgs()) {
 			return false;
 		}
 	}
 	if (addAllLCDsToRobot) {
 
-			ArLog::log (ArLog::Normal,
-		            "ArLCDConnector::connectLCDs() addAllLCDsToRobot");
+			ArLog::log (MvrLog::Normal,
+		            "MvrLCDConnector::connectLCDs() addAllLCDsToRobot");
 
 		if (myRobot != NULL) {
 
 			for (it = myLCDs.begin(); it != myLCDs.end(); it++) {
 				lcdData = (*it).second;
 				myRobot->addLCD (lcdData->myLCD, lcdData->myNumber);
-				ArLog::log (ArLog::Verbose,
-				            "ArLCDConnector::connectLCDs: Added %s to robot as lcd %d",
+				ArLog::log (MvrLog::Verbose,
+				            "MvrLCDConnector::connectLCDs: Added %s to robot as lcd %d",
 				            lcdData->myLCD->getName(), lcdData->myNumber);
 			}
 		} else {
-			ArLog::log (ArLog::Normal, "ArLCDConnector::connectLCDs: Supposed to add all lcds to robot, but there is no robot");
+			ArLog::log (MvrLog::Normal, "MvrLCDConnector::connectLCDs: Supposed to add all lcds to robot, but there is no robot");
 			return false;
 		}
 	}
@@ -714,7 +714,7 @@ AREXPORT bool ArLCDConnector::connectLCDs (
 
 		if (lcdData->myConnectReallySet && lcdData->myConnect) {
 			ArLog::log (myInfoLogLevel,
-			            "ArLCDConnector::connectLCDs: Connecting %s",
+			            "MvrLCDConnector::connectLCDs: Connecting %s",
 			            lcdData->myLCD->getName());
 			lcdData->myLCD->setRobot (myRobot);
 			bool connected = false;
@@ -726,42 +726,42 @@ AREXPORT bool ArLCDConnector::connectLCDs (
 					if (myRobot != NULL) {
 						myRobot->addLCD (lcdData->myLCD, lcdData->myNumber);
 						//myRobot->addRangeDevice(lcdData->myLCD);
-						ArLog::log (ArLog::Verbose,
-						            "ArLCDConnector::connectLCDs: Added %s to robot",
+						ArLog::log (MvrLog::Verbose,
+						            "MvrLCDConnector::connectLCDs: Added %s to robot",
 						            lcdData->myLCD->getName());
 					} else {
-						ArLog::log (ArLog::Normal,
-						            "ArLCDConnector::connectLCDs: Could not add %s to robot, since there is no robot",
+						ArLog::log (MvrLog::Normal,
+						            "MvrLCDConnector::connectLCDs: Could not add %s to robot, since there is no robot",
 						            lcdData->myLCD->getName());
 					}
 				} else if (addAllLCDsToRobot && myRobot != NULL) {
-					ArLog::log (ArLog::Verbose,
-					            "ArLCDConnector::connectLCDs: %s already added to robot)",
+					ArLog::log (MvrLog::Verbose,
+					            "MvrLCDConnector::connectLCDs: %s already added to robot)",
 					            lcdData->myLCD->getName());
 				} else if (myRobot != NULL) {
-					ArLog::log (ArLog::Verbose,
-					            "ArLCDConnector::connectLCDs: Did not add %s to robot",
+					ArLog::log (MvrLog::Verbose,
+					            "MvrLCDConnector::connectLCDs: Did not add %s to robot",
 					            lcdData->myLCD->getName());
 				}
 			} else {
 				if (!continueOnFailedConnect) {
-					ArLog::log (ArLog::Normal,
-					            "ArLCDConnector::connectLCDs: Could not connect %s, stopping",
+					ArLog::log (MvrLog::Normal,
+					            "MvrLCDConnector::connectLCDs: Could not connect %s, stopping",
 					            lcdData->myLCD->getName());
 					return false;
 				} else
-					ArLog::log (ArLog::Normal,
-					            "ArLCDConnector::connectLCDs: Could not connect %s, continuing with remainder of lcds",
+					ArLog::log (MvrLog::Normal,
+					            "MvrLCDConnector::connectLCDs: Could not connect %s, continuing with remainder of lcds",
 					            lcdData->myLCD->getName());
 			}
 		}
 	}
 	ArLog::log (myInfoLogLevel,
-	            "ArLCDConnector: Done connecting lcds");
+	            "MvrLCDConnector: Done connecting lcds");
 	return true;
 }
 
-AREXPORT bool ArLCDConnector::turnOnPower (LCDData *LCDData)
+AREXPORT bool MvrLCDConnector::turnOnPower (LCDData *LCDData)
 {
 	/// MPL the new way
 	if (myTurnOnPowerOutputCB != NULL) {
@@ -769,8 +769,8 @@ AREXPORT bool ArLCDConnector::turnOnPower (LCDData *LCDData)
 		      LCDData->myNumber) == NULL ||
 		    myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 		      LCDData->myNumber) [0] == '\0') {
-			ArLog::log (ArLog::Normal,
-			            "ArLCDConnector::turnOnPower: LCD %d has no power output set so can't be turned on (things may still work).",
+			ArLog::log (MvrLog::Normal,
+			            "MvrLCDConnector::turnOnPower: LCD %d has no power output set so can't be turned on (things may still work).",
 			            LCDData->myNumber);
 			return false;
 		} else {
@@ -778,14 +778,14 @@ AREXPORT bool ArLCDConnector::turnOnPower (LCDData *LCDData)
 			      myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 			        LCDData->myNumber))) {
 				ArLog::log (myInfoLogLevel,
-				            "ArLCDConnector::turnOnPower: Turned on power output %s for lcd %d",
+				            "MvrLCDConnector::turnOnPower: Turned on power output %s for lcd %d",
 				            myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 				              LCDData->myNumber),
 				            LCDData->myNumber);
 				return true;
 			} else {
-				ArLog::log (ArLog::Normal,
-				            "ArLCDConnector::turnOnPower: Could not turn on power output %s for lcd %d (things may still work).",
+				ArLog::log (MvrLog::Normal,
+				            "MvrLCDConnector::turnOnPower: Could not turn on power output %s for lcd %d (things may still work).",
 				            myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 				              LCDData->myNumber),
 				            LCDData->myNumber);
@@ -796,7 +796,7 @@ AREXPORT bool ArLCDConnector::turnOnPower (LCDData *LCDData)
 	return false;
 }
 
-AREXPORT bool ArLCDConnector::turnOffPower (LCDData *LCDData)
+AREXPORT bool MvrLCDConnector::turnOffPower (LCDData *LCDData)
 {
 	/// MPL the new way
 	if (myTurnOffPowerOutputCB != NULL) {
@@ -804,8 +804,8 @@ AREXPORT bool ArLCDConnector::turnOffPower (LCDData *LCDData)
 		      LCDData->myNumber) == NULL ||
 		    myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 		      LCDData->myNumber) [0] == '\0') {
-			ArLog::log (ArLog::Normal,
-			            "ArLCDConnector::turnOffPower: LCD %d has no power output set so can't be turned off (things may still work).",
+			ArLog::log (MvrLog::Normal,
+			            "MvrLCDConnector::turnOffPower: LCD %d has no power output set so can't be turned off (things may still work).",
 			            LCDData->myNumber);
 			return false;
 		} else {
@@ -813,14 +813,14 @@ AREXPORT bool ArLCDConnector::turnOffPower (LCDData *LCDData)
 			      myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 			        LCDData->myNumber))) {
 				ArLog::log (myInfoLogLevel,
-				            "ArLCDConnector::turnOffPower: Turned off power output %s for lcd %d",
+				            "MvrLCDConnector::turnOffPower: Turned off power output %s for lcd %d",
 				            myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 				              LCDData->myNumber),
 				            LCDData->myNumber);
 				return true;
 			} else {
-				ArLog::log (ArLog::Normal,
-				            "ArLCDConnector::turnOffPower: Could not turn off power output %s for lcd %d (things may still work).",
+				ArLog::log (MvrLog::Normal,
+				            "MvrLCDConnector::turnOffPower: Could not turn off power output %s for lcd %d (things may still work).",
 				            myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 				              LCDData->myNumber),
 				            LCDData->myNumber);
@@ -831,7 +831,7 @@ AREXPORT bool ArLCDConnector::turnOffPower (LCDData *LCDData)
 	return false;
 }
 
-AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
+AREXPORT bool MvrLCDConnector::verifyFirmware (LCDData *LCDData)
 
 {
 
@@ -853,11 +853,11 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 	serConn = dynamic_cast<ArSerialConnection *> (LCDData->myConn);
 	if (serConn != NULL)
 		serConn->setBaud (115200);
-	if (LCDData->myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (LCDData->myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 	    && !LCDData->myConn->openSimple()) {
 		ArLog::log (
-		  ArLog::Normal,
-		  "ArLCDConnector::verifyFirmware: Could not connect (%d) because the connection was not open and could not open it",
+		  MvrLog::Normal,
+		  "MvrLCDConnector::verifyFirmware: Could not connect (%d) because the connection was not open and could not open it",
 		  LCDData->myNumber);
 
 		return false;
@@ -869,15 +869,15 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 
 	unsigned char hello = 0xc1;
   
- //// ArBasePacket *packet;
+ //// MvrBasePacket *packet;
  // while ((packet = readPacket()) != NULL)
 
 	ArTime timeDone;
 
 	if (!timeDone.addMSec(30 * 1000))
 	{
-		ArLog::log(ArLog::Normal,
-				"ArLCDConnector::verifyFirmware(%d) error adding msecs (30 * 1000)",
+		ArLog::log(MvrLog::Normal,
+				"MvrLCDConnector::verifyFirmware(%d) error adding msecs (30 * 1000)",
 				LCDData->myNumber);
 	}
 
@@ -890,20 +890,20 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 
 		if ((LCDData->myConn->write((char *)&hello, 1)) == -1) {
 
-			ArLog::log(ArLog::Normal,
-					"ArLCDConnector::verifyFirmware(%d) Could not send hello to LCD", LCDData->myNumber);
+			ArLog::log(MvrLog::Normal,
+					"MvrLCDConnector::verifyFirmware(%d) Could not send hello to LCD", LCDData->myNumber);
 			return false;
 		}
 
 		if ((LCDData->myConn->read((char *) &helloResp[0], 4, 500)) > 0) {
 
-			ArLog::log(ArLog::Normal,
-					"ArLCDConnector::verifyFirmware(%d) received hello response 0x%02x 0x%02x 0x%02x 0x%02x",
+			ArLog::log(MvrLog::Normal,
+					"MvrLCDConnector::verifyFirmware(%d) received hello response 0x%02x 0x%02x 0x%02x 0x%02x",
 					LCDData->myNumber, helloResp[0],  helloResp[1],  helloResp[2],  helloResp[3] );
 
 			if ((helloResp[0] == 0xc0) && (helloResp[3] == 0x4b)) {
-				ArLog::log(ArLog::Normal,
-					"ArLCDConnector::verifyFirmware(%d) received hello response",
+				ArLog::log(MvrLog::Normal,
+					"MvrLCDConnector::verifyFirmware(%d) received hello response",
 					LCDData->myNumber);
 
 				gotResponse = true;
@@ -916,16 +916,16 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 
 		}
 		else {
-			ArLog::log(ArLog::Normal,
-					"ArLCDConnector::verifyFirmware(%d) read failed",
+			ArLog::log(MvrLog::Normal,
+					"MvrLCDConnector::verifyFirmware(%d) read failed",
 					LCDData->myNumber);
 
 		}
 	}
 
 	if (!gotResponse) {
-		ArLog::log(ArLog::Normal,
-				"ArLCDConnector::verifyFirmware(%d) Received no hello response", LCDData->myNumber);
+		ArLog::log(MvrLog::Normal,
+				"MvrLCDConnector::verifyFirmware(%d) Received no hello response", LCDData->myNumber);
 		return false;
 	}
 
@@ -949,8 +949,8 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 	hmiFileOut[0] = '\0';
 
 	if (hmiFile.empty()) {
-		ArLog::log(ArLog::Normal,
-				"ArLCDConnector::verifyFirmware(%d) can't find hmi file with prefix = %s", 
+		ArLog::log(MvrLog::Normal,
+				"MvrLCDConnector::verifyFirmware(%d) can't find hmi file with prefix = %s", 
 						LCDData->myNumber, hmiFilePrefix);
 		return false;
 	}
@@ -964,8 +964,8 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 			foundHmi = true;
 		}
 		else {
-			ArLog::log(ArLog::Normal,
-				"ArLCDConnector::verifyFirmware(%d) hmi file found but version matches (%s)",
+			ArLog::log(MvrLog::Normal,
+				"MvrLCDConnector::verifyFirmware(%d) hmi file found but version matches (%s)",
 						LCDData->myNumber, hmiFileOut);
 			return false;
 		}
@@ -974,8 +974,8 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 
 
 	if (!foundHmi) {
-		ArLog::log(ArLog::Normal,
-				"ArLCDConnector::verifyFirmware(%d) Can not find %s.ds file", LCDData->myNumber, hmiFileOut);
+		ArLog::log(MvrLog::Normal,
+				"MvrLCDConnector::verifyFirmware(%d) Can not find %s.ds file", LCDData->myNumber, hmiFileOut);
 		return false;
 	}
 
@@ -987,9 +987,9 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 	unsigned char c;
 
 	std:: string hmiDirFile = baseDir + hmiFile;
-	if ( (file = ArUtil::fopen (hmiDirFile.c_str(), "r")) == NULL) {
-		ArLog::log (ArLog::Normal,
-			            "ArLCDConnector::verifyFirmware(%d) Could not open file %s for reading errno (%d)",
+	if ( (file = MvrUtil::fopen (hmiDirFile.c_str(), "r")) == NULL) {
+		ArLog::log (MvrLog::Normal,
+			            "MvrLCDConnector::verifyFirmware(%d) Could not open file %s for reading errno (%d)",
 			            LCDData->myNumber, hmiDirFile.c_str(), errno);
 		return false;
 	}
@@ -1010,8 +1010,8 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 	
 			if (!builder.isArgInt(i, true)) {
 
-				ArLog::log(ArLog::Normal,
-							"ArLCDConnector::verifyFirmware(%d) Could not convert file", LCDData->myNumber);
+				ArLog::log(MvrLog::Normal,
+							"MvrLCDConnector::verifyFirmware(%d) Could not convert file", LCDData->myNumber);
 				return false;
 
 			}
@@ -1024,14 +1024,14 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 		} // end for
 
 		
-				//ArLog::log(ArLog::Normal,
-			//			"ArLCDConnector::verifyFirmware(%d) data = %s size = %d", LCDData->myNumber, data.c_str(), data.size());
+				//ArLog::log(MvrLog::Normal,
+			//			"MvrLCDConnector::verifyFirmware(%d) data = %s size = %d", LCDData->myNumber, data.c_str(), data.size());
 
-				//ArLog::log(ArLog::Normal,
-				//		"ArLCDConnector::verifyFirmware(%d) %d %c 0x%02x", LCDData->myNumber, data, data, data);
+				//ArLog::log(MvrLog::Normal,
+				//		"MvrLCDConnector::verifyFirmware(%d) %d %c 0x%02x", LCDData->myNumber, data, data, data);
 			if ((LCDData->myConn->write((char *)data.c_str(), data.size())) == -1) {
-				ArLog::log(ArLog::Normal,
-						"ArLCDConnector::verifyFirmware(%d) Could not send data 0x%02x size(%d) to LCD errno (%d)", LCDData->myNumber, data.c_str(), data.size(), errno);
+				ArLog::log(MvrLog::Normal,
+						"MvrLCDConnector::verifyFirmware(%d) Could not send data 0x%02x size(%d) to LCD errno (%d)", LCDData->myNumber, data.c_str(), data.size(), errno);
 				return false;
 			}
 
@@ -1042,16 +1042,16 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 				if (c == 0x4b) 
 					continue;
 				else {
-					ArLog::log(ArLog::Normal,
-							"ArLCDConnector::verifyFirmware(%d) Invalid response %x02%x from LCD to load data", 
+					ArLog::log(MvrLog::Normal,
+							"MvrLCDConnector::verifyFirmware(%d) Invalid response %x02%x from LCD to load data", 
 							LCDData->myNumber, c);
 					return false;
 				}
 
 			}
 			else {
-				ArLog::log(ArLog::Normal,
-						"ArLCDConnector::verifyFirmware(%d) Did not get response from LCD to load data", LCDData->myNumber);
+				ArLog::log(MvrLog::Normal,
+						"MvrLCDConnector::verifyFirmware(%d) Did not get response from LCD to load data", LCDData->myNumber);
 				return false;
 
 			}
@@ -1059,8 +1059,8 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 	} // end while
 	if (feof(file)) {
 		// end of file reached
-		ArLog::log (ArLog::Normal,
-			            "ArLCDConnector::verifyFirmware(%d) LCD firmware updated",
+		ArLog::log (MvrLog::Normal,
+			            "MvrLCDConnector::verifyFirmware(%d) LCD firmware updated",
 			            LCDData->myNumber);
 		fclose (file);
 
@@ -1070,8 +1070,8 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 	}
 	else {
 
-		ArLog::log (ArLog::Normal,
-			            "ArLCDConnector::verifyFirmware(%d) failed updating LCD firmware",
+		ArLog::log (MvrLog::Normal,
+			            "MvrLCDConnector::verifyFirmware(%d) failed updating LCD firmware",
 			            LCDData->myNumber);
 		fclose (file);
 
@@ -1084,11 +1084,11 @@ AREXPORT bool ArLCDConnector::verifyFirmware (LCDData *LCDData)
 // TODO move searchForFile to ariaUtil
 #ifdef WIN32
 
-AREXPORT std::string ArLCDConnector::searchForFile(const char *dirname, const char *prefix, const char *suffix)
+AREXPORT std::string MvrLCDConnector::searchForFile(const char *dirname, const char *prefix, const char *suffix)
 {
   // todo recurse into directories? (bool flag?)
   std::string filepattern = std::string(dirname) + "\\" + prefix + "*" + suffix;
-  printf("ArLCDConnector searching for %s...\n", filepattern.c_str());
+  printf("MvrLCDConnector searching for %s...\n", filepattern.c_str());
   WIN32_FIND_DATA fileData;
   HANDLE h = FindFirstFileEx(filepattern.c_str(), FindExInfoBasic, &fileData, FindExSearchNameMatch, NULL, 0);
   if(h == INVALID_HANDLE_VALUE) 
@@ -1103,7 +1103,7 @@ AREXPORT std::string ArLCDConnector::searchForFile(const char *dirname, const ch
 
 #else
 
-AREXPORT std::string ArLCDConnector::searchForFile(
+AREXPORT std::string MvrLCDConnector::searchForFile(
 	const char *dirToLookIn, const char *prefix, const char *suffix)
 {
 
@@ -1111,8 +1111,8 @@ AREXPORT std::string ArLCDConnector::searchForFile(
 	return "";
 #else
   /***
-  ArLog::log(ArLog::Normal, 
-             "ArUtil::matchCase() dirToLookIn = \"%s\" fileName = \"%s\"",
+  MvrLog::log(MvrLog::Normal, 
+             "MvrUtil::matchCase() dirToLookIn = \"%s\" fileName = \"%s\"",
              dirToLookIn,
              fileName);
   ***/
@@ -1136,8 +1136,8 @@ AREXPORT std::string ArLCDConnector::searchForFile(
   // found what we want
   if ((dir = opendir(dirToLookIn)) == NULL)
   {
-    ArLog::log(ArLog::Normal, 
-	       "AramUtil::findFile: No such directory '%s' for base", 
+    MvrLog::log(MvrLog::Normal, 
+	       "MvramUtil::findFile: No such directory '%s' for base", 
 	       dirToLookIn);
     return "";
   }
@@ -1175,7 +1175,7 @@ AREXPORT std::string ArLCDConnector::searchForFile(
 } 
 #endif
 
-AREXPORT void ArLCDConnector::turnOnPowerCB (int lcdNumber)
+AREXPORT void MvrLCDConnector::turnOnPowerCB (int lcdNumber)
 {
 std::map<int, LCDData *>::iterator it;
 LCDData *lcdData;
@@ -1190,7 +1190,7 @@ LCDData *lcdData;
 
 }
 
-AREXPORT void ArLCDConnector::turnOffPowerCB (int lcdNumber)
+AREXPORT void MvrLCDConnector::turnOffPowerCB (int lcdNumber)
 {
 
 std::map<int, LCDData *>::iterator it;
@@ -1206,7 +1206,7 @@ LCDData *lcdData;
 
 }
 
-AREXPORT void ArLCDConnector::setIdentifier(const char *identifier)
+AREXPORT void MvrLCDConnector::setIdentifier(const char *identifier)
 {
 
 	// go thru list of lcd's and set the identifiers

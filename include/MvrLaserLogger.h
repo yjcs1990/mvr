@@ -30,13 +30,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <stdio.h>
 
 #include "ariaUtil.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
-class ArLaser;
-class ArRobot;
-class ArJoyHandler;
-class ArRobotJoyHandler;
-class ArRobotPacket;
+class MvrLaser;
+class MvrRobot;
+class MvrJoyHandler;
+class MvrRobotJoyHandler;
+class MvrRobotPacket;
 
 /// This class can be used to create log files for the laser mapper
 /**
@@ -53,21 +53,21 @@ class ArRobotPacket;
 
    @see @ref LaserLogFileFormat for details on the laser scan log output file format.
 **/
-class ArLaserLogger
+class MvrLaserLogger
 {
 public:
   /// Constructor
-  AREXPORT ArLaserLogger(
-	  ArRobot *robot, ArLaser *laser, double distDiff, 
+  AREXPORT MvrLaserLogger(
+	  MvrRobot *robot, MvrLaser *laser, double distDiff, 
 	  double degDiff, const char *fileName, 
 	  bool addGoals = false, 
-	  ArJoyHandler *joyHandler = NULL,
+	  MvrJoyHandler *joyHandler = NULL,
 	  const char *baseDirectory = NULL,
 	  bool useReflectorValues = false,
-	  ArRobotJoyHandler *robotJoyHandler = NULL,
+	  MvrRobotJoyHandler *robotJoyHandler = NULL,
 	  const std::map<std::string, 
-	  ArRetFunctor3<int, ArTime, ArPose *, ArPoseWithTime *> *, 
-	  ArStrCaseCmpOp> *extraLocationData = NULL,
+	  MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *, 
+	  MvrStrCaseCmpOp> *extraLocationData = NULL,
 	  std::list<ArLaser *> *extraLasers = NULL);
   /// Destructor
   AREXPORT virtual ~ArLaserLogger();
@@ -92,11 +92,11 @@ public:
   /// Same as addToInfo, but does it without marking robot position
   AREXPORT void addInfoToLogPlain(const char *str);
   /// Sets the distance at which the robot will take a new reading
-  void setDistDiff(double distDiff) { myDistDiff = ArMath::fabs(distDiff); }
+  void setDistDiff(double distDiff) { myDistDiff = MvrMath::fabs(distDiff); }
   /// Gets the distance at which the robot will take a new reading
   double getDistDiff(void) { return myDistDiff; }
   /// Sets the degrees to turn at which the robot will take a new reading
-  void setDegDiff(double degDiff) { myDistDiff = ArMath::fabs(degDiff); }
+  void setDegDiff(double degDiff) { myDistDiff = MvrMath::fabs(degDiff); }
   /// Gets the degrees to turn at which the robot will take a new reading
   double getDegDiff(void) { return myDegDiff; }
   /// Explicitly tells the robot to take a reading
@@ -124,14 +124,14 @@ protected:
   // internal function that takes a reading
   void internalTakeReading(void);
   // internal function that takes a reading from one laser
-  void internalTakeLaserReading(ArLaser *laser, int laserNumber);
+  void internalTakeLaserReading(MvrLaser *laser, int laserNumber);
   // internal function that prints the position
-  void internalPrintPos(ArPose encoderPoseTaken, ArPose goalPoseTaken, 
+  void internalPrintPos(MvrPose encoderPoseTaken, MvrPose goalPoseTaken, 
 			ArTime timeTaken);
   // internal function that logs the pose and conf
-  void internalPrintLaserPoseAndConf(ArLaser *laser, int laserNumber);
+  void internalPrintLaserPoseAndConf(MvrLaser *laser, int laserNumber);
   // internal packet for handling the loop packets
-  AREXPORT bool loopPacketHandler(ArRobotPacket *packet);
+  AREXPORT bool loopPacketHandler(MvrRobotPacket *packet);
 
 
   // what type of readings we are taking
@@ -143,27 +143,27 @@ protected:
   std::list<std::string> myTags;
   std::list<std::string> myInfos;
   bool myWrote;
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
   // note that this is now in the list of lasers, but this pointer is
   // kept to denote the primary laser (so that it can always be called
   // number 1)
-  ArLaser *myLaser;
+  MvrLaser *myLaser;
   bool myAddGoals;
-  ArJoyHandler *myJoyHandler;
-  ArRobotJoyHandler *myRobotJoyHandler;
+  MvrJoyHandler *myJoyHandler;
+  MvrRobotJoyHandler *myRobotJoyHandler;
   std::string myFileName;
   std::string myBaseDirectory;
   FILE *myFile;
   bool myFirstTaken;
 
-  ArPose myLast;
+  MvrPose myLast;
   double myLastVel;
   double myDistDiff;
   double myDegDiff;
-  ArSectors mySectors;
-  ArFunctorC<ArLaserLogger> myTaskCB;
+  MvrSectors mySectors;
+  MvrFunctorC<ArLaserLogger> myTaskCB;
   int myScanNumber;
-  ArTime myStartTime;
+  MvrTime myStartTime;
   bool myTakeReadingExplicit;
   bool myAddGoalExplicit;
   bool myAddGoalKeyboard;
@@ -172,8 +172,8 @@ protected:
   bool myLastRobotJoyButton;
   bool myFirstGoalTaken;
   int myNumGoal;
-  ArPose myLastGoalTakenPose;
-  ArTime myLastGoalTakenTime;
+  MvrPose myLastGoalTakenPose;
+  MvrTime myLastGoalTakenTime;
 
   void goalKeyCallback(void);
   unsigned char myLastLoops;
@@ -182,17 +182,17 @@ protected:
   //bool myFlipped;
   
   bool myIncludeRawEncoderPose;
-  std::map<std::string, ArRetFunctor3<int, ArTime, ArPose *, ArPoseWithTime *> *, 
-	   ArStrCaseCmpOp> myExtraLocationData;
+  std::map<std::string, MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *, 
+	   MvrStrCaseCmpOp> myExtraLocationData;
   
   // holders for the extra lasers 
   std::list<ArLaser *> myLasers;
 
-  ArFunctorC<ArLaserLogger> myGoalKeyCB;
-  ArRetFunctor1C<bool, ArLaserLogger, ArRobotPacket *> myLoopPacketHandlerCB;
+  MvrFunctorC<ArLaserLogger> myGoalKeyCB;
+  MvrRetFunctor1C<bool, MvrLaserLogger, MvrRobotPacket *> myLoopPacketHandlerCB;
 };
 
 /// @deprecated
-typedef ArLaserLogger ArSickLogger;
+typedef MvrLaserLogger MvrSickLogger;
 
 #endif // ARLASERLOGGER_H

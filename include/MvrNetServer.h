@@ -28,16 +28,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARNETSERVER_H
 
 #include "ariaTypedefs.h"
-#include "ArSocket.h"
-#include "ArFunctor.h"
+#include "MvrSocket.h"
+#include "MvrFunctor.h"
 #include "ariaUtil.h"
 
 #include <list>
 
 
-class ArRobot;
+class MvrRobot;
 
-class ArArgumentBuilder;
+class MvrArgumentBuilder;
 
 /// Class for running a simple net server to send/recv commands via text
 /**
@@ -54,7 +54,7 @@ class ArArgumentBuilder;
    line sent should be a password and must match the password given to
    open() in order to continue.
 
-   You can use the "telnet" program as a general client to any ArNetServer server.
+   You can use the "telnet" program as a general client to any MvrNetServer server.
 
    It has a built in mutex, if you only use sendToAllClients() through
    the normal commands or during the robot loop you don't need to
@@ -70,19 +70,19 @@ class ArArgumentBuilder;
 
     @ingroup OptionalClasses
 **/
-class ArNetServer
+class MvrNetServer
 {
 public:
   /// Constructor
-  AREXPORT ArNetServer(bool addAriaExitCB = true,
+  AREXPORT MvrNetServer(bool addAriaExitCB = true,
 		       bool doNotAddShutdownServer = false, 
-		       const char *name = "ArNetServer", 
-		       ArNetServer *childServer = NULL);
+		       const char *name = "MvrNetServer", 
+		       MvrNetServer *childServer = NULL);
   /// Destructor
   AREXPORT ~ArNetServer();
   
   /// Initializes the server
-  AREXPORT bool open(ArRobot *robot, unsigned int port, 
+  AREXPORT bool open(MvrRobot *robot, unsigned int port, 
 		     const char *password, bool multipleClients = true,
 		     const char *openOnIP = NULL);
 
@@ -91,7 +91,7 @@ public:
 
   /// Adds a new command
   AREXPORT bool addCommand(const char *command, 
-			   ArFunctor3<char **, int, ArSocket *> *functor, 
+			   MvrFunctor3<char **, int, MvrSocket *> *functor, 
 			   const char *help);
 
   /// Removes a command
@@ -130,12 +130,12 @@ public:
    *  @swigomit
    *  @sa sendToClientPlain()
    */
-  AREXPORT void sendToClient(ArSocket *socket, const char *ipString,
+  AREXPORT void sendToClient(MvrSocket *socket, const char *ipString,
 			     const char *str, ...);
 #endif
 
   /// Sends the given plain string to the (hopefully) the client given (this method may go away)
-  AREXPORT void sendToClientPlain(ArSocket *socket, const char *ipString,
+  AREXPORT void sendToClientPlain(MvrSocket *socket, const char *ipString,
 				  const char *str);
 
   /// Sees if the server is running and open
@@ -163,26 +163,26 @@ public:
   AREXPORT void runOnce(void);
 
   /// the internal function that gives the greeting message
-  AREXPORT void internalGreeting(ArSocket *socket);
+  AREXPORT void internalGreeting(MvrSocket *socket);
   
   /// The internal function that does the help
-  AREXPORT void internalHelp(ArSocket *socket);
+  AREXPORT void internalHelp(MvrSocket *socket);
   /// The internal function for the help cb
-  AREXPORT void internalHelp(char **argv, int argc, ArSocket *socket);
+  AREXPORT void internalHelp(char **argv, int argc, MvrSocket *socket);
   /// The internal function for echo
-  AREXPORT void internalEcho(char **argv, int argc, ArSocket *socket);
+  AREXPORT void internalEcho(char **argv, int argc, MvrSocket *socket);
   /// The internal function for closing this connection
-  AREXPORT void internalQuit(char **argv, int argc, ArSocket *socket);
+  AREXPORT void internalQuit(char **argv, int argc, MvrSocket *socket);
   /// The internal function for shutting down
   AREXPORT void internalShutdownServer(char **argv, int argc, 
-				       ArSocket *socket);
+				       MvrSocket *socket);
   /// The internal function for parsing a command on a socket
-  AREXPORT void parseCommandOnSocket(ArArgumentBuilder *args, 
-				     ArSocket *socket, bool allowLog = true);
+  AREXPORT void parseCommandOnSocket(MvrArgumentBuilder *args, 
+				     MvrSocket *socket, bool allowLog = true);
   /// The internal function that adds a client to our list
-  AREXPORT void internalAddSocketToList(ArSocket *socket);
+  AREXPORT void internalAddSocketToList(MvrSocket *socket);
   /// The internal function that adds a client to our delete list
-  AREXPORT void internalAddSocketToDeleteList(ArSocket *socket);
+  AREXPORT void internalAddSocketToDeleteList(MvrSocket *socket);
   /// This squelchs all the normal commands and help
   AREXPORT void squelchNormal(void);
   /// Sets an extra string that the server holds for passing around
@@ -197,19 +197,19 @@ public:
   AREXPORT int unlock() {return(myMutex.unlock());}
 protected:
   std::string myName;
-  ArNetServer *myChildServer;
-  ArMutex myMutex;
-  ArSocket myAcceptingSocket;
-  std::map<std::string, ArFunctor3<char **, int, ArSocket *> *, ArStrCaseCmpOp> myFunctorMap;
-  std::map<std::string, std::string, ArStrCaseCmpOp> myHelpMap;
+  MvrNetServer *myChildServer;
+  MvrMutex myMutex;
+  MvrSocket myAcceptingSocket;
+  std::map<std::string, MvrFunctor3<char **, int, MvrSocket *> *, MvrStrCaseCmpOp> myFunctorMap;
+  std::map<std::string, std::string, MvrStrCaseCmpOp> myHelpMap;
   bool myLoggingDataSent;
   bool myLoggingDataReceived;
   bool myUseWrongEndChars;
   bool myOpened;
   bool myWantToClose;
   bool mySquelchNormal;
-  ArSocket myServerSocket;
-  ArRobot *myRobot;
+  MvrSocket myServerSocket;
+  MvrRobot *myRobot;
   std::string myPassword;
   bool myMultipleClients;
   unsigned int myPort;
@@ -218,15 +218,15 @@ protected:
   std::list<ArSocket *> myConnectingConns;
   std::list<ArSocket *> myDeleteList;
   
-  ArMutex myNextCycleSendsMutex;
+  MvrMutex myNextCycleSendsMutex;
   std::list<std::string> myNextCycleSends;
   
-  ArFunctorC<ArNetServer> myTaskCB;
-  ArFunctor3C<ArNetServer, char **, int, ArSocket *> myHelpCB;
-  ArFunctor3C<ArNetServer, char **, int, ArSocket *> myEchoCB;
-  ArFunctor3C<ArNetServer, char **, int, ArSocket *> myQuitCB;
-  ArFunctor3C<ArNetServer, char **, int, ArSocket *> myShutdownServerCB;
-  ArFunctorC<ArNetServer> myAriaExitCB;
+  MvrFunctorC<ArNetServer> myTaskCB;
+  MvrFunctor3C<ArNetServer, char **, int, MvrSocket *> myHelpCB;
+  MvrFunctor3C<ArNetServer, char **, int, MvrSocket *> myEchoCB;
+  MvrFunctor3C<ArNetServer, char **, int, MvrSocket *> myQuitCB;
+  MvrFunctor3C<ArNetServer, char **, int, MvrSocket *> myShutdownServerCB;
+  MvrFunctorC<ArNetServer> myAriaExitCB;
 };
 
 #endif // ARNETSERVER_H

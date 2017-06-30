@@ -34,8 +34,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <signal.h>
 #endif
 #include "ariaTypedefs.h"
-#include "ArASyncTask.h"
-#include "ArFunctor.h"
+#include "MvrASyncTask.h"
+#include "MvrFunctor.h"
 
 
 /// Signal handling class
@@ -52,7 +52,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    greater chance of the signal handler not interfering with the robot control
    loop.
 
-   See the Aria main class for how to initialize a default setup of the
+   See the Mvria main class for how to initialize a default setup of the
    signal handling.
 
    There are functions to block, unblock, handle and unhandle signals. These
@@ -76,7 +76,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    signal handling to do anything in Windows. This should not be a problem
    since signals are not used in Windows.
 */
-class ArSignalHandler : public ArASyncTask
+class MvrSignalHandler : public MvrASyncTask
 {
 public:
 
@@ -113,17 +113,17 @@ public:
   AREXPORT static void unhandle(Signal sig);
 
   /// Add a handler callback
-  AREXPORT static void addHandlerCB(ArFunctor1<int> *func,
-				    ArListPos::Pos position);
+  AREXPORT static void addHandlerCB(MvrFunctor1<int> *func,
+				    MvrListPos::Pos position);
 
   /// Remove a handler callback
-  AREXPORT static void delHandlerCB(ArFunctor1<int> *func);
+  AREXPORT static void delHandlerCB(MvrFunctor1<int> *func);
 
   /// Removes all the handlers
   AREXPORT static void delAllHandlerCBs(void);
 
-  /// Get a pointer to the single ArSignalHandler instance
-  AREXPORT static ArSignalHandler * getHandler();
+  /// Get a pointer to the single MvrSignalHandler instance
+  AREXPORT static MvrSignalHandler * getHandler();
 
   /// Get the name of the given signal
   AREXPORT static const char * nameSignal(int sig);
@@ -144,14 +144,14 @@ public:
   AREXPORT static void logThread(void);
 protected:
 
-  ArSignalHandler();
+  MvrSignalHandler();
 
   static void initSigMap();
 
   bool ourIgnoreQUIT;
 
-  static ArSignalHandler *ourSignalHandler;
-  static ArStrMap ourSigMap;
+  static MvrSignalHandler *ourSignalHandler;
+  static MvrStrMap ourSigMap;
 #ifdef WIN32
 #else
   static sigset_t ourBlockSigSet;

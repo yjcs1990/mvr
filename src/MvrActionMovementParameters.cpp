@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionMovementParameters.h"
-#include "ArConfig.h"
-#include "ArRobot.h"
+#include "MvrActionMovementParameters.h"
+#include "MvrConfig.h"
+#include "MvrRobot.h"
 
 /**
    @param name the name of this instance of the action
@@ -39,13 +39,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    strength)
 
    @param addLatVelIfAvailable If true, include the LatVel parameters in the
-   ArConfig if the robot supports lateral motion.
+   MvrConfig if the robot supports lateral motion.
  **/
-AREXPORT ArActionMovementParameters::ArActionMovementParameters(
+AREXPORT MvrActionMovementParameters::ArActionMovementParameters(
 	const char *name,
 	bool overrideFaster,
 	bool addLatVelIfAvailable) : 
-  ArAction(name, "Sets all the max vel and accels/decels")
+  MvrAction(name, "Sets all the max vel and accels/decels")
 {
   myOverrideFaster = overrideFaster;
   myAddLatVelIfAvailable = addLatVelIfAvailable;
@@ -54,12 +54,12 @@ AREXPORT ArActionMovementParameters::ArActionMovementParameters(
   setParameters();
 }
 
-AREXPORT ArActionMovementParameters::~ArActionMovementParameters()
+AREXPORT MvrActionMovementParameters::~ArActionMovementParameters()
 {
 
 }
 
-AREXPORT void ArActionMovementParameters::setParameters(double maxVel, 
+AREXPORT void MvrActionMovementParameters::setParameters(double maxVel, 
 							double maxNegVel,
 							double transAccel,
 							double transDecel,
@@ -82,7 +82,7 @@ AREXPORT void ArActionMovementParameters::setParameters(double maxVel,
   myLatDecel = latDecel;
 }
 
-AREXPORT void ArActionMovementParameters::addToConfig(ArConfig *config, 
+AREXPORT void MvrActionMovementParameters::addToConfig(MvrConfig *config, 
 						      const char *section, 
 						      const char *prefix)
 {
@@ -93,99 +93,99 @@ AREXPORT void ArActionMovementParameters::addToConfig(ArConfig *config,
   else
     strPrefix = prefix;
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::DETAILED);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::DETAILED);
   name = strPrefix;
   name += "TransVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxVel, 
+	  MvrConfigArg(name.c_str(), &myMaxVel, 
 		      "Maximum forward translational velocity (0 means use default)", 
 		      0),
 		      //myRobot->getAbsoluteMaxTransVel()),
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 
 
   name = strPrefix;
   name += "TransNegVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxNegVel, 
+	  MvrConfigArg(name.c_str(), &myMaxNegVel, 
 		      "Maximum backwards translational velocity (0 means use default)", 
 		      0),
 	  //myRobot->getAbsoluteMaxTransVel()),
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 
   name = strPrefix;
   name += "TransAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myTransAccel, 
+	  MvrConfigArg(name.c_str(), &myTransAccel, 
 		      "Translational acceleration (0 means use default)", 0),
 		      //myRobot->getAbsoluteMaxTransAccel()),		      
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 
   name = strPrefix;
   name += "TransDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myTransDecel, 
+	  MvrConfigArg(name.c_str(), &myTransDecel, 
 		      "Translational deceleration (0 means use default)", 0),
 		      //myRobot->getAbsoluteMaxTransDecel()),		      
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 
   name = strPrefix;
   name += "RotVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxRotVel, 
+	  MvrConfigArg(name.c_str(), &myMaxRotVel, 
 		      "Maximum rotational velocity (0 means use default)", 
 		      0), // myRobot->getAbsoluteMaxRotVel()),
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 
   name = strPrefix;
   name += "RotAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myRotAccel, 
+	  MvrConfigArg(name.c_str(), &myRotAccel, 
 		      "Rotational acceleration (0 means use default)", 0),
 	  //myRobot->getAbsoluteMaxRotAccel()),
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 
   name = strPrefix;
   name += "RotDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myRotDecel, 
+	  MvrConfigArg(name.c_str(), &myRotDecel, 
 		      "Rotational deceleration (0 means use default)", 0),
 		      //myRobot->getAbsoluteMaxRotDecel()),
-	  section, ArPriority::DETAILED);
+	  section, MvrPriority::DETAILED);
 
   if (myAddLatVelIfAvailable && myRobot != NULL && myRobot->hasLatVel())
   {
     name = strPrefix;
     name += "LatVelMax";
     config->addParam(
-	    ArConfigArg(name.c_str(), &myMaxLatVel, 
+	    MvrConfigArg(name.c_str(), &myMaxLatVel, 
 			"Maximum lateral velocity (0 means use default)", 
 			0), // myRobot->getAbsoluteMaxLatVel()),
-	    section, ArPriority::DETAILED);
+	    section, MvrPriority::DETAILED);
     
     name = strPrefix;
     name += "LatAccel";
     config->addParam(
-	    ArConfigArg(name.c_str(), &myLatAccel, 
+	    MvrConfigArg(name.c_str(), &myLatAccel, 
 			"Lateral acceleration (0 means use default)", 0),
 	    //myRobot->getAbsoluteMaxLatAccel()),
-	    section, ArPriority::DETAILED);
+	    section, MvrPriority::DETAILED);
     
     name = strPrefix;
     name += "LatDecel";
     config->addParam(
-	    ArConfigArg(name.c_str(), &myLatDecel, 
+	    MvrConfigArg(name.c_str(), &myLatDecel, 
 			"Lateral deceleration (0 means use default)", 0),
 	    //myRobot->getAbsoluteMaxLatDecel()),
-	    section, ArPriority::DETAILED);
+	    section, MvrPriority::DETAILED);
   }
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::DETAILED);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::DETAILED);
 
 
 }
 
-AREXPORT ArActionDesired *ArActionMovementParameters::fire(
+AREXPORT MvrActionDesired *ArActionMovementParameters::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

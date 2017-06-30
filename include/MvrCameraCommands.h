@@ -29,16 +29,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaUtil.h"
 
-/// Commands that are supported by the camera (ArPTZ) and video classes.
+/// Commands that are supported by the camera (MvrPTZ) and video classes.
 /**
- * ArCameraCommands defines the commands that are commonly supported by 
- * the Aria camera and video classes.  The commands that are actually 
- * supported for a particular camera are specified in the ArCameraCollection.
+ * MvrCameraCommands defines the commands that are commonly supported by 
+ * the Mvria camera and video classes.  The commands that are actually 
+ * supported for a particular camera are specified in the MvrCameraCollection.
  * <p>
  * There are basically two classes of commands:
  * <ol>
  *   <li>Double Format Commands:  These commands use the new double interface 
- *   to the Aria camera classes.  They are generally preferred for future
+ *   to the Mvria camera classes.  They are generally preferred for future
  *   development since they provide finer control over the camera movements. 
  *   In addition, only these commands will work correctly in a multi-camera 
  *   configuration.</li>
@@ -49,7 +49,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * </ol>
  *
 **/
-class ArCameraCommands
+class MvrCameraCommands
 {
 public:
 
@@ -162,7 +162,7 @@ public:
   **/
   AREXPORT static const char *GET_SNAPSHOT_PLAIN;
 
-}; // end class ArCameraCommands
+}; // end class MvrCameraCommands
 
 #endif // ARCAMERACOMMANDS_H
 

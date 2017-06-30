@@ -33,9 +33,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <pthread.h>
 #endif
 #include "ariaTypedefs.h"
-#include "ArMutex.h"
-#include "ArFunctor.h"
-#include "ArLog.h"
+#include "MvrMutex.h"
+#include "MvrFunctor.h"
+#include "MvrLog.h"
 
 #ifdef MINGW
 #include <vector>
@@ -58,10 +58,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
   The static function self() will return a thread
 
-  @sa ArASyncTask which provides a different approach with a simpler interface.
+  @sa MvrASyncTask which provides a different approach with a simpler interface.
 
 */
-class ArThread
+class MvrThread
 {
 public:
 
@@ -73,15 +73,15 @@ public:
 
 // pthread_t on Linux happens to be an integer or pointer that can be used in a map. On other platforms, pthread_t may be a struct or similar, and this is true on MINGW, so store them differently.  Use the access methods that follow to access the map.
 #ifdef MINGW
-  typedef std::vector< std::pair<ThreadType, ArThread*> > MapType;
+  typedef std::vector< std::pair<ThreadType, MvrThread*> > MapType;
 #else
-  typedef std::map<ThreadType, ArThread*> MapType;
+  typedef std::map<ThreadType, MvrThread*> MapType;
 #endif
 
 protected:
-  static ArThread* findThreadInMap(ThreadType t);
+  static MvrThread* findThreadInMap(ThreadType t);
   static void removeThreadFromMap(ThreadType t); 
-  static void addThreadToMap(ThreadType pt, ArThread *at);
+  static void addThreadToMap(ThreadType pt, MvrThread *at);
   
 public:
   typedef enum {
@@ -94,12 +94,12 @@ public:
   } Status;
 
   /// Constructor
-  AREXPORT ArThread(bool blockAllSignals=true);
+  AREXPORT MvrThread(bool blockAllSignals=true);
   /// Constructor - starts the thread
-  AREXPORT ArThread(ThreadType thread, bool joinable,
+  AREXPORT MvrThread(ThreadType thread, bool joinable,
 		    bool blockAllSignals=true);
   /// Constructor - starts the thread
-  AREXPORT ArThread(ArFunctor *func, bool joinable=true,
+  AREXPORT MvrThread(MvrFunctor *func, bool joinable=true,
 		    bool blockAllSignals=true);
   /// Destructor
   AREXPORT virtual ~ArThread();
@@ -107,7 +107,7 @@ public:
   /// Initialize the internal book keeping structures
   AREXPORT static void init(void);
   /// Returns the instance of your own thread (the current one)
-  AREXPORT static ArThread * self(void);
+  AREXPORT static MvrThread * self(void);
   /// Returns the os self of the current thread
   AREXPORT static ThreadType osSelf(void);
   /// Stop all threads
@@ -123,12 +123,12 @@ public:
   /// Yield the processor to another thread
   AREXPORT static void yieldProcessor(void);
   /// Gets the logging level for thread information
-  static ArLog::LogLevel getLogLevel(void) { return ourLogLevel; }
+  static MvrLog::LogLevel getLogLevel(void) { return ourLogLevel; }
   /// Sets the logging level for thread information
-  static void setLogLevel(ArLog::LogLevel level) { ourLogLevel = level; }
+  static void setLogLevel(MvrLog::LogLevel level) { ourLogLevel = level; }
 
   /// Create and start the thread
-  AREXPORT virtual int create(ArFunctor *func, bool joinable=true,
+  AREXPORT virtual int create(MvrFunctor *func, bool joinable=true,
 			      bool lowerPriority=true);
   /// Stop the thread
   virtual void stopRunning(void) {myRunning=false;}
@@ -151,7 +151,7 @@ public:
   /// Get the underlying os thread type
   virtual ThreadType getOSThread(void) const {return(myThread);}
   /// Get the functor that the thread runs
-  virtual ArFunctor * getFunc(void) const {return(myFunc);}
+  virtual MvrFunctor * getFunc(void) const {return(myFunc);}
 
   /// Set the running value on the thread
   virtual void setRunning(bool running) {myRunning=running;}
@@ -231,18 +231,18 @@ public:
   AREXPORT static ThreadType getThisOSThread(void);
 
 protected:
-  static ArMutex ourThreadsMutex;
+  static MvrMutex ourThreadsMutex;
   static MapType ourThreads;
 #if defined(WIN32) && !defined(MINGW)
-  static std::map<HANDLE, ArThread *> ourThreadHandles;
+  static std::map<HANDLE, MvrThread *> ourThreadHandles;
 #endif 
-  AREXPORT static ArLog::LogLevel ourLogLevel; 
+  AREXPORT static MvrLog::LogLevel ourLogLevel; 
 
   AREXPORT virtual int doJoin(void **ret=NULL);
 
   std::string myName;
 
-  ArMutex myMutex;
+  MvrMutex myMutex;
   /// State variable to denote when the thread should continue or exit
   bool myRunning;
   bool myJoinable;
@@ -251,8 +251,8 @@ protected:
   bool myStarted;
   bool myFinished;
 
-  ArStrMap myStrMap;
-  ArFunctor *myFunc;
+  MvrStrMap myStrMap;
+  MvrFunctor *myFunc;
   ThreadType myThread;
 #if defined(WIN32) && !defined(MINGW)
   HANDLE myThreadHandle;

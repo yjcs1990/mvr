@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSimulatedLaser.h"
-#include "ArRobot.h"
+#include "MvrSimulatedLaser.h"
+#include "MvrRobot.h"
 
 
-AREXPORT ArSimulatedLaser::ArSimulatedLaser(ArLaser *laser) :
+AREXPORT ArSimulatedLaser::ArSimulatedLaser(MvrLaser *laser) :
   ArLaser(laser->getLaserNumber(),
 	  laser->getName(),
 	  laser->getAbsoluteMaxRange(),
@@ -137,7 +137,7 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
 {
   if (myLaserNumber != 1)
   {
-    ArLog::log(ArLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
+    ArLog::log(MvrLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
     laserFailedConnect();
     return false;
   }
@@ -150,7 +150,7 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
 
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Normal, 
+    ArLog::log(MvrLog::Normal, 
 	       "%s: Cannot connect to simulated laser because it has no robot",
 	       getName());
     laserFailedConnect();
@@ -171,7 +171,7 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
   }
   else
   {
-    ArLog::log(ArLog::Normal, 
+    ArLog::log(MvrLog::Normal, 
 	   "%s: This laser type does not have field of view (start/end degrees) parameters configured, and does not have any defaults, cannot configure the simulated laser. Failing connection",
 	       getName());
     unlockDevice();
@@ -189,7 +189,7 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
   }
   else
   {
-    ArLog::log(ArLog::Normal, 
+    ArLog::log(MvrLog::Normal, 
 	   "%s: This laser type does not have increment (resolution) parameter configured, and does not have a default, cannot configure the simulated laser. Failing connection",
 	       getName());
     unlockDevice();
@@ -232,13 +232,13 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
     }
     if (!failed && myReceivedData)
     {
-      ArLog::log(ArLog::Verbose, "%s::blockingConnect: Got data back", 
+      ArLog::log(MvrLog::Verbose, "%s::blockingConnect: Got data back", 
 		 getName());
     }
   }
   else
   {
-    ArLog::log(ArLog::Normal, "%s::blockingConnect: Robot isn't running so can't wait for data", getName());
+    ArLog::log(MvrLog::Normal, "%s::blockingConnect: Robot isn't running so can't wait for data", getName());
   }
 
 
@@ -248,7 +248,7 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
     myIsConnected = true;
     myTryingToConnect = false;
     //madeConnection();
-    ArLog::log(ArLog::Terse, "%s: Connected to simulated laser.",
+    ArLog::log(MvrLog::Terse, "%s: Connected to simulated laser.",
 	       getName());
     unlockDevice();
     laserConnect();
@@ -261,7 +261,7 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
     myIsConnected = false;
     myTryingToConnect = false;
     unlockDevice();
-    ArLog::log(ArLog::Terse, 
+    ArLog::log(MvrLog::Terse, 
 	       "%s: Failed to connect to simulated laser.",
 	       getName());
     laserFailedConnect();
@@ -273,7 +273,7 @@ AREXPORT bool ArSimulatedLaser::asyncConnect(void)
 {
   if (myLaserNumber != 1)
   {
-    ArLog::log(ArLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
+    ArLog::log(MvrLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
     return false;
   }
 
@@ -297,7 +297,7 @@ AREXPORT bool ArSimulatedLaser::finishParams(void)
 
   if (!laserPullUnsetParamsFromRobot())
   {
-    ArLog::log(ArLog::Normal, "%s: Couldn't pull params from robot",
+    ArLog::log(MvrLog::Normal, "%s: Couldn't pull params from robot",
 	       getName());
     return false;
   }
@@ -378,7 +378,7 @@ AREXPORT void *ArSimulatedLaser::runThread(void *arg)
     if (getConnectionTimeoutSeconds() > 0 && 
 	getLastReadingTime().secSince() > getConnectionTimeoutSeconds())
     {
-      ArLog::log(ArLog::Terse, 
+      ArLog::log(MvrLog::Terse, 
 		 "%s:  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(), 
 		 myLastReading.mSecSince()/1000.0, 
 		 getConnectionTimeoutSeconds());
@@ -395,7 +395,7 @@ AREXPORT void *ArSimulatedLaser::runThread(void *arg)
 }
 
 /** @internal */
-AREXPORT bool ArSimulatedLaser::simPacketHandler(ArRobotPacket *packet)
+AREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -441,11 +441,11 @@ AREXPORT bool ArSimulatedLaser::simPacketHandler(ArRobotPacket *packet)
     mySimPacketEncoderTrans = myRobot->getEncoderTransform();
     mySimPacketCounter = myRobot->getCounter();
   }
-  //printf("ArSimulatedLaser::simPacketHandler: On reading number %d out of %d, new %d\n", readingNumber, totalNumReadings, newReadings);
+  //printf("MvrSimulatedLaser::simPacketHandler: On reading number %d out of %d, new %d\n", readingNumber, totalNumReadings, newReadings);
   // if we have too many readings in our list of raw readings, pop the extras
   while (myAssembleReadings->size() > totalNumReadings)
   {
-    ArLog::log(ArLog::Terse, "ArSimulatedLaser::simPacketHandler, too many readings, popping one.");
+    ArLog::log(MvrLog::Terse, "MvrSimulatedLaser::simPacketHandler, too many readings, popping one.");
     tempIt = myAssembleReadings->begin();
     if (tempIt != myAssembleReadings->end())
       delete (*tempIt);
@@ -515,7 +515,7 @@ AREXPORT bool ArSimulatedLaser::simPacketHandler(ArRobotPacket *packet)
     {
       //if (atDeg == 0)
       //printf("Ignoring %.0f\n", (*ignoreIt));
-      if (ArMath::fabs(ArMath::subAngle(atDeg, *(ignoreIt))) < 1.0)
+      if (MvrMath::fabs(MvrMath::subAngle(atDeg, *(ignoreIt))) < 1.0)
       {
       //printf("Ignoring %.0f\n", (*ignoreIt));
 	ignore = true;
@@ -527,7 +527,7 @@ AREXPORT bool ArSimulatedLaser::simPacketHandler(ArRobotPacket *packet)
     if (myMaxRange != 0 && range > (int)myMaxRange)
       ignore = true;
     */
-    reading->resetSensorPosition(ArMath::roundInt(mySensorPose.getX()),
+    reading->resetSensorPosition(MvrMath::roundInt(mySensorPose.getX()),
 				 ArMath::roundInt(mySensorPose.getY()),
 				 atDeg);
     //printf("dist %d\n", dist);

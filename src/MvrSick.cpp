@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSick.h"
-#include "ArRobot.h"
-#include "ArSerialConnection.h"
+#include "MvrSick.h"
+#include "MvrRobot.h"
+#include "MvrSerialConnection.h"
 #include "ariaInternal.h"
 #include <time.h>
 
@@ -88,14 +88,14 @@ AREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
   else if (baud == BAUD38400)
     chooseAutoBaud("38400");
   else
-    ArLog::log(ArLog::Normal, "%s: Bad baud choice", getName());
+    ArLog::log(MvrLog::Normal, "%s: Bad baud choice", getName());
 
   if (deg == DEGREES180)
     chooseDegrees("180");
   else if (deg == DEGREES100)
     chooseDegrees("100");
   else
-    ArLog::log(ArLog::Normal, "%s: Bad degrees choice", getName());
+    ArLog::log(MvrLog::Normal, "%s: Bad degrees choice", getName());
 
 
   if (incr == INCREMENT_ONE)
@@ -103,7 +103,7 @@ AREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
   else if (incr == INCREMENT_HALF)
     chooseIncrement("half");
   else
-    ArLog::log(ArLog::Normal, "%s: Bad increment choice", getName());
+    ArLog::log(MvrLog::Normal, "%s: Bad increment choice", getName());
 
 }
 
@@ -121,7 +121,7 @@ AREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
   else if (bits == BITS_3REFLECTOR)
     chooseReflectorBits("3ref");
   else
-    ArLog::log(ArLog::Normal, "%s: Bad reflectorBits choice", getName());
+    ArLog::log(MvrLog::Normal, "%s: Bad reflectorBits choice", getName());
 
   if (units == UNITS_1MM)
     chooseUnits("1mm");
@@ -130,7 +130,7 @@ AREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
   else if (units == UNITS_10CM)
     chooseUnits("10cm");
   else
-    ArLog::log(ArLog::Normal, "%s: Bad units choice", getName());
+    ArLog::log(MvrLog::Normal, "%s: Bad units choice", getName());
 }
 
 
@@ -153,7 +153,7 @@ AREXPORT ArSick::Degrees ArSick::getDegrees(void)
     return DEGREES100;
   else
   {
-    ArLog::log(ArLog::Normal, "ArSick::getDegrees: Invalid degrees %s",
+    ArLog::log(MvrLog::Normal, "MvrSick::getDegrees: Invalid degrees %s",
 	       getDegreesChoice());
     return DEGREES_INVALID;
   }
@@ -167,7 +167,7 @@ AREXPORT ArSick::Increment ArSick::getIncrement(void)
     return INCREMENT_HALF;
   else
   {
-    ArLog::log(ArLog::Normal, "ArSick::getIncrement: Invalid increment %s",
+    ArLog::log(MvrLog::Normal, "MvrSick::getIncrement: Invalid increment %s",
 	       getIncrementChoice());
     return INCREMENT_INVALID;
   }
@@ -183,7 +183,7 @@ AREXPORT ArSick::Bits ArSick::getBits(void)
     return BITS_3REFLECTOR;
   else
   {
-    ArLog::log(ArLog::Normal, "ArSick::getReflectorBits: Invalid ReflectorBits %s",
+    ArLog::log(MvrLog::Normal, "MvrSick::getReflectorBits: Invalid ReflectorBits %s",
 	       getReflectorBitsChoice());
     return BITS_INVALID;
   }
@@ -199,7 +199,7 @@ AREXPORT ArSick::Units ArSick::getUnits(void)
     return UNITS_10CM;
   else
   {
-    ArLog::log(ArLog::Normal, "ArSick::getUnits: Invalid units %s",
+    ArLog::log(MvrLog::Normal, "MvrSick::getUnits: Invalid units %s",
 	       getUnitsChoice());
     return UNITS_INVALID;
   }

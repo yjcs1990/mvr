@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 
-#include "ArMapUtils.h"
+#include "MvrMapUtils.h"
 
 #include "ariaUtil.h"
-#include "ArBasePacket.h"
-#include "ArMapComponents.h"
-#include "ArMD5Calculator.h"
+#include "MvrBasePacket.h"
+#include "MvrMapComponents.h"
+#include "MvrMD5Calculator.h"
 
 #include <iterator>
 
@@ -136,7 +136,7 @@ AREXPORT ArMapId::~ArMapId()
 AREXPORT bool ArMapId::isNull() const
 {
   // TODO Any need to check others?
-  bool b = (ArUtil::isStrEmpty(mySourceName.c_str()) &&
+  bool b = (MvrUtil::isStrEmpty(mySourceName.c_str()) &&
             ArUtil::isStrEmpty(myFileName.c_str()));
 
   return b; 
@@ -210,7 +210,7 @@ AREXPORT time_t ArMapId::getTimestamp() const
     
 AREXPORT bool ArMapId::isSameFile(const ArMapId &other) const
 {
-  if (ArUtil::strcasecmp(myFileName, other.myFileName) != 0) {
+  if (MvrUtil::strcasecmp(myFileName, other.myFileName) != 0) {
     return false;
   }
   if (mySize != other.mySize) {
@@ -242,8 +242,8 @@ AREXPORT bool ArMapId::isSameFile(const ArMapId &other) const
 
 AREXPORT bool ArMapId::isVersionOfSameFile(const ArMapId &other) const
 {
-  if ((ArUtil::strcasecmp(mySourceName, other.mySourceName) == 0) && 
-      (ArUtil::strcasecmp(myFileName, other.myFileName) == 0)) {
+  if ((MvrUtil::strcasecmp(mySourceName, other.mySourceName) == 0) && 
+      (MvrUtil::strcasecmp(myFileName, other.myFileName) == 0)) {
     return true;
   }
   return false;
@@ -310,8 +310,8 @@ AREXPORT void ArMapId::setSize(long int size)
 
 AREXPORT void ArMapId::setTimestamp(const time_t &timestamp)
 {
-  IFDEBUG(ArLog::log(ArLog::Normal,
-                     "ArMapId::setTimestamp() time = %i", 
+  IFDEBUG(MvrLog::log(MvrLog::Normal,
+                     "MvrMapId::setTimestamp() time = %i", 
                      timestamp));
 
   myTimestamp = timestamp;
@@ -337,10 +337,10 @@ AREXPORT bool operator==(const ArMapId & id1, const ArMapId & id2)
   }
 
   // TODO: Compare only if sources are not null (like timestamps)?
-  if (ArUtil::strcasecmp(id1.mySourceName, id2.mySourceName) != 0) {
+  if (MvrUtil::strcasecmp(id1.mySourceName, id2.mySourceName) != 0) {
     return false;
   }
-  if (ArUtil::strcasecmp(id1.myFileName, id2.myFileName) != 0) {
+  if (MvrUtil::strcasecmp(id1.myFileName, id2.myFileName) != 0) {
     return false;
   }
   if ((id1.myChecksum != NULL) && (id2.myChecksum != NULL)) {
@@ -378,10 +378,10 @@ AREXPORT bool operator!=(const ArMapId & id1, const ArMapId & id2)
   }
 
   // TODO: Compare only if sources are not null (like timestamps)?
-  if (ArUtil::strcasecmp(id1.mySourceName, id2.mySourceName) != 0) {
+  if (MvrUtil::strcasecmp(id1.mySourceName, id2.mySourceName) != 0) {
     return true;
   }
-  if (ArUtil::strcasecmp(id1.myFileName, id2.myFileName) != 0) {
+  if (MvrUtil::strcasecmp(id1.myFileName, id2.myFileName) != 0) {
     return true;
   }
   if ((id1.myChecksum != NULL) && (id2.myChecksum != NULL)) {
@@ -418,7 +418,7 @@ AREXPORT void ArMapId::log(const char *prefix) const
     snprintf(timeBuf, sizeof(timeBuf), "NULL");
   }
 
-  ArLog::log(ArLog::Normal,
+  ArLog::log(MvrLog::Normal,
              "%s%smap %s %s%s checksum = \"%s\" size = %i  time = %s (%i)",
              ((prefix != NULL) ? prefix : ""),
              ((prefix != NULL) ? " " : ""),
@@ -432,7 +432,7 @@ AREXPORT void ArMapId::log(const char *prefix) const
   
 }
   
-AREXPORT bool ArMapId::fromPacket(ArBasePacket *packetIn,
+AREXPORT bool ArMapId::fromPacket(MvrBasePacket *packetIn,
                                   ArMapId *mapIdOut)
 {
   if ((packetIn == NULL) || (mapIdOut == NULL)) {
@@ -458,8 +458,8 @@ AREXPORT bool ArMapId::fromPacket(ArBasePacket *packetIn,
   size_t fileSize = packetIn->bufToUByte4();
   time_t fileTime = packetIn->bufToByte4();
 
-  IFDEBUG(ArLog::log(ArLog::Normal,
-                     "ArMapId::fromPacket() time = %i", 
+  IFDEBUG(MvrLog::log(MvrLog::Normal,
+                     "MvrMapId::fromPacket() time = %i", 
                      fileTime));
 
   *mapIdOut = ArMapId(sourceBuffer,
@@ -469,7 +469,7 @@ AREXPORT bool ArMapId::fromPacket(ArBasePacket *packetIn,
                       fileSize,
                       fileTime);
 
-  IFDEBUG(mapIdOut->log("ArMapId::fromPacket()"));
+  IFDEBUG(mapIdOut->log("MvrMapId::fromPacket()"));
 
   delete [] checksum;
 
@@ -482,7 +482,7 @@ AREXPORT bool ArMapId::toPacket(const ArMapId &mapId,
                                 ArBasePacket *packetOut)
 {
   
-  IFDEBUG(mapId.log("ArMapId::toPacket()"));
+  IFDEBUG(mapId.log("MvrMapId::toPacket()"));
  
   if (packetOut == NULL) {
     return false;
@@ -509,8 +509,8 @@ AREXPORT bool ArMapId::toPacket(const ArMapId &mapId,
   packetOut->uByte4ToBuf(mapId.getSize());
   packetOut->byte4ToBuf(mapId.getTimestamp());
   
-  IFDEBUG(ArLog::log(ArLog::Normal,
-                     "ArMapId::toPacket() time = %i", 
+  IFDEBUG(MvrLog::log(MvrLog::Normal,
+                     "MvrMapId::toPacket() time = %i", 
                      mapId.getTimestamp()));
   
   return true;
@@ -523,12 +523,12 @@ AREXPORT bool ArMapId::create(const char *mapFileName,
                               ArMapId *mapIdOut)
 {
   if (mapIdOut == NULL) {
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
                "Cannot create null map ID");
     return false;
   }
-  if (ArUtil::isStrEmpty(mapFileName)) {
-    ArLog::log(ArLog::Verbose,
+  if (MvrUtil::isStrEmpty(mapFileName)) {
+    ArLog::log(MvrLog::Verbose,
                "Returning null map ID for null file name");
     mapIdOut->clear();
     return true;
@@ -537,7 +537,7 @@ AREXPORT bool ArMapId::create(const char *mapFileName,
   struct stat mapFileStat;
   if (stat(mapFileName, &mapFileStat) != 0)
   {
-    ArLog::log(ArLog::Normal, 
+    ArLog::log(MvrLog::Normal, 
                "Map file %s not not found", mapFileName);
     mapIdOut->clear();
     return false;
@@ -549,7 +549,7 @@ AREXPORT bool ArMapId::create(const char *mapFileName,
                                                       sizeof(buffer));
 
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
                "Error calculating checksum for map file %s",
                mapFileName);
     mapIdOut->clear();
@@ -578,7 +578,7 @@ AREXPORT bool ArMapId::create(const char *mapFileName,
 
 void ArMapFileLineGroup::log() 
 {
-  ArLog::log(ArLog::Normal,
+  ArLog::log(MvrLog::Normal,
              "#%-3i : %s",
              myParentLine.getLineNum(),
              myParentLine.getLineText());
@@ -586,7 +586,7 @@ void ArMapFileLineGroup::log()
        iter != myChildLines.end();
        iter++) {
     ArMapFileLine &fileLine = *iter;
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
                 "     #%-3i : %s",
                 fileLine.getLineNum(),
                 fileLine.getLineText());
@@ -598,7 +598,7 @@ void ArMapFileLineGroup::log()
 AREXPORT void ArMapFileLineSet::log(const char *prefix)
 {
   if (prefix != NULL) {
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
                prefix);
   }
  
@@ -612,9 +612,9 @@ AREXPORT void ArMapFileLineSet::log(const char *prefix)
   }
  
   if (mIter != end()) {
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
                "..... (cont.)");
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
                "Size = %i", size());
 
   }
@@ -629,20 +629,20 @@ AREXPORT ArMapFileLineSet::iterator ArMapFileLineSet::find(const ArMapFileLine &
 
         if (strcmp(group.getParentLine()->getLineText(),
                    groupParent.getLineText()) != 0) {
-          ArLog::log(ArLog::Normal,
+          ArLog::log(MvrLog::Normal,
                      "Line #i text does not match:",
                      group.getParentLine()->getLineNum());
-          ArLog::log(ArLog::Normal,
+          ArLog::log(MvrLog::Normal,
                       "\"%s\"",
                       group.getParentLine()->getLineText());
-          ArLog::log(ArLog::Normal,
+          ArLog::log(MvrLog::Normal,
                       "\"%s\"",
                       groupParent.getLineText());
 
         }
         //(strcmp(group.getParentLine()->getLineText(),
         //        groupParent.getLineText()) == 0)) {
-                  ArLog::log(ArLog::Normal,
+                  ArLog::log(MvrLog::Normal,
                               "Found #%i : %s",
                               groupParent.getLineNum(),
                               groupParent.getLineText());
@@ -652,7 +652,7 @@ AREXPORT ArMapFileLineSet::iterator ArMapFileLineSet::find(const ArMapFileLine &
   return end();
 }
 
-AREXPORT bool ArMapFileLineSet::calculateChanges(ArMapFileLineSet &origLines,
+AREXPORT bool ArMapFileLineSet::calculateChanges(MvrMapFileLineSet &origLines,
                                      ArMapFileLineSet &newLines,
                                      ArMapFileLineSet *deletedLinesOut,
                                      ArMapFileLineSet *addedLinesOut,
@@ -698,7 +698,7 @@ AREXPORT bool ArMapFileLineSet::calculateChanges(ArMapFileLineSet &origLines,
 
     ArMapFileLineCompare compareLine;
 
-    for (ArMapFileLineSet::iterator iterO = unchangedOrigLines.begin(),
+    for (MvrMapFileLineSet::iterator iterO = unchangedOrigLines.begin(),
                                  iterN = unchangedNewLines.begin();
          ( (iterO != unchangedOrigLines.end()) && 
            (iterN != unchangedNewLines.end()) );
@@ -761,9 +761,9 @@ AREXPORT bool ArMapFileLineSet::calculateChanges(ArMapFileLineSet &origLines,
 
 void ArMapChangeDetails::createChildArgMap()
 {
-  myInfoNameToMapOfChildArgsMap["MapInfo:"]["ArgDesc"] = true;
+  myInfoNameToMapOfChildArgsMap["MapInfo:"]["MvrgDesc"] = true;
 
-  myInfoNameToMapOfChildArgsMap["TaskInfo:"]["ArgDesc"] = true;
+  myInfoNameToMapOfChildArgsMap["TaskInfo:"]["MvrgDesc"] = true;
 
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["Task"] = true;
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["GoalTask"] = true;
@@ -774,7 +774,7 @@ void ArMapChangeDetails::createChildArgMap()
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["_everyBefore"] = true;
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["_everyAfter"] = true;
 
-  myInfoNameToMapOfChildArgsMap["SchedTaskInfo:"]["ArgDesc"] = true;
+  myInfoNameToMapOfChildArgsMap["SchedTaskInfo:"]["MvrgDesc"] = true;
 
   myInfoNameToMapOfChildArgsMap["SchedInfo:"]["Route"] = true;
   myInfoNameToMapOfChildArgsMap["SchedInfo:"]["SchedTask"] = true;
@@ -806,7 +806,7 @@ AREXPORT ArMapChangeDetails::ArMapChangeDetails() :
   myChangedObjectLines(),
   myInfoToChangeMaps()
 {
-  myMutex.setLogName("ArMapChangeDetails");
+  myMutex.setLogName("MvrMapChangeDetails");
 
   createChildArgMap();
 
@@ -825,7 +825,7 @@ AREXPORT ArMapChangeDetails::ArMapChangeDetails
   myChangedObjectLines(),
   myInfoToChangeMaps()
 {
-  myMutex.setLogName("ArMapChangeDetails");
+  myMutex.setLogName("MvrMapChangeDetails");
 
   createChildArgMap();
 
@@ -891,7 +891,7 @@ AREXPORT ArMapChangeDetails::~ArMapChangeDetails()
 }
 
 
-AREXPORT bool ArMapChangeDetails::getOrigMapId(ArMapId *mapIdOut)
+AREXPORT bool ArMapChangeDetails::getOrigMapId(MvrMapId *mapIdOut)
 {
   if (mapIdOut == NULL) {
     return false;
@@ -900,7 +900,7 @@ AREXPORT bool ArMapChangeDetails::getOrigMapId(ArMapId *mapIdOut)
   return true;
 }
 
-AREXPORT bool ArMapChangeDetails::getNewMapId(ArMapId *mapIdOut)
+AREXPORT bool ArMapChangeDetails::getNewMapId(MvrMapId *mapIdOut)
 {
   if (mapIdOut == NULL) {
     return false;
@@ -912,13 +912,13 @@ AREXPORT bool ArMapChangeDetails::getNewMapId(ArMapId *mapIdOut)
 AREXPORT void ArMapChangeDetails::setOrigMapId(const ArMapId &mapId)
 {
   myOrigMapId = mapId;
-  myOrigMapId.log("ArMapChangeDetails::setOrigMapId");
+  myOrigMapId.log("MvrMapChangeDetails::setOrigMapId");
 }
 
 AREXPORT void ArMapChangeDetails::setNewMapId(const ArMapId &mapId)
 {
   myNewMapId = mapId;
-  myNewMapId.log("ArMapChangeDetails::setNewMapId");
+  myNewMapId.log("MvrMapChangeDetails::setNewMapId");
 }
 
 
@@ -970,8 +970,8 @@ AREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedInfoLines
                                                 (const char *infoName,
                                                  MapLineChangeType change) 
 {
-  if (ArUtil::isStrEmpty(infoName)) {
-    ArLog::log(ArLog::Normal, "ArMapChangeDetails::getChangedInfoLines() null info name");
+  if (MvrUtil::isStrEmpty(infoName)) {
+    ArLog::log(MvrLog::Normal, "MvrMapChangeDetails::getChangedInfoLines() null info name");
     return NULL;
   }
 
@@ -1001,7 +1001,7 @@ AREXPORT bool ArMapChangeDetails::isChildArg(const char *infoName,
 AREXPORT bool ArMapChangeDetails::isChildArg(const char *infoName,
                                              const char *argText) const
 {
-  if (ArUtil::isStrEmpty(infoName) || ArUtil::isStrEmpty(argText)) {
+  if (MvrUtil::isStrEmpty(infoName) || ArUtil::isStrEmpty(argText)) {
     return false;
   }
   std::map<std::string, std::map<std::string, bool> >::const_iterator iter1 =
@@ -1033,14 +1033,14 @@ ArMapChangeDetails::ArMapScanChangeDetails *ArMapChangeDetails::getScanChangeDet
     }
     else {
 /**
-      ArLog::log(ArLog::Normal,
-        "ArMapChangeDetails::getScanChangeDetails() adding details for scan type %s",
+      ArLog::log(MvrLog::Normal,
+        "MvrMapChangeDetails::getScanChangeDetails() adding details for scan type %s",
         scanType);
 **/
 
-      if (ArUtil::isStrEmpty(scanType)) {
-        ArLog::log(ArLog::Verbose,
-                   "ArMapChangeDetails::getScanChangeDetails() adding empty scan type%s",
+      if (MvrUtil::isStrEmpty(scanType)) {
+        ArLog::log(MvrLog::Verbose,
+                   "MvrMapChangeDetails::getScanChangeDetails() adding empty scan type%s",
                    scanType);
       }
       
@@ -1089,7 +1089,7 @@ AREXPORT std::list<std::string> ArMapChangeDetails::findChangedInfoNames() const
 AREXPORT void ArMapChangeDetails::log()
 {
 
-  ArLog::log(ArLog::Normal,
+  ArLog::log(MvrLog::Normal,
              "");
 
   for (int t = 0; t < CHANGE_TYPE_COUNT; t++) {
@@ -1098,11 +1098,11 @@ AREXPORT void ArMapChangeDetails::log()
 
     switch (t) {
     case DELETIONS:
-      ArLog::log(ArLog::Normal,
+      ArLog::log(MvrLog::Normal,
                 "---- DELETED MAP LINES --------------");
       break;
     case ADDITIONS:
-      ArLog::log(ArLog::Normal,
+      ArLog::log(MvrLog::Normal,
                 "---- ADDED MAP LINES ----------------");
       break;
 
@@ -1116,17 +1116,17 @@ AREXPORT void ArMapChangeDetails::log()
 
       const char *scanType = (*iter2).c_str();
 
-      ArLog::log(ArLog::Normal,
+      ArLog::log(MvrLog::Normal,
                 "%s Point Count:  %i",
                 scanType,
                 getChangedPoints(change, scanType)->size());
-      ArLog::log(ArLog::Normal,
+      ArLog::log(MvrLog::Normal,
                 "%s Line Segment Count:  %i",
                 scanType,
                 getChangedLineSegments(change, scanType)->size());
 
 
-      ArLog::log(ArLog::Normal,
+      ArLog::log(MvrLog::Normal,
                 "");
 
       ArMapFileLineSet *changedSummaryLines = getChangedSummaryLines(change,
@@ -1174,7 +1174,7 @@ AREXPORT void ArMapChangeDetails::unlock()
 // ------------------------------------------------------------------------------
 
 AREXPORT ArMapChangedHelper::ArMapChangedHelper() :
-  myMapChangedLogLevel(ArLog::Verbose),
+  myMapChangedLogLevel(MvrLog::Verbose),
   myMapChangedCBList(),
   myPreMapChangedCBList()
 {
@@ -1199,34 +1199,34 @@ AREXPORT void ArMapChangedHelper::invokeMapChangedCallbacks(void)
 } // end method invokeMapChangedCallbacks
 
 
-AREXPORT void ArMapChangedHelper::addMapChangedCB(ArFunctor *functor, 
+AREXPORT void ArMapChangedHelper::addMapChangedCB(MvrFunctor *functor, 
 						  int position)
 {
   myMapChangedCBList.addCallback(functor, position);
 } // end method addMapChangedCB
 
-AREXPORT void ArMapChangedHelper::remMapChangedCB(ArFunctor *functor)
+AREXPORT void ArMapChangedHelper::remMapChangedCB(MvrFunctor *functor)
 {
   myMapChangedCBList.remCallback(functor);
 
 } // end method remMapChangedCB
 
 
-AREXPORT void ArMapChangedHelper::addPreMapChangedCB(ArFunctor *functor,
+AREXPORT void ArMapChangedHelper::addPreMapChangedCB(MvrFunctor *functor,
                                                      int position)
 {
   myPreMapChangedCBList.addCallback(functor, position);
 } // end method addPreMapChangedCB
 
 
-AREXPORT void ArMapChangedHelper::remPreMapChangedCB(ArFunctor *functor)
+AREXPORT void ArMapChangedHelper::remPreMapChangedCB(MvrFunctor *functor)
 {
   myPreMapChangedCBList.remCallback(functor);
 
 } // end method remPreMapChangedCB
 
 
-AREXPORT void ArMapChangedHelper::setMapChangedLogLevel(ArLog::LogLevel level)
+AREXPORT void ArMapChangedHelper::setMapChangedLogLevel(MvrLog::LogLevel level)
 {
   myMapChangedLogLevel = level;
 

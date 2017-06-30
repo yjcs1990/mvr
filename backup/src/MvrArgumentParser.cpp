@@ -169,7 +169,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentBool(const char *argumen
     else
     {
       MvrLog::log(MvrLog::Normal, 
-		              "Argument given to %s was not a bool (true, false, 1, 0) it was the string %s",
+		              "Mvrgument given to %s was not a bool (true, false, 1, 0) it was the string %s",
 		               argument, param);
       return false;
     }
@@ -225,7 +225,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentInteger(const char *argu
     }
     else
     {
-      MvrLog::log(MvrLog::Normal, "Argument given to %s was not an interger it was the string %s",
+      MvrLog::log(MvrLog::Normal, "Mvrgument given to %s was not an interger it was the string %s",
                   argument, param);
       return false;
     }
@@ -267,7 +267,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentFloat(const char *argume
     float floatVal = strtod(param, &endPtr);
     if (endPtr == param)
     {
-      MvrLog::log(MvrLog::Normal, "Argument given with %s was not a valid number", argument);
+      MvrLog::log(MvrLog::Normal, "Mvrgument given with %s was not a valid number", argument);
       return false;
     }
     else
@@ -310,7 +310,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(const char *argum
     float doubleVal = strtod(param, &endPtr);
     if (endPtr == param)
     {
-      MvrLog::log(MvrLog::Normal, "Argument given with %s was not a valid number", argument);
+      MvrLog::log(MvrLog::Normal, "Mvrgument given with %s was not a valid number", argument);
       return false;
     }
     else
@@ -433,7 +433,7 @@ MVREXPORT void MvrArgumentParser::log(void) const
   MvrLog::log(MvrLog::Terse, "Num arguments: %d", getArgc());
   for (i=0; i<getArgc(); ++i)
   {
-    MvrLog::log(MvrLog::Terse, "Arg %d: %s", i, getArgv()[i]);
+    MvrLog::log(MvrLog::Terse, "Mvrg %d: %s", i, getArgv()[i]);
   }
 }
 

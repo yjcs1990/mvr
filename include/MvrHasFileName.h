@@ -31,27 +31,27 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /// Interface to access an object's associated file name.
 /**
- * ArHasFileName provides a single abstract method which should be overridden
+ * MvrHasFileName provides a single abstract method which should be overridden
  * to return the complete file path name of the associated file.  It is 
  * implemented by classes that have external persistent storage, such as 
- * ArConfig and ArMap.
+ * MvrConfig and MvrMap.
  * 
  * Copyright (c) Adept Technology, Inc. All rights reserved.
 **/
-class ArHasFileName
+class MvrHasFileName
 {
 public:
 
   /// Constructor
-	AREXPORT ArHasFileName() 
+	AREXPORT MvrHasFileName() 
   {}
 	
   /// Copy constructor
-  ArHasFileName(ArHasFileName const &) 
+  MvrHasFileName(MvrHasFileName const &) 
   {}
 
 	/// Assignment operator.
-  ArHasFileName &operator=(ArHasFileName const & )
+  MvrHasFileName &operator=(MvrHasFileName const & )
   {
     return *this;
   }

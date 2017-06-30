@@ -28,36 +28,36 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARRATIOINPUTROBOTJOYDRIVE_H
 
 #include "ariaTypedefs.h"
-#include "ArActionRatioInput.h"
+#include "MvrActionRatioInput.h"
 
-class ArRobotPacket;
-class ArRobot;
-class ArRobotJoyHandler;
+class MvrRobotPacket;
+class MvrRobot;
+class MvrRobotJoyHandler;
 
-/// Use robot's joystick to control an ArActionRatioInput action and drive the robot.
+/// Use robot's joystick to control an MvrActionRatioInput action and drive the robot.
 /**
    This class connects the joystick data obtained from  the robot's built
    in joystick port (if it has one, not all robots have a joystick port)
-   to an ArActionRatioInput which drives the robot. (See ArRatioInputJoydrive
+   to an MvrActionRatioInput which drives the robot. (See MvrRatioInputJoydrive
    for a similar class that uses a joystick plugged in to the computer.)
 
-   A callback is attached to the ArActionRatioInput object which reads joystick
-   information using an ArRobotJoyHandler object, and sets requested drive rations on the ArActionRatioInput
+   A callback is attached to the MvrActionRatioInput object which reads joystick
+   information using an MvrRobotJoyHandler object, and sets requested drive rations on the MvrActionRatioInput
    object.
 
 
-    @sa ArRatioInputJoydrive
-    @sa ArActionRatioInput
+    @sa MvrRatioInputJoydrive
+    @sa MvrActionRatioInput
 
 
   @ingroup OptionalClasses
 **/
-class ArRatioInputRobotJoydrive 
+class MvrRatioInputRobotJoydrive 
 {
 public:
   /// Constructor
-  AREXPORT ArRatioInputRobotJoydrive(ArRobot *robot, 
-				     ArActionRatioInput *input,
+  AREXPORT MvrRatioInputRobotJoydrive(MvrRobot *robot, 
+				     MvrActionRatioInput *input,
 				     int priority = 75,
 				     bool requireDeadmanPushed = true);
   /// Destructor
@@ -65,13 +65,13 @@ public:
 protected:
   AREXPORT void fireCallback(void);
 
-  ArRobot *myRobot;
-  ArActionRatioInput *myInput;
+  MvrRobot *myRobot;
+  MvrActionRatioInput *myInput;
   bool myRequireDeadmanPushed;
   bool myDeadZoneLast;
 
-  ArRobotJoyHandler *myRobotJoyHandler;
-  ArFunctorC<ArRatioInputRobotJoydrive> myFireCB;
+  MvrRobotJoyHandler *myRobotJoyHandler;
+  MvrFunctorC<ArRatioInputRobotJoydrive> myFireCB;
 };
 
 #endif //ARRATIOINPUTROBOTJOYDRIVE_H

@@ -28,13 +28,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARPIXELDEVICE_H
 
 #include <stdio.h>
-#include "Aria.h"
+#include "Mvria.h"
 /*!
-  @class ArPixelDevice.
+  @class MvrPixelDevice.
   @brief Holds data from a sensor that provides data arranged in a 2d array.
 
   Subclasses are used for specific sensor implementations, such
-  as the ArFocusPixelDevice for the Focus Robotics nDepth 
+  as the MvrFocusPixelDevice for the Focus Robotics nDepth 
   stereocamera.  
 
   The data are arranged in an x,y grid, with the origin being
@@ -58,14 +58,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   @param name the name of this device
 */
 template<class DataObject>
-class ArPixelDevice
+class MvrPixelDevice
 {
  public:
   /// Base Constructor
-  AREXPORT ArPixelDevice(int x_size, int y_size, double x_fov, double y_fov,
+  AREXPORT MvrPixelDevice(int x_size, int y_size, double x_fov, double y_fov,
 		      const char *name)
   {
-    myDeviceMutex.setLogName("ArPixelDevice::myDeviceMutex");
+    myDeviceMutex.setLogName("MvrPixelDevice::myDeviceMutex");
     myXSize = x_size;
     myYSize = y_size;
     myXFOV = x_fov;
@@ -76,20 +76,20 @@ class ArPixelDevice
     
     if (!allocateSensorDataMemory()) 
     {
-      ArLog::log(ArLog::Terse, "Failed to allocate memory for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Terse, "Failed to allocate memory for MvrPixelDevice %s", getName());
     }
     else
     {
-      ArLog::log(ArLog::Verbose, "Allocated memory for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Verbose, "Allocated memory for MvrPixelDevice %s", getName());
     }
 
     if (!allocateSensorXYZMemory()) 
     {
-      ArLog::log(ArLog::Terse, "Failed to allocate XYZ memory for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Terse, "Failed to allocate XYZ memory for MvrPixelDevice %s", getName());
     }
     else
     {
-      ArLog::log(ArLog::Verbose, "Allocated XYZ memory for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Verbose, "Allocated XYZ memory for MvrPixelDevice %s", getName());
     }
   }
   /// Base destructor
@@ -173,26 +173,26 @@ protected:
   double myYFOV;
   DataObject ***mySensorData;
   DataObject ***mySensorXYZ;
-  ArMutex myDeviceMutex;
+  MvrMutex myDeviceMutex;
 
   bool allocateSensorDataMemory()
   {    
     if ((myXSize < 1) || (myYSize < 1)) 
     {
-      ArLog::log(ArLog::Normal, "Bad array size for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Normal, "Bad array size for MvrPixelDevice %s", getName());
       return false;
     }
     mySensorData = new DataObject**[myXSize];
     if (mySensorData == NULL)
     {
-      ArLog::log(ArLog::Normal, "Cannot allocate memory for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Normal, "Cannot allocate memory for MvrPixelDevice %s", getName());
       return false;
     }
     for (int i = 0; i < myXSize; i++)
     {
       if ((mySensorData[i] = new DataObject*[myYSize]) == NULL)
       {
-	ArLog::log(ArLog::Normal, "Cannot allocate memory for ArPixelDevice %s", getName());
+	ArLog::log(MvrLog::Normal, "Cannot allocate memory for MvrPixelDevice %s", getName());
 	return false;
       }
       for (int j = 0; j < myYSize; j++) 
@@ -207,20 +207,20 @@ protected:
   {    
     if ((myXSize < 1) || (myYSize < 1)) 
     {
-      ArLog::log(ArLog::Normal, "Bad array size for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Normal, "Bad array size for MvrPixelDevice %s", getName());
       return false;
     }
     mySensorXYZ = new DataObject**[myXSize];
     if (mySensorXYZ == NULL)
     {
-      ArLog::log(ArLog::Normal, "Cannot allocate memory for ArPixelDevice %s", getName());
+      MvrLog::log(MvrLog::Normal, "Cannot allocate memory for MvrPixelDevice %s", getName());
       return false;
     }
     for (int i = 0; i < myXSize; i++)
     {
       if ((mySensorXYZ[i] = new DataObject*[myYSize]) == NULL)
       {
-	ArLog::log(ArLog::Normal, "Cannot allocate memory for ArPixelDevice %s", getName());
+	ArLog::log(MvrLog::Normal, "Cannot allocate memory for MvrPixelDevice %s", getName());
 	return false;
       }
       for (int j = 0; j < myYSize; j++) 

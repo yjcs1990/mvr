@@ -27,20 +27,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARCONFIGGROUP_H
 #define ARCONFIGGROUP_H
 
-#include "ArConfig.h"
+#include "MvrConfig.h"
 
-/// Container for holding a group of ArConfigs
-class ArConfigGroup
+/// Container for holding a group of MvrConfigs
+class MvrConfigGroup
 {
 public:
   /// Constructor
-  AREXPORT ArConfigGroup(const char *baseDirectory = NULL);
+  AREXPORT MvrConfigGroup(const char *baseDirectory = NULL);
   /// Destructor
   AREXPORT ~ArConfigGroup(void);
   /// Adds a config to the group
-  AREXPORT void addConfig(ArConfig *config);
+  AREXPORT void addConfig(MvrConfig *config);
   /// Removes a config from the group
-  AREXPORT void remConfig(ArConfig *config);
+  AREXPORT void remConfig(MvrConfig *config);
   /// Parses the given file (starting from the base directory)
   AREXPORT bool parseFile(const char *fileName, bool continueOnError = false);
   /// Reloads the last file parsed

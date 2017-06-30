@@ -24,25 +24,25 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #include <time.h>
-#include "ArRobot.h"
-#include "ArResolver.h"
-#include "ArActionStallRecover.h"
+#include "MvrRobot.h"
+#include "MvrResolver.h"
+#include "MvrActionStallRecover.h"
 
 /**
    @param name name of the action
    @param obstacleDistance distance at which not to move because of 
    obstacle. (mm)
    @param cyclesToMove default number of cycles to move (# of cycles) (may be
-changed via ArConfig)
+changed via MvrConfig)
    @param speed default speed at which to back up or go forward (mm/sec) (may be
-changed via ArConfig)
+changed via MvrConfig)
    @param degreesToTurn default number of degrees to turn (deg) (may be changed vi
 ArConfig)
    @param enabled default value of "enabled" state configuration parameter (may
-be changed via ArConfig)
+be changed via MvrConfig)
 */
 AREXPORT
 ArActionStallRecover::ArActionStallRecover(const char * name,
@@ -51,21 +51,21 @@ ArActionStallRecover::ArActionStallRecover(const char * name,
 					   double speed, 
 					   double degreesToTurn,
 					   bool enabled) :
-    ArAction(name, "Recovers the robot from a stall.")
+    MvrAction(name, "Recovers the robot from a stall.")
 {
-  setNextArgument(ArArg("obstacle distance", &myObstacleDistance, 
+  setNextArgument(MvrArg("obstacle distance", &myObstacleDistance, 
 		"Distance at which not to move because of obstacle. (mm)"));
   myObstacleDistance = obstacleDistance;
-  setNextArgument(ArArg("cycles to move", &myCyclesToMove, 
+  setNextArgument(MvrArg("cycles to move", &myCyclesToMove, 
 			"Number of cycles to move (# of cycles)"));
   myCyclesToMove = cyclesToMove;
-  setNextArgument(ArArg("speed", &mySpeed, 
+  setNextArgument(MvrArg("speed", &mySpeed, 
 			"Speed at which to back up or go forward (mm/sec)"));
   mySpeed = speed;
-  setNextArgument(ArArg("degrees to turn", &myDegreesToTurn, 
+  setNextArgument(MvrArg("degrees to turn", &myDegreesToTurn, 
 			"Number of Degrees to turn (deg)"));
   myDegreesToTurn = degreesToTurn;
-  setNextArgument(ArArg("enabled", &myEnabled, 
+  setNextArgument(MvrArg("enabled", &myEnabled, 
 			"Whether stall recover is enabled or not"));
   myEnabled = enabled;
 
@@ -94,20 +94,20 @@ ArActionStallRecover::~ArActionStallRecover()
 
 }
 
-AREXPORT void ArActionStallRecover::activate(void)
+AREXPORT void MvrActionStallRecover::activate(void)
 {
   myState = STATE_NOTHING;
-  ArAction::activate();
+  MvrAction::activate();
 }
 
-void ArActionStallRecover::addSequence(int sequence)
+void MvrActionStallRecover::addSequence(int sequence)
 {
   mySequence[mySequenceNum] = sequence;
   ++mySequenceNum;
 }
 
 AREXPORT
-ArActionDesired *ArActionStallRecover::fire(ArActionDesired currentDesired)
+ArActionDesired *ArActionStallRecover::fire(MvrActionDesired currentDesired)
 {
   std::string doingString;
 
@@ -115,9 +115,9 @@ ArActionDesired *ArActionStallRecover::fire(ArActionDesired currentDesired)
     return NULL;
   
   if (myRobot->isLeftMotorStalled())
-    ArLog::log(ArLog::Verbose, "########## Left stall");
+    MvrLog::log(MvrLog::Verbose, "########## Left stall");
   if (myRobot->isRightMotorStalled())
-    ArLog::log(ArLog::Verbose, "########## Right stall");
+    MvrLog::log(MvrLog::Verbose, "########## Right stall");
 
   if ((currentDesired.getVelStrength() >= 1.0 || 
        currentDesired.getDeltaHeadingStrength() >= 1.0 ||
@@ -128,7 +128,7 @@ ArActionDesired *ArActionStallRecover::fire(ArActionDesired currentDesired)
     {
       myState = STATE_NOTHING;
       myCount = -1;
-      ArLog::log(ArLog::Normal, "StallRecover: done (interrupted)");
+      MvrLog::log(MvrLog::Normal, "StallRecover: done (interrupted)");
     }
     return NULL;
   }
@@ -170,7 +170,7 @@ ArActionDesired *ArActionStallRecover::fire(ArActionDesired currentDesired)
       doingString += " turning_right";
     if (myDoing == 0)
       doingString += " messed";
-    ArLog::log(ArLog::Normal, doingString.c_str());
+    MvrLog::log(MvrLog::Normal, doingString.c_str());
     myActionDesired.setVel(0);
     myActionDesired.setDeltaHeading(0);
   case STATE_GOING:
@@ -178,13 +178,13 @@ ArActionDesired *ArActionStallRecover::fire(ArActionDesired currentDesired)
     doit();
     break;
   default:
-    ArLog::log(ArLog::Normal, "StallRecover: Bad state");
+    MvrLog::log(MvrLog::Normal, "StallRecover: Bad state");
     break;
   }
   return &myActionDesired;
 }
 
-void ArActionStallRecover::doit(void)
+void MvrActionStallRecover::doit(void)
 {
   double leftDist, rightDist;
   double dist;
@@ -264,7 +264,7 @@ void ArActionStallRecover::doit(void)
       myActionDesired.setVel(0);
 
     if ((myCount <= 0 || myDegreesToTurn == 0 || 
-	 ArMath::fabs(ArMath::subAngle(myRobot->getTh(),myDesiredHeading)) < 3))
+	 MvrMath::fabs(MvrMath::subAngle(myRobot->getTh(),myDesiredHeading)) < 3))
     {
       //printf("Not turning \n");
       myActionDesired.setRotVel(0);
@@ -286,24 +286,24 @@ void ArActionStallRecover::doit(void)
   if (myCount <= 0 || (!transFired && !rotFired))
   {
     myState = STATE_NOTHING;
-    ArLog::log(ArLog::Normal, "StallRecover: done");
+    MvrLog::log(MvrLog::Normal, "StallRecover: done");
     myActionDesired.reset();
     return;
   }
 }
 
-void ArActionStallRecover::addToConfig(ArConfig* config, const char* sectionName, ArPriority::Priority priority)
+void MvrActionStallRecover::addToConfig(MvrConfig* config, const char* sectionName, MvrPriority::Priority priority)
 {
   if (config == NULL || sectionName == NULL)
   {
-    ArLog::log(ArLog::Terse, "Could not add ArActionStallRecoverToConfig because config (%p) or section (%p) are null", config, sectionName);
+    MvrLog::log(MvrLog::Terse, "Could not add MvrActionStallRecoverToConfig because config (%p) or section (%p) are null", config, sectionName);
     return;
   }
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), sectionName, priority);
-  config->addParam(ArConfigArg("StallRecoverEnabled", &myEnabled, "Whether a stall recover should be done when the robot stalls."), sectionName, priority);
-  config->addParam(ArConfigArg("StallRecoverSpeed", &mySpeed, "Speed at which to back away when stalled.", 0), sectionName, priority);
-  config->addParam(ArConfigArg("StallRecoverDuration", &myCyclesToMove, "Cycles of operation to move when recovering from stall.", 0), sectionName, priority);
-  config->addParam(ArConfigArg("StallRecoverRotation", &myDegreesToTurn, "Amount of rotation when recovering (degrees).", 0), sectionName, priority);
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), sectionName, priority);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), sectionName, priority);
+  config->addParam(MvrConfigArg("StallRecoverEnabled", &myEnabled, "Whether a stall recover should be done when the robot stalls."), sectionName, priority);
+  config->addParam(MvrConfigArg("StallRecoverSpeed", &mySpeed, "Speed at which to back away when stalled.", 0), sectionName, priority);
+  config->addParam(MvrConfigArg("StallRecoverDuration", &myCyclesToMove, "Cycles of operation to move when recovering from stall.", 0), sectionName, priority);
+  config->addParam(MvrConfigArg("StallRecoverRotation", &myDegreesToTurn, "Amount of rotation when recovering (degrees).", 0), sectionName, priority);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), sectionName, priority);
 }
 

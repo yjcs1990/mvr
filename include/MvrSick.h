@@ -28,29 +28,29 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSICK_H
 
 #include "ariaTypedefs.h"
-#include "ArRobotPacket.h"
-#include "ArLaser.h"   
-#include "ArFunctor.h"
-#include "ArCondition.h"
-#include "ArLMS2xx.h"
+#include "MvrRobotPacket.h"
+#include "MvrLaser.h"   
+#include "MvrFunctor.h"
+#include "MvrCondition.h"
+#include "MvrLMS2xx.h"
 
 
 /**
 Compatability class used to access SICK LMS-200 laser rangefinder device in
-versions of ARIA prior to 2.7.0; used alone or with ArSimpleConnector (also
-deprecated).  In 2.7.0 and later, ArSick implements the same
-API as in previous versions, but serves only as an interface to ArLMS2xx; the
+versions of ARIA prior to 2.7.0; used alone or with MvrSimpleConnector (also
+deprecated).  In 2.7.0 and later, MvrSick implements the same
+API as in previous versions, but serves only as an interface to MvrLMS2xx; the
 preferred way to access laser rangefinders is to first connect to a robot using
 ArRobotConnector to load robot parameter files specifying laser types
-and options, then use ArLaserConnector to connect to all lasers the robot has.
-ArRobot stores a list of ArLaser objects for these lasers.
+and options, then use MvrLaserConnector to connect to all lasers the robot has.
+ArRobot stores a list of MvrLaser objects for these lasers.
 @deprecated
 */
-class ArSick : public ArLMS2xx
+class MvrSick : public MvrLMS2xx
 {
 public:
   /// Constructor
-  AREXPORT ArSick(size_t currentBufferSize = 361, 
+  AREXPORT MvrSick(size_t currentBufferSize = 361, 
 		  size_t cumulativeBufferSize = 0,
 		  const char *name = "laser",
 		  bool addAriaExitCB = true,
@@ -121,7 +121,7 @@ public:
   AREXPORT Degrees getDegrees(void);
 #ifndef SWIG
         // this ends up causing problems in the Java wrapper, since it has the
-        // wrong return type vs. ArLaser::getIncrement(). But we need to keep
+        // wrong return type vs. MvrLaser::getIncrement(). But we need to keep
         // this function for backwards compatability.
   /// Gets the amount each scan increments
   AREXPORT Increment getIncrement(void);
@@ -245,87 +245,87 @@ public:
     { return getReadingCount(); }
 
   /// Adds a connect callback
-  void addConnectCB(ArFunctor *functor,
-			     ArListPos::Pos position = ArListPos::LAST)
+  void addConnectCB(MvrFunctor *functor,
+			     MvrListPos::Pos position = MvrListPos::LAST)
     {
-      if (position == ArListPos::FIRST)
+      if (position == MvrListPos::FIRST)
 	ArLMS2xx::addConnectCB(functor, 75);
-      else if (position == ArListPos::LAST)
+      else if (position == MvrListPos::LAST)
 	ArLMS2xx::addConnectCB(functor, 25);
       else
 	ArLMS2xx::addConnectCB(functor, 25);
     }
   /// Adds a disconnect callback
-  void remConnectCB(ArFunctor *functor)
+  void remConnectCB(MvrFunctor *functor)
     {
-      ArLMS2xx::remConnectCB(functor);
+      MvrLMS2xx::remConnectCB(functor);
     }
 
   /// Adds a callback for when a connection to the robot is failed
-  void addFailedConnectCB(ArFunctor *functor, 
-				   ArListPos::Pos position = ArListPos::LAST)
+  void addFailedConnectCB(MvrFunctor *functor, 
+				   MvrListPos::Pos position = MvrListPos::LAST)
     {
-      if (position == ArListPos::FIRST)
+      if (position == MvrListPos::FIRST)
 	ArLMS2xx::addFailedConnectCB(functor, 75);
-      else if (position == ArListPos::LAST)
+      else if (position == MvrListPos::LAST)
 	ArLMS2xx::addFailedConnectCB(functor, 25);
       else
 	ArLMS2xx::addFailedConnectCB(functor, 25);
     }
   /// Removes a callback for when a connection to the robot is failed
-  void remFailedConnectCB(ArFunctor *functor)
+  void remFailedConnectCB(MvrFunctor *functor)
     {
-      ArLMS2xx::remFailedConnectCB(functor);
+      MvrLMS2xx::remFailedConnectCB(functor);
     }
 
   /// Adds a callback for when disconnect is called while connected
-  void addDisconnectNormallyCB(ArFunctor *functor, 
-				ArListPos::Pos position = ArListPos::LAST)
+  void addDisconnectNormallyCB(MvrFunctor *functor, 
+				ArListPos::Pos position = MvrListPos::LAST)
     {
-      if (position == ArListPos::FIRST)
+      if (position == MvrListPos::FIRST)
 	ArLMS2xx::addDisconnectNormallyCB(functor, 75);
-      else if (position == ArListPos::LAST)
+      else if (position == MvrListPos::LAST)
 	ArLMS2xx::addDisconnectNormallyCB(functor, 25);
       else
 	ArLMS2xx::addDisconnectNormallyCB(functor, 25);
     }
   /// Removes a callback for when disconnect is called while connected
-   void remDisconnectNormallyCB(ArFunctor *functor)
+   void remDisconnectNormallyCB(MvrFunctor *functor)
     {
-      ArLMS2xx::remDisconnectNormallyCB(functor);
+      MvrLMS2xx::remDisconnectNormallyCB(functor);
     }
   
   /// Adds a callback for when disconnection happens because of an error
-  void addDisconnectOnErrorCB(ArFunctor *functor, 
-			       ArListPos::Pos position = ArListPos::LAST)
+  void addDisconnectOnErrorCB(MvrFunctor *functor, 
+			       MvrListPos::Pos position = MvrListPos::LAST)
     {
-      if (position == ArListPos::FIRST)
+      if (position == MvrListPos::FIRST)
 	ArLMS2xx::addDisconnectOnErrorCB(functor, 75);
-      else if (position == ArListPos::LAST)
+      else if (position == MvrListPos::LAST)
 	ArLMS2xx::addDisconnectOnErrorCB(functor, 25);
       else
 	ArLMS2xx::addDisconnectOnErrorCB(functor, 25);
     }
   /// Removes a callback for when disconnection happens because of an error
-  void remDisconnectOnErrorCB(ArFunctor *functor)
+  void remDisconnectOnErrorCB(MvrFunctor *functor)
     {
-      ArLMS2xx::remDisconnectOnErrorCB(functor);
+      MvrLMS2xx::remDisconnectOnErrorCB(functor);
     }
   /// Adds a callback that is called whenever a laser packet is processed
-  void addDataCB(ArFunctor *functor,
-			  ArListPos::Pos position = ArListPos::LAST)
+  void addDataCB(MvrFunctor *functor,
+			  MvrListPos::Pos position = MvrListPos::LAST)
     {
-      if (position == ArListPos::FIRST)
+      if (position == MvrListPos::FIRST)
 	ArLMS2xx::addReadingCB(functor, 75);
-      else if (position == ArListPos::LAST)
+      else if (position == MvrListPos::LAST)
 	ArLMS2xx::addReadingCB(functor, 25);
       else
 	ArLMS2xx::addReadingCB(functor, 25);
     }
   /// Removes a callback that is called whenever a laser packet is processed
-  void remDataCB(ArFunctor *functor)
+  void remDataCB(MvrFunctor *functor)
     {
-      ArLMS2xx::remReadingCB(functor);
+      MvrLMS2xx::remReadingCB(functor);
     }
 
   /// Sets the time without a response until connection assumed lost
@@ -333,7 +333,7 @@ public:
     { setConnectionTimeoutSeconds(secs); }
   /// Gets the time without a response until connection assumed lost
   int getConnectionTimeoutTime(void)
-    { return ArMath::roundInt(getConnectionTimeoutSeconds()); }
+    { return MvrMath::roundInt(getConnectionTimeoutSeconds()); }
 
 };
 

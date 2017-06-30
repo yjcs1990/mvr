@@ -1,36 +1,10 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#include "MvrExport.h"
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ArExport.h"
-
-#include "ariaOSDef.h"
-#include "ArActionAvoidFront.h"
-#include "ArResolver.h"
-#include "ArRobot.h"
-#include "ArLog.h"
+#include "mvriaOSDef.h"
+#include "MvrActionAvoidFront.h"
+#include "MvrResolver.h"
+#include "MvrRobot.h"
+#include "MvrLog.h"
 
 /**
    @param name the name of the action
@@ -42,38 +16,38 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param useTableIRIfAvail Whether to use the table sensing IR if they are 
    available
 */
-AREXPORT ArActionAvoidFront::ArActionAvoidFront(const char *name, 
+AREXPORT MvrActionAvoidFront::MvrActionAvoidFront(const char *name, 
 						double obstacleDistance,
 						double avoidVelocity,
 						double turnAmount, 
 						bool useTableIRIfAvail) :
-  ArAction(name, "Slows down and avoids obstacles in front of the robot.")
+  MvrAction(name, "Slows down and avoids obstacles in front of the robot.")
 {
-  setNextArgument(ArArg("obstacle distance", &myObsDist, 
+  setNextArgument(MvrArg("obstacle distance", &myObsDist, 
 			"Distance at which to turn. (mm)"));
   myObsDist = obstacleDistance;
   
-  setNextArgument(ArArg("avoid speed", &myAvoidVel,
+  setNextArgument(MvrArg("avoid speed", &myAvoidVel,
 	"Speed at which to go while avoiding an obstacle. (mm/sec)"));
   myAvoidVel = avoidVelocity;
 
-  setNextArgument(ArArg("turn ammount", &myTurnAmountParam, 
+  setNextArgument(MvrArg("turn ammount", &myTurnAmountParam, 
 	"Degrees to turn relative to current heading while avoiding obstacle (deg)"));
   myTurnAmountParam = turnAmount;
 
-  setNextArgument(ArArg("use table IR", &myUseTableIRIfAvail,
+  setNextArgument(MvrArg("use table IR", &myUseTableIRIfAvail,
 		"true to use table sensing IR for avoidance if the robot has them, false otherwise"));
   myUseTableIRIfAvail = useTableIRIfAvail;
 
   myTurning = 0;
 }
 
-AREXPORT ArActionAvoidFront::~ArActionAvoidFront()
+AREXPORT MvrActionAvoidFront::~MvrActionAvoidFront()
 {
 
 }
 
-AREXPORT ArActionDesired *ArActionAvoidFront::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *MvrActionAvoidFront::fire(MvrActionDesired currentDesired)
 {
   double dist, angle;
 

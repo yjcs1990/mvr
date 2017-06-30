@@ -24,17 +24,17 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLMS2xx.h"
-#include "ArRobot.h"
-#include "ArSerialConnection.h"
+#include "MvrLMS2xx.h"
+#include "MvrRobot.h"
+#include "MvrSerialConnection.h"
 #include "ariaInternal.h"
 #include <time.h>
 
-AREXPORT ArLMS2xx::ArLMS2xx(
+AREXPORT MvrLMS2xx::ArLMS2xx(
 	int laserNumber, const char *name, bool appendLaserNumberToName) :
-  ArLaser(laserNumber, name, 32000, false, appendLaserNumberToName),
+  MvrLaser(laserNumber, name, 32000, false, appendLaserNumberToName),
   mySimPacketHandler(this, &ArLMS2xx::simPacketHandler),
   mySensorInterpCB(this, &ArLMS2xx::sensorInterpCallback),
   myLMS2xxPacketReceiver(0, true),
@@ -45,7 +45,7 @@ AREXPORT ArLMS2xx::ArLMS2xx(
   laserSetDefaultTcpPort(8102);
   laserSetDefaultPortType("serial");
 
-  Aria::addExitCallback(&myAriaExitCB, -10);
+  Mvria::addExitCallback(&myAriaExitCB, -10);
 
   std::map<std::string, double> degreesChoices;
   degreesChoices["180"] = 180;
@@ -105,23 +105,23 @@ AREXPORT ArLMS2xx::ArLMS2xx(
   resetLastCumulativeCleanTime();
 
   setCurrentDrawingData(
-	  new ArDrawingData("polyDots", 
-			    ArColor(0, 0, 255), 
+	  new MvrDrawingData("polyDots", 
+			    MvrColor(0, 0, 255), 
 			    80,  // mm diameter of dots
 			    75), // layer above sonar 
 	  true);
 
   setCumulativeDrawingData(
-	  new ArDrawingData("polyDots", 
-			    ArColor(125, 125, 125), 
+	  new MvrDrawingData("polyDots", 
+			    MvrColor(125, 125, 125), 
 			    100, // mm diameter of dots
 			    60), // layer below current range devices  
 	  true);
 }
 
-AREXPORT ArLMS2xx::~ArLMS2xx()
+AREXPORT MvrLMS2xx::~ArLMS2xx()
 {
-  Aria::remExitCallback(&myAriaExitCB);
+  Mvria::remExitCallback(&myAriaExitCB);
   if (myRobot != NULL)
   {
     myRobot->remRangeDevice(this);
@@ -138,7 +138,7 @@ AREXPORT ArLMS2xx::~ArLMS2xx()
 }
 
 
-AREXPORT void ArLMS2xx::laserSetName(const char *name)
+AREXPORT void MvrLMS2xx::laserSetName(const char *name)
 {
   myName = name;
 
@@ -146,43 +146,43 @@ AREXPORT void ArLMS2xx::laserSetName(const char *name)
   myAriaExitCB.setNameVar("%s::exitCallback", getName());
   mySimPacketHandler.setNameVar("%s::simPacketHandler", getName());
   
-  ArLaser::laserSetName(getName());
+  MvrLaser::laserSetName(getName());
 }
 
-AREXPORT bool ArLMS2xx::sickGetIsUsingSim(void)
+AREXPORT bool MvrLMS2xx::sickGetIsUsingSim(void)
 {
   return myUseSim;
 }
 
-AREXPORT void ArLMS2xx::sickSetIsUsingSim(bool usingSim)
+AREXPORT void MvrLMS2xx::sickSetIsUsingSim(bool usingSim)
 {
   myUseSim = usingSim;
 }
 
-AREXPORT void ArLMS2xx::setDeviceConnection(ArDeviceConnection *conn)
+AREXPORT void MvrLMS2xx::setDeviceConnection(MvrDeviceConnection *conn)
 {
   myConnMutex.lock();
   myLMS2xxPacketReceiver.setDeviceConnection(conn); 
   myConnMutex.unlock();
-  ArLaser::setDeviceConnection(conn);
+  MvrLaser::setDeviceConnection(conn);
 }
 
 
 
-AREXPORT void ArLMS2xx::setRobot(ArRobot *robot)
+AREXPORT void MvrLMS2xx::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
   {
-    myRobot->addPacketHandler(&mySimPacketHandler, ArListPos::LAST);
+    myRobot->addPacketHandler(&mySimPacketHandler, MvrListPos::LAST);
     myRobot->addSensorInterpTask("sick", 90, &mySensorInterpCB);
   }
-  ArRangeDevice::setRobot(robot);
+  MvrRangeDevice::setRobot(robot);
 }
 
 
 /** @internal */
-AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
+AREXPORT bool MvrLMS2xx::simPacketHandler(MvrRobotPacket *packet)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -190,12 +190,12 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
   unsigned int readingNumber;
   double atDeg;
   unsigned int i;
-  ArSensorReading *reading;
+  MvrSensorReading *reading;
   std::list<ArSensorReading *>::iterator tempIt;
   unsigned int newReadings;
   int range;
   int refl = 0;
-  ArPose encoderPose;
+  MvrPose encoderPose;
   //std::list<double>::iterator ignoreIt;  
   bool ignore;
   
@@ -211,7 +211,7 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
   //printf("1\n");
   if (!myUseSim)
   {
-    ArLog::log(ArLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Got a packet from the simulator with laser information, but the laser is not being simulated, major trouble.", 
 	       getName());
     unlockDevice();
@@ -234,11 +234,11 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
     mySimPacketEncoderTrans = myRobot->getEncoderTransform();
     mySimPacketCounter = myRobot->getCounter();
   }
-  //printf("ArLMS2xx::simPacketHandler: On reading number %d out of %d, new %d\n", readingNumber, totalNumReadings, newReadings);
+  //printf("MvrLMS2xx::simPacketHandler: On reading number %d out of %d, new %d\n", readingNumber, totalNumReadings, newReadings);
   // if we have too many readings in our list of raw readings, pop the extras
   while (myAssembleReadings->size() > totalNumReadings)
   {
-    ArLog::log(ArLog::Verbose, "ArLMS2xx::simPacketHandler, too many readings, popping one.");
+    MvrLog::log(MvrLog::Verbose, "MvrLMS2xx::simPacketHandler, too many readings, popping one.");
     tempIt = myAssembleReadings->begin();
     if (tempIt != myAssembleReadings->end())
       delete (*tempIt);
@@ -248,7 +248,7 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
   // If we don't have any sensor readings created at all, make 'em all now
   if (myAssembleReadings->size() == 0)
     for (i = 0; i < totalNumReadings; i++)
-      myAssembleReadings->push_back(new ArSensorReading);
+      myAssembleReadings->push_back(new MvrSensorReading);
   
   // Okay, we know where we're at, so get an iterator to the right spot, or 
   // make sure the one we keep around is in the right spot... if neither of
@@ -264,7 +264,7 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
       tempIt = myIter;
       tempIt++;
       if (tempIt == myAssembleReadings->end() && (i + 1 != myTotalNumReadings))
-	myAssembleReadings->push_back(new ArSensorReading);
+	myAssembleReadings->push_back(new MvrSensorReading);
       myIter++;
     }
   }
@@ -302,7 +302,7 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
     {
       //if (atDeg == 0)
       //printf("Ignoring %.0f\n", (*ignoreIt));
-      if (ArMath::fabs(ArMath::subAngle(atDeg, *(ignoreIt))) < 1.0)
+      if (MvrMath::fabs(MvrMath::subAngle(atDeg, *(ignoreIt))) < 1.0)
       {
 	//printf("Ignoring %.0f\n", (*ignoreIt));
 	ignore = true;
@@ -314,8 +314,8 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
     if (myMaxRange != 0 && range > (int)myMaxRange)
       ignore = true;
     */
-    reading->resetSensorPosition(ArMath::roundInt(mySensorPose.getX()),
-				 ArMath::roundInt(mySensorPose.getY()),
+    reading->resetSensorPosition(MvrMath::roundInt(mySensorPose.getX()),
+				 MvrMath::roundInt(mySensorPose.getY()),
 				 atDeg);
     //      printf("dist %d\n", dist);
     reading->newData(range, mySimPacketStart, 
@@ -330,7 +330,7 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
     if (tempIt == myAssembleReadings->end() && 
 	myWhichReading + 1 != myTotalNumReadings)
     {
-      myAssembleReadings->push_back(new ArSensorReading);
+      myAssembleReadings->push_back(new MvrSensorReading);
     }
     myIter++;
   }
@@ -339,7 +339,7 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
   //printf("%d %d %d\n", newReadings, readingNumber, totalNumReadings);
   if (newReadings + readingNumber >= totalNumReadings)
   {
-    // set ArRangeDevice buffer
+    // set MvrRangeDevice buffer
     myRawReadings = myAssembleReadings;
     // switch internal buffers
     myAssembleReadings = myCurrentReadings;
@@ -356,7 +356,7 @@ AREXPORT bool ArLMS2xx::simPacketHandler(ArRobotPacket *packet)
 
 
 /** @internal */
-AREXPORT void ArLMS2xx::switchState(State state)
+AREXPORT void MvrLMS2xx::switchState(State state)
 {
   myStateMutex.lock();
   myState = state;
@@ -368,10 +368,10 @@ AREXPORT void ArLMS2xx::switchState(State state)
    @internal
    @return 0 if its still trying to connect, 1 if it connected, 2 if it failed
 **/
-AREXPORT int ArLMS2xx::internalConnectHandler(void)
+AREXPORT int MvrLMS2xx::internalConnectHandler(void)
 {
-  ArLMS2xxPacket *packet;
-  ArSerialConnection *conn;
+  MvrLMS2xxPacket *packet;
+  MvrSerialConnection *conn;
   int value, autoBaud;
 
   switch (myState)
@@ -379,14 +379,14 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
   case STATE_INIT:
     if (myConn == NULL)
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, have no deviceConnection.",
 		 getName());
       switchState(STATE_NONE);
       failedConnect();
       return 2;
     }
-    if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN)
+    if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN)
     {
       if ((conn = dynamic_cast<ArSerialConnection *>(myConn)) != NULL)
       {
@@ -394,7 +394,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
       }
       if (!myConn->openSimple())
       {
-	ArLog::log(ArLog::Terse,
+	ArLog::log(MvrLog::Terse,
 		   "%s: Failed to connect to laser, could not open port.",
 		   getName());
 	switchState(STATE_NONE);
@@ -414,7 +414,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
       switchState(STATE_CHANGE_BAUD);
       return internalConnectHandler();
     }
-    ArLog::log(ArLog::Terse, "%s: waiting for laser to power on.",
+    MvrLog::log(MvrLog::Terse, "%s: waiting for laser to power on.",
 	       getName());
     myPacket.empty();
     myPacket.uByteToBuf(0x10);
@@ -426,7 +426,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     else
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, could not send init.",
 		 getName());
       switchState(STATE_NONE);
@@ -445,7 +445,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     if (myStateStart.secSince() > 65)
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, no poweron received.",
 		 getName());
       switchState(STATE_NONE);
@@ -472,7 +472,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
       myPacket.byteToBuf(0x40);
     else
     {
-      ArLog::log(ArLog::Terse, "%s: Do not know how to autobaud to %d", 
+      MvrLog::log(MvrLog::Terse, "%s: Do not know how to autobaud to %d", 
 		 getName(), autoBaud);
       switchState(STATE_NONE);
       failedConnect();
@@ -481,14 +481,14 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     myPacket.finalizePacket();
     if (myConn->write(myPacket.getBuf(), myPacket.getLength()))
     {
-      ArUtil::sleep(20);
+      MvrUtil::sleep(20);
       conn->setBaud(autoBaud);
       switchState(STATE_CONFIGURE);
       return 0;
     }
     else
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 	 "%s: Failed to connect to laser, could not send baud command.",
 		 getName());
       switchState(STATE_NONE);
@@ -502,8 +502,8 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
       return 0;
     myPacket.empty();
     myPacket.byteToBuf(0x3b);
-    myPacket.uByte2ToBuf(abs(ArMath::roundInt(myOffsetAmount * 2)));
-    myPacket.uByte2ToBuf(abs(ArMath::roundInt(myIncrementAmount * 100)));
+    myPacket.uByte2ToBuf(abs(MvrMath::roundInt(myOffsetAmount * 2)));
+    myPacket.uByte2ToBuf(abs(MvrMath::roundInt(myIncrementAmount * 100)));
     myPacket.finalizePacket();
     if (myConn->write(myPacket.getBuf(), myPacket.getLength()))
     {
@@ -512,7 +512,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     else
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, could not send configure command.", 
 		 getName());
       switchState(STATE_NONE);
@@ -528,7 +528,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	value = packet->bufToByte();
 	if (value == 0)
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 		     "%s: Could not configure laser, failed connect.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -544,7 +544,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 		     "%s: Could not configure laser, failed connect.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -554,7 +554,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
       }
       else if (packet->getID() == 0xb0)
       {
-	ArLog::log(ArLog::Terse, 
+	ArLog::log(MvrLog::Terse, 
 		   "%s: extra data packet while waiting for configure ack", 
 		   getName());
 	myPacket.empty();
@@ -568,12 +568,12 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
       }
       else
-	ArLog::log(ArLog::Terse, "%s: Got a 0x%x", getName(), packet->getID(),
+	ArLog::log(MvrLog::Terse, "%s: Got a 0x%x", getName(), packet->getID(),
 		   getName());
     }
     if (myStateStart.mSecSince() > 10000)
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, no configure acknowledgement received.", 
 		 getName());
       switchState(STATE_NONE);
@@ -596,7 +596,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     else
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 	 "%s: Failed to connect to laser, could not send start command.",
 		 getName());
       switchState(STATE_NONE);
@@ -618,7 +618,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
 	else if (value == 1)
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 		     "%s: Could not start laser, incorrect password.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -627,7 +627,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
 	else if (value == 2)
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 		     "%s: Could not start laser, LMI fault.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -636,7 +636,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 		     "%s: Could not start laser, unknown problem.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -647,7 +647,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
       else if (packet->getID() == 0xb0)
       {
 	
-	ArLog::log(ArLog::Terse, "%s: extra data packet",
+	ArLog::log(MvrLog::Terse, "%s: extra data packet",
 		   getName());
 	myPacket.empty();
 	myPacket.uByteToBuf(0x20);
@@ -660,12 +660,12 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
       }
       else
-	ArLog::log(ArLog::Terse, "%s: bad packet 0x%x", packet->getID(),
+	ArLog::log(MvrLog::Terse, "%s: bad packet 0x%x", packet->getID(),
 		   getName());
     }
     if (myStateStart.mSecSince() > 10000)
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, no install mode ack received.", getName());
       switchState(STATE_NONE);
       return 2;
@@ -708,7 +708,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     else
     {
-      ArLog::log(ArLog::Terse, "%s: Bits set to unknown value",
+      MvrLog::log(MvrLog::Terse, "%s: Bits set to unknown value",
 		 getName());
       myPacket.uByteToBuf(5);
       //maxRange *= 4;
@@ -733,7 +733,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     else
     {
-      ArLog::log(ArLog::Terse, "%s: Units set to unknown value", getName());
+      MvrLog::log(MvrLog::Terse, "%s: Units set to unknown value", getName());
       //maxRange *= 1000;
       myPacket.uByteToBuf(1);
     }
@@ -798,7 +798,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     else
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		"%s: Failed to connect to laser, could not send set mode command.", 
 		 getName());
       switchState(STATE_NONE);
@@ -820,7 +820,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
       else if (packet->getID() == 0xb0)
       {
 	
-	ArLog::log(ArLog::Terse, "%s: extra data packet",
+	ArLog::log(MvrLog::Terse, "%s: extra data packet",
 		   getName());
 	myPacket.empty();
 	myPacket.uByteToBuf(0x20);
@@ -838,11 +838,11 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	return 0;
       }
       else
-	ArLog::log(ArLog::Terse, "%s: Got a 0x%x", getName(), packet->getID());
+	ArLog::log(MvrLog::Terse, "%s: Got a 0x%x", getName(), packet->getID());
     }
     if (myStateStart.mSecSince() > 14000)
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, no set mode acknowledgement received.", 
 		 getName());
       switchState(STATE_NONE);
@@ -864,7 +864,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     else
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, could not send start command.", 
 		 getName());
       switchState(STATE_NONE);
@@ -880,7 +880,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	value = packet->bufToByte();
 	if (value == 0)
 	{
-	  ArLog::log(ArLog::Terse, "%s: Connected to the laser.",
+	  MvrLog::log(MvrLog::Terse, "%s: Connected to the laser.",
 		     getName());
 	  switchState(STATE_CONNECTED);
 	  madeConnection();
@@ -888,7 +888,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
 	else if (value == 1)
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 	     "%s: Could not start laser laser, incorrect password.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -897,7 +897,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
 	else if (value == 2)
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 		     "%s: Could not start laser laser, LMI fault.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -906,7 +906,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, 
+	  MvrLog::log(MvrLog::Terse, 
 		     "%s: Could not start laser laser, unknown problem.",
 		     getName());
 	  switchState(STATE_NONE);
@@ -917,7 +917,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     if (myStateStart.mSecSince() > 1000)
     {
-      ArLog::log(ArLog::Terse,
+      MvrLog::log(MvrLog::Terse,
 		 "%s: Failed to connect to laser, no start acknowledgement received.",
 		 getName());
       switchState(STATE_NONE);
@@ -926,7 +926,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
     }
     break;
   default:
-    ArLog::log(ArLog::Verbose, "%s: In bad connection state",
+    MvrLog::log(MvrLog::Verbose, "%s: In bad connection state",
 	       getName());
     break;
   }
@@ -938,7 +938,7 @@ AREXPORT int ArLMS2xx::internalConnectHandler(void)
 
    @return true if the commands were sent, false otherwise
 **/
-AREXPORT bool ArLMS2xx::internalConnectSim(void)
+AREXPORT bool MvrLMS2xx::internalConnectSim(void)
 {
   lockDevice();
   double offset = myOffsetAmount;
@@ -948,15 +948,15 @@ AREXPORT bool ArLMS2xx::internalConnectSim(void)
   myRobot->lock();
   // return true if we could send all the commands
   if (myRobot->comInt(36, -ArMath::roundInt(offset)) &&   // Start angle
-      myRobot->comInt(37, ArMath::roundInt(offset)) &&    // End angle
-      myRobot->comInt(38, ArMath::roundInt(increment * 100.0)) && // increment
+      myRobot->comInt(37, MvrMath::roundInt(offset)) &&    // End angle
+      myRobot->comInt(38, MvrMath::roundInt(increment * 100.0)) && // increment
       myRobot->comInt(35, 2)) // Enable sending data, with extended info 
     ///@todo only choose extended info if reflector bits desired, also shorten range.
   {
     myRobot->unlock();
     switchState(STATE_CONNECTED);
     madeConnection();
-    ArLog::log(ArLog::Terse, "%s: Connected to simulated laser.",
+    MvrLog::log(MvrLog::Terse, "%s: Connected to simulated laser.",
 	       getName());
     return true;
   }
@@ -964,7 +964,7 @@ AREXPORT bool ArLMS2xx::internalConnectSim(void)
   {
     switchState(STATE_NONE);
     failedConnect();
-    ArLog::log(ArLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Failed to connect to simulated laser.",
 	       getName());
     return false;
@@ -972,7 +972,7 @@ AREXPORT bool ArLMS2xx::internalConnectSim(void)
 }
 
 /** @internal */
-AREXPORT void ArLMS2xx::dropConnection(void)
+AREXPORT void MvrLMS2xx::dropConnection(void)
 {
   std::list<ArFunctor *>::iterator it;  
 
@@ -981,7 +981,7 @@ AREXPORT void ArLMS2xx::dropConnection(void)
 
   myCurrentBuffer.reset();
   myCumulativeBuffer.reset();
-  ArLog::log(ArLog::Terse, 
+  MvrLog::log(MvrLog::Terse, 
 	     "%s:  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(), 
 	     myLastReading.mSecSince()/1000.0, 
 	     getConnectionTimeoutSeconds());
@@ -994,7 +994,7 @@ AREXPORT void ArLMS2xx::dropConnection(void)
 }
 
 /** @internal */
-AREXPORT void ArLMS2xx::failedConnect(void)
+AREXPORT void MvrLMS2xx::failedConnect(void)
 {
   std::list<ArFunctor *>::iterator it;  
   
@@ -1007,7 +1007,7 @@ AREXPORT void ArLMS2xx::failedConnect(void)
 }
 
 /** @internal */
-AREXPORT void ArLMS2xx::madeConnection(void)
+AREXPORT void MvrLMS2xx::madeConnection(void)
 {
   myLastReading.setToNow();
 
@@ -1022,11 +1022,11 @@ AREXPORT void ArLMS2xx::madeConnection(void)
    
    @return true if it could disconnect from the laser cleanly
 **/
-AREXPORT bool ArLMS2xx::disconnect(void)
+AREXPORT bool MvrLMS2xx::disconnect(void)
 {
   std::list<ArFunctor *>::iterator it;  
   bool ret;
-  ArSerialConnection *conn;
+  MvrSerialConnection *conn;
 
   myStateMutex.lock();
   if (myState == STATE_NONE)
@@ -1043,14 +1043,14 @@ AREXPORT bool ArLMS2xx::disconnect(void)
     ret = myConn->close();
     myConnMutex.unlock();
     unlockDevice();
-    ArLog::log(ArLog::Terse, "%s: Disconnecting from laser that was not fully connected to...  this may cause problems later.", getName());
+    MvrLog::log(MvrLog::Terse, "%s: Disconnecting from laser that was not fully connected to...  this may cause problems later.", getName());
     myStateMutex.unlock();
     return ret;
   }
 
   myCurrentBuffer.reset();
   myCumulativeBuffer.reset();
-  ArLog::log(ArLog::Terse, "%s: Disconnecting from laser.", getName());
+  MvrLog::log(MvrLog::Terse, "%s: Disconnecting from laser.", getName());
   myState = STATE_NONE;
   myStateMutex.unlock();
 
@@ -1082,34 +1082,34 @@ AREXPORT bool ArLMS2xx::disconnect(void)
     myPacket.finalizePacket();
     ret = myConn->write(myPacket.getBuf(), myPacket.getLength());
     // put the thing back to 9600 baud
-    ArUtil::sleep(1000);
+    MvrUtil::sleep(1000);
     myPacket.empty();
     myPacket.byteToBuf(0x20);
     myPacket.byteToBuf(0x42);
     myPacket.finalizePacket();
     if (myConn->write(myPacket.getBuf(), myPacket.getLength()))
     {
-      ArUtil::sleep(20);
+      MvrUtil::sleep(20);
       if ((conn = dynamic_cast<ArSerialConnection *>(myConn)))
 	  conn->setBaud(9600);
     } else
       ret = false;
     ret = ret && myConn->close();
     myConnMutex.unlock();
-    ArUtil::sleep(300);
+    MvrUtil::sleep(300);
     laserDisconnectNormally();
     return ret;
   }
 }
 
-bool ArLMS2xx::finishParams(void)
+bool MvrLMS2xx::finishParams(void)
 {
   if (!getRunning())
     runAsync();
 
   if (!laserPullUnsetParamsFromRobot())
   {
-    ArLog::log(ArLog::Normal, "%s: Couldn't pull params from robot",
+    MvrLog::log(MvrLog::Normal, "%s: Couldn't pull params from robot",
 	       getName());
     return false;
   }
@@ -1117,7 +1117,7 @@ bool ArLMS2xx::finishParams(void)
   return laserCheckParams();
 }
 
-AREXPORT bool ArLMS2xx::laserCheckParams(void)
+AREXPORT bool MvrLMS2xx::laserCheckParams(void)
 {
   myOffsetAmount = getDegreesChoiceDouble() / 2.0;
   if (getFlipped())
@@ -1135,7 +1135,7 @@ AREXPORT bool ArLMS2xx::laserCheckParams(void)
     myNumReflectorBits = 3;
   else
   {
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "%s: Bad reflectorBits choice %s, choices are %s", 
 	       getName(), getReflectorBitsChoice(), 
 	       getReflectorBitsChoicesString());
@@ -1148,7 +1148,7 @@ AREXPORT bool ArLMS2xx::laserCheckParams(void)
     myInterlaced = false;
   else
   {
-    ArLog::log(ArLog::Normal, "%s: Bad increment choice %s, choices are %s", 
+    MvrLog::log(MvrLog::Normal, "%s: Bad increment choice %s, choices are %s", 
 	       getName(), getIncrementChoice(), getIncrementChoicesString());
     return false;
   }
@@ -1164,7 +1164,7 @@ AREXPORT bool ArLMS2xx::laserCheckParams(void)
     myPacket.uByteToBuf(1);
   else
   {
-    ArLog::log(ArLog::Terse, "%s: Bits set to unknown value", getName());
+    MvrLog::log(MvrLog::Terse, "%s: Bits set to unknown value", getName());
     maxRange *= 4;
   }
   
@@ -1176,7 +1176,7 @@ AREXPORT bool ArLMS2xx::laserCheckParams(void)
     maxRange *= 10000;
   else
   {
-    ArLog::log(ArLog::Terse, "%s: Units set to unknown value", getName());
+    MvrLog::log(MvrLog::Terse, "%s: Units set to unknown value", getName());
     maxRange *= 1000;
   }
 
@@ -1195,16 +1195,16 @@ AREXPORT bool ArLMS2xx::laserCheckParams(void)
    before calling this function.
 
    @note Since the simulated laser uses the robot connection instead
-   of a separate, new connection, this ArLMS2xx object @b must have been
-   added to the robot using ArRobot::addRangeDevice(), and the robot
+   of a separate, new connection, this MvrLMS2xx object @b must have been
+   added to the robot using MvrRobot::addRangeDevice(), and the robot
    connection @b must be connected and running (e.g. in a background thread
-   via ArRobot::runAsync()) for blockingConnect() to be able to successfully
+   via MvrRobot::runAsync()) for blockingConnect() to be able to successfully
    connect to the simulator.
 
    @return true if a connection was successfully made, false otherwise
 **/
  
-AREXPORT bool ArLMS2xx::blockingConnect(void)
+AREXPORT bool MvrLMS2xx::blockingConnect(void)
 {
   int ret;
 
@@ -1221,7 +1221,7 @@ AREXPORT bool ArLMS2xx::blockingConnect(void)
   {
     if (myConn == NULL)
     {
-      ArLog::log(ArLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 		 "%s: Invalid device connection, cannot connect.",
 		 getName());
       return false; // Nobody ever set the device connection.
@@ -1231,7 +1231,7 @@ AREXPORT bool ArLMS2xx::blockingConnect(void)
     switchState(STATE_INIT);
     unlockDevice();
     while (getRunningWithLock() && (ret = internalConnectHandler()) == 0)
-      ArUtil::sleep(100);
+      MvrUtil::sleep(100);
     myConnMutex.unlock();
     if (ret == 1)
       return true;
@@ -1254,14 +1254,14 @@ AREXPORT bool ArLMS2xx::blockingConnect(void)
   @return true if a connection will be able to be tried, false
   otherwise 
 
-  @see configure(), ArRangeDeviceThreaded::run(),
-  ArRangeDeviceThreaded::runAsync(), runOnRobot()
+  @see configure(), MvrRangeDeviceThreaded::run(),
+  MvrRangeDeviceThreaded::runAsync(), runOnRobot()
 **/
-AREXPORT bool ArLMS2xx::asyncConnect(void)
+AREXPORT bool MvrLMS2xx::asyncConnect(void)
 {
   if (myState == STATE_CONNECTED)
   {
-    ArLog::log(ArLog::Terse, "%s: already connected to laser.",
+    MvrLog::log(MvrLog::Terse, "%s: already connected to laser.",
 	       getName());
     return false;
   }
@@ -1271,7 +1271,7 @@ AREXPORT bool ArLMS2xx::asyncConnect(void)
 
   if (!myUseSim && myConn == NULL)
   {
-    ArLog::log(ArLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Invalid device connection, cannot connect.",
 	       getName());
     return false; // Nobody ever set the device connection.
@@ -1289,7 +1289,7 @@ AREXPORT bool ArLMS2xx::asyncConnect(void)
    You should lock the robot and lockDevice() this laser before calling this if 
    other things are running already.
 **/
-AREXPORT bool ArLMS2xx::internalRunOnRobot(void)
+AREXPORT bool MvrLMS2xx::internalRunOnRobot(void)
 {
   if (myRobot == NULL)
     return false;
@@ -1303,11 +1303,11 @@ AREXPORT bool ArLMS2xx::internalRunOnRobot(void)
 }
 
 /** @internal */
-AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
-				    ArPose encoderPose,
+AREXPORT void MvrLMS2xx::processPacket(MvrLMS2xxPacket *packet, MvrPose pose,
+				    MvrPose encoderPose,
 				    unsigned int counter,
 				    bool deinterlace,
-				    ArPose deinterlaceDelta)
+				    MvrPose deinterlaceDelta)
 {
   std::list<ArFunctor *>::iterator it;  
   unsigned int rawValue;
@@ -1317,26 +1317,26 @@ AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
   unsigned int i;
   double atDeg;
   unsigned int onReading;
-  ArSensorReading *reading;
+  MvrSensorReading *reading;
   int dist;
   std::list<ArSensorReading *>::iterator tempIt;
   int multiplier;
-  ArTransform transform;
+  MvrTransform transform;
   //std::list<double>::iterator ignoreIt;  
   bool ignore;
 
-  ArTime arTime;
+  MvrTime arTime;
   arTime = packet->getTimeReceived();
   if (!arTime.addMSec(-13)) {
-    ArLog::log(ArLog::Normal,
-               "ArLMS2xx::processPacket() error adding msecs (-13)");
+    MvrLog::log(MvrLog::Normal,
+               "MvrLMS2xx::processPacket() error adding msecs (-13)");
   }
 
-  ArTime deinterlaceTime;
+  MvrTime deinterlaceTime;
   deinterlaceTime = packet->getTimeReceived();
   if (!deinterlaceTime.addMSec(-27)) {
-    ArLog::log(ArLog::Normal,
-               "ArLMS2xx::processPacket() error adding msecs (-27)");
+    MvrLog::log(MvrLog::Normal,
+               "MvrLMS2xx::processPacket() error adding msecs (-27)");
   } 
   //if (packet->getID() != 0xb0)
   //printf("Got in packet of type 0x%x\n", packet->getID());
@@ -1345,26 +1345,26 @@ AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
     value = packet->bufToUByte2();
     numReadings = value & 0x3ff;
     //printf("numreadings %d\n", numReadings);
-    if (!(value & ArUtil::BIT14) && !(value & ArUtil::BIT15))
+    if (!(value & MvrUtil::BIT14) && !(value & MvrUtil::BIT15))
       multiplier = 10;
-    else if ((value & ArUtil::BIT14) && !(value & ArUtil::BIT15))
+    else if ((value & MvrUtil::BIT14) && !(value & MvrUtil::BIT15))
       multiplier = 1;
-    else if (!(value & ArUtil::BIT14) && (value & ArUtil::BIT15))
+    else if (!(value & MvrUtil::BIT14) && (value & MvrUtil::BIT15))
       multiplier = 100;
     else
     {
-      ArLog::log(ArLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 		 "%s::processPacket: bad distance configuration in packet",
 		 getName());
       multiplier = 0;
     }
     //printf("%ld ms after last reading.\n", myLastReading.mSecSince());
     /*printf("Reading number %d, complete %d, unit: %d %d:\n", numReadings,
-      !(bool)(value & ArUtil::BIT13), (bool)(value & ArUtil::BIT14),
-      (bool)(value & ArUtil::BIT15));*/
+      !(bool)(value & MvrUtil::BIT13), (bool)(value & MvrUtil::BIT14),
+      (bool)(value & MvrUtil::BIT15));*/
     while (myAssembleReadings->size() > numReadings)
     {
-      ArLog::log(ArLog::Verbose, "%s::processPacket, too many readings, popping one.",
+      MvrLog::log(MvrLog::Verbose, "%s::processPacket, too many readings, popping one.",
 		 getName());
       tempIt = myAssembleReadings->begin();
       if (tempIt != myAssembleReadings->end())
@@ -1375,7 +1375,7 @@ AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
     // If we don't have any sensor readings created at all, make 'em all 
     if (myAssembleReadings->size() == 0)
       for (i = 0; i < numReadings; i++)
-	myAssembleReadings->push_back(new ArSensorReading);
+	myAssembleReadings->push_back(new MvrSensorReading);
 
     transform.setTransform(pose);
     //deinterlaceDelta = transform.doInvTransform(deinterlacePose);
@@ -1426,7 +1426,7 @@ AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
 	   ignoreIt != myIgnoreReadings.end();
 	   ignoreIt++)
       {
-	if (ArMath::fabs(ArMath::subAngle(atDeg, *(ignoreIt))) < 1.0)
+	if (MvrMath::fabs(MvrMath::subAngle(atDeg, *(ignoreIt))) < 1.0)
 	{
 	  ignore = true;
 	  break;
@@ -1440,23 +1440,23 @@ AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
       if (deinterlace && (onReading % 2) == 0)
       {
 	reading->resetSensorPosition(
-	       ArMath::roundInt(mySensorPose.getX() + deinterlaceDelta.getX()),
-	       ArMath::roundInt(mySensorPose.getY() + deinterlaceDelta.getY()),
-	       ArMath::addAngle(atDeg, deinterlaceDelta.getTh()));
+	       MvrMath::roundInt(mySensorPose.getX() + deinterlaceDelta.getX()),
+	       MvrMath::roundInt(mySensorPose.getY() + deinterlaceDelta.getY()),
+	       MvrMath::addAngle(atDeg, deinterlaceDelta.getTh()));
 	reading->newData(dist, pose, encoderPose, transform, counter, 
 			 deinterlaceTime, ignore, reflector);
       }
       else
       {
-	reading->resetSensorPosition(ArMath::roundInt(mySensorPose.getX()),
-				     ArMath::roundInt(mySensorPose.getY()),
+	reading->resetSensorPosition(MvrMath::roundInt(mySensorPose.getX()),
+				     MvrMath::roundInt(mySensorPose.getY()),
 				     atDeg); 
 	reading->newData(dist, pose, encoderPose, transform, counter, 
 			 arTime, ignore, reflector);
       }
       /*
       reading->newData(onReading, 0, 0, 0,
-		       ArTransform(), counter, 
+		       MvrTransform(), counter, 
 		       packet->getTimeReceived());
       */
       tempIt = myIter;
@@ -1464,10 +1464,10 @@ AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
       if (tempIt == myAssembleReadings->end() && 
 	  onReading + 1 != numReadings)
       {
-	myAssembleReadings->push_back(new ArSensorReading);
+	myAssembleReadings->push_back(new MvrSensorReading);
       }
     }
-    // set ArRangeDevice buffer, switch internal buffers
+    // set MvrRangeDevice buffer, switch internal buffers
     myRawReadings = myAssembleReadings;
     //printf("Readings? 0x%x\n", myRawReadings);
     myAssembleReadings = myCurrentReadings;
@@ -1480,16 +1480,16 @@ AREXPORT void ArLMS2xx::processPacket(ArLMS2xxPacket *packet, ArPose pose,
 }
 
 /** @internal */
-AREXPORT void ArLMS2xx::runOnce(bool lockRobot)
+AREXPORT void MvrLMS2xx::runOnce(bool lockRobot)
 {
-  ArLMS2xxPacket *packet;
+  MvrLMS2xxPacket *packet;
   unsigned int counter;
   int ret;
-  ArTime time;
-  ArTime time2;
-  ArPose pose;
-  ArPose pose2;
-  ArPose encoderPose;
+  MvrTime time;
+  MvrTime time2;
+  MvrPose pose;
+  MvrPose pose2;
+  MvrPose encoderPose;
 
   if (myProcessImmediately && myRobot != NULL)
   {
@@ -1543,11 +1543,11 @@ AREXPORT void ArLMS2xx::runOnce(bool lockRobot)
       if (lockRobot && myInterpolation)
 	myRobot->unlock();
       lockDevice();
-      processPacket(packet, pose, encoderPose, counter, false, ArPose());
+      processPacket(packet, pose, encoderPose, counter, false, MvrPose());
     }
     else if (packet != NULL) // if there's no robot
     {
-      processPacket(packet, pose, encoderPose, 0, false, ArPose());
+      processPacket(packet, pose, encoderPose, 0, false, MvrPose());
       delete packet;
     }
   }
@@ -1556,20 +1556,20 @@ AREXPORT void ArLMS2xx::runOnce(bool lockRobot)
 }
 
 /** @internal */
-AREXPORT void ArLMS2xx::sensorInterpCallback(void)
+AREXPORT void MvrLMS2xx::sensorInterpCallback(void)
 {
   std::list<ArLMS2xxPacket *>::iterator it;
   std::list<ArLMS2xxPacket *> processed;
-  ArLMS2xxPacket *packet;
-  ArTime time;
-  ArPose pose;
+  MvrLMS2xxPacket *packet;
+  MvrTime time;
+  MvrPose pose;
   int ret = -999;
   int retEncoder = -999;
-  ArPose encoderPose;
-  ArPose deinterlaceEncoderPose;
+  MvrPose encoderPose;
+  MvrPose deinterlaceEncoderPose;
   bool deinterlace;
-  ArTime deinterlaceTime;
-  ArPose deinterlaceDelta;
+  MvrTime deinterlaceTime;
+  MvrPose deinterlaceDelta;
   
   if (myRunningOnRobot)
     runOnce(false);
@@ -1586,8 +1586,8 @@ AREXPORT void ArLMS2xx::sensorInterpCallback(void)
     packet = (*it);
     time = packet->getTimeReceived();
     if (!time.addMSec(-13)) {
-      ArLog::log(ArLog::Normal,
-                 "ArLMS2xx::sensorInterpCallback() error adding msecs (-13)");
+      MvrLog::log(MvrLog::Normal,
+                 "MvrLMS2xx::sensorInterpCallback() error adding msecs (-13)");
     }
     if ((ret = myRobot->getPoseInterpPosition(time, &pose)) >= 0 &&
 	(retEncoder = 
@@ -1595,8 +1595,8 @@ AREXPORT void ArLMS2xx::sensorInterpCallback(void)
     {
       deinterlaceTime = packet->getTimeReceived();
       if (!deinterlaceTime.addMSec(-27)) {
-        ArLog::log(ArLog::Normal,
-                   "ArLMS2xx::sensorInterpCallback() error adding msecs (-27)");
+        MvrLog::log(MvrLog::Normal,
+                   "MvrLMS2xx::sensorInterpCallback() error adding msecs (-27)");
       } 
       if (myInterlaced && 
 	  (myRobot->getEncoderPoseInterpPosition(
@@ -1605,7 +1605,7 @@ AREXPORT void ArLMS2xx::sensorInterpCallback(void)
       else
 	deinterlace = false;
 
-      ArTransform deltaTransform;
+      MvrTransform deltaTransform;
       deltaTransform.setTransform(encoderPose);
       deinterlaceDelta = deltaTransform.doInvTransform(deinterlaceEncoderPose);
 
@@ -1619,20 +1619,20 @@ AREXPORT void ArLMS2xx::sensorInterpCallback(void)
     {
       if (myRobot->isConnected())
       {
-	ArLog::log(ArLog::Normal, 
+	ArLog::log(MvrLog::Normal, 
 		   "%s::processPacket: too old to process",
 		   getName());
       }
       else
       {
 	processPacket(packet, pose, encoderPose, myRobot->getCounter(), false,
-		      ArPose());
+		      MvrPose());
       }
       processed.push_back(packet);
     }
     else 
     {
-      //ArLog::log(ArLog::Terse, "%s::processPacket: error %d from interpolation\n", getName(), ret);
+      //ArLog::log(MvrLog::Terse, "%s::processPacket: error %d from interpolation\n", getName(), ret);
       //printf("$$$ ret = %d\n", ret);
     }
   }
@@ -1676,13 +1676,13 @@ AREXPORT void *ArLMS2xx::runThread(void *arg)
 	  }
 	  myConnMutex.unlock();
 	  unlockDevice();
-	  ArUtil::sleep(1);
+	  MvrUtil::sleep(1);
 	}
       }
     } else
       unlockDevice();
     runOnce(true);
-    ArUtil::sleep(1);
+    MvrUtil::sleep(1);
   }
   lockDevice();
   if (isConnected())

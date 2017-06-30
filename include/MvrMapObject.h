@@ -24,8 +24,8 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-/*  \file ArMapObject.h
- *  \brief Contains the definition of the ArMapObject class.
+/*  \file MvrMapObject.h
+ *  \brief Contains the definition of the MvrMapObject class.
  *  \date 06/27/08
  *  \author K. Cunningham
 */
@@ -35,53 +35,53 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
 
-/// A point or region of interest in an Aria map.
+/// A point or region of interest in an Mvria map.
 /**
- * ArMapObject contains the data related to an Aria map object, i.e a point or
- * region of interest in an Aria map that is not part of the sensed obstacle 
+ * MvrMapObject contains the data related to an Mvria map object, i.e a point or
+ * region of interest in an Mvria map that is not part of the sensed obstacle 
  * data.  Examples of map objects include goals, docks, forbidden lines, and 
- * forbidden areas.  Applications may define their own custom ArMapObject types 
- * using the ArMap MapInfo mechanism.  See @ref ArMap for more information.
+ * forbidden areas.  Applications may define their own custom MvrMapObject types 
+ * using the MvrMap MapInfo mechanism.  See @ref MvrMap for more information.
  * 
- * The basic attributes of an ArMapObject include the type of the map object,
+ * The basic attributes of an MvrMapObject include the type of the map object,
  * an optional name of the object, and its position information.  As mentioned 
- * above, there are two basic categories of ArMapObjects:  
+ * above, there are two basic categories of MvrMapObjects:  
  *
- *  - Points:  A single ArPose in the map. By convention, if a map object
+ *  - Points:  A single MvrPose in the map. By convention, if a map object
  *    can have an optional heading, then "WithHeading" appears at the end of 
  *    the object type when the heading is specified.  For example, "Goal" 
  *    designates an (x,y) location in the map (any heading or theta value should
  *    be ignored) and "GoalWithHeading" designates
  *    an (x,y,th) location.
  *
- *  - Regions: A set of two ArPoses ("from" and "to") which define a rectangle
+ *  - Regions: A set of two MvrPoses ("from" and "to") which define a rectangle
  *    or a line.  Rectangles may have an associated rotation value. It is the
  *    rotation to be applied to the "from" and "to" poses <em> around
  *    the global origin </em>.  To retrieve the list of line segments that 
  *    comprise the rotated rectangle's perimeter, use the getFromToSegments()
  *    method.
  * 
- * Note that the ArMapObject is generally immutable.  If an object needs to be 
+ * Note that the MvrMapObject is generally immutable.  If an object needs to be 
  * changed, then the original version should simply be replaced with a new one.  
- * See ArMap::getMapObjects(), ArMap::setMapObjects(), and ArMap::mapChanged().
+ * See MvrMap::getMapObjects(), MvrMap::setMapObjects(), and MvrMap::mapChanged().
  * 
 **/
-class ArMapObject
+class MvrMapObject
 {
 public: 
 
-  /// Creates a new ArMapObject whose attributes are as specified in the given arguments
+  /// Creates a new MvrMapObject whose attributes are as specified in the given arguments
   /**
-   * @param arg the ArArgumentBuilder * from which to create the ArMapObject; this
-   * should correspond to a parsed line in the ArMap file
-   * @return ArMapObject * the newly created map object, or NULL if an error 
+   * @param arg the MvrArgumentBuilder * from which to create the MvrMapObject; this
+   * should correspond to a parsed line in the MvrMap file
+   * @return MvrMapObject * the newly created map object, or NULL if an error 
    * occurred
   **/
-  AREXPORT static ArMapObject *createMapObject(ArArgumentBuilder *arg);
+  AREXPORT static MvrMapObject *createMapObject(MvrArgumentBuilder *arg);
   
 
-  /// ArArgumentBuilder indices for the various map object attributes
-  enum ArgIndex {
+  /// MvrArgumentBuilder indices for the various map object attributes
+  enum MvrgIndex {
     TYPE_ARG_INDEX = 0,
     POSE_X_ARG_INDEX = 1,
     POSE_Y_ARG_INDEX = 2,
@@ -109,7 +109,7 @@ public:
   /**
    * @param type the char * type of the map object (e.g. "Goal", "ForbiddenLine");
    * must be non-empty
-   * @param pose the primary ArPose of the map object; for points, this is its
+   * @param pose the primary MvrPose of the map object; for points, this is its
    * location; for rectangles, this specifies the rotation of the rectangle (in
    * pose.getTh())
    * @param description an optional char * description of the object.
@@ -119,25 +119,25 @@ public:
    * this may be optional or required
    * @param hasFromTo a bool set to true if the object is a region (i.e. line or
    * rectangle); false if the object is a point
-   * @param fromPose the ArPose that defines the start point of the region object;
+   * @param fromPose the MvrPose that defines the start point of the region object;
    * applicable only when hasFromTo is true
-   * @param toPose the ArPose that defines the end point of the region object;
+   * @param toPose the MvrPose that defines the end point of the region object;
    * applicable only when hasFromTo is true
   **/
-  AREXPORT ArMapObject(const char *type, 
-                       ArPose pose, 
+  AREXPORT MvrMapObject(const char *type, 
+                       MvrPose pose, 
                        const char *description,
  		                   const char *iconName, 
                        const char *name,
  		                   bool hasFromTo, 
-                       ArPose fromPose, 
-                       ArPose toPose);
+                       MvrPose fromPose, 
+                       MvrPose toPose);
 
   /// Copy constructor
-  AREXPORT ArMapObject(const ArMapObject &mapObject);
+  AREXPORT MvrMapObject(const MvrMapObject &mapObject);
 
   /// Assignment operator
-  AREXPORT ArMapObject &operator=(const ArMapObject &mapObject);
+  AREXPORT MvrMapObject &operator=(const MvrMapObject &mapObject);
 
   /// Destructor
   AREXPORT virtual ~ArMapObject();
@@ -198,18 +198,18 @@ public:
    * For points, this is the map object's location; for rectangles, this 
    * specifies the rotation of the rectangle (in getPose().getTh())
   **/
-  AREXPORT ArPose getPose(void) const;
+  AREXPORT MvrPose getPose(void) const;
 
   /// Returns true if the map object has valid "from/to" poses (i.e. is a line or rectangle)
   AREXPORT bool hasFromTo(void) const;
 
   /// Returns the "from" pose for lines and rectangles; valid only if hasFromTo() 
-  AREXPORT ArPose getFromPose(void) const;
+  AREXPORT MvrPose getFromPose(void) const;
   /// Returns the "to" pose for lines and rectangles; valid only if hasFromTo() 
-  AREXPORT ArPose getToPose(void) const;
+  AREXPORT MvrPose getToPose(void) const;
 
-  void setPose(ArPose p) { myPose = p; }
-  AREXPORT void setFromTo(ArPose from, ArPose to);
+  void setPose(MvrPose p) { myPose = p; }
+  AREXPORT void setFromTo(MvrPose from, MvrPose to);
 
   /// Returns the optional rotation of a rectangle; or 0 if none
   /**
@@ -245,7 +245,7 @@ public:
    * the copy if the map changes).  It may not make much difference on
    * a modern processor though (its set up this way for safety).
   **/
-  AREXPORT ArLineSegment getFromToSegment(void);
+  AREXPORT MvrLineSegment getFromToSegment(void);
 
   /// Computes the center pose of the map object.
   /**
@@ -253,12 +253,12 @@ public:
    * "to" pose (i.e. lines and rectangles).  For map objects that are poses, 
    * this method simply returns the pose.
   **/
-  AREXPORT ArPose findCenter(void) const;
+  AREXPORT MvrPose findCenter(void) const;
 
   /** Return true if the given point is inside the region of this object,
    * assuming that this object is a region or sector.  False if not.
    */
-  bool isPointInside(const ArPose& p) const { 
+  bool isPointInside(const MvrPose& p) const { 
     if(!hasFromTo()) return false;
     const std::vector<ArPose> v = getRegionVertices();
     if(v.size() > 2)
@@ -272,7 +272,7 @@ public:
    * object rotation into account, find each corner. If this object is not a
    * region or sector (i.e. does not have "from" and "to" corners), then 
    * an empty std::vector is returned.  The "Theta" components of the vertex
-   * ArPose objects is not set or used.
+   * MvrPose objects is not set or used.
    */
   AREXPORT std::vector<ArPose> getRegionVertices() const;
 
@@ -282,7 +282,7 @@ public:
 
   /// Returns the text representation of the map object
   /**
-   * The returned string is suitable for writing to the ArMap file.  Note that
+   * The returned string is suitable for writing to the MvrMap file.  Note that
    * the string does NOT include the map object's optional parameters.
   **/
   AREXPORT const char *toString() const;
@@ -295,7 +295,7 @@ public:
     return toString();
   }
 
-  /// Writes the map object to the ArLog.
+  /// Writes the map object to the MvrLog.
   /**
    * @param intro an optional string that should appear before the object
   **/
@@ -307,7 +307,7 @@ public:
   // --------------------------------------------------------------------------
 
   /// Less than operator (for sets), orders by position
-  AREXPORT bool operator<(const ArMapObject& other) const;
+  AREXPORT bool operator<(const MvrMapObject& other) const;
 
 
   /// Gets the fileName of the object (probably never used for maps)
@@ -322,9 +322,9 @@ public:
 
 private:
 
-  /// Parses the given arguments and sets the description of the given ArMapObject
-  static bool setObjectDescription(ArMapObject *object,
-                                   ArArgumentBuilder *arg);
+  /// Parses the given arguments and sets the description of the given MvrMapObject
+  static bool setObjectDescription(MvrMapObject *object,
+                                   MvrArgumentBuilder *arg);
 
 protected:
 
@@ -339,7 +339,7 @@ protected:
   std::string myDescription;
 
   /// For pose objects, THE pose; For rectangle objects, contains the optional rotation
-  ArPose myPose;
+  MvrPose myPose;
 
   /// Reserved for future use
   std::string myIconName;
@@ -347,19 +347,19 @@ protected:
   /// Whether the map object is a region (line or rect) with "from/to" poses
   bool myHasFromTo;
   /// The "from" pose of a region map object; valid only if myHasFromTo is true
-  ArPose myFromPose;
+  MvrPose myFromPose;
   /// The "to" pose of a region map object; valid only if myHasFromTo is true
-  ArPose myToPose;
+  MvrPose myToPose;
 
   /// For rectangle objects, the line segments that comprise the perimeter (even if rotated)
   std::list<ArLineSegment> myFromToSegments;
   /// For line objects, the line
-  ArLineSegment myFromToSegment;
+  MvrLineSegment myFromToSegment;
   
   /// Text representation written to the map file
   mutable std::string myStringRepresentation;
 
-}; // end class ArMapObject
+}; // end class MvrMapObject
 
 
 // =============================================================================
@@ -367,14 +367,14 @@ protected:
 #ifndef SWIG
 /// Comparator for two pointers to map objects
 /** @swigomit */
-struct ArMapObjectCompare : 
-  public std::binary_function<const ArMapObject *,
-                              const ArMapObject *,
+struct MvrMapObjectCompare : 
+  public std::binary_function<const MvrMapObject *,
+                              const MvrMapObject *,
                               bool> 
  {
    /// Returns true if obj1 is less than obj2; NULL pointers are greater than non-NULL
-   bool operator()(const ArMapObject *obj1,
-                   const ArMapObject *obj2)
+   bool operator()(const MvrMapObject *obj1,
+                   const MvrMapObject *obj2)
    {
      if ((obj1 != NULL) && (obj2 != NULL)) {
        return *obj1 < *obj2;
@@ -387,7 +387,7 @@ struct ArMapObjectCompare :
      }
    } // end operator()
 
- }; // end struct ArMapObjectCompare
+ }; // end struct MvrMapObjectCompare
 
 #endif //ifndef SWIG
 

@@ -46,25 +46,25 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include <string>
 #include "ariaTypedefs.h"
-#include "ArMutex.h"
+#include "MvrMutex.h"
 #include "ariaUtil.h"
 
-class ArFunctor;
+class MvrFunctor;
 
 
 /// socket communication wrapper
 /**
-   ArSocket is a layer which allows you to use the sockets networking
+   MvrSocket is a layer which allows you to use the sockets networking
    interface in an operating system independent manner. All of the standard
    commonly used socket functions are implemented such as open(), close(),
-   connect(), accept(), read(), write(), hostToNetOrder(), netToHostOrder().  ArSocket extends some of these functions to set useful options (see method documentation for details). It also provides additional useful functions like
+   connect(), accept(), read(), write(), hostToNetOrder(), netToHostOrder().  MvrSocket extends some of these functions to set useful options (see method documentation for details). It also provides additional useful functions like
    writeString(), readString, setCloseCallback(), and more.
 
    In Windows, the sockets subsystem needs to be initialized and shutdown
-   by the program. So when a program starts it must call Aria::init() and
-   call Aria::shutdown() when it exits. (Or, to only initialize the socket
-   system, and not do any other global Aria initialization, use ArSocket::init()
-   and ArSocket::shutdown().)
+   by the program. So when a program starts it must call Mvria::init() and
+   call Mvria::shutdown() when it exits. (Or, to only initialize the socket
+   system, and not do any other global Mvria initialization, use MvrSocket::init()
+   and MvrSocket::shutdown().)
 
    Some calls set an error code on failure in addition to returning false. This value is available from getError().
    If getError() returns something other than NoErr, a text description of the error may be available from getErrorStr().  
@@ -74,7 +74,7 @@ class ArFunctor;
 
     @ingroup UtilityClasses
 */
-class ArSocket
+class MvrSocket
 {
 public:
 
@@ -82,19 +82,19 @@ public:
   enum Error {NoErr, NetFail, ConBadHost, ConNoRoute, ConRefused, NameLookup};
 
   /// Constructor. You must then use either connect() or open().
-  AREXPORT ArSocket();
+  AREXPORT MvrSocket();
 
   /// Constructor which immediately connects to a server as a client
   /// @a host Hostname or IP address of remote server
   /// @a port Port number on server
-  /// @a Which IP protocol to use, type ArSocket::TCP or ArSocket::UDP
-  AREXPORT ArSocket(const char *host, int port, Type type);
+  /// @a Which IP protocol to use, type MvrSocket::TCP or MvrSocket::UDP
+  AREXPORT MvrSocket(const char *host, int port, Type type);
 
   /// Constructor which immediately opens a port as a server
   /// @a port Port number to open. Use a value greater than 1024.
-  /// @a doClose Automatically close the port when ArSocket is destroyed (recommend using true)
-  /// @a type Which IP protocol to use, ArSocket::TCP or ArSocket::UDP
-  AREXPORT ArSocket(int port, bool doClose, Type type);
+  /// @a doClose Automatically close the port when MvrSocket is destroyed (recommend using true)
+  /// @a type Which IP protocol to use, MvrSocket::TCP or MvrSocket::UDP
+  AREXPORT MvrSocket(int port, bool doClose, Type type);
 
   /// Destructor
   AREXPORT ~ArSocket();
@@ -117,14 +117,14 @@ public:
 
   /// Copy socket 
   /// @internal
-  AREXPORT void copy(ArSocket *s)
+  AREXPORT void copy(MvrSocket *s)
     {myFD=s->myFD; myDoClose=false; mySin=s->mySin;}
 
   /// Transfer ownership of a socket
   /** transfer() will transfer ownership to this socket. The input socket
       will no longer close the file descriptor when it is destructed.
   */
-  AREXPORT void transfer(ArSocket *s)
+  AREXPORT void transfer(MvrSocket *s)
     {myFD=s->myFD; myDoClose=true; s->myDoClose=false; mySin=s->mySin;
       myType=s->myType; strcpy(myRawIPString, s->myRawIPString); 
       setIPString(s->getIPString()); }
@@ -144,7 +144,7 @@ public:
       particularly useful for servers).  
       
       @param port Port number
-      @param type ArSocket::TCP or ArSocket::UDP.
+      @param type MvrSocket::TCP or MvrSocket::UDP.
       @param openOnIP If given, only bind to the interface
         accociated with this address (Linux only) (by default, all interfaces are used)
   */
@@ -166,7 +166,7 @@ public:
   AREXPORT bool connectTo(struct sockaddr_in *sin);
 
   /// Accept a new connection
-  AREXPORT bool accept(ArSocket *sock);
+  AREXPORT bool accept(MvrSocket *sock);
 
   /// Close the socket
   AREXPORT bool close();
@@ -292,7 +292,7 @@ public:
   /// Compares a string against what was partially read
   AREXPORT int comparePartialReadString(const char *partialString);
   /// Gets the time we last successfully read a string from the socket
-  AREXPORT ArTime getLastStringReadTime(void) { return myLastStringReadTime; }
+  AREXPORT MvrTime getLastStringReadTime(void) { return myLastStringReadTime; }
   /// Sets echoing on the readString calls this socket does
   AREXPORT void setEcho(bool echo) 
   { myStringAutoEcho = false; myStringEcho = echo; }
@@ -317,10 +317,10 @@ public:
   AREXPORT void setIPString(const char *ipString) 
     { if (ipString != NULL) myIPString = ipString; else myIPString = ""; }
   /// Sets the callback for when the socket is closed (nicely or harshly)
-  AREXPORT void setCloseCallback(ArFunctor *functor) 
+  AREXPORT void setCloseCallback(MvrFunctor *functor) 
     { myCloseFunctor = functor; }
   /// Sets the callback for when the socket is closed (nicely or harshly)
-  AREXPORT ArFunctor *getCloseCallback(void) { return myCloseFunctor; }
+  AREXPORT MvrFunctor *getCloseCallback(void) { return myCloseFunctor; }
   /// Gets the number of writes we've done
   long getSends(void) { return mySends; }
   /// Gets the number of bytes we've written
@@ -370,8 +370,8 @@ protected:
 
   bool myFakeWrites;
   bool myLogWriteStrings;
-  ArMutex myReadStringMutex;
-  ArMutex myWriteStringMutex;
+  MvrMutex myReadStringMutex;
+  MvrMutex myWriteStringMutex;
   bool myStringAutoEcho;
   bool myStringEcho;
   bool myStringIgnoreReturn;
@@ -382,7 +382,7 @@ protected:
   size_t myStringPosLast;
   std::string myIPString;
   char myRawIPString[128];
-  ArTime myLastStringReadTime;
+  MvrTime myLastStringReadTime;
   bool myStringGotEscapeChars;
   bool myStringGotComplete;
   bool myStringHaveEchoed;
@@ -397,7 +397,7 @@ protected:
   bool myErrorTracking;
 
   // A functor to call when the socket closes
-  ArFunctor *myCloseFunctor;
+  MvrFunctor *myCloseFunctor;
 };
 
 

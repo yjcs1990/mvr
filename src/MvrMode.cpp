@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArMode.h"
-#include "ArRobot.h"
+#include "MvrMode.h"
+#include "MvrRobot.h"
 #include "ariaInternal.h"
 
 ArMode *ArMode::ourActiveMode = NULL;
@@ -45,7 +45,7 @@ std::list<ArMode *> ArMode::ourModes;
    @param key2 an alternative key to switch to this mode on... it can be
    '\\0' if you don't want a second alternative key
 **/
-AREXPORT ArMode::ArMode(ArRobot *robot, const char *name, char key, 
+AREXPORT ArMode::ArMode(MvrRobot *robot, const char *name, char key, 
 			char key2) :
   myActivateCB(this, &ArMode::activate),
   myDeactivateCB(this, &ArMode::deactivate),
@@ -64,19 +64,19 @@ AREXPORT ArMode::ArMode(ArRobot *robot, const char *name, char key,
     if (myRobot != NULL)
       myRobot->attachKeyHandler(keyHandler);
     else
-      ArLog::log(ArLog::Terse, "ArMode: No robot to attach a keyHandler to, keyHandling won't work... either make your own keyHandler and drive it yourself, make a keyhandler and attach it to a robot, or give this a robot to attach to.");
+      ArLog::log(MvrLog::Terse, "MvrMode: No robot to attach a keyHandler to, keyHandling won't work... either make your own keyHandler and drive it yourself, make a keyhandler and attach it to a robot, or give this a robot to attach to.");
   }  
   if (ourHelpCB == NULL)
   {
     ourHelpCB = new ArGlobalFunctor(&ArMode::baseHelp);
     if (!keyHandler->addKeyHandler('h', ourHelpCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for 'h', ArMode will not be invoked on an 'h' keypress.");
+      ArLog::log(MvrLog::Terse, "The key handler already has a key for 'h', ArMode will not be invoked on an 'h' keypress.");
     if (!keyHandler->addKeyHandler('H', ourHelpCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for 'H', ArMode will not be invoked on an 'H' keypress.");
+      ArLog::log(MvrLog::Terse, "The key handler already has a key for 'H', ArMode will not be invoked on an 'H' keypress.");
     if (!keyHandler->addKeyHandler('?', ourHelpCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for '?', ArMode will not be invoked on an '?' keypress.");
+      ArLog::log(MvrLog::Terse, "The key handler already has a key for '?', ArMode will not be invoked on an '?' keypress.");
     if (!keyHandler->addKeyHandler('/', ourHelpCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for '/', ArMode will not be invoked on an '/' keypress.");
+      ArLog::log(MvrLog::Terse, "The key handler already has a key for '/', ArMode will not be invoked on an '/' keypress.");
 
   }
 
@@ -84,10 +84,10 @@ AREXPORT ArMode::ArMode(ArRobot *robot, const char *name, char key,
   // warning messages if they fail
   if (myKey != '\0')
     if (!keyHandler->addKeyHandler(myKey, &myActivateCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for '%c', ArMode will not work correctly.", myKey);
+      ArLog::log(MvrLog::Terse, "The key handler already has a key for '%c', ArMode will not work correctly.", myKey);
   if (myKey2 != '\0')
     if (!keyHandler->addKeyHandler(myKey2, &myActivateCB))
-      ArLog::log(ArLog::Terse, "The key handler already has a key for '%c', ArMode will not work correctly.", myKey2);
+      ArLog::log(MvrLog::Terse, "The key handler already has a key for '%c', ArMode will not work correctly.", myKey2);
 
   // toss this mode into our list of modes
   ourModes.push_front(this);
@@ -169,20 +169,20 @@ AREXPORT char ArMode::getKey2(void)
 AREXPORT void ArMode::baseHelp(void)
 {
   std::list<ArMode *>::iterator it;
-  ArLog::log(ArLog::Terse, "\n\nYou can do these actions with these keys:\n");
-  ArLog::log(ArLog::Terse, "quit: escape");
-  ArLog::log(ArLog::Terse, "help: 'h' or 'H' or '?' or '/'");
-  ArLog::log(ArLog::Terse, "\nYou can switch to other modes with these keys:");
+  ArLog::log(MvrLog::Terse, "\n\nYou can do these actions with these keys:\n");
+  ArLog::log(MvrLog::Terse, "quit: escape");
+  ArLog::log(MvrLog::Terse, "help: 'h' or 'H' or '?' or '/'");
+  ArLog::log(MvrLog::Terse, "\nYou can switch to other modes with these keys:");
   for (it = ourModes.begin(); it != ourModes.end(); ++it)
   {
-    ArLog::log(ArLog::Terse, "%30s mode: '%c' or '%c'", (*it)->getName(), 
+    ArLog::log(MvrLog::Terse, "%30s mode: '%c' or '%c'", (*it)->getName(), 
 	       (*it)->getKey(), (*it)->getKey2());
   }
   if (ourActiveMode == NULL)
-    ArLog::log(ArLog::Terse, "You are in no mode currently.");
+    ArLog::log(MvrLog::Terse, "You are in no mode currently.");
   else
   {
-    ArLog::log(ArLog::Terse, "You are in '%s' mode currently.\n",
+    ArLog::log(MvrLog::Terse, "You are in '%s' mode currently.\n",
 	       ourActiveMode->getName());
     ourActiveMode->help();
   }
@@ -197,7 +197,7 @@ AREXPORT void ArMode::addKeyHandler(int keyToHandle, ArFunctor *functor)
   // (since constructor should make one if there isn't one yet
   if ((keyHandler = Aria::getKeyHandler()) == NULL)
   {
-    ArLog::log(ArLog::Terse,"ArMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
+    ArLog::log(MvrLog::Terse,"MvrMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
     return;
   }
 
@@ -250,16 +250,16 @@ AREXPORT void ArMode::addKeyHandler(int keyToHandle, ArFunctor *functor)
       break;
     }
     if (specialKey || (keyToHandle >= '!' && keyToHandle <= '~'))
-      ArLog::log(ArLog::Terse,  
-		 "ArMode '%s': The key handler has a duplicate key for '%s' so the mode may not work right.", getName(), charStr.c_str());
+      ArLog::log(MvrLog::Terse,  
+		 "MvrMode '%s': The key handler has a duplicate key for '%s' so the mode may not work right.", getName(), charStr.c_str());
     else
-      ArLog::log(ArLog::Terse,  
-		 "ArMode '%s': The key handler has a duplicate key for number %d so the mode may not work right.", getName(), keyToHandle);
+      ArLog::log(MvrLog::Terse,  
+		 "MvrMode '%s': The key handler has a duplicate key for number %d so the mode may not work right.", getName(), keyToHandle);
   }
   
 }
 
-AREXPORT void ArMode::remKeyHandler(ArFunctor *functor)
+AREXPORT void ArMode::remKeyHandler(MvrFunctor *functor)
 {
   ArKeyHandler *keyHandler;
   std::string charStr;
@@ -268,11 +268,11 @@ AREXPORT void ArMode::remKeyHandler(ArFunctor *functor)
   // (since constructor should make one if there isn't one yet
   if ((keyHandler = Aria::getKeyHandler()) == NULL)
   {
-    ArLog::log(ArLog::Terse,"ArMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
+    ArLog::log(MvrLog::Terse,"MvrMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
     return;
   }
   if (!keyHandler->remKeyHandler(functor))
-    ArLog::log(ArLog::Terse,  
-	       "ArMode '%s': The key handler already didn't have the given functor so the mode may not be working right.", getName());
+    ArLog::log(MvrLog::Terse,  
+	       "MvrMode '%s': The key handler already didn't have the given functor so the mode may not be working right.", getName());
 }
   

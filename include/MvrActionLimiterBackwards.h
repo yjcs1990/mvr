@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONBACKWARDSSPEEDLIMITER_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action to limit the backwards motion of the robot based on range sensor readings
 /**
@@ -38,11 +38,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    this action requests that the robot decelerate or stop any current backwards movement.
    @ingroup ActionClasses
 */
-class ArActionLimiterBackwards : public ArAction
+class MvrActionLimiterBackwards : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionLimiterBackwards(const char *name = "speed limiter", 
+  AREXPORT MvrActionLimiterBackwards(const char *name = "speed limiter", 
 				    double stopDistance = -250,
 				    double slowDistance = -600,
 				    double maxBackwardsSpeed = -250,
@@ -50,10 +50,10 @@ public:
 				    bool avoidLocationDependentObstacles = true);
   /// Destructor
   AREXPORT virtual ~ArActionLimiterBackwards();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
@@ -62,7 +62,7 @@ protected:
   double myMaxBackwardsSpeed;
   double myWidthRatio;
   bool myAvoidLocationDependentObstacles;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 };
 
 #endif // ARACTIONBACKWARDSSPEEDLIMITER_H

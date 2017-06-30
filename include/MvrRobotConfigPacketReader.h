@@ -29,20 +29,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
-#include "ArRobotPacket.h"
+#include "MvrFunctor.h"
+#include "MvrRobotPacket.h"
 
-class ArRobot;
+class MvrRobot;
 
 
 /// This class will read a config packet from the robot
-class ArRobotConfigPacketReader
+class MvrRobotConfigPacketReader
 {
 public:
   /// Constructor
-  AREXPORT ArRobotConfigPacketReader(ArRobot *robot, 
+  AREXPORT MvrRobotConfigPacketReader(MvrRobot *robot, 
 				     bool onlyOneRequest = false,
-				     ArFunctor *packetedArrivedCB = NULL);
+				     MvrFunctor *packetedArrivedCB = NULL);
   /// Destructor
   AREXPORT ~ArRobotConfigPacketReader();
   /// Request a packet.. true if we could, false if onlyOneRequest already done
@@ -52,7 +52,7 @@ public:
   /// See if we've gotten the data
   bool hasPacketArrived(void) const { return myPacketArrived; }
   /// Gets a pointer to the packet that we built the config packet from
-  const ArRobotPacket *getRobotPacket(void) const { return &myPacket; } 
+  const MvrRobotPacket *getRobotPacket(void) const { return &myPacket; } 
   /// Log the config
   AREXPORT void log(void) const;
   /// Log the movement part of the config config
@@ -205,7 +205,7 @@ public:
   int getGyroFWVersion(void) const 
     { return myGyroFWVersion; }
   /// internal, packet handler
-  AREXPORT bool packetHandler(ArRobotPacket *packet);
+  AREXPORT bool packetHandler(MvrRobotPacket *packet);
   /// internal, connection callback
   AREXPORT void connected(void);
 protected:
@@ -279,7 +279,7 @@ protected:
   int myGyroFWVersion;
 
   // the robot
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
   // whether only one request can be done or not
   bool myOnlyOneRequest;
   // whether a request has been made or not
@@ -287,16 +287,16 @@ protected:
   // whether our data has been received or not
   bool myPacketArrived;
   // last time we requested a packet (we'll only ask every 200 ms)
-  ArTime myLastPacketRequest;
+  MvrTime myLastPacketRequest;
   // a copy of the packet
-  ArRobotPacket myPacket;
+  MvrRobotPacket myPacket;
   
   // the callback
-  ArRetFunctor1C<bool, ArRobotConfigPacketReader, ArRobotPacket *> myPacketHandlerCB;
+  MvrRetFunctor1C<bool, MvrRobotConfigPacketReader, MvrRobotPacket *> myPacketHandlerCB;
   // callback for connectiosn in case we need to request a config packet
-  ArFunctorC<ArRobotConfigPacketReader> myConnectedCB;
+  MvrFunctorC<ArRobotConfigPacketReader> myConnectedCB;
   // callback for when we get a packet
-  ArFunctor *myPacketArrivedCB;
+  MvrFunctor *myPacketArrivedCB;
   
 };
 

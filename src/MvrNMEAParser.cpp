@@ -27,9 +27,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArNMEAParser.h"
+#include "MvrNMEAParser.h"
 
 #include <iostream>
 
@@ -114,7 +114,7 @@ void ArNMEAParser::beginMessage()
 }
 
 
-AREXPORT int ArNMEAParser::parse(ArDeviceConnection *dev) 
+AREXPORT int ArNMEAParser::parse(MvrDeviceConnection *dev) 
 {
   int n = dev->read(myReadBuffer, sizeof(myReadBuffer));
 #ifdef DEBUG_ARNMEAPARSER
@@ -177,7 +177,7 @@ AREXPORT int ArNMEAParser::parse(const char *buf, int n)
         if(!inChecksum)
         {
           // checksum should have preceded.
-          ArLog::log(ArLog::Terse, "ArNMEAParser: Missing checksum.");
+          ArLog::log(MvrLog::Terse, "MvrNMEAParser: Missing checksum.");
           result |= ParseError;
           endMessage();
           continue;
@@ -208,7 +208,7 @@ AREXPORT int ArNMEAParser::parse(const char *buf, int n)
           const char *id = msg.id.c_str();
           const char *p = msg.prefix.c_str();
           const char *lp = lastprefix.c_str();
-          ArLog::log(ArLog::Normal, "ArNMEAParser: Warning: Got duplicate %s message with prefix %s (previous prefix was %s).  Data from %s%s will replace %s%s.", id, p, lp, p, id, lp, id);
+          ArLog::log(MvrLog::Normal, "MvrNMEAParser: Warning: Got duplicate %s message with prefix %s (previous prefix was %s).  Data from %s%s will replace %s%s.", id, p, lp, p, id, lp, id);
         }
         HandlerMap::iterator h = myHandlers.find(msg.id);
         if (h != myHandlers.end()) 
@@ -223,7 +223,7 @@ AREXPORT int ArNMEAParser::parse(const char *buf, int n)
           }
           else
           {
-            ArLog::log(ArLog::Terse, "ArNMEAParser Internal Error: NULL handler functor for message %s!\n", msg.id.c_str());
+            ArLog::log(MvrLog::Terse, "MvrNMEAParser Internal Error: NULL handler functor for message %s!\n", msg.id.c_str());
           }
         }
 #ifdef DEBUG_ARNMEAPARSER
@@ -235,7 +235,7 @@ AREXPORT int ArNMEAParser::parse(const char *buf, int n)
       }
       else
       {
-        ArLog::log(ArLog::Normal, "ArNMEAParser: syntax error, \\n without \\r.");
+        ArLog::log(MvrLog::Normal, "MvrNMEAParser: syntax error, \\n without \\r.");
         result |= ParseError;
       }
 
@@ -252,7 +252,7 @@ AREXPORT int ArNMEAParser::parse(const char *buf, int n)
         int checksumRec = (int) strtol(checksumBuf, NULL, 16);
         if (checksumRec != currentChecksum) 
         {
-          ArLog::log(ArLog::Normal, "%s: Warning: Skipping message with incorrect checksum.", myName);
+          ArLog::log(MvrLog::Normal, "%s: Warning: Skipping message with incorrect checksum.", myName);
 
           // reconstruct message to log:
           std::string nmeaText = "";
@@ -261,7 +261,7 @@ AREXPORT int ArNMEAParser::parse(const char *buf, int n)
             if(i != currentMessage.begin()) nmeaText += ",";
             nmeaText += *i;
           }
-          ArLog::log(ArLog::Normal, "%s: Message provided checksum \"%s\" = 0x%x (%d). Calculated checksum is 0x%x (%d).  NMEA message contents were: \"%s\"", myName, checksumBuf, checksumRec, checksumRec, currentChecksum, currentChecksum, nmeaText.c_str());
+          ArLog::log(MvrLog::Normal, "%s: Message provided checksum \"%s\" = 0x%x (%d). Calculated checksum is 0x%x (%d).  NMEA message contents were: \"%s\"", myName, checksumBuf, checksumRec, checksumRec, currentChecksum, currentChecksum, nmeaText.c_str());
 
           // abort the message and start looking for the next one.
           result |= ParseError;

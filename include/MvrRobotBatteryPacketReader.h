@@ -29,17 +29,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
-class ArRobot;
-class ArRobotPacket;
+class MvrRobot;
+class MvrRobotPacket;
 
 /// This class will read a config packet from the robot
-class ArRobotBatteryPacketReader
+class MvrRobotBatteryPacketReader
 {
 public:
   /// Constructor
-  AREXPORT ArRobotBatteryPacketReader(ArRobot *robot);
+  AREXPORT MvrRobotBatteryPacketReader(MvrRobot *robot);
   /// Destructor
   AREXPORT ~ArRobotBatteryPacketReader();
   /// Request a single packet.. 
@@ -70,12 +70,12 @@ public:
 
 protected:
   /// internal, packet handler
-  AREXPORT bool packetHandler(ArRobotPacket *packet);
+  AREXPORT bool packetHandler(MvrRobotPacket *packet);
   /// internal, packet handler
   AREXPORT void connectCallback(void);
 
   // the robot
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
 
   int myNumBatteries;
   int myNumBytesPerBattery;
@@ -89,13 +89,13 @@ protected:
   // whether our data has been received or not
   bool myPacketArrived;
   // last time we requested a packet (we'll only ask every 200 ms)
-  ArTime myLastPacketRequest;
+  MvrTime myLastPacketRequest;
 
   bool myRequestedBatteryPackets;
 
   // the callback
-  ArRetFunctor1C<bool, ArRobotBatteryPacketReader, ArRobotPacket *> myPacketHandlerCB;
-  ArFunctorC<ArRobotBatteryPacketReader> myConnectCB;
+  MvrRetFunctor1C<bool, MvrRobotBatteryPacketReader, MvrRobotPacket *> myPacketHandlerCB;
+  MvrFunctorC<ArRobotBatteryPacketReader> myConnectCB;
 };
 
 #endif // ARROBOTBATTERYPACKETREADER_H

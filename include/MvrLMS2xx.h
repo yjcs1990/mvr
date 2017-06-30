@@ -29,30 +29,30 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaTypedefs.h"
-#include "ArLMS2xxPacket.h"
-#include "ArLMS2xxPacketReceiver.h"
-#include "ArRobotPacket.h"
-#include "ArLaser.h"   
-#include "ArFunctor.h"
-#include "ArCondition.h"
+#include "MvrLMS2xxPacket.h"
+#include "MvrLMS2xxPacketReceiver.h"
+#include "MvrRobotPacket.h"
+#include "MvrLaser.h"   
+#include "MvrFunctor.h"
+#include "MvrCondition.h"
 
 /// Interface to a SICK LMS-200 laser range device
 /**
  * This class processes incoming data from a SICK LMS-200
  * laser rangefinding device in a background thread, and provides
- * it through the standard ArRangeDevice API, to be used via ArRobot
- * (see ArRobot::addRangeDevice()), used by an ArAction, or used directly.
+ * it through the standard MvrRangeDevice API, to be used via MvrRobot
+ * (see MvrRobot::addRangeDevice()), used by an MvrAction, or used directly.
  *
- * An ArSick instance must be connected to the laser through a serial port
- * (or simulator): the typical procedure is to allow your ArSimpleConnector
+ * An MvrSick instance must be connected to the laser through a serial port
+ * (or simulator): the typical procedure is to allow your MvrSimpleConnector
  * to configure the laser based on the robot connection type and command
- * line parameters; then initiate the ArSick background thread; and finally
- * connect ArSick to the laser device.
+ * line parameters; then initiate the MvrSick background thread; and finally
+ * connect MvrSick to the laser device.
  * For example:
  * @code
- *  ArRobot robot;
- *  ArSick laser;
- *  ArSimpleConnector connector(...);
+ *  MvrRobot robot;
+ *  MvrSick laser;
+ *  MvrSimpleConnector connector(...);
  *  ...
  *   Setup the simple connector and connect to the robot --
  *   see the example programs.
@@ -69,13 +69,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *
  * The most important methods in this class are the constructor, runAsync(), 
  * blockingConnect(), getSensorPosition(), isConnected(), addConnectCB(),
- * asyncConnect(), configure(), in addition to the ArRangeDevice interface. 
+ * asyncConnect(), configure(), in addition to the MvrRangeDevice interface. 
  *
  * @note The "extra int" on the raw readings returned by
- * ArRangeDevice::getRawReadings() is like other laser
+ * MvrRangeDevice::getRawReadings() is like other laser
  * devices and is the reflectance value, if enabled, ranging between 0 and 255.
  *
- * ArLMS2xx uses the following buffer parameters by default (see ArRangeDevice
+ * MvrLMS2xx uses the following buffer parameters by default (see MvrRangeDevice
  * documentation):
  * <dl>
  *  <dt>MinDistBetweenCurrent <dd>50 mm
@@ -88,11 +88,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *
  * @since 2.7.0
 **/
-class ArLMS2xx : public ArLaser
+class MvrLMS2xx : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT ArLMS2xx(int laserNumber,
+  AREXPORT MvrLMS2xx(int laserNumber,
 		    const char *name = "lms2xx",
 		    bool appendLaserNumberToName = true);
 
@@ -119,16 +119,16 @@ public:
     }
 
   /// Sets the device connection
-  AREXPORT virtual void setDeviceConnection(ArDeviceConnection *conn);
+  AREXPORT virtual void setDeviceConnection(MvrDeviceConnection *conn);
 
-  /** The internal function used by the ArRangeDeviceThreaded
+  /** The internal function used by the MvrRangeDeviceThreaded
    *  @internal
    */
   AREXPORT virtual void * runThread(void *arg);
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
 protected:
   // The packet handler for when connected to the simulator
-  AREXPORT bool simPacketHandler(ArRobotPacket * packet);
+  AREXPORT bool simPacketHandler(MvrRobotPacket * packet);
   // The function called if the laser isn't running in its own thread and isn't simulated
   AREXPORT void sensorInterpCallback(void);
   // An internal function for connecting to the sim
@@ -136,9 +136,9 @@ protected:
   /// An internal function, single loop event to connect to laser
   AREXPORT int internalConnectHandler(void);
   // The internal function which processes the sickPackets
-  AREXPORT void processPacket(ArLMS2xxPacket *packet, ArPose pose, 
-			      ArPose encoderPose, unsigned int counter,
-			      bool deinterlace, ArPose deinterlaceDelta);
+  AREXPORT void processPacket(MvrLMS2xxPacket *packet, MvrPose pose, 
+			      MvrPose encoderPose, unsigned int counter,
+			      bool deinterlace, MvrPose deinterlaceDelta);
   // The internal function that gets does the work
   AREXPORT void runOnce(bool lockRobot);
   // Internal function, shouldn't be used, drops the conn because of error
@@ -148,13 +148,13 @@ protected:
   // Internal function, shouldn't be used, does the after conn stuff
   AREXPORT void madeConnection(void);
 
-  /// Internal function that gets whether the laser is simulated or not (just for the old ArSick)
+  /// Internal function that gets whether the laser is simulated or not (just for the old MvrSick)
   AREXPORT bool sickGetIsUsingSim(void);
 
-  /// Internal function that sets whether the laser is simulated or not (just for the old ArSick)
+  /// Internal function that sets whether the laser is simulated or not (just for the old MvrSick)
   AREXPORT void sickSetIsUsingSim(bool usingSim);
 
-  /// internal function to runOnRobot so that ArSick can do that while this class won't
+  /// internal function to runOnRobot so that MvrSick can do that while this class won't
   AREXPORT bool internalRunOnRobot(void);
 
   /// Finishes getting the unset parameters from the robot then
@@ -183,10 +183,10 @@ protected:
   /// Internal function for switching states
   AREXPORT void switchState(State state);
   State myState;
-  ArTime myStateStart;
-  ArFunctorC<ArLMS2xx> myRobotConnectCB;
-  ArRetFunctor1C<bool, ArLMS2xx, ArRobotPacket *> mySimPacketHandler;
-  ArFunctorC<ArLMS2xx> mySensorInterpCB;
+  MvrTime myStateStart;
+  MvrFunctorC<ArLMS2xx> myRobotConnectCB;
+  MvrRetFunctor1C<bool, MvrLMS2xx, MvrRobotPacket *> mySimPacketHandler;
+  MvrFunctorC<ArLMS2xx> mySensorInterpCB;
   std::list<ArSensorReading *>::iterator myIter;
   bool myStartConnect;
   bool myRunningOnRobot;
@@ -209,23 +209,23 @@ protected:
   double myIncrementAmount;
 
   // packet stuff
-  ArLMS2xxPacket myPacket;
+  MvrLMS2xxPacket myPacket;
   bool myUseSim;
   
   int myNumReflectorBits;
   bool myInterlaced;
 
   // stuff for the sim packet
-  ArPose mySimPacketStart;
-  ArTransform mySimPacketTrans;
-  ArTransform mySimPacketEncoderTrans;
+  MvrPose mySimPacketStart;
+  MvrTransform mySimPacketTrans;
+  MvrTransform mySimPacketEncoderTrans;
   unsigned int mySimPacketCounter;
 
   // connection
-  ArLMS2xxPacketReceiver myLMS2xxPacketReceiver;
+  MvrLMS2xxPacketReceiver myLMS2xxPacketReceiver;
 
-  ArMutex myStateMutex;
-  ArRetFunctorC<bool, ArLMS2xx> myAriaExitCB;
+  MvrMutex myStateMutex;
+  MvrRetFunctorC<bool, MvrLMS2xx> myAriaExitCB;
 };
 
 

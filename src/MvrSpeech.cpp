@@ -26,9 +26,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
 
-#include "ArExport.h"
-#include "ArSpeech.h"
-#include "ArConfig.h"
+#include "MvrExport.h"
+#include "MvrSpeech.h"
+#include "MvrConfig.h"
 #include "ariaInternal.h"
 
 
@@ -39,7 +39,7 @@ AREXPORT ArSpeechSynth::ArSpeechSynth() :
   myAudioPlaybackCB(0),
   myProcessConfigCB(this, &ArSpeechSynth::processConfig)
 {
-  myProcessConfigCB.setName("ArSpeechSynth");
+  myProcessConfigCB.setName("MvrSpeechSynth");
 }
 
 
@@ -48,7 +48,7 @@ AREXPORT bool ArSpeechSynth::init()
   return true;
 }
 
-AREXPORT void ArSpeechSynth::addToConfig(ArConfig *config)
+AREXPORT void ArSpeechSynth::addToConfig(MvrConfig *config)
 {
   addVoiceConfigParam(config);
   config->addProcessFileCB(&myProcessConfigCB, 100);
@@ -74,7 +74,7 @@ AREXPORT ArFunctorC<ArSpeechSynth>*  ArSpeechSynth::getInterruptCallback()
   return &myInterruptCB;
 }
 
-AREXPORT void ArSpeechSynth::setAudioCallback(ArRetFunctor2<bool, ArTypes::Byte2*, int>* cb)
+AREXPORT void ArSpeechSynth::setAudioCallback(MvrRetFunctor2<bool, ArTypes::Byte2*, int>* cb)
 {
   myAudioPlaybackCB = cb;
 }
@@ -92,7 +92,7 @@ bool ArSpeechSynth::processConfig()
   return true;
 }
 
-void ArSpeechSynth::addVoiceConfigParam(ArConfig *config)
+void ArSpeechSynth::addVoiceConfigParam(MvrConfig *config)
 {
   const char *current = getCurrentVoiceName();
   if(current)

@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONBUMPERS_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action to deal with if the bumpers trigger
 /**
@@ -43,25 +43,25 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   @ingroup ActionClasses
 */
 
-class ArActionBumpers : public ArAction
+class MvrActionBumpers : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionBumpers(const char *name = "bumpers", 
+  AREXPORT MvrActionBumpers(const char *name = "bumpers", 
 			   double backOffSpeed = 100, int backOffTime = 3000,
 			   int turnTime = 3000, bool setMaximums = false);
   /// Destructor
   AREXPORT virtual ~ArActionBumpers();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   AREXPORT double findDegreesToTurn(int bumpValue, int whichBumper);
   AREXPORT virtual void activate(void);
 protected:
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
   bool mySetMaximums;
   double myBackOffSpeed;
   int myBackOffTime;
@@ -71,7 +71,7 @@ protected:
   double mySpeed;
   double myHeading;
   int myBumpMask;
-  ArTime myStartBack;
+  MvrTime myStartBack;
   //ArTime myStoppedSince;
 };
 

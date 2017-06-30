@@ -1,42 +1,15 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#include "MvrExport.h"
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
-#include "ArExport.h"
-
-#include "ariaOSDef.h"
-#include "ArActionColorFollow.h"
-#include "ArResolver.h"
-#include "ArRobot.h"
+#include "mvriaOSDef.h"
+#include "MvrActionColorFollow.h"
+#include "MvrResolver.h"
+#include "MvrRobot.h"
 
 // Constructor: Initialize the color follow action
-AREXPORT ArActionColorFollow::ArActionColorFollow(const char *name, ArACTS_1_2 *acts, 
-						  ArPTZ *camera, double speed, 
+AREXPORT MvrActionColorFollow::MvrActionColorFollow(const char *name, MvrACTS_1_2 *acts, 
+						  MvrPTZ *camera, double speed, 
 						  int width, int height) :
-    ArAction(name, "Follows the largest blob of color.")
+    MvrAction(name, "Follows the largest blob of color.")
 {
   myActs = acts;
   myAcquire = true;
@@ -54,14 +27,14 @@ AREXPORT ArActionColorFollow::ArActionColorFollow(const char *name, ArACTS_1_2 *
 }
 
 // Destructor
-AREXPORT ArActionColorFollow::~ArActionColorFollow(void) {}
+AREXPORT MvrActionColorFollow::~MvrActionColorFollow(void) {}
 
 
 // The color follow action
-AREXPORT ArActionDesired *ArActionColorFollow::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *MvrActionColorFollow::fire(MvrActionDesired currentDesired)
 {
-  ArACTSBlob blob;
-  ArACTSBlob largestBlob;
+  MvrACTSBlob blob;
+  MvrACTSBlob largestBlob;
 
   bool haveBlob = false;
 
@@ -135,7 +108,7 @@ AREXPORT ArActionDesired *ArActionColorFollow::fire(ArActionDesired currentDesir
 	  yRel = (double)(largestBlob.getYCG() - myHeight/2.0) / (double)myHeight;
 	  
 	  // Tilt the camera toward the blob
-	  if(!(ArMath::fabs(yRel) < .20) && myCamera != NULL)
+	  if(!(MvrMath::fabs(yRel) < .20) && myCamera != NULL)
 	    {
 	      if (-yRel > 0)
 		myCamera->tiltRel(1);
@@ -147,7 +120,7 @@ AREXPORT ArActionDesired *ArActionColorFollow::fire(ArActionDesired currentDesir
 	  if(!killMovement)
 	    {
 	      // Set the heading and velocity for the robot
-	      if (ArMath::fabs(xRel) < .10)
+	      if (MvrMath::fabs(xRel) < .10)
 		{
 		  myLocation = CENTER;
 		  myDesired.setDeltaHeading(0);
@@ -156,7 +129,7 @@ AREXPORT ArActionDesired *ArActionColorFollow::fire(ArActionDesired currentDesir
 		}
 	      else
 		{
-		  if (ArMath::fabs(-xRel * 10) <= 10)
+		  if (MvrMath::fabs(-xRel * 10) <= 10)
 		    {
 		      if(xRel < 0) myLocation = RIGHT;
 		      if(xRel > 0) myLocation = LEFT;
@@ -222,10 +195,10 @@ AREXPORT ArActionDesired *ArActionColorFollow::fire(ArActionDesired currentDesir
 }
 
 // Set the channel that the blob info will be obtained from
-AREXPORT bool ArActionColorFollow::setChannel(int channel)
+AREXPORT bool MvrActionColorFollow::setChannel(int channel)
 {
   // Make sure that the requested channel is in range
-  if (channel >= 1 && channel <= ArACTS_1_2::NUM_CHANNELS)
+  if (channel >= 1 && channel <= MvrACTS_1_2::NUM_CHANNELS)
   {
     myChannel = channel;
     return true;
@@ -235,51 +208,51 @@ AREXPORT bool ArActionColorFollow::setChannel(int channel)
 }
 
 // Set the camera that we are controlling
-AREXPORT void ArActionColorFollow::setCamera(ArPTZ *camera)
+AREXPORT void MvrActionColorFollow::setCamera(MvrPTZ *camera)
 {
   myCamera = camera;
 }
 
 // Toggle whether or not we should attempt to acquire a
 // target or just stay still
-AREXPORT void ArActionColorFollow::setAcquire(bool acquire)
+AREXPORT void MvrActionColorFollow::setAcquire(bool acquire)
 {
   myAcquire = acquire;
 }
 
 // Kill movement
-AREXPORT void ArActionColorFollow::stopMovement(void)
+AREXPORT void MvrActionColorFollow::stopMovement(void)
 {
   killMovement = true;
 }
 
 // Start moving
-AREXPORT void ArActionColorFollow::startMovement(void)
+AREXPORT void MvrActionColorFollow::startMovement(void)
 {
   killMovement = false;
 }
 
 // Return the channel that we are looking on
-AREXPORT int ArActionColorFollow::getChannel(void)
+AREXPORT int MvrActionColorFollow::getChannel(void)
 {
   return myChannel;
 }
 
 // Return if we are actively trying to find a blob
 // if one cannot be seen
-AREXPORT bool ArActionColorFollow::getAcquire(void)
+AREXPORT bool MvrActionColorFollow::getAcquire(void)
 {
   return myAcquire;
 }
 
 // Return whether we are supposed to be moving or not
-AREXPORT bool ArActionColorFollow::getMovement(void)
+AREXPORT bool MvrActionColorFollow::getMovement(void)
 {
   return !killMovement;
 }
 
 // Return whether we can see a target or not
-AREXPORT bool ArActionColorFollow::getBlob(void)
+AREXPORT bool MvrActionColorFollow::getBlob(void)
 {
   if(myState == TARGET) return true;
   else return false;

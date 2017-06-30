@@ -24,40 +24,40 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArAMPTU.h"
-#include "ArCommands.h"
-#include "ArLog.h"
-#include "ArRobot.h"
+#include "MvrAMPTU.h"
+#include "MvrCommands.h"
+#include "MvrLog.h"
+#include "MvrRobot.h"
 
-AREXPORT ArAMPTUPacket::ArAMPTUPacket(ArTypes::UByte2 bufferSize) :
-  ArBasePacket(bufferSize, 3)
+AREXPORT MvrAMPTUPacket::ArAMPTUPacket(MvrTypes::UByte2 bufferSize) :
+  MvrBasePacket(bufferSize, 3)
 {
   myUnitNumber = 0;
 }
 
-AREXPORT ArAMPTUPacket::~ArAMPTUPacket()
+AREXPORT MvrAMPTUPacket::~ArAMPTUPacket()
 {
 
 }
 
-AREXPORT void ArAMPTUPacket::byteToBuf(ArTypes::Byte val)
+AREXPORT void MvrAMPTUPacket::byteToBuf(MvrTypes::Byte val)
 {
   if (myLength + 1 > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArAMPTUPacket::uByteToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrAMPTUPacket::uByteToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = val;
   ++myLength;
 }
 
-AREXPORT void ArAMPTUPacket::byte2ToBuf(ArTypes::Byte2 val)
+AREXPORT void MvrAMPTUPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 2) > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArAMPTUPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrAMPTUPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = val/255;//(val & 0xff00) >> 8;
@@ -66,7 +66,7 @@ AREXPORT void ArAMPTUPacket::byte2ToBuf(ArTypes::Byte2 val)
   ++myLength;
 }
 
-AREXPORT void ArAMPTUPacket::finalizePacket(void)
+AREXPORT void MvrAMPTUPacket::finalizePacket(void)
 {
   int length = myLength;
   myLength = 0;
@@ -82,7 +82,7 @@ AREXPORT void ArAMPTUPacket::finalizePacket(void)
    packet has to know what the number is.
    @return the unit number this packet has
 */
-AREXPORT unsigned char ArAMPTUPacket::getUnitNumber(void)
+AREXPORT unsigned char MvrAMPTUPacket::getUnitNumber(void)
 {
   return myUnitNumber;
 }
@@ -94,7 +94,7 @@ AREXPORT unsigned char ArAMPTUPacket::getUnitNumber(void)
    @param unitNumber the unit number for this packet, this needs to be 0-7
    @return true if the number is acceptable, false otherwise
 */
-AREXPORT bool ArAMPTUPacket::setUnitNumber(unsigned char unitNumber)
+AREXPORT bool MvrAMPTUPacket::setUnitNumber(unsigned char unitNumber)
 {
   if (unitNumber > 7)
     return false;
@@ -107,8 +107,8 @@ AREXPORT bool ArAMPTUPacket::setUnitNumber(unsigned char unitNumber)
    @param robot the robot to attach to
    @param unitNumber the unit number for this packet, this needs to be 0-7
 */
-AREXPORT ArAMPTU::ArAMPTU(ArRobot *robot, int unitNumber) :
-  ArPTZ(robot)
+AREXPORT MvrAMPTU::ArAMPTU(MvrRobot *robot, int unitNumber) :
+  MvrPTZ(robot)
 {
   myRobot = robot;
   myPanSlew = 0;
@@ -116,27 +116,27 @@ AREXPORT ArAMPTU::ArAMPTU(ArRobot *robot, int unitNumber) :
   myPan = 0;
   myTilt = 0;
   myUnitNumber = unitNumber;
-  ArPTZ::setLimits(150, -150, 90, -90);
+  MvrPTZ::setLimits(150, -150, 90, -90);
 }
 
-AREXPORT ArAMPTU::~ArAMPTU()
+AREXPORT MvrAMPTU::~ArAMPTU()
 {
 }
 
-AREXPORT bool ArAMPTU::init(void)
+AREXPORT bool MvrAMPTU::init(void)
 {
   if (!myPacket.setUnitNumber(myUnitNumber))
   {
-    ArLog::log(ArLog::Terse, "ArAMPTU::init: the unit number is invalid.");
+    MvrLog::log(MvrLog::Terse, "MvrAMPTU::init: the unit number is invalid.");
     return false;
   }
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::INIT);
+  myPacket.byteToBuf(MvrAMPTUCommands::INIT);
   if (!sendPacket(&myPacket))
     return false;
   
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::RESP);
+  myPacket.byteToBuf(MvrAMPTUCommands::RESP);
   myPacket.byteToBuf(0);
   if (!sendPacket(&myPacket))
     return false;
@@ -147,7 +147,7 @@ AREXPORT bool ArAMPTU::init(void)
   return true;
 }
 
-AREXPORT bool ArAMPTU::pan_i(double deg)
+AREXPORT bool MvrAMPTU::pan_i(double deg)
 {
   if (deg > getMaxPosPan_i())
     deg = getMaxPosPan_i();
@@ -155,15 +155,15 @@ AREXPORT bool ArAMPTU::pan_i(double deg)
     deg = getMaxNegPan_i();
 
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::ABSPAN);
-  myPacket.byte2ToBuf(ArMath::roundInt(deg + 
+  myPacket.byteToBuf(MvrAMPTUCommands::ABSPAN);
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg + 
 				       (getMaxPosPan_i() - getMaxNegPan_i())/2));
   
   myPan = deg;
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::panRel_i(double deg)
+AREXPORT bool MvrAMPTU::panRel_i(double deg)
 {
   if (deg + myPan > getMaxPosPan_i())
     deg = getMaxPosPan_i() - myPan;
@@ -174,16 +174,16 @@ AREXPORT bool ArAMPTU::panRel_i(double deg)
   myPacket.empty();
 
   if (deg >= 0)
-    myPacket.byteToBuf(ArAMPTUCommands::RELPANCW);
+    myPacket.byteToBuf(MvrAMPTUCommands::RELPANCW);
   else
-    myPacket.byteToBuf(ArAMPTUCommands::RELPANCCW);
+    myPacket.byteToBuf(MvrAMPTUCommands::RELPANCCW);
   
-  myPacket.byte2ToBuf(ArMath::roundInt(fabs(deg)));
+  myPacket.byte2ToBuf(MvrMath::roundInt(fabs(deg)));
   
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::tilt_i(double deg)
+AREXPORT bool MvrAMPTU::tilt_i(double deg)
 {
   if (deg > getMaxPosTilt_i())
     deg = getMaxPosTilt_i();
@@ -191,15 +191,15 @@ AREXPORT bool ArAMPTU::tilt_i(double deg)
     deg = getMaxNegTilt_i();
 
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::ABSTILT);
-  myPacket.byteToBuf(ArMath::roundInt(deg + 
+  myPacket.byteToBuf(MvrAMPTUCommands::ABSTILT);
+  myPacket.byteToBuf(MvrMath::roundInt(deg + 
 				      (getMaxPosTilt_i() - getMaxNegTilt_i())/2));
   
   myTilt = deg;
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::tiltRel_i(double deg)
+AREXPORT bool MvrAMPTU::tiltRel_i(double deg)
 {
   if (deg + myTilt > getMaxPosTilt_i())
     deg = getMaxPosTilt_i() - myTilt;
@@ -210,16 +210,16 @@ AREXPORT bool ArAMPTU::tiltRel_i(double deg)
   myPacket.empty();
 
   if (deg >= 0)
-    myPacket.byteToBuf(ArAMPTUCommands::RELTILTU);
+    myPacket.byteToBuf(MvrAMPTUCommands::RELTILTU);
   else
-    myPacket.byteToBuf(ArAMPTUCommands::RELTILTD);
+    myPacket.byteToBuf(MvrAMPTUCommands::RELTILTD);
   
-  myPacket.byteToBuf(ArMath::roundInt(fabs(deg)));
+  myPacket.byteToBuf(MvrMath::roundInt(fabs(deg)));
   
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::panTilt_i(double panDeg, double tiltDeg)
+AREXPORT bool MvrAMPTU::panTilt_i(double panDeg, double tiltDeg)
 {
   if (panDeg > getMaxPosPan_i())
     panDeg = getMaxPosPan_i();
@@ -243,15 +243,15 @@ AREXPORT bool ArAMPTU::panTilt_i(double panDeg, double tiltDeg)
 
 
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::PANTILT);
-  myPacket.byte2ToBuf(ArMath::roundInt(myPan + 
+  myPacket.byteToBuf(MvrAMPTUCommands::PANTILT);
+  myPacket.byte2ToBuf(MvrMath::roundInt(myPan + 
 				       (getMaxPosPan_i() - getMaxNegPan_i())/2));
-  myPacket.byteToBuf(ArMath::roundInt(myTilt + (getMaxPosTilt_i() - 
+  myPacket.byteToBuf(MvrMath::roundInt(myTilt + (getMaxPosTilt_i() - 
 						getMaxNegTilt_i())/2));
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::panTiltRel_i(double panDeg, double tiltDeg)
+AREXPORT bool MvrAMPTU::panTiltRel_i(double panDeg, double tiltDeg)
 {
   if (panDeg + myPan > getMaxPosPan_i())
     panDeg = getMaxPosPan_i() - myPan;
@@ -275,21 +275,21 @@ AREXPORT bool ArAMPTU::panTiltRel_i(double panDeg, double tiltDeg)
 
   myPacket.empty();
   if (panDeg >= 0 && tiltDeg >= 0)
-    myPacket.byteToBuf(ArAMPTUCommands::PANTILTUCW);
+    myPacket.byteToBuf(MvrAMPTUCommands::PANTILTUCW);
   else if (panDeg >= 0 && tiltDeg < 0)
-    myPacket.byteToBuf(ArAMPTUCommands::PANTILTDCW);
+    myPacket.byteToBuf(MvrAMPTUCommands::PANTILTDCW);
   else if (panDeg < 0 && tiltDeg >= 0)
-    myPacket.byteToBuf(ArAMPTUCommands::PANTILTUCCW);
+    myPacket.byteToBuf(MvrAMPTUCommands::PANTILTUCCW);
   else
-    myPacket.byteToBuf(ArAMPTUCommands::PANTILTDCCW);
+    myPacket.byteToBuf(MvrAMPTUCommands::PANTILTDCCW);
 
-  myPacket.byte2ToBuf(ArMath::roundInt(fabs(panDeg)));
-  myPacket.byte2ToBuf(ArMath::roundInt(fabs(tiltDeg)));
+  myPacket.byte2ToBuf(MvrMath::roundInt(fabs(panDeg)));
+  myPacket.byte2ToBuf(MvrMath::roundInt(fabs(tiltDeg)));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::panSlew(double deg)
+AREXPORT bool MvrAMPTU::panSlew(double deg)
 {
   if (deg > MAX_PAN_SLEW)
     deg = MAX_PAN_SLEW;
@@ -298,12 +298,12 @@ AREXPORT bool ArAMPTU::panSlew(double deg)
   
   myPanSlew = deg;
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::PANSLEW);
+  myPacket.byteToBuf(MvrAMPTUCommands::PANSLEW);
   myPacket.byteToBuf((int)(256 - (3840 / (float)deg)));
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::tiltSlew(double deg)
+AREXPORT bool MvrAMPTU::tiltSlew(double deg)
 {
   if (deg > MAX_TILT_SLEW)
     deg = MAX_TILT_SLEW;
@@ -312,36 +312,36 @@ AREXPORT bool ArAMPTU::tiltSlew(double deg)
   
   myTiltSlew = deg;
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::TILTSLEW);
+  myPacket.byteToBuf(MvrAMPTUCommands::TILTSLEW);
   myPacket.byteToBuf((int)(256 - (3840 / (float)deg)));
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::pause(void)
+AREXPORT bool MvrAMPTU::pause(void)
 {
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::PAUSE);
+  myPacket.byteToBuf(MvrAMPTUCommands::PAUSE);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::resume(void)
+AREXPORT bool MvrAMPTU::resume(void)
 {
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::CONT);
+  myPacket.byteToBuf(MvrAMPTUCommands::CONT);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::purge(void)
+AREXPORT bool MvrAMPTU::purge(void)
 {
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::PURGE);
+  myPacket.byteToBuf(MvrAMPTUCommands::PURGE);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArAMPTU::requestStatus(void)
+AREXPORT bool MvrAMPTU::requestStatus(void)
 {
   myPacket.empty();
-  myPacket.byteToBuf(ArAMPTUCommands::STATUS);
+  myPacket.byteToBuf(MvrAMPTUCommands::STATUS);
   return sendPacket(&myPacket);
 }
 

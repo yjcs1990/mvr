@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONDECELERATINGLIMITER_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action to limit the forwards motion of the robot based on range sensor readings
 /**
@@ -44,7 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    things will play together nicely.
   @ingroup ActionClasses
 **/
-class ArActionDeceleratingLimiter : public ArAction
+class MvrActionDeceleratingLimiter : public MvrAction
 {
 public:
   enum LimiterType {
@@ -55,14 +55,14 @@ public:
 
   };
   /// Constructor
-  AREXPORT ArActionDeceleratingLimiter(const char *name = "limitAndDecel", 
+  AREXPORT MvrActionDeceleratingLimiter(const char *name = "limitAndDecel", 
 				       LimiterType type = FORWARDS);
   /// Destructor
   AREXPORT virtual ~ArActionDeceleratingLimiter();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   /// Sets the parameters (don't use this if you're using the addToConfig)
@@ -80,8 +80,8 @@ public:
   LimiterType getType(void) { return myType; }
   /// Sets if this will control us when going forwards
   void setType(LimiterType type) { myType = type; }
-  /// Adds to the ArConfig given, in section, with prefix
-  AREXPORT void addToConfig(ArConfig *config, const char *section,
+  /// Adds to the MvrConfig given, in section, with prefix
+  AREXPORT void addToConfig(MvrConfig *config, const char *section,
 			    const char *prefix = NULL);
   /// Sets if we're using locationDependent range devices or not
   bool getUseLocationDependentDevices(void) 
@@ -109,7 +109,7 @@ protected:
   bool myStopRotationToo;
 
 //unused?  double myDecelerateDistance;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 };
 
 #endif // ARACTIONSPEEDLIMITER_H

@@ -28,21 +28,21 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARFUNCTORASYNCTASK_H
 
 #include "ariaTypedefs.h"
-#include "ArASyncTask.h"
-#include "ArFunctor.h"
+#include "MvrASyncTask.h"
+#include "MvrFunctor.h"
 
-/// This is like ArASyncTask, but instead of runThread it uses a functor to run
-class ArFunctorASyncTask : public ArASyncTask
+/// This is like MvrASyncTask, but instead of runThread it uses a functor to run
+class MvrFunctorASyncTask : public MvrASyncTask
 {
 public:
   /// Constructor
-  AREXPORT ArFunctorASyncTask(ArRetFunctor1<void *, void *> *functor);
+  AREXPORT MvrFunctorASyncTask(MvrRetFunctor1<void *, void *> *functor);
   /// Destructor
   AREXPORT virtual ~ArFunctorASyncTask();
   /// Our reimplementation of runThread
   AREXPORT virtual void *runThread(void *arg);
 protected:
-  ArRetFunctor1<void *, void *> *myFunc;
+  MvrRetFunctor1<void *, void *> *myFunc;
 };
 
 #endif

@@ -31,19 +31,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <map>
 #include <string>
 #include "ariaTypedefs.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 
-/// Dynamic ArModule loader
+/// Dynamic MvrModule loader
 /**
-   The ArModuleLoader is used to load ArModules into a program and invoke
+   The MvrModuleLoader is used to load MvrModules into a program and invoke
    them. 
 
-   See also ArModule to see how to define an ArModule.
+   See also MvrModule to see how to define an MvrModule.
 
    See also the example programs advanced/simpleMod.cpp and advanced/simpleModule.cpp. 
 */
-class ArModuleLoader
+class MvrModuleLoader
 {
 public:
 
@@ -63,15 +63,15 @@ public:
     STATUS_NOT_FOUND ///< The module was not found
   } Status;
 
-  /// Load an ArModule
-  AREXPORT static Status load(const char *modName, ArRobot *robot,
+  /// Load an MvrModule
+  AREXPORT static Status load(const char *modName, MvrRobot *robot,
 			      void *modArgument = NULL, bool quiet = false);
-  /// Close and then reload an ArModule
-  AREXPORT static Status reload(const char *modName, ArRobot *robot,
+  /// Close and then reload an MvrModule
+  AREXPORT static Status reload(const char *modName, MvrRobot *robot,
 				void * modArgument = NULL, bool quiet = false);
-  /// Close an ArModule
+  /// Close an MvrModule
   AREXPORT static Status close(const char *modName, bool quiet = false);
-  /// Close all open ArModule
+  /// Close all open MvrModule
   AREXPORT static void closeAll();
 
 protected:

@@ -24,16 +24,16 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionRatioInput.h"
-#include "ArRobot.h"
+#include "MvrActionRatioInput.h"
+#include "MvrRobot.h"
 
 /**
    @param name name of the action
 */
-AREXPORT ArActionRatioInput::ArActionRatioInput(const char *name) :
-    ArAction(name, "RatioInputs vel and heading")
+AREXPORT MvrActionRatioInput::ArActionRatioInput(const char *name) :
+    MvrAction(name, "RatioInputs vel and heading")
 {
   myTransRatio = 0;
   myRotRatio = 0;
@@ -56,85 +56,85 @@ AREXPORT ArActionRatioInput::ArActionRatioInput(const char *name) :
   myLatDeadZone = 10;
 }
 
-AREXPORT ArActionRatioInput::~ArActionRatioInput()
+AREXPORT MvrActionRatioInput::~ArActionRatioInput()
 {
 }
 
-AREXPORT void ArActionRatioInput::addToConfig(ArConfig *config, 
+AREXPORT void MvrActionRatioInput::addToConfig(MvrConfig *config, 
 					      const char *section)
 {
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
   config->addParam(
-	  ArConfigArg("FullThrottleForwards", &myFullThrottleForwards,
+	  MvrConfigArg("FullThrottleForwards", &myFullThrottleForwards,
 		      "The maximum forwards speed (0 means robot's TransVelMax) (mm/sec)", 0),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   config->addParam(
-	  ArConfigArg("FullThrottleBackwards", &myFullThrottleBackwards,
+	  MvrConfigArg("FullThrottleBackwards", &myFullThrottleBackwards,
 		      "The maximum backwards speed (0 means 1/4 robot's TransVelMax) (mm/sec)", 0),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   config->addParam(
-	  ArConfigArg("RotAtFullForwards", &myRotAtFullForwards,
+	  MvrConfigArg("RotAtFullForwards", &myRotAtFullForwards,
 	      "The maximum speed we turn at when going full forwards (0 means 1/2 robots RotVelMax) (deg/sec)", 0),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   config->addParam(
-	  ArConfigArg("RotAtFullBackwards", &myRotAtFullBackwards,
+	  MvrConfigArg("RotAtFullBackwards", &myRotAtFullBackwards,
 	      "The maximum speed we turn at when going full backwards (0 means 1/2 robots RotVelMax) (deg/sec)", 0),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   config->addParam(
-	  ArConfigArg("RotAtStopped", &myRotAtStopped,
+	  MvrConfigArg("RotAtStopped", &myRotAtStopped,
 	      "The maximum speed we turn at when stopped (0 means robot's RotVelMax) (deg/sec)", 0),
-  section, ArPriority::NORMAL);
+  section, MvrPriority::NORMAL);
   
   if (myRobot && myRobot->hasLatVel())
   {
     config->addParam(
-	    ArConfigArg("LatAtFullForwards", &myLatAtFullForwards,
+	    MvrConfigArg("LatAtFullForwards", &myLatAtFullForwards,
 			"The maximum speed we turn at when going full forwards (0 means 1/2 robots LatVelMax) (mm/sec)", 0),
-	    section, ArPriority::NORMAL);
+	    section, MvrPriority::NORMAL);
     
     config->addParam(
-	    ArConfigArg("LatAtFullBackwards", &myLatAtFullBackwards,
+	    MvrConfigArg("LatAtFullBackwards", &myLatAtFullBackwards,
 			"The maximum speed we turn at when going full backwards (0 means 1/2 robots LatVelMax) (mm/sec)", 0),
-	    section, ArPriority::NORMAL);
+	    section, MvrPriority::NORMAL);
     
     config->addParam(
-	    ArConfigArg("LatAtStopped", &myLatAtStopped,
+	    MvrConfigArg("LatAtStopped", &myLatAtStopped,
 			"The maximum speed we turn at when stopped (0 means robot's LatVelMax) (mm/sec)", 0),
-	    section, ArPriority::NORMAL);
+	    section, MvrPriority::NORMAL);
   }
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
 
     config->addParam(
-	    ArConfigArg("TransDeadZone", &myTransDeadZone,
+	    MvrConfigArg("TransDeadZone", &myTransDeadZone,
 			"The percentage in the middle of the translation direction to not drive (percent)", 0),
-	    section, ArPriority::EXPERT);
+	    section, MvrPriority::EXPERT);
 
     config->addParam(
-	    ArConfigArg("RotDeadZone", &myRotDeadZone,
+	    MvrConfigArg("RotDeadZone", &myRotDeadZone,
 			"The percentage in the middle of the rotation direction to not drive (percent)", 0),
-	    section, ArPriority::EXPERT);
+	    section, MvrPriority::EXPERT);
 
   if (myRobot && myRobot->hasLatVel())
   {
     config->addParam(
-	    ArConfigArg("LatDeadZone", &myLatDeadZone,
+	    MvrConfigArg("LatDeadZone", &myLatDeadZone,
 			"The percentage in the middle of the lateral direction to not drive (percent)", 0),
-	    section, ArPriority::EXPERT);
+	    section, MvrPriority::EXPERT);
   }
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
 
 }
 
 /**
    This checks the inputs and pulls them into the valid range.
 **/
-AREXPORT void ArActionRatioInput::setRatios(double transRatio, 
+AREXPORT void MvrActionRatioInput::setRatios(double transRatio, 
 					    double rotRatio, 
 					    double throttleRatio,
 					    double latRatio)
@@ -149,7 +149,7 @@ AREXPORT void ArActionRatioInput::setRatios(double transRatio,
    This checks the input for greather than 100 and less than -100 and
    pulls it to within that range.
 **/
-AREXPORT void ArActionRatioInput::setTransRatio(double transRatio)
+AREXPORT void MvrActionRatioInput::setTransRatio(double transRatio)
 {
   if (transRatio > 100)
     myTransRatio = 100;
@@ -163,7 +163,7 @@ AREXPORT void ArActionRatioInput::setTransRatio(double transRatio)
    This checks the input for greather than 100 and less than -100 and
    pulls it to within that range.
 **/
-AREXPORT void ArActionRatioInput::setRotRatio(double rotRatio)
+AREXPORT void MvrActionRatioInput::setRotRatio(double rotRatio)
 {
   if (rotRatio > 100)
     myRotRatio = 100;
@@ -177,7 +177,7 @@ AREXPORT void ArActionRatioInput::setRotRatio(double rotRatio)
    This checks the input for greather than 100 and less than -100 and
    pulls it to within that range.
 **/
-AREXPORT void ArActionRatioInput::setLatRatio(double latRatio)
+AREXPORT void MvrActionRatioInput::setLatRatio(double latRatio)
 {
   if (latRatio > 100)
     myLatRatio = 100;
@@ -191,7 +191,7 @@ AREXPORT void ArActionRatioInput::setLatRatio(double latRatio)
    This checks the input for greather than 100 and less than 0 and
    pulls it to within that range.
 **/
-AREXPORT void ArActionRatioInput::setThrottleRatio(double throttleRatio)
+AREXPORT void MvrActionRatioInput::setThrottleRatio(double throttleRatio)
 {
   if (throttleRatio > 100)
     myThrottleRatio = 100;
@@ -227,7 +227,7 @@ AREXPORT void ArActionRatioInput::setThrottleRatio(double throttleRatio)
    
 
 **/
-AREXPORT void ArActionRatioInput::setParameters(double fullThrottleForwards, 
+AREXPORT void MvrActionRatioInput::setParameters(double fullThrottleForwards, 
 						double fullThrottleBackwards, 
 						double rotAtFullForwards,
 						double rotAtFullBackwards,
@@ -251,15 +251,15 @@ AREXPORT void ArActionRatioInput::setParameters(double fullThrottleForwards,
    to highest number, but this still means higher numbers are more
    important since throttle set by those will override the lower.
 **/
-AREXPORT void ArActionRatioInput::addFireCallback(int priority, 
-						  ArFunctor *functor)
+AREXPORT void MvrActionRatioInput::addFireCallback(int priority, 
+						  MvrFunctor *functor)
 {
-  myFireCallbacks.insert(std::pair<int, ArFunctor *>(priority, functor));
+  myFireCallbacks.insert(std::pair<int, MvrFunctor *>(priority, functor));
 }
 
-AREXPORT void ArActionRatioInput::remFireCallback(ArFunctor *functor)
+AREXPORT void MvrActionRatioInput::remFireCallback(MvrFunctor *functor)
 {
-  std::multimap<int, ArFunctor *>::iterator it;
+  std::multimap<int, MvrFunctor *>::iterator it;
   for (it = myFireCallbacks.begin(); it != myFireCallbacks.end(); it++)
   {
     if ((*it).second == functor)
@@ -271,44 +271,44 @@ AREXPORT void ArActionRatioInput::remFireCallback(ArFunctor *functor)
     myFireCallbacks.erase(it);
   }
   else 
-    ArLog::log(ArLog::Normal, "ArActionRatioInput::RemFireCallback: could not remove callback");
+    MvrLog::log(MvrLog::Normal, "MvrActionRatioInput::RemFireCallback: could not remove callback");
 }
 
-AREXPORT void ArActionRatioInput::addActivateCallback(ArFunctor *functor, 
+AREXPORT void MvrActionRatioInput::addActivateCallback(MvrFunctor *functor, 
 						ArListPos::Pos position)
 {
-  if (position == ArListPos::FIRST)
+  if (position == MvrListPos::FIRST)
     myActivateCallbacks.push_front(functor);
-  else if (position == ArListPos::LAST)
+  else if (position == MvrListPos::LAST)
     myActivateCallbacks.push_back(functor);
   else
-    ArLog::log(ArLog::Terse, 
-	       "ArActionRatioInput::addActivateCallback: Invalid position.");
+    MvrLog::log(MvrLog::Terse, 
+	       "MvrActionRatioInput::addActivateCallback: Invalid position.");
 }
 
-AREXPORT void ArActionRatioInput::remActivateCallback(ArFunctor *functor)
+AREXPORT void MvrActionRatioInput::remActivateCallback(MvrFunctor *functor)
 {
   myActivateCallbacks.remove(functor);
 }
 
-AREXPORT void ArActionRatioInput::addDeactivateCallback(ArFunctor *functor, 
+AREXPORT void MvrActionRatioInput::addDeactivateCallback(MvrFunctor *functor, 
 						ArListPos::Pos position)
 {
-  if (position == ArListPos::FIRST)
+  if (position == MvrListPos::FIRST)
     myDeactivateCallbacks.push_front(functor);
-  else if (position == ArListPos::LAST)
+  else if (position == MvrListPos::LAST)
     myDeactivateCallbacks.push_back(functor);
   else
-    ArLog::log(ArLog::Terse, 
-	       "ArActionRatioInput::addDeactivateCallback: Invalid position.");
+    MvrLog::log(MvrLog::Terse, 
+	       "MvrActionRatioInput::addDeactivateCallback: Invalid position.");
 }
 
-AREXPORT void ArActionRatioInput::remDeactivateCallback(ArFunctor *functor)
+AREXPORT void MvrActionRatioInput::remDeactivateCallback(MvrFunctor *functor)
 {
   myDeactivateCallbacks.remove(functor);
 }
 
-AREXPORT void ArActionRatioInput::activate(void)
+AREXPORT void MvrActionRatioInput::activate(void)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -323,10 +323,10 @@ AREXPORT void ArActionRatioInput::activate(void)
 	 it++)
       (*it)->invoke();
   }
-  ArAction::activate();
+  MvrAction::activate();
 }
 
-AREXPORT void ArActionRatioInput::deactivate(void)
+AREXPORT void MvrActionRatioInput::deactivate(void)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -341,19 +341,19 @@ AREXPORT void ArActionRatioInput::deactivate(void)
 	 it++)
       (*it)->invoke();
   }
-  ArAction::deactivate();
+  MvrAction::deactivate();
 }
 
-AREXPORT ArActionDesired *ArActionRatioInput::fire(
+AREXPORT MvrActionDesired *ArActionRatioInput::fire(
 	ArActionDesired currentDesired)
 {
-  std::multimap<int, ArFunctor *>::iterator it;
-  //ArLog::log(ArLog::Normal, "Calling");
+  std::multimap<int, MvrFunctor *>::iterator it;
+  //ArLog::log(MvrLog::Normal, "Calling");
   // call the callbacks that'll set our ratios
   for (it = myFireCallbacks.begin(); it != myFireCallbacks.end(); it++)
   {
     (*it).second->invoke();
-    /*ArLog::log(ArLog::Normal, "Called %s now %g %g %g %g\n", 
+    /*ArLog::log(MvrLog::Normal, "Called %s now %g %g %g %g\n", 
 	       (*it).second->getName(), 
 	       myTransRatio, myRotRatio, myThrottleRatio, myLatRatio);
     */
@@ -416,10 +416,10 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
   {
     myDesired.setVel(myTransRatio/100.0 * 
 		     fullThrottleForwards * myThrottleRatio/100.0);
-    //double totalThrottle = ArMath::fabs(myTransRatio/100.0 * 
+    //double totalThrottle = MvrMath::fabs(myTransRatio/100.0 * 
     //myThrottleRatio/100.0);
     double speedRatio = fabs(myRobot->getVel() / fullThrottleForwards);
-    if (ArMath::fabs(myRotRatio) < myRotDeadZone)
+    if (MvrMath::fabs(myRotRatio) < myRotDeadZone)
       myDesired.setRotVel(0);
     else
       myDesired.setRotVel(
@@ -428,7 +428,7 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
 	      myThrottleRatio/100.0);
     if (myPrinting)
       printf("forwards rot %.0f %.0f %.0f %.0f\n", myRotRatio/100.0, rotAtFullForwards - rotAtStopped, speedRatio, rotAtStopped);
-    if (myRobot->hasLatVel() && ArMath::fabs(myLatRatio) < myLatDeadZone)
+    if (myRobot->hasLatVel() && MvrMath::fabs(myLatRatio) < myLatDeadZone)
       myDesired.setLeftLatVel(0);
     else if (myRobot->hasLatVel())
       myDesired.setLeftLatVel(
@@ -444,10 +444,10 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
   {
     myDesired.setVel(myTransRatio/100.0 * 
 		     fullThrottleBackwards * myThrottleRatio/100.0);
-    //double totalThrottle = ArMath::fabs(myTransRatio/100.0 * 
+    //double totalThrottle = MvrMath::fabs(myTransRatio/100.0 * 
     //myThrottleRatio/100.0);
     double speedRatio = fabs(myRobot->getVel() / fullThrottleForwards);
-    if (ArMath::fabs(myRotRatio) < myRotDeadZone)
+    if (MvrMath::fabs(myRotRatio) < myRotDeadZone)
       myDesired.setRotVel(0);
     else
       myDesired.setRotVel(
@@ -456,7 +456,7 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
 	      myThrottleRatio/100.0);
     if (myPrinting)
       printf("backwards rot %.0f %.0f %.0f %.0f\n", myRotRatio/100.0, rotAtFullBackwards - rotAtStopped, speedRatio, rotAtStopped);
-    if (myRobot->hasLatVel() && ArMath::fabs(myLatRatio) < myLatDeadZone)
+    if (myRobot->hasLatVel() && MvrMath::fabs(myLatRatio) < myLatDeadZone)
       myDesired.setLeftLatVel(0);
     else if (myRobot->hasLatVel())
       myDesired.setLeftLatVel(
@@ -470,12 +470,12 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
   else
   {
     myDesired.setVel(0);
-    if (ArMath::fabs(myRotRatio) < myRotDeadZone)
+    if (MvrMath::fabs(myRotRatio) < myRotDeadZone)
       myDesired.setRotVel(0);
     else
       myDesired.setRotVel(myRotRatio/100.0 * rotAtStopped * 
 			  myThrottleRatio/100.0);
-    if (myRobot->hasLatVel() && ArMath::fabs(myLatRatio) < myLatDeadZone)
+    if (myRobot->hasLatVel() && MvrMath::fabs(myLatRatio) < myLatDeadZone)
       myDesired.setLeftLatVel(0);
     else if (myRobot->hasLatVel())
       myDesired.setLeftLatVel(myLatRatio/100.0 * latAtStopped * 
@@ -494,7 +494,7 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
     if (myPrinting)
       printf("Decelerating trans more\n");
     myDesired.setTransDecel(myRobot->getTransDecel() * 3, 
-			    ArActionDesired::MIN_STRENGTH);
+			    MvrActionDesired::MIN_STRENGTH);
   }
 
   // if they have the stick the opposite direction of the velocity
@@ -505,7 +505,7 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
     if (myPrinting)
       printf("Decelerating rot more\n");
     myDesired.setRotDecel(myRobot->getRotDecel() * 3,
-			  ArActionDesired::MIN_STRENGTH);
+			  MvrActionDesired::MIN_STRENGTH);
   }
 
   // if they have the stick the opposite direction of the velocity
@@ -517,7 +517,7 @@ AREXPORT ArActionDesired *ArActionRatioInput::fire(
     if (myPrinting)
       printf("Decelerating lat more\n");
     myDesired.setLatDecel(myRobot->getLatDecel() * 3,
-			  ArActionDesired::MIN_STRENGTH);
+			  MvrActionDesired::MIN_STRENGTH);
   }
 
   return &myDesired;

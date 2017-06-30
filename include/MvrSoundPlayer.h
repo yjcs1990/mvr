@@ -29,15 +29,15 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define _ARSOUNDPLAYER_H_
 
 
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
 
 
 /** 
  * @brief This class provides a cross-platform interface for playing short sound samples.
  * (Currently implemented for Windows and Linux).
- * @sa For I/O and network transfer of encoded audio, see the ArNetAudio library.
- * @sa ArSoundsQueue
+ * @sa For I/O and network transfer of encoded audio, see the MvrNetAudio library.
+ * @sa MvrSoundsQueue
  *
  * @note Uses an external program to play WAV files on Linux. If an environment
  * variable named PLAY_WAV is set, that program is used, otherwise, 'play' from
@@ -56,13 +56,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * the computer sound device mixer, and also the amplifier which drives the
  * speakers.  The computer's mixer can be adjusted through the operating system:
  * on Linux, you can use the 'aumix' program to adjust the Master and PCM
- * levels.  On Windows, use the Windows mixer program.  If on Linux, ArSoundPlayer also
+ * levels.  On Windows, use the Windows mixer program.  If on Linux, MvrSoundPlayer also
  * prodives the setVolume() method, which adjusts the volume of the sound before
  * it is played.
  *  
     @ingroup UtilityClasses
  */
-class ArSoundPlayer
+class MvrSoundPlayer
 {
  public:
   /** Play a WAV (Windows RIFF) file 
@@ -84,10 +84,10 @@ class ArSoundPlayer
   AREXPORT static void stopPlaying();
 
   /** Return the static functor for playWavFile */
-  AREXPORT static ArRetFunctor2<bool, const char*, const char*> *getPlayWavFileCallback();
+  AREXPORT static MvrRetFunctor2<bool, const char*, const char*> *getPlayWavFileCallback();
 
   /** Return the static functor for stopPlaying(). */
-  AREXPORT static ArFunctor* getStopPlayingCallback();
+  AREXPORT static MvrFunctor* getStopPlayingCallback();
 
   /** Play raw uncompressed PCM16 sound data. The format of this data is 
    *  numSamples samples of two bytes each. Each byte pair is a signed little endian
@@ -115,8 +115,8 @@ class ArSoundPlayer
  
 protected:
   static int ourPlayChildPID; ///< Only used on Linux.
-  static ArGlobalRetFunctor2<bool, const char*, const char*> ourPlayWavFileCB;
-  static ArGlobalFunctor ourStopPlayingCB;
+  static MvrGlobalRetFunctor2<bool, const char*, const char*> ourPlayWavFileCB;
+  static MvrGlobalFunctor ourStopPlayingCB;
   static double ourVolume;
 };
     

@@ -25,10 +25,10 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArTrimbleGPS.h"
-#include "ArDeviceConnection.h"
+#include "MvrTrimbleGPS.h"
+#include "MvrDeviceConnection.h"
 
 //#define DEBUG_ARTRIMBLEGPS 1
 
@@ -39,7 +39,7 @@ void ArTrimbleGPS_printTransUnprintable( const char *data, int size){  for(int i
 AREXPORT ArTrimbleGPS::ArTrimbleGPS() :
   myAuxDataHandler(this, &ArTrimbleGPS::handlePTNLAG001)
 {
-  myMutex.setLogName("ArTrimbleGPS::myMutex");
+  myMutex.setLogName("MvrTrimbleGPS::myMutex");
   addNMEAHandler("NLAG001", &myAuxDataHandler);
 }
 
@@ -129,14 +129,14 @@ AREXPORT bool ArTrimbleGPS::initDevice()
  * just re-serializes the contents of that message and bounces
  * it back to ArGPS for further parsing.
  */
-void ArTrimbleGPS::handlePTNLAG001(ArNMEAParser::Message m)
+void ArTrimbleGPS::handlePTNLAG001(MvrNMEAParser::Message m)
 {
   ArNMEAParser::MessageVector *message = m.message;
   if(message->size() < 2) return;
   std::string text;
   size_t len = 0;
   // Undo split by commas, skip msg[0] which is "PTNLAG001"
-  for(ArNMEAParser::MessageVector::const_iterator i = message->begin() + 1; i != message->end(); ++i)
+  for(MvrNMEAParser::MessageVector::const_iterator i = message->begin() + 1; i != message->end(); ++i)
   {
     if(i != message->begin()) text += ",";
     text += *i;
@@ -158,7 +158,7 @@ void ArTrimbleGPS::handlePTNLAG001(ArNMEAParser::Message m)
 AREXPORT bool ArTrimbleGPS::sendTSIPCommand(char cmd, const char *data, size_t size)
 {
 #ifdef DEBUG_ARTRIMBLEGPS
-  ArLog::log(ArLog::Normal, "ArTrimbleGPS sending command 0x%X to GPS, with data:", cmd & 0xFF);
+  ArLog::log(MvrLog::Normal, "MvrTrimbleGPS sending command 0x%X to GPS, with data:", cmd & 0xFF);
   printf("\t");
   ArTrimbleGPS_printTransUnprintable(data, size);
   puts("");

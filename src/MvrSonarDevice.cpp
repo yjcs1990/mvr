@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSonarDevice.h"
-#include "ArSensorReading.h"
-#include "ArRobot.h"
+#include "MvrSonarDevice.h"
+#include "MvrSensorReading.h"
+#include "MvrRobot.h"
 
 AREXPORT ArSonarDevice::ArSonarDevice(size_t currentBufferSize,
 			     size_t cumulativeBufferSize, const char *name) :
@@ -70,7 +70,7 @@ AREXPORT ArSonarDevice::~ArSonarDevice()
   }
 }
 
-AREXPORT void ArSonarDevice::setRobot(ArRobot *robot)
+AREXPORT void ArSonarDevice::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)

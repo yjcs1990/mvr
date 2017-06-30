@@ -30,30 +30,30 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
-#include "ArThread.h"
+#include "MvrFunctor.h"
+#include "MvrThread.h"
 
 
 /// Asynchronous task (runs in its own thread)
 /**
-   The ArAsynTask is a task that runs in its own thread. This is a
+   The MvrAsynTask is a task that runs in its own thread. This is a
    rather simple class. The user simply needs to derive their own
-   class from ArAsyncTask and define the runThread() function. They
+   class from MvrAsyncTask and define the runThread() function. They
    then need to create an instance of their task and call run or
    runAsync. The standard way to stop a task is to call stopRunning()
-   which sets ArThread::myRunning to false. In their run loop, they
-   should pay attention to the getRunning() or the ArThread::myRunning
+   which sets MvrThread::myRunning to false. In their run loop, they
+   should pay attention to the getRunning() or the MvrThread::myRunning
    variable. If this value goes to false, the task should clean up
    after itself and exit its runThread() function.  
 
     @ingroup UtilityClasses
 **/
-class ArASyncTask : public ArThread
+class MvrASyncTask : public MvrThread
 {
 public:
 
   /// Constructor
-  AREXPORT ArASyncTask();
+  AREXPORT MvrASyncTask();
   /// Destructor
   AREXPORT virtual ~ArASyncTask();
 
@@ -70,7 +70,7 @@ public:
 
   /// Run without creating a new thread
 /**
-   This will run the the ArASyncTask without creating a new
+   This will run the the MvrASyncTask without creating a new
    thread to run it in. It performs the needed setup then calls runThread() 
    directly instead of letting the system threading system do it in a new thread.
 */
@@ -99,11 +99,11 @@ public:
 private:
 
   // Hide regular Thread::Create
-  virtual int create(ArFunctor * /*func*/, bool /*joinable=true*/,
+  virtual int create(MvrFunctor * /*func*/, bool /*joinable=true*/,
 		     bool /*lowerPriority=true*/) {return(false);}
 
 
-  ArRetFunctor1C<void*, ArASyncTask, void*> myFunc;
+  MvrRetFunctor1C<void*, MvrASyncTask, void*> myFunc;
 };
 
 

@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #include "ariaInternal.h"
 
-#include "ArMapInterface.h"
+#include "MvrMapInterface.h"
 
 
 AREXPORT const char *ArMapInfoInterface::MAP_INFO_NAME        = "MapInfo:"; 
@@ -47,17 +47,17 @@ AREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_COMPOSITE = "2D-Map-Ex3";
 
 
 
-AREXPORT bool ArMapScanInterface::isDefaultScanType(const char *scanType)
+AREXPORT bool MvrMapScanInterface::isDefaultScanType(const char *scanType)
 {
   bool b = false;
   if ((scanType != NULL) &&
-      (ArUtil::isStrEmpty(scanType))) {
+      (MvrUtil::isStrEmpty(scanType))) {
     b = true;
   }
   return b;
 }
 
-AREXPORT bool ArMapScanInterface::isSummaryScanType(const char *scanType)
+AREXPORT bool MvrMapScanInterface::isSummaryScanType(const char *scanType)
 {
   bool b = scanType == NULL;
   return b;
@@ -73,7 +73,7 @@ AREXPORT bool ArMapScanInterface::isSummaryScanType(const char *scanType)
  * An absolute path starts with the '/' or '\' character, or on Windows, with "X:\" where X is any
  * upper or lower case alphabetic character A-Z or a-z.  
  */
-AREXPORT std::string ArMapInterface::createRealFileName(const char *baseDirectory,
+AREXPORT std::string MvrMapInterface::createRealFileName(const char *baseDirectory,
                                                         const char *fileName,
                                                         bool isIgnoreCase)
 { 
@@ -103,7 +103,7 @@ AREXPORT std::string ArMapInterface::createRealFileName(const char *baseDirector
     nameBuf[0] = '\0';
 
     snprintf(nameBuf, totalLen, baseDirectory);
-    ArUtil::appendSlash(nameBuf, totalLen);
+    MvrUtil::appendSlash(nameBuf, totalLen);
     
     realFileName = nameBuf;
     realFileName += fileName;
@@ -125,8 +125,8 @@ AREXPORT std::string ArMapInterface::createRealFileName(const char *baseDirector
 	      !ArUtil::getFileName(realFileName.c_str(), 
 			                       fileNamePart, sizeof(fileNamePart)))
     {
-      ArLog::log(ArLog::Normal, 
-		             "ArMap: Problem with filename '%s'", 
+      MvrLog::log(MvrLog::Normal, 
+		             "MvrMap: Problem with filename '%s'", 
 		             realFileName.c_str());
       return "";
     }
@@ -147,8 +147,8 @@ AREXPORT std::string ArMapInterface::createRealFileName(const char *baseDirector
                                 directory, 
 				                        sizeof(directory)))
     {
-	    ArLog::log(ArLog::Normal, 
-		             "ArMap: Bad directory for '%s'", 
+	    MvrLog::log(MvrLog::Normal, 
+		             "MvrMap: Bad directory for '%s'", 
 		              realFileName.c_str());
       return "";
     }
@@ -157,10 +157,10 @@ AREXPORT std::string ArMapInterface::createRealFileName(const char *baseDirector
     tmpDir[0] = '\0';
     //sprintf(tmpDir, "%s", tmpDir, directory);
     strcpy(tmpDir, directory);
-    ArUtil::appendSlash(tmpDir, sizeof(tmpDir));
+    MvrUtil::appendSlash(tmpDir, sizeof(tmpDir));
     char squashedFileName[2048];
     
-    if (ArUtil::matchCase(tmpDir, fileNamePart, 
+    if (MvrUtil::matchCase(tmpDir, fileNamePart, 
 			                    squashedFileName, 
 			                    sizeof(squashedFileName)))
     {
@@ -175,8 +175,8 @@ AREXPORT std::string ArMapInterface::createRealFileName(const char *baseDirector
       //printf("unsquashed from %s %s\n", tmpDir, fileNamePart);
     }
     
-    ArLog::log(ArLog::Verbose, 
-	       "ArMap: %s is %s",
+    MvrLog::log(MvrLog::Verbose, 
+	       "MvrMap: %s is %s",
 	       fileName, realFileName.c_str());
   }
 #endif
@@ -185,25 +185,25 @@ AREXPORT std::string ArMapInterface::createRealFileName(const char *baseDirector
 
 } // end method createRealFileName
 
-AREXPORT void ArMapInterface::addMapChangedCB(ArFunctor *functor, 
-					      ArListPos::Pos position)
+AREXPORT void MvrMapInterface::addMapChangedCB(MvrFunctor *functor, 
+					      MvrListPos::Pos position)
 {
-  if (position == ArListPos::FIRST)
+  if (position == MvrListPos::FIRST)
     addMapChangedCB(functor, 75);
-  else if (position == ArListPos::LAST)
+  else if (position == MvrListPos::LAST)
     addMapChangedCB(functor, 25);
   else
-    ArLog::log(ArLog::Terse, "ArMapInterface::addPreMapChangedCB: Invalid position.");
+    MvrLog::log(MvrLog::Terse, "MvrMapInterface::addPreMapChangedCB: Invalid position.");
 }
 
 
-AREXPORT void ArMapInterface::addPreMapChangedCB(ArFunctor *functor, 
-						 ArListPos::Pos position)
+AREXPORT void MvrMapInterface::addPreMapChangedCB(MvrFunctor *functor, 
+						 MvrListPos::Pos position)
 {
-  if (position == ArListPos::FIRST)
+  if (position == MvrListPos::FIRST)
     addPreMapChangedCB(functor, 75);
-  else if (position == ArListPos::LAST)
+  else if (position == MvrListPos::LAST)
     addPreMapChangedCB(functor, 25);
   else
-    ArLog::log(ArLog::Terse, "ArMapInterface::addPreMapChangedCB: Invalid position.");
+    MvrLog::log(MvrLog::Terse, "MvrMapInterface::addPreMapChangedCB: Invalid position.");
 }

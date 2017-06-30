@@ -24,25 +24,25 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #include <list>
-#include "ArThread.h"
-#include "ArLog.h"
-#include "ArSignalHandler.h"
+#include "MvrThread.h"
+#include "MvrLog.h"
+#include "MvrSignalHandler.h"
 #include "ariaUtil.h"
 
 
 static DWORD WINAPI run(void *arg)
 {
-  ArThread *t=(ArThread*)arg;
+  ArThread *t=(MvrThread*)arg;
   void *ret=NULL;
 
   if (t->getBlockAllSignals())
     ArSignalHandler::blockCommonThisThread();
 
   if (dynamic_cast<ArRetFunctor<void*>*>(t->getFunc()))
-    ret=((ArRetFunctor<void*>*)t->getFunc())->invokeR();
+    ret=((MvrRetFunctor<void*>*)t->getFunc())->invokeR();
   else
     t->getFunc()->invoke();
 
@@ -97,8 +97,8 @@ AREXPORT void ArThread::shutdown()
     delete (*listIter);
   }
   if (!ourThreads.empty()) {
-    ArLog::log(ArLog::Normal,
-               "ArThread::shutdown() unexpected thread leftover");
+    ArLog::log(MvrLog::Normal,
+               "MvrThread::shutdown() unexpected thread leftover");
   }
   ourThreadsMutex.unlock();
 
@@ -151,12 +151,12 @@ AREXPORT void ArThread::cancelAll()
 }
 
 
-AREXPORT int ArThread::create(ArFunctor *func, bool joinable,
+AREXPORT int ArThread::create(MvrFunctor *func, bool joinable,
                               bool lowerPriority)
 {
   // Log a warning (until desired behavior is determined)
   if (myThreadHandle != 0) {
-    ArLog::log(ArLog::Terse, "ArThread::create: Thread %s (ID %d) already created.",
+    ArLog::log(MvrLog::Terse, "MvrThread::create: Thread %s (ID %d) already created.",
                (myName.empty() ? "[anonymous]" : myName.c_str()),
 		           myThread);
   }
@@ -172,7 +172,7 @@ AREXPORT int ArThread::create(ArFunctor *func, bool joinable,
   err=GetLastError();
   if (myThreadHandle == 0)
   {
-    ArLog::log(ArLog::Terse, "ArThread::create: Failed to create thread.");
+    ArLog::log(MvrLog::Terse, "MvrThread::create: Failed to create thread.");
     return(STATUS_FAILED);
   }
   else
@@ -181,7 +181,7 @@ AREXPORT int ArThread::create(ArFunctor *func, bool joinable,
     {
       ArLog::log(ourLogLevel, "Created anonymous thread with ID %d", 
 		 myThread);
-      //ArLog::logBacktrace(ArLog::Normal);
+      //ArLog::logBacktrace(MvrLog::Normal);
     }
     else
     {
@@ -205,7 +205,7 @@ AREXPORT int ArThread::doJoin(void **iret)
   ret=WaitForSingleObject(myThreadHandle, INFINITE);
   if (ret == WAIT_FAILED)
   {
-    ArLog::log(ArLog::Terse, "ArThread::doJoin: Failed to join on thread.");
+    ArLog::log(MvrLog::Terse, "MvrThread::doJoin: Failed to join on thread.");
     return(STATUS_FAILED);
   }
 

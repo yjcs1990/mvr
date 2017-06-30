@@ -24,19 +24,19 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLaser.h"
-#include "ArRobot.h"
-#include "ArDeviceConnection.h"
+#include "MvrLaser.h"
+#include "MvrRobot.h"
+#include "MvrDeviceConnection.h"
 
-bool ArLaser::ourUseSimpleNaming = false;
+bool MvrLaser::ourUseSimpleNaming = false;
 
-AREXPORT ArLaser::ArLaser(
+AREXPORT MvrLaser::ArLaser(
 	int laserNumber, const char *name, 
 	unsigned int absoluteMaxRange, bool locationDependent, 
 	bool appendLaserNumberToName) :
-  ArRangeDeviceThreaded(
+  MvrRangeDeviceThreaded(
 	  361, 200, name, absoluteMaxRange,
 	  0, 0, 0, locationDependent)
 {
@@ -52,7 +52,7 @@ AREXPORT ArLaser::ArLaser(
   else
   {
     if (laserNumber != 1)
-      ArLog::log(ArLog::Verbose, "ArLaser::%s: Laser created with number %d, but the number is not appended to the name which may break things (especially since this number is greater than 1_", name, laserNumber);
+      MvrLog::log(MvrLog::Verbose, "MvrLaser::%s: Laser created with number %d, but the number is not appended to the name which may break things (especially since this number is greater than 1_", name, laserNumber);
 
     myName = name;
   }
@@ -107,11 +107,11 @@ AREXPORT ArLaser::ArLaser(
   
   myDefaultTcpPort = 8102;
 
-  myInfoLogLevel = ArLog::Verbose;
+  myInfoLogLevel = MvrLog::Verbose;
   myRobotRunningAndConnected = false;
 }
 
-AREXPORT ArLaser::~ArLaser()
+AREXPORT MvrLaser::~ArLaser()
 {
 }
 
@@ -119,7 +119,7 @@ AREXPORT ArLaser::~ArLaser()
    This can be used to set the name on mutexes and such to match the
    laser's new name.
 **/
-AREXPORT void ArLaser::laserSetName(const char *name)
+AREXPORT void MvrLaser::laserSetName(const char *name)
 {
   if (ourUseSimpleNaming)
   {
@@ -146,30 +146,30 @@ AREXPORT void ArLaser::laserSetName(const char *name)
   myDataCBList.setLogging(false); // supress debug logging since it drowns out all other logging 
 }
 
-AREXPORT void ArLaser::setMaxRange(unsigned int maxRange)
+AREXPORT void MvrLaser::setMaxRange(unsigned int maxRange)
 {
   if (maxRange > myAbsoluteMaxRange)
   {
-    ArLog::log(ArLog::Terse, "%s::setMaxRange: Tried to set the max range to %u which is above the absoluteMaxRange on the device of %d, capping it", 
+    MvrLog::log(MvrLog::Terse, "%s::setMaxRange: Tried to set the max range to %u which is above the absoluteMaxRange on the device of %d, capping it", 
 	       getName(), maxRange, getAbsoluteMaxRange());
-    ArRangeDevice::setMaxRange(myAbsoluteMaxRange);
+    MvrRangeDevice::setMaxRange(myAbsoluteMaxRange);
   }
   else
-    ArRangeDevice::setMaxRange(maxRange);
+    MvrRangeDevice::setMaxRange(maxRange);
 
   myMaxRangeSet = true;
 }
 
-AREXPORT void ArLaser::setCumulativeBufferSize(size_t size)
+AREXPORT void MvrLaser::setCumulativeBufferSize(size_t size)
 {
-  ArRangeDevice::setCumulativeBufferSize(size);
+  MvrRangeDevice::setCumulativeBufferSize(size);
   myCumulativeBufferSizeSet = true;
 }
 
 
-AREXPORT void ArLaser::laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange)
+AREXPORT void MvrLaser::laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange)
 { 
-  ArLog::log(myInfoLogLevel, "%s: Setting absolute max range to %u", 
+  MvrLog::log(myInfoLogLevel, "%s: Setting absolute max range to %u", 
 	     getName(), absoluteMaxRange);
   myAbsoluteMaxRange = absoluteMaxRange; 
   setMaxRange(getMaxRange());
@@ -177,7 +177,7 @@ AREXPORT void ArLaser::laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange)
 
 /**
    Filter readings, moving them from the raw current buffer to
-   filtered current buffer (see ArRangeDevice), and then also to the
+   filtered current buffer (see MvrRangeDevice), and then also to the
    cumulative buffer.
 
    This must be called for the laser subclass to work right.
@@ -185,18 +185,18 @@ AREXPORT void ArLaser::laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange)
    This also calls the reading callbacks.
 **/
 
-void ArLaser::laserProcessReadings(void)
+void MvrLaser::laserProcessReadings(void)
 {
   // if we have no readings... don't do anything
   if (myRawReadings == NULL || myRawReadings->begin() == myRawReadings->end())
     return;
 
   std::list<ArSensorReading *>::iterator sensIt;
-  ArSensorReading *sReading;
+  MvrSensorReading *sReading;
   double x, y;
   double lastX = 0.0, lastY = 0.0;
   //unsigned int i = 0;
-  ArTime len;
+  MvrTime len;
   len.setToNow();
 
   bool clean;
@@ -268,7 +268,7 @@ void ArLaser::laserProcessReadings(void)
       // see where the last reading was
       //squaredDist = (x-lastX)*(x-lastX) + (y-lastY)*(y-lastY);
       // see if the reading is far enough from the last reading
-      if (ArMath::squaredDistanceBetween(x, y, lastX, lastY) > 
+      if (MvrMath::squaredDistanceBetween(x, y, lastX, lastY) > 
 	  myMinDistBetweenCurrentSquared)
       {
 	lastX = x;
@@ -280,7 +280,7 @@ void ArLaser::laserProcessReadings(void)
 	/* we don't do this part anymore since it wound up leaving
 	// too many things not really tehre... if its outside of our
 	// sensor angle to use to filter then don't let this one
-	// clean  (ArMath::fabs(sReading->getSensorTh()) > 50)
+	// clean  (MvrMath::fabs(sReading->getSensorTh()) > 50)
 	// filterAddAndCleanCumulative(x, y, false); else*/
       }
       // it wasn't far enough, skip this one and go to the next one
@@ -308,7 +308,7 @@ void ArLaser::laserProcessReadings(void)
 }
 
 
-void ArLaser::internalProcessReading(double x, double y, 
+void MvrLaser::internalProcessReading(double x, double y, 
 				     unsigned int range, bool clean,
 				     bool onlyClean)
 {
@@ -325,11 +325,11 @@ void ArLaser::internalProcessReading(double x, double y,
 
   //double squaredDist;
 
-  ArLineSegment line;
+  MvrLineSegment line;
   double xTaken = myCurrentBuffer.getPoseTaken().getX();
   double yTaken = myCurrentBuffer.getPoseTaken().getY();
-  ArPose intersection;
-  ArPoseWithTime reading(x, y);
+  MvrPose intersection;
+  MvrPoseWithTime reading(x, y);
 
   // if we're not cleaning and its further than we're keeping track of
   // readings ignore it... replaced with the part thats 'until here'
@@ -361,7 +361,7 @@ void ArLaser::internalProcessReading(double x, double y,
   {
     // if its closer to a reading than the filter near dist, just return
     if (addReading && myMinDistBetweenCumulativeSquared < .0000001 ||
-	(ArMath::squaredDistanceBetween(x, y, (*cit)->getX(), (*cit)->getY()) <
+	(MvrMath::squaredDistanceBetween(x, y, (*cit)->getX(), (*cit)->getY()) <
 	 myMinDistBetweenCumulativeSquared))
     {
       // if we're not cleaning it and its too close just return,
@@ -398,18 +398,18 @@ void ArLaser::internalProcessReading(double x, double y,
 
 }
 
-AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
+AREXPORT bool MvrLaser::laserPullUnsetParamsFromRobot(void)
 {
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Normal, "%s: Trying to connect, but have no robot, continuing under the assumption this is intentional", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Trying to connect, but have no robot, continuing under the assumption this is intentional", getName());
     return true;
   }
 
-  const ArRobotParams *params = myRobot->getRobotParams();
+  const MvrRobotParams *params = myRobot->getRobotParams();
   if (params == NULL)
   {
-    ArLog::log(ArLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Robot has no params, cannot pull unset params from robot",
 	       getName());
     return false;
@@ -426,14 +426,14 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   {
     if (paramBool)
     {
-      ArLog::log(myInfoLogLevel, 
+      MvrLog::log(myInfoLogLevel, 
 		 "%s: Setting flipped to true from robot params",
 		 getName());
       setFlipped(true);
     }
     else if (!paramBool)
     {
-      ArLog::log(myInfoLogLevel, 
+      MvrLog::log(myInfoLogLevel, 
 		 "%s: Setting flipped to false from robot params",
 		 getName());
       setFlipped(false);
@@ -445,12 +445,12 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   {
     if(paramInt < 0)
     {
-      ArLog::log(ArLog::Terse, "%s: LaserMaxRange in robot param file was negative but shouldn't be (it was '%d'), failing", getName(), paramInt);
+      MvrLog::log(MvrLog::Terse, "%s: LaserMaxRange in robot param file was negative but shouldn't be (it was '%d'), failing", getName(), paramInt);
       return false;
     }
     if (paramInt > 0)
     {
-      ArLog::log(myInfoLogLevel, 
+      MvrLog::log(myInfoLogLevel, 
 		 "%s: Setting max range to %d from robot params",
 		 getName(), paramInt);
       setMaxRange(paramInt);
@@ -462,12 +462,12 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   {
     if(paramInt < 0)
     {
-      ArLog::log(ArLog::Terse, "%s: LaserCumulativeBufferSize in robot param file was negative but shouldn't be (it was '%d'), failing", getName(), paramInt);
+      MvrLog::log(MvrLog::Terse, "%s: LaserCumulativeBufferSize in robot param file was negative but shouldn't be (it was '%d'), failing", getName(), paramInt);
       return false;
     }
     if (paramInt > 0)
     {
-      ArLog::log(myInfoLogLevel, 
+      MvrLog::log(myInfoLogLevel, 
 		 "%s: Setting cumulative buffer size to %d from robot params",
 		 getName(), paramInt);
       setCumulativeBufferSize(paramInt);
@@ -481,10 +481,10 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
     paramDouble = strtod(paramStr, &endPtr);
     if(endPtr == paramStr)
     {
-      ArLog::log(ArLog::Terse, "%s: LaserStartDegrees in robot param file was not a double (it was '%s'), failing", getName(), paramStr);
+      MvrLog::log(MvrLog::Terse, "%s: LaserStartDegrees in robot param file was not a double (it was '%s'), failing", getName(), paramStr);
       return false;
     }
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting start degrees to %g from robot params",
 	       getName(), paramDouble);
     setStartDegrees(paramDouble);
@@ -497,12 +497,12 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
     paramDouble = strtod(paramStr, &endPtr);
     if(endPtr == paramStr)
     {
-      ArLog::log(ArLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 		 "%s: LaserEndDegrees in robot param file was not a double (it was '%s'), failing", 
 		 getName(), paramStr);
       return false;
     }
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting end degrees to %g from robot params",
 	       getName(), paramDouble);
     setEndDegrees(paramDouble);
@@ -512,7 +512,7 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   if (canChooseDegrees() && !myDegreesChoiceSet && 
       paramStr != NULL && paramStr[0] != '\0')
   {
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting degrees choice to %s from robot params",
 	       getName(), paramStr);
     chooseDegrees(paramStr);
@@ -525,12 +525,12 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
     paramDouble = strtod(paramStr, &endPtr);
     if(endPtr == paramStr)
     {
-      ArLog::log(ArLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 		 "%s: LaserIncrement in robot param file was not a double (it was '%s'), failing", 
 		 getName(), paramStr);
       return false;
     }
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting increment to %g from robot params",
 	       getName(), paramDouble);
     setIncrement(paramDouble);
@@ -540,7 +540,7 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   if (canChooseIncrement() && !myIncrementChoiceSet && 
       paramStr != NULL && paramStr[0] != '\0')
   {
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting increment choice to %s from robot params",
 	       getName(), paramStr);
     chooseIncrement(paramStr);
@@ -550,7 +550,7 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   if (canChooseUnits() && !myUnitsChoiceSet && 
       paramStr != NULL && paramStr[0] != '\0')
   {
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting units choice to %s from robot params",
 	       getName(), paramStr);
     chooseUnits(paramStr);
@@ -560,7 +560,7 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   if (canChooseReflectorBits() && !myReflectorBitsChoiceSet && 
       paramStr != NULL && paramStr[0] != '\0')
   {
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting reflectorBits choice to %s from robot params",
 	       getName(), paramStr);
     chooseReflectorBits(paramStr);
@@ -571,14 +571,14 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   {
     if (paramBool)
     {
-      ArLog::log(myInfoLogLevel, 
+      MvrLog::log(myInfoLogLevel, 
 		 "%s: Setting powerControlled to true from robot params",
 		 getName());
       setPowerControlled(true);
     }
     else if (!paramBool)
     {
-      ArLog::log(myInfoLogLevel, 
+      MvrLog::log(myInfoLogLevel, 
 		 "%s: Setting powerControlled to false from robot params",
 		 getName());
       setPowerControlled(false);
@@ -589,7 +589,7 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   if (canChooseStartingBaud() && !myStartingBaudChoiceSet && 
       paramStr != NULL && paramStr[0] != '\0')
   {
-    ArLog::log(myInfoLogLevel,
+    MvrLog::log(myInfoLogLevel,
 	       "%s: Setting startingBaud choice to %s from robot params",
 	       getName(), paramStr);
     chooseStartingBaud(paramStr);
@@ -599,7 +599,7 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   if (canChooseAutoBaud() && !myAutoBaudChoiceSet && 
       paramStr != NULL && paramStr[0] != '\0')
   {
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Setting autoBaud choice to %s from robot params",
 	       getName(), paramStr);
     chooseAutoBaud(paramStr);
@@ -616,7 +616,7 @@ AREXPORT bool ArLaser::laserPullUnsetParamsFromRobot(void)
   return true;
 }
 
-AREXPORT void ArLaser::setDeviceConnection(ArDeviceConnection *conn)
+AREXPORT void MvrLaser::setDeviceConnection(MvrDeviceConnection *conn)
 {
   myConnMutex.lock();
   myConn = conn; 
@@ -624,7 +624,7 @@ AREXPORT void ArLaser::setDeviceConnection(ArDeviceConnection *conn)
   myConnMutex.unlock();
 }
 
-AREXPORT ArDeviceConnection *ArLaser::getDeviceConnection(void)
+AREXPORT MvrDeviceConnection *ArLaser::getDeviceConnection(void)
 {
   return myConn;
 }
@@ -642,9 +642,9 @@ AREXPORT ArDeviceConnection *ArLaser::getDeviceConnection(void)
    will be disabled, otherwise disconnect on error will be triggered
    after this number of miliseconds...  
 **/
-AREXPORT void ArLaser::setConnectionTimeoutSeconds(double seconds)
+AREXPORT void MvrLaser::setConnectionTimeoutSeconds(double seconds)
 {
-  ArLog::log(ArLog::Normal, 
+  MvrLog::log(MvrLog::Normal, 
 	     "%s::setConnectionTimeoutSeconds: Setting timeout to %g secs", 
 	     getName(), seconds);
   myLastReading.setToNow();
@@ -665,12 +665,12 @@ AREXPORT void ArLaser::setConnectionTimeoutSeconds(double seconds)
    reading time against this value.  If there is a robot then it will
    not start the check until the laser is running and connected.
 **/
-double ArLaser::getConnectionTimeoutSeconds(void)
+double MvrLaser::getConnectionTimeoutSeconds(void)
 {
   return myTimeoutSeconds;
 }
 
-AREXPORT void ArLaser::laserConnect(void)
+AREXPORT void MvrLaser::laserConnect(void)
 {
   // figure out how many readings we can have and set the current
   // buffer size to that
@@ -680,9 +680,9 @@ AREXPORT void ArLaser::laserConnect(void)
 
   if (canSetDegrees())
   {
-    //degrees = fabs(ArMath::subAngle(getStartDegrees(), getEndDegrees()));
+    //degrees = fabs(MvrMath::subAngle(getStartDegrees(), getEndDegrees()));
     degrees = fabs(getStartDegrees() - getEndDegrees());
-    ArLog::log(myInfoLogLevel, 
+    MvrLog::log(myInfoLogLevel, 
 	       "%s: Using degrees settings of %g to %g for %g degrees",
 	       getName(), getStartDegrees(), getEndDegrees(), 
 	       degrees);
@@ -690,26 +690,26 @@ AREXPORT void ArLaser::laserConnect(void)
   else if (canChooseDegrees())
   {
     degrees = getDegreesChoiceDouble();
-    ArLog::log(myInfoLogLevel, "%s: Using choice of %g degrees",
+    MvrLog::log(myInfoLogLevel, "%s: Using choice of %g degrees",
 	       getName(), degrees);
   }
   else
   {
     degrees = 360;
-    ArLog::log(ArLog::Terse, "%s: Don't have any settings for degrees, arbitrarily using 360", getName());
+    MvrLog::log(MvrLog::Terse, "%s: Don't have any settings for degrees, arbitrarily using 360", getName());
   }
 
   double increment;
   if (canSetIncrement())
   {
     increment = getIncrement();
-    ArLog::log(myInfoLogLevel, "%s: Using increment setting of %g degrees",
+    MvrLog::log(myInfoLogLevel, "%s: Using increment setting of %g degrees",
 	       getName(), increment);
   }
   else if (canChooseIncrement())
   {
     increment = getIncrementChoiceDouble();
-    ArLog::log(myInfoLogLevel, "%s: Using increment setting of %g degrees",
+    MvrLog::log(myInfoLogLevel, "%s: Using increment setting of %g degrees",
 	       getName(), increment);
   }
   else
@@ -719,37 +719,37 @@ AREXPORT void ArLaser::laserConnect(void)
 	// size but it's being overriden by this procedure - do we want to fix
 	// this or just leave it at the max value 360/.25=1440???
 	increment = .25;
-    ArLog::log(ArLog::Terse, "%s: Don't have any settings for increment, arbitrarily using .25", getName());
+    MvrLog::log(MvrLog::Terse, "%s: Don't have any settings for increment, arbitrarily using .25", getName());
   }
   
   int size = (int)ceil(degrees / increment) + 1;
-  ArLog::log(myInfoLogLevel, "%s: Setting current buffer size to %d", 
+  MvrLog::log(myInfoLogLevel, "%s: Setting current buffer size to %d", 
 	     getName(), size);
   setCurrentBufferSize(size);
   
-  ArLog::log(myInfoLogLevel, "%s: Connected", getName());
+  MvrLog::log(myInfoLogLevel, "%s: Connected", getName());
   myConnectCBList.invoke();
 }
 
-AREXPORT void ArLaser::laserFailedConnect(void)
+AREXPORT void MvrLaser::laserFailedConnect(void)
 {
-  ArLog::log(myInfoLogLevel, "%s: Failed to connect", getName());
+  MvrLog::log(myInfoLogLevel, "%s: Failed to connect", getName());
   myFailedConnectCBList.invoke();
 }
 
-AREXPORT void ArLaser::laserDisconnectNormally(void)
+AREXPORT void MvrLaser::laserDisconnectNormally(void)
 {
-  ArLog::log(myInfoLogLevel, "%s: Disconnected normally", getName());
+  MvrLog::log(myInfoLogLevel, "%s: Disconnected normally", getName());
   myDisconnectNormallyCBList.invoke();
 }
 
-AREXPORT void ArLaser::laserDisconnectOnError(void)
+AREXPORT void MvrLaser::laserDisconnectOnError(void)
 {
-  ArLog::log(ArLog::Normal, "%s: Disconnected because of error", getName());
+  MvrLog::log(MvrLog::Normal, "%s: Disconnected because of error", getName());
   myDisconnectOnErrorCBList.invoke();
 }
 
-AREXPORT void ArLaser::internalGotReading(void)
+AREXPORT void MvrLaser::internalGotReading(void)
 {
   if (myTimeLastReading != time(NULL)) 
   {
@@ -764,7 +764,7 @@ AREXPORT void ArLaser::internalGotReading(void)
   myDataCBList.invoke();
 }
 
-AREXPORT int ArLaser::getReadingCount()
+AREXPORT int MvrLaser::getReadingCount()
 {
   if (myTimeLastReading == time(NULL))
     return myReadingCount;
@@ -777,26 +777,26 @@ AREXPORT int ArLaser::getReadingCount()
 
 
 
-AREXPORT void ArLaser::setSensorPosition(
+AREXPORT void MvrLaser::setSensorPosition(
 	double x, double y, double th, double z)
 {
-  setSensorPosition(ArPose(x, y, th), z);
+  setSensorPosition(MvrPose(x, y, th), z);
 }
 
-AREXPORT void ArLaser::setSensorPosition(ArPose pose, double z)
+AREXPORT void MvrLaser::setSensorPosition(MvrPose pose, double z)
 {
   myHaveSensorPose = true;
   mySensorPose.setPose(pose);
   mySensorZ = z;
 }
 
-bool ArLaser::internalCheckChoice(const char *check, const char *choice, 
+bool MvrLaser::internalCheckChoice(const char *check, const char *choice, 
 				  std::list<std::string> *choices,
 				  const char *choicesStr)
 {
   if (check == NULL || choices == NULL || choice == NULL || choice[0] == '\0')
   {
-    ArLog::log(ArLog::Terse, "%s::%s: Internal error in setup");
+    MvrLog::log(MvrLog::Terse, "%s::%s: Internal error in setup");
     return false;
   }
   
@@ -805,23 +805,23 @@ bool ArLaser::internalCheckChoice(const char *check, const char *choice,
   for (it = choices->begin(); it != choices->end(); it++)
   {
     str = (*it);
-    if (ArUtil::strcasecmp(choice, str) == 0)
+    if (MvrUtil::strcasecmp(choice, str) == 0)
       return true;
   }
   
-  ArLog::log(ArLog::Terse, "%s::%s: Invalid choice, choices are <%s>.",
+  MvrLog::log(MvrLog::Terse, "%s::%s: Invalid choice, choices are <%s>.",
 	     myName.c_str(), check, choicesStr);
   return false;
 }
 
-bool ArLaser::internalCheckChoice(const char *check, const char *choice, 
+bool MvrLaser::internalCheckChoice(const char *check, const char *choice, 
 				  std::map<std::string, double> *choices,
 				  const char *choicesStr, 
 				  double *choiceDouble)
 {
   if (check == NULL || choices == NULL || choice == NULL || choice[0] == '\0')
   {
-    ArLog::log(ArLog::Terse, "%s::%s: Internal error in setup");
+    MvrLog::log(MvrLog::Terse, "%s::%s: Internal error in setup");
     return false;
   }
   
@@ -830,19 +830,19 @@ bool ArLaser::internalCheckChoice(const char *check, const char *choice,
   for (it = choices->begin(); it != choices->end(); it++)
   {
     str = (*it).first;
-    if (ArUtil::strcasecmp(choice, str) == 0)
+    if (MvrUtil::strcasecmp(choice, str) == 0)
     {
       *choiceDouble = (*it).second;
       return true;
     }
   }
 
-  ArLog::log(ArLog::Terse, "%s::%s: Invalid choice, choices are <%s>.",
+  MvrLog::log(MvrLog::Terse, "%s::%s: Invalid choice, choices are <%s>.",
 	     myName.c_str(), check, choicesStr);
   return false;
 }
 
-void ArLaser::internalBuildChoicesString(
+void MvrLaser::internalBuildChoicesString(
 	std::list<std::string> *choices, std::string *str)
 {
   std::list<std::string>::iterator it;
@@ -859,7 +859,7 @@ void ArLaser::internalBuildChoicesString(
   }
 }
 
-void ArLaser::internalBuildChoices(
+void MvrLaser::internalBuildChoices(
 	std::map<std::string, double> *choices, std::string *str,
 	std::list<std::string> *choicesList)
 {
@@ -897,7 +897,7 @@ void ArLaser::internalBuildChoices(
 
    @param endDegreesMax The maximum value for end degrees
 **/
-AREXPORT void ArLaser::laserAllowSetDegrees(double defaultStartDegrees, double startDegreesMin, double startDegreesMax, double defaultEndDegrees, double endDegreesMin, double endDegreesMax)
+AREXPORT void MvrLaser::laserAllowSetDegrees(double defaultStartDegrees, double startDegreesMin, double startDegreesMax, double defaultEndDegrees, double endDegreesMin, double endDegreesMax)
 {
   myCanSetDegrees = true;
   myStartDegreesMin = startDegreesMin;
@@ -912,26 +912,26 @@ AREXPORT void ArLaser::laserAllowSetDegrees(double defaultStartDegrees, double s
 
 }
 
-AREXPORT bool ArLaser::setStartDegrees(double startDegrees)
+AREXPORT bool MvrLaser::setStartDegrees(double startDegrees)
 {
   if (!myCanSetDegrees)
   {
-    ArLog::log(ArLog::Terse, "%s::setStartDegrees: Cannot set angles on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::setStartDegrees: Cannot set angles on this laser", myName.c_str());
     return false;
   }
   if (startDegrees < myStartDegreesMin)
   {
-    ArLog::log(ArLog::Terse, "%s::setStartDegrees: Start degrees (%g) tried to be set to less than the minimum (%g))", myName.c_str(), startDegrees, myStartDegreesMin);
+    MvrLog::log(MvrLog::Terse, "%s::setStartDegrees: Start degrees (%g) tried to be set to less than the minimum (%g))", myName.c_str(), startDegrees, myStartDegreesMin);
     return false;
   }
   if (startDegrees > myStartDegreesMax)
   {
-    ArLog::log(ArLog::Terse, "%s::setStartDegrees: Start degrees (%g) tried to be set to greater than the minimum (%g))", myName.c_str(), startDegrees, myStartDegreesMax);
+    MvrLog::log(MvrLog::Terse, "%s::setStartDegrees: Start degrees (%g) tried to be set to greater than the minimum (%g))", myName.c_str(), startDegrees, myStartDegreesMax);
     return false;
   }
   if (myEndDegreesSet && startDegrees >= myEndDegrees)
   {
-    ArLog::log(ArLog::Terse, "%s::setStartDegrees: Start degrees (%g) tried to be set to greater than or equal to end degrees %g)", myName.c_str(), startDegrees, myEndDegrees);
+    MvrLog::log(MvrLog::Terse, "%s::setStartDegrees: Start degrees (%g) tried to be set to greater than or equal to end degrees %g)", myName.c_str(), startDegrees, myEndDegrees);
     return false;
   }
   myStartDegreesSet = true;
@@ -939,26 +939,26 @@ AREXPORT bool ArLaser::setStartDegrees(double startDegrees)
   return true;
 }
     
-AREXPORT bool ArLaser::setEndDegrees(double endDegrees)
+AREXPORT bool MvrLaser::setEndDegrees(double endDegrees)
 {
   if (!myCanSetDegrees)
   {
-    ArLog::log(ArLog::Terse, "%s::setEndDegrees: Cannot set angles on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::setEndDegrees: Cannot set angles on this laser", myName.c_str());
     return false;
   }
   if (endDegrees < myEndDegreesMin)
   {
-    ArLog::log(ArLog::Terse, "%s::setEndDegrees: End degrees (%g) tried to be set to less than the minimum (%g))", myName.c_str(), endDegrees, myEndDegreesMin);
+    MvrLog::log(MvrLog::Terse, "%s::setEndDegrees: End degrees (%g) tried to be set to less than the minimum (%g))", myName.c_str(), endDegrees, myEndDegreesMin);
     return false;
   }
   if (endDegrees > myEndDegreesMax)
   {
-    ArLog::log(ArLog::Terse, "%s::setEndDegrees: End degrees (%g) tried to be set to greater than the minimum (%g))", myName.c_str(), endDegrees, myEndDegreesMax);
+    MvrLog::log(MvrLog::Terse, "%s::setEndDegrees: End degrees (%g) tried to be set to greater than the minimum (%g))", myName.c_str(), endDegrees, myEndDegreesMax);
     return false;
   }
   if (myStartDegreesSet && endDegrees <= myStartDegrees)
   {
-    ArLog::log(ArLog::Terse, "%s::setEndDegrees: End degrees (%g) tried to be set to less than or equal to end degrees %g)", myName.c_str(), endDegrees, myStartDegrees);
+    MvrLog::log(MvrLog::Terse, "%s::setEndDegrees: End degrees (%g) tried to be set to less than or equal to end degrees %g)", myName.c_str(), endDegrees, myStartDegrees);
     return false;
   }
   myEndDegreesSet = true;
@@ -980,7 +980,7 @@ AREXPORT bool ArLaser::setEndDegrees(double endDegrees)
    lasers... and because the original sick driver used words typed out
    (to make problems more obvious).
 **/
-AREXPORT void ArLaser::laserAllowDegreesChoices(
+AREXPORT void MvrLaser::laserAllowDegreesChoices(
 	const char *defaultDegreesChoice, 
 	std::map<std::string, double> degreesChoices)
 {
@@ -991,12 +991,12 @@ AREXPORT void ArLaser::laserAllowDegreesChoices(
   myDegreesChoiceSet = false;
 }
 
-AREXPORT bool ArLaser::chooseDegrees(
+AREXPORT bool MvrLaser::chooseDegrees(
 	const char *degreesChoice)
 {
   if (!myCanChooseDegrees)
   {
-    ArLog::log(ArLog::Terse, "%s::chooseDegrees: Cannot choose degrees on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::chooseDegrees: Cannot choose degrees on this laser", myName.c_str());
     return false;
   }
 
@@ -1021,7 +1021,7 @@ AREXPORT bool ArLaser::chooseDegrees(
 
    @param incrementMax The maximum value for the increment
 **/
-AREXPORT void ArLaser::laserAllowSetIncrement(
+AREXPORT void MvrLaser::laserAllowSetIncrement(
 	double defaultIncrement, double incrementMin, double incrementMax)
 {
   myCanSetIncrement = true;
@@ -1032,22 +1032,22 @@ AREXPORT void ArLaser::laserAllowSetIncrement(
 
 }
 
-AREXPORT bool ArLaser::setIncrement(double increment)
+AREXPORT bool MvrLaser::setIncrement(double increment)
 {
   if (!myCanSetIncrement)
   {
-    ArLog::log(ArLog::Terse, "%s::setIncrement: Cannot set increment on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::setIncrement: Cannot set increment on this laser", myName.c_str());
     return false;
   }
 
   if (increment < myIncrementMin)
   {
-    ArLog::log(ArLog::Terse, "%s::setIncrement: Increment (%g) tried to be set to less than the minimum (%g))", myName.c_str(), increment, myIncrementMin);
+    MvrLog::log(MvrLog::Terse, "%s::setIncrement: Increment (%g) tried to be set to less than the minimum (%g))", myName.c_str(), increment, myIncrementMin);
     return false;
   }
   if (increment > myIncrementMax)
   {
-    ArLog::log(ArLog::Terse, "%s::setIncrement: End degrees (%g) tried to be set to greater than the maximum (%g))", myName.c_str(), increment, myIncrementMax);
+    MvrLog::log(MvrLog::Terse, "%s::setIncrement: End degrees (%g) tried to be set to greater than the maximum (%g))", myName.c_str(), increment, myIncrementMax);
     return false;
   }
   myIncrementSet = true;
@@ -1069,7 +1069,7 @@ AREXPORT bool ArLaser::setIncrement(double increment)
    lasers... and because the original sick driver used words typed out
    (to make problems more obvious).
 **/
-AREXPORT void ArLaser::laserAllowIncrementChoices(
+AREXPORT void MvrLaser::laserAllowIncrementChoices(
 	const char *defaultIncrementChoice, 
 	std::map<std::string, double> incrementChoices)
 {
@@ -1080,11 +1080,11 @@ AREXPORT void ArLaser::laserAllowIncrementChoices(
   myIncrementChoiceSet = false;
 }
 
-AREXPORT bool ArLaser::chooseIncrement(const char *incrementChoice)
+AREXPORT bool MvrLaser::chooseIncrement(const char *incrementChoice)
 {
   if (!myCanChooseIncrement)
   {
-    ArLog::log(ArLog::Terse, "%s::chooseIncrement: Cannot choose increment on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::chooseIncrement: Cannot choose increment on this laser", myName.c_str());
     return false;
   }
 
@@ -1104,7 +1104,7 @@ AREXPORT bool ArLaser::chooseIncrement(const char *incrementChoice)
 
    @param unitsChoices The possible choices for units.
 **/
-AREXPORT void ArLaser::laserAllowUnitsChoices(
+AREXPORT void MvrLaser::laserAllowUnitsChoices(
 	const char *defaultUnitsChoice, 
 	std::list<std::string> unitsChoices)
 {
@@ -1116,11 +1116,11 @@ AREXPORT void ArLaser::laserAllowUnitsChoices(
 
 }
 
-AREXPORT bool ArLaser::chooseUnits(const char *unitsChoice)
+AREXPORT bool MvrLaser::chooseUnits(const char *unitsChoice)
 {
   if (!myCanChooseUnits)
   {
-    ArLog::log(ArLog::Terse, "%s::chooseUnits: Cannot choose units on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::chooseUnits: Cannot choose units on this laser", myName.c_str());
     return false;
   }
 
@@ -1138,7 +1138,7 @@ AREXPORT bool ArLaser::chooseUnits(const char *unitsChoice)
    
    @param reflectorBitsChoices The possible choices for reflector bits
 **/
-AREXPORT void ArLaser::laserAllowReflectorBitsChoices(
+AREXPORT void MvrLaser::laserAllowReflectorBitsChoices(
 	const char *defaultReflectorBitsChoice, 
 	std::list<std::string> reflectorBitsChoices)
 {
@@ -1149,11 +1149,11 @@ AREXPORT void ArLaser::laserAllowReflectorBitsChoices(
   myReflectorBitsChoiceSet = false;
 }
 
-AREXPORT bool ArLaser::chooseReflectorBits(const char *reflectorBitsChoice)
+AREXPORT bool MvrLaser::chooseReflectorBits(const char *reflectorBitsChoice)
 {
   if (!myCanChooseReflectorBits)
   {
-    ArLog::log(ArLog::Terse, "%s::chooseReflectorBits: Cannot choose reflectorBits on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::chooseReflectorBits: Cannot choose reflectorBits on this laser", myName.c_str());
     return false;
   }
 
@@ -1176,19 +1176,19 @@ AREXPORT bool ArLaser::chooseReflectorBits(const char *reflectorBitsChoice)
    @param defaultPowerControlled The default value for power
    controlled.
 **/
-AREXPORT void ArLaser::laserAllowSetPowerControlled(bool defaultPowerControlled)
+AREXPORT void MvrLaser::laserAllowSetPowerControlled(bool defaultPowerControlled)
 {
   myCanSetPowerControlled = true;
   setPowerControlled(defaultPowerControlled);
   myPowerControlledSet = false;
 }
 
-AREXPORT bool ArLaser::setPowerControlled(
+AREXPORT bool MvrLaser::setPowerControlled(
 	bool powerControlled)
 {
   if (!myCanSetPowerControlled)
   {
-    ArLog::log(ArLog::Terse, "%s::setPowerControlled: Cannot set if the laser power is controlled on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::setPowerControlled: Cannot set if the laser power is controlled on this laser", myName.c_str());
     return false;
   }
 
@@ -1203,7 +1203,7 @@ AREXPORT bool ArLaser::setPowerControlled(
 
    @param startingBaudChoices The available choices for starting baud
 **/
-AREXPORT void ArLaser::laserAllowStartingBaudChoices(
+AREXPORT void MvrLaser::laserAllowStartingBaudChoices(
 	const char *defaultStartingBaudChoice, 
 	std::list<std::string> startingBaudChoices)
 {
@@ -1214,11 +1214,11 @@ AREXPORT void ArLaser::laserAllowStartingBaudChoices(
   myStartingBaudChoiceSet = false;
 }
 
-AREXPORT bool ArLaser::chooseStartingBaud(const char *startingBaudChoice)
+AREXPORT bool MvrLaser::chooseStartingBaud(const char *startingBaudChoice)
 {
   if (!myCanChooseStartingBaud)
   {
-    ArLog::log(ArLog::Terse, "%s::chooseStartingBaud: Cannot choose startingBaud on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::chooseStartingBaud: Cannot choose startingBaud on this laser", myName.c_str());
     return false;
   }
 
@@ -1239,7 +1239,7 @@ AREXPORT bool ArLaser::chooseStartingBaud(const char *startingBaudChoice)
 
    @param autoBaudChoices The available choices for auto baud
 **/
-AREXPORT void ArLaser::laserAllowAutoBaudChoices(
+AREXPORT void MvrLaser::laserAllowAutoBaudChoices(
 	const char *defaultAutoBaudChoice, 
 	std::list<std::string> autoBaudChoices)
 {
@@ -1250,11 +1250,11 @@ AREXPORT void ArLaser::laserAllowAutoBaudChoices(
   myAutoBaudChoiceSet = false;
 }
 
-AREXPORT bool ArLaser::chooseAutoBaud(const char *autoBaudChoice)
+AREXPORT bool MvrLaser::chooseAutoBaud(const char *autoBaudChoice)
 {
   if (!myCanChooseAutoBaud)
   {
-    ArLog::log(ArLog::Terse, "%s::chooseAutoBaud: Cannot choose autoBaud on this laser", myName.c_str());
+    MvrLog::log(MvrLog::Terse, "%s::chooseAutoBaud: Cannot choose autoBaud on this laser", myName.c_str());
     return false;
   }
 
@@ -1266,17 +1266,17 @@ AREXPORT bool ArLaser::chooseAutoBaud(const char *autoBaudChoice)
   return true;      
 }
 
-AREXPORT void ArLaser::laserSetDefaultTcpPort(int defaultTcpPort)
+AREXPORT void MvrLaser::laserSetDefaultTcpPort(int defaultTcpPort)
 {
   myDefaultTcpPort = defaultTcpPort;
 }
 
-AREXPORT void ArLaser::laserSetDefaultPortType(const char *defaultPortType)
+AREXPORT void MvrLaser::laserSetDefaultPortType(const char *defaultPortType)
 {
   myDefaultPortType = defaultPortType;
 }
 
-AREXPORT bool ArLaser::addIgnoreReadings(const char *ignoreReadings)
+AREXPORT bool MvrLaser::addIgnoreReadings(const char *ignoreReadings)
 {
   // if we have , then use it as the separator, otherwise use space
   // like normal
@@ -1284,7 +1284,7 @@ AREXPORT bool ArLaser::addIgnoreReadings(const char *ignoreReadings)
   if (strstr(ignoreReadings, ",") != NULL)
     separator = ',';
 
-  ArArgumentBuilder args(1024, separator);
+  MvrArgumentBuilder args(1024, separator);
   
   args.add(ignoreReadings);
   if (args.getArgc() == 0)
@@ -1300,7 +1300,7 @@ AREXPORT bool ArLaser::addIgnoreReadings(const char *ignoreReadings)
     {
       ignore = args.getArgDouble(i);
       addIgnoreReading(ignore);
-      ArLog::log(ArLog::Verbose, "%s: Added ignore reading %g", 
+      MvrLog::log(MvrLog::Verbose, "%s: Added ignore reading %g", 
 		 getName(), ignore);
     }
     else
@@ -1309,7 +1309,7 @@ AREXPORT bool ArLaser::addIgnoreReadings(const char *ignoreReadings)
       if (sscanf(str, "%f:%f", &begin, &end) == 2 || 
 	  sscanf(str, "%f-%f", &begin, &end) == 2)
       {
-	ArLog::log(ArLog::Verbose, "%s: Adding ignore reading from %g to %g", 
+	ArLog::log(MvrLog::Verbose, "%s: Adding ignore reading from %g to %g", 
 		   getName(), begin, end);
 	// reorder them for easier looping
 	if (begin > end)
@@ -1319,22 +1319,22 @@ AREXPORT bool ArLaser::addIgnoreReadings(const char *ignoreReadings)
 	  end = ignore;
 	}
 
-	ArLog::log(ArLog::Verbose, "%s: Added ignore reading (beginning) %g", 
+	ArLog::log(MvrLog::Verbose, "%s: Added ignore reading (beginning) %g", 
 		   getName(), begin);
 	addIgnoreReading(begin);
 	for (ignore = begin; ignore <= end; ignore += 1.0)
 	{
-	  ArLog::log(ArLog::Verbose, "%s: Added ignore reading %g", 
+	  MvrLog::log(MvrLog::Verbose, "%s: Added ignore reading %g", 
 		     getName(), ignore);
 	  addIgnoreReading(ignore);
 	}
-	ArLog::log(ArLog::Verbose, "%s: Added ignore reading (ending) %g", 
+	ArLog::log(MvrLog::Verbose, "%s: Added ignore reading (ending) %g", 
 		   getName(), end);
 	addIgnoreReading(end);
       }
       else
       {
-	ArLog::log(ArLog::Terse, "%s: Bad syntax for ignore readings, had string '%s' as one of the arguments (the values need to either be individual doubles, or begin:end (75:77) or begin-end (75-77))", getName(), str);
+	ArLog::log(MvrLog::Terse, "%s: Bad syntax for ignore readings, had string '%s' as one of the arguments (the values need to either be individual doubles, or begin:end (75:77) or begin-end (75-77))", getName(), str);
 	return false;
       }
     }
@@ -1351,7 +1351,7 @@ AREXPORT bool ArLaser::addIgnoreReadings(const char *ignoreReadings)
     @param trans the transform to apply to the data
     @param doCumulative whether to transform the cumulative buffer or not
 */
-AREXPORT void ArLaser::applyTransform(ArTransform trans,
+AREXPORT void MvrLaser::applyTransform(MvrTransform trans,
 				       bool doCumulative)
 {
   myCurrentBuffer.applyTransform(trans);
@@ -1370,7 +1370,7 @@ AREXPORT void ArLaser::applyTransform(ArTransform trans,
    getConnectionTimeoutSeconds.  If there is a robot then it will not
    start the check until the laser is running and connected.
 **/
-AREXPORT bool ArLaser::laserCheckLostConnection(void)
+AREXPORT bool MvrLaser::laserCheckLostConnection(void)
 {
 	
   if ((myRobot == NULL || myRobotRunningAndConnected) && 
@@ -1388,15 +1388,15 @@ AREXPORT bool ArLaser::laserCheckLostConnection(void)
   return false;
 }
 
-AREXPORT void ArLaser::copyReadingCount(const ArLaser* laser)
+AREXPORT void MvrLaser::copyReadingCount(const MvrLaser* laser)
 {
   myTimeLastReading = laser->myTimeLastReading;
   myReadingCurrentCount = laser->myReadingCurrentCount;
   myReadingCount = laser->myReadingCount;
 }
 
-AREXPORT void ArLaser::useSimpleNamingForAllLasers(void)
+AREXPORT void MvrLaser::useSimpleNamingForAllLasers(void)
 {
-  ArLog::log(ArLog::Normal, "ArLaser: Will use simple naming for all lasers");
+  MvrLog::log(MvrLog::Normal, "MvrLaser: Will use simple naming for all lasers");
   ourUseSimpleNaming = true;
 }

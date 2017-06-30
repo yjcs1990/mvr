@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONLIMITERROT_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action to limit the forwards motion of the robot based on range sensor readings
 /**
@@ -45,24 +45,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    @ingroup ActionClasses
 **/
-class ArActionLimiterRot : public ArAction
+class MvrActionLimiterRot : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionLimiterRot(const char *name = "limitRot");
+  AREXPORT MvrActionLimiterRot(const char *name = "limitRot");
   /// Destructor
   AREXPORT virtual ~ArActionLimiterRot();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   /// Sets the parameters (don't use this if you're using the addToConfig)
   AREXPORT void setParameters(bool checkRadius = false,
 			      double inRadiusSpeed = 0);
-  /// Adds to the ArConfig given, in section, with prefix
-  AREXPORT void addToConfig(ArConfig *config, const char *section,
+  /// Adds to the MvrConfig given, in section, with prefix
+  AREXPORT void addToConfig(MvrConfig *config, const char *section,
 			    const char *prefix = NULL);
   /// Sets if we're using locationDependent range devices or not
   bool getUseLocationDependentDevices(void) 
@@ -74,7 +74,7 @@ protected:
   bool myCheckRadius;
   double myInRadiusSpeed;
   bool myUseLocationDependentDevices;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 };
 
 #endif // ARACTIONSPEEDLIMITER_H

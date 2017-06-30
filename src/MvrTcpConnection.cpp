@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArTcpConnection.h"
-#include "ArLog.h"
+#include "MvrTcpConnection.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
 
 AREXPORT ArTcpConnection::ArTcpConnection()
@@ -51,7 +51,7 @@ AREXPORT ArTcpConnection::~ArTcpConnection()
    connection.
    @param socket the socket to use
 **/
-AREXPORT void ArTcpConnection::setSocket(ArSocket *socket)
+AREXPORT void ArTcpConnection::setSocket(MvrSocket *socket)
 {
   if (myOwnSocket)
   {
@@ -116,7 +116,7 @@ AREXPORT int ArTcpConnection::internalOpen(void)
 {
   mySocket->init();
 
-  ArLog::log(ArLog::Verbose, "ArTcpConnection::internalOpen: Connecting to %s %d", myHostName.c_str(), myPortNum);
+  ArLog::log(MvrLog::Verbose, "MvrTcpConnection::internalOpen: Connecting to %s %d", myHostName.c_str(), myPortNum);
 
   if (mySocket->connect(const_cast<char *>(myHostName.c_str()), myPortNum,
 		       ArSocket::TCP)) 
@@ -139,7 +139,7 @@ AREXPORT int ArTcpConnection::internalOpen(void)
   case ArSocket::ConRefused:
     return OPEN_CON_REFUSED;
   case ArSocket::NoErr:
-    ArLog::log(ArLog::Terse, "ArTcpConnection::open: No error!\n");
+    ArLog::log(MvrLog::Terse, "MvrTcpConnection::open: No error!\n");
   default:
     return -1;
   }
@@ -174,8 +174,8 @@ AREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
 
   if (getStatus() != STATUS_OPEN) 
   {
-    ArLog::log(ArLog::Terse, 
-	       "ArTcpConnection::read: Attempt to use port that is not open.");
+    ArLog::log(MvrLog::Terse, 
+	       "MvrTcpConnection::read: Attempt to use port that is not open.");
     return -1;
   }
 
@@ -183,8 +183,8 @@ AREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
   int timeToWait;  
   timeDone.setToNow();
   if (!timeDone.addMSec(msWait)) {
-    ArLog::log(ArLog::Normal,
-               "ArTcpConnection::read() error adding msecs (%i)",
+    ArLog::log(MvrLog::Normal,
+               "MvrTcpConnection::read() error adding msecs (%i)",
                msWait);
   }
 
@@ -196,8 +196,8 @@ AREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
     // if the sockets empty don't read it, but pause some
     if (mySocket->getFD() < 0)
     {
-      ArLog::log(ArLog::Terse, 
-		 "ArTcpConnection::read: Attempt to read port that already closed. (%d)", timeToWait);
+      ArLog::log(MvrLog::Terse, 
+		 "MvrTcpConnection::read: Attempt to read port that already closed. (%d)", timeToWait);
       if (timeToWait > 0)
 	ArUtil::sleep(timeToWait);
       return -1;
@@ -207,7 +207,7 @@ AREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
 		       timeToWait);
     /*if (n == -1) 
     {
-      ArLog::log("ArTcpConnection::read: read failed.");
+      ArLog::log("MvrTcpConnection::read: read failed.");
       return -1;
       } */
     //printf("%ld %d %d\n", timeDone.mSecTo(), n, size);
@@ -226,14 +226,14 @@ AREXPORT int ArTcpConnection::write(const char *data, unsigned int size)
 
   if (getStatus() != STATUS_OPEN) 
   {
-    ArLog::log(ArLog::Terse, 
-	       "ArTcpConnection::write: Attempt to use port that is not open.");
+    ArLog::log(MvrLog::Terse, 
+	       "MvrTcpConnection::write: Attempt to use port that is not open.");
     return -1;
   }
   if ((ret = mySocket->write(data, size)) != -1)
     return ret;
 
-  ArLog::log(ArLog::Terse, "ArTcpConnection::write: Write failed, closing connection.");
+  ArLog::log(MvrLog::Terse, "MvrTcpConnection::write: Write failed, closing connection.");
   close();
   return -1;
 }

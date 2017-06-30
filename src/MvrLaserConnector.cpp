@@ -24,20 +24,20 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLaserConnector.h"
-#include "ArRobot.h"
-#include "ArLaser.h"
+#include "MvrLaserConnector.h"
+#include "MvrRobot.h"
+#include "MvrLaser.h"
 #include "ariaInternal.h"
-#include "ArSick.h"
-#include "ArUrg.h"
-#include "ArSimulatedLaser.h"
-#include "ArCommands.h"
-#include "ArRobotConfigPacketReader.h"
+#include "MvrSick.h"
+#include "MvrUrg.h"
+#include "MvrSimulatedLaser.h"
+#include "MvrCommands.h"
+#include "MvrRobotConfigPacketReader.h"
 
 /** @warning do not delete @a parser during the lifetime of this
- ArLaserConnector, which may need to access its contents later.
+ MvrLaserConnector, which may need to access its contents later.
 
  @param parser the parser with the arguments to parse 
 
@@ -53,8 +53,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  lasers and such, this is also passed to all the lasers created as
  their infoLogLevel too
  */
-AREXPORT ArLaserConnector::ArLaserConnector(
-	ArArgumentParser *parser, ArRobot *robot,
+AREXPORT MvrLaserConnector::ArLaserConnector(
+	ArArgumentParser *parser, MvrRobot *robot,
 	ArRobotConnector *robotConnector, bool autoParseArgs,
 	ArLog::LogLevel infoLogLevel,
 	ArRetFunctor1<bool, const char *> *turnOnPowerOutputCB,
@@ -73,34 +73,34 @@ AREXPORT ArLaserConnector::ArLaserConnector(
   myTurnOnPowerOutputCB = turnOnPowerOutputCB;
   myTurnOffPowerOutputCB = turnOffPowerOutputCB;
 
-  myParseArgsCB.setName("ArLaserConnector");
-  Aria::addParseArgsCB(&myParseArgsCB, 60);
-  myLogOptionsCB.setName("ArLaserConnector");
-  Aria::addLogOptionsCB(&myLogOptionsCB, 80);
+  myParseArgsCB.setName("MvrLaserConnector");
+  Mvria::addParseArgsCB(&myParseArgsCB, 60);
+  myLogOptionsCB.setName("MvrLaserConnector");
+  Mvria::addLogOptionsCB(&myLogOptionsCB, 80);
 }
 
-AREXPORT ArLaserConnector::~ArLaserConnector(void)
+AREXPORT MvrLaserConnector::~ArLaserConnector(void)
 {
 
 }
 
 
 /**
- * Parse command line arguments using the ArArgumentParser given in the ArLaserConnector constructor.
+ * Parse command line arguments using the MvrArgumentParser given in the MvrLaserConnector constructor.
  *
- * See parseArgs(ArArgumentParser*) for details about argument parsing.
+ * See parseArgs(MvrArgumentParser*) for details about argument parsing.
  * 
   @return true if the arguments were parsed successfully false if not
  **/
 
-AREXPORT bool ArLaserConnector::parseArgs(void)
+AREXPORT bool MvrLaserConnector::parseArgs(void)
 {
   return parseArgs(myParser);
 }
 
 /**
- * This function parses command line arguments held by the given ArArgumentParser.
- * Normally, it is automatically called by ArArgumentParser::parseArgs().
+ * This function parses command line arguments held by the given MvrArgumentParser.
+ * Normally, it is automatically called by MvrArgumentParser::parseArgs().
  *
   @return true if the arguments were parsed successfully false if not
 
@@ -154,7 +154,7 @@ AREXPORT bool ArLaserConnector::parseArgs(void)
 
  **/
 
-AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
+AREXPORT bool MvrLaserConnector::parseArgs (MvrArgumentParser *parser)
 {
 	if (myParsedArgs)
 		return true;
@@ -167,7 +167,7 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 	LaserData *laserData;
 	bool wasReallySetOnlyTrue = parser->getWasReallySetOnlyTrue();
 	parser->setWasReallySetOnlyTrue (true);
-	for (i = 1; i <= Aria::getMaxNumLasers(); i++) {
+	for (i = 1; i <= Mvria::getMaxNumLasers(); i++) {
 		if (i == 1)
 			buf[0] = '\0';
 		else
@@ -178,8 +178,8 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 		    "-laserType%s", buf) ||
 		    !parser->checkParameterArgumentStringVar (&typeReallySet, &type,
 		        "-lt%s", buf)) {
-			ArLog::log (ArLog::Normal,
-			            "ArLaserConnector: Bad laser type given for laser number %d",
+			ArLog::log (MvrLog::Normal,
+			            "MvrLaserConnector: Bad laser type given for laser number %d",
 			            i);
 			parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 			return false;
@@ -188,7 +188,7 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 		if (!typeReallySet)
 			continue;
 		if ( (it = myLasers.find (i)) != myLasers.end()) {
-			ArLog::log (ArLog::Normal, "ArLaserConnector: A laser already exists for laser number %d, replacing it with a new one of type %s",
+			ArLog::log (MvrLog::Normal, "MvrLaserConnector: A laser already exists for laser number %d, replacing it with a new one of type %s",
 			            i, type);
 			laserData = (*it).second;
 			delete laserData;
@@ -196,16 +196,16 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 		}
 		if (typeReallySet && type != NULL) {
 			ArLaser *laser = NULL;
-			if ( (laser = Aria::laserCreate (type, i, "ArLaserConnector: ")) != NULL) {
+			if ( (laser = Mvria::laserCreate (type, i, "MvrLaserConnector: ")) != NULL) {
 				ArLog::log (myInfoLogLevel,
-				            "ArLaserConnector: Created %s as laser %d from arguments",
+				            "MvrLaserConnector: Created %s as laser %d from arguments",
 				            laser->getName(), i);
 				myLasers[i] = new LaserData (i, laser);
 				laser->setInfoLogLevel (myInfoLogLevel);
 			} else {
-				ArLog::log (ArLog::Normal,
+				ArLog::log (MvrLog::Normal,
 				            "Unknown laser type %s for laser %d, choices are %s",
-				            type, i, Aria::laserGetTypes());
+				            type, i, Mvria::laserGetTypes());
 				parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 				return false;
 			}
@@ -213,17 +213,17 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 	}
 	// go through the robot param list and add the lasers defined
 	// in the parameter file.
-	const ArRobotParams *params = NULL;
+	const MvrRobotParams *params = NULL;
 	if (myRobot != NULL) {
 		params = myRobot->getRobotParams();
 		if (params != NULL) {
-			for (i = 1; i <= Aria::getMaxNumLasers(); i++) {
+			for (i = 1; i <= Mvria::getMaxNumLasers(); i++) {
 				// if we already have a laser for this then don't add one from
 				// the param file, since it was added either explicitly by a
 				// program or from the command line
 				if (myLasers.find (i) != myLasers.end())
 				{
-				  ArLog::log(myInfoLogLevel, "ArLaserConnector: Already a laser %d", i);
+				  MvrLog::log(myInfoLogLevel, "MvrLaserConnector: Already a laser %d", i);
 				  continue;
 				}
 				type = params->getLaserType (i);
@@ -235,24 +235,24 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 				    myLasers[i] = new LaserData(i, NULL);
 				    myLasers[i]->myConnect = true;
 				    myLasers[i]->myConnectReallySet = true;
-				    ArLog::log(myInfoLogLevel,
-	       "ArLaserConnector: Will connect a NULL laser %d, since the parameter file wants to connect and it'll be clearer to fail in connectLasers",
+				    MvrLog::log(myInfoLogLevel,
+	       "MvrLaserConnector: Will connect a NULL laser %d, since the parameter file wants to connect and it'll be clearer to fail in connectLasers",
 					       i);
 				  }
 				  continue;
 				}
 				ArLaser *laser = NULL;
 				if ( (laser =
-				        Aria::laserCreate (type, i, "ArLaserConnector: ")) != NULL) {
+				        Mvria::laserCreate (type, i, "MvrLaserConnector: ")) != NULL) {
 					ArLog::log (myInfoLogLevel,
-					            "ArLaserConnector: Created %s as laser %d from parameter file",
+					            "MvrLaserConnector: Created %s as laser %d from parameter file",
 					            laser->getName(), i);
 					myLasers[i] = new LaserData (i, laser);
 					laser->setInfoLogLevel (myInfoLogLevel);
 				} else {
-					ArLog::log (ArLog::Normal,
+					ArLog::log (MvrLog::Normal,
 					            "Unknown laser type %s for laser %d from the .p file, choices are %s",
-					            type, i, Aria::laserGetTypes());
+					            type, i, Mvria::laserGetTypes());
 					parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 					return false;
 				}
@@ -260,8 +260,8 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 				{
 				  myLasers[i]->myConnect = true;
 				  myLasers[i]->myConnectReallySet = true;
-				  ArLog::log(myInfoLogLevel,
-					     "ArLaserConnector: Will connect %s as laser %d from parameter file",
+				  MvrLog::log(myInfoLogLevel,
+					     "MvrLaserConnector: Will connect %s as laser %d from parameter file",
 					     laser->getName(), i);
 				  
 				}
@@ -269,7 +269,7 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 				    
 			}
 		} else {
-		  ArLog::log (ArLog::Normal, "ArLaserConnector: Have robot, but robot has NULL params, so cannot configure its laser %s", i);
+		  MvrLog::log (MvrLog::Normal, "MvrLaserConnector: Have robot, but robot has NULL params, so cannot configure its laser %s", i);
 		  parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 		  return false;
 		}
@@ -286,7 +286,7 @@ AREXPORT bool ArLaserConnector::parseArgs (ArArgumentParser *parser)
 	return true;
 }
 
-AREXPORT bool ArLaserConnector::parseLaserArgs(ArArgumentParser *parser, 
+AREXPORT bool MvrLaserConnector::parseLaserArgs(MvrArgumentParser *parser, 
 						LaserData *laserData)
 {
   char buf[512];
@@ -294,20 +294,20 @@ AREXPORT bool ArLaserConnector::parseLaserArgs(ArArgumentParser *parser,
 
   if (laserData == NULL)
   {
-    ArLog::log(ArLog::Terse, "Was given NULL laser");
+    MvrLog::log(MvrLog::Terse, "Was given NULL laser");
     return false;
   }
 
   if (laserData->myLaser == NULL)
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArLaserConnector: There is no laser for laser number %d but there should be... this should fail in the connect, so just returning here", 
+    MvrLog::log(MvrLog::Normal, 
+	       "MvrLaserConnector: There is no laser for laser number %d but there should be... this should fail in the connect, so just returning here", 
 	       laserData->myNumber);
     //return false;
     return true;
   }
 
-  ArLaser *laser = laserData->myLaser;
+  MvrLaser *laser = laserData->myLaser;
 
   if (laserData->myNumber == 1)
     buf[0] = '\0';
@@ -472,14 +472,14 @@ AREXPORT bool ArLaserConnector::parseLaserArgs(ArArgumentParser *parser,
   return internalConfigureLaser(laserData);
 }
 
-bool ArLaserConnector::internalConfigureLaser(
+bool MvrLaserConnector::internalConfigureLaser(
 	LaserData *laserData)
 {
-  ArLaser *laser = laserData->myLaser;
+  MvrLaser *laser = laserData->myLaser;
   
   if (laser == NULL)
   {
-    ArLog::log(ArLog::Terse, "ArLaserConnector: No laser for number %d",
+    MvrLog::log(MvrLog::Terse, "MvrLaserConnector: No laser for number %d",
 	       laserData->myNumber);
     return false;
   }
@@ -546,19 +546,19 @@ bool ArLaserConnector::internalConfigureLaser(
   }
   
   // the rest handles all the connection stuff
-  const ArRobotParams *params;
+  const MvrRobotParams *params;
 
   char portBuf[1024];
   if (laserData->myLaser == NULL)
   {
-    ArLog::log(ArLog::Terse, "ArLaserConnector: There is no laser, cannot connect");
+    MvrLog::log(MvrLog::Terse, "MvrLaserConnector: There is no laser, cannot connect");
     return false;
   }
   sprintf(portBuf, "%d", laserData->myLaser->getDefaultTcpPort());
 
   if (myRobotConnector == NULL)
   {
-    ArLog::log(ArLog::Terse, "ArLaserConnector: No ArRobotConnector is passed in so simulators and remote hosts will not work correctly");
+    MvrLog::log(MvrLog::Terse, "MvrLaserConnector: No MvrRobotConnector is passed in so simulators and remote hosts will not work correctly");
   }
 
   /*
@@ -569,21 +569,21 @@ bool ArLaserConnector::internalConfigureLaser(
   {
     if (laserData->myNumber != 1)
     {
-      ArLog::log(ArLog::Normal, "Cannot use the simulator with multiple lasers yet, will continue but will be unable to connect laser %s (num %d)", laserData->myLaser->getName(), laserData->myNumber);
+      MvrLog::log(MvrLog::Normal, "Cannot use the simulator with multiple lasers yet, will continue but will be unable to connect laser %s (num %d)", laserData->myLaser->getName(), laserData->myNumber);
       return true;
     }
-    ArSick *sick = NULL;
+    MvrSick *sick = NULL;
     if ((sick = dynamic_cast<ArSick *>(laser)) != NULL)
     {
-      ArLog::log(ArLog::Normal, "Using old style sim laser for %s", 
+      MvrLog::log(MvrLog::Normal, "Using old style sim laser for %s", 
 		 laser->getName());
       sick->setIsUsingSim(true);
     }
     else
     {
-      ArLog::log(ArLog::Normal, "Using new style simulated laser for %s", 
+      MvrLog::log(MvrLog::Normal, "Using new style simulated laser for %s", 
 		 laser->getName());
-      laserData->myLaser = new ArSimulatedLaser(laser);
+      laserData->myLaser = new MvrSimulatedLaser(laser);
       laser = laserData->myLaser;
     }
     // return here, since the rest is just dealing with how to connect
@@ -596,7 +596,7 @@ bool ArLaserConnector::internalConfigureLaser(
   if ((laserData->myPort == NULL || strlen(laserData->myPort) == 0) && 
       (laserData->myPortType != NULL && strlen(laserData->myPortType) > 0))
   {
-    ArLog::log(ArLog::Normal, "There is a laser port type given ('%s') for laser %d (%s), but no laser port given, cannot configure laser", 
+    MvrLog::log(MvrLog::Normal, "There is a laser port type given ('%s') for laser %d (%s), but no laser port given, cannot configure laser", 
 	       laserData->myPortType, laserData->myNumber, laser->getName());
     return false;
   }
@@ -604,11 +604,11 @@ bool ArLaserConnector::internalConfigureLaser(
   if ((laserData->myPort != NULL && strlen(laserData->myPort) > 0) &&
       (laserData->myPortType != NULL && strlen(laserData->myPortType) > 0))
   {
-    ArLog::log(ArLog::Normal, "ArLaserConnector: Connection type and port command arguments given for laser %d (%s), so overriding everything and using that information",
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector: Connection type and port command arguments given for laser %d (%s), so overriding everything and using that information",
 	       laserData->myNumber, laser->getName());
-    if ((laserData->myConn = Aria::deviceConnectionCreate(
+    if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		 laserData->myPortType, laserData->myPort, portBuf, 
-		 "ArLaserConnector:")) == NULL)
+		 "MvrLaserConnector:")) == NULL)
     {
       return false;
     }
@@ -626,10 +626,10 @@ bool ArLaserConnector::internalConfigureLaser(
       myRobotConnector->getRemoteHost() != NULL && 
       strlen(myRobotConnector->getRemoteHost()) > 0)
   { 
-    ArLog::log(ArLog::Normal, "ArLaserConnector: Remote host is used for robot, so remote host is also being used for laser %d (%s)", 
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector: Remote host is used for robot, so remote host is also being used for laser %d (%s)", 
 	       laserData->myNumber, laser->getName());
     // if a port was given for the laser, then use that one... 
-    ArTcpConnection *tcpConn = new ArTcpConnection;
+    MvrTcpConnection *tcpConn = new MvrTcpConnection;
     laserData->myConn = tcpConn;
     if (laserData->myRemoteTcpPortReallySet)
       tcpConn->setPort(myRobotConnector->getRemoteHost(),
@@ -640,20 +640,20 @@ bool ArLaserConnector::internalConfigureLaser(
 		       laser->getDefaultTcpPort());
     /*
       This code is commented out because it created problems with demo
-      (or any other program that used ArLaserConnector::connectLasers
+      (or any other program that used MvrLaserConnector::connectLasers
       with addAllLasersToRobot as true)
 
     // now try and open the port, since if it doesn't open nothing will work
     if (!tcpConn->openSimple())
     { 
       if (laserData->myRemoteTcpPortReallySet)
-	ArLog::log(ArLog::Terse, 
+	ArLog::log(MvrLog::Terse, 
 		   "Could not connect laser to remote host %s with given remote port %d.", 
 		   myRobotConnector->getRemoteHost(), 
 		   laserData->myRemoteTcpPort);
       else
 	/// TODO is this next line wrong?
-	ArLog::log(ArLog::Terse, 
+	ArLog::log(MvrLog::Terse, 
 		   "Could not connect laser to remote host %s with default remote port %d.", 
 		   myRobotConnector->getRemoteHost(), 
 		   laserData->myRemoteTcpPort);
@@ -677,11 +677,11 @@ bool ArLaserConnector::internalConfigureLaser(
       if (params->getLaserPortType(laserData->myNumber) != NULL &&
 	  params->getLaserPortType(laserData->myNumber)[0] != '\0')
       {	  
-	ArLog::log(ArLog::Normal, "ArLaserConnector: There is a port given, but no port type given so using the robot parameters port type");
-	if ((laserData->myConn = Aria::deviceConnectionCreate(
+	ArLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given, but no port type given so using the robot parameters port type");
+	if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		     params->getLaserPortType(laserData->myNumber), 
 		     laserData->myPort, portBuf, 
-		     "ArLaserConnector: ")) == NULL)
+		     "MvrLaserConnector: ")) == NULL)
 	{
 	  return false;
 	}
@@ -689,23 +689,23 @@ bool ArLaserConnector::internalConfigureLaser(
       else if (laser->getDefaultPortType() != NULL && 
 	       laser->getDefaultPortType()[0] != '\0')
       {
-	ArLog::log(ArLog::Normal, "ArLaserConnector: There is a port given for laser %d (%s), but no port type given and no robot parameters port type so using the laser's default port type", laserData->myNumber, laser->getName());
-	if ((laserData->myConn = Aria::deviceConnectionCreate(
+	ArLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given for laser %d (%s), but no port type given and no robot parameters port type so using the laser's default port type", laserData->myNumber, laser->getName());
+	if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		     laser->getDefaultPortType(),
 		     laserData->myPort, portBuf, 
-		     "ArLaserConnector: ")) == NULL)
+		     "MvrLaserConnector: ")) == NULL)
 	{
 	  return false;
 	}
       }
       else
       {
-	ArLog::log(ArLog::Normal, "ArLaserConnector: There is a port given for laser %d (%s), but no port type given, no robot parameters port type, and no laser default port type, so using serial",
+	ArLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given for laser %d (%s), but no port type given, no robot parameters port type, and no laser default port type, so using serial",
 		   laserData->myNumber, laser->getName());
-	if ((laserData->myConn = Aria::deviceConnectionCreate(
+	if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		     "serial",
 		     laserData->myPort, portBuf, 
-		     "ArLaserConnector: ")) == NULL)
+		     "MvrLaserConnector: ")) == NULL)
 	{
 	  return false;
 	}
@@ -715,11 +715,11 @@ bool ArLaserConnector::internalConfigureLaser(
     }
     else
     {
-      ArLog::log(ArLog::Normal, "There is a laser port given ('%s') for laser %d (%s), but no laser port type given and there are no robot params to find the information in, so assuming serial", 
+      MvrLog::log(MvrLog::Normal, "There is a laser port given ('%s') for laser %d (%s), but no laser port type given and there are no robot params to find the information in, so assuming serial", 
 		 laserData->myPort, laserData->myNumber, laser->getName());
-      if ((laserData->myConn = Aria::deviceConnectionCreate(
+      if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		   "serial", laserData->myPort, portBuf, 
-		   "ArLaserConnector: ")) == NULL)
+		   "MvrLaserConnector: ")) == NULL)
       {
 	return false;
       }
@@ -732,16 +732,16 @@ bool ArLaserConnector::internalConfigureLaser(
 
   if (myRobot == NULL || (params = myRobot->getRobotParams()) == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArLaserConnector: No robot params are available, and no command line information given on how to connect to the laser %d (%s), so cannot connect", laserData->myNumber, laser->getName());
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector: No robot params are available, and no command line information given on how to connect to the laser %d (%s), so cannot connect", laserData->myNumber, laser->getName());
     return false;
   }
 
-  ArLog::log(ArLog::Normal, "ArLaserConnector: Using robot params for connecting to laser %d (%s)", laserData->myNumber, laser->getName());
+  MvrLog::log(MvrLog::Normal, "MvrLaserConnector: Using robot params for connecting to laser %d (%s)", laserData->myNumber, laser->getName());
 
-  if ((laserData->myConn = Aria::deviceConnectionCreate(
+  if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		   params->getLaserPortType(laserData->myNumber), 
 		   params->getLaserPort(laserData->myNumber), portBuf,
-		   "ArLaserConnector: ")) == NULL)
+		   "MvrLaserConnector: ")) == NULL)
   {
     return false;
   }
@@ -750,13 +750,13 @@ bool ArLaserConnector::internalConfigureLaser(
   return true;
 }
 
-AREXPORT void ArLaserConnector::logOptions(void) const
+AREXPORT void MvrLaserConnector::logOptions(void) const
 {
-  ArLog::log(ArLog::Terse, "Options for ArLaserConnector:");
-  ArLog::log(ArLog::Terse, "\nOptions shown are for currently set up lasers.  Activate lasers with -laserType<N> option");
-  ArLog::log(ArLog::Terse, "to see options for that laser (e.g. \"-help -laserType1 lms2xx\").");
-  ArLog::log(ArLog::Terse, "Valid laser types are: %s", Aria::laserGetTypes()); 
-  ArLog::log(ArLog::Terse, "\nSee docs for details.");
+  MvrLog::log(MvrLog::Terse, "Options for MvrLaserConnector:");
+  MvrLog::log(MvrLog::Terse, "\nOptions shown are for currently set up lasers.  Activate lasers with -laserType<N> option");
+  MvrLog::log(MvrLog::Terse, "to see options for that laser (e.g. \"-help -laserType1 lms2xx\").");
+  MvrLog::log(MvrLog::Terse, "Valid laser types are: %s", Mvria::laserGetTypes()); 
+  MvrLog::log(MvrLog::Terse, "\nSee docs for details.");
 
   std::map<int, LaserData *>::const_iterator it;
   LaserData *laserData;
@@ -769,27 +769,27 @@ AREXPORT void ArLaserConnector::logOptions(void) const
 
 }
 
-AREXPORT void ArLaserConnector::logLaserOptions(
+AREXPORT void MvrLaserConnector::logLaserOptions(
 	LaserData *laserData, bool header, bool metaOpts) const
 {
   char buf[512];
 
   if (laserData == NULL)
   {
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "Tried to log laser options with NULL laser data");
     return;
   }
 
   if (laserData->myLaser == NULL)
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArLaserConnector: There is no laser for laser number %d but there should be", 
+    MvrLog::log(MvrLog::Normal, 
+	       "MvrLaserConnector: There is no laser for laser number %d but there should be", 
 	       laserData->myNumber);
     return;
   }
 
-  ArLaser *laser = laserData->myLaser;
+  MvrLaser *laser = laserData->myLaser;
 
   if (laserData->myNumber == 1)
     buf[0] = '\0';
@@ -798,63 +798,63 @@ AREXPORT void ArLaserConnector::logLaserOptions(
   
   if(header)
   {
-    ArLog::log(ArLog::Terse, "");
-    ArLog::log(ArLog::Terse, "Laser%s: (\"%s\")", buf, laser->getName());
+    MvrLog::log(MvrLog::Terse, "");
+    MvrLog::log(MvrLog::Terse, "Laser%s: (\"%s\")", buf, laser->getName());
   }
 
   if (metaOpts)
   {
-    ArLog::log(ArLog::Terse, "-laserType%s <%s>", buf, Aria::laserGetTypes());
-    ArLog::log(ArLog::Terse, "-lt%s <%s>", buf, Aria::laserGetTypes());
+    MvrLog::log(MvrLog::Terse, "-laserType%s <%s>", buf, Mvria::laserGetTypes());
+    MvrLog::log(MvrLog::Terse, "-lt%s <%s>", buf, Mvria::laserGetTypes());
     
-    ArLog::log(ArLog::Terse, "-connectLaser%s", buf);
-    ArLog::log(ArLog::Terse, "-cl%s", buf);
+    MvrLog::log(MvrLog::Terse, "-connectLaser%s", buf);
+    MvrLog::log(MvrLog::Terse, "-cl%s", buf);
   }
 
-  ArLog::log(ArLog::Terse, "-laserPort%s <laserPort>", buf);
-  ArLog::log(ArLog::Terse, "-lp%s <laserPort>", buf);
+  MvrLog::log(MvrLog::Terse, "-laserPort%s <laserPort>", buf);
+  MvrLog::log(MvrLog::Terse, "-lp%s <laserPort>", buf);
 
-  ArLog::log(ArLog::Terse, "-laserPortType%s <%s>", buf, Aria::deviceConnectionGetTypes());
-  ArLog::log(ArLog::Terse, "-lpt%s <%s>", buf, Aria::deviceConnectionGetTypes());
+  MvrLog::log(MvrLog::Terse, "-laserPortType%s <%s>", buf, Mvria::deviceConnectionGetTypes());
+  MvrLog::log(MvrLog::Terse, "-lpt%s <%s>", buf, Mvria::deviceConnectionGetTypes());
 
-  ArLog::log(ArLog::Terse, "-remoteLaserTcpPort%s <remoteLaserTcpPort>", buf);
-  ArLog::log(ArLog::Terse, "-rltp%s <remoteLaserTcpPort>", buf);  
+  MvrLog::log(MvrLog::Terse, "-remoteLaserTcpPort%s <remoteLaserTcpPort>", buf);
+  MvrLog::log(MvrLog::Terse, "-rltp%s <remoteLaserTcpPort>", buf);  
 
-  ArLog::log(ArLog::Terse, "-laserFlipped%s <true|false>", buf);
-  ArLog::log(ArLog::Terse, "-lf%s <true|false>", buf);
+  MvrLog::log(MvrLog::Terse, "-laserFlipped%s <true|false>", buf);
+  MvrLog::log(MvrLog::Terse, "-lf%s <true|false>", buf);
 
-  ArLog::log(ArLog::Terse, "-laserMaxRange%s <maxRange>", buf);
-  ArLog::log(ArLog::Terse, "-lmr%s <maxRange>", buf);
-  ArLog::log(ArLog::Terse, "\t<maxRange> is an unsigned int less than %d", 
+  MvrLog::log(MvrLog::Terse, "-laserMaxRange%s <maxRange>", buf);
+  MvrLog::log(MvrLog::Terse, "-lmr%s <maxRange>", buf);
+  MvrLog::log(MvrLog::Terse, "\t<maxRange> is an unsigned int less than %d", 
 	     laser->getAbsoluteMaxRange());
   
   
   if (laser->canSetDegrees())
   {
-    ArLog::log(ArLog::Terse, "-laserDegreesStart%s <startAngle>", buf);
-    ArLog::log(ArLog::Terse, "-lds%s <startAngle>", buf);
-    ArLog::log(ArLog::Terse, "\t<startAngle> is a double between %g and %g",
+    MvrLog::log(MvrLog::Terse, "-laserDegreesStart%s <startAngle>", buf);
+    MvrLog::log(MvrLog::Terse, "-lds%s <startAngle>", buf);
+    MvrLog::log(MvrLog::Terse, "\t<startAngle> is a double between %g and %g",
 	       laser->getStartDegreesMin(), laser->getStartDegreesMax());
-    ArLog::log(ArLog::Terse, "-laserDegreesEnd%s <endAngle>", buf);
-    ArLog::log(ArLog::Terse, "-lde%s <endAngle>", buf);
-    ArLog::log(ArLog::Terse, "\t<endAngle> is a double between %g and %g",
+    MvrLog::log(MvrLog::Terse, "-laserDegreesEnd%s <endAngle>", buf);
+    MvrLog::log(MvrLog::Terse, "-lde%s <endAngle>", buf);
+    MvrLog::log(MvrLog::Terse, "\t<endAngle> is a double between %g and %g",
 	       laser->getEndDegreesMin(), laser->getEndDegreesMax());
 	       
   }
 
   if (laser->canChooseDegrees())
   {
-    ArLog::log(ArLog::Terse, "-laserDegrees%s <%s>", buf, 
+    MvrLog::log(MvrLog::Terse, "-laserDegrees%s <%s>", buf, 
 	       laser->getDegreesChoicesString());
-    ArLog::log(ArLog::Terse, "-ld%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-ld%s <%s>", buf,
 	       laser->getDegreesChoicesString());
   }
 
   if (laser->canSetIncrement())
   {
-    ArLog::log(ArLog::Terse, "-laserIncrementByDegrees%s <incrementByDegrees>", buf);
-    ArLog::log(ArLog::Terse, "-libd%s <incrementByDegrees>", buf);
-    ArLog::log(ArLog::Terse, 
+    MvrLog::log(MvrLog::Terse, "-laserIncrementByDegrees%s <incrementByDegrees>", buf);
+    MvrLog::log(MvrLog::Terse, "-libd%s <incrementByDegrees>", buf);
+    MvrLog::log(MvrLog::Terse, 
 	       "\t<incrementByDegrees> is a double between %g and %g",
 	       laser->getIncrementMin(), laser->getIncrementMax());
 
@@ -862,53 +862,53 @@ AREXPORT void ArLaserConnector::logLaserOptions(
 
   if (laser->canChooseIncrement())
   {
-    ArLog::log(ArLog::Terse, "-laserIncrement%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-laserIncrement%s <%s>", buf,
 	       laser->getIncrementChoicesString());
-    ArLog::log(ArLog::Terse, "-li%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-li%s <%s>", buf,
 	       laser->getIncrementChoicesString());
   }
   
   if (laser->canChooseUnits())
   {
-    ArLog::log(ArLog::Terse, "-laserUnits%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-laserUnits%s <%s>", buf,
 	       laser->getUnitsChoicesString());
-    ArLog::log(ArLog::Terse, "-lu%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-lu%s <%s>", buf,
 	       laser->getUnitsChoicesString());
   }
 
   if (laser->canChooseReflectorBits())
   {
-    ArLog::log(ArLog::Terse, "-laserReflectorBits%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-laserReflectorBits%s <%s>", buf,
 	       laser->getReflectorBitsChoicesString());
-    ArLog::log(ArLog::Terse, "-lrb%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-lrb%s <%s>", buf,
 	       laser->getReflectorBitsChoicesString());
   }
 
   if (laser->canSetPowerControlled())
   {
-    ArLog::log(ArLog::Terse, "-laserPowerControlled%s <true|false>", buf);
-    ArLog::log(ArLog::Terse, "-lpc%s <true|false>", buf);
+    MvrLog::log(MvrLog::Terse, "-laserPowerControlled%s <true|false>", buf);
+    MvrLog::log(MvrLog::Terse, "-lpc%s <true|false>", buf);
   }
 
   if (laser->canChooseStartingBaud())
   {
-    ArLog::log(ArLog::Terse, "-laserStartingBaud%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-laserStartingBaud%s <%s>", buf,
 	       laser->getStartingBaudChoicesString());
-    ArLog::log(ArLog::Terse, "-lsb%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-lsb%s <%s>", buf,
 	       laser->getStartingBaudChoicesString());
   }
 
   if (laser->canChooseAutoBaud())
   {
-    ArLog::log(ArLog::Terse, "-laserAutoBaud%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-laserAutoBaud%s <%s>", buf,
 	       laser->getAutoBaudChoicesString());
-    ArLog::log(ArLog::Terse, "-lab%s <%s>", buf,
+    MvrLog::log(MvrLog::Terse, "-lab%s <%s>", buf,
 	       laser->getAutoBaudChoicesString());
   }
 
-  ArLog::log(ArLog::Terse, "-laserAdditionalIgnoreReadings%s <readings>", buf);
-  ArLog::log(ArLog::Terse, "-lair%s <readings>", buf);
-  ArLog::log(ArLog::Terse, "\t<readings> is a string that contains readings to ignore separated by commas, where ranges are acceptable with a -, example '75,76,90-100,-75,-76,-90--100'");
+  MvrLog::log(MvrLog::Terse, "-laserAdditionalIgnoreReadings%s <readings>", buf);
+  MvrLog::log(MvrLog::Terse, "-lair%s <readings>", buf);
+  MvrLog::log(MvrLog::Terse, "\t<readings> is a string that contains readings to ignore separated by commas, where ranges are acceptable with a -, example '75,76,90-100,-75,-76,-90--100'");
   
 
 }
@@ -919,12 +919,12 @@ AREXPORT void ArLaserConnector::logLaserOptions(
    override the .p file, and may cause some problems).
 
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArLaserConnector::connectLasers.()
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrLaserConnector::connectLasers.()
 
    @internal
 **/
-AREXPORT bool ArLaserConnector::addLaser(
+AREXPORT bool MvrLaserConnector::addLaser(
 	ArLaser *laser, int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
@@ -937,8 +937,8 @@ AREXPORT bool ArLaserConnector::addLaser(
   {
     if (laserData->myLaserIsPlaceholder)
     {
-      ArLog::log(myInfoLogLevel, 
-		 "ArLaserConnector::addLaser: Replacing placeholder laser #%d of type %s but a replacement laser of type %s was passed in", 
+      MvrLog::log(myInfoLogLevel, 
+		 "MvrLaserConnector::addLaser: Replacing placeholder laser #%d of type %s but a replacement laser of type %s was passed in", 
 		 laserNumber, laserData->myLaser->getName(), laser->getName());
       if (laserData->myOwnPlaceholder)
 	delete laserData->myLaser;
@@ -947,12 +947,12 @@ AREXPORT bool ArLaserConnector::addLaser(
     else
     {
       if (laserData->myLaser != NULL)
-	ArLog::log(ArLog::Terse, 
-		   "ArLaserConnector::addLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
+	ArLog::log(MvrLog::Terse, 
+		   "MvrLaserConnector::addLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
 		   laserNumber, laserData->myLaser->getName(), laser->getName());
       else
-	ArLog::log(ArLog::Terse, 
-		   "ArLaserConnector::addLaser: Already have laser for number #%d but a replacement laser of type %s was passed in", 
+	ArLog::log(MvrLog::Terse, 
+		   "MvrLaserConnector::addLaser: Already have laser for number #%d but a replacement laser of type %s was passed in", 
 		   laserNumber, laser->getName());
       delete laserData;
       myLasers.erase(laserNumber);
@@ -969,13 +969,13 @@ AREXPORT bool ArLaserConnector::addLaser(
    override the .p file, and may cause some problems).
 
    This is only for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArLaserConnector::connectLasers().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrLaserConnector::connectLasers().
 
    @internal
 **/
 
-AREXPORT bool ArLaserConnector::addPlaceholderLaser(
+AREXPORT bool MvrLaserConnector::addPlaceholderLaser(
 	ArLaser *placeholderLaser,
 	int laserNumber, bool takeOwnershipOfPlaceholder)
 {
@@ -989,8 +989,8 @@ AREXPORT bool ArLaserConnector::addPlaceholderLaser(
   {
     if (laserData->myLaserIsPlaceholder)
     {
-      ArLog::log(myInfoLogLevel, 
-		 "ArLaserConnector::addPlaceholderLaser: Replacing placeholder laser #%d of type %s but a replacement laser of type %s was passed in", 
+      MvrLog::log(myInfoLogLevel, 
+		 "MvrLaserConnector::addPlaceholderLaser: Replacing placeholder laser #%d of type %s but a replacement laser of type %s was passed in", 
 		 laserNumber, laserData->myLaser->getName(), 
 		 placeholderLaser->getName());
       if (laserData->myOwnPlaceholder)
@@ -1000,12 +1000,12 @@ AREXPORT bool ArLaserConnector::addPlaceholderLaser(
     else
     {
       if (laserData->myLaser != NULL)
-	ArLog::log(ArLog::Terse, 
-		   "ArLaserConnector::addPlaceholderLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
+	ArLog::log(MvrLog::Terse, 
+		   "MvrLaserConnector::addPlaceholderLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
 		   laserNumber, laserData->myLaser->getName(), placeholderLaser->getName());
       else
-	ArLog::log(ArLog::Terse, 
-		   "ArLaserConnector::addPlaceholderLaser: Already have laser for number #%d but a replacement laser of type %s was passed in", 
+	ArLog::log(MvrLog::Terse, 
+		   "MvrLaserConnector::addPlaceholderLaser: Already have laser for number #%d but a replacement laser of type %s was passed in", 
 		   laserNumber, placeholderLaser->getName());
       delete laserData;
       myLasers.erase(laserNumber);
@@ -1017,7 +1017,7 @@ AREXPORT bool ArLaserConnector::addPlaceholderLaser(
   return true;
 }
 
-AREXPORT ArLaser *ArLaserConnector::getLaser(int laserNumber)
+AREXPORT MvrLaser *ArLaserConnector::getLaser(int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
   LaserData *laserData = NULL;
@@ -1033,7 +1033,7 @@ AREXPORT ArLaser *ArLaserConnector::getLaser(int laserNumber)
   return laserData->myLaser;
 }
 
-AREXPORT bool ArLaserConnector::replaceLaser(
+AREXPORT bool MvrLaserConnector::replaceLaser(
 	ArLaser *laser, int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
@@ -1047,12 +1047,12 @@ AREXPORT bool ArLaserConnector::replaceLaser(
     return false;
   
   if (laserData->myLaser != NULL)
-    ArLog::log(myInfoLogLevel, 
-	       "ArLaserConnector::replaceLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
+    MvrLog::log(myInfoLogLevel, 
+	       "MvrLaserConnector::replaceLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
 	       laserNumber, laserData->myLaser->getName(), laser->getName());
   else
-    ArLog::log(ArLog::Normal, 
-	       "ArLaserConnector::replaceLaser: Replacing a non existant laser number #%d with a laser of type %s passed in", 
+    MvrLog::log(MvrLog::Normal, 
+	       "MvrLaserConnector::replaceLaser: Replacing a non existant laser number #%d with a laser of type %s passed in", 
 	       laserNumber, laser->getName());
 
   laserData->myLaser = laser;
@@ -1062,12 +1062,12 @@ AREXPORT bool ArLaserConnector::replaceLaser(
 
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArLaserConnector::connectLasers().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrLaserConnector::connectLasers().
 
    @internal
 **/
-AREXPORT bool ArLaserConnector::setupLaser(ArLaser *laser,
+AREXPORT bool MvrLaserConnector::setupLaser(MvrLaser *laser,
 					   int laserNumber)
 {
 
@@ -1076,24 +1076,24 @@ AREXPORT bool ArLaserConnector::setupLaser(ArLaser *laser,
 
   std::map<int, LaserData *>::iterator it;
   LaserData *laserData = NULL;
-  //const ArRobotParams *params;
+  //const MvrRobotParams *params;
 
   if ((it = myLasers.find(laserNumber)) != myLasers.end())
     laserData = (*it).second;
 
   if (laserData == NULL && laser == NULL)
   {
-    ArLog::log(ArLog::Terse, "ArLaserConnector::setupLaser: Do not have laser #%d", laserNumber) ;
+    MvrLog::log(MvrLog::Terse, "MvrLaserConnector::setupLaser: Do not have laser #%d", laserNumber) ;
     return false;
   }
   if (laserData != NULL && laser != NULL && !laserData->myLaserIsPlaceholder &&
       laserData->myLaser != laser)
   {
     if (laserData->myLaser != NULL)
-      ArLog::log(ArLog::Terse, "ArLaserConnector::setupLaser: Already have laser for number #%d (%s) but a replacement laser (%s) was passed in, this will replace all of the command line arguments for that laser", 
+      MvrLog::log(MvrLog::Terse, "MvrLaserConnector::setupLaser: Already have laser for number #%d (%s) but a replacement laser (%s) was passed in, this will replace all of the command line arguments for that laser", 
 		 laserNumber, laserData->myLaser->getName(), laser->getName());
     else
-      ArLog::log(ArLog::Terse, "ArLaserConnector::setupLaser: Already have laser for number #%d but a replacement laser (%s) was passed in, this will replace all of the command line arguments for that laser", 
+      MvrLog::log(MvrLog::Terse, "MvrLaserConnector::setupLaser: Already have laser for number #%d but a replacement laser (%s) was passed in, this will replace all of the command line arguments for that laser", 
 		 laserNumber, laser->getName());
       
     delete laserData;
@@ -1107,7 +1107,7 @@ AREXPORT bool ArLaserConnector::setupLaser(ArLaser *laser,
     myLasers[laserNumber] = laserData;
     if (myAutoParseArgs && !parseLaserArgs(myParser, laserData))
     {
-      ArLog::log(ArLog::Normal, "ArLaserConnector: Auto parsing args for laser %s (num %d)", laserData->myLaser->getName(), laserNumber);
+      MvrLog::log(MvrLog::Normal, "MvrLaserConnector: Auto parsing args for laser %s (num %d)", laserData->myLaser->getName(), laserNumber);
       return false;
     }
   }
@@ -1144,19 +1144,19 @@ AREXPORT bool ArLaserConnector::setupLaser(ArLaser *laser,
   }
   else
   {
-    ArLog::log(ArLog::Normal, "ArLaserConnector::setupLaser: No robot, so laser cannot be added to robot");
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector::setupLaser: No robot, so laser cannot be added to robot");
   }
   return true;
 }
 
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArLaserConnector::connectLasers().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrLaserConnector::connectLasers().
    
    @internal
 **/
-AREXPORT bool ArLaserConnector::connectLaser(ArLaser *laser,
+AREXPORT bool MvrLaserConnector::connectLaser(MvrLaser *laser,
 					     int laserNumber, 
 					     bool forceConnection)
 {
@@ -1177,7 +1177,7 @@ AREXPORT bool ArLaserConnector::connectLaser(ArLaser *laser,
 
   if (laserData == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArLaserConnector::connectLaser: Some horrendous error in connectLaser with laser number %d", laserNumber);
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector::connectLaser: Some horrendous error in connectLaser with laser number %d", laserNumber);
     return false;
   }
   // see if we want to connect
@@ -1192,10 +1192,10 @@ AREXPORT bool ArLaserConnector::connectLaser(ArLaser *laser,
    connection or not
 
    @param addConnectedLasersToRobot whether to add connected lasers to
-   the list stored in ArRobot. Normally this should be left as true.
+   the list stored in MvrRobot. Normally this should be left as true.
 
    @param addAllLasersToRobot whether to add all the lasers to the
-   ArRobot list or not (even if connection was not made to that laser).
+   MvrRobot list or not (even if connection was not made to that laser).
    
    @param turnOnLasers whether to attempt to turn on power to the laser (by
    sending commands to the robot microcontroller).
@@ -1211,7 +1211,7 @@ AREXPORT bool ArLaserConnector::connectLaser(ArLaser *laser,
 
    @return true if successful connecting to lasers, false on any errors.
 **/
-AREXPORT bool ArLaserConnector::connectLasers(
+AREXPORT bool MvrLaserConnector::connectLasers(
 	bool continueOnFailedConnect, bool addConnectedLasersToRobot, 
 	bool addAllLasersToRobot, bool turnOnLasers,
 	bool powerCycleLaserOnFailedConnect, int *failedOnLaser)
@@ -1219,14 +1219,14 @@ AREXPORT bool ArLaserConnector::connectLasers(
   std::map<int, LaserData *>::iterator it;
   LaserData *laserData = NULL;
   
-  ArLog::log(myInfoLogLevel, 
-	     "ArLaserConnector: Connecting lasers");
+  MvrLog::log(myInfoLogLevel, 
+	     "MvrLaserConnector: Connecting lasers");
 
 
   if (myAutoParseArgs && !myParsedArgs)
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArLaserConnector: Auto parsing args for lasers");
+    MvrLog::log(MvrLog::Normal, 
+	       "MvrLaserConnector: Auto parsing args for lasers");
     if (!parseArgs())
     {
       if (failedOnLaser != NULL)
@@ -1244,14 +1244,14 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	laserData = (*it).second;
 	myRobot->addLaser(laserData->myLaser, laserData->myNumber);
 	//myRobot->addRangeDevice(laserData->myLaser);
-	ArLog::log(ArLog::Verbose, 
-	    "ArLaserConnector::connectLasers: Added %s to robot as laser %d", 
+	ArLog::log(MvrLog::Verbose, 
+	    "MvrLaserConnector::connectLasers: Added %s to robot as laser %d", 
 		   laserData->myLaser->getName(), laserData->myNumber);
       }
     }
     else
     {
-      ArLog::log(ArLog::Normal, "ArLaserConnect::connectLasers: Supposed to add all lasers to robot, but there is no robot");
+      MvrLog::log(MvrLog::Normal, "MvrLaserConnect::connectLasers: Supposed to add all lasers to robot, but there is no robot");
       if (failedOnLaser != NULL)
 	*failedOnLaser = -1;
       return false;
@@ -1263,7 +1263,7 @@ AREXPORT bool ArLaserConnector::connectLasers(
     laserData = (*it).second;
     if (laserData->myLaserIsPlaceholder)
     {
-      ArLog::log(ArLog::Normal, "ArLaserConnector::connectLasers: This function was called to connect laser %s (num %d) but there is a placeholder laser, so things are not configured correctly, you must use setupLaser or connectLaser with a placeholder laser, see the documenation for more details",
+      MvrLog::log(MvrLog::Normal, "MvrLaserConnector::connectLasers: This function was called to connect laser %s (num %d) but there is a placeholder laser, so things are not configured correctly, you must use setupLaser or connectLaser with a placeholder laser, see the documenation for more details",
 		 laserData->myLaser->getName(), laserData->myNumber);
       continue;
     }
@@ -1271,8 +1271,8 @@ AREXPORT bool ArLaserConnector::connectLasers(
     {
       if (laserData->myLaser == NULL)
       {
-	ArLog::log(ArLog::Normal, 
-		   "ArLaserConnector::connectLasers: Could not connect to laser %d, no laser defined, stopping", 
+	ArLog::log(MvrLog::Normal, 
+		   "MvrLaserConnector::connectLasers: Could not connect to laser %d, no laser defined, stopping", 
 		   laserData->myNumber);
 	if (failedOnLaser != NULL)
 	  *failedOnLaser = laserData->myNumber;
@@ -1292,8 +1292,8 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	      myRobot->getRobotParams()->getLaserPowerOutput(
 		      laserData->myNumber)[0] == '\0')
 	  {
-	    ArLog::log(ArLog::Normal, 
-		       "ArLaserConnector::connectLasers: Laser %s has no power output set so can't be turned on (things may still work).",
+	    MvrLog::log(MvrLog::Normal, 
+		       "MvrLaserConnector::connectLasers: Laser %s has no power output set so can't be turned on (things may still work).",
 		       laserData->myLaser->getName());
 	  }
 	  else
@@ -1302,8 +1302,8 @@ AREXPORT bool ArLaserConnector::connectLasers(
 			myRobot->getRobotParams()->getLaserPowerOutput(
 				laserData->myNumber)))
 	    {
-	      ArLog::log(myInfoLogLevel, 
-			 "ArLaserConnector::connectLasers: Turned on power output %s for %s",
+	      MvrLog::log(myInfoLogLevel, 
+			 "MvrLaserConnector::connectLasers: Turned on power output %s for %s",
 			 myRobot->getRobotParams()->getLaserPowerOutput(
 				 laserData->myNumber),
 			 laserData->myLaser->getName());
@@ -1311,8 +1311,8 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	    }
 	    else
 	    {
-	      ArLog::log(ArLog::Normal, 
-			 "ArLaserConnector::connectLasers: Could not turn on power output %s for %s (things may still work).",
+	      MvrLog::log(MvrLog::Normal, 
+			 "MvrLaserConnector::connectLasers: Could not turn on power output %s for %s (things may still work).",
 			 myRobot->getRobotParams()->getLaserPowerOutput(
 				 laserData->myNumber),
 			 laserData->myLaser->getName());
@@ -1324,21 +1324,21 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	  // see if the firmware supports the LRF command
 	  if (myRobot->getOrigRobotConfig() != NULL && 
 	      myRobot->getOrigRobotConfig()->hasPacketArrived() && 
-	      myRobot->getOrigRobotConfig()->getPowerBits() & ArUtil::BIT1)
+	      myRobot->getOrigRobotConfig()->getPowerBits() & MvrUtil::BIT1)
 	  {
-	    ArLog::log(myInfoLogLevel, 
-		       "ArLaserConnector::connectLasers: Turning on LRF power for %s",
+	    MvrLog::log(myInfoLogLevel, 
+		       "MvrLaserConnector::connectLasers: Turning on LRF power for %s",
 		       laserData->myLaser->getName());
-	    myRobot->comInt(ArCommands::POWER_LRF, 1);
-	    ArUtil::sleep(250);
+	    myRobot->comInt(MvrCommands::POWER_LRF, 1);
+	    MvrUtil::sleep(250);
 	  }
 	  else
 	  {
-	    ArLog::log(myInfoLogLevel, 
-		       "ArLaserConnector::connectLasers: Using legacy method to turn on LRF power for %s since firmware or robot doesn't support new way",
+	    MvrLog::log(myInfoLogLevel, 
+		       "MvrLaserConnector::connectLasers: Using legacy method to turn on LRF power for %s since firmware or robot doesn't support new way",
 		       laserData->myLaser->getName());
 	    myRobot->com2Bytes(31, 11, 1);
-	    ArUtil::sleep(250);
+	    MvrUtil::sleep(250);
 	  }
 	}
 	else if (laserData->myNumber == 2)
@@ -1346,32 +1346,32 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	  // see if the firmware supports the LRF2 command
 	  if (myRobot->getOrigRobotConfig() != NULL && 
 	      myRobot->getOrigRobotConfig()->hasPacketArrived() && 
-	      myRobot->getOrigRobotConfig()->getPowerBits() & ArUtil::BIT9)
+	      myRobot->getOrigRobotConfig()->getPowerBits() & MvrUtil::BIT9)
 	  {
-	    ArLog::log(myInfoLogLevel, 
-		       "ArLaserConnector::connectLasers: Turning on LRF2 power for %s",
+	    MvrLog::log(myInfoLogLevel, 
+		       "MvrLaserConnector::connectLasers: Turning on LRF2 power for %s",
 		       laserData->myLaser->getName());
-	    myRobot->comInt(ArCommands::POWER_LRF2, 1);
-	    ArUtil::sleep(250);
+	    myRobot->comInt(MvrCommands::POWER_LRF2, 1);
+	    MvrUtil::sleep(250);
 	  }
 	  else
 	  {
-	    ArLog::log(myInfoLogLevel, 
-		       "ArLaserConnector::connectLasers: Cannot turn on LRF2 power for %s since firmware or robot doesn't support it",
+	    MvrLog::log(myInfoLogLevel, 
+		       "MvrLaserConnector::connectLasers: Cannot turn on LRF2 power for %s since firmware or robot doesn't support it",
 		       laserData->myLaser->getName());
-	    ArUtil::sleep(250);
+	    MvrUtil::sleep(250);
 	  }
 	}
 	else
 	{
-	  ArLog::log(myInfoLogLevel, 
-	      "ArLaserConnector::connectLasers: Cannot turn power on for %s, since it is number %d (higher than 2)",
+	  MvrLog::log(myInfoLogLevel, 
+	      "MvrLaserConnector::connectLasers: Cannot turn power on for %s, since it is number %d (higher than 2)",
 		     laserData->myLaser->getName(), 
 		     laserData->myLaser->getLaserNumber());
 	}
       }
-      ArLog::log(myInfoLogLevel, 
-		 "ArLaserConnector::connectLasers: Connecting %s",
+      MvrLog::log(myInfoLogLevel, 
+		 "MvrLaserConnector::connectLasers: Connecting %s",
 		 laserData->myLaser->getName());
 
       laserData->myLaser->setRobot(myRobot);
@@ -1392,8 +1392,8 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	{
 	  if (myTurnOffPowerOutputCB != NULL)
 	  {
-	    ArLog::log(ArLog::Normal, 
-		       "ArLaserConnector::connectLasers: Have no way to turn power off, so laser %s can't be power cycled (it's possible things will still work).",
+	    MvrLog::log(MvrLog::Normal, 
+		       "MvrLaserConnector::connectLasers: Have no way to turn power off, so laser %s can't be power cycled (it's possible things will still work).",
 		       laserData->myLaser->getName());
 	  }
 	  else if (myRobot->getRobotParams()->getLaserPowerOutput(
@@ -1401,8 +1401,8 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	      myRobot->getRobotParams()->getLaserPowerOutput(
 		      laserData->myNumber)[0] == '\0')
 	  {
-	    ArLog::log(ArLog::Normal, 
-		       "ArLaserConnector::connectLasers: Laser %s has no power output set so can't be power cycled (it's possible things will still work).",
+	    MvrLog::log(MvrLog::Normal, 
+		       "MvrLaserConnector::connectLasers: Laser %s has no power output set so can't be power cycled (it's possible things will still work).",
 		       laserData->myLaser->getName());
 	  }
 	  else
@@ -1411,41 +1411,41 @@ AREXPORT bool ArLaserConnector::connectLasers(
 			myRobot->getRobotParams()->getLaserPowerOutput(
 				laserData->myNumber)))
 	    {
-	      ArLog::log(myInfoLogLevel, 
-			 "ArLaserConnector::connectLasers: Cycled off power output %s for %s",
+	      MvrLog::log(myInfoLogLevel, 
+			 "MvrLaserConnector::connectLasers: Cycled off power output %s for %s",
 			 myRobot->getRobotParams()->getLaserPowerOutput(
 				 laserData->myNumber),
 			 laserData->myLaser->getName());
 	    }
 	    else
 	    {
-	      ArLog::log(ArLog::Normal, 
-			 "ArLaserConnector::connectLasers: Could not cycle off power output %s for %s",
+	      MvrLog::log(MvrLog::Normal, 
+			 "MvrLaserConnector::connectLasers: Could not cycle off power output %s for %s",
 			 myRobot->getRobotParams()->getLaserPowerOutput(
 				 laserData->myNumber),
 			 laserData->myLaser->getName());
 	    }
-	    ArUtil::sleep(1000);
+	    MvrUtil::sleep(1000);
 	    if (myTurnOnPowerOutputCB->invokeR(
 			myRobot->getRobotParams()->getLaserPowerOutput(
 				laserData->myNumber)))
 	    {
-	      ArLog::log(myInfoLogLevel, 
-			 "ArLaserConnector::connectLasers: Cycled on power output %s for %s",
+	      MvrLog::log(myInfoLogLevel, 
+			 "MvrLaserConnector::connectLasers: Cycled on power output %s for %s",
 			 myRobot->getRobotParams()->getLaserPowerOutput(
 				 laserData->myNumber),
 			 laserData->myLaser->getName());
 	    }
 	    else
 	    {
-	      ArLog::log(ArLog::Normal, 
-			 "ArLaserConnector::connectLasers: Could not cycle on power output %s for %s",
+	      MvrLog::log(MvrLog::Normal, 
+			 "MvrLaserConnector::connectLasers: Could not cycle on power output %s for %s",
 			 myRobot->getRobotParams()->getLaserPowerOutput(
 				 laserData->myNumber),
 			 laserData->myLaser->getName());
 	    }
 	  }
-	  ArUtil::sleep(1000);
+	  MvrUtil::sleep(1000);
 	  connected = laserData->myLaser->blockingConnect();
 	}
 	if (laserData->myNumber == 1)
@@ -1453,27 +1453,27 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	  // see if the firmware supports the LRF command
 	  if (myRobot->getOrigRobotConfig() != NULL && 
 	      myRobot->getOrigRobotConfig()->hasPacketArrived() && 
-	      myRobot->getOrigRobotConfig()->getPowerBits() & ArUtil::BIT1)
+	      myRobot->getOrigRobotConfig()->getPowerBits() & MvrUtil::BIT1)
 	  {
-	    ArLog::log(ArLog::Normal, 
-		       "ArLaserConnector::connectLasers: Cycling LRF power for %s and trying to connect again",
+	    MvrLog::log(MvrLog::Normal, 
+		       "MvrLaserConnector::connectLasers: Cycling LRF power for %s and trying to connect again",
 		       laserData->myLaser->getName());
-	    myRobot->comInt(ArCommands::POWER_LRF, 0);
-	    ArUtil::sleep(1000);
-	    myRobot->comInt(ArCommands::POWER_LRF, 1);
-	    ArUtil::sleep(1000);
+	    myRobot->comInt(MvrCommands::POWER_LRF, 0);
+	    MvrUtil::sleep(1000);
+	    myRobot->comInt(MvrCommands::POWER_LRF, 1);
+	    MvrUtil::sleep(1000);
 	    connected = laserData->myLaser->blockingConnect();
 	  }
 	  else
 	  {
 
-	    ArLog::log(ArLog::Normal, 
-		       "ArLaserConnector::connectLasers: Using legacy method to cycle LRF power for %s since firmware or robot doesn't support new way",
+	    MvrLog::log(MvrLog::Normal, 
+		       "MvrLaserConnector::connectLasers: Using legacy method to cycle LRF power for %s since firmware or robot doesn't support new way",
 		       laserData->myLaser->getName());
 	    myRobot->com2Bytes(31, 11, 0);
-	    ArUtil::sleep(1000);
+	    MvrUtil::sleep(1000);
 	    myRobot->com2Bytes(31, 11, 1);
-	    ArUtil::sleep(1000);
+	    MvrUtil::sleep(1000);
 	    connected = laserData->myLaser->blockingConnect();
 	  }
 	}
@@ -1482,31 +1482,31 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	  // see if the firmware supports the LRF2 command
 	  if (myRobot->getOrigRobotConfig() != NULL && 
 	      myRobot->getOrigRobotConfig()->hasPacketArrived() && 
-	      myRobot->getOrigRobotConfig()->getPowerBits() & ArUtil::BIT9)
+	      myRobot->getOrigRobotConfig()->getPowerBits() & MvrUtil::BIT9)
 	  {
-	    ArLog::log(ArLog::Normal, 
-		       "ArLaserConnector::connectLasers: Cycling LRF2 power for %s and trying to connect again",
+	    MvrLog::log(MvrLog::Normal, 
+		       "MvrLaserConnector::connectLasers: Cycling LRF2 power for %s and trying to connect again",
 		       laserData->myLaser->getName());
 	    
-	    myRobot->comInt(ArCommands::POWER_LRF2, 0);
-	    ArUtil::sleep(1000);
-	    myRobot->comInt(ArCommands::POWER_LRF2, 1);
-	    ArUtil::sleep(1000);
+	    myRobot->comInt(MvrCommands::POWER_LRF2, 0);
+	    MvrUtil::sleep(1000);
+	    myRobot->comInt(MvrCommands::POWER_LRF2, 1);
+	    MvrUtil::sleep(1000);
 	    connected = laserData->myLaser->blockingConnect();
 	  }
 	  else
 	  {
-	    ArLog::log(myInfoLogLevel, 
-		       "ArLaserConnector::connectLasers: Cannot cycle LRF2 power for %s since firmware or robot doesn't support it",
+	    MvrLog::log(myInfoLogLevel, 
+		       "MvrLaserConnector::connectLasers: Cannot cycle LRF2 power for %s since firmware or robot doesn't support it",
 		       laserData->myLaser->getName());
-	    ArUtil::sleep(1000);
-	    ArUtil::sleep(1000);
+	    MvrUtil::sleep(1000);
+	    MvrUtil::sleep(1000);
 	  }
 	}
 	else
 	{
-	  ArLog::log(myInfoLogLevel, 
-	      "ArLaserConnector::connectLasers: Cannot cycle power for %s, since it is number %d (higher than 2)",
+	  MvrLog::log(myInfoLogLevel, 
+	      "MvrLaserConnector::connectLasers: Cannot cycle power for %s, since it is number %d (higher than 2)",
 		     laserData->myLaser->getName(), 
 		     laserData->myLaser->getLaserNumber());
 	}
@@ -1520,28 +1520,28 @@ AREXPORT bool ArLaserConnector::connectLasers(
 	  {
 	    myRobot->addLaser(laserData->myLaser, laserData->myNumber);
 	    //myRobot->addRangeDevice(laserData->myLaser);
-	    ArLog::log(ArLog::Verbose, 
-		       "ArLaserConnector::connectLasers: Added %s to robot",
+	    MvrLog::log(MvrLog::Verbose, 
+		       "MvrLaserConnector::connectLasers: Added %s to robot",
 		       laserData->myLaser->getName());
 	  }
 	  else
 	  {
-	    ArLog::log(ArLog::Normal, 
-		       "ArLaserConnector::connectLasers: Could not add %s to robot, since there is no robot",
+	    MvrLog::log(MvrLog::Normal, 
+		       "MvrLaserConnector::connectLasers: Could not add %s to robot, since there is no robot",
 		       laserData->myLaser->getName());
 	  }
 
 	}
 	else if (addAllLasersToRobot && myRobot != NULL)
 	{
-	  ArLog::log(ArLog::Verbose, 
-		     "ArLaserConnector::connectLasers: %s already added to robot)", 
+	  MvrLog::log(MvrLog::Verbose, 
+		     "MvrLaserConnector::connectLasers: %s already added to robot)", 
 		     laserData->myLaser->getName());
 	}
 	else if (myRobot != NULL)
 	{
-	  ArLog::log(ArLog::Verbose, 
-	     "ArLaserConnector::connectLasers: Did not add %s to robot", 
+	  MvrLog::log(MvrLog::Verbose, 
+	     "MvrLaserConnector::connectLasers: Did not add %s to robot", 
 		     laserData->myLaser->getName());
 	}
       }
@@ -1549,27 +1549,27 @@ AREXPORT bool ArLaserConnector::connectLasers(
       {
 	if (!continueOnFailedConnect)
 	{
-	  ArLog::log(ArLog::Normal, 
-		     "ArLaserConnector::connectLasers: Could not connect %s, stopping", 
+	  MvrLog::log(MvrLog::Normal, 
+		     "MvrLaserConnector::connectLasers: Could not connect %s, stopping", 
 		     laserData->myLaser->getName());
 	  if (failedOnLaser != NULL)
 	    *failedOnLaser = laserData->myNumber;
 	  return false;
 	}
 	else
-	  ArLog::log(ArLog::Normal, 
-		     "ArLaserConnector::connectLasers: Could not connect %s, continuing with remainder of lasers", 
+	  MvrLog::log(MvrLog::Normal, 
+		     "MvrLaserConnector::connectLasers: Could not connect %s, continuing with remainder of lasers", 
 		     laserData->myLaser->getName());
       }
     }
   }
 
-  ArLog::log(myInfoLogLevel, 
-	     "ArLaserConnector: Done connecting lasers");
+  MvrLog::log(myInfoLogLevel, 
+	     "MvrLaserConnector: Done connecting lasers");
   return true;
 }
 
-AREXPORT void ArLaserConnector::logLaserData()
+AREXPORT void MvrLaserConnector::logLaserData()
 {
   for(std::map<int, LaserData*>::const_iterator i = myLasers.begin(); i != myLasers.end(); ++i)
   {
@@ -1577,18 +1577,18 @@ AREXPORT void ArLaserConnector::logLaserData()
     LaserData *ld = i->second;
     if(!ld)
     {
-      ArLog::log(ArLog::Normal, "ArLaserConnector: no data for laser #%d", li);
+      MvrLog::log(MvrLog::Normal, "MvrLaserConnector: no data for laser #%d", li);
       continue;
     }
-    ArLog::log(ArLog::Normal, "ArLaserConnector: laser #%d: %s: %s, port=%s, portType=%s, remoteTCPPort=%d, flipped=%d, fov=(%0.2f, %0.2f), increment=%0.2f.", 
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector: laser #%d: %s: %s, port=%s, portType=%s, remoteTCPPort=%d, flipped=%d, fov=(%0.2f, %0.2f), increment=%0.2f.", 
       li, ld->myLaser->getName(), 
       ld->myConnect?"will connect to this laser":"will NOT connect to this laser", 
       ld->myPort, ld->myPortType, ld->myRemoteTcpPort, 
       ld->myFlipped, ld->myDegreesStart, ld->myDegreesEnd, ld->myIncrementByDegrees);
   }
   if(myParsedArgs)
-    ArLog::log(ArLog::Normal, "ArLaserConnector: command-line arguments have been parsed.");
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector: command-line arguments have been parsed.");
   else
-    ArLog::log(ArLog::Normal, "ArLaserConnector: command-line arguments have not yet been parsed");
+    MvrLog::log(MvrLog::Normal, "MvrLaserConnector: command-line arguments have not yet been parsed");
 }
 

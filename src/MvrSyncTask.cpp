@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #include "ariaUtil.h"
-#include "ArSyncTask.h"
-#include "ArLog.h"
+#include "MvrSyncTask.h"
+#include "MvrLog.h"
 
 /**
    New should never be called to create an ArSyncTask except to create the 
@@ -42,7 +42,7 @@ AREXPORT ArSyncTask::ArSyncTask(const char *name, ArFunctor *functor,
   myFunctor = functor;
   myParent = parent;
   myIsDeleting = false;
-  setState(ArTaskState::INIT);
+  setState(MvrTaskState::INIT);
   if (myParent != NULL)
   {
     setWarningTimeCB(parent->getWarningTimeCB());
@@ -78,7 +78,7 @@ AREXPORT ArTaskState::State ArSyncTask::getState(void)
     return myState;
 }
 
-AREXPORT void ArSyncTask::setState(ArTaskState::State state)
+AREXPORT void ArSyncTask::setState(MvrTaskState::State state)
 {
   if (myStatePointer != NULL)
     *myStatePointer = state;
@@ -97,7 +97,7 @@ AREXPORT std::string ArSyncTask::getName(void)
    @param functor The task functor pointer to search for. Must not be NULL.
    @return The task, if found.  If not found, NULL.
 */
-AREXPORT ArSyncTask *ArSyncTask::find(ArFunctor *functor)
+AREXPORT ArSyncTask *ArSyncTask::find(MvrFunctor *functor)
 {
   ArSyncTask *proc;
   std::multimap<int, ArSyncTask *>::iterator it;
@@ -162,7 +162,7 @@ AREXPORT ArSyncTask *ArSyncTask::findNonRecursive(const char * name)
    @param functor the functor we are interested in finding
    @return The task, if found.  If not found, NULL.
 */
-AREXPORT ArSyncTask *ArSyncTask::findNonRecursive(ArFunctor *functor)
+AREXPORT ArSyncTask *ArSyncTask::findNonRecursive(MvrFunctor *functor)
 {
   ArSyncTask *proc;
   std::multimap<int, ArSyncTask *>::iterator it;
@@ -214,7 +214,7 @@ AREXPORT void ArSyncTask::addNewLeaf(const char *nameOfNew, int position,
   myMultiMap.insert(std::pair<int, ArSyncTask *>(position, proc));
 }
 
-AREXPORT void ArSyncTask::remove(ArSyncTask *proc)
+AREXPORT void ArSyncTask::remove(MvrSyncTask *proc)
 {
   std::multimap<int, ArSyncTask *>::iterator it;
   
@@ -276,7 +276,7 @@ AREXPORT void ArSyncTask::run(void)
       myFunctor != NULL && myWarningTimeCB != NULL &&
       myWarningTimeCB->invokeR() > 0 && 
       (took = runTime.mSecSince()) > (signed int)myWarningTimeCB->invokeR())
-    ArLog::log(ArLog::Normal, 
+    ArLog::log(MvrLog::Normal, 
 	       "Warning: Task '%s' took %d ms to run (longer than the %d warning time)",
 	       myName.c_str(), took, (signed int)myWarningTimeCB->invokeR());
   
@@ -294,7 +294,7 @@ AREXPORT void ArSyncTask::run(void)
    task such that if it takes longer than this number of ms to run a
    warning message will be issued, sets this on the children too.
 **/
-AREXPORT void ArSyncTask::setWarningTimeCB(ArRetFunctor<unsigned int> *functor)
+AREXPORT void ArSyncTask::setWarningTimeCB(MvrRetFunctor<unsigned int> *functor)
 {
   std::multimap<int, ArSyncTask *>::reverse_iterator it;
   myWarningTimeCB = functor;
@@ -316,7 +316,7 @@ AREXPORT ArRetFunctor<unsigned int> *ArSyncTask::getWarningTimeCB(void)
    This sets a functor which will be called to see if we should warn
    this time through or not.
 **/
-AREXPORT void ArSyncTask::setNoTimeWarningCB(ArRetFunctor<bool> *functor)
+AREXPORT void ArSyncTask::setNoTimeWarningCB(MvrRetFunctor<bool> *functor)
 {
   std::multimap<int, ArSyncTask *>::reverse_iterator it;
   myNoTimeWarningCB = functor;
@@ -375,7 +375,7 @@ AREXPORT void ArSyncTask::log(int depth)
     str += ", running)";
     break;
   }
-  ArLog::log(ArLog::Terse, const_cast<char *>(str.c_str()));
+  ArLog::log(MvrLog::Terse, const_cast<char *>(str.c_str()));
   for (it = myMultiMap.rbegin(); it != myMultiMap.rend(); it++)
     (*it).second->log(depth + 1);
   
@@ -393,7 +393,7 @@ AREXPORT ArSyncTask *ArSyncTask::getRunning(void)
     return this;
   else
   {
-    ArLog::log(ArLog::Normal, "ArSyncTask::getRunning: Tried to get running, but apparently nothing was running");
+    ArLog::log(MvrLog::Normal, "MvrSyncTask::getRunning: Tried to get running, but apparently nothing was running");
     return NULL;
   }
 }

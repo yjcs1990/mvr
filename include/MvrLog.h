@@ -32,14 +32,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif
 #include <string>
 #include "ariaTypedefs.h"
-#include "ArMutex.h"
-#include "ArFunctor.h"
+#include "MvrMutex.h"
+#include "MvrFunctor.h"
 
-class ArConfig;
+class MvrConfig;
 
 /// Logging utility class
 /**
-   ArLog is a utility class to log all messages from Aria to a choosen
+   MvrLog is a utility class to log all messages from Mvria to a choosen
    destintation. Messages can be logged to stdout, stderr, a file, and
    turned off completely. Logging by default is set to stdout. The level
    of logging can be changed as well. Allowed levels are Terse, Normal,
@@ -48,7 +48,7 @@ class ArConfig;
    @ingroup ImportantClasses
    @ingroup easy
 */
-class ArLog
+class MvrLog
 {
 public:
 
@@ -112,8 +112,8 @@ public:
   /// @deprecated
   AREXPORT static void (* colbertPrint)(int i, const char *str);
 
-  /// Use an ArConfig object to control ArLog's options
-  AREXPORT static void addToConfig(ArConfig *config);
+  /// Use an MvrConfig object to control MvrLog's options
+  AREXPORT static void addToConfig(MvrConfig *config);
 
   /// Set log level
   AREXPORT static void setLogLevel(LogLevel level);
@@ -122,14 +122,14 @@ public:
   // Init for aram behavior
   /// @internal
   AREXPORT static void aramInit(const char *prefix, 
-				ArLog::LogLevel defaultLevel = ArLog::Normal, 
+				ArLog::LogLevel defaultLevel = MvrLog::Normal, 
 				double defaultSize = 10, 
 				bool daemonized = false);
 #endif
   
   /// Set a functor to be called when a log message is made 
   /// Call clearFunctor() to unset.
-  AREXPORT static void setFunctor(ArFunctor1<const char *> *functor);
+  AREXPORT static void setFunctor(MvrFunctor1<const char *> *functor);
   /// Clear functor set by setFunctor().
   AREXPORT static void clearFunctor();
   /// Internal function to force a lockup, only for debugging
@@ -159,8 +159,8 @@ protected:
   AREXPORT static void invokeFunctor(const char *message);
   AREXPORT static void checkFileSize(void);
 
-  static ArLog *ourLog;
-  static ArMutex ourMutex;
+  static MvrLog *ourLog;
+  static MvrMutex ourMutex;
   static LogType ourType;
   static LogLevel ourLevel;
   static bool ourLoggingTime;
@@ -175,12 +175,12 @@ protected:
   static char ourConfigFileName[1024];
   static bool ourConfigLogTime;
   static bool ourConfigAlsoPrint;
-  static ArGlobalRetFunctor<bool> ourConfigProcessFileCB;
+  static MvrGlobalRetFunctor<bool> ourConfigProcessFileCB;
 
 #ifndef ARINTERFACE
   static char ourAramConfigLogLevel[1024];
   static double ourAramConfigLogSize;
-  static ArGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
+  static MvrGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
   static bool ourUseAramBehavior;
   static double ourAramLogSize;
   static std::string ourAramPrefix;
@@ -188,7 +188,7 @@ protected:
 
   static bool ourAramDaemonized;
   
-  static ArFunctor1<const char *> *ourFunctor;
+  static MvrFunctor1<const char *> *ourFunctor;
 
 };
 

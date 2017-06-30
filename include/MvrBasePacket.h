@@ -34,13 +34,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /// Base packet class
 /** This class is a base class for specific packet types implemented by base
     classes.  In most cases, you would not instantiate this class directly, but instead 
-    use a subclass. However, ArBasePacket contains many of the functions used to
+    use a subclass. However, MvrBasePacket contains many of the functions used to
     access the packet's data.
 
     A packet is a sequence of values stored in a buffer.  The contents 
     of a packet's data buffer is read from a device or other program or written to the
     device (for example, a serial port or TCP port
-    using an ArDeviceConnection or using ArNetworking), optionally preceded
+    using an MvrDeviceConnection or using MvrNetworking), optionally preceded
     by a header with some identifying data and a length, and optionally followed by a 
     footer with a checksum of the data. (If the
     header length of a particular packet type is 0, no header is written or expected on read, and likewise
@@ -51,14 +51,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     "ToBuf" methods are used to add values to the buffer. There are different
     methods for different sized values.
 
-    ArBasePacket keeps a current position index in the buffer, which is the position
+    MvrBasePacket keeps a current position index in the buffer, which is the position
     at which new values are added or values are removed. 
 
     A buffer may be statically allocated externally and supplied to the
     constructor
     (also give a buffer size to determine the maximum amount of data that can be
     placed in that bufer),
-    or automatically and dynamically allocated by ArBasePacket as needed
+    or automatically and dynamically allocated by MvrBasePacket as needed
     (the default behavior).
 
     When it is time to write out a packet, call finalizePacket() to set 
@@ -66,21 +66,21 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     To reuse a packet, use empty() to reset the buffer; new data will
     then be added to the beginning of the buffer again.
 */
-class ArBasePacket
+class MvrBasePacket
 {
 public:
     
   /// Constructor
-  AREXPORT ArBasePacket(ArTypes::UByte2 bufferSize = 0,
-    ArTypes::UByte2 headerLength = 0, 
+  AREXPORT MvrBasePacket(MvrTypes::UByte2 bufferSize = 0,
+    MvrTypes::UByte2 headerLength = 0, 
     char * buf = NULL,
-    ArTypes::UByte2 footerLength = 0);
+    MvrTypes::UByte2 footerLength = 0);
 
   /// Copy constructor
-  AREXPORT ArBasePacket(const ArBasePacket &other);
+  AREXPORT MvrBasePacket(const MvrBasePacket &other);
 
   /// Assignment operator
-  AREXPORT ArBasePacket &operator=(const ArBasePacket &other);
+  AREXPORT MvrBasePacket &operator=(const MvrBasePacket &other);
 
   /// Destructor
   AREXPORT virtual ~ArBasePacket();
@@ -91,9 +91,9 @@ public:
   /// MakeFinals the packet in preparation for sending, must be done
   AREXPORT virtual void finalizePacket(void) {}
 
-  /// ArLogs the hex and decimal values of each byte of the packet, and possibly extra metadata as well
+  /// MvrLogs the hex and decimal values of each byte of the packet, and possibly extra metadata as well
   AREXPORT virtual void log(void);
-  /// ArLogs the hex value of each byte in the packet 
+  /// MvrLogs the hex value of each byte in the packet 
   AREXPORT virtual void printHex(void);
 
   /// Returns whether the packet is valid, i.e. no error has occurred when reading/writing.
@@ -105,23 +105,23 @@ public:
   // Utility functions to write different data types to a buffer. They will
   // increment the length.
 
-  /// Puts ArTypes::Byte into packets buffer
-  AREXPORT virtual void byteToBuf(ArTypes::Byte val);
-  /// Puts ArTypes::Byte2 into packets buffer
-  AREXPORT virtual void byte2ToBuf(ArTypes::Byte2 val);
-  /// Puts ArTypes::Byte4 into packets buffer
-  AREXPORT virtual void byte4ToBuf(ArTypes::Byte4 val);
-  /// Puts ArTypes::Byte8 into packets buffer
-  AREXPORT virtual void byte8ToBuf(ArTypes::Byte8 val);
+  /// Puts MvrTypes::Byte into packets buffer
+  AREXPORT virtual void byteToBuf(MvrTypes::Byte val);
+  /// Puts MvrTypes::Byte2 into packets buffer
+  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
+  /// Puts MvrTypes::Byte4 into packets buffer
+  AREXPORT virtual void byte4ToBuf(MvrTypes::Byte4 val);
+  /// Puts MvrTypes::Byte8 into packets buffer
+  AREXPORT virtual void byte8ToBuf(MvrTypes::Byte8 val);
 
-  /// Puts ArTypes::UByte into packets buffer
-  AREXPORT virtual void uByteToBuf(ArTypes::UByte val);
-  /// Puts ArTypes::UByte2 into packet buffer
-  AREXPORT virtual void uByte2ToBuf(ArTypes::UByte2 val);
-  /// Puts ArTypes::UByte4 into packet buffer
-  AREXPORT virtual void uByte4ToBuf(ArTypes::UByte4 val);
-  /// Puts ArTypes::UByte8 into packet buffer
-  AREXPORT virtual void uByte8ToBuf(ArTypes::UByte8 val);
+  /// Puts MvrTypes::UByte into packets buffer
+  AREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
+  /// Puts MvrTypes::UByte2 into packet buffer
+  AREXPORT virtual void uByte2ToBuf(MvrTypes::UByte2 val);
+  /// Puts MvrTypes::UByte4 into packet buffer
+  AREXPORT virtual void uByte4ToBuf(MvrTypes::UByte4 val);
+  /// Puts MvrTypes::UByte8 into packet buffer
+  AREXPORT virtual void uByte8ToBuf(MvrTypes::UByte8 val);
 
   /// Puts a NULL-terminated string into packet buffer
   AREXPORT virtual void strToBuf(const char *str);
@@ -140,23 +140,23 @@ public:
 
   // Utility functions to read differet data types from a bufer. Each read
   // will increment the myReadLength.
-  /// Gets a ArTypes::Byte from the buffer
-  AREXPORT virtual ArTypes::Byte bufToByte(void);
-  /// Gets a ArTypes::Byte2 from the buffer
-  AREXPORT virtual ArTypes::Byte2 bufToByte2(void);
-  /// Gets a ArTypes::Byte4 from the buffer
-  AREXPORT virtual ArTypes::Byte4 bufToByte4(void);
-  /// Gets a ArTypes::Byte8 from the buffer
-  AREXPORT virtual ArTypes::Byte8 bufToByte8(void);
+  /// Gets a MvrTypes::Byte from the buffer
+  AREXPORT virtual MvrTypes::Byte bufToByte(void);
+  /// Gets a MvrTypes::Byte2 from the buffer
+  AREXPORT virtual MvrTypes::Byte2 bufToByte2(void);
+  /// Gets a MvrTypes::Byte4 from the buffer
+  AREXPORT virtual MvrTypes::Byte4 bufToByte4(void);
+  /// Gets a MvrTypes::Byte8 from the buffer
+  AREXPORT virtual MvrTypes::Byte8 bufToByte8(void);
 
-  /// Gets a ArTypes::UByte from the buffer
-  AREXPORT virtual ArTypes::UByte bufToUByte(void);
-  /// Gets a ArTypes::UByte2 from the buffer
-  AREXPORT virtual ArTypes::UByte2 bufToUByte2(void);
-  /// Gets a ArTypes::UByte4 from the buffer
-  AREXPORT virtual ArTypes::UByte4 bufToUByte4(void);
-  /// Gets a ArTypes::UByte8 from the buffer
-  AREXPORT virtual ArTypes::UByte8 bufToUByte8(void);
+  /// Gets a MvrTypes::UByte from the buffer
+  AREXPORT virtual MvrTypes::UByte bufToUByte(void);
+  /// Gets a MvrTypes::UByte2 from the buffer
+  AREXPORT virtual MvrTypes::UByte2 bufToUByte2(void);
+  /// Gets a MvrTypes::UByte4 from the buffer
+  AREXPORT virtual MvrTypes::UByte4 bufToUByte4(void);
+  /// Gets a MvrTypes::UByte8 from the buffer
+  AREXPORT virtual MvrTypes::UByte8 bufToUByte8(void);
 
   /// Gets a null-terminated string from the buffer
   AREXPORT virtual void bufToStr(char *buf, int maxlen);
@@ -173,23 +173,23 @@ public:
   // Accessors
 
   /// Gets the total length of the packet
-  virtual ArTypes::UByte2 getLength(void) const { return myLength; }
+  virtual MvrTypes::UByte2 getLength(void) const { return myLength; }
   /// Gets the length of the data in the packet
-  AREXPORT virtual ArTypes::UByte2 getDataLength(void) const;
+  AREXPORT virtual MvrTypes::UByte2 getDataLength(void) const;
 
   /// Gets how far into the packet that has been read
-  virtual ArTypes::UByte2 getReadLength(void) const { return myReadLength; }
+  virtual MvrTypes::UByte2 getReadLength(void) const { return myReadLength; }
   /// Gets how far into the data of the packet that has been read
-  virtual ArTypes::UByte2 getDataReadLength(void) const { return myReadLength - myHeaderLength; }
+  virtual MvrTypes::UByte2 getDataReadLength(void) const { return myReadLength - myHeaderLength; }
   /// Gets the length of the header
-  virtual ArTypes::UByte2 getHeaderLength(void) const
+  virtual MvrTypes::UByte2 getHeaderLength(void) const
   { return myHeaderLength; }
   /// Gets the length of the header
-  virtual ArTypes::UByte2 getFooterLength(void) const
+  virtual MvrTypes::UByte2 getFooterLength(void) const
   { return myFooterLength; }
 
   /// Gets the maximum length packet
-  virtual ArTypes::UByte2 getMaxLength(void) const { return myMaxLength; }
+  virtual MvrTypes::UByte2 getMaxLength(void) const { return myMaxLength; }
 
   /// Gets a const pointer to the buffer the packet uses 
   AREXPORT virtual const char * getBuf(void) const;
@@ -198,17 +198,17 @@ public:
   AREXPORT virtual char * getBuf(void);
 
   /// Sets the buffer the packet is using
-  AREXPORT virtual void setBuf(char *buf, ArTypes::UByte2 bufferSize);
+  AREXPORT virtual void setBuf(char *buf, MvrTypes::UByte2 bufferSize);
   /// Sets the maximum buffer size (if new size is <= current does nothing)
-  AREXPORT virtual void setMaxLength(ArTypes::UByte2 bufferSize);
+  AREXPORT virtual void setMaxLength(MvrTypes::UByte2 bufferSize);
   /// Sets the length of the packet
-  AREXPORT virtual bool setLength(ArTypes::UByte2 length);
+  AREXPORT virtual bool setLength(MvrTypes::UByte2 length);
   /// Sets the read length
-  AREXPORT virtual void setReadLength(ArTypes::UByte2 readLength);
+  AREXPORT virtual void setReadLength(MvrTypes::UByte2 readLength);
   /// Sets the length of the header
-  AREXPORT virtual bool setHeaderLength(ArTypes::UByte2 length);
+  AREXPORT virtual bool setHeaderLength(MvrTypes::UByte2 length);
   /// Makes this packet a duplicate of another packet
-  AREXPORT virtual void duplicatePacket(ArBasePacket *packet);
+  AREXPORT virtual void duplicatePacket(MvrBasePacket *packet);
 protected:
   // internal function to make sure we have enough length left to read in the packet
   AREXPORT bool isNextGood(int bytes);
@@ -217,16 +217,16 @@ protected:
   AREXPORT bool hasWriteCapacity(int bytes);
 
   // internal data
-  ArTypes::UByte2 myHeaderLength;
-  ArTypes::UByte2 myFooterLength;
-  ArTypes::UByte2 myMaxLength;
+  MvrTypes::UByte2 myHeaderLength;
+  MvrTypes::UByte2 myFooterLength;
+  MvrTypes::UByte2 myMaxLength;
 
-  ArTypes::UByte2 myReadLength;
+  MvrTypes::UByte2 myReadLength;
   bool myOwnMyBuf;
 
   // Actual packet data
   char *myBuf;
-  ArTypes::UByte2 myLength;
+  MvrTypes::UByte2 myLength;
 
   // Whether no error has occurred in reading/writing the packet.
   bool myIsValid;

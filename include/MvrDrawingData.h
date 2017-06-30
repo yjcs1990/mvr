@@ -30,18 +30,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
 
-/// A class for holding color information for ArDrawingData
-class ArColor
+/// A class for holding color information for MvrDrawingData
+class MvrColor
 {
 public:
   /// Constructor (colors use full range of 0-255)
-  ArColor(unsigned char red, unsigned char green, unsigned char blue)
+  MvrColor(unsigned char red, unsigned char green, unsigned char blue)
     { myRed = red; myGreen = green; myBlue = blue; }
   /// Constructor
-  ArColor() { myRed = 255, myGreen = 255, myBlue = 255; }
+  MvrColor() { myRed = 255, myGreen = 255, myBlue = 255; }
 
   /// Constructs a color from the given RGB value
-  ArColor(ArTypes::Byte4 rgbValue)
+  MvrColor(MvrTypes::Byte4 rgbValue)
   {
     myRed   = (rgbValue & 0xFF0000) >> 16;
     myGreen = (rgbValue & 0x00FF00) >> 8;
@@ -57,7 +57,7 @@ public:
   /// Gets the blue value (uses full range of 0-255)
   unsigned char getBlue(void) { return myBlue; }
   /// Gets the color in a byte 4 for putting into a buffer
-  ArTypes::Byte4 colorToByte4(void) 
+  MvrTypes::Byte4 colorToByte4(void) 
     { return ((myRed << 16) | (myGreen << 8) | myBlue); }
 protected:
   unsigned char myRed;
@@ -109,7 +109,7 @@ protected:
  * The default visibility is "DefaultOn".
  *
 **/
-class ArDrawingData
+class MvrDrawingData
 {
 public:
 
@@ -129,8 +129,8 @@ public:
             whether the user is allowed to change the visibility (see above / MobileEyes
             docs for valid values).  
    **/
-  ArDrawingData(const char *shape, 
-			                  ArColor primaryColor, 
+  MvrDrawingData(const char *shape, 
+			                  MvrColor primaryColor, 
 			                  int size,
 			                  int layer, 
 			                  unsigned int defaultRefreshTime = DEFAULT_REFRESH_TIME, 
@@ -140,7 +140,7 @@ public:
     mySize(size),
     myLayer(layer),
     myDefaultRefreshTime(defaultRefreshTime),
-    mySecondaryColor(ArColor(0,0,0)),
+    mySecondaryColor(MvrColor(0,0,0)),
     myVisibility(visibility)
   { 
   }
@@ -157,12 +157,12 @@ public:
             whether the user is allowed to change the visibility (see above / MobileEyes
             docs for valid values).  
    **/
-  ArDrawingData(const char *shape, 
-			 ArColor primaryColor, 
+  MvrDrawingData(const char *shape, 
+			 MvrColor primaryColor, 
 			 int size,
 			 int layer, 
 			 unsigned int defaultRefreshTime, 
-			 ArColor secondaryColor,
+			 MvrColor secondaryColor,
        const char *visibility = "DefaultOn")
     { 
       myShape = shape; 
@@ -178,7 +178,7 @@ public:
   /// Returns the shape of data to draw
   const char * getShape(void) { return myShape.c_str(); }
   /// Gets the primary color (meaning depending on shape)
-  ArColor getPrimaryColor(void) { return myPrimaryColor; }
+  MvrColor getPrimaryColor(void) { return myPrimaryColor; }
   /// Gets the size (meaning depends on shape, but its in mm)
   int getSize(void) { return mySize; }
   /// Gets the layer to draw at (see MobileEyes docs for what layer means)
@@ -186,14 +186,14 @@ public:
   /// Gets how often this data should be drawn (0 == only when explicitly sent)
   unsigned int getDefaultRefreshTime(void) { return myDefaultRefreshTime; }
   /// Gets the secondary color (meaning depends on shape)
-  ArColor getSecondaryColor(void) { return mySecondaryColor; }
+  MvrColor getSecondaryColor(void) { return mySecondaryColor; }
   /// Gets the visibility of the drawing data
   const char *getVisibility(void) { return myVisibility.c_str(); }
 
   /// Sets the shape of data to draw
   void setShape(const char *shape) { myShape = shape; }
   /// Sets the primary color (meaning depends on shape)
-  void setPrimaryColor(ArColor color) { myPrimaryColor = color; }
+  void setPrimaryColor(MvrColor color) { myPrimaryColor = color; }
   /// Sets the size (meaning depends on shape, but its in mm)
   void setSize(int size) { mySize = size; }
   /// Sets the layer (see MobileEyes for docs on what layer means)
@@ -202,16 +202,16 @@ public:
   void setDefaultRefreshTime(unsigned int refreshTime)
     { myDefaultRefreshTime = refreshTime; }
   /// Sets the secondary color (meaning depends on shape)
-  void setSecondaryColor(ArColor color) { mySecondaryColor = color; }
+  void setSecondaryColor(MvrColor color) { mySecondaryColor = color; }
   /// Sets the visibility of the drawing data
   void setVisibility(const char *visibility) { myVisibility = visibility; }
 protected:
   std::string myShape;
-   ArColor myPrimaryColor;
+   MvrColor myPrimaryColor;
   int mySize;
   int myLayer;
   unsigned int myDefaultRefreshTime;
-  ArColor mySecondaryColor;
+  MvrColor mySecondaryColor;
   std::string myVisibility;
 };
 

@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONTURN
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action to turn when the behaviors with more priority have limited the speed
 /**
@@ -40,20 +40,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    @ingroup ActionClasses
 **/
-class ArActionTurn : public ArAction
+class MvrActionTurn : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionTurn(const char *name = "turn",
+  AREXPORT MvrActionTurn(const char *name = "turn",
 			double speedStartTurn = 200,
 			double speedFullTurn = 100,
 			double turnAmount = 15);
   /// Destructor
   AREXPORT virtual ~ArActionTurn();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
@@ -62,7 +62,7 @@ protected:
   double myTurnAmount;
   double myTurning;
 
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 
 };
 

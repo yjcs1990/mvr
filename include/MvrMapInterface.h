@@ -24,54 +24,54 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-/*! \file ArMapInterface.h
- *  \brief Contains the set of interfaces that define the Aria maps.
+/*! \file MvrMapInterface.h
+ *  \brief Contains the set of interfaces that define the Mvria maps.
  *  \date 06/27/08
  *  \author K. Cunningham
  * 
- * The methods that define the Aria maps are grouped into a set of smaller
+ * The methods that define the Mvria maps are grouped into a set of smaller
  * interfaces which are contained in this file.   These include:
  * 
- *  - ArMapScanInterface : Methods related to scan data (e.g.  points and
+ *  - MvrMapScanInterface : Methods related to scan data (e.g.  points and
  *    lines) generally obtained from a specific sensor (such as the SICK laser
  *    or Hokuyo URG).
  *
- *  - ArMapObjectsInterface : Methods related to the objects in a map.
+ *  - MvrMapObjectsInterface : Methods related to the objects in a map.
  *    These include user-defined objects such as goals, docks, and forbidden
  *    lines.  They also include special "data" types of objects that may be
  *    automatically created during the scanning process.
  * 
- *  - ArMapInfoInterface : Methods related to the various info arguments
+ *  - MvrMapInfoInterface : Methods related to the various info arguments
  *    stored in a map.  Examples of info include the map object type 
  *    definitions and the routes and macros.
  * 
- *  - ArMapSupplementInterface : Methods used to access supplemental data 
+ *  - MvrMapSupplementInterface : Methods used to access supplemental data 
  *    associated with the map.  This currently consists only of the latitude /
  *    longitude of the origin, but may be extended in the future.
  * 
- * The primary interface implemented by all Aria maps is also contained in
+ * The primary interface implemented by all Mvria maps is also contained in
  * this file:
  *
- *  - ArMapInterface : All of the methods that are available for an Aria map.
+ *  - MvrMapInterface : All of the methods that are available for an Mvria map.
  *    This interface extends all of the above interfaces and contains a 
  *    few additional file-related methods.
  * 
- * In general, when passing an Aria map (pointer) as a parameter to a method, 
- * it is preferable to pass ArMapInterface *.  This will allow for extension 
+ * In general, when passing an Mvria map (pointer) as a parameter to a method, 
+ * it is preferable to pass MvrMapInterface *.  This will allow for extension 
  * and different implementations of the interface. 
  *
  * <pre>  
- *      ArMapScanInterface
+ *      MvrMapScanInterface
  *      ^
- *      |    ArMapObjectsInterface
+ *      |    MvrMapObjectsInterface
  *      |    ^
- *      |    |    ArMapInfoInterface
+ *      |    |    MvrMapInfoInterface
  *      |    |    ^
- *      |    |    |    ArMapSupplementInterface
+ *      |    |    |    MvrMapSupplementInterface
  *      |    |    |    ^  
  *      |    |    |    | (extends)
  *      |    |    |    |
- *       ArMapInterface
+ *       MvrMapInterface
  *
  * </pre>
 **/
@@ -81,38 +81,38 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
 
-#include "ArMapObject.h"
-#include "ArMapUtils.h"
+#include "MvrMapObject.h"
+#include "MvrMapUtils.h"
 
-#include "ArArgumentBuilder.h"
-#include "ArFunctor.h"
-#include "ArHasFileName.h"
-#include "ArMutex.h"
+#include "MvrArgumentBuilder.h"
+#include "MvrFunctor.h"
+#include "MvrHasFileName.h"
+#include "MvrMutex.h"
 
 #include <vector>
 #include <set>
 
-class ArFileParser;
-class ArMapChangeDetails;
-class ArMapObject;
+class MvrFileParser;
+class MvrMapChangeDetails;
+class MvrMapObject;
 
 
 // =============================================================================
-// ArMapScanInterface
+// MvrMapScanInterface
 // =============================================================================
 
-/// The default scan type indicator, when an Aria map only has obstacle data of one type
+/// The default scan type indicator, when an Mvria map only has obstacle data of one type
 #define ARMAP_DEFAULT_SCAN_TYPE ""
 /// The scan type indicator used to obtain collective data from most or all obstacle data (see individual methods for how it is used for specific kinds of map data)
 #define ARMAP_SUMMARY_SCAN_TYPE NULL
 
-/// Methods related to setting and retrieving the scan-related data in an Aria map.
+/// Methods related to setting and retrieving the scan-related data in an Mvria map.
 /**
- * ArMapScanInterface is an abstract class that defines the methods used
- * to manipulate obstacle data in an Aria map.  These generally include the 
+ * MvrMapScanInterface is an abstract class that defines the methods used
+ * to manipulate obstacle data in an Mvria map.  These generally include the 
  * points and lines detected by a particular sensor (a.k.a. scan type).
 **/
-class ArMapScanInterface 
+class MvrMapScanInterface 
 {
 public:
 
@@ -126,7 +126,7 @@ public:
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /// Default constructor
-  AREXPORT ArMapScanInterface() {}
+  AREXPORT MvrMapScanInterface() {}
   /// Destructor
   AREXPORT virtual ~ArMapScanInterface() {}
 
@@ -157,7 +157,7 @@ public:
    * which to return the minimum pose; if ARMAP_SUMMARY_SCAN_TYPE, then the 
    * minimum pose for all scans is returned
   **/
-  AREXPORT virtual ArPose getMinPose
+  AREXPORT virtual MvrPose getMinPose
                            (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) = 0;
 
   /// Returns the upper right point (maximum x and y) of the scan's points.
@@ -166,7 +166,7 @@ public:
    * which to return the maximum pose; if ARMAP_SUMMARY_SCAN_TYPE, then the 
    * maximum pose for all scans is returned
   **/
-  AREXPORT virtual ArPose getMaxPose
+  AREXPORT virtual MvrPose getMaxPose
                            (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) = 0;
 
   /// Returns the number of points in the specified scan.
@@ -196,22 +196,22 @@ public:
   /// Sets the points (copies those passed in)
   /**
    * This method will sort the given points in ascending order (according 
-   * to the ArPose less-than operator.  If the points vector is already sorted, 
+   * to the MvrPose less-than operator.  If the points vector is already sorted, 
    * then set the isSortedPoints parameter to true in order to improve performance.
-   * @param points a pointer to the ArPose vector to be copied to the scan data
+   * @param points a pointer to the MvrPose vector to be copied to the scan data
    * @param scanType the const char * identifier of the scan type for which 
    * to set the points; must not be ARMAP_SUMMARY_SCAN_TYPE or NULL
    * @param isSortedPoints a bool set to true if the points vector has already
    * been sorted in ascending order
-   * @param changeDetails a pointer to the optional ArMapChangeDetails in which
+   * @param changeDetails a pointer to the optional MvrMapChangeDetails in which
    * to store a description of the changes to the scan data; if NULL then the 
    * changes are not tracked.
-   * @see ArMapChangeDetails
+   * @see MvrMapChangeDetails
   **/
   AREXPORT virtual void setPoints(const std::vector<ArPose> *points,
                                   const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
                                   bool isSortedPoints = false,
-                                  ArMapChangeDetails *changeDetails = NULL) = 0;
+                                  MvrMapChangeDetails *changeDetails = NULL) = 0;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Line Segment Methods
@@ -237,7 +237,7 @@ public:
    * which to return the minimum line segment pose; if ARMAP_SUMMARY_SCAN_TYPE, 
    * then the minimum line segment pose for all scans is returned
   **/  
-  AREXPORT virtual ArPose getLineMinPose
+  AREXPORT virtual MvrPose getLineMinPose
                            (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) = 0;
 
   /// Returns the upper right point (maximum x and y) of the scan's line segments.
@@ -246,7 +246,7 @@ public:
    * which to return the maximum line segment pose; if ARMAP_SUMMARY_SCAN_TYPE, 
    * then the maximum line segment pose for all scans is returned
   **/
-  AREXPORT virtual ArPose getLineMaxPose
+  AREXPORT virtual MvrPose getLineMaxPose
                            (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) = 0;
   
   /// Returns the number of line segments in the specified scan.
@@ -275,22 +275,22 @@ public:
   /// Sets the lines (copies those passed in)
   /**
    * This method will sort the given line segments in ascending order (according 
-   * to the ArLineSegment less-than operator.  If the vector is already sorted, 
+   * to the MvrLineSegment less-than operator.  If the vector is already sorted, 
    * then set the isSortedLiens parameter to true in order to improve performance.
-   * @param lines a pointer to the ArLineSegment vector to be copied to the scan data
+   * @param lines a pointer to the MvrLineSegment vector to be copied to the scan data
    * @param scanType the const char * identifier of the scan type for which 
    * to set the points; must not be ARMAP_SUMMARY_SCAN_TYPE or NULL
    * @param isSortedLines a bool set to true if the line segment vector has already
    * been sorted in ascending order
-   * @param changeDetails a pointer to the optional ArMapChangeDetails in which
+   * @param changeDetails a pointer to the optional MvrMapChangeDetails in which
    * to store a description of the changes to the scan data; if NULL then the 
    * changes are not tracked.
-   * @see ArMapChangeDetails
+   * @see MvrMapChangeDetails
   **/
   AREXPORT virtual void setLines(const std::vector<ArLineSegment> *lines,
                                  const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
                                  bool isSortedLines = false,
-                                 ArMapChangeDetails *changeDetails = NULL) = 0;
+                                 MvrMapChangeDetails *changeDetails = NULL) = 0;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Other Attributes
@@ -310,14 +310,14 @@ public:
    * @param resolution the int number of mm between the scan data point readings
    * @param scanType the const char * identifier of the scan for which to return
    * the resolution; must not be ARMAP_SUMMARY_SCAN_TYPE or NULL
-   * @param changeDetails a pointer to the optional ArMapChangeDetails in which
+   * @param changeDetails a pointer to the optional MvrMapChangeDetails in which
    * to store a description of the changes to the scan data; if NULL then the 
    * changes are not tracked.
-   * @see ArMapChangeDetails
+   * @see MvrMapChangeDetails
   **/
   AREXPORT virtual void setResolution(int resolution,
                                       const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
-                                      ArMapChangeDetails *changeDetails = NULL) = 0;
+                                      MvrMapChangeDetails *changeDetails = NULL) = 0;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Persistence
@@ -329,7 +329,7 @@ public:
    * (such as MinPose, MaxPose, NumPoints).  Depending on the scan type, a 
    * prefix may be prepended to the keyword (e.g. HokuyoURGMinPose).
    * 
-   * @param functor the ArFunctor1 to which to write the scan header information
+   * @param functor the MvrFunctor1 to which to write the scan header information
    * (as text lines)
    * @param endOfLineChars the const char * string to be appended to the end
    * of each text line
@@ -338,7 +338,7 @@ public:
    *
   **/
   AREXPORT virtual void writeScanToFunctor
-                                (ArFunctor1<const char *> *functor, 
+                                (MvrFunctor1<const char *> *functor, 
  			                           const char *endOfLineChars,
                                  const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) = 0;
 
@@ -347,53 +347,53 @@ public:
    * A pointer to the entire data point vector is passed directly to the 
    * functor in order to improve performance.  The functor must not
    * modify the vector's contents.
-   * @param functor a pointer to the ArFunctor2 that takes the number of points
-   * and the vector of ArPoses, and writes the information
+   * @param functor a pointer to the MvrFunctor2 that takes the number of points
+   * and the vector of MvrPoses, and writes the information
    * @param scanType the const char * identifier of the scan points to be written;
    * must not be ARMAP_SUMMARY_SCAN_TYPE or NULL
-   * @param keywordFunctor a pointer to an optional ArFunctor1 that writes a 
-   * text line to introduce the associated ArPoses; if NULL, then the header is not
+   * @param keywordFunctor a pointer to an optional MvrFunctor1 that writes a 
+   * text line to introduce the associated MvrPoses; if NULL, then the header is not
    * written
   **/
   AREXPORT virtual void writePointsToFunctor
-                         		(ArFunctor2<int, std::vector<ArPose> *> *functor,
+                         		(MvrFunctor2<int, std::vector<ArPose> *> *functor,
                              const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
-                             ArFunctor1<const char *> *keywordFunctor = NULL) = 0;
+                             MvrFunctor1<const char *> *keywordFunctor = NULL) = 0;
 
   /// Writes the map line segments to a functor.
   /**
    * A pointer to the entire data line segment vector is passed directly to the 
    * functor in order to improve performance.  The functor must not
    * modify the vector's contents.
-   * @param functor a pointer to the ArFunctor2 that takes the number of line
-   * segments and the vector of ArLineSegments, and writes the information
+   * @param functor a pointer to the MvrFunctor2 that takes the number of line
+   * segments and the vector of MvrLineSegments, and writes the information
    * @param scanType the const char * identifier of the scan points to be written;
    * must not be ARMAP_SUMMARY_SCAN_TYPE or NULL
-   * @param keywordFunctor a pointer to an optional ArFunctor1 that writes a 
-   * text line to introduce the associated ArLineSegments; if NULL, then the
+   * @param keywordFunctor a pointer to an optional MvrFunctor1 that writes a 
+   * text line to introduce the associated MvrLineSegments; if NULL, then the
    * header is not written
   **/
   AREXPORT virtual void writeLinesToFunctor
- 	                          (ArFunctor2<int, std::vector<ArLineSegment> *> *functor,
+ 	                          (MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
                              const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
-                             ArFunctor1<const char *> *keywordFunctor = NULL) = 0;
+                             MvrFunctor1<const char *> *keywordFunctor = NULL) = 0;
 
 
   /// Adds handlers for this scan data's header information to the given file parser
   /**
-   * @param fileParser a pointer to the ArFileParser to which to add the handlers
+   * @param fileParser a pointer to the MvrFileParser to which to add the handlers
    * @return bool true if the handlers were successfully added; false if an error
    * occurred
   **/
-  AREXPORT virtual bool addToFileParser(ArFileParser *fileParser) = 0;
+  AREXPORT virtual bool addToFileParser(MvrFileParser *fileParser) = 0;
 
   /// Removes the handlers for this scan data's header information from the given file parser
   /**
-   * @param fileParser a pointer to the ArFileParser from which to remove the handlers
+   * @param fileParser a pointer to the MvrFileParser from which to remove the handlers
    * @return bool true if the handlers were successfully removed; false if an error
    * occurred
   **/
-  AREXPORT virtual bool remFromFileParser(ArFileParser *fileParser) = 0;
+  AREXPORT virtual bool remFromFileParser(MvrFileParser *fileParser) = 0;
 
 
   /// Reads a data point from the given line and adds it to this scan data.
@@ -415,32 +415,32 @@ public:
   **/
   AREXPORT virtual bool readLineSegment( char *line) = 0;
 
-  /*** Public for ArQClientMapProducer ***/
+  /*** Public for MvrQClientMapProducer ***/
   /// Adds the specified data point to the scan data.
   AREXPORT virtual void loadDataPoint(double x, double y) = 0;
   /// Adds the specified line segment to the scan data.
   AREXPORT virtual void loadLineSegment(double x1, double y1, 
                                         double x2, double y2) = 0;
 
-}; // end class ArMapScanInterface
+}; // end class MvrMapScanInterface
 
 
 // =============================================================================
-// ArMapObjectsInterface
+// MvrMapObjectsInterface
 // =============================================================================
 
-/// Methods related to setting and retrieving the objects in an Aria map.
+/// Methods related to setting and retrieving the objects in an Mvria map.
 /**
- * ArMapObjectsInterface is an abstract class that defines the methods used
- * to manipulate the ArMapObjects that are contained in an Aria map.
+ * MvrMapObjectsInterface is an abstract class that defines the methods used
+ * to manipulate the MvrMapObjects that are contained in an Mvria map.
 **/
-class ArMapObjectsInterface 
+class MvrMapObjectsInterface 
 {
 
 public :
  
    /// Constructor 
-   AREXPORT ArMapObjectsInterface() {}
+   AREXPORT MvrMapObjectsInterface() {}
  
    /// Destructor
    AREXPORT virtual ~ArMapObjectsInterface() {}
@@ -460,9 +460,9 @@ public :
     * @param isIncludeWithHeading a bool set to true if the given type represents a 
     * pose and both "heading-less" and "with-heading" objects should be searched; 
     * if false, then only objects of the exact type are searched
-    * @return ArMapObject * the matching map object, or NULL if none found
+    * @return MvrMapObject * the matching map object, or NULL if none found
    **/
-   AREXPORT virtual ArMapObject *findFirstMapObject(const char *name, 
+   AREXPORT virtual MvrMapObject *findFirstMapObject(const char *name, 
                                                     const char *type,
                                                     bool isIncludeWithHeading = false) = 0;
  
@@ -479,9 +479,9 @@ public :
     * @param isIncludeWithHeading a bool set to true if the given type represents a 
     * pose and both "heading-less" and "with-heading" objects should be searched; 
     * if false, then only objects of the exact type are searched
-    * @return ArMapObject * the matching map object, or NULL if none found
+    * @return MvrMapObject * the matching map object, or NULL if none found
    **/
-   AREXPORT virtual ArMapObject *findMapObject(const char *name, 
+   AREXPORT virtual MvrMapObject *findMapObject(const char *name, 
  				                                       const char *type = NULL,
                                                bool isIncludeWithHeading = false) = 0;
  
@@ -499,7 +499,7 @@ public :
     * @param isIncludeWithHeading a bool set to true if the given type represents a 
     * pose and both "heading-less" and "with-heading" objects should be searched; 
     * if false, then only objects of the exact type are searched
-    * @return a list of pointers to all of the ArMapObject's  that match the given
+    * @return a list of pointers to all of the MvrMapObject's  that match the given
     * type
    **/
    AREXPORT virtual std::list<ArMapObject *> findMapObjectsOfType
@@ -516,7 +516,7 @@ public :
     * be deleted when the map is changed.  If the caller needs the map objects at 
     * a later time, then it should create its own copy of each object in the list.
     * This method is not thread-safe.   
-    * @return a list of pointers to all of the ArMapObject's in the map
+    * @return a list of pointers to all of the MvrMapObject's in the map
    **/
    AREXPORT virtual std::list<ArMapObject *> *getMapObjects(void) = 0;
  
@@ -529,19 +529,19 @@ public :
     * objects in the lower right).
     * This method is not thread-safe.
     *
-    * @param mapObjects a pointer to the list of ArMapObject *'s to be copied
+    * @param mapObjects a pointer to the list of MvrMapObject *'s to be copied
     * @param isSortedObjects a bool set to true if the objects in the given 
     * list have already been sorted by increasing pose; this can improve 
     * the performance of this method
-    * @param changeDetails an optional pointer to the ArMapChangeDetails in 
+    * @param changeDetails an optional pointer to the MvrMapChangeDetails in 
     * which to accumulate a description of the changes to the map objects; 
     * if NULL, then changes are not tracked
-    * @see ArMapChangeDetails
+    * @see MvrMapChangeDetails
    **/
    AREXPORT virtual void setMapObjects
                             (const std::list<ArMapObject *> *mapObjects,
                              bool isSortedObjects = false,
-                             ArMapChangeDetails *changeDetails = NULL) = 0; 
+                             MvrMapChangeDetails *changeDetails = NULL) = 0; 
  
 
    // TODO Seems like it would be awfully nice to have an addMapObject and a
@@ -550,31 +550,31 @@ public :
 
    /// Writes the list of map objects to a text-based functor.
    /**
-    * This method writes a Cairn text line for each of the ArMapObject's.  
+    * This method writes a Cairn text line for each of the MvrMapObject's.  
     * This method is not thread-safe.
     *
-    * @param functor a pointer to the ArFunctor1 that writes the text lines
+    * @param functor a pointer to the MvrFunctor1 that writes the text lines
     * @param endOfLineChars the const char * string that indicates the end of
     * each text line
    **/
-   AREXPORT virtual void writeObjectListToFunctor(ArFunctor1<const char *> *functor, 
+   AREXPORT virtual void writeObjectListToFunctor(MvrFunctor1<const char *> *functor, 
  			                                            const char *endOfLineChars) = 0;
  
- }; // end class ArMapObjectsInterface
+ }; // end class MvrMapObjectsInterface
 
 
 // =============================================================================
-// ArMapInfoInterface
+// MvrMapInfoInterface
 // =============================================================================
 
-/// Methods related to setting and retrieving the various "info" tags in an Aria map.
+/// Methods related to setting and retrieving the various "info" tags in an Mvria map.
 /**
- * ArMapInfoInterface is an abstract class that defines the methods used to 
- * get and set an Aria map's "info" arguments.  An Aria map may have one or more
- * categories of info, each implemented by an ordered list of ArArgumentBuilder's.
- * The ArMapInfoInterface defines access to a collection of these info categories.
+ * MvrMapInfoInterface is an abstract class that defines the methods used to 
+ * get and set an Mvria map's "info" arguments.  An Mvria map may have one or more
+ * categories of info, each implemented by an ordered list of MvrArgumentBuilder's.
+ * The MvrMapInfoInterface defines access to a collection of these info categories.
 **/
-class ArMapInfoInterface 
+class MvrMapInfoInterface 
 {
 public :
   
@@ -591,7 +591,7 @@ public :
 
 
   /// Constructor
-  AREXPORT ArMapInfoInterface() {}
+  AREXPORT MvrMapInfoInterface() {}
 
   /// Destructor
   AREXPORT virtual ~ArMapInfoInterface() {}
@@ -614,7 +614,7 @@ public :
 
   /// Returns the arguments for the specified info category; or NULL if none found
   /**
-  * This method returns a pointer to the actual ArArgumentBuilder list that is
+  * This method returns a pointer to the actual MvrArgumentBuilder list that is
   * contained in the map.  It is not safe to store these pointers because they 
   * will be deleted when the map is changed.  If the caller needs the info
   * arguments at a later time, then it should create its own copy of each 
@@ -633,7 +633,7 @@ public :
   /**
   * @deprecated use getInfo(const char *) instead
   * 
-  * This method returns a pointer to the actual ArArgumentBuilder list that is
+  * This method returns a pointer to the actual MvrArgumentBuilder list that is
   * contained in the map.  It is not safe to store these pointers because they 
   * will be deleted when the map is changed.  If the caller needs the info
   * arguments at a later time, then it should create its own copy of each 
@@ -665,17 +665,17 @@ public :
    * @param infoName the unique const char * identifier of the 
    * @param infoList the std::list<ArArgumentBuilder *> * that defines the
    * Info category's contents; NULL to clear the Info
-   * @param changeDetails a pointer to the ArMapChangeDetails in which to 
+   * @param changeDetails a pointer to the MvrMapChangeDetails in which to 
    * accumulate changes to the map's info lines; if NULL, then changes are
    * not tracked
    * @return bool set to true if the contents were successfully set; false,
    * if an error occurred
-   * @see ArMapChangeDetails
+   * @see MvrMapChangeDetails
    * @see setInfoNames
   **/
   AREXPORT virtual bool setInfo(const char *infoName,
                                 const std::list<ArArgumentBuilder *> *infoList,
-                                ArMapChangeDetails *changeDetails = NULL) = 0;
+                                MvrMapChangeDetails *changeDetails = NULL) = 0;
 
 
   /// Sets the contents of the specified Info category (copies those passed in)
@@ -686,16 +686,16 @@ public :
    * @param infoType the int ID of the Info category to be set
    * @param infoList the std::list<ArArgumentBuilder *> * that defines the
    * Info category's contents; NULL to clear the Info
-   * @param changeDetails a pointer to the ArMapChangeDetails in which to 
+   * @param changeDetails a pointer to the MvrMapChangeDetails in which to 
    * accumulate changes to the map's info lines; if NULL, then changes are
    * not tracked
    * @return bool set to true if the contents were successfully set; false,
    * if infoType was invalid
-   * @see ArMapChangeDetails
+   * @see MvrMapChangeDetails
   **/
   AREXPORT virtual bool setInfo(int infoType,
  						                    const std::list<ArArgumentBuilder *> *infoList,
-                                ArMapChangeDetails *changeDetails = NULL) = 0; 
+                                MvrMapChangeDetails *changeDetails = NULL) = 0; 
 
 
   /// Sets the map info (copies those passed in)
@@ -703,7 +703,7 @@ public :
    * This method is equivalent to setInfo(MAP_INFO, mapInfo, changeDetails);
   **/
   AREXPORT virtual bool setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
-                                   ArMapChangeDetails *changeDetails = NULL) = 0;
+                                   MvrMapChangeDetails *changeDetails = NULL) = 0;
 
 
   //AREXPORT virtual bool setInfoNames(const std::list<std::string> &infoNameList) = 0;
@@ -715,22 +715,22 @@ public :
 
   /// Writes the info collection to a text-based functor.
   /**
-  * This method writes a text line for each of the info's ArArgumentBuilders.
+  * This method writes a text line for each of the info's MvrArgumentBuilders.
   * This method is not thread-safe.
   *
-  * @param functor a pointer to the ArFunctor1 that writes the text lines
+  * @param functor a pointer to the MvrFunctor1 that writes the text lines
   * @param endOfLineChars the const char * string that indicates the end of
   * each text line
   **/
   AREXPORT virtual void writeInfoToFunctor
- 				                  (ArFunctor1<const char *> *functor, 
+ 				                  (MvrFunctor1<const char *> *functor, 
  			                      const char *endOfLineChars) = 0;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Deprecated
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  /// List of the standard Info categories defined for Aria maps
+  /// List of the standard Info categories defined for Mvria maps
   /**
    * @deprecated
   **/
@@ -768,25 +768,25 @@ public :
   AREXPORT virtual const char *getInfoName(int infoType) = 0;
 
 
-}; // end class ArMapInfoInterface
+}; // end class MvrMapInfoInterface
 
 
 // =============================================================================
-// ArMapSupplementInterface
+// MvrMapSupplementInterface
 // =============================================================================
 
-/// Methods related to miscellaneous extra data in an Aria map.
+/// Methods related to miscellaneous extra data in an Mvria map.
 /**
- * ArMapSupplementInterface is basically a repository for any pieces of data 
+ * MvrMapSupplementInterface is basically a repository for any pieces of data 
  * that do not fit in the other categories (i.e. scan data, map objects, or 
  * info).  It currently stores the optional latitude/longitude information.
 **/
-class ArMapSupplementInterface 
+class MvrMapSupplementInterface 
 {
 public:
 
   /// Default constructor
-  AREXPORT ArMapSupplementInterface() {}
+  AREXPORT MvrMapSupplementInterface() {}
   
   /// Destructor
   AREXPORT virtual ~ArMapSupplementInterface() {}
@@ -795,7 +795,7 @@ public:
   AREXPORT virtual bool hasOriginLatLongAlt() = 0;
   
   /// Returns the latitude/longitude origin; valid only if hasOriginLatLongAlt returns true
-  AREXPORT virtual ArPose getOriginLatLong() = 0;
+  AREXPORT virtual MvrPose getOriginLatLong() = 0;
   
   /// Gets the altitude of the origin; valid only if hasOriginLatLongAlt returns true
   /**
@@ -807,39 +807,39 @@ public:
   /**
    * @param hasOriginLatLong a bool set to true if the map has latitude/longitude
    * information for the origin
-   * @param originLatLong the ArPose that specifies the latitude/longitude of the
+   * @param originLatLong the MvrPose that specifies the latitude/longitude of the
    * origin
    * @param altitude the double altitude (in meters) of the origin 
-   * @param changeDetails a pointer to the optional ArMapChangeDetails in which
+   * @param changeDetails a pointer to the optional MvrMapChangeDetails in which
    * to store a description of the changes to the scan data; if NULL then the 
    * changes are not tracked.
   **/
   AREXPORT virtual void setOriginLatLongAlt
                                         (bool hasOriginLatLong,
-                                         const ArPose &originLatLong,
+                                         const MvrPose &originLatLong,
                                          double altitude,
-                                         ArMapChangeDetails *changeDetails = NULL) = 0;
+                                         MvrMapChangeDetails *changeDetails = NULL) = 0;
   
   /// Writes the supplemental data to the given functor
   /**
-   * @param functor the ArFunctor1 to which to write the supplemental data
+   * @param functor the MvrFunctor1 to which to write the supplemental data
    * (as text lines)
    * @param endOfLineChars the const char * string to be appended to the end
    * of each text line
   **/
   AREXPORT virtual void writeSupplementToFunctor
-                                (ArFunctor1<const char *> *functor, 
+                                (MvrFunctor1<const char *> *functor, 
  			                           const char *endOfLineChars) = 0;
 
-}; // end class ArMapSupplementInterface
+}; // end class MvrMapSupplementInterface
 
 
 // =============================================================================
-// ArMapInterface
+// MvrMapInterface
 // =============================================================================
 
 /**
- * ArMapInterface defines the methods that are available on all Aria maps.
+ * MvrMapInterface defines the methods that are available on all Mvria maps.
  * These maps represent the operating space of a robot, and can be used for
  * space searching, localizing, navigating etc.  The types of data stored 
  * in a map include sensable obstacles (e.g. walls and furniture in a room)
@@ -848,30 +848,30 @@ public:
  * (a vector map, useful for low resolution sensors like the sonar), 
  * goals, and other points or regions of interest ("map objects"). 
  * 
- * The methods in ArMapInterface can be broadly categorized as follows:
+ * The methods in MvrMapInterface can be broadly categorized as follows:
  *   - Scan Methods:  These provide access the sensable obstacles that are
  *     represented as a collection of data points or lines.  These are 
  *     typically generated during the scanning process (i.e. the creation of 
  *     the .2d file).  If more than one sensor is used, then the data is
  *     organized on a per-sensor basis.  The scan methods are grouped into 
- *     the ArMapScanInterface.  
+ *     the MvrMapScanInterface.  
  *   - Object Methods:  These provide access to the "high-level" objects 
  *     in the environment.  Such objects include goals, docks, forbidden 
  *     areas, and other user-defined points of interest.  They may also 
  *     include special data objects that are actually part of the operating
  *     environment and are generally added automatically and are not editable
  *     by the user.  The object methods are grouped into the 
- *     ArMapObjectsInterface.
+ *     MvrMapObjectsInterface.
  *   - Info Methods: A wide variety of supporting information is included 
  *     in various "info" categories.  This includes definitions for the 
  *     types of map objects that can be stored in the map.  It also includes
  *     various optional features such as macros and schedules.  The info
- *     methods are grouped into the ArMapInfoInterface.
+ *     methods are grouped into the MvrMapInfoInterface.
  *   - Extra Data Methods: These are essentially the "leftovers" -- i.e. 
  *     methods that are related directly to map data but which do not 
  *     fit into any of the above categories.  They are defined in the 
- *     ArMapSupplementInterface.
- *   - Callback Methods:  Users of the Aria map may install callbacks onto
+ *     MvrMapSupplementInterface.
+ *   - Callback Methods:  Users of the Mvria map may install callbacks onto
  *     the map in order to be notified when the map contents has changed.
  *     These methods are defined below.
  *   - File and I/O Methods: Methods to read and write map files are also
@@ -881,11 +881,11 @@ public:
  * TODO: 
  *  - Possibly make the calculation of checksums optional?
 **/
-class ArMapInterface : public ArHasFileName,
-                       public ArMapInfoInterface,
-                       public ArMapObjectsInterface,
-                       public ArMapScanInterface,
-                       public ArMapSupplementInterface
+class MvrMapInterface : public MvrHasFileName,
+                       public MvrMapInfoInterface,
+                       public MvrMapObjectsInterface,
+                       public MvrMapScanInterface,
+                       public MvrMapSupplementInterface
 {
 public:
 
@@ -907,7 +907,7 @@ public:
                                                  bool isIgnoreCase);
 
   /// Constructor 
-  AREXPORT ArMapInterface() {}
+  AREXPORT MvrMapInterface() {}
 
   /// Destructor
   AREXPORT virtual ~ArMapInterface(void) {}
@@ -921,23 +921,23 @@ public:
    * Modifies this map so that is effectively a copy of the given map.  All info,
    * objects, and data points and lines in the other map are copied and stored in 
    * this map.
-   * @param other a pointer to the ArMapInterface to be copied; must not be NULL
+   * @param other a pointer to the MvrMapInterface to be copied; must not be NULL
    * @return bool true if the map was successfully copied to this one; false if 
    * an error occurred
   **/
-  AREXPORT virtual bool set(ArMapInterface *other) = 0;
+  AREXPORT virtual bool set(MvrMapInterface *other) = 0;
 
   /// Creates a new map that is "equivalent" to this map.
   /**
    * Creates a new map that is effectively a copy of this map.  Note, however,
    * that the returned map may not be of exactly the same class (so the term
-   * "clone" is being used somewhat loosely).  In particular, if the active ArMap
+   * "clone" is being used somewhat loosely).  In particular, if the active MvrMap
    * that is associated with the robot configuration is cloned, then the resulting
    * map will be simpler and not associated with the robot configuration.
-   * @return ArMapInterface * a new copy of this map
+   * @return MvrMapInterface * a new copy of this map
    * @javanote Use cloneMap() instead
   **/
-  AREXPORT virtual ArMapInterface *clone() = 0;
+  AREXPORT virtual MvrMapInterface *clone() = 0;
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -982,7 +982,7 @@ public:
 
   /// Function that will call the map changed CBs if needed
   /**
-   * Users of Aria maps should invoke this method after making any changes to the
+   * Users of Mvria maps should invoke this method after making any changes to the
    * map.  It causes the installed map changed handlers to be invoked.
    * 
    * This method is not thread-safe.  It should be surrounded by calls to lock() 
@@ -1019,11 +1019,11 @@ public:
    * takes position as an integer is the main one that should be used
    * now.
    * 
-   * @param functor a pointer to the ArFunctor to be invoked; must be non-NULL
-   * @param position the ArListPos::Pos indication at which to add the functor
+   * @param functor a pointer to the MvrFunctor to be invoked; must be non-NULL
+   * @param position the MvrListPos::Pos indication at which to add the functor
    * (i.e. at the beginning or at the end of the callback list)
   **/
-  AREXPORT virtual void addMapChangedCB(ArFunctor *functor, 
+  AREXPORT virtual void addMapChangedCB(MvrFunctor *functor, 
 					ArListPos::Pos position);
 
 
@@ -1034,22 +1034,22 @@ public:
    * mapChanged() callback list during the invoke method.
    * This method is not thread-safe.
    *
-   * @param functor a pointer to the ArFunctor to be invoked; must be non-NULL
+   * @param functor a pointer to the MvrFunctor to be invoked; must be non-NULL
    *
    * @param position this indicates the order in which the functors
    * will be called, the nominal range is 0 to 100, highest is called first
   **/
   AREXPORT virtual void addMapChangedCB
-                            (ArFunctor *functor, 
+                            (MvrFunctor *functor, 
 			     int position = 50) = 0;
 
   /// Removes a callback called when the map has been changed
   /**
    * This method is not thread-safe.
    *
-   * @param functor a pointer to the ArFunctor to be removed; must be non-NULL
+   * @param functor a pointer to the MvrFunctor to be removed; must be non-NULL
   **/
-  AREXPORT virtual void remMapChangedCB(ArFunctor *functor) = 0;
+  AREXPORT virtual void remMapChangedCB(MvrFunctor *functor) = 0;
 
   /// Adds a callback called before the map changed callbacks are called
   /**
@@ -1061,14 +1061,14 @@ public:
    * takes position as an integer is the main one that should be used
    * now.
    *
-   * @param functor a pointer to the ArFunctor to be invoked; must be non-NULL
-   * @param position the ArListPos::Pos indication at which to add the functor
+   * @param functor a pointer to the MvrFunctor to be invoked; must be non-NULL
+   * @param position the MvrListPos::Pos indication at which to add the functor
    * (i.e. at the beginning or at the end of the callback list)
    *
-   * @swignote call as addPreMapChangedCBPos() if passing an ArListPos.Pos
+   * @swignote call as addPreMapChangedCBPos() if passing an MvrListPos.Pos
    * object for @a position rather than an int
   **/
-  AREXPORT virtual void addPreMapChangedCB(ArFunctor *functor, ArListPos::Pos position);
+  AREXPORT virtual void addPreMapChangedCB(MvrFunctor *functor, MvrListPos::Pos position);
 
   /// Adds a callback called before the map changed callbacks are called
   /**
@@ -1076,14 +1076,14 @@ public:
    * changed, but before the other "map-changed callbacks" are invoked.
    * This method is not thread-safe.
    * 
-   * @param functor a pointer to the ArFunctor to be invoked; must be non-NULL
+   * @param functor a pointer to the MvrFunctor to be invoked; must be non-NULL
    *
    * @param position this indicates the order in which the functors
    * will be called, the nominal range is 0 to 100, highest is called
    * first
   **/
   AREXPORT virtual void addPreMapChangedCB
-                          (ArFunctor *functor,
+                          (MvrFunctor *functor,
                            int position = 50) = 0;
 
 
@@ -1091,16 +1091,16 @@ public:
   /**
    * This method is not thread-safe.
    *
-   * @param functor a pointer to the ArFunctor to be removed; must be non-NULL
+   * @param functor a pointer to the MvrFunctor to be removed; must be non-NULL
    **/
-  AREXPORT virtual void remPreMapChangedCB(ArFunctor *functor) = 0;
+  AREXPORT virtual void remPreMapChangedCB(MvrFunctor *functor) = 0;
 
 
   /// Sets the level at which to log information about the map changed callbacks
-  AREXPORT virtual void setMapChangedLogLevel(ArLog::LogLevel level) = 0; 
+  AREXPORT virtual void setMapChangedLogLevel(MvrLog::LogLevel level) = 0; 
 
   /// Returns the level at which information about the map changed callbacks is logged
-  AREXPORT virtual ArLog::LogLevel getMapChangedLogLevel(void) = 0; 
+  AREXPORT virtual MvrLog::LogLevel getMapChangedLogLevel(void) = 0; 
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1111,12 +1111,12 @@ public:
   /// Writes all of the map to the given text-based functor 
   /**
    * This method is not thread-safe
-   * @param functor a pointer to the ArFunctor1 to which to write the map 
+   * @param functor a pointer to the MvrFunctor1 to which to write the map 
    * header as text lines
    * @param endOfLineChars the const char * string to use as an end-of-line 
    * indicator
   **/
-  AREXPORT virtual void writeToFunctor(ArFunctor1<const char *> *functor, 
+  AREXPORT virtual void writeToFunctor(MvrFunctor1<const char *> *functor, 
  			                                const char *endOfLineChars) = 0;
 
   /// Writes the map header information and objects to a text-based functor.
@@ -1127,7 +1127,7 @@ public:
    * data).
    * This method is not thread-safe.
    * 
-   * @param functor a pointer to the ArFunctor1 to which to write the map 
+   * @param functor a pointer to the MvrFunctor1 to which to write the map 
    * header as text lines
    * @param endOfLineChars the const char * string to use as an end-of-line 
    * indicator
@@ -1137,7 +1137,7 @@ public:
    * do not expect multiple scan types in a single map.
    * @param maxCategory if given, limit map category
   **/
-  AREXPORT virtual void writeObjectsToFunctor(ArFunctor1<const char *> *functor, 
+  AREXPORT virtual void writeObjectsToFunctor(MvrFunctor1<const char *> *functor, 
  			                                        const char *endOfLineChars,
                                               bool isOverrideAsSingleScan = false,
                                               const char *maxCategory = NULL) = 0;
@@ -1148,33 +1148,33 @@ public:
 
   /// Adds a callback to be invoked before the map file is written.
   /**
-   * @param functor the ArFunctor * callback to be added
-   * @param position the ArListPos::Pos that specifies whether the callback
+   * @param functor the MvrFunctor * callback to be added
+   * @param position the MvrListPos::Pos that specifies whether the callback
    * should be added at the front or the back of the list
   **/
-  AREXPORT virtual void addPreWriteFileCB(ArFunctor *functor,
-                                          ArListPos::Pos position = ArListPos::LAST) = 0;
+  AREXPORT virtual void addPreWriteFileCB(MvrFunctor *functor,
+                                          MvrListPos::Pos position = MvrListPos::LAST) = 0;
 
   /// Removes the given callback from the list of pre-write callbacks.
   /**
-   * @param functor the ArFunctor * callback to be removed 
+   * @param functor the MvrFunctor * callback to be removed 
   **/
-  AREXPORT virtual void remPreWriteFileCB(ArFunctor *functor) = 0;
+  AREXPORT virtual void remPreWriteFileCB(MvrFunctor *functor) = 0;
 
   /// Adds a callback to be invoked after the map file is written.
   /**
-   * @param functor the ArFunctor * callback to be added 
-   * @param position the ArListPos::Pos that specifies whether the callback
+   * @param functor the MvrFunctor * callback to be added 
+   * @param position the MvrListPos::Pos that specifies whether the callback
    * should be added at the front or the back of the list
   **/
-  AREXPORT virtual void addPostWriteFileCB(ArFunctor *functor,
-                                           ArListPos::Pos position = ArListPos::LAST) = 0;
+  AREXPORT virtual void addPostWriteFileCB(MvrFunctor *functor,
+                                           MvrListPos::Pos position = MvrListPos::LAST) = 0;
 
   /// Removes the given callback from the list of post-write callbacks.
   /**
-   * @param functor the ArFunctor * callback to be removed 
+   * @param functor the MvrFunctor * callback to be removed 
   **/
-  AREXPORT virtual void remPostWriteFileCB(ArFunctor *functor) = 0;
+  AREXPORT virtual void remPostWriteFileCB(MvrFunctor *functor) = 0;
 
 #ifndef SWIG
   /// Reads the map from the specified file
@@ -1198,7 +1198,7 @@ public:
    * @param md5DigestBufferLen the size_t of the checksum buffer
    * @return bool true if the file was successfully read and the map was populated;
    * false if an error occurred
-   * @see ArMD5Calculator
+   * @see MvrMD5Calculator
   **/
   AREXPORT virtual bool readFile(const char *fileName, 
  			                           char *errorBuffer = NULL, 
@@ -1228,7 +1228,7 @@ public:
    * robots
    * @return bool true if the file was successfully written; false if an error
    * occurred
-   * @see ArMD5Calculator
+   * @see MvrMD5Calculator
   **/
   AREXPORT virtual bool writeFile(const char *fileName, 
                                   bool internalCall = false,
@@ -1248,13 +1248,13 @@ public:
    * The map ID is a unique identifier based on the map file name and the
    * checksum data.  (Perhaps more accurately, it is highly likely to be 
    * unique during normal usage.)  
-   * @param mapIdOut a pointer to the ArMapId to be set 
+   * @param mapIdOut a pointer to the MvrMapId to be set 
    * @param isInternalCall a bool set to true only when getMapId is called
    * within the context of a method that has already locked the map; if 
    * false, then the map is locked by this method
    * @return bool true if the map ID was successfully set; false, otherwise
   **/
-  AREXPORT virtual bool getMapId(ArMapId *mapIdOut,
+  AREXPORT virtual bool getMapId(MvrMapId *mapIdOut,
                                  bool isInternalCall = false) = 0;
 
   /// Calculates the checksum of the map.
@@ -1262,10 +1262,10 @@ public:
    * @param md5DigestBuffer the unsigned char buffer in which to store
    * the calculated checksum
    * @param md5DigestBufferLen the length of the md5DigestBuffer; should
-   * be ArMD5Calculator::DIGEST_LENGTH
+   * be MvrMD5Calculator::DIGEST_LENGTH
    * @return bool true if the checksum was successfully calculated; 
    * false if an error occurrred
-   * @see ArMD5Calculator
+   * @see MvrMD5Calculator
   **/
   AREXPORT virtual bool calculateChecksum(unsigned char *md5DigestBuffer,
                                           size_t md5DigestBufferLen) = 0;
@@ -1307,7 +1307,7 @@ public:
 
   /// Determines whether the map file needs to be re-read.
   /**
-   * This method is primarily applicable to the active Aria map that is 
+   * This method is primarily applicable to the active Mvria map that is 
    * associated with the robot configuration.  It checks to see if the map 
    * file has been modified since it was read, and re-reads it if necessary.  
    * The method may do nothing for "simpler" maps.
@@ -1316,25 +1316,25 @@ public:
 
   /// Sets whether we ignore empty file names or fail if we encounter one
   /**
-   * This method is primarily applicable to the active Aria map that is 
+   * This method is primarily applicable to the active Mvria map that is 
    * associated with the robot configuration. 
   **/
   virtual void setIgnoreEmptyFileName(bool ignore) = 0;
   /// Gets whether we ignore empty file names or fail if we encounter one
   /**
-   * This method is primarily applicable to the active Aria map that is 
+   * This method is primarily applicable to the active Mvria map that is 
    * associated with the robot configuration. 
   **/
   virtual bool getIgnoreEmptyFileName(void) = 0;
   /// Sets whether we ignore case or not
   /**
-   * This method is primarily applicable to the active Aria map that is 
+   * This method is primarily applicable to the active Mvria map that is 
    * associated with the robot configuration. 
   **/
   virtual void setIgnoreCase(bool ignoreCase = false) = 0;
   /// Gets whether we ignore case or not
   /**
-   * This method is primarily applicable to the active Aria map that is 
+   * This method is primarily applicable to the active Mvria map that is 
    * associated with the robot configuration. 
   **/
   virtual bool getIgnoreCase(void) = 0;
@@ -1346,38 +1346,38 @@ public:
 
   /// Provides direct access to the inactive map info.
   /**
-   * The "inactive" info is a section of the Aria map that applications may 
+   * The "inactive" info is a section of the Mvria map that applications may 
    * use to store "_XInfo:" lines that are not currently active or applicable.
    * The inactive info will be written to the map file, but it will not be 
-   * included in any of the inherited ArMapInfoInterface calls (e.g. getInfo(type)).
+   * included in any of the inherited MvrMapInfoInterface calls (e.g. getInfo(type)).
    * This is primarily intended for advanced specialized use where something
    * needs to be removed from the map file, but it may be necessary to restore
    * it later.
    * This method is not thread-safe.
-   * @return ArMapInfoInterface * a pointer to the inactive map info section
+   * @return MvrMapInfoInterface * a pointer to the inactive map info section
   **/
-  AREXPORT virtual ArMapInfoInterface *getInactiveInfo() = 0;
+  AREXPORT virtual MvrMapInfoInterface *getInactiveInfo() = 0;
 
   /// Provides direct access to the inactive map objects.
   /**
-   * The "inactive" objects is a section of the Aria map that applications may 
+   * The "inactive" objects is a section of the Mvria map that applications may 
    * use to store "_Cairn" lines that are not currently active or applicable.
    * The inactive objects will be written to the map file, but they will not be 
-   * included in any of the inherited ArMapObjectsInterface calls 
+   * included in any of the inherited MvrMapObjectsInterface calls 
    * (e.g. getMapObjects()).  This is primarily intended for advanced specialized 
    * use where an object needs to be removed from the map file, but it may be 
    * necessary to restore it later.
    * This method is not thread-safe.
-   * @return ArMapObjectsInterface * a pointer to the inactive map objects section
+   * @return MvrMapObjectsInterface * a pointer to the inactive map objects section
   **/
-  AREXPORT virtual ArMapObjectsInterface *getInactiveObjects() = 0;
+  AREXPORT virtual MvrMapObjectsInterface *getInactiveObjects() = 0;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Child Objects Section
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /// Provides direct access to the child map objects which are used to define group templates.
-  AREXPORT virtual ArMapObjectsInterface *getChildObjects() = 0;
+  AREXPORT virtual MvrMapObjectsInterface *getChildObjects() = 0;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Miscellaneous
@@ -1385,8 +1385,8 @@ public:
 
   /// Returns the optional parameters associated with a map object, or NULL if none.
   /**
-   * The Aria map provides an advanced feature that allows a parameter list
-   * to be defined for custom map object types.  (Refer to the ArMap MapFileFormat
+   * The Mvria map provides an advanced feature that allows a parameter list
+   * to be defined for custom map object types.  (Refer to the MvrMap MapFileFormat
    * for more information.)  
    *
    * This convenience method provides access to the parameter values for a 
@@ -1403,14 +1403,14 @@ public:
    * parameter values or the associated map object.
    *
    * This method is not thread-safe.  (The call and use of the returned 
-   * ArArgumentBuilder should be surrounded by calls to lock()/unlock().)
+   * MvrArgumentBuilder should be surrounded by calls to lock()/unlock().)
    *
    * @param mapObjectName the unique char * name of the map object whose
    * parameters are to be retrieved
-   * @return ArArgumentBuilder * a pointer to the map object's parameter
+   * @return MvrArgumentBuilder * a pointer to the map object's parameter
    * values; 
   **/
-  AREXPORT virtual ArArgumentBuilder *findMapObjectParams
+  AREXPORT virtual MvrArgumentBuilder *findMapObjectParams
                                           (const char *mapObjectName) = 0;
 
 
@@ -1418,7 +1418,7 @@ public:
   /**
    * This method sets the parameter values for the specified map object.
    * It should be used only for custom map object types that have a 
-   * parameter list defined in the MapInfo.  (Refer to the ArMap MapFileFormat
+   * parameter list defined in the MapInfo.  (Refer to the MvrMap MapFileFormat
    * for more information.)  
    *
    * Like findMapObjectParams(), this is basically a convenience method
@@ -1438,17 +1438,17 @@ public:
    *
    * @param mapObjectName the unique char * name of the map object whose
    * parameters are to be updated
-   * @param params the ArArgumentBuiler * containing the new parameter 
+   * @param params the MvrArgumentBuiler * containing the new parameter 
    * values; if NULL, then the parameter information for the map object
    * is deleted
-   * @param changeDetails an optional pointer to the ArMapChangeDetails in 
+   * @param changeDetails an optional pointer to the MvrMapChangeDetails in 
    * which to accumulate a description of the changes to the map; if NULL, 
    * then changes are not tracked
-   * @see ArMapChangeDetails
+   * @see MvrMapChangeDetails
   */
   AREXPORT virtual bool setMapObjectParams(const char *mapObjectName,
-                                           ArArgumentBuilder *params,
-                                           ArMapChangeDetails *changeDetails = NULL) = 0;
+                                           MvrArgumentBuilder *params,
+                                           MvrMapChangeDetails *changeDetails = NULL) = 0;
 
   
   /// Returns a list of the map file lines that were not recognized.
@@ -1468,7 +1468,7 @@ public:
   AREXPORT virtual void setQuiet(bool isQuiet) = 0;
  	
 
-  /** Public for ArQMapProducer **/
+  /** Public for MvrQMapProducer **/
 
   /// Parses a map line
   AREXPORT virtual bool parseLine(char *line) = 0;
@@ -1489,7 +1489,7 @@ public:
   **/
   AREXPORT virtual bool isLoadingLinesAndDataStarted() = 0;
 
-}; // end class ArMapInterface
+}; // end class MvrMapInterface
 
 #endif // ARMAPINTERFACE_H
 

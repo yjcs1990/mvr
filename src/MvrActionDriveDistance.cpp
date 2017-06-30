@@ -1,56 +1,30 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#include "MvrExport.h"
+#include "mvriaOSDef.h"
+#include "MvrActionDriveDistance.h"
+#include "MvrRobot.h"
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ArExport.h"
-#include "ariaOSDef.h"
-#include "ArActionDriveDistance.h"
-#include "ArRobot.h"
-
-AREXPORT ArActionDriveDistance::ArActionDriveDistance(const char *name,
+AREXPORT MvrActionDriveDistance::MvrActionDriveDistance(const char *name,
 						      double speed,
 						      double deceleration) :
-  ArAction(name, "Drives a given distance.")
+  MvrAction(name, "Drives a given distance.")
 {
   myPrinting = false;
 
-  setNextArgument(ArArg("speed", &mySpeed, 
+  setNextArgument(MvrArg("speed", &mySpeed, 
 			"Speed to travel to at. (mm/sec)"));
-  setNextArgument(ArArg("deceleration", &myDeceleration, 
+  setNextArgument(MvrArg("deceleration", &myDeceleration, 
 			"Speed to decelerate at. (mm/sec/sec)"));
   mySpeed = speed;
   myDeceleration = deceleration;
   myState = STATE_NO_DISTANCE;
 }
 
-AREXPORT ArActionDriveDistance::~ArActionDriveDistance()
+AREXPORT MvrActionDriveDistance::~MvrActionDriveDistance()
 {
 
 }
 
-AREXPORT bool ArActionDriveDistance::haveAchievedDistance(void)
+AREXPORT bool MvrActionDriveDistance::haveAchievedDistance(void)
 {
   if (myState == STATE_ACHIEVED_DISTANCE)
     return true;
@@ -58,12 +32,12 @@ AREXPORT bool ArActionDriveDistance::haveAchievedDistance(void)
     return false;
 }
 
-AREXPORT void ArActionDriveDistance::cancelDistance(void)
+AREXPORT void MvrActionDriveDistance::cancelDistance(void)
 {
   myState = STATE_NO_DISTANCE;
 }
 
-AREXPORT void ArActionDriveDistance::setDistance(
+AREXPORT void MvrActionDriveDistance::setDistance(
 	double distance, bool useEncoders)
 {
   myState = STATE_GOING_DISTANCE;
@@ -78,8 +52,8 @@ AREXPORT void ArActionDriveDistance::setDistance(
 }
 
 
-AREXPORT ArActionDesired *ArActionDriveDistance::fire(
-	ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *MvrActionDriveDistance::fire(
+	MvrActionDesired currentDesired)
 {
   double distToGo;
   double vel;
@@ -105,11 +79,11 @@ AREXPORT ArActionDesired *ArActionDriveDistance::fire(
   else
     distToGo = -myDistance - myDistTravelled;
 
-  if (distToGo <= 0 && ArMath::fabs(myRobot->getVel() < 5))
+  if (distToGo <= 0 && MvrMath::fabs(myRobot->getVel() < 5))
   {
     if (myPrinting)
     {
-      ArLog::log(ArLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "Achieved distToGo %.0f realVel %.0f realVelDelta %.0f", 
 		 distToGo, myRobot->getVel(), myRobot->getVel() - myLastVel);
     }
@@ -136,7 +110,7 @@ AREXPORT ArActionDesired *ArActionDriveDistance::fire(
     myDesired.setVel(vel);
   }
   if (myPrinting)
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "distToGo %.0f cmdVel %.0f realVel %.0f realVelDelta %.0f", 
 	       distToGo, vel, myRobot->getVel(), 
 	       myRobot->getVel() - myLastVel);

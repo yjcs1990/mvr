@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRatioInputKeydrive.h"
-#include "ArRobot.h"
+#include "MvrRatioInputKeydrive.h"
+#include "MvrRobot.h"
 #include "ariaInternal.h"
-#include "ArKeyHandler.h"
+#include "MvrKeyHandler.h"
 
-AREXPORT ArRatioInputKeydrive::ArRatioInputKeydrive(ArRobot *robot, 
+AREXPORT ArRatioInputKeydrive::ArRatioInputKeydrive(MvrRobot *robot, 
 						    ArActionRatioInput *input,
 						    int priority,
 						    double velIncrement) :
@@ -75,37 +75,37 @@ AREXPORT void ArRatioInputKeydrive::takeKeys(void)
   ArKeyHandler *keyHandler;
   if ((keyHandler = Aria::getKeyHandler()) == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-	       "ArRatioInputKeydrive::takeKeys: There is no key handler, keydrive will not work.");
+    ArLog::log(MvrLog::Terse, 
+	       "MvrRatioInputKeydrive::takeKeys: There is no key handler, keydrive will not work.");
   }
   // now that we have one, add our keys as callbacks, print out big
   // warning messages if they fail
-  if (!keyHandler->addKeyHandler(ArKeyHandler::UP, &myUpCB))
-    ArLog::log(ArLog::Terse, "The key handler already has a key for up, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::DOWN, &myDownCB))
-    ArLog::log(ArLog::Terse, "The key handler already has a key for down, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::LEFT, &myLeftCB))
-    ArLog::log(ArLog::Terse,  
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::UP, &myUpCB))
+    ArLog::log(MvrLog::Terse, "The key handler already has a key for up, keydrive will not work correctly.");
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::DOWN, &myDownCB))
+    ArLog::log(MvrLog::Terse, "The key handler already has a key for down, keydrive will not work correctly.");
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::LEFT, &myLeftCB))
+    ArLog::log(MvrLog::Terse,  
 	       "The key handler already has a key for left, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::RIGHT, &myRightCB))
-    ArLog::log(ArLog::Terse,  
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::RIGHT, &myRightCB))
+    ArLog::log(MvrLog::Terse,  
 	       "The key handler already has a key for right, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::SPACE, &mySpaceCB))
-    ArLog::log(ArLog::Terse,  
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::SPACE, &mySpaceCB))
+    ArLog::log(MvrLog::Terse,  
 	       "The key handler already has a key for space, keydrive will not work correctly.");
   if (myRobot != NULL && myRobot->hasLatVel())
   {
     if (!keyHandler->addKeyHandler('z', &myZCB))
-      ArLog::log(ArLog::Terse,  
+      ArLog::log(MvrLog::Terse,  
 		 "The key handler already has a key for z, keydrive will not work correctly.");
     if (!keyHandler->addKeyHandler('Z', &myZCB))
-      ArLog::log(ArLog::Terse,  
+      ArLog::log(MvrLog::Terse,  
 		 "The key handler already has a key for Z, keydrive will not work correctly.");
     if (!keyHandler->addKeyHandler('x', &myXCB))
-      ArLog::log(ArLog::Terse,  
+      ArLog::log(MvrLog::Terse,  
 		 "The key handler already has a key for x, keydrive will not work correctly.");
     if (!keyHandler->addKeyHandler('X', &myXCB))
-      ArLog::log(ArLog::Terse,  
+      ArLog::log(MvrLog::Terse,  
 		 "The key handler already has a key for x, keydrive will not work correctly.");
   }
 }
@@ -116,32 +116,32 @@ AREXPORT void ArRatioInputKeydrive::giveUpKeys(void)
   myHaveKeys = false;
   if ((keyHandler = Aria::getKeyHandler()) == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-	       "ArRatioInputKeydrive::giveUpKeys: There is no key handler, something is probably horribly wrong .");
+    ArLog::log(MvrLog::Terse, 
+	       "MvrRatioInputKeydrive::giveUpKeys: There is no key handler, something is probably horribly wrong .");
   }
   // now that we have one, add our keys as callbacks, print out big
   // warning messages if they fail
   if (!keyHandler->remKeyHandler(&myUpCB))
-    ArLog::log(ArLog::Terse, "ArRatioInputKeydrive: The key handler already didn't have a key for up, something is wrong.");
+    ArLog::log(MvrLog::Terse, "MvrRatioInputKeydrive: The key handler already didn't have a key for up, something is wrong.");
   if (!keyHandler->remKeyHandler(&myDownCB))
-    ArLog::log(ArLog::Terse, "ArRatioInputKeydrive: The key handler already didn't have a key for down, something is wrong.");
+    ArLog::log(MvrLog::Terse, "MvrRatioInputKeydrive: The key handler already didn't have a key for down, something is wrong.");
   if (!keyHandler->remKeyHandler(&myLeftCB))
-    ArLog::log(ArLog::Terse,  
-	       "ArRatioInputKeydrive: The key handler already didn't have a key for left, something is wrong.");
+    ArLog::log(MvrLog::Terse,  
+	       "MvrRatioInputKeydrive: The key handler already didn't have a key for left, something is wrong.");
   if (!keyHandler->remKeyHandler(&myRightCB))
-    ArLog::log(ArLog::Terse,  
-	       "ArRatioInputKeydrive: The key handler already didn't have a key for right, something is wrong.");
+    ArLog::log(MvrLog::Terse,  
+	       "MvrRatioInputKeydrive: The key handler already didn't have a key for right, something is wrong.");
   if (!keyHandler->remKeyHandler(&mySpaceCB))
-    ArLog::log(ArLog::Terse,  
-	       "ArRatioInputKeydrive: The key handler didn't have a key for space, something is wrong.");
+    ArLog::log(MvrLog::Terse,  
+	       "MvrRatioInputKeydrive: The key handler didn't have a key for space, something is wrong.");
   if (myRobot != NULL && myRobot->hasLatVel())
   {
     if (!keyHandler->remKeyHandler(&myZCB))
-      ArLog::log(ArLog::Terse,  
-		 "ArRatioInputKeydrive: The key handler didn't have a key for z, something is wrong.");
+      ArLog::log(MvrLog::Terse,  
+		 "MvrRatioInputKeydrive: The key handler didn't have a key for z, something is wrong.");
     if (!keyHandler->remKeyHandler(&myXCB))
-      ArLog::log(ArLog::Terse,  
-		 "ArRatioInputKeydrive: The key handler didn't have a key for x, something is wrong.");
+      ArLog::log(MvrLog::Terse,  
+		 "MvrRatioInputKeydrive: The key handler didn't have a key for x, something is wrong.");
   }
 
 }

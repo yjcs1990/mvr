@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #if !defined(WIN32) || defined(MINGW)
 #include <pthread.h>
-#include "ArMutex.h"
+#include "MvrMutex.h"
 #endif
 #include "ariaTypedefs.h"
 
@@ -38,7 +38,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /** Threading condition wrapper class
  @ingroup UtilityClasses
 */
-class ArCondition
+class MvrCondition
 {
 public:
 
@@ -60,7 +60,7 @@ public:
 #endif
 
   /// Constructor
-  AREXPORT ArCondition();
+  AREXPORT MvrCondition();
   /// Desctructor
   AREXPORT virtual ~ArCondition();
 
@@ -85,14 +85,14 @@ public:
 
 protected:
 
-  static ArStrMap ourStrMap;
+  static MvrStrMap ourStrMap;
 
   bool myFailedInit;
   CondType myCond;
 #if defined(WIN32) && !defined(MINGW)
   int myCount;
 #else
-  ArMutex myMutex;
+  MvrMutex myMutex;
 #endif
   std::string myLogName;
 };

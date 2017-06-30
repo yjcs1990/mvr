@@ -24,18 +24,18 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionMovementParametersDebugging.h"
-#include "ArConfig.h"
-#include "ArRobot.h"
+#include "MvrActionMovementParametersDebugging.h"
+#include "MvrConfig.h"
+#include "MvrRobot.h"
 
 /**
    @param name the name of this instance of the action
  **/
-AREXPORT ArActionMovementParametersDebugging::ArActionMovementParametersDebugging(
+AREXPORT MvrActionMovementParametersDebugging::ArActionMovementParametersDebugging(
 	const char *name) :
-  ArAction(name, "Sets all the max vel and accels/decels in a way appropriate for debugging")
+  MvrAction(name, "Sets all the max vel and accels/decels in a way appropriate for debugging")
 {
   myEnabled = true;
   myEnableOnce = false;
@@ -64,12 +64,12 @@ AREXPORT ArActionMovementParametersDebugging::ArActionMovementParametersDebuggin
   myLatDecel = 500;
 }
 
-AREXPORT ArActionMovementParametersDebugging::~ArActionMovementParametersDebugging()
+AREXPORT MvrActionMovementParametersDebugging::~ArActionMovementParametersDebugging()
 {
 
 }
 
-AREXPORT void ArActionMovementParametersDebugging::addToConfig(
+AREXPORT void MvrActionMovementParametersDebugging::addToConfig(
 	ArConfig *config, const char *section, const char *prefix)
 {
   std::string strPrefix;
@@ -79,168 +79,168 @@ AREXPORT void ArActionMovementParametersDebugging::addToConfig(
   else
     strPrefix = prefix;
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::EXPERT);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetTransVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetMaxVel, 
+	  MvrConfigArg(name.c_str(), &mySetMaxVel, 
 		      "True to set the transVelMax"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "TransVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxVel, 
+	  MvrConfigArg(name.c_str(), &myMaxVel, 
 		      "Maximum forward translational velocity (0 means use default)"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetTransNegVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetMaxNegVel, 
+	  MvrConfigArg(name.c_str(), &mySetMaxNegVel, 
 		      "True to set the transNegVelMax"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "TransNegVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxNegVel, 
+	  MvrConfigArg(name.c_str(), &myMaxNegVel, 
 		      "Maximum backwards translational velocity"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetTransAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetTransAccel, 
+	  MvrConfigArg(name.c_str(), &mySetTransAccel, 
 		      "True to set the transAccel"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "TransAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myTransAccel, 
+	  MvrConfigArg(name.c_str(), &myTransAccel, 
 		      "Translational acceleration"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetTransDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetTransDecel, 
+	  MvrConfigArg(name.c_str(), &mySetTransDecel, 
 		      "True to set the transDecel"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "TransDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myTransDecel, 
+	  MvrConfigArg(name.c_str(), &myTransDecel, 
 		      "Translational deceleration"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetRotVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetMaxRotVel, 
+	  MvrConfigArg(name.c_str(), &mySetMaxRotVel, 
 		      "True to set the rotVelMax"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "RotVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxRotVel, 
+	  MvrConfigArg(name.c_str(), &myMaxRotVel, 
 		      "Maximum rotational velocity"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetRotAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetRotAccel, 
+	  MvrConfigArg(name.c_str(), &mySetRotAccel, 
 		      "True to set rotAccel"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "RotAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myRotAccel, 
+	  MvrConfigArg(name.c_str(), &myRotAccel, 
 		      "Rotational acceleration"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetRotDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetRotDecel, 
+	  MvrConfigArg(name.c_str(), &mySetRotDecel, 
 		      "True to set rotDecel"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "RotDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myRotDecel, 
+	  MvrConfigArg(name.c_str(), &myRotDecel, 
 		      "Rotational deceleration"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetLeftLatVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetMaxLeftLatVel, 
+	  MvrConfigArg(name.c_str(), &mySetMaxLeftLatVel, 
 		      "True to set leftLatVelMax"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "LeftLatVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxLeftLatVel, 
+	  MvrConfigArg(name.c_str(), &myMaxLeftLatVel, 
 		      "Maximum left lateral velocity"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "SetRightLatVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetMaxRightLatVel, 
+	  MvrConfigArg(name.c_str(), &mySetMaxRightLatVel, 
 		      "True to set rightLatVelMax"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "RightLatVelMax";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myMaxRightLatVel, 
+	  MvrConfigArg(name.c_str(), &myMaxRightLatVel, 
 		      "Maximum right lateral velocity"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
   
   name = strPrefix;
   name += "SetLatAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetLatAccel, 
+	  MvrConfigArg(name.c_str(), &mySetLatAccel, 
 		      "True to set latAccel"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "LatAccel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myLatAccel, 
+	  MvrConfigArg(name.c_str(), &myLatAccel, 
 		      "Lateral acceleration"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
   
   name = strPrefix;
   name += "SetLatDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &mySetLatDecel, 
+	  MvrConfigArg(name.c_str(), &mySetLatDecel, 
 		      "True to set latDecel"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
 
   name = strPrefix;
   name += "LatDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myLatDecel, 
+	  MvrConfigArg(name.c_str(), &myLatDecel, 
 		      "Lateral deceleration"),
-	  section, ArPriority::EXPERT);
+	  section, MvrPriority::EXPERT);
   
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::EXPERT);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::EXPERT);
 
 
 }
 
-AREXPORT ArActionDesired *ArActionMovementParametersDebugging::fire(
+AREXPORT MvrActionDesired *ArActionMovementParametersDebugging::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

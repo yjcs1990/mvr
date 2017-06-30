@@ -28,11 +28,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARMODE_H
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 #include <string>
 #include <list>
 
-class ArRobot;
+class MvrRobot;
 
 
 /// A class for different modes, mostly as related to keyboard input
@@ -46,15 +46,15 @@ class ArRobot;
   will need to add and remove their user tasks (or call the base class
   activate/deactivate to do it) as well as the key handling things for
   their other part of modes.  This mode will ALWAYS bind help to /, ?, h,
-  and H when the first instance of an ArMode is made.
+  and H when the first instance of an MvrMode is made.
 
  @ingroup OptionalClasses
 **/
-class ArMode 
+class MvrMode 
 {
 public:
   /// Constructor
-  AREXPORT ArMode(ArRobot *robot, const char *name, char key, char key2);
+  AREXPORT MvrMode(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
   AREXPORT virtual ~ArMode();
   /// Gets the name of the mode
@@ -63,7 +63,7 @@ public:
   AREXPORT virtual void activate(void) = 0;
   /// The function called when the mode is deactivated, subclass must provide
   AREXPORT virtual void deactivate(void) = 0;
-  /// The ArMode's user task, don't need one, subclass must provide if needed
+  /// The MvrMode's user task, don't need one, subclass must provide if needed
   AREXPORT virtual void userTask(void) {}
   /// The mode's help print out... subclass must provide if needed
   /** 
@@ -84,19 +84,19 @@ public:
   /// An internal function to get the second key this is bound to
   AREXPORT char getKey2(void);
 protected:
-  AREXPORT void addKeyHandler(int keyToHandle, ArFunctor *functor);
-  AREXPORT void remKeyHandler(ArFunctor *functor);
+  AREXPORT void addKeyHandler(int keyToHandle, MvrFunctor *functor);
+  AREXPORT void remKeyHandler(MvrFunctor *functor);
   // Our activeArMode
-  AREXPORT static ArMode *ourActiveMode;
+  AREXPORT static MvrMode *ourActiveMode;
   std::string myName;
-  ArRobot *myRobot;
-  ArFunctorC<ArMode> myActivateCB;
-  ArFunctorC<ArMode> myDeactivateCB;
-  ArFunctorC<ArMode> myUserTaskCB;
+  MvrRobot *myRobot;
+  MvrFunctorC<ArMode> myActivateCB;
+  MvrFunctorC<ArMode> myDeactivateCB;
+  MvrFunctorC<ArMode> myUserTaskCB;
   char myKey;
   char myKey2;
   // our help callback, its NULL until its initialized
-  static ArGlobalFunctor *ourHelpCB;
+  static MvrGlobalFunctor *ourHelpCB;
   static std::list<ArMode *> ourModes;
 };
 

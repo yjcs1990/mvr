@@ -31,9 +31,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArDeviceConnection.h"
-#include "ArTCM2.h"
-#include "ArNMEAParser.h"
+#include "MvrDeviceConnection.h"
+#include "MvrTCM2.h"
+#include "MvrNMEAParser.h"
 
 
 /** @brief Talk to a compass directly over a computer serial port
@@ -44,38 +44,38 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *  On all Pioneer robots, the TCM compass (as originally installed by
  *  MobileRobots) is connected to the robot microcontroller, so if you 
  *  have a Pioneer with this configuration, you  should instead use the 
- *  ArTCMCompassRobot class. Only use this class if you
+ *  MvrTCMCompassRobot class. Only use this class if you
  *  have connected the compass to the computer serial port.
  *
  *  You can create an instance of this class directly, or using an
- *  ArCompassConnector object and giving the "-compassType serialtcm" program
+ *  MvrCompassConnector object and giving the "-compassType serialtcm" program
  *  argument. 
  *
- *  If you create your own ArTCMCompassDirect object, you must call the read()
+ *  If you create your own MvrTCMCompassDirect object, you must call the read()
  *  method periodically (ideally at the same rate the compass sends data,
  *  approx. 8 hz by default) to read and parse incoming data. You can use an
- *  ArRobot callback to do this, for example:
+ *  MvrRobot callback to do this, for example:
  *  @code
- *    ArRetFunctor1C<int, ArTCMCompassDirect, unsigned int> compassReadFunc(myCompass, &ArTCMCompassDirect::read, 10);
- *    myRobot->addSensorInterpTask("ArTCMCompassDirect read", 200, &compassReadFunc);
+ *    MvrRetFunctor1C<int, MvrTCMCompassDirect, unsigned int> compassReadFunc(myCompass, &ArTCMCompassDirect::read, 10);
+ *    myRobot->addSensorInterpTask("MvrTCMCompassDirect read", 200, &compassReadFunc);
  *  @endcode
  *
- *  If you use ArCompassConnector, however, it will automatically do this.
+ *  If you use MvrCompassConnector, however, it will automatically do this.
  *
  */
-class ArTCMCompassDirect : public virtual ArTCM2  
+class MvrTCMCompassDirect : public virtual MvrTCM2  
 {
 private:
-  ArDeviceConnection *myDeviceConnection;
+  MvrDeviceConnection *myDeviceConnection;
   bool myCreatedOwnDeviceConnection;
   const char *mySerialPortName;
-  ArNMEAParser myNMEAParser;
+  MvrNMEAParser myNMEAParser;
   bool sendTCMCommand(const char *str, ...);
-  ArFunctor1C<ArTCMCompassDirect, ArNMEAParser::Message>  myHCHDMHandler;
-  void handleHCHDM(ArNMEAParser::Message);
+  MvrFunctor1C<ArTCMCompassDirect, MvrNMEAParser::Message>  myHCHDMHandler;
+  void handleHCHDM(MvrNMEAParser::Message);
 public:
-  AREXPORT ArTCMCompassDirect(ArDeviceConnection *devCon);
-  AREXPORT ArTCMCompassDirect(const char *serialPortName = ARTCM2_DEFAULT_SERIAL_PORT);
+  AREXPORT MvrTCMCompassDirect(MvrDeviceConnection *devCon);
+  AREXPORT MvrTCMCompassDirect(const char *serialPortName = ARTCM2_DEFAULT_SERIAL_PORT);
   AREXPORT ~ArTCMCompassDirect();
 
   /** Open device connection if not yet open  and send commands to configure compass. */
@@ -109,8 +109,8 @@ public:
    * */
   AREXPORT int read(unsigned int msWait = 1);
  
-  AREXPORT void setDeviceConnection(ArDeviceConnection *devCon) { myDeviceConnection = devCon; }
-  AREXPORT ArDeviceConnection *getDeviceConnetion() { return myDeviceConnection; }
+  AREXPORT void setDeviceConnection(MvrDeviceConnection *devCon) { myDeviceConnection = devCon; }
+  AREXPORT MvrDeviceConnection *getDeviceConnetion() { return myDeviceConnection; }
 
 
 };

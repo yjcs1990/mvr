@@ -28,22 +28,22 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARLCDCONNECTOR_H
 
 #include "ariaTypedefs.h"
-#include "ArSerialConnection.h"
-#include "ArTcpConnection.h"
-#include "ArArgumentBuilder.h"
-#include "ArArgumentParser.h"
+#include "MvrSerialConnection.h"
+#include "MvrTcpConnection.h"
+#include "MvrArgumentBuilder.h"
+#include "MvrArgumentParser.h"
 #include "ariaUtil.h"
-#include "ArRobotConnector.h"
+#include "MvrRobotConnector.h"
 
-class ArLCDMTX;
-class ArRobot;
+class MvrLCDMTX;
+class MvrRobot;
 
 
 
 /// Connect to robot and lcd based on run-time availablitily and command-line arguments
 /**
 
-   ArLCDConnector makes a lcd connection either through a serial port 
+   MvrLCDConnector makes a lcd connection either through a serial port 
    connection, or through a TCP
    port (for the simulator or for robots with Ethernet-serial bridge
    devices instead of onboard computers).
@@ -56,39 +56,39 @@ class ArRobot;
    available if you need to use it: See addLCD(); otherwise don't use
    addLCD(), setupLCD(), etc.).
   
-   When you create your ArLCDConnector, pass it command line parameters via
+   When you create your MvrLCDConnector, pass it command line parameters via
    either the argc and argv variables from main(), or pass it an
-   ArArgumentBuilder or ArArgumentParser object. (ArArgumentBuilder
+   MvrArgumentBuilder or MvrArgumentParser object. (MvrArgumentBuilder
    is able to obtain command line parameters from a Windows program
    that uses WinMain() instead of main()).
-   ArLCDConnector registers a callback with the global Aria class. Use
-   Aria::parseArgs() to parse all command line parameters to the program, and
-   Aria::logOptions() to print out information about all registered command-line parameters.
+   MvrLCDConnector registers a callback with the global Mvria class. Use
+   Mvria::parseArgs() to parse all command line parameters to the program, and
+   Mvria::logOptions() to print out information about all registered command-line parameters.
 
    The following command-line arguments are checked:
-   @verbinclude ArLCDConnector_options
+   @verbinclude MvrLCDConnector_options
 
    To connect to any lcds that were set up in the robot parameter file or
    via command line arguments, call connectLCDs().  If successful, 
    connectLCDs() will return true and add an entry for each lcd connected
-   in the ArRobot object's list of lcds.  These ArLCDMTX objects can be
-   accessed from your ArRobot object via ArRobot::findLCD() or ArRobot::getLCDMap(). 
+   in the MvrRobot object's list of lcds.  These MvrLCDMTX objects can be
+   accessed from your MvrRobot object via MvrRobot::findLCD() or MvrRobot::getLCDMap(). 
    
 
    @since 2.8.0
 
  **/
-class ArLCDConnector
+class MvrLCDConnector
 {
 public:
   /// Constructor that takes argument parser
-  AREXPORT ArLCDConnector(
-	  ArArgumentParser *parser, 
-	  ArRobot *robot, ArRobotConnector *robotConnector,
+  AREXPORT MvrLCDConnector(
+	  MvrArgumentParser *parser, 
+	  MvrRobot *robot, MvrRobotConnector *robotConnector,
 	  bool autoParseArgs = true,
-	  ArLog::LogLevel infoLogLevel = ArLog::Verbose,
-	  ArRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
-	  ArRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
+	  MvrLog::LogLevel infoLogLevel = MvrLog::Verbose,
+	  MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
+	  MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
   /// Destructor
   AREXPORT ~ArLCDConnector(void);
   /// Connects all the lcds the robot has that should be auto connected
@@ -98,26 +98,26 @@ public:
 			      bool turnOnLCDs = true,
 			      bool powerCycleLCDOnFailedConnect = true);
   /// Sets up a lcd to be connected
-  AREXPORT bool setupLCD(ArLCDMTX *lcd, 
+  AREXPORT bool setupLCD(MvrLCDMTX *lcd, 
 			   int lcdNumber = 1);
   /// Connects the lcd synchronously (will take up to a minute)
-  AREXPORT bool connectLCD(ArLCDMTX *lcd,
+  AREXPORT bool connectLCD(MvrLCDMTX *lcd,
 			     int lcdNumber = 1,
 			     bool forceConnection = true);
   /// Adds a lcd so parsing will get it
-  AREXPORT bool addLCD(ArLCDMTX *lcd,
+  AREXPORT bool addLCD(MvrLCDMTX *lcd,
 			 int lcdNumber = 1);
   /// Function to parse the arguments given in the constructor
   AREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(ArArgumentParser *parser);
+  AREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
   AREXPORT void logOptions(void) const;
   /// Internal function to get the lcd (only useful between parseArgs and connectLCDs)
-  AREXPORT ArLCDMTX *getLCD(int lcdNumber);
+  AREXPORT MvrLCDMTX *getLCD(int lcdNumber);
 
   /// Internal function to replace the lcd (only useful between parseArgs and connectLCDs) but not the lcd data
-  AREXPORT bool replaceLCD(ArLCDMTX *lcd, int lcdNumber);
+  AREXPORT bool replaceLCD(MvrLCDMTX *lcd, int lcdNumber);
 
 	AREXPORT void turnOnPowerCB (int);
 	AREXPORT void turnOffPowerCB (int);
@@ -129,7 +129,7 @@ protected:
 class LCDData
 {
 	public:
-		LCDData (int number, ArLCDMTX *lcd) {
+		LCDData (int number, MvrLCDMTX *lcd) {
 			myNumber = number;
 			myLCD = lcd;
 			myConn = NULL;
@@ -188,7 +188,7 @@ class LCDData
 
   
   /// Parses the lcd arguments
-  AREXPORT bool parseLCDArgs(ArArgumentParser *parser, 
+  AREXPORT bool parseLCDArgs(MvrArgumentParser *parser, 
 			       LCDData *lcdData);
   /// Logs the lcd command line option help text. 
   AREXPORT void logLCDOptions(LCDData *lcddata, bool header = true, bool metaOpts = true) const;
@@ -198,26 +198,26 @@ class LCDData
   std::string myLCDTypes;
 
   // our parser
-  ArArgumentParser *myParser;
+  MvrArgumentParser *myParser;
   bool myOwnParser;
   // if we should autoparse args or toss errors 
   bool myAutoParseArgs;
   bool myParsedArgs;
 
-  ArRobot *myRobot;
-  ArRobotConnector *myRobotConnector;
+  MvrRobot *myRobot;
+  MvrRobotConnector *myRobotConnector;
 
   // variables to hold if we're logging or not
   bool myLCDLogPacketsReceived;
   bool myLCDLogPacketsSent;
 
-  ArLog::LogLevel myInfoLogLevel;
+  MvrLog::LogLevel myInfoLogLevel;
 
-  ArRetFunctor1<bool, const char *> *myTurnOnPowerOutputCB;
-  ArRetFunctor1<bool, const char *> *myTurnOffPowerOutputCB;
+  MvrRetFunctor1<bool, const char *> *myTurnOnPowerOutputCB;
+  MvrRetFunctor1<bool, const char *> *myTurnOffPowerOutputCB;
 
-  ArRetFunctorC<bool, ArLCDConnector> myParseArgsCB;
-  ArConstFunctorC<ArLCDConnector> myLogOptionsCB;
+  MvrRetFunctorC<bool, MvrLCDConnector> myParseArgsCB;
+  MvrConstFunctorC<ArLCDConnector> myLogOptionsCB;
 
 	ArFunctor1C<ArLCDConnector, int> myTurnOnPowerCB;
 	ArFunctor1C<ArLCDConnector, int> myTurnOffPowerCB;

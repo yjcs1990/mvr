@@ -30,15 +30,15 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
 
-/// Class used by ArActionDesired for each channel, internal
-class ArActionDesiredChannel
+/// Class used by MvrActionDesired for each channel, internal
+class MvrActionDesiredChannel
 {
 public:
   AREXPORT static const double NO_STRENGTH;
   AREXPORT static const double MIN_STRENGTH;
   AREXPORT static const double MAX_STRENGTH;
   
-  ArActionDesiredChannel() { reset(); myOverrideDoesLessThan = true; }
+  MvrActionDesiredChannel() { reset(); myOverrideDoesLessThan = true; }
   ~ArActionDesiredChannel() {}
   void setOverrideDoesLessThan(bool overrideDoesLessThan) 
     { myOverrideDoesLessThan = overrideDoesLessThan; }
@@ -58,7 +58,7 @@ public:
   double getAllowOverride(void) const { return myAllowOverride; }
   void reset(void) 
     { myDesired = 0; myStrength = NO_STRENGTH; myAllowOverride = true; }
-  void merge(ArActionDesiredChannel *desiredChannel)
+  void merge(MvrActionDesiredChannel *desiredChannel)
     {
       double otherStrength = desiredChannel->getStrength();
       double oldStrength = myStrength;
@@ -75,10 +75,10 @@ public:
 	    desiredChannel->getStrength() >= MIN_STRENGTH)
 	{
 	  if (myOverrideDoesLessThan)
-	    myDesired = ArUtil::findMin(myDesired, 
+	    myDesired = MvrUtil::findMin(myDesired, 
 					desiredChannel->getDesired());
 	  else if (!myOverrideDoesLessThan)
-	    myDesired = ArUtil::findMax(myDesired, 
+	    myDesired = MvrUtil::findMax(myDesired, 
 					desiredChannel->getDesired());
 	}
 	// if only it has strength use it
@@ -98,7 +98,7 @@ public:
       myDesiredTotal = myDesired * myStrength;
       myStrengthTotal = myStrength;
     }
-  void addAverage(ArActionDesiredChannel *desiredChannel)
+  void addAverage(MvrActionDesiredChannel *desiredChannel)
     {
       myAllowOverride = myAllowOverride && desiredChannel->getAllowOverride();
       // if we're allowing override then myDesired is just the least
@@ -111,10 +111,10 @@ public:
 	    desiredChannel->getStrength() >= MIN_STRENGTH)
 	{
 	  if (myOverrideDoesLessThan)
-	    myDesired = ArUtil::findMin(myDesired, 
+	    myDesired = MvrUtil::findMin(myDesired, 
 					desiredChannel->getDesired());
 	  else if (!myOverrideDoesLessThan)
-	    myDesired = ArUtil::findMax(myDesired, 
+	    myDesired = MvrUtil::findMax(myDesired, 
 					desiredChannel->getDesired());
 	}
 	// if only it has strength use it
@@ -150,9 +150,9 @@ public:
       if (myStrength < MIN_STRENGTH)
 	return;
       
-      if (ArMath::roundInt(myDesired) < lowerBound)
+      if (MvrMath::roundInt(myDesired) < lowerBound)
       {
-	ArLog::log(ArLog::Terse, 
+	ArLog::log(MvrLog::Terse, 
 		   "ActionSanityChecking: '%s' tried to set %s to %g (which wound wind up less than %d and will be set to %d)",
 		   actionName, typeName, myDesired, lowerBound, lowerBound);
 	myDesired = lowerBound;
@@ -167,9 +167,9 @@ public:
       if (myStrength < MIN_STRENGTH)
 	return;
       
-      if (ArMath::roundInt(myDesired) > upperBound)
+      if (MvrMath::roundInt(myDesired) > upperBound)
       {
-	ArLog::log(ArLog::Terse, 
+	ArLog::log(MvrLog::Terse, 
 		   "ActionSanityChecking: '%s' tried to set %s to %g (which would wind up greater than %d and will be set to %d)",
 		   actionName, typeName, myDesired, upperBound, upperBound);
 	myDesired = upperBound;
@@ -187,10 +187,10 @@ protected:
   bool myOverrideDoesLessThan;
 };
 
-/// Contains values returned by ArAction objects expressing desired motion commands to resolver
+/// Contains values returned by MvrAction objects expressing desired motion commands to resolver
 /**
    This class is use by actions to report what want movement commands they want. 
-   The action resolver combines the ArActionDesired objects returned by different actions.
+   The action resolver combines the MvrActionDesired objects returned by different actions.
 
    A brief summary follows. For a fuller explanation of actions, see @ref actions.
 
@@ -203,13 +203,13 @@ protected:
    that also have their own strengths.
 
    The strength value reflects how strongly an action wants to do the chosen 
-   movement command, the resolver (ArResolver) will combine these strengths 
+   movement command, the resolver (MvrResolver) will combine these strengths 
    and figure out what to do based on them.
 
    For all strength values there is a total of 1.0 combined strength avaliable.
    The range for strength is from 0 to 1.  This is simply a convention that 
    ARIA uses by default, if you don't like it, you could override this
-   class the ArResolver class.
+   class the MvrResolver class.
 
    Note that for the different maximum/accel/decel values they take an
    additional argument of whether just to use the slowest speed,
@@ -223,14 +223,14 @@ protected:
    @sa @ref actions
 
 */
-class ArActionDesired
+class MvrActionDesired
 {
 public:
   AREXPORT static const double NO_STRENGTH;
   AREXPORT static const double MIN_STRENGTH;
   AREXPORT static const double MAX_STRENGTH;
   /// Constructor
-  ArActionDesired() 
+  MvrActionDesired() 
     { 
       myHeadingSet = false; 
       myTransDecelDes.setOverrideDoesLessThan(false); 
@@ -281,7 +281,7 @@ public:
   /// Sets the maximum velocity (+mm/sec) and strength
   /**
      This sets the maximum positive velocity for this cycle.  Check
-     the ArRobot class notes for more details.
+     the MvrRobot class notes for more details.
      
      @param maxVel desired maximum velocity (+mm/sec)
      @param strength strength given to this, defaults to MAX_STRENGTH
@@ -295,7 +295,7 @@ public:
   /// Sets the maximum velocity for going backwards (-mm/sec) and strength
   /**
      This sets the maximum negative velocity for this cycle.  Check
-     the ArRobot class notes for more details.
+     the MvrRobot class notes for more details.
 
      @param maxVel desired maximum velocity for going backwards (-mm/sec)
      @param strength strength given to this, defaults to MAX_STRENGTH (1.0)
@@ -309,7 +309,7 @@ public:
   /// Sets the translation acceleration (deg/sec/sec) and strength
   /**
      This sets the translation acceleration for this cycle (this is
-     sent down to the robot).  Check the ArRobot class notes for more
+     sent down to the robot).  Check the MvrRobot class notes for more
      details.
 
      @param transAccel desired translation acceleration (deg/sec/sec)
@@ -325,7 +325,7 @@ public:
   /// Sets the translation deceleration (deg/sec/sec) and strength
   /**
      This sets the translation deceleration for this cycle (this is
-     sent down to the robot).  Check the ArRobot class notes for more
+     sent down to the robot).  Check the MvrRobot class notes for more
      details.
 
      @param transDecel desired translation deceleration (deg/sec/sec)
@@ -340,7 +340,7 @@ public:
   /// Sets the maximum rotational velocity (deg/sec) and strength
   /**
      This sets the maximum rotational velocity for this cycle (this is
-     sent down to the robot).  Check the ArRobot class notes for more
+     sent down to the robot).  Check the MvrRobot class notes for more
      details.
 
      @param maxVel desired maximum rotational velocity (deg/sec)
@@ -357,7 +357,7 @@ public:
      This sets the maximum rotational velocity for this cycle (this is
      sent down to the robot) in the positive direction.  If the
      setMaxRotVel is set to less than this that will be used instead.
-     Check the ArRobot class notes for more details.
+     Check the MvrRobot class notes for more details.
 
      @param maxVel desired maximum rotational velocity in the positive
      direction (deg/sec)
@@ -376,7 +376,7 @@ public:
      This sets the maximum rotational velocity for this cycle (this is
      sent down to the robot) in the negative direction.  If the
      setMaxRotVel is set to less than this that will be used instead.
-     Check the ArRobot class notes for more details.
+     Check the MvrRobot class notes for more details.
 
      @param maxVel desired maximum rotational velocity in the negative
      direction (deg/sec)
@@ -393,7 +393,7 @@ public:
   /// Sets the rotational acceleration (deg/sec/sec) and strength
   /**
      This sets the rotational acceleration for this cycle (this is
-     sent down to the robot).  Check the ArRobot class notes for more
+     sent down to the robot).  Check the MvrRobot class notes for more
      details.
 
      @param rotAccel desired rotational acceleration (deg/sec/sec)
@@ -408,7 +408,7 @@ public:
   /// Sets the rotational deceleration (deg/sec/sec) and strength
   /**
      This sets the rotational deceleration for this cycle (this is
-     sent down to the robot).  Check the ArRobot class notes for more
+     sent down to the robot).  Check the MvrRobot class notes for more
      details.
 
      @param rotDecel desired rotational deceleration (deg/sec/sec)
@@ -453,7 +453,7 @@ public:
   /// Sets the maximum lateral velocity (deg/sec) and strength
   /**
      This sets the maximum lateral velocity for this cycle.  Check
-     the ArRobot class notes for more details.
+     the MvrRobot class notes for more details.
 
      @param maxVel desired maximum lateral velocity (deg/sec)
      @param strength strength given to this, defaults to MAX_STRENGTH (1.0) 
@@ -466,7 +466,7 @@ public:
   /// Sets the maximum lateral velocity (deg/sec) and strength
   /**
      This sets the maximum lateral velocity for this cycle.  Check
-     the ArRobot class notes for more details.
+     the MvrRobot class notes for more details.
 
      @param maxVel desired maximum lateral velocity (deg/sec)
      @param strength strength given to this, defaults to MAX_STRENGTH (1.0) 
@@ -480,7 +480,7 @@ public:
   /// Sets the lateral acceleration (deg/sec/sec) and strength
   /**
      This sets the lateral acceleration for this cycle (this is
-     sent down to the robot).  Check the ArRobot class notes for more
+     sent down to the robot).  Check the MvrRobot class notes for more
      details.
 
      @param latAccel desired lateral acceleration (deg/sec/sec)
@@ -495,7 +495,7 @@ public:
   /// Sets the lateral deceleration (deg/sec/sec) and strength
   /**
      This sets the lateral deceleration for this cycle (this is
-     sent down to the robot).  Check the ArRobot class notes for more
+     sent down to the robot).  Check the MvrRobot class notes for more
      details.
 
      @param latDecel desired lateral deceleration (deg/sec/sec)
@@ -679,7 +679,7 @@ public:
     { return myLatDecelDes.getAllowOverride(); }
 
 
-  /// Merges the given ArActionDesired into this one (this one has precedence),
+  /// Merges the given MvrActionDesired into this one (this one has precedence),
   /// internal
   /** 
       This merges in the two different action values, accountForRobotHeading
@@ -688,7 +688,7 @@ public:
       for angle is done.
       @param actDesired the actionDesired to merge with this one
   */
-  virtual void merge(ArActionDesired *actDesired)
+  virtual void merge(MvrActionDesired *actDesired)
     {
       if (actDesired == NULL)
 	return;
@@ -759,7 +759,7 @@ public:
      For a description of how to use this, see startAverage.
      @param actDesired the actionDesired to add into the average
   */
-  virtual void addAverage(ArActionDesired *actDesired)
+  virtual void addAverage(MvrActionDesired *actDesired)
     {
       if (actDesired == NULL)
 	return;
@@ -837,7 +837,7 @@ public:
   virtual void accountForRobotHeading(double robotHeading)
     {
       if (myHeadingSet)
-	setDeltaHeading(ArMath::subAngle(myHeading, robotHeading), 
+	setDeltaHeading(MvrMath::subAngle(myHeading, robotHeading), 
 			myHeadingStrength);
       myHeadingSet = false;
     }
@@ -854,25 +854,25 @@ protected:
   double myHeadingStrength;
   bool myHeadingSet;
 
-  ArActionDesiredChannel myVelDes;
-  ArActionDesiredChannel myMaxVelDes;
-  ArActionDesiredChannel myMaxNegVelDes;
-  ArActionDesiredChannel myTransAccelDes;
-  ArActionDesiredChannel myTransDecelDes;
+  MvrActionDesiredChannel myVelDes;
+  MvrActionDesiredChannel myMaxVelDes;
+  MvrActionDesiredChannel myMaxNegVelDes;
+  MvrActionDesiredChannel myTransAccelDes;
+  MvrActionDesiredChannel myTransDecelDes;
 
-  ArActionDesiredChannel myRotVelDes;
-  ArActionDesiredChannel myDeltaHeadingDes;
-  ArActionDesiredChannel myMaxRotVelDes;
-  ArActionDesiredChannel myMaxRotVelPosDes;
-  ArActionDesiredChannel myMaxRotVelNegDes;
-  ArActionDesiredChannel myRotAccelDes;
-  ArActionDesiredChannel myRotDecelDes;
+  MvrActionDesiredChannel myRotVelDes;
+  MvrActionDesiredChannel myDeltaHeadingDes;
+  MvrActionDesiredChannel myMaxRotVelDes;
+  MvrActionDesiredChannel myMaxRotVelPosDes;
+  MvrActionDesiredChannel myMaxRotVelNegDes;
+  MvrActionDesiredChannel myRotAccelDes;
+  MvrActionDesiredChannel myRotDecelDes;
 
-  ArActionDesiredChannel myLatVelDes;
-  ArActionDesiredChannel myMaxLeftLatVelDes;
-  ArActionDesiredChannel myMaxRightLatVelDes;
-  ArActionDesiredChannel myLatAccelDes;
-  ArActionDesiredChannel myLatDecelDes;
+  MvrActionDesiredChannel myLatVelDes;
+  MvrActionDesiredChannel myMaxLeftLatVelDes;
+  MvrActionDesiredChannel myMaxRightLatVelDes;
+  MvrActionDesiredChannel myLatAccelDes;
+  MvrActionDesiredChannel myLatDecelDes;
 };
 
 

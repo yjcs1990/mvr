@@ -30,8 +30,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
 
-class ArRobot;
-class ArRobotPacket;
+class MvrRobot;
+class MvrRobotPacket;
 
 /// Interfaces to a joystick on the robot's microcontroller
 /** 
@@ -49,11 +49,11 @@ class ArRobotPacket;
 
   @ingroup OptionalClasses
 **/
-class ArRobotJoyHandler
+class MvrRobotJoyHandler
 {
  public:
   /// Constructor
-  AREXPORT ArRobotJoyHandler(ArRobot *robot);
+  AREXPORT MvrRobotJoyHandler(MvrRobot *robot);
   /// Destructor
   AREXPORT ~ArRobotJoyHandler();
   /// Gets the adjusted reading, as floats
@@ -63,11 +63,11 @@ class ArRobotJoyHandler
   /// Gets the second button 
   bool getButton2(void) { return myButton2; }
   /// Gets the time we last got information back
-  AREXPORT ArTime getDataReceivedTime(void) { return myDataReceived; }
+  AREXPORT MvrTime getDataReceivedTime(void) { return myDataReceived; }
   /// If we've ever gotten a packet back
   AREXPORT bool gotData(void) { return myGotData; }
   /// Adds to a section in a config
-  AREXPORT void addToConfig(ArConfig *config, const char *section);
+  AREXPORT void addToConfig(MvrConfig *config, const char *section);
   /// Gets the X value (only use for information, or with the robot locked, getDoubles is preferred)
   int getRawX(void) { return myRawX; }
   /// Gets the Y value (only use for information, or with the robot locked, getDoubles is preferred)
@@ -76,11 +76,11 @@ class ArRobotJoyHandler
   int getRawThrottle(void) { return myRawThrottle; }
 
  protected:
-  AREXPORT bool handleJoystickPacket(ArRobotPacket *packet);
+  AREXPORT bool handleJoystickPacket(MvrRobotPacket *packet);
   AREXPORT void connectCallback(void);
 
-  ArRobot *myRobot;
-  ArTime myDataReceived;
+  MvrRobot *myRobot;
+  MvrTime myDataReceived;
   bool myButton1;
   bool myButton2;
   double myJoyX;
@@ -95,12 +95,12 @@ class ArRobotJoyHandler
   int myRawY;
   int myRawThrottle;
 
-  ArTime myStarted;
-  ArRetFunctor1C<bool, ArRobotJoyHandler,
-      ArRobotPacket *> myHandleJoystickPacketCB;
-  ArFunctorC<ArRobotJoyHandler> myConnectCB;
+  MvrTime myStarted;
+  MvrRetFunctor1C<bool, MvrRobotJoyHandler,
+      MvrRobotPacket *> myHandleJoystickPacketCB;
+  MvrFunctorC<ArRobotJoyHandler> myConnectCB;
 
-  ArFunctorC<ArRobotJoyHandler> myStopPacketsCB;
+  MvrFunctorC<ArRobotJoyHandler> myStopPacketsCB;
 
   void stopPackets();
 

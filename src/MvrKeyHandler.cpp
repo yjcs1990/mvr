@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArKeyHandler.h"
-#include "ArLog.h"
+#include "MvrKeyHandler.h"
+#include "MvrLog.h"
 
 #ifdef WIN32
 #include <conio.h>
@@ -48,14 +48,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param takeKeysInConstructor whether to take the keys when created or not
    (default is true)
 **/
-AREXPORT ArKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB, 
+AREXPORT MvrKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB, 
 				    FILE *stream, 
 				    bool takeKeysInConstructor) :
   myAriaExitCB(this, &ArKeyHandler::restore)
 {
-  myAriaExitCB.setName("ArKeyHandlerExit");
+  myAriaExitCB.setName("MvrKeyHandlerExit");
   if (addAriaExitCB)
-    Aria::addExitCallback(&myAriaExitCB);
+    Mvria::addExitCallback(&myAriaExitCB);
 
   myStream = stream;
   myTookKeys = false;
@@ -64,13 +64,13 @@ AREXPORT ArKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB,
     takeKeys(blocking);
 }
 
-AREXPORT ArKeyHandler::~ArKeyHandler()
+AREXPORT MvrKeyHandler::~ArKeyHandler()
 {
-  Aria::remExitCallback(&myAriaExitCB);
+  Mvria::remExitCallback(&myAriaExitCB);
   restore();
 }
 
-AREXPORT void ArKeyHandler::takeKeys(bool blocking)
+AREXPORT void MvrKeyHandler::takeKeys(bool blocking)
 {
   myBlocking = blocking;
 #ifndef WIN32
@@ -116,7 +116,7 @@ AREXPORT void ArKeyHandler::takeKeys(bool blocking)
   myTookKeys = true;
 }
 
-AREXPORT void ArKeyHandler::restore(void)
+AREXPORT void MvrKeyHandler::restore(void)
 {
   if (!myTookKeys)
     return;
@@ -143,17 +143,17 @@ AREXPORT void ArKeyHandler::restore(void)
    exists.
    that key
 */
-AREXPORT bool ArKeyHandler::addKeyHandler(int keyToHandle, ArFunctor *functor)
+AREXPORT bool MvrKeyHandler::addKeyHandler(int keyToHandle, MvrFunctor *functor)
 {
   if (myMap.find(keyToHandle) != myMap.end())
   {
     if (keyToHandle >= '!' && keyToHandle <= '~')
-      ArLog::log(ArLog::Normal, "There is already a key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
+      MvrLog::log(MvrLog::Normal, "There is already a key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
     else
-      ArLog::log(ArLog::Normal, "There is already a key to handle number %d 0x%x", keyToHandle, keyToHandle);
+      MvrLog::log(MvrLog::Normal, "There is already a key to handle number %d 0x%x", keyToHandle, keyToHandle);
     return false;
   }
-  //ArLog::log(ArLog::Verbose, "keyhandler %p added key '%c' number '%d'", 
+  //ArLog::log(MvrLog::Verbose, "keyhandler %p added key '%c' number '%d'", 
   //this, keyToHandle, keyToHandle);
   myMap[keyToHandle] = functor;
 
@@ -167,18 +167,18 @@ AREXPORT bool ArKeyHandler::addKeyHandler(int keyToHandle, ArFunctor *functor)
      key handler for @a keyToHandle was found and rmeoved, or false if no
      handler for that value was found.
  **/
-AREXPORT bool ArKeyHandler::remKeyHandler(int keyToHandle)
+AREXPORT bool MvrKeyHandler::remKeyHandler(int keyToHandle)
 {
   if (myMap.find(keyToHandle) == myMap.end())
   {
-    //ArLog::log(ArLog::Normal, "There is no key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
+    //ArLog::log(MvrLog::Normal, "There is no key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
     return false;
   }
   if (keyToHandle >= '!' && keyToHandle <= '~')
-    ArLog::log(ArLog::Verbose, "keyhandler %p removed key '%c' number '%d'",
+    MvrLog::log(MvrLog::Verbose, "keyhandler %p removed key '%c' number '%d'",
 	       this, keyToHandle, keyToHandle);
   else
-    ArLog::log(ArLog::Verbose, "keyhandler %p removed key number '%d'",
+    MvrLog::log(MvrLog::Verbose, "keyhandler %p removed key number '%d'",
 	       this, keyToHandle);
   myMap.erase(keyToHandle);
   return true;
@@ -191,11 +191,11 @@ AREXPORT bool ArKeyHandler::remKeyHandler(int keyToHandle)
     functor was found and removed from the handlers, or false if no
     handler with the given functor was found.
  **/
-AREXPORT bool ArKeyHandler::remKeyHandler(ArFunctor *functor)
+AREXPORT bool MvrKeyHandler::remKeyHandler(MvrFunctor *functor)
 {
-  std::map<int, ArFunctor *>::iterator it;
-  std::list<std::map<int, ArFunctor *>::iterator> iters;
-  std::list<std::map<int, ArFunctor *>::iterator>::iterator iterIter;
+  std::map<int, MvrFunctor *>::iterator it;
+  std::list<std::map<int, MvrFunctor *>::iterator> iters;
+  std::list<std::map<int, MvrFunctor *>::iterator>::iterator iterIter;
 
   for (it = myMap.begin(); it != myMap.end(); ++it)
   {
@@ -211,17 +211,17 @@ AREXPORT bool ArKeyHandler::remKeyHandler(ArFunctor *functor)
       myMap.erase((*iterIter));
       iters.pop_front();
     }
-    ArLog::log(ArLog::Verbose, "keyhandler %p removed functor %p", this, 
+    MvrLog::log(MvrLog::Verbose, "keyhandler %p removed functor %p", this, 
 	       functor);
     return true;
   }
   return false;
 }
 
-AREXPORT void ArKeyHandler::checkKeys(void)
+AREXPORT void MvrKeyHandler::checkKeys(void)
 {
   int key;
-  std::map<int, ArFunctor *>::iterator it;
+  std::map<int, MvrFunctor *>::iterator it;
 
   if (myRestored)
     return;
@@ -232,7 +232,7 @@ AREXPORT void ArKeyHandler::checkKeys(void)
     // if there's something to handle it, handle it
     if ((it = myMap.find(key)) != myMap.end())
     {
-      //ArLog::log(ArLog::Verbose, "key '%c' num %d pressed\n", key, key);
+      //ArLog::log(MvrLog::Verbose, "key '%c' num %d pressed\n", key, key);
       it->second->invoke();
     }
   }
@@ -240,7 +240,7 @@ AREXPORT void ArKeyHandler::checkKeys(void)
 
 #ifndef WIN32
 
-AREXPORT int ArKeyHandler::getChar(void)
+AREXPORT int MvrKeyHandler::getChar(void)
 {
   if (myStream == NULL)
     return getchar();
@@ -248,7 +248,7 @@ AREXPORT int ArKeyHandler::getChar(void)
     return getc(myStream);
 }
 
-AREXPORT int ArKeyHandler::getKey(void)
+AREXPORT int MvrKeyHandler::getKey(void)
 {
  /*
   * What follows is a somewhat poor implementation of getch(), basically, since
@@ -299,7 +299,7 @@ AREXPORT int ArKeyHandler::getKey(void)
           for(short i = 0; key != -1 && key != 27 && i < 5; i++) 
           {
             k[i] = key = getChar();
-            //printf("ArKeyHandler::getKey: read extended key component %d/%d.\n", k[i], key);
+            //printf("MvrKeyHandler::getKey: read extended key component %d/%d.\n", k[i], key);
           }
           ungetc(key, stdin); // put last key back. (Esp. important if it was the beginning of a new control sequence (27).
 
@@ -347,7 +347,7 @@ AREXPORT int ArKeyHandler::getKey(void)
 #if 0
 /* This is a previous implementation of getKey(), just for reference or
  * quick reversion: */
-AREXPORT int ArKeyHandler::getKey(void)
+AREXPORT int MvrKeyHandler::getKey(void)
 {
   char key;
 
@@ -404,7 +404,7 @@ AREXPORT int ArKeyHandler::getKey(void)
 
 #else // if it is win32
 
-AREXPORT int ArKeyHandler::getKey(void)
+AREXPORT int MvrKeyHandler::getKey(void)
 {
   int key;
 

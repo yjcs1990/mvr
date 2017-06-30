@@ -24,9 +24,9 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSensorReading.h"
+#include "MvrSensorReading.h"
 #include "ariaUtil.h"
 
 /**
@@ -189,7 +189,7 @@ AREXPORT void ArSensorReading::resetSensorPosition(double xPos, double yPos,
 /**
    @param trans the transform to apply to the reading and where the reading was taken
 */
-AREXPORT void ArSensorReading::applyTransform(ArTransform trans)
+AREXPORT void ArSensorReading::applyTransform(MvrTransform trans)
 {
   myReading = trans.doTransform(myReading);
   myReadingTaken = trans.doTransform(myReadingTaken);
@@ -198,7 +198,7 @@ AREXPORT void ArSensorReading::applyTransform(ArTransform trans)
 /**
    @param trans the transform to apply to the encoder pose taken
 */
-AREXPORT void ArSensorReading::applyEncoderTransform(ArTransform trans)
+AREXPORT void ArSensorReading::applyEncoderTransform(MvrTransform trans)
 {
   myEncoderPoseTaken = trans.doTransform(myEncoderPoseTaken);
 }

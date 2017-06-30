@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArJoyHandler.h"
-#include "ArLog.h"
+#include "MvrJoyHandler.h"
+#include "MvrLog.h"
 #include <errno.h>
 #include "ariaUtil.h"
 
-bool ArJoyHandler::init(void)
+bool MvrJoyHandler::init(void)
 {
   int i;
 
@@ -40,18 +40,18 @@ bool ArJoyHandler::init(void)
 
   if (myUseOld)
   {
-    myOldJoyDesc = ArUtil::fopen("/dev/js0", "r");
+    myOldJoyDesc = MvrUtil::fopen("/dev/js0", "r");
     if(myOldJoyDesc > 0)
-      ArLog::log(ArLog::Verbose, "ArJoyHandler: Opened /dev/js0 (old Linux device name scheme)");
+      MvrLog::log(MvrLog::Verbose, "MvrJoyHandler: Opened /dev/js0 (old Linux device name scheme)");
   }
   else
   {
     for (i = 0; i < 32; i++)
     {
       sprintf(myJoyNameTemp, "/dev/input/js%d", i);
-      if ((myJoyDesc = ArUtil::open(myJoyNameTemp, O_RDONLY | O_NONBLOCK)) > 0)
+      if ((myJoyDesc = MvrUtil::open(myJoyNameTemp, O_RDONLY | O_NONBLOCK)) > 0)
       {
-        ArLog::log(ArLog::Verbose, "ArJoyHandler: Opened %s", myJoyNameTemp);
+        MvrLog::log(MvrLog::Verbose, "MvrJoyHandler: Opened %s", myJoyNameTemp);
         break;
       }
     }
@@ -76,7 +76,7 @@ bool ArJoyHandler::init(void)
   }
 }
 
-void ArJoyHandler::getData(void)
+void MvrJoyHandler::getData(void)
 {
   if (myUseOld && !myInitialized)
     return;
@@ -91,7 +91,7 @@ void ArJoyHandler::getData(void)
     getNewData();
 }
 
-void ArJoyHandler::getOldData(void)
+void MvrJoyHandler::getOldData(void)
 {
 #ifdef linux
   int x, y;
@@ -130,7 +130,7 @@ void ArJoyHandler::getOldData(void)
 }
 
 /// Handles the reading of the data into the bins
-void ArJoyHandler::getNewData(void)
+void MvrJoyHandler::getNewData(void)
 {
 #ifdef linux
   if (myLastOpenTry.mSecSince() > 125)
@@ -138,9 +138,9 @@ void ArJoyHandler::getNewData(void)
     int tempDesc;
     myLastOpenTry.setToNow();
     sprintf(myJoyNameTemp, "/dev/input/js%d", myJoyNumber + 1);
-    if ((tempDesc = ArUtil::open(myJoyNameTemp, O_RDWR | O_NONBLOCK)) > 0)
+    if ((tempDesc = MvrUtil::open(myJoyNameTemp, O_RDWR | O_NONBLOCK)) > 0)
     {
-      ArLog::log(ArLog::Verbose, "ArJoyHandler: Opened next joydev %s", myJoyNameTemp);
+      MvrLog::log(MvrLog::Verbose, "MvrJoyHandler: Opened next joydev %s", myJoyNameTemp);
       close(myJoyDesc);
       myInitialized = true;
       myJoyDesc = tempDesc;
@@ -148,10 +148,10 @@ void ArJoyHandler::getNewData(void)
     }
     else if (myJoyNumber > 0)
     {
-      if ((tempDesc = ArUtil::open("/dev/input/js0", O_RDWR | O_NONBLOCK)) > 0)
+      if ((tempDesc = MvrUtil::open("/dev/input/js0", O_RDWR | O_NONBLOCK)) > 0)
       {
 	myInitialized = true;
-	ArLog::log(ArLog::Verbose, "ArJoyHandler: Opened first joydev /dev/input/js0");
+	ArLog::log(MvrLog::Verbose, "MvrJoyHandler: Opened first joydev /dev/input/js0");
 	close(myJoyDesc);
 	myJoyDesc = tempDesc;
 	myJoyNumber = 0;
@@ -173,9 +173,9 @@ void ArJoyHandler::getNewData(void)
     {
       // if its one of the buttons we want set it
       if (e.number == 0)
-      	myAxes[e.number+1] = ArMath::roundInt(e.value * 128.0 / 32767.0);
+      	myAxes[e.number+1] = MvrMath::roundInt(e.value * 128.0 / 32767.0);
       else
-	myAxes[e.number+1] = ArMath::roundInt(-e.value * 128.0 / 32767.0);
+	myAxes[e.number+1] = MvrMath::roundInt(-e.value * 128.0 / 32767.0);
       if (e.number == 2)
 	myHaveZ = true;
     }
@@ -183,7 +183,7 @@ void ArJoyHandler::getNewData(void)
   }
   if (errno != EAGAIN)
   {
-    //ArLog::log(ArLog::Terse, "ArJoyHandler::getUnfiltered: Trouble reading data.");
+    //ArLog::log(MvrLog::Terse, "MvrJoyHandler::getUnfiltered: Trouble reading data.");
   }
 #endif // ifdef linux 
 }

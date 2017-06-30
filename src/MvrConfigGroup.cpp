@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArConfigGroup.h"
-#include "ArArgumentBuilder.h"
-#include "ArLog.h"
+#include "MvrConfigGroup.h"
+#include "MvrArgumentBuilder.h"
+#include "MvrLog.h"
 
-AREXPORT ArConfigGroup::ArConfigGroup(const char *baseDirectory)
+AREXPORT MvrConfigGroup::ArConfigGroup(const char *baseDirectory)
 {
   if (baseDirectory != NULL)
     myBaseDirectory = baseDirectory;
@@ -38,22 +38,22 @@ AREXPORT ArConfigGroup::ArConfigGroup(const char *baseDirectory)
     myBaseDirectory = "";
 }
 
-AREXPORT ArConfigGroup::~ArConfigGroup(void)
+AREXPORT MvrConfigGroup::~ArConfigGroup(void)
 {
   
 }
 
-AREXPORT void ArConfigGroup::addConfig(ArConfig *config)
+AREXPORT void MvrConfigGroup::addConfig(MvrConfig *config)
 {
   myConfigs.push_back(config);
 }
 
-AREXPORT void ArConfigGroup::remConfig(ArConfig *config)
+AREXPORT void MvrConfigGroup::remConfig(MvrConfig *config)
 {
   myConfigs.remove(config);
 }
 
-AREXPORT bool ArConfigGroup::parseFile(const char *fileName, 
+AREXPORT bool MvrConfigGroup::parseFile(const char *fileName, 
 				       bool continueOnError)
 {
   std::list<ArConfig *>::iterator it;
@@ -84,12 +84,12 @@ AREXPORT bool ArConfigGroup::parseFile(const char *fileName,
   return ret;
 }
 
-AREXPORT bool ArConfigGroup::reloadFile(bool continueOnError)
+AREXPORT bool MvrConfigGroup::reloadFile(bool continueOnError)
 {
   return parseFile(myLastFile.c_str(), continueOnError);
 }
 
-AREXPORT bool ArConfigGroup::writeFile(const char *fileName)
+AREXPORT bool MvrConfigGroup::writeFile(const char *fileName)
 {
   std::set<std::string> alreadyWritten;
   std::list<ArConfig *>::iterator it;
@@ -107,7 +107,7 @@ AREXPORT bool ArConfigGroup::writeFile(const char *fileName)
   // if we're supposed to
   for (it = myConfigs.begin(); it != myConfigs.end(); it++)
   {
-    ArLog::log(ArLog::Verbose, "Writing config file");
+    MvrLog::log(MvrLog::Verbose, "Writing config file");
     if (!(*it)->writeFile(fileName, append, &alreadyWritten))
     {
       // if we are continuing on errors we still want to tell them we
@@ -120,7 +120,7 @@ AREXPORT bool ArConfigGroup::writeFile(const char *fileName)
   
 }
 
-AREXPORT void ArConfigGroup::setBaseDirectory(const char *baseDirectory)
+AREXPORT void MvrConfigGroup::setBaseDirectory(const char *baseDirectory)
 {
   myBaseDirectory = baseDirectory;
 }

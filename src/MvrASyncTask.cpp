@@ -24,38 +24,38 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #if !defined(WIN32) || defined(MINGW)
 #include <pthread.h>
 #endif
 #include "ariaOSDef.h"
-#include "ArASyncTask.h"
-#include "ArLog.h"
+#include "MvrASyncTask.h"
+#include "MvrLog.h"
 
 
-AREXPORT ArASyncTask::ArASyncTask() :
+AREXPORT MvrASyncTask::ArASyncTask() :
   myFunc(this, &ArASyncTask::runThread, NULL)
 {
 }
 
-AREXPORT ArASyncTask::~ArASyncTask()
+AREXPORT MvrASyncTask::~ArASyncTask()
 {
 }
 
-AREXPORT int ArASyncTask::create(bool joinable, bool lowerPriority)
+AREXPORT int MvrASyncTask::create(bool joinable, bool lowerPriority)
 {
-  return(ArThread::create(&myFunc, joinable, lowerPriority));
+  return(MvrThread::create(&myFunc, joinable, lowerPriority));
 }
 
 /**
-   This will run the code of the ArASyncTask without creating a new
+   This will run the code of the MvrASyncTask without creating a new
    thread to run it in. It performs the needed setup then calls runThread().
    This is good if you have a task which you wish to run multiple
    instances of and you want to use the main() thread  instead of having
    it block, waiting for exit of the program.
    @param arg the argument to pass to the runThread()
 */
-AREXPORT void * ArASyncTask::runInThisThread(void *arg)
+AREXPORT void * MvrASyncTask::runInThisThread(void *arg)
 {
   myJoinable=true;
   myRunning=true;
@@ -67,13 +67,13 @@ AREXPORT void * ArASyncTask::runInThisThread(void *arg)
   
   if (myName.size() == 0)
   {
-    ArLog::log(ourLogLevel, "Running anonymous thread with ID %d", 
+    MvrLog::log(ourLogLevel, "Running anonymous thread with ID %d", 
 	       myThread);
-    //ArLog::logBacktrace(ArLog::Normal);
+    //ArLog::logBacktrace(MvrLog::Normal);
   }
   else
   {
-    ArLog::log(ourLogLevel, "Running %s thread", myName.c_str());
+    MvrLog::log(ourLogLevel, "Running %s thread", myName.c_str());
   }
   
   addThreadToMap(myThread, this);

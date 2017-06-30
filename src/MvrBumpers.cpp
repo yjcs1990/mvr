@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRobot.h"
-#include "ArBumpers.h"
+#include "MvrRobot.h"
+#include "MvrBumpers.h"
 
 /**
    @param currentBufferSize The number of readings to store in the current Buffer
@@ -37,24 +37,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param angleRange the range in front and behind the robot which is divided by the number of bumpers and used to detrmine where the sensor readings will be placed.
 */
 
-AREXPORT ArBumpers::ArBumpers(size_t currentBufferSize, size_t cumulativeBufferSize, 
+AREXPORT MvrBumpers::ArBumpers(size_t currentBufferSize, size_t cumulativeBufferSize, 
 		     const char *name, int maxSecondsToKeepCurrent, double angleRange) :
-  ArRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000, maxSecondsToKeepCurrent), 
+  MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000, maxSecondsToKeepCurrent), 
   myProcessCB(this, &ArBumpers::processReadings)
 {
   // MPL I wrote this code, but checking for BIT8 makes no sense, BIT0 is  the stall, BIT8 would be beyond this data
-  myBumpMask = (ArUtil::BIT1 | ArUtil::BIT2 | ArUtil::BIT3 | ArUtil::BIT4 | 
-		ArUtil::BIT5 | ArUtil::BIT6 | ArUtil::BIT7 | ArUtil::BIT8); 
+  myBumpMask = (MvrUtil::BIT1 | MvrUtil::BIT2 | MvrUtil::BIT3 | MvrUtil::BIT4 | 
+		ArUtil::BIT5 | MvrUtil::BIT6 | MvrUtil::BIT7 | MvrUtil::BIT8); 
 
   myAngleRange = angleRange;
 
-  setCurrentDrawingData(new ArDrawingData("polyDots", ArColor(0, 0, 0),
+  setCurrentDrawingData(new MvrDrawingData("polyDots", MvrColor(0, 0, 0),
 					  120, // mm diameter of dots
 					  83), // layer above most everything else
 			true);
 }
 
-AREXPORT ArBumpers::~ArBumpers()
+AREXPORT MvrBumpers::~ArBumpers()
 {
   if (myRobot != NULL)
     {
@@ -63,18 +63,18 @@ AREXPORT ArBumpers::~ArBumpers()
     }
 }
 
-AREXPORT void ArBumpers::setRobot(ArRobot *robot)
+AREXPORT void MvrBumpers::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
     myRobot->addSensorInterpTask(myName.c_str(), 10, &myProcessCB);
-  ArRangeDevice::setRobot(robot);
+  MvrRangeDevice::setRobot(robot);
 }
 
 /**
    This function is called every 100 milliseconds.
 */
-AREXPORT void ArBumpers::processReadings(void)
+AREXPORT void MvrBumpers::processReadings(void)
 {
   int frontBump;
   int rearBump;
@@ -111,7 +111,7 @@ AREXPORT void ArBumpers::processReadings(void)
    @param bumpValue This is the value that tells which individual bumper has been triggered
    @param whichBumper This value tells if the front or rear has been triggered
 */
-AREXPORT void ArBumpers::addBumpToBuffer(int bumpValue, int whichBumper)
+AREXPORT void MvrBumpers::addBumpToBuffer(int bumpValue, int whichBumper)
 {
   int numBumpers;
   double x;
@@ -119,7 +119,7 @@ AREXPORT void ArBumpers::addBumpToBuffer(int bumpValue, int whichBumper)
   double degree;
   double radius;
 
-  const ArRobotParams *params;
+  const MvrRobotParams *params;
   params = myRobot->getRobotParams();
 
   radius = params->getRobotRadius();
@@ -130,31 +130,31 @@ AREXPORT void ArBumpers::addBumpToBuffer(int bumpValue, int whichBumper)
   for (int i = 0; i < numBumpers; i++)
     {
       // MPL I wrote this code, but checking for BIT8 makes no sense, BIT0 is  the stall, BIT8 would be beyond this data
-      if((i == 0 && (bumpValue & ArUtil::BIT1)) || 
-	 (i == 1 && (bumpValue & ArUtil::BIT2)) ||
-	 (i == 2 && (bumpValue & ArUtil::BIT3)) || 
-	 (i == 3 && (bumpValue & ArUtil::BIT4)) ||
-	 (i == 4 && (bumpValue & ArUtil::BIT5)) || 
-	 (i == 5 && (bumpValue & ArUtil::BIT6)) ||
-	 (i == 6 && (bumpValue & ArUtil::BIT7)) || 
-	 (i == 7 && (bumpValue & ArUtil::BIT8)))
+      if((i == 0 && (bumpValue & MvrUtil::BIT1)) || 
+	 (i == 1 && (bumpValue & MvrUtil::BIT2)) ||
+	 (i == 2 && (bumpValue & MvrUtil::BIT3)) || 
+	 (i == 3 && (bumpValue & MvrUtil::BIT4)) ||
+	 (i == 4 && (bumpValue & MvrUtil::BIT5)) || 
+	 (i == 5 && (bumpValue & MvrUtil::BIT6)) ||
+	 (i == 6 && (bumpValue & MvrUtil::BIT7)) || 
+	 (i == 7 && (bumpValue & MvrUtil::BIT8)))
 	{
 	  degree = -1 * (i * (myAngleRange / (double)numBumpers) + 
 		    ((myAngleRange / (double)numBumpers) / 2) - (myAngleRange / 2));
 
 	  if(whichBumper == 2) degree = degree + 180;
 
-	  x = radius * ArMath::cos(degree);
-	  y = radius * ArMath::sin(degree);
+	  x = radius * MvrMath::cos(degree);
+	  y = radius * MvrMath::sin(degree);
 
-	  ArPose pose;
+	  MvrPose pose;
 	  pose.setX(x);
 	  pose.setY(y);
 
-	  ArTransform global = myRobot->getToGlobalTransform();
+	  MvrTransform global = myRobot->getToGlobalTransform();
 	  pose = global.doTransform(pose);
 
-    ArLog::log(ArLog::Verbose, "Bumpers: recording %s bumper hit (bumpflags=%d)", (whichBumper==1?"front":"rear"), bumpValue);
+    MvrLog::log(MvrLog::Verbose, "Bumpers: recording %s bumper hit (bumpflags=%d)", (whichBumper==1?"front":"rear"), bumpValue);
 
 	  myCurrentBuffer.addReading(pose.getX(), pose.getY());
 	}

@@ -28,35 +28,35 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSONYPTZ_H
 
 #include "ariaTypedefs.h"
-#include "ArBasePacket.h"
-#include "ArPTZ.h"
+#include "MvrBasePacket.h"
+#include "MvrPTZ.h"
 
 /// A class for for making commands to send to the sony
 /** There are only two functioning ways to put things into this packet, you
     MUST use thse, if you use anything else your commands won't work.  You 
     must use uByteToBuf and byte2ToBuf.  
 */
-class ArSonyPacket: public ArBasePacket
+class MvrSonyPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArSonyPacket(ArTypes::UByte2 bufferSize = 15);
+  AREXPORT MvrSonyPacket(MvrTypes::UByte2 bufferSize = 15);
   AREXPORT virtual ~ArSonyPacket();
   
-  AREXPORT virtual void uByteToBuf(ArTypes::UByte val);
-  AREXPORT virtual void byte2ToBuf(ArTypes::Byte2 val);
+  AREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
+  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
   /// This is a new function, read the details before you try to use it
-  AREXPORT void byte2ToBufAtPos(ArTypes::Byte2 val, ArTypes::UByte2 pose);
+  AREXPORT void byte2ToBufAtPos(MvrTypes::Byte2 val, MvrTypes::UByte2 pose);
 };
 
-class ArRobot;
+class MvrRobot;
 
 /// A class to use the sony pan tilt zoom unit
 
-class ArSonyPTZ : public ArPTZ
+class MvrSonyPTZ : public MvrPTZ
 {
 public:
-  AREXPORT ArSonyPTZ(ArRobot *robot);
+  AREXPORT MvrSonyPTZ(MvrRobot *robot);
   AREXPORT virtual ~ArSonyPTZ();
   
   AREXPORT virtual bool init(void);
@@ -87,7 +87,7 @@ public:
 
   AREXPORT bool backLightingOn(void);
   AREXPORT bool backLightingOff(void);
-  //AREXPORT bool packetHandler(ArRobotPacket *packet);
+  //AREXPORT bool packetHandler(MvrRobotPacket *packet);
   /* unused?
   enum {
     MAX_PAN = 95, ///< maximum degrees the unit can pan (either direction)
@@ -97,7 +97,7 @@ public:
   };
   */
   
-  /// called automatically by Aria::init()
+  /// called automatically by Mvria::init()
   ///@since 2.7.6
   ///@internal
 #ifndef SWIG
@@ -106,20 +106,20 @@ public:
 
 protected:
   void initializePackets(void);
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
   double myPan;
   double myTilt;
   int myZoom;
   double myDegToTilt;
   double myDegToPan;
-  ArSonyPacket myPacket;
-  ArSonyPacket myZoomPacket; 
-  ArSonyPacket myPanTiltPacket;
+  MvrSonyPacket myPacket;
+  MvrSonyPacket myZoomPacket; 
+  MvrSonyPacket myPanTiltPacket;
 
   ///@since 2.7.6
-  static ArPTZ* create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot);
+  static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
   ///@since 2.7.6
-  static ArPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
+  static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 };
 
 #endif // ARSONYPTZ_H

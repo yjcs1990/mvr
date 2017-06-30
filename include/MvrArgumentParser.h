@@ -28,17 +28,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARARGUMENTPARSER_H
 
 #include "ariaTypedefs.h"
-#include "ArArgumentBuilder.h"
+#include "MvrArgumentBuilder.h"
 
 /// Parse and store program command-line arguments for use by other ARIA classes.
 /**
    This class is made for parsing arguments from the argv and argc variables
    passed into a program's main() function by the operating system, from
-   an ArArgumentBuilder object, or just from a string (e.g. provided by WinMain() 
+   an MvrArgumentBuilder object, or just from a string (e.g. provided by WinMain() 
    in a Windows MFC program.)
 
    It will also load default argument values if you call
-   loadDefaultArguments().   Aria::init() adds the file /etc/Aria.args and the 
+   loadDefaultArguments().   Mvria::init() adds the file /etc/Aria.args and the 
    environment variable ARIAARGS as locations for argument defaults, so 
    loadDefaultArguments() will always search those. You can
    use this mechanism to avoid needing to always supply command line parameters
@@ -53,7 +53,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    the variable to false or to true, now it will only set it to false
    if 'setWasReallySetOnlyTrue' is set to false.  By default that is
    set to false, but you can just set it to true after you make the
-   parser with no ill effects since all of the built in Aria parsers
+   parser with no ill effects since all of the built in Mvria parsers
    will play nicely with this value, setting it to true or false while
    they parse but then setting it to whatever it was when they
    started.  This change in behavior is so that checking for two
@@ -62,13 +62,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    @ingroup ImportantClasses
 **/
-class ArArgumentParser
+class MvrArgumentParser
 {
 public:
   /// Constructor, takes the argc argv
-  AREXPORT ArArgumentParser(int *argc, char **argv);
+  AREXPORT MvrArgumentParser(int *argc, char **argv);
   /// Constructor, takes an argument builder
-  AREXPORT ArArgumentParser(ArArgumentBuilder *builder);
+  AREXPORT MvrArgumentParser(MvrArgumentBuilder *builder);
   /// Destructor
   AREXPORT ~ArArgumentParser();
   /// If we should only set wasReallySet to true
@@ -116,7 +116,7 @@ public:
   /// Gets the argv
   AREXPORT char** getArgv(void) const;
   /// Gets the argument builder, if one is being used (may be NULL)
-  AREXPORT const ArArgumentBuilder *getArgumentBuilder(void) const 
+  AREXPORT const MvrArgumentBuilder *getArgumentBuilder(void) const 
     { return myBuilder; }
   /// Gets a specific argument
   AREXPORT const char* getArg(size_t whichArg) const;
@@ -178,7 +178,7 @@ protected:
   static std::list<std::string> ourDefaultArgumentLocs;
   static std::list<bool> ourDefaultArgumentLocIsFile;
   bool myOwnBuilder;
-  ArArgumentBuilder *myBuilder;
+  MvrArgumentBuilder *myBuilder;
   bool myUsingBuilder;
   char **myArgv;
   int *myArgc;

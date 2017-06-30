@@ -28,8 +28,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARTCM2_H
 
 #include "ariaUtil.h"
-#include "ArFunctor.h"
-#include "ArRobot.h"
+#include "MvrFunctor.h"
+#include "MvrRobot.h"
 
 
 #ifdef WIN32
@@ -41,12 +41,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /** Interface to the PNI TCM 2, TCM 2.5, and TCM 2.6  3-axis compass (magnetometer)  that can sense absolute heading, as well as pitch, roll, and includes a temperature sensor.
  *
- * See subclasses and ArCompassConnector for more information, as well as 
+ * See subclasses and MvrCompassConnector for more information, as well as 
  * your robot manuals.  PNI's TCM manual is also available for download at the 
  * MobileRobots support website, documentation section.
  *
  * This is an abstract interface. To create a compass interface object,
- * instantiate a subclass or use ArCompassConnector.
+ * instantiate a subclass or use MvrCompassConnector.
 
     @ingroup OptionalClasses
   @ingroup DeviceClasses
@@ -61,11 +61,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * various locations on Earth at 
  * http://www.ngdc.noaa.gov/seg/geomag/jsp/Declination.jsp
  */
-class ArTCM2
+class MvrTCM2
 {
 public:
   
-  AREXPORT ArTCM2();
+  AREXPORT MvrTCM2();
   virtual ~ArTCM2() {}
 
   /** If a connection/initialization procedure is required, perform it, and
@@ -160,7 +160,7 @@ public:
   }
 
   // Add a callback to be invoked when a new heading is recieved
-  void addHeadingDataCallback(ArFunctor1<double> *f) {
+  void addHeadingDataCallback(MvrFunctor1<double> *f) {
     myHeadingDataCallbacks.push_back(f);
   }
 
@@ -189,7 +189,7 @@ protected:
   bool myHaveCalibrationV;
   bool myHaveCalibrationM;
 
-  std::list< ArFunctor1<double>* > myHeadingDataCallbacks;
+  std::list< MvrFunctor1<double>* > myHeadingDataCallbacks;
 
   // packet count
   time_t myTimeLastPacket;
@@ -220,18 +220,18 @@ protected:
  * and connect to the device based on program command line options. 
  * This allows the user of a program to select a different kind
  * of compass configuration (for example, if the compass is connected
- * to a computer serial port, use ArTCMCompassDirect instead of
- * the normal ArTCMCompassRobot.)
+ * to a computer serial port, use MvrTCMCompassDirect instead of
+ * the normal MvrTCMCompassRobot.)
  *
  * The following command-line arguments are checked:
- * @verbinclude ArCompassConnector_options
+ * @verbinclude MvrCompassConnector_options
  */
-class ArCompassConnector
+class MvrCompassConnector
 {
 protected:
-  ArArgumentParser *myArgParser;
-  ArRetFunctorC<bool, ArCompassConnector> myParseArgsCallback;
-  ArFunctorC<ArCompassConnector> myLogArgsCallback;
+  MvrArgumentParser *myArgParser;
+  MvrRetFunctorC<bool, MvrCompassConnector> myParseArgsCallback;
+  MvrFunctorC<ArCompassConnector> myLogArgsCallback;
   typedef enum {
     Robot,
     SerialTCM,
@@ -240,14 +240,14 @@ protected:
   DeviceType myDeviceType;
   const char *mySerialPort;
   AREXPORT bool parseArgs();
-  ArFunctor *mySerialTCMReadFunctor;
-  ArRobot *myRobot;
+  MvrFunctor *mySerialTCMReadFunctor;
+  MvrRobot *myRobot;
   AREXPORT void logOptions();
 public:
-  AREXPORT ArCompassConnector(ArArgumentParser *argParser);
+  AREXPORT MvrCompassConnector(MvrArgumentParser *argParser);
   AREXPORT ~ArCompassConnector();
-  AREXPORT ArTCM2 *create(ArRobot *robot);
-  AREXPORT bool connect(ArTCM2*) const;
+  AREXPORT MvrTCM2 *create(MvrRobot *robot);
+  AREXPORT bool connect(MvrTCM2*) const;
 };
 
 #endif // ARTCM2_H

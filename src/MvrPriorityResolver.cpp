@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArPriorityResolver.h"
-#include "ArAction.h"
-#include "ArRobot.h"
+#include "MvrPriorityResolver.h"
+#include "MvrAction.h"
+#include "MvrRobot.h"
 
 AREXPORT ArPriorityResolver::ArPriorityResolver() :
-  ArResolver("ArPriorityResolver", "Resolves strictly by using priority, the highest priority action to act is the one that gets to go.  Does no mixing of any variety.")
+  ArResolver("MvrPriorityResolver", "Resolves strictly by using priority, the highest priority action to act is the one that gets to go.  Does no mixing of any variety.")
 {
 }
 
@@ -85,11 +85,11 @@ AREXPORT ArActionDesired *ArPriorityResolver::resolve(
       {
 	if (printedFirst || printedLast != (*it).first)
 	{
-	  ArLog::log(ArLog::Terse, "Priority %d:", (*it).first);
+	  ArLog::log(MvrLog::Terse, "Priority %d:", (*it).first);
 	  printedLast = (*it).first;
 	  printedFirst = false;
 	}
-	ArLog::log(ArLog::Terse, "Action: %s", action->getName());
+	ArLog::log(MvrLog::Terse, "Action: %s", action->getName());
 	act->log();
       }
 	

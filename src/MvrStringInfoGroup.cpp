@@ -24,9 +24,9 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArStringInfoGroup.h"
+#include "MvrStringInfoGroup.h"
 
 /* 
    TODO the stringInt functions and such'll leak memory on a failed attempt 
@@ -34,7 +34,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 AREXPORT ArStringInfoGroup::ArStringInfoGroup()
 {
-  myDataMutex.setLogName("ArStringInfoGroup::myDataMutex");
+  myDataMutex.setLogName("MvrStringInfoGroup::myDataMutex");
 }
 
 AREXPORT ArStringInfoGroup::~ArStringInfoGroup()
@@ -54,20 +54,20 @@ AREXPORT bool ArStringInfoGroup::addString(
   myDataMutex.lock();
   if (myAddedStrings.find(name) != myAddedStrings.end())
   {
-    ArLog::log(ArLog::Normal, "ArStringInfoGroups: Cannot add info '%s', duplicate", name);
+    ArLog::log(MvrLog::Normal, "MvrStringInfoGroups: Cannot add info '%s', duplicate", name);
     myDataMutex.unlock();
     return false;
   }
 
   std::list<ArFunctor3<const char *, ArTypes::UByte2,
   ArFunctor2<char *, ArTypes::UByte2> *> *>::iterator it;
-  ArLog::log(ArLog::Verbose, "ArStringInfoGroups: Adding info '%s'", name);
+  ArLog::log(MvrLog::Verbose, "MvrStringInfoGroups: Adding info '%s'", name);
   myAddedStrings.insert(name);
   for (it = myAddStringCBList.begin(); it != myAddStringCBList.end(); it++)
   {
     (*it)->invoke(name, maxLength, functor);
   }
-  ArLog::log(ArLog::Verbose, "ArStringInfoGroups: Added info '%s'", name);
+  ArLog::log(MvrLog::Verbose, "MvrStringInfoGroups: Added info '%s'", name);
   myDataMutex.unlock();
   return true;
 }
@@ -80,7 +80,7 @@ AREXPORT bool ArStringInfoGroup::addStringInt(
 	    (new ArGlobalFunctor4<char *, ArTypes::UByte2, 
 	     ArRetFunctor<int> *, 
 	     const char *>(&ArStringInfoHolderFunctions::intWrapper, 
-			   (char *)NULL, (ArTypes::UByte2) 0, 
+			   (char *)NULL, (MvrTypes::UByte2) 0, 
 			   functor, format)));
 }
 
@@ -92,7 +92,7 @@ AREXPORT bool ArStringInfoGroup::addStringDouble(
 	    (new ArGlobalFunctor4<char *, ArTypes::UByte2, 
 	     ArRetFunctor<double> *, 
 	     const char *>(&ArStringInfoHolderFunctions::doubleWrapper, 
-			   (char *)NULL, (ArTypes::UByte2) 0, 
+			   (char *)NULL, (MvrTypes::UByte2) 0, 
 			   functor, format)));
 }
 
@@ -105,7 +105,7 @@ AREXPORT bool ArStringInfoGroup::addStringBool(
 	    (new ArGlobalFunctor4<char *, ArTypes::UByte2, 
 	     ArRetFunctor<bool> *, 
 	     const char *>(&ArStringInfoHolderFunctions::boolWrapper, 
-			   (char *)NULL, (ArTypes::UByte2) 0, 
+			   (char *)NULL, (MvrTypes::UByte2) 0, 
 			   functor, format)));
 }
 
@@ -118,7 +118,7 @@ AREXPORT bool ArStringInfoGroup::addStringString(
 	    (new ArGlobalFunctor4<char *, ArTypes::UByte2, 
 	     ArRetFunctor<const char *> *, 
 	     const char *>(&ArStringInfoHolderFunctions::stringWrapper, 
-			   (char *)NULL, (ArTypes::UByte2) 0, 
+			   (char *)NULL, (MvrTypes::UByte2) 0, 
 			   functor, format)));
 }
 
@@ -130,7 +130,7 @@ AREXPORT bool ArStringInfoGroup::addStringString(
   return addString(name, maxLength, 
 	    (new ArGlobalFunctor3<char *, ArTypes::UByte2, ArRetFunctor<std::string>*>(
          &ArStringInfoHolderFunctions::cppStringWrapper, 
-			   (char *)NULL, (ArTypes::UByte2) 0, 
+			   (char *)NULL, (MvrTypes::UByte2) 0, 
 			   functor)
       )
   );
@@ -144,7 +144,7 @@ AREXPORT bool ArStringInfoGroup::addStringUnsignedLong(
 	    (new ArGlobalFunctor4<char *, ArTypes::UByte2, 
 	     ArRetFunctor<unsigned long> *, 
 	     const char *>(&ArStringInfoHolderFunctions::unsignedLongWrapper, 
-			   (char *)NULL, (ArTypes::UByte2) 0, 
+			   (char *)NULL, (MvrTypes::UByte2) 0, 
 			   functor, format)));
 }
 
@@ -156,7 +156,7 @@ AREXPORT bool ArStringInfoGroup::addStringLong(
 	    (new ArGlobalFunctor4<char *, ArTypes::UByte2, 
 	     ArRetFunctor<long> *, 
 	     const char *>(&ArStringInfoHolderFunctions::longWrapper, 
-			   (char *)NULL, (ArTypes::UByte2) 0, 
+			   (char *)NULL, (MvrTypes::UByte2) 0, 
 			   functor, format)));
 }
 
@@ -171,6 +171,6 @@ AREXPORT void ArStringInfoGroup::addAddStringCallback(
   else if (position == ArListPos::LAST)
     myAddStringCBList.push_back(functor);
   else
-    ArLog::log(ArLog::Terse, 
-	       "ArStringInfoGroup::addAddStringCallback: Invalid position.");
+    ArLog::log(MvrLog::Terse, 
+	       "MvrStringInfoGroup::addAddStringCallback: Invalid position.");
 }

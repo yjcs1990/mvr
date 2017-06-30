@@ -27,19 +27,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARTCPCONNECTION_H
 #define ARTCPCONNECTION_H
 
-#include "ArDeviceConnection.h"
+#include "MvrDeviceConnection.h"
 #include <string>
 
 #include "ariaTypedefs.h"
-#include "ArSocket.h"
+#include "MvrSocket.h"
 
 /// For connecting to a device through a TCP network socket
 /// @ingroup UtilityClasses
-class ArTcpConnection: public ArDeviceConnection
+class MvrTcpConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT ArTcpConnection();
+  AREXPORT MvrTcpConnection();
   /// Destructor also closes connection
   AREXPORT virtual ~ArTcpConnection();
 
@@ -54,7 +54,7 @@ class ArTcpConnection: public ArDeviceConnection
 			    unsigned int msWait = 0);
   AREXPORT virtual int write(const char *data, unsigned int size);
   AREXPORT virtual const char * getOpenMessage(int messageNumber);
-  AREXPORT virtual ArTime getTimeRead(int index);
+  AREXPORT virtual MvrTime getTimeRead(int index);
   AREXPORT virtual bool isTimeStamping(void);
 
   /// Gets the name of the host connected to
@@ -66,9 +66,9 @@ class ArTcpConnection: public ArDeviceConnection
   AREXPORT int internalOpen(void);
 
   /// Sets the tcp connection to use this socket instead of its own
-  AREXPORT void setSocket(ArSocket *socket);
+  AREXPORT void setSocket(MvrSocket *socket);
   /// Gets the socket this tcp connection is using
-  AREXPORT ArSocket *getSocket(void);
+  AREXPORT MvrSocket *getSocket(void);
   /// Sets the status of the device, ONLY use this if you're playing
   /// with setSocket and know what you're doing
   AREXPORT void setStatus(int status);
@@ -85,9 +85,9 @@ class ArTcpConnection: public ArDeviceConnection
 protected:
   void buildStrMap(void);
   
-  ArStrMap myStrMap;
+  MvrStrMap myStrMap;
   bool myOwnSocket;
-  ArSocket *mySocket;
+  MvrSocket *mySocket;
   int myStatus;
   
   std::string myHostName;

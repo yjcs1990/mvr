@@ -24,16 +24,16 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 // Recurrent task class
 #ifndef WIN32
 #include <pthread.h>
 #include <unistd.h>
 #endif
 #include "ariaOSDef.h"
-#include "ArASyncTask.h"
-#include "ArLog.h"
-#include "ArRecurrentTask.h"
+#include "MvrASyncTask.h"
+#include "MvrLog.h"
+#include "MvrRecurrentTask.h"
 
 //
 // Async recurrent tasks
@@ -47,7 +47,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 AREXPORT 
 ArRecurrentTask::ArRecurrentTask()
 {
-  setThreadName("ArRecurrentTask");
+  setThreadName("MvrRecurrentTask");
   running = go_req = killed = false;
   create();			// create the thread
 }

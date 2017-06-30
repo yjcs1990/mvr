@@ -24,17 +24,17 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArFunctorASyncTask.h"
+#include "MvrFunctorASyncTask.h"
 
-AREXPORT ArFunctorASyncTask::ArFunctorASyncTask(ArRetFunctor1<void *, void *> *functor)
+AREXPORT MvrFunctorASyncTask::ArFunctorASyncTask(MvrRetFunctor1<void *, void *> *functor)
 {
   setThreadName(functor->getName());
   myFunc = functor;
 }
 
-AREXPORT ArFunctorASyncTask::~ArFunctorASyncTask()
+AREXPORT MvrFunctorASyncTask::~ArFunctorASyncTask()
 {
 
 }

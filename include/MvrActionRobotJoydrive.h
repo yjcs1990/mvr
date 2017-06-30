@@ -28,13 +28,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONROBOTJOYDRIVE_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
-class ArRobotPacket;
+class MvrRobotPacket;
 
 /// This action will use the joystick for input to drive the robot
 /**
-   This class creates its own ArJoyHandler to get input from the
+   This class creates its own MvrJoyHandler to get input from the
    joystick.  Then it will scale the speed between 0 and the given max
    for velocity and turning, up and down on the joystick go
    forwards/backwards while right and left go right and left.  You
@@ -50,23 +50,23 @@ class ArRobotPacket;
 
    @ingroup ActionClasses
 **/
-class ArActionRobotJoydrive : public ArAction
+class MvrActionRobotJoydrive : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionRobotJoydrive(const char * name = "robotJoyDrive", 
+  AREXPORT MvrActionRobotJoydrive(const char * name = "robotJoyDrive", 
 				 bool requireDeadmanPushed = true);
   /// Destructor
   AREXPORT virtual ~ArActionRobotJoydrive();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
 protected:
-  AREXPORT bool handleJoystickPacket(ArRobotPacket *packet);
+  AREXPORT bool handleJoystickPacket(MvrRobotPacket *packet);
   AREXPORT void connectCallback(void);
   // whether we require the deadman to be pushed to drive
   bool myRequireDeadmanPushed;
@@ -77,12 +77,12 @@ protected:
   int myJoyX;
   int myJoyY;
   int myThrottle;
-  ArTime myPacketReceivedTime;
+  MvrTime myPacketReceivedTime;
   // action desired
-  ArActionDesired myDesired;
-  ArRetFunctor1C<bool, ArActionRobotJoydrive, 
-      ArRobotPacket *> myHandleJoystickPacketCB;
-  ArFunctorC<ArActionRobotJoydrive> myConnectCB;
+  MvrActionDesired myDesired;
+  MvrRetFunctor1C<bool, MvrActionRobotJoydrive, 
+      MvrRobotPacket *> myHandleJoystickPacketCB;
+  MvrFunctorC<ArActionRobotJoydrive> myConnectCB;
 };
 
 #endif //ARACTIONROBOTJOYDRIVE_H

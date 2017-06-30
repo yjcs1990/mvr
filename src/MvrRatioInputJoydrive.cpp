@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRatioInputJoydrive.h"
-#include "ArRobot.h"
+#include "MvrRatioInputJoydrive.h"
+#include "MvrRobot.h"
 #include "ariaInternal.h"
 
 /**

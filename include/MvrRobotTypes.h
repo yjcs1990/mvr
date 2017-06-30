@@ -29,359 +29,359 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaUtil.h"
-#include "ArRobotParams.h"
+#include "MvrRobotParams.h"
 
 /** @cond INCLUDE_INTERNAL_ROBOT_PARAM_CLASSES */
 
-class ArRobotGeneric : public ArRobotParams
+class MvrRobotGeneric : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotGeneric(const char *dir="");
+  AREXPORT MvrRobotGeneric(const char *dir="");
   AREXPORT virtual ~ArRobotGeneric() {}
 };
 
-class ArRobotAmigo : public ArRobotParams
+class MvrRobotAmigo : public MvrRobotParams
 {
 public:
 
-  AREXPORT ArRobotAmigo(const char *dir="");
+  AREXPORT MvrRobotAmigo(const char *dir="");
   AREXPORT virtual ~ArRobotAmigo() {}
 };
 
-class ArRobotAmigoSh : public ArRobotParams
+class MvrRobotAmigoSh : public MvrRobotParams
 {
 public:
 
-  AREXPORT ArRobotAmigoSh(const char *dir="");
+  AREXPORT MvrRobotAmigoSh(const char *dir="");
   AREXPORT virtual ~ArRobotAmigoSh() {}
 };
 
 
-class ArRobotAmigoShTim5xxWibox : public ArRobotAmigoSh
+class MvrRobotAmigoShTim5xxWibox : public MvrRobotAmigoSh
 {
 public:
-  AREXPORT ArRobotAmigoShTim5xxWibox(const char *dir="");
+  AREXPORT MvrRobotAmigoShTim5xxWibox(const char *dir="");
   AREXPORT virtual ~ArRobotAmigoShTim5xxWibox() {}
 };
 
-class ArRobotP2AT : public ArRobotParams
+class MvrRobotP2AT : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2AT(const char *dir="");
+  AREXPORT MvrRobotP2AT(const char *dir="");
   AREXPORT virtual ~ArRobotP2AT() {}
 };
 
-class ArRobotP2AT8 : public ArRobotParams
+class MvrRobotP2AT8 : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2AT8(const char *dir="");
+  AREXPORT MvrRobotP2AT8(const char *dir="");
   AREXPORT virtual ~ArRobotP2AT8() {}
 };
 
-class ArRobotP2AT8Plus : public ArRobotParams
+class MvrRobotP2AT8Plus : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2AT8Plus(const char *dir="");
+  AREXPORT MvrRobotP2AT8Plus(const char *dir="");
   AREXPORT virtual ~ArRobotP2AT8Plus() {}
 };
 
-class ArRobotP2IT : public ArRobotParams
+class MvrRobotP2IT : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2IT(const char *dir="");
+  AREXPORT MvrRobotP2IT(const char *dir="");
   AREXPORT virtual ~ArRobotP2IT() {}
 };
 
-class ArRobotP2DX : public ArRobotParams
+class MvrRobotP2DX : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2DX(const char *dir="");
+  AREXPORT MvrRobotP2DX(const char *dir="");
   AREXPORT virtual ~ArRobotP2DX() {}
 };
 
-class ArRobotP2DXe : public ArRobotParams
+class MvrRobotP2DXe : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2DXe(const char *dir="");
+  AREXPORT MvrRobotP2DXe(const char *dir="");
   AREXPORT virtual ~ArRobotP2DXe() {}
 };
 
-class ArRobotP2DF : public ArRobotParams
+class MvrRobotP2DF : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2DF(const char *dir="");
+  AREXPORT MvrRobotP2DF(const char *dir="");
   AREXPORT virtual ~ArRobotP2DF() {}
 };
 
-class ArRobotP2D8 : public ArRobotParams
+class MvrRobotP2D8 : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2D8(const char *dir="");
+  AREXPORT MvrRobotP2D8(const char *dir="");
   AREXPORT virtual ~ArRobotP2D8() {}
 };
 
-class ArRobotP2D8Plus : public ArRobotParams
+class MvrRobotP2D8Plus : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2D8Plus(const char *dir="");
+  AREXPORT MvrRobotP2D8Plus(const char *dir="");
   AREXPORT virtual ~ArRobotP2D8Plus() {}
 };
 
-class ArRobotP2CE : public ArRobotParams
+class MvrRobotP2CE : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2CE(const char *dir="");
+  AREXPORT MvrRobotP2CE(const char *dir="");
   AREXPORT virtual ~ArRobotP2CE() {}
 };
 
-class ArRobotP2PP : public ArRobotParams
+class MvrRobotP2PP : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2PP(const char *dir="");
+  AREXPORT MvrRobotP2PP(const char *dir="");
   AREXPORT virtual ~ArRobotP2PP() {}
 };
 
-class ArRobotP2PB : public ArRobotParams
+class MvrRobotP2PB : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP2PB(const char *dir="");
+  AREXPORT MvrRobotP2PB(const char *dir="");
   AREXPORT virtual ~ArRobotP2PB() {}
 };
 
 
-class ArRobotP3AT : public ArRobotParams
+class MvrRobotP3AT : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP3AT(const char *dir="");
+  AREXPORT MvrRobotP3AT(const char *dir="");
   AREXPORT virtual ~ArRobotP3AT() {}
 };
 
 
-class ArRobotP3DX : public ArRobotParams
+class MvrRobotP3DX : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotP3DX(const char *dir="");
+  AREXPORT MvrRobotP3DX(const char *dir="");
   AREXPORT virtual ~ArRobotP3DX() {}
 };
 
-class ArRobotPerfPB : public ArRobotParams
+class MvrRobotPerfPB : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPerfPB(const char *dir="");
+  AREXPORT MvrRobotPerfPB(const char *dir="");
   AREXPORT virtual ~ArRobotPerfPB() {}
 };
 
-class ArRobotPerfPBPlus : public ArRobotParams
+class MvrRobotPerfPBPlus : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPerfPBPlus(const char *dir="");
+  AREXPORT MvrRobotPerfPBPlus(const char *dir="");
   AREXPORT virtual ~ArRobotPerfPBPlus() {}
 };
 
-class ArRobotPion1M : public ArRobotParams
+class MvrRobotPion1M : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPion1M(const char *dir="");
+  AREXPORT MvrRobotPion1M(const char *dir="");
   AREXPORT virtual ~ArRobotPion1M() {}
 };
 
-class ArRobotPion1X : public ArRobotParams
+class MvrRobotPion1X : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPion1X(const char *dir="");
+  AREXPORT MvrRobotPion1X(const char *dir="");
   AREXPORT virtual ~ArRobotPion1X() {}
 };
 
-class ArRobotPsos1M : public ArRobotParams
+class MvrRobotPsos1M : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPsos1M(const char *dir="");
+  AREXPORT MvrRobotPsos1M(const char *dir="");
   AREXPORT virtual ~ArRobotPsos1M() {}
 };
 
-class ArRobotPsos43M : public ArRobotParams
+class MvrRobotPsos43M : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPsos43M(const char *dir="");
+  AREXPORT MvrRobotPsos43M(const char *dir="");
   AREXPORT virtual ~ArRobotPsos43M() {}
 };
 
-class ArRobotPsos1X : public ArRobotParams
+class MvrRobotPsos1X : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPsos1X(const char *dir="");
+  AREXPORT MvrRobotPsos1X(const char *dir="");
   AREXPORT virtual ~ArRobotPsos1X() {}
 };
 
-class ArRobotPionAT : public ArRobotParams
+class MvrRobotPionAT : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPionAT(const char *dir="");
+  AREXPORT MvrRobotPionAT(const char *dir="");
   AREXPORT virtual ~ArRobotPionAT() {}
 };
 
-class ArRobotMapper : public ArRobotParams
+class MvrRobotMapper : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotMapper(const char *dir="");
+  AREXPORT MvrRobotMapper(const char *dir="");
   AREXPORT virtual ~ArRobotMapper() {}
 };
 
-class ArRobotPowerBot : public ArRobotParams
+class MvrRobotPowerBot : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPowerBot(const char *dir="");
+  AREXPORT MvrRobotPowerBot(const char *dir="");
   AREXPORT virtual ~ArRobotPowerBot() {}
 };
 
-class ArRobotP3DXSH : public ArRobotParams
+class MvrRobotP3DXSH : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotP3DXSH(const char *dir="");
+  AREXPORT MvrRobotP3DXSH(const char *dir="");
   AREXPORT virtual ~ArRobotP3DXSH() {}
 };
 
-class ArRobotP3ATSH : public ArRobotParams
+class MvrRobotP3ATSH : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotP3ATSH(const char *dir="");
+  AREXPORT MvrRobotP3ATSH(const char *dir="");
   AREXPORT virtual ~ArRobotP3ATSH() {}
 };
 
-class ArRobotP3ATIWSH : public ArRobotParams
+class MvrRobotP3ATIWSH : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotP3ATIWSH(const char *dir="");
+  AREXPORT MvrRobotP3ATIWSH(const char *dir="");
   AREXPORT virtual ~ArRobotP3ATIWSH() {}
 };
 
-class ArRobotPatrolBotSH : public ArRobotParams
+class MvrRobotPatrolBotSH : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotPatrolBotSH(const char *dir="");
+  AREXPORT MvrRobotPatrolBotSH(const char *dir="");
   AREXPORT virtual ~ArRobotPatrolBotSH() {}
 };
 
-class ArRobotPeopleBotSH : public ArRobotParams
+class MvrRobotPeopleBotSH : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotPeopleBotSH(const char *dir="");
+  AREXPORT MvrRobotPeopleBotSH(const char *dir="");
   AREXPORT virtual ~ArRobotPeopleBotSH() {}
 };
 
-class ArRobotPowerBotSH : public ArRobotParams
+class MvrRobotPowerBotSH : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotPowerBotSH(const char *dir="");
+  AREXPORT MvrRobotPowerBotSH(const char *dir="");
   AREXPORT virtual ~ArRobotPowerBotSH() {}
 };
 
-class ArRobotWheelchairSH : public ArRobotParams
+class MvrRobotWheelchairSH : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotWheelchairSH(const char *dir="");
+  AREXPORT MvrRobotWheelchairSH(const char *dir="");
   AREXPORT virtual ~ArRobotWheelchairSH() {}
 };
 
-class ArRobotPowerBotSHuARCS : public ArRobotParams
+class MvrRobotPowerBotSHuARCS : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotPowerBotSHuARCS(const char *dir="");
+  AREXPORT MvrRobotPowerBotSHuARCS(const char *dir="");
   AREXPORT virtual ~ArRobotPowerBotSHuARCS() {}
 };
 
-class ArRobotSeekur : public ArRobotParams
+class MvrRobotSeekur : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotSeekur(const char *dir="");
+  AREXPORT MvrRobotSeekur(const char *dir="");
   AREXPORT virtual ~ArRobotSeekur() {}
 };
 
-/// @since Aria 2.7.2
-class ArRobotMT400 : public ArRobotParams
+/// @since Mvria 2.7.2
+class MvrRobotMT400 : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotMT400(const char *dir="");
+  AREXPORT MvrRobotMT400(const char *dir="");
   AREXPORT virtual ~ArRobotMT400() {}
 };
 
-/// @since Aria 2.7.2
-class ArRobotResearchPB : public ArRobotParams
+/// @since Mvria 2.7.2
+class MvrRobotResearchPB : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotResearchPB(const char *dir="");
+  AREXPORT MvrRobotResearchPB(const char *dir="");
   AREXPORT virtual ~ArRobotResearchPB() {}
 };
 
-/// @since Aria 2.7.2
-class ArRobotSeekurJr : public ArRobotParams
+/// @since Mvria 2.7.2
+class MvrRobotSeekurJr : public MvrRobotParams
 {
  public:
-  AREXPORT ArRobotSeekurJr(const char *dir="");
+  AREXPORT MvrRobotSeekurJr(const char *dir="");
   AREXPORT virtual ~ArRobotSeekurJr() {}
 };
 
-/// @since Aria 2.7.4
-class ArRobotP3DXSH_lms1xx : public ArRobotP3DXSH
+/// @since Mvria 2.7.4
+class MvrRobotP3DXSH_lms1xx : public MvrRobotP3DXSH
 {
 public: 
-  AREXPORT ArRobotP3DXSH_lms1xx(const char *dir="");
+  AREXPORT MvrRobotP3DXSH_lms1xx(const char *dir="");
 };
 
-/// @since Aria 2.7.4
-class ArRobotP3ATSH_lms1xx : public ArRobotP3ATSH
+/// @since Mvria 2.7.4
+class MvrRobotP3ATSH_lms1xx : public MvrRobotP3ATSH
 {
 public: 
-  AREXPORT ArRobotP3ATSH_lms1xx(const char *dir="");
+  AREXPORT MvrRobotP3ATSH_lms1xx(const char *dir="");
 };
 
-/// @since Aria 2.7.4
-class ArRobotPeopleBotSH_lms1xx : public ArRobotPeopleBotSH
+/// @since Mvria 2.7.4
+class MvrRobotPeopleBotSH_lms1xx : public MvrRobotPeopleBotSH
 {
 public: 
-  AREXPORT ArRobotPeopleBotSH_lms1xx(const char *dir="");
+  AREXPORT MvrRobotPeopleBotSH_lms1xx(const char *dir="");
 };
 
-/// @since Aria 2.7.4
-class ArRobotP3DXSH_lms500 : public ArRobotP3DXSH
+/// @since Mvria 2.7.4
+class MvrRobotP3DXSH_lms500 : public MvrRobotP3DXSH
 {
 public: 
-  AREXPORT ArRobotP3DXSH_lms500(const char *dir="");
+  AREXPORT MvrRobotP3DXSH_lms500(const char *dir="");
 };
 
-/// @since Aria 2.7.4
-class ArRobotP3ATSH_lms500 : public ArRobotP3ATSH
+/// @since Mvria 2.7.4
+class MvrRobotP3ATSH_lms500 : public MvrRobotP3ATSH
 {
 public: 
-  AREXPORT ArRobotP3ATSH_lms500(const char *dir="");
+  AREXPORT MvrRobotP3ATSH_lms500(const char *dir="");
 };
 
-/// @since Aria 2.7.4
-class ArRobotPeopleBotSH_lms500 : public ArRobotPeopleBotSH
+/// @since Mvria 2.7.4
+class MvrRobotPeopleBotSH_lms500 : public MvrRobotPeopleBotSH
 {
 public: 
-  AREXPORT ArRobotPeopleBotSH_lms500(const char *dir="");
+  AREXPORT MvrRobotPeopleBotSH_lms500(const char *dir="");
 };
 
-/// @since Aria 2.7.4
-class ArRobotPowerBotSH_lms500 : public ArRobotPowerBotSH
+/// @since Mvria 2.7.4
+class MvrRobotPowerBotSH_lms500 : public MvrRobotPowerBotSH
 {
 public: 
-  AREXPORT ArRobotPowerBotSH_lms500(const char *dir="");
+  AREXPORT MvrRobotPowerBotSH_lms500(const char *dir="");
 };
 
-/// @since Aria 2.7.4
-class ArRobotResearchPB_lms500 : public ArRobotResearchPB
+/// @since Mvria 2.7.4
+class MvrRobotResearchPB_lms500 : public MvrRobotResearchPB
 {
 public: 
-  AREXPORT ArRobotResearchPB_lms500(const char *dir="");
+  AREXPORT MvrRobotResearchPB_lms500(const char *dir="");
 };
 
-/// @since Aria 2.8
-class ArRobotPioneerLX : public ArRobotParams
+/// @since Mvria 2.8
+class MvrRobotPioneerLX : public MvrRobotParams
 {
 public:
-  AREXPORT ArRobotPioneerLX(const char *dir="");
+  AREXPORT MvrRobotPioneerLX(const char *dir="");
   AREXPORT virtual ~ArRobotPioneerLX() {}
 };
 

@@ -30,14 +30,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <string>
 #include <map>
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
-#include "ArTaskState.h"
+#include "MvrFunctor.h"
+#include "MvrTaskState.h"
 
 /// Class used internally to manage the tasks that are called every cycle
 /**
    This is used internally, no user should normally have to create one, but 
    serious developers may want to use the members.  Most users will be able to 
-   add user tasks via the ArRobot class.
+   add user tasks via the MvrRobot class.
 
    The way it works is that each instance is a node in a tree.  The only node 
    that should ever be created with a new is the top one.  The run and print
@@ -55,34 +55,34 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    by the position passed in to the add function.  addNewBranch() adds a new 
    branch node to the instance it is called on, with the given name and
    position.  addNewLeaf() adds a new leaf node to the instance it is called on,
-   with the given name and position, and also with the ArFunctor given, this 
+   with the given name and position, and also with the MvrFunctor given, this 
    functor will be called when the leaf is run.  Either add creates the new 
    instance and puts it in the list of branches/nodes in the approriate spot.
 
    The tree takes care of all of its own memory management and list management,
    the "add" functions put into the list and creates the memory, conversely
-   if you delete an ArSyncTask (which is the correct way to get rid of one)
+   if you delete an MvrSyncTask (which is the correct way to get rid of one)
    it will remove itself from its parents list.
 
    If you want to add something to the tree the proper way to do it is to get
-   the pointer to the root of the tree (ie with ArRobot::getSyncProcRoot) and
+   the pointer to the root of the tree (ie with MvrRobot::getSyncProcRoot) and
    then to use find on the root to find the branch you want to travel down,
    then continue this until you find the node you want to add to.  Once there
    just call addNewBranch or addNewLeaf and you're done.
 
-   The state of a task can be stored in the target of a given ArTaskState::State pointer,
-   or if NULL than ArSyncTask will use its own member variable.
+   The state of a task can be stored in the target of a given MvrTaskState::State pointer,
+   or if NULL than MvrSyncTask will use its own member variable.
 
   @internal
 */
 
-class ArSyncTask
+class MvrSyncTask
 {
 public:
   /// Constructor, shouldn't ever do a new on anything besides the root node
-  AREXPORT ArSyncTask(const char *name, ArFunctor * functor = NULL, 
-		      ArTaskState::State *state = NULL,
-		      ArSyncTask * parent = NULL);
+  AREXPORT MvrSyncTask(const char *name, MvrFunctor * functor = NULL, 
+		      MvrTaskState::State *state = NULL,
+		      MvrSyncTask * parent = NULL);
   /// Destructor
   AREXPORT virtual ~ArSyncTask();
 
@@ -92,68 +92,68 @@ public:
   AREXPORT void log(int depth = 0);
 
   /// Gets the state of the task
-  AREXPORT ArTaskState::State getState(void);
+  AREXPORT MvrTaskState::State getState(void);
   /// Sets the state of the task
-  AREXPORT void setState(ArTaskState::State state);
+  AREXPORT void setState(MvrTaskState::State state);
     
   /// Finds the task in the instances list of children, by name
-  AREXPORT ArSyncTask *findNonRecursive(const char *name);
+  AREXPORT MvrSyncTask *findNonRecursive(const char *name);
   /// Finds the task in the instances list of children, by functor
-  AREXPORT ArSyncTask *findNonRecursive(ArFunctor *functor);
+  AREXPORT MvrSyncTask *findNonRecursive(MvrFunctor *functor);
 
   /// Finds the task recursively down the tree by name
-  AREXPORT ArSyncTask *find(const char *name); 
+  AREXPORT MvrSyncTask *find(const char *name); 
   /// Finds the task recursively down the tree by functor
-  AREXPORT ArSyncTask *find(ArFunctor *functor);
+  AREXPORT MvrSyncTask *find(MvrFunctor *functor);
 
   /// Returns what this is running, if anything (recurses)
-  AREXPORT ArSyncTask *getRunning(void);
+  AREXPORT MvrSyncTask *getRunning(void);
 
   /// Adds a new branch to this instance
   AREXPORT void addNewBranch(const char *nameOfNew, int position, 
-			     ArTaskState::State *state = NULL);
+			     MvrTaskState::State *state = NULL);
   /// Adds a new leaf to this instance
   AREXPORT void addNewLeaf(const char *nameOfNew, int position, 
-			   ArFunctor *functor, 
-			   ArTaskState::State *state = NULL);
+			   MvrFunctor *functor, 
+			   MvrTaskState::State *state = NULL);
 
   /// Gets the name of this task
   AREXPORT std::string getName(void);
 
   /// Gets the functor this instance runs, if there is one
-  AREXPORT ArFunctor *getFunctor(void);
+  AREXPORT MvrFunctor *getFunctor(void);
 
   /// Sets the functor called to get the cycle warning time (should only be used from the robot)
   AREXPORT void setWarningTimeCB(
-	  ArRetFunctor<unsigned int> *functor);
+	  MvrRetFunctor<unsigned int> *functor);
   /// Gets the functor called to get the cycle warning time (should only be used from the robot)
-  AREXPORT ArRetFunctor<unsigned int> *getWarningTimeCB(void);
+  AREXPORT MvrRetFunctor<unsigned int> *getWarningTimeCB(void);
 
   /// Sets the functor called to check if there should be a time warning this cycle (should only be used from the robot)
   AREXPORT void setNoTimeWarningCB(
-	  ArRetFunctor<bool> *functor);
+	  MvrRetFunctor<bool> *functor);
   /// Gets the functor called to check if there should be a time warning this cycle (should only be used from the robot)
-  AREXPORT ArRetFunctor<bool> *getNoTimeWarningCB(void);
+  AREXPORT MvrRetFunctor<bool> *getNoTimeWarningCB(void);
   
   // removes this task from the map
-  AREXPORT void remove(ArSyncTask * proc);
+  AREXPORT void remove(MvrSyncTask * proc);
 
   // returns whether this node is deleting or not
   AREXPORT bool isDeleting(void);
 protected:
-  std::multimap<int, ArSyncTask *> myMultiMap;
-  ArTaskState::State *myStatePointer;
-  ArTaskState::State myState;
-  ArFunctor *myFunctor;
+  std::multimap<int, MvrSyncTask *> myMultiMap;
+  MvrTaskState::State *myStatePointer;
+  MvrTaskState::State myState;
+  MvrFunctor *myFunctor;
   std::string myName;
-  ArSyncTask *myParent;
+  MvrSyncTask *myParent;
   bool myIsDeleting;
-  ArRetFunctor<unsigned int> *myWarningTimeCB;
-  ArRetFunctor<bool> *myNoTimeWarningCB;
+  MvrRetFunctor<unsigned int> *myWarningTimeCB;
+  MvrRetFunctor<bool> *myNoTimeWarningCB;
   // variables for introspection
   bool myRunning;
   // this is just a pointer to what we're invoking so we can know later
-  ArSyncTask *myInvokingOtherFunctor;
+  MvrSyncTask *myInvokingOtherFunctor;
 };
 
 

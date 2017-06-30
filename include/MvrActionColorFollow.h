@@ -29,22 +29,22 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
-#include "ArAction.h"
-#include "ArACTS.h"
-#include "ArPTZ.h"
+#include "MvrFunctor.h"
+#include "MvrAction.h"
+#include "MvrACTS.h"
+#include "MvrPTZ.h"
 
-/// ArActionColorFollow is an action that moves the robot toward the
+/// MvrActionColorFollow is an action that moves the robot toward the
 /// largest ACTS blob that appears in it's current field of view.
 ///  @ingroup ActionClasses
-class ArActionColorFollow : public ArAction
+class MvrActionColorFollow : public MvrAction
 {
   
 public:
   // Constructor
-  AREXPORT ArActionColorFollow(const char *name, 
-			       ArACTS_1_2 *acts,
-			       ArPTZ *camera,
+  AREXPORT MvrActionColorFollow(const char *name, 
+			       MvrACTS_1_2 *acts,
+			       MvrPTZ *camera,
 			       double speed = 200, 
 			       int width = 160, 
 			       int height = 120);
@@ -53,13 +53,13 @@ public:
   AREXPORT virtual ~ArActionColorFollow(void);
   
   // The action
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
 
   // Set the ACTS channel that we want to get blob info out of
   AREXPORT bool setChannel(int channel);
 
   // Set the camera that we will be controlling
-  AREXPORT void setCamera(ArPTZ *camera);
+  AREXPORT void setCamera(MvrPTZ *camera);
 
   // Toggle whether we should try to acquire a blob
   // if one cannot be seen
@@ -106,16 +106,16 @@ public:
     RIGHT,          // The blob is on the right side of the screen
     CENTER          // The blob is relatively close to the center
   };
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
-  ArActionDesired myDesired;
-  ArACTS_1_2 *myActs;
-  ArPTZ *myCamera;
-  ArTime myLastSeen;
+  MvrActionDesired myDesired;
+  MvrACTS_1_2 *myActs;
+  MvrPTZ *myCamera;
+  MvrTime myLastSeen;
   TargetState myState;
   MoveState myMove;
   LocationState myLocation;

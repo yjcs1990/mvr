@@ -29,16 +29,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaUtil.h"
 #include "ariaTypedefs.h"
-#include "ArTransform.h"
+#include "MvrTransform.h"
 #include <list>
 #include <vector>
 
 /// This class is a buffer that holds ranging information
-class ArRangeBuffer
+class MvrRangeBuffer
 {
 public:
   /// Constructor
-  AREXPORT ArRangeBuffer(int size);
+  AREXPORT MvrRangeBuffer(int size);
   /// Destructor
   AREXPORT virtual ~ArRangeBuffer();
   /// Gets the size of the buffer
@@ -46,13 +46,13 @@ public:
   /// Sets the size of the buffer
   AREXPORT void setSize(size_t size);
   /// Gets the pose of the robot when readings were taken
-  AREXPORT ArPose getPoseTaken() const;
+  AREXPORT MvrPose getPoseTaken() const;
   /// Sets the pose of the robot when readings were taken
-  AREXPORT void setPoseTaken(ArPose p);
+  AREXPORT void setPoseTaken(MvrPose p);
   /// Gets the encoder pose of the robot when readings were taken
-  AREXPORT ArPose getEncoderPoseTaken() const;
+  AREXPORT MvrPose getEncoderPoseTaken() const;
   /// Sets the pose of the robot when readings were taken
-  AREXPORT void setEncoderPoseTaken(ArPose p);
+  AREXPORT void setEncoderPoseTaken(MvrPose p);
   /// Adds a new reading to the buffer
   AREXPORT void addReading(double x, double y);
   /// Adds a new reading to the buffer if some conditions are met
@@ -77,15 +77,15 @@ public:
 
   /// Gets the closest reading, on a polar system 
   AREXPORT double getClosestPolar(double startAngle, double endAngle, 
-				  ArPose position, unsigned int maxRange,
+				  MvrPose position, unsigned int maxRange,
 				  double *angle = NULL) const;
   /// Gets the closest reading, from a rectangular box, in robot LOCAL coords
   AREXPORT double getClosestBox(double x1, double y1, double x2, double y2,
 				ArPose position, unsigned int maxRange, 
 				ArPose *readingPos = NULL,
-				ArPose targetPose = ArPose(0, 0, 0)) const;
+				ArPose targetPose = MvrPose(0, 0, 0)) const;
   /// Applies a transform to the buffer
-  AREXPORT void applyTransform(ArTransform trans);
+  AREXPORT void applyTransform(MvrTransform trans);
   /// Clears all the readings in the range buffer
   AREXPORT void clear(void);
   /// Resets the readings older than this many seconds
@@ -104,18 +104,18 @@ public:
   AREXPORT std::vector<ArPoseWithTime> *getBufferAsVector(void);
   /// Gets the closest reading, from an arbitrary buffer
   AREXPORT static double getClosestPolarInList(
-	  double startAngle, double endAngle, ArPose position, 
+	  double startAngle, double endAngle, MvrPose position, 
 	  unsigned int maxRange, double *angle, 
 	  const std::list<ArPoseWithTime *> *buffer);
   /// Gets the closest reading, from an arbitrary buffer
   AREXPORT static double getClosestBoxInList(
-	  double x1, double y1, double x2, double y2, ArPose position, 
-	  unsigned int maxRange, ArPose *readingPos, 
-	  ArPose targetPose, const std::list<ArPoseWithTime *> *buffer);
+	  double x1, double y1, double x2, double y2, MvrPose position, 
+	  unsigned int maxRange, MvrPose *readingPos, 
+	  MvrPose targetPose, const std::list<ArPoseWithTime *> *buffer);
 protected:
   std::vector<ArPoseWithTime> myVector;
-  ArPose myBufferPose;		// where the robot was when readings were acquired
-  ArPose myEncoderBufferPose;		// where the robot was when readings were acquired
+  MvrPose myBufferPose;		// where the robot was when readings were acquired
+  MvrPose myEncoderBufferPose;		// where the robot was when readings were acquired
 
   std::list<ArPoseWithTime *> myBuffer;
   std::list<ArPoseWithTime *> myInvalidBuffer;
@@ -129,7 +129,7 @@ protected:
   std::list<ArPoseWithTime *>::reverse_iterator myRevIterator;
   std::list<ArPoseWithTime *>::iterator myIterator;
   
-  ArPoseWithTime * myReading;
+  MvrPoseWithTime * myReading;
 };
 
 #endif // ARRANGEBUFFER_H

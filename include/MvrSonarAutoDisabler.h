@@ -43,58 +43,58 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
-class ArRobot;
+class MvrRobot;
 
-class ArSonarAutoDisabler
+class MvrSonarAutoDisabler
 {
 public:
   /// Constructor
-  AREXPORT ArSonarAutoDisabler(ArRobot *robot);
+  AREXPORT MvrSonarAutoDisabler(MvrRobot *robot);
   /// Destructor
   AREXPORT virtual ~ArSonarAutoDisabler();
   /// Supresses this disabler (which turns off the sonar)
   void supress(void) 
-    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::supress:"); 
+    { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::supress:"); 
       mySupressed = true; }
   /// Gets the callback to supress the autodisabler
-  ArFunctor *getSupressCallback(void) { return &mySupressCB; }
+  MvrFunctor *getSupressCallback(void) { return &mySupressCB; }
   /// Unsupresses this disabler (goes back to auto enabling/disabling)
   void unsupress(void) 
-    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::unsupress:"); 
+    { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::unsupress:"); 
       mySupressed = false; }
   /// Gets the callback to supress the autodisabler
-  ArFunctor *getUnsupressCallback(void) { return &myUnsupressCB; }
+  MvrFunctor *getUnsupressCallback(void) { return &myUnsupressCB; }
 
   /// Sets that we're autonomous drivign so we only enable some sonar
   void setAutonomousDriving(void) 
-    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::setAutonomousDriving:"); 
+    { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::setAutonomousDriving:"); 
       myAutonomousDriving = true; }
   /// Gets the callback to set that we're driving autonomously
-  ArFunctor *getSetAutonomousDrivingCallback(void) 
+  MvrFunctor *getSetAutonomousDrivingCallback(void) 
     { return &mySetAutonomousDrivingCB; }
   /// Sets that we're driving non-autonomously so we enable all sonar
   void clearAutonomousDriving(void) 
-    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::clearAutonomousDriving:"); 
+    { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::clearAutonomousDriving:"); 
       myAutonomousDriving = false; }
   /// Gets the callback to set that we're not driving autonomously
-  ArFunctor *getClearAutonomousDrivingCallback(void) 
+  MvrFunctor *getClearAutonomousDrivingCallback(void) 
     { return &myClearAutonomousDrivingCB; }
 protected:
   /// our user task
   AREXPORT void userTask(void);
-  ArRobot *myRobot;
-  ArTime myLastMoved;
-  ArTime myLastSupressed;
+  MvrRobot *myRobot;
+  MvrTime myLastMoved;
+  MvrTime myLastSupressed;
   bool mySupressed;
   bool myAutonomousDriving;
 
-  ArFunctorC<ArSonarAutoDisabler> myUserTaskCB;
-  ArFunctorC<ArSonarAutoDisabler> mySupressCB;
-  ArFunctorC<ArSonarAutoDisabler> myUnsupressCB;
-  ArFunctorC<ArSonarAutoDisabler> mySetAutonomousDrivingCB;
-  ArFunctorC<ArSonarAutoDisabler> myClearAutonomousDrivingCB;
+  MvrFunctorC<ArSonarAutoDisabler> myUserTaskCB;
+  MvrFunctorC<ArSonarAutoDisabler> mySupressCB;
+  MvrFunctorC<ArSonarAutoDisabler> myUnsupressCB;
+  MvrFunctorC<ArSonarAutoDisabler> mySetAutonomousDrivingCB;
+  MvrFunctorC<ArSonarAutoDisabler> myClearAutonomousDrivingCB;
 };
 
 #endif // ARSONARAUTODISABLER

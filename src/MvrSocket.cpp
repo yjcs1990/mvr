@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSocket.h"
-#include "ArLog.h"sendTo
+#include "MvrSocket.h"
+#include "MvrLog.h"sendTo
 
 AREXPORT const char *ArSocket::toString(Type t)
 {
@@ -45,8 +45,8 @@ AREXPORT const char *ArSocket::toString(Type t)
 
 void ArSocket::internalInit(void)
 {
-  myReadStringMutex.setLogName("ArMutex::myReadStringMutex");
-  myWriteStringMutex.setLogName("ArMutex::myWriteStringMutex");
+  myReadStringMutex.setLogName("MvrMutex::myReadStringMutex");
+  myWriteStringMutex.setLogName("MvrMutex::myWriteStringMutex");
   myCloseFunctor = NULL;
   myStringAutoEcho = true;
   myStringEcho = false;
@@ -131,7 +131,7 @@ AREXPORT int ArSocket::write(const void *buff, size_t len)
 
   if (myFD < 0)
   {
-    ArLog::log(ArLog::Terse, "ArSocket::write: called after socket closed");
+    ArLog::log(MvrLog::Terse, "MvrSocket::write: called after socket closed");
     return 0;
   }
 
@@ -192,7 +192,7 @@ AREXPORT int ArSocket::read(void *buff, size_t len, unsigned int msWait)
 {
   if (myFD < 0)
   {
-    ArLog::log(ArLog::Terse, "ArSocket::read: called after socket closed");
+    ArLog::log(MvrLog::Terse, "MvrSocket::read: called after socket closed");
     return 0;
   }
 
@@ -280,14 +280,14 @@ AREXPORT int ArSocket::writeString(const char *str, ...)
   if (ret <= 0)
   {
     if (ret < 0)
-      ArLog::log(ArLog::Normal, "Problem sending (ret %d errno %d) to %s: %s",
+      ArLog::log(MvrLog::Normal, "Problem sending (ret %d errno %d) to %s: %s",
 		 ret, errno, getIPString(), buf);
     else 
-      ArLog::log(ArLog::Normal, "Problem sending (backed up) to %s: %s",
+      ArLog::log(MvrLog::Normal, "Problem sending (backed up) to %s: %s",
 		 getIPString(), buf);
   }
   else if (myLogWriteStrings)
-    ArLog::log(ArLog::Normal, "Sent to %s: %s", getIPString(), buf);
+    ArLog::log(MvrLog::Normal, "Sent to %s: %s", getIPString(), buf);
 
   myWriteStringMutex.unlock();
   return ret;
@@ -360,8 +360,8 @@ AREXPORT char *ArSocket::readString(unsigned int msWait)
 	{
 	  myLastStringReadTime.setToNow();
 	  if (printing)
-	    ArLog::log(ArLog::Normal, 
-		       "ArSocket::ReadString: calling readstring again since got \\n or \\r as the first char",
+	    ArLog::log(MvrLog::Normal, 
+		       "MvrSocket::ReadString: calling readstring again since got \\n or \\r as the first char",
 		       myStringBuf, strlen(myStringBuf));
 	  myReadStringMutex.unlock();
 	  return readString(msWait);
@@ -382,8 +382,8 @@ AREXPORT char *ArSocket::readString(unsigned int msWait)
 	  doStringEcho();
 	  myLastStringReadTime.setToNow();
 	  if (printing)
-	    ArLog::log(ArLog::Normal, 
-		       "ArSocket::ReadString: '%s' (%d) (got \\n or \\r)",
+	    ArLog::log(MvrLog::Normal, 
+		       "MvrSocket::ReadString: '%s' (%d) (got \\n or \\r)",
 		       &myStringBuf[ei], strlen(&myStringBuf[ei]));
 	  myReadStringMutex.unlock();
 	  return &myStringBuf[ei];
@@ -392,8 +392,8 @@ AREXPORT char *ArSocket::readString(unsigned int msWait)
 	doStringEcho();
 	myLastStringReadTime.setToNow();
 	if (printing)
-	  ArLog::log(ArLog::Normal, 
-		     "ArSocket::ReadString: '%s' (%d) (got \\n or \\r)",
+	  ArLog::log(MvrLog::Normal, 
+		     "MvrSocket::ReadString: '%s' (%d) (got \\n or \\r)",
 		     myStringBuf, strlen(myStringBuf));
 	myReadStringMutex.unlock();
 	return myStringBuf;
@@ -408,7 +408,7 @@ AREXPORT char *ArSocket::readString(unsigned int msWait)
       myStringPos = i;
       myStringBuf[myStringPos] = '\0';
       if (printing)
-	ArLog::log(ArLog::Normal, "ArSocket::ReadString: NULL (0) (got 0 bytes, means connection closed");
+	ArLog::log(MvrLog::Normal, "MvrSocket::ReadString: NULL (0) (got 0 bytes, means connection closed");
       myReadStringMutex.unlock();
       return NULL;
     }
@@ -420,7 +420,7 @@ AREXPORT char *ArSocket::readString(unsigned int msWait)
 	myStringPos = i;
 	doStringEcho();
 	if (printing)
-	  ArLog::log(ArLog::Normal, "ArSocket::ReadString: '%s' (%d) (got WSAEWOULDBLOCK)",
+	  ArLog::log(MvrLog::Normal, "MvrSocket::ReadString: '%s' (%d) (got WSAEWOULDBLOCK)",
 		     myStringBufEmpty, strlen(myStringBufEmpty));
 	myReadStringMutex.unlock();
 	return myStringBufEmpty;
@@ -432,25 +432,25 @@ AREXPORT char *ArSocket::readString(unsigned int msWait)
 	myStringPos = i;
 	doStringEcho();
 	if (printing)
-	  ArLog::log(ArLog::Normal, 
-		     "ArSocket::ReadString: '%s' (%d) (got EAGAIN)",
+	  ArLog::log(MvrLog::Normal, 
+		     "MvrSocket::ReadString: '%s' (%d) (got EAGAIN)",
 		     myStringBufEmpty, strlen(myStringBufEmpty));
 	myReadStringMutex.unlock();
 	return myStringBufEmpty;
       }
 #endif
-      ArLog::logErrorFromOS(ArLog::Normal, "ArSocket::readString: Error in reading from network");
+      ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::readString: Error in reading from network");
       if (printing)
-	ArLog::log(ArLog::Normal, "ArSocket::ReadString: NULL (0) (got 0 bytes,  error reading network)");
+	ArLog::log(MvrLog::Normal, "MvrSocket::ReadString: NULL (0) (got 0 bytes,  error reading network)");
       myReadStringMutex.unlock();
       return NULL;
     }
   }
   // if they want a 0 length string
-  ArLog::log(ArLog::Normal, "Some trouble in ArSocket::readString to %s (cannot fit string into buffer?)", getIPString());
+  ArLog::log(MvrLog::Normal, "Some trouble in ArSocket::readString to %s (cannot fit string into buffer?)", getIPString());
   writeString("String too long");
       if (printing)
-	ArLog::log(ArLog::Normal, "ArSocket::ReadString: NULL (0) (string too long?)");
+	ArLog::log(MvrLog::Normal, "MvrSocket::ReadString: NULL (0) (string too long?)");
 
   myReadStringMutex.unlock();
   return NULL;
@@ -506,12 +506,12 @@ void ArSocket::separateHost(const char *rawHost, int rawPort, char *useHost,
 {
   if (useHost == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArSocket: useHost was NULL");
+    ArLog::log(MvrLog::Normal, "MvrSocket: useHost was NULL");
     return;
   }
   if (port == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArSocket: port was NULL");
+    ArLog::log(MvrLog::Normal, "MvrSocket: port was NULL");
     return;
   }
 
@@ -519,7 +519,7 @@ void ArSocket::separateHost(const char *rawHost, int rawPort, char *useHost,
 
   if (rawHost == NULL || rawHost[0] == '\0')
   {
-    ArLog::log(ArLog::Normal, "ArSocket: rawHost was NULL or empty");
+    ArLog::log(MvrLog::Normal, "MvrSocket: rawHost was NULL or empty");
     return;
   }
   
@@ -528,7 +528,7 @@ void ArSocket::separateHost(const char *rawHost, int rawPort, char *useHost,
 
   if (separator.getArgc() <= 0)
   {
-    ArLog::log(ArLog::Normal, "ArSocket: rawHost was empty");
+    ArLog::log(MvrLog::Normal, "MvrSocket: rawHost was empty");
     return;
   }
   if (separator.getArgc() == 1)
@@ -547,13 +547,13 @@ void ArSocket::separateHost(const char *rawHost, int rawPort, char *useHost,
     }
     else
     {
-      ArLog::log(ArLog::Normal, "ArSocket: port given in hostname was not an integer it was %s", separator.getArg(1));
+      ArLog::log(MvrLog::Normal, "MvrSocket: port given in hostname was not an integer it was %s", separator.getArg(1));
       return;
     }
   }
 
   // if we get down here there's too many args
-  ArLog::log(ArLog::Normal, "ArSocket: too many arguments in hostname %s", separator.getFullString());
+  ArLog::log(MvrLog::Normal, "MvrSocket: too many arguments in hostname %s", separator.getFullString());
   return;
 }
 

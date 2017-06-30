@@ -28,36 +28,36 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARIA_wrapper_Functors_h
 #define ARIA_wrapper_Functors_h
 
-/* For Python, define ArFunctor subclasses to hold Python C library
+/* For Python, define MvrFunctor subclasses to hold Python C library
  * callable function objects.  These are used internally by the 
  * wrapper library, and typemaps convert target-language function 
- * objects to these ArFunctor subclasses-- you only need to pass
- * the function to Aria when in the C++ API you would pass a Functor.
+ * objects to these MvrFunctor subclasses-- you only need to pass
+ * the function to Mvria when in the C++ API you would pass a Functor.
  *
- * For Java, define subclasses of ArFunctor for various argument types,
+ * For Java, define subclasses of MvrFunctor for various argument types,
  * since you can't access template classes in Java.  Then you can 
- * further subclass within Java and pass that object to Aria.
+ * further subclass within Java and pass that object to Mvria.
  */
 
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
 /* Functors for Python: */
 
 #ifdef SWIGPYTHON
 
-class ArPyFunctor : public virtual ArFunctor 
+class MvrPyFunctor : public virtual MvrFunctor 
 {
 protected:
   PyObject* pyFunction;
 public:
-  ArPyFunctor(PyObject* _m) : pyFunction(_m) {
+  MvrPyFunctor(PyObject* _m) : pyFunction(_m) {
     Py_INCREF(pyFunction);
   }
 
   virtual void invoke() { 
     PyObject* r = PyObject_CallObject(pyFunction, NULL);
     if(!r) {
-      fputs("** ArPyFunctor: Error calling Python function: ", stderr);
+      fputs("** MvrPyFunctor: Error calling Python function: ", stderr);
       PyErr_Print();
     }
   }
@@ -77,18 +77,18 @@ public:
  * required by the C++ functor.  This _Bool version just checks boolean value of
  * return from python function.
  */
-class ArPyRetFunctor_Bool : 
-  public virtual ArRetFunctor<bool>,
-  public virtual ArPyFunctor
+class MvrPyRetFunctor_Bool : 
+  public virtual MvrRetFunctor<bool>,
+  public virtual MvrPyFunctor
 {
 public:
-  ArPyRetFunctor_Bool(PyObject* _m) : ArRetFunctor<bool>(), ArPyFunctor(_m) {
+  MvrPyRetFunctor_Bool(PyObject* _m) : MvrRetFunctor<bool>(), MvrPyFunctor(_m) {
   }
 
   virtual bool invokeR() {
     PyObject* r = PyObject_CallObject(pyFunction, NULL);  
     if(!r) {
-      fputs("** ArPyRetFunctor_Bool: Error calling Python function: ", stderr);
+      fputs("** MvrPyRetFunctor_Bool: Error calling Python function: ", stderr);
       PyErr_Print();
     }
     return(r == Py_True);
@@ -101,38 +101,38 @@ public:
 
 
 
-class ArPyFunctor1_String : 
-  public virtual ArFunctor1<const char*>,
-  public virtual ArPyFunctor
+class MvrPyFunctor1_String : 
+  public virtual MvrFunctor1<const char*>,
+  public virtual MvrPyFunctor
 {
 public:
-  ArPyFunctor1_String(PyObject* _m) : ArFunctor1<const char*>(), ArPyFunctor(_m) {
+  MvrPyFunctor1_String(PyObject* _m) : MvrFunctor1<const char*>(), MvrPyFunctor(_m) {
   }
 
   virtual void invoke(const char* arg) {
     if(!arg) {
-      Py_FatalError("ArPyFunctor1_String invoked with null argument!");
+      Py_FatalError("MvrPyFunctor1_String invoked with null argument!");
       // TODO invoke with "None" value
       return;
     }
-    //printf("ArPyFunctor1_String invoked with \"%s\"\n", arg);
+    //printf("MvrPyFunctor1_String invoked with \"%s\"\n", arg);
     PyObject *s = PyString_FromString(arg);
     if(!s) {
       PyErr_Print();
-      Py_FatalError("ArPyFunctor1_String: Error converting argument to Python string value");
+      Py_FatalError("MvrPyFunctor1_String: Error converting argument to Python string value");
       return;
     }
     PyObject* r = PyObject_CallFunctionObjArgs(pyFunction, s, NULL);  
     if(!r) {
-      fputs("** ArPyFunctor1_String: invoke: Error calling Python function: ", stderr);
+      fputs("** MvrPyFunctor1_String: invoke: Error calling Python function: ", stderr);
       PyErr_Print();
     }
     Py_DECREF(s);
   }
 
   virtual void invoke() {
-    fputs("** ArPyFunctor1_String: invoke: No argument supplied?", stderr);
-    Py_FatalError("ArPyFunctor1_String invoked with no arguments!");
+    fputs("** MvrPyFunctor1_String: invoke: No argument supplied?", stderr);
+    Py_FatalError("MvrPyFunctor1_String invoked with no arguments!");
   }
 
   virtual const char* getName() {
@@ -141,34 +141,34 @@ public:
 };
 
 #ifdef ARIA_WRAPPER
-class ArPyPacketHandlerFunctor : 
-  public virtual ArRetFunctor1<bool, ArRobotPacket*>,
-  public virtual ArPyFunctor
+class MvrPyPacketHandlerFunctor : 
+  public virtual MvrRetFunctor1<bool, MvrRobotPacket*>,
+  public virtual MvrPyFunctor
 {
 public:
-  ArPyPacketHandlerFunctor(PyObject* _m) : ArRetFunctor1<bool, ArRobotPacket*>(), ArPyFunctor(_m) {}
-  virtual bool invokeR(ArRobotPacket* pkt) {
+  MvrPyPacketHandlerFunctor(PyObject* _m) : MvrRetFunctor1<bool, MvrRobotPacket*>(), MvrPyFunctor(_m) {}
+  virtual bool invokeR(MvrRobotPacket* pkt) {
     if(!pkt) { 
-      Py_FatalError("ArPyPacketHandlerFunctor invoked with null argument!");
+      Py_FatalError("MvrPyPacketHandlerFunctor invoked with null argument!");
       return false;
     }
     PyObject *po = SWIG_NewPointerObj((void*)pkt, SWIGTYPE_p_ArRobotPacket, 0); //PyObject_FromPointer(arg);
     PyObject *r = PyObject_CallFunctionObjArgs(this->pyFunction, po, NULL);
     if(!r) {
-      fputs("** ArPyPacketHandlerFunctor: invoke: Error calling Python function: ", stderr);
+      fputs("** MvrPyPacketHandlerFunctor: invoke: Error calling Python function: ", stderr);
       PyErr_Print();
     }
     Py_DECREF(po);
     return (r == Py_True);
   }
   virtual bool invokeR() {
-    fputs("** ArPyPacketHandlerFunctor: invokeR: No argument supplied", stderr);
-    Py_FatalError("ArPyPacketHandlerFunctor invoked with no arguments!");
+    fputs("** MvrPyPacketHandlerFunctor: invokeR: No argument supplied", stderr);
+    Py_FatalError("MvrPyPacketHandlerFunctor invoked with no arguments!");
     return false;
   }
   virtual void invoke() {
-    fputs("** ArPyPacketHandlerFunctor: invoke: No argument supplied?", stderr);
-    Py_FatalError("ArPyPacketHandlerFunctor invoked with no arguments!");
+    fputs("** MvrPyPacketHandlerFunctor: invoke: No argument supplied?", stderr);
+    Py_FatalError("MvrPyPacketHandlerFunctor invoked with no arguments!");
   }
   virtual const char* getName() {
     return (const char*) PyString_AsString(PyObject_Str(pyFunction));
@@ -179,26 +179,26 @@ public:
 // XXX TODO supply reference/pointer in constructor to Python library conversion function to convert to Python
 // type (e.g. ...FromInt, FromLong, FromInt, etc.)
 template <typename T1>
-class ArPyFunctor1 : 
-  public virtual ArFunctor1<T1>,
-  public virtual ArPyFunctor
+class MvrPyFunctor1 : 
+  public virtual MvrFunctor1<T1>,
+  public virtual MvrPyFunctor
 {
 public:
-  ArPyFunctor1(PyObject* pyfunc) : ArFunctor1<T1>(), ArPyFunctor(pyfunc) {
+  MvrPyFunctor1(PyObject* pyfunc) : MvrFunctor1<T1>(), MvrPyFunctor(pyfunc) {
   }
 
   virtual void invoke(T1 arg) {
-    puts("ArPyFunctor1<> invoked");
+    puts("MvrPyFunctor1<> invoked");
     fflush(stdout);
     PyObject* r = PyObject_CallFunctionObjArgs(pyFunction, arg, NULL);  
     if(!r) {
-      fputs("** ArPyFunctor1: invoke: Error calling Python function: ", stderr);
+      fputs("** MvrPyFunctor1: invoke: Error calling Python function: ", stderr);
       PyErr_Print();
     }
   }
 
   virtual void invoke() {
-    fputs("** ArPyFunctor1: invoke: No argument supplied?", stderr);
+    fputs("** MvrPyFunctor1: invoke: No argument supplied?", stderr);
   }
 
   virtual const char* getName() {
@@ -207,30 +207,30 @@ public:
 };
 
 template <typename T1, typename T2>
-class ArPyFunctor2 : 
-  public virtual ArFunctor2<T1, T2>,
-  public virtual ArPyFunctor
+class MvrPyFunctor2 : 
+  public virtual MvrFunctor2<T1, T2>,
+  public virtual MvrPyFunctor
 {
 public:
-  ArPyFunctor2(PyObject* _m) : ArFunctor2<T1, T2>(), ArPyFunctor(_m) {
+  MvrPyFunctor2(PyObject* _m) : MvrFunctor2<T1, T2>(), MvrPyFunctor(_m) {
   }
 
   virtual void invoke(T1 arg1, T2 arg2) {
     PyObject* r = PyObject_CallFunctionObjArgs(pyFunction, arg1, arg2, NULL);  
     if(!r) {
-      fputs("** ArPyFunctor2: invoke: Error calling Python function: ", stderr);
+      fputs("** MvrPyFunctor2: invoke: Error calling Python function: ", stderr);
       PyErr_Print();
     }
   }
 
   virtual void invoke() {
-    fputs("** ArPyFunctor2: invoke: No argument supplied?", stderr);
-    Py_FatalError("ArPyFunctor2 invoked with no arguments!");
+    fputs("** MvrPyFunctor2: invoke: No argument supplied?", stderr);
+    Py_FatalError("MvrPyFunctor2 invoked with no arguments!");
   }
 
   virtual void invoke(T1 arg1) {
-    fputs("** ArPyFunctor2: invoke: No argument supplied?", stderr);
-    Py_FatalError("ArPyFunctor2 invoked with not enough arguments!");
+    fputs("** MvrPyFunctor2: invoke: No argument supplied?", stderr);
+    Py_FatalError("MvrPyFunctor2 invoked with not enough arguments!");
   }
 
   virtual const char* getName() {

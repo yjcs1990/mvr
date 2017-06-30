@@ -24,21 +24,21 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionLimiterRot.h"
-#include "ArRobot.h"
-#include "ArCommands.h"
+#include "MvrActionLimiterRot.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
 #include "ariaInternal.h"
-#include "ArRobotConfigPacketReader.h"
-#include "ArRangeDevice.h"
+#include "MvrRobotConfigPacketReader.h"
+#include "MvrRangeDevice.h"
 
 /**
    @param name name of the action
 */
-AREXPORT ArActionLimiterRot::ArActionLimiterRot(
+AREXPORT MvrActionLimiterRot::ArActionLimiterRot(
 	const char *name) :
-  ArAction(name,
+  MvrAction(name,
       "Applies a limit to rotation if there are sensor readings in the radius")
 {
   setParameters();
@@ -46,7 +46,7 @@ AREXPORT ArActionLimiterRot::ArActionLimiterRot(
   myUseLocationDependentDevices = true;
 }
 
-AREXPORT ArActionLimiterRot::~ArActionLimiterRot()
+AREXPORT MvrActionLimiterRot::~ArActionLimiterRot()
 {
 
 }
@@ -56,14 +56,14 @@ AREXPORT ArActionLimiterRot::~ArActionLimiterRot()
    @param inRadiusSpeed the speed to go at if something is in the radius
    
 */
-AREXPORT void ArActionLimiterRot::setParameters(
+AREXPORT void MvrActionLimiterRot::setParameters(
 	bool checkRadius, double inRadiusSpeed)
 {
   myCheckRadius = checkRadius;
   myInRadiusSpeed = inRadiusSpeed;
 }
 
-AREXPORT void ArActionLimiterRot::addToConfig(ArConfig *config, 
+AREXPORT void MvrActionLimiterRot::addToConfig(MvrConfig *config, 
 						       const char *section, 
 						       const char *prefix)
 {
@@ -74,27 +74,27 @@ AREXPORT void ArActionLimiterRot::addToConfig(ArConfig *config,
   else
     strPrefix = prefix;
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);  
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);  
 
   name = strPrefix;
   name += "CheckRadius";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myCheckRadius, 
+	  MvrConfigArg(name.c_str(), &myCheckRadius, 
 		      "True to check the robot's radius and apply InRadiusSpeed, false not to"), 
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "InRadiusSpeed";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myInRadiusSpeed, 
+	  MvrConfigArg(name.c_str(), &myInRadiusSpeed, 
 		      "Maximum speed to allow if CheckRadius is true and there are sensor readings in the robot's radius, 0 or less means allow no rotation (deg/sec)"), 
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
 }
 
-AREXPORT ArActionDesired *
-ArActionLimiterRot::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *
+ArActionLimiterRot::fire(MvrActionDesired currentDesired)
 {
   bool printing = false;
 
@@ -107,17 +107,17 @@ ArActionLimiterRot::fire(ArActionDesired currentDesired)
   }
 
   double leftDist;
-  const ArRangeDevice *leftRangeDevice = NULL;
+  const MvrRangeDevice *leftRangeDevice = NULL;
   double rightDist;
-  const ArRangeDevice *rightRangeDevice = NULL;
+  const MvrRangeDevice *rightRangeDevice = NULL;
 
   double dist;
-  //const ArRangeDevice *rangeDevice = NULL;
+  //const MvrRangeDevice *rangeDevice = NULL;
 
-  //ArLog::LogLevel verboseLogLevel = ArLog::Verbose;
-  //ArLog::LogLevel verboseLogLevel = ArLog::Verbose;
+  //ArLog::LogLevel verboseLogLevel = MvrLog::Verbose;
+  //ArLog::LogLevel verboseLogLevel = MvrLog::Verbose;
   //if (printing)
-  //  verboseLogLevel = ArLog::Normal;
+  //  verboseLogLevel = MvrLog::Normal;
 
 
   leftDist = myRobot->checkRangeDevicesCurrentPolar(

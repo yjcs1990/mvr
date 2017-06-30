@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// This action drives the robot specific distances
 
@@ -46,17 +46,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    negative value.
 
    This doesn't avoid obstacles or anything, you could add have an
-   limiting ArAction at a higher priority to try to do this (so you
+   limiting MvrAction at a higher priority to try to do this (so you
    don't smash things). (For truly intelligent navigation, see
    the ARNL or SONARNL software libraries.)
   @ingroup ActionClasses
 **/
 
 
-class ArActionDriveDistance : public ArAction
+class MvrActionDriveDistance : public MvrAction
 {
 public:
-  AREXPORT ArActionDriveDistance(const char *name = "driveDistance", 
+  AREXPORT MvrActionDriveDistance(const char *name = "driveDistance", 
 				double speed = 400, double deceleration = 200);
   AREXPORT virtual ~ArActionDriveDistance();
 
@@ -79,10 +79,10 @@ public:
   double getDeceleration(void) { return myDeceleration; }
   /// Sets if we're printing or not
   void setPrinting(bool printing) { myPrinting = printing; }
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
@@ -90,12 +90,12 @@ protected:
   bool myUseEncoders;
   double mySpeed;
   double myDeceleration;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
   bool myPrinting;
   double myLastVel;
 
   double myDistTravelled;
-  ArPose myLastPose;
+  MvrPose myLastPose;
   
   enum State
   {

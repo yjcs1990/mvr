@@ -49,16 +49,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
   Because of the design of C++ never allowed for encapsulating these two
   pointers together into one language supported construct, this has to be
-  done by hand. For conviences sake, there are functors (ArGlobalFunctor,
-  ArGlobalRetFunctor) which take a pure C style function pointer
+  done by hand. For conviences sake, there are functors (MvrGlobalFunctor,
+  MvrGlobalRetFunctor) which take a pure C style function pointer
   (a non-member function). This is in case you want to use a functor that
   refers to a global C style function.
 
-  Aria makes use of functors by using them as callback functions. Since
-  Aria is programmed using the object oriented programming paradigm, all
+  Mvria makes use of functors by using them as callback functions. Since
+  Mvria is programmed using the object oriented programming paradigm, all
   the callback functions need to be tied to an object and a particular
   instance. Thus the need for functors. Most of the use of callbacks simply
-  take an ArFunctor, which is the base class for all the functors. This
+  take an MvrFunctor, which is the base class for all the functors. This
   class only has the ability to invoke a functor. All the derivitave
   functors have the ability to invoke the correct function on the correct
   object.
@@ -68,12 +68,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   were used to create the functors. These are the base classes for the
   functors. These classes encapsulate everything except for the class
   type that the member function is a member of. This allows someone to
-  accept a functor of type ArFunctor1<int> which has one parameter of type
+  accept a functor of type MvrFunctor1<int> which has one parameter of type
   'int'. But they never have to know that the function is a member function
   of class 'SomeUnknownType'. These classes are:
 
-  ArFunctor, ArFunctor1, ArFunctor2, ArFunctor3
-  ArRetFunctor, ArRetFunctor1, ArRetFunctor2, ArRetFunctor3
+  MvrFunctor, MvrFunctor1, MvrFunctor2, MvrFunctor3
+  MvrRetFunctor, MvrRetFunctor1, MvrRetFunctor2, MvrRetFunctor3
 
   These 8 functors are the only thing a piece of code that wants a functor
   will ever need. But these classes are abstract classes and can not be
@@ -81,8 +81,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   called back will need the functor classes that know about the class type.
   These functors are:
 
-  ArFunctorC, ArFunctor1C, ArFunctor2C, ArFunctor3C
-  ArRetFunctorC, ArRetFunctor1C, ArRetFunctor2C, ArRetFunctor3C
+  MvrFunctorC, MvrFunctor1C, MvrFunctor2C, MvrFunctor3C
+  MvrRetFunctorC, MvrRetFunctor1C, MvrRetFunctor2C, MvrRetFunctor3C
 
   These functors are meant to be instantiated and passed of to a piece of
   code that wants to use them. That piece of code should only know the
@@ -91,8 +91,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   Note that you can create these FunctorC instances with default
   arguments that are then used when the invoke is called without those
   arguments...  These are quite useful since if you have a class that
-  expects an ArFunctor you can make an ArFunctor1C with default
-  arguments and pass it as an ArFunctor... and it will get called with
+  expects an MvrFunctor you can make an MvrFunctor1C with default
+  arguments and pass it as an MvrFunctor... and it will get called with
   that default argument, this is useful for having multiple functors
   use the same function with different arguments and results (just
   takes one functor each). 
@@ -100,13 +100,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   Functors now have a getName() method, this is useful as an aid to debugging,
   allowing you to display the name of some functor being used.
 
-  @javanote You can subclass ArFunctor and override invoke().
+  @javanote You can subclass MvrFunctor and override invoke().
 
   @see @ref functorExample.cpp
 
   @ingroup ImportantClasses
 **/
-class ArFunctor
+class MvrFunctor
 {
 public:
 
@@ -148,10 +148,10 @@ protected:
    name. This allows the code to know how to invoke the functor without
    knowing which class the member function is in.
 
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1>
-class ArFunctor1 : public ArFunctor
+class MvrFunctor1 : public MvrFunctor
 {
 public:
 
@@ -175,10 +175,10 @@ public:
    name. This allows the code to know how to invoke the functor without
    knowing which class the member function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2>
-class ArFunctor2 : public ArFunctor1<P1>
+class MvrFunctor2 : public MvrFunctor1<P1>
 {
 public:
 
@@ -209,10 +209,10 @@ public:
    name. This allows the code to know how to invoke the functor without
    knowing which class the member function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2, class P3>
-class ArFunctor3 : public ArFunctor2<P1, P2>
+class MvrFunctor3 : public MvrFunctor2<P1, P2>
 {
 public:
 
@@ -253,10 +253,10 @@ public:
    name. This allows the code to know how to invoke the functor without
    knowing which class the member function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2, class P3, class P4>
-class ArFunctor4 : public ArFunctor3<P1, P2, P3>
+class MvrFunctor4 : public MvrFunctor3<P1, P2, P3>
 {
 public:
 
@@ -306,10 +306,10 @@ public:
    name. This allows the code to know how to invoke the functor without
    knowing which class the member function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2, class P3, class P4, class P5>
-class ArFunctor5 : public ArFunctor4<P1, P2, P3, P4>
+class MvrFunctor5 : public MvrFunctor4<P1, P2, P3, P4>
 {
 public:
 
@@ -371,14 +371,14 @@ public:
    name. This allows the code to know how to invoke the functor without
    knowing which class the member function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 
-   @javanote To create the equivalent of ArRetFunctor<bool>, you can 
+   @javanote To create the equivalent of MvrRetFunctor<bool>, you can 
       subclass <code>ArRetFunctor_Bool</code> and override <code>invoke(bool)</code>
      
 */
 template<class Ret>
-class ArRetFunctor : public ArFunctor
+class MvrRetFunctor : public MvrFunctor
 {
 public:
 
@@ -400,10 +400,10 @@ public:
    to know how to invoke the functor without knowing which class the member
    function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1>
-class ArRetFunctor1 : public ArRetFunctor<Ret>
+class MvrRetFunctor1 : public MvrRetFunctor<Ret>
 {
 public:
 
@@ -428,10 +428,10 @@ public:
    to know how to invoke the functor without knowing which class the member
    function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2>
-class ArRetFunctor2 : public ArRetFunctor1<Ret, P1>
+class MvrRetFunctor2 : public MvrRetFunctor1<Ret, P1>
 {
 public:
 
@@ -463,10 +463,10 @@ public:
    to know how to invoke the functor without knowing which class the member
    function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2, class P3>
-class ArRetFunctor3 : public ArRetFunctor2<Ret, P1, P2>
+class MvrRetFunctor3 : public MvrRetFunctor2<Ret, P1, P2>
 {
 public:
 
@@ -507,10 +507,10 @@ public:
    to know how to invoke the functor without knowing which class the member
    function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2, class P3, class P4>
-class ArRetFunctor4 : public ArRetFunctor3<Ret, P1, P2, P3>
+class MvrRetFunctor4 : public MvrRetFunctor3<Ret, P1, P2, P3>
 {
 public:
 
@@ -559,10 +559,10 @@ public:
    to know how to invoke the functor without knowing which class the member
    function is in.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2, class P3, class P4, class P5>
-class ArRetFunctor5 : public ArRetFunctor4<Ret, P1, P2, P3, P4>
+class MvrRetFunctor5 : public MvrRetFunctor4<Ret, P1, P2, P3, P4>
 {
 public:
 
@@ -623,7 +623,7 @@ public:
 //////
 //////
 //////
-////// ArFunctors for global functions. C style function pointers.
+////// MvrFunctors for global functions. C style function pointers.
 //////
 //////
 //////
@@ -637,24 +637,24 @@ public:
 /**
    This is a class for global functions. This ties a C style function
    pointer into the functor class hierarchy as a convience. Code that
-   has a reference to this class and treat it as an ArFunctor can use
+   has a reference to this class and treat it as an MvrFunctor can use
    it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 
    @swigomit
 */
-class ArGlobalFunctor : public ArFunctor
+class MvrGlobalFunctor : public MvrFunctor
 {
 public:
 
   /// Constructor
-  ArGlobalFunctor() {}
+  MvrGlobalFunctor() {}
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalFunctor(void (*func)(void)) : myFunc(func) {}
+  MvrGlobalFunctor(void (*func)(void)) : myFunc(func) {}
   /// Destructor
   virtual ~ArGlobalFunctor() {}
 
@@ -670,29 +670,29 @@ protected:
    This is a class for global functions which take 1 parameter. This ties
    a C style function pointer into the functor class hierarchy as a
    convience. Code that has a reference to this class and treat it as
-   an ArFunctor can use it like any other functor.
+   an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1>
-class ArGlobalFunctor1 : public ArFunctor1<P1>
+class MvrGlobalFunctor1 : public MvrFunctor1<P1>
 {
 public:
 
   /// Constructor
-  ArGlobalFunctor1() {}
+  MvrGlobalFunctor1() {}
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalFunctor1(void (*func)(P1)) :
+  MvrGlobalFunctor1(void (*func)(P1)) :
     myFunc(func), myP1() {}
   /// Constructor - supply function pointer, default parameters
   /**
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalFunctor1(void (*func)(P1), P1 p1) :
+  MvrGlobalFunctor1(void (*func)(P1), P1 p1) :
     myFunc(func), myP1(p1) {}
 
   /// Destructor
@@ -725,23 +725,23 @@ protected:
    This is a class for global functions which take 2 parameters. This ties
    a C style function pointer into the functor class hierarchy as a
    convience. Code that has a reference to this class and treat it as
-   an ArFunctor can use it like any other functor.
+   an MvrFunctor can use it like any other functor.
 
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2>
-class ArGlobalFunctor2 : public ArFunctor2<P1, P2>
+class MvrGlobalFunctor2 : public MvrFunctor2<P1, P2>
 {
 public:
 
   /// Constructor
-  ArGlobalFunctor2() {}
+  MvrGlobalFunctor2() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalFunctor2(void (*func)(P1, P2)) :
+  MvrGlobalFunctor2(void (*func)(P1, P2)) :
     myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -749,7 +749,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalFunctor2(void (*func)(P1, P2), P1 p1) :
+  MvrGlobalFunctor2(void (*func)(P1, P2), P1 p1) :
     myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -758,7 +758,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalFunctor2(void (*func)(P1, P2), P1 p1, P2 p2) :
+  MvrGlobalFunctor2(void (*func)(P1, P2), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
@@ -804,23 +804,23 @@ protected:
    This is a class for global functions which take 3 parameters. This ties
    a C style function pointer into the functor class hierarchy as a
    convience. Code that has a reference to this class and treat it as
-   an ArFunctor can use it like any other functor.
+   an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2, class P3>
-class ArGlobalFunctor3 : public ArFunctor3<P1, P2, P3>
+class MvrGlobalFunctor3 : public MvrFunctor3<P1, P2, P3>
 {
 public:
 
   /// Constructor
-  ArGlobalFunctor3() {}
+  MvrGlobalFunctor3() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalFunctor3(void (*func)(P1, P2, P3)) :
+  MvrGlobalFunctor3(void (*func)(P1, P2, P3)) :
     myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -828,7 +828,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1) :
+  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1) :
     myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -837,7 +837,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2) :
+  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -847,7 +847,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+  MvrGlobalFunctor3(void (*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
@@ -910,23 +910,23 @@ protected:
    This is a class for global functions which take 4 parameters. This ties
    a C style function pointer into the functor class hierarchy as a
    convience. Code that has a reference to this class and treat it as
-   an ArFunctor can use it like any other functor.
+   an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2, class P3, class P4>
-class ArGlobalFunctor4 : public ArFunctor4<P1, P2, P3, P4>
+class MvrGlobalFunctor4 : public MvrFunctor4<P1, P2, P3, P4>
 {
 public:
 
   /// Constructor
-  ArGlobalFunctor4() {}
+  MvrGlobalFunctor4() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalFunctor4(void (*func)(P1, P2, P3, P4)) :
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4)) :
     myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -934,7 +934,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1) :
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1) :
     myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -943,7 +943,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -953,7 +953,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
    /// Constructor - supply function pointer, default parameters
@@ -964,7 +964,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
- ArGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+ MvrGlobalFunctor4(void (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
@@ -1042,23 +1042,23 @@ protected:
    This is a class for global functions which take 5 parameters. This ties
    a C style function pointer into the functor class hierarchy as a
    convience. Code that has a reference to this class and treat it as
-   an ArFunctor can use it like any other functor.
+   an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class P1, class P2, class P3, class P4, class P5>
-class ArGlobalFunctor5 : public ArFunctor5<P1, P2, P3, P4, P5>
+class MvrGlobalFunctor5 : public MvrFunctor5<P1, P2, P3, P4, P5>
 {
 public:
 
   /// Constructor
-  ArGlobalFunctor5() {}
+  MvrGlobalFunctor5() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5)) :
+  MvrGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5)) :
     myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1066,7 +1066,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1) :
     myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1075,7 +1075,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1085,7 +1085,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
    /// Constructor - supply function pointer, default parameters
@@ -1096,7 +1096,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
    /// Constructor - supply function pointer, default parameters
@@ -1108,7 +1108,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
  */
-  ArGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrGlobalFunctor5(void (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor
@@ -1197,7 +1197,7 @@ protected:
   P5 myP5;
 };
 
-#endif // Omitting ArGlobalFunctor from Swig
+#endif // Omitting MvrGlobalFunctor from Swig
 
 
 
@@ -1208,7 +1208,7 @@ protected:
 //////
 //////
 //////
-////// ArFunctors for global functions, C style function pointers with return
+////// MvrFunctors for global functions, C style function pointers with return
 ////// return values.
 //////
 //////
@@ -1224,23 +1224,23 @@ protected:
    This is a class for global functions which return a value. This ties
    a C style function pointer into the functor class hierarchy as a
    convience. Code that has a reference to this class and treat it as
-   an ArFunctor can use it like any other functor.
+   an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret>
-class ArGlobalRetFunctor : public ArRetFunctor<Ret>
+class MvrGlobalRetFunctor : public MvrRetFunctor<Ret>
 {
 public:
 
   /// Constructor
-  ArGlobalRetFunctor() {}
+  MvrGlobalRetFunctor() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalRetFunctor(Ret (*func)(void)) : myFunc(func) {}
+  MvrGlobalRetFunctor(Ret (*func)(void)) : myFunc(func) {}
 
   /// Destructor
   virtual ~ArGlobalRetFunctor() {}
@@ -1259,23 +1259,23 @@ protected:
    This is a class for global functions which take 1 parameter and return
    a value. This ties a C style function pointer into the functor class
    hierarchy as a convience. Code that has a reference to this class
-   and treat it as an ArFunctor can use it like any other functor.
+   and treat it as an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1>
-class ArGlobalRetFunctor1 : public ArRetFunctor1<Ret, P1>
+class MvrGlobalRetFunctor1 : public MvrRetFunctor1<Ret, P1>
 {
 public:
 
   /// Constructor
-  ArGlobalRetFunctor1() {}
+  MvrGlobalRetFunctor1() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalRetFunctor1(Ret (*func)(P1)) :
+  MvrGlobalRetFunctor1(Ret (*func)(P1)) :
     myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1283,7 +1283,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalRetFunctor1(Ret (*func)(P1), P1 p1) :
+  MvrGlobalRetFunctor1(Ret (*func)(P1), P1 p1) :
     myFunc(func), myP1(p1) {}
 
   /// Destructor
@@ -1315,23 +1315,23 @@ protected:
    This is a class for global functions which take 2 parameters and return
    a value. This ties a C style function pointer into the functor class
    hierarchy as a convience. Code that has a reference to this class
-   and treat it as an ArFunctor can use it like any other functor.
+   and treat it as an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2>
-class ArGlobalRetFunctor2 : public ArRetFunctor2<Ret, P1, P2>
+class MvrGlobalRetFunctor2 : public MvrRetFunctor2<Ret, P1, P2>
 {
 public:
 
   /// Constructor
-  ArGlobalRetFunctor2() {}
+  MvrGlobalRetFunctor2() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalRetFunctor2(Ret (*func)(P1, P2)) :
+  MvrGlobalRetFunctor2(Ret (*func)(P1, P2)) :
     myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1339,7 +1339,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalRetFunctor2(Ret (*func)(P1, P2), P1 p1) :
+  MvrGlobalRetFunctor2(Ret (*func)(P1, P2), P1 p1) :
     myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1348,7 +1348,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalRetFunctor2(Ret (*func)(P1, P2), P1 p1, P2 p2) :
+  MvrGlobalRetFunctor2(Ret (*func)(P1, P2), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
@@ -1394,23 +1394,23 @@ protected:
    This is a class for global functions which take 2 parameters and return
    a value. This ties a C style function pointer into the functor class
    hierarchy as a convience. Code that has a reference to this class
-   and treat it as an ArFunctor can use it like any other functor.
+   and treat it as an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2, class P3>
-class ArGlobalRetFunctor3 : public ArRetFunctor3<Ret, P1, P2, P3>
+class MvrGlobalRetFunctor3 : public MvrRetFunctor3<Ret, P1, P2, P3>
 {
 public:
 
   /// Constructor
-  ArGlobalRetFunctor3() {}
+  MvrGlobalRetFunctor3() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalRetFunctor3(Ret (*func)(P1, P2, P3)) :
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3)) :
     myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1418,7 +1418,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1) :
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1) :
     myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1427,7 +1427,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1, P2 p2) :
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1437,7 +1437,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+  MvrGlobalRetFunctor3(Ret (*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
@@ -1502,23 +1502,23 @@ protected:
    This is a class for global functions which take 4 parameters and return
    a value. This ties a C style function pointer into the functor class
    hierarchy as a convience. Code that has a reference to this class
-   and treat it as an ArFunctor can use it like any other functor.
+   and treat it as an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2, class P3, class P4>
-class ArGlobalRetFunctor4 : public ArRetFunctor4<Ret, P1, P2, P3, P4>
+class MvrGlobalRetFunctor4 : public MvrRetFunctor4<Ret, P1, P2, P3, P4>
 {
 public:
 
   /// Constructor
-  ArGlobalRetFunctor4() {}
+  MvrGlobalRetFunctor4() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4)) :
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4)) :
     myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1526,7 +1526,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1) :
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1) :
     myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1535,7 +1535,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1545,7 +1545,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
  */
-  ArGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
 	/// Constructor - supply function pointer, default parameters
@@ -1556,7 +1556,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrGlobalRetFunctor4(Ret (*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
@@ -1635,23 +1635,23 @@ protected:
    This is a class for global functions which take 4 parameters and return
    a value. This ties a C style function pointer into the functor class
    hierarchy as a convience. Code that has a reference to this class
-   and treat it as an ArFunctor can use it like any other functor.
+   and treat it as an MvrFunctor can use it like any other functor.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class P1, class P2, class P3, class P4, class P5>
-class ArGlobalRetFunctor5 : public ArRetFunctor5<Ret, P1, P2, P3, P4, P5>
+class MvrGlobalRetFunctor5 : public MvrRetFunctor5<Ret, P1, P2, P3, P4, P5>
 {
 public:
 
   /// Constructor
-  ArGlobalRetFunctor5() {}
+  MvrGlobalRetFunctor5() {}
 
   /// Constructor - supply function pointer
   /**
      @param func global function pointer
   */
-  ArGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5)) :
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5)) :
     myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1659,7 +1659,7 @@ public:
      @param func global function pointer
      @param p1 default first parameter
   */
-  ArGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1) :
     myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1668,7 +1668,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1678,7 +1678,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
  */
-  ArGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
 	/// Constructor - supply function pointer, default parameters
@@ -1689,7 +1689,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
   /**
@@ -1700,7 +1700,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
  */
-  ArGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrGlobalRetFunctor5(Ret (*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor
@@ -1789,7 +1789,7 @@ protected:
   P5 myP5;
 };
 
-#endif // omitting ArGlobalRetFunctor from SWIG
+#endif // omitting MvrGlobalRetFunctor from SWIG
 
 
 
@@ -1800,7 +1800,7 @@ protected:
 //////
 //////
 //////
-////// ArFunctors for member functions
+////// MvrFunctors for member functions
 //////
 //////
 //////
@@ -1816,29 +1816,29 @@ protected:
    This class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class T>
-class ArFunctorC : public ArFunctor
+class MvrFunctorC : public MvrFunctor
 {
 public:
 
   /// Constructor
-  ArFunctorC() {}
+  MvrFunctorC() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctorC(T &obj, void (T::*func)(void)) : myObj(&obj), myFunc(func) {}
+  MvrFunctorC(T &obj, void (T::*func)(void)) : myObj(&obj), myFunc(func) {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctorC(T *obj, void (T::*func)(void)) : myObj(obj), myFunc(func) {}
+  MvrFunctorC(T *obj, void (T::*func)(void)) : myObj(obj), myFunc(func) {}
 
   /// Destructor
   virtual ~ArFunctorC() {}
@@ -1872,22 +1872,22 @@ protected:
    instance of a class. This class should be instantiated by code that
    wishes to pass off a functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class T, class P1>
-class ArFunctor1C : public ArFunctor1<P1>
+class MvrFunctor1C : public MvrFunctor1<P1>
 {
 public:
 
   /// Constructor
-  ArFunctor1C() {}
+  MvrFunctor1C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor1C(T &obj, void (T::*func)(P1)) :
+  MvrFunctor1C(T &obj, void (T::*func)(P1)) :
     myObj(&obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1896,7 +1896,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor1C(T &obj, void (T::*func)(P1), P1 p1) :
+  MvrFunctor1C(T &obj, void (T::*func)(P1), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1) {}
 
   /// Constructor - supply function pointer
@@ -1904,7 +1904,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor1C(T *obj, void (T::*func)(P1)) :
+  MvrFunctor1C(T *obj, void (T::*func)(P1)) :
     myObj(obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1913,7 +1913,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor1C(T *obj, void (T::*func)(P1), P1 p1) :
+  MvrFunctor1C(T *obj, void (T::*func)(P1), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
@@ -1961,22 +1961,22 @@ protected:
    instance of a class. This class should be instantiated by code that
    wishes to pass off a functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class T, class P1, class P2>
-class ArFunctor2C : public ArFunctor2<P1, P2>
+class MvrFunctor2C : public MvrFunctor2<P1, P2>
 {
 public:
 
   /// Constructor
-  ArFunctor2C() {}
+  MvrFunctor2C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor2C(T &obj, void (T::*func)(P1, P2)) :
+  MvrFunctor2C(T &obj, void (T::*func)(P1, P2)) :
     myObj(&obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1985,7 +1985,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor2C(T &obj, void (T::*func)(P1, P2), P1 p1) :
+  MvrFunctor2C(T &obj, void (T::*func)(P1, P2), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -1995,7 +1995,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor2C(T &obj, void (T::*func)(P1, P2), P1 p1, P2 p2) :
+  MvrFunctor2C(T &obj, void (T::*func)(P1, P2), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Constructor - supply function pointer
@@ -2003,7 +2003,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor2C(T *obj, void (T::*func)(P1, P2)) :
+  MvrFunctor2C(T *obj, void (T::*func)(P1, P2)) :
     myObj(obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2012,7 +2012,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor2C(T *obj, void (T::*func)(P1, P2), P1 p1) :
+  MvrFunctor2C(T *obj, void (T::*func)(P1, P2), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2022,7 +2022,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor2C(T *obj, void (T::*func)(P1, P2), P1 p1, P2 p2) :
+  MvrFunctor2C(T *obj, void (T::*func)(P1, P2), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
@@ -2083,22 +2083,22 @@ protected:
    instance of a class. This class should be instantiated by code that
    wishes to pass off a functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class T, class P1, class P2, class P3>
-class ArFunctor3C : public ArFunctor3<P1, P2, P3>
+class MvrFunctor3C : public MvrFunctor3<P1, P2, P3>
 {
 public:
 
   /// Constructor
-  ArFunctor3C() {}
+  MvrFunctor3C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor3C(T &obj, void (T::*func)(P1, P2, P3)) :
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3)) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2107,7 +2107,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1) :
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2117,7 +2117,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2128,7 +2128,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+  MvrFunctor3C(T &obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Constructor - supply function pointer
@@ -2136,7 +2136,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor3C(T *obj, void (T::*func)(P1, P2, P3)) :
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3)) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2145,7 +2145,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1) :
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2155,7 +2155,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3() {} 
 
   /// Constructor - supply function pointer, default parameters
@@ -2166,7 +2166,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+  MvrFunctor3C(T *obj, void (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
@@ -2244,22 +2244,22 @@ protected:
    instance of a class. This class should be instantiated by code that
    wishes to pass off a functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class T, class P1, class P2, class P3, class P4>
-class ArFunctor4C : public ArFunctor4<P1, P2, P3, P4>
+class MvrFunctor4C : public MvrFunctor4<P1, P2, P3, P4>
 {
 public:
 
   /// Constructor
-  ArFunctor4C() {}
+  MvrFunctor4C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4)) :
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4)) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2268,7 +2268,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2278,7 +2278,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2289,7 +2289,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2301,7 +2301,7 @@ public:
      @param p3 default third parameter
       @param p4 default fourth parameter
  */
-  ArFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Constructor - supply function pointer
@@ -2309,7 +2309,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4)) :
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4)) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2318,7 +2318,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2328,7 +2328,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2339,7 +2339,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2351,7 +2351,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
 	
@@ -2446,22 +2446,22 @@ protected:
    instance of a class. This class should be instantiated by code that
    wishes to pass off a functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class T, class P1, class P2, class P3, class P4, class P5>
-class ArFunctor5C : public ArFunctor5<P1, P2, P3, P4, P5>
+class MvrFunctor5C : public MvrFunctor5<P1, P2, P3, P4, P5>
 {
 public:
 
   /// Constructor
-  ArFunctor5C() {}
+  MvrFunctor5C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5)) :
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5)) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2470,7 +2470,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2480,7 +2480,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2491,7 +2491,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2503,7 +2503,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
   
   /// Constructor - supply function pointer, default parameters
@@ -2524,7 +2524,7 @@ ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4
      @param obj object to call function on
      @param func member function pointer
   */
-  ArFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5)) :
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5)) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2533,7 +2533,7 @@ ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2543,7 +2543,7 @@ ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2554,7 +2554,7 @@ ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2566,7 +2566,7 @@ ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2579,7 +2579,7 @@ ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4
      @param p4 default fourth parameter
      @param p5 default fifth parameter
   */
-  ArFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
 	
@@ -2695,7 +2695,7 @@ protected:
 //////
 //////
 //////
-////// ArFunctors for member functions with return values
+////// MvrFunctors for member functions with return values
 //////
 //////
 //////
@@ -2711,29 +2711,29 @@ protected:
    instance of a class. This class should be instantiated by code that
    wishes to pass off a functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class T>
-class ArRetFunctorC : public ArRetFunctor<Ret>
+class MvrRetFunctorC : public MvrRetFunctor<Ret>
 {
 public:
 
   /// Constructor
-  ArRetFunctorC() {}
+  MvrRetFunctorC() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctorC(T &obj, Ret (T::*func)(void)) : myObj(&obj), myFunc(func) {}
+  MvrRetFunctorC(T &obj, Ret (T::*func)(void)) : myObj(&obj), myFunc(func) {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctorC(T *obj, Ret (T::*func)(void)) : myObj(obj), myFunc(func) {}
+  MvrRetFunctorC(T *obj, Ret (T::*func)(void)) : myObj(obj), myFunc(func) {}
 
   /// Destructor - supply function pointer
   virtual ~ArRetFunctorC() {}
@@ -2767,22 +2767,22 @@ protected:
    instantiated by code that wishes to pass off a functor to another
    piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class T, class P1>
-class ArRetFunctor1C : public ArRetFunctor1<Ret, P1>
+class MvrRetFunctor1C : public MvrRetFunctor1<Ret, P1>
 {
 public:
 
   /// Constructor
-  ArRetFunctor1C() {}
+  MvrRetFunctor1C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor1C(T &obj, Ret (T::*func)(P1)) :
+  MvrRetFunctor1C(T &obj, Ret (T::*func)(P1)) :
     myObj(&obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2791,7 +2791,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor1C(T &obj, Ret (T::*func)(P1), P1 p1) :
+  MvrRetFunctor1C(T &obj, Ret (T::*func)(P1), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1) {}
 
   /// Constructor - supply function pointer
@@ -2799,7 +2799,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor1C(T *obj, Ret (T::*func)(P1)) :
+  MvrRetFunctor1C(T *obj, Ret (T::*func)(P1)) :
     myObj(obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2808,7 +2808,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor1C(T *obj, Ret (T::*func)(P1), P1 p1) :
+  MvrRetFunctor1C(T *obj, Ret (T::*func)(P1), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
@@ -2856,22 +2856,22 @@ protected:
    instantiated by code that wishes to pass off a functor to another
    piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class T, class P1, class P2>
-class ArRetFunctor2C : public ArRetFunctor2<Ret, P1, P2>
+class MvrRetFunctor2C : public MvrRetFunctor2<Ret, P1, P2>
 {
 public:
 
   /// Constructor
-  ArRetFunctor2C() {}
+  MvrRetFunctor2C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor2C(T &obj, Ret (T::*func)(P1, P2)) :
+  MvrRetFunctor2C(T &obj, Ret (T::*func)(P1, P2)) :
     myObj(&obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2880,7 +2880,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor2C(T &obj, Ret (T::*func)(P1, P2), P1 p1) :
+  MvrRetFunctor2C(T &obj, Ret (T::*func)(P1, P2), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2890,7 +2890,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor2C(T &obj, Ret (T::*func)(P1, P2), P1 p1, P2 p2) :
+  MvrRetFunctor2C(T &obj, Ret (T::*func)(P1, P2), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Constructor - supply function pointer
@@ -2898,7 +2898,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor2C(T *obj, Ret (T::*func)(P1, P2)) :
+  MvrRetFunctor2C(T *obj, Ret (T::*func)(P1, P2)) :
     myObj(obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2907,7 +2907,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor2C(T *obj, Ret (T::*func)(P1, P2), P1 p1) :
+  MvrRetFunctor2C(T *obj, Ret (T::*func)(P1, P2), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -2917,7 +2917,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor2C(T *obj, Ret (T::*func)(P1, P2), P1 p1, P2 p2) :
+  MvrRetFunctor2C(T *obj, Ret (T::*func)(P1, P2), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
@@ -2979,22 +2979,22 @@ protected:
    instantiated by code that wishes to pass off a functor to another
    piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class T, class P1, class P2, class P3>
-class ArRetFunctor3C : public ArRetFunctor3<Ret, P1, P2, P3>
+class MvrRetFunctor3C : public MvrRetFunctor3<Ret, P1, P2, P3>
 {
 public:
 
   /// Constructor
-  ArRetFunctor3C() {}
+  MvrRetFunctor3C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3)) :
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3)) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3003,7 +3003,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1) :
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3013,7 +3013,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3024,7 +3024,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+  MvrRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Constructor - supply function pointer
@@ -3032,7 +3032,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3)) :
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3)) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3041,7 +3041,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1) :
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3051,7 +3051,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3062,7 +3062,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
+  MvrRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
@@ -3148,22 +3148,22 @@ protected:
    instantiated by code that wishes to pass off a functor to another
    piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class T, class P1, class P2, class P3, class P4>
-class ArRetFunctor4C : public ArRetFunctor4<Ret, P1, P2, P3, P4>
+class MvrRetFunctor4C : public MvrRetFunctor4<Ret, P1, P2, P3, P4>
 {
 public:
 
   /// Constructor
-  ArRetFunctor4C() {}
+  MvrRetFunctor4C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4)) :
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4)) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3172,7 +3172,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1) :
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3182,7 +3182,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3193,7 +3193,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3205,7 +3205,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
 
@@ -3215,7 +3215,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4)) :
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4)) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3224,7 +3224,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1) :
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3234,7 +3234,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3245,7 +3245,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3257,7 +3257,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
@@ -3355,22 +3355,22 @@ protected:
    instantiated by code that wishes to pass off a functor to another
    piece of code.
    
-   For an overall description of functors, see ArFunctor.
+   For an overall description of functors, see MvrFunctor.
 */
 template<class Ret, class T, class P1, class P2, class P3, class P4, class P5>
-class ArRetFunctor5C : public ArRetFunctor5<Ret, P1, P2, P3, P4, P5>
+class MvrRetFunctor5C : public MvrRetFunctor5<Ret, P1, P2, P3, P4, P5>
 {
 public:
 
   /// Constructor
-  ArRetFunctor5C() {}
+  MvrRetFunctor5C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5)) :
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5)) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3379,7 +3379,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3389,7 +3389,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3400,7 +3400,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3412,7 +3412,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
 
@@ -3426,7 +3426,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
   */
-  ArRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
 
@@ -3436,7 +3436,7 @@ public:
      @param obj object to call function on
      @param func member function pointer
   */
-  ArRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5)) :
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5)) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3445,7 +3445,7 @@ public:
      @param func member function pointer
      @param p1 default first parameter
   */
-  ArRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3455,7 +3455,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3466,7 +3466,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3478,7 +3478,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
 
@@ -3492,7 +3492,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
  */
-  ArRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor
@@ -3608,7 +3608,7 @@ protected:
 //////
 //////
 //////
-////// ArFunctors for const member functions
+////// MvrFunctors for const member functions
 //////
 //////
 //////
@@ -3624,31 +3624,31 @@ protected:
    instance of a class.  This class should be instantiated by code
    that wishes to pass off a functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  
+   For an overall description of functors, see MvrFunctor.  
 
    @swigomit
 */
 template<class T>
-class ArConstFunctorC : public ArFunctor
+class MvrConstFunctorC : public MvrFunctor
 {
 public:
 
   /// Constructor
-  ArConstFunctorC() {}
+  MvrConstFunctorC() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctorC(T &obj, void (T::*func)(void) const) : myObj(&obj), myFunc(func) {}
+  MvrConstFunctorC(T &obj, void (T::*func)(void) const) : myObj(&obj), myFunc(func) {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctorC(T *obj, void (T::*func)(void) const) : myObj(obj), myFunc(func) {}
+  MvrConstFunctorC(T *obj, void (T::*func)(void) const) : myObj(obj), myFunc(func) {}
 
   /// Destructor
   virtual ~ArConstFunctorC() {}
@@ -3683,21 +3683,21 @@ protected:
    should be instantiated by code that wishes to pass off a functor to
    another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class T, class P1>
-class ArConstFunctor1C : public ArFunctor1<P1>
+class MvrConstFunctor1C : public MvrFunctor1<P1>
 {
 public:
 
   /// Constructor
-  ArConstFunctor1C() {}
+  MvrConstFunctor1C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor1C(T &obj, void (T::*func)(P1) const) :
+  MvrConstFunctor1C(T &obj, void (T::*func)(P1) const) :
     myObj(&obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3706,7 +3706,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor1C(T &obj, void (T::*func)(P1) const, P1 p1) :
+  MvrConstFunctor1C(T &obj, void (T::*func)(P1) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1) {}
 
   /// Constructor - supply function pointer
@@ -3714,7 +3714,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor1C(T *obj, void (T::*func)(P1) const) :
+  MvrConstFunctor1C(T *obj, void (T::*func)(P1) const) :
     myObj(obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3723,7 +3723,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor1C(T *obj, void (T::*func)(P1) const, P1 p1) :
+  MvrConstFunctor1C(T *obj, void (T::*func)(P1) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
@@ -3772,21 +3772,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class T, class P1, class P2>
-class ArConstFunctor2C : public ArFunctor2<P1, P2>
+class MvrConstFunctor2C : public MvrFunctor2<P1, P2>
 {
 public:
 
   /// Constructor
-  ArConstFunctor2C() {}
+  MvrConstFunctor2C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor2C(T &obj, void (T::*func)(P1, P2) const) :
+  MvrConstFunctor2C(T &obj, void (T::*func)(P1, P2) const) :
     myObj(&obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3795,7 +3795,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor2C(T &obj, void (T::*func)(P1, P2) const, P1 p1) :
+  MvrConstFunctor2C(T &obj, void (T::*func)(P1, P2) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3805,7 +3805,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor2C(T &obj, void (T::*func)(P1, P2) const, P1 p1, P2 p2) :
+  MvrConstFunctor2C(T &obj, void (T::*func)(P1, P2) const, P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Constructor - supply function pointer
@@ -3813,7 +3813,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor2C(T *obj, void (T::*func)(P1, P2) const) :
+  MvrConstFunctor2C(T *obj, void (T::*func)(P1, P2) const) :
     myObj(obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3822,7 +3822,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor2C(T *obj, void (T::*func)(P1, P2) const, P1 p1) :
+  MvrConstFunctor2C(T *obj, void (T::*func)(P1, P2) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3832,7 +3832,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor2C(T *obj, void (T::*func)(P1, P2) const, P1 p1, P2 p2) :
+  MvrConstFunctor2C(T *obj, void (T::*func)(P1, P2) const, P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
@@ -3894,21 +3894,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class T, class P1, class P2, class P3>
-class ArConstFunctor3C : public ArFunctor3<P1, P2, P3>
+class MvrConstFunctor3C : public MvrFunctor3<P1, P2, P3>
 {
 public:
 
   /// Constructor
-  ArConstFunctor3C() {}
+  MvrConstFunctor3C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const) :
+  MvrConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3917,7 +3917,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const, P1 p1) :
+  MvrConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3927,7 +3927,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
+  MvrConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3938,7 +3938,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstFunctor3C(T &obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Constructor - supply function pointer
@@ -3946,7 +3946,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const) :
+  MvrConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3955,7 +3955,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const, P1 p1) :
+  MvrConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -3965,7 +3965,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
+  MvrConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3() {} 
 
   /// Constructor - supply function pointer, default parameters
@@ -3976,7 +3976,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstFunctor3C(T *obj, void (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
@@ -4053,21 +4053,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class T, class P1, class P2, class P3, class P4>
-class ArConstFunctor4C : public ArFunctor4<P1, P2, P3, P4>
+class MvrConstFunctor4C : public MvrFunctor4<P1, P2, P3, P4>
 {
 public:
 
   /// Constructor
-  ArConstFunctor4C() {}
+  MvrConstFunctor4C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4) const) :
+  MvrConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4) const) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4076,7 +4076,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
+  MvrConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4086,7 +4086,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4097,7 +4097,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4109,7 +4109,7 @@ public:
      @param p3 default third parameter
       @param p4 default fourth parameter
  */
-  ArConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstFunctor4C(T &obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Constructor - supply function pointer
@@ -4117,7 +4117,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4) const) :
+  MvrConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4) const) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4126,7 +4126,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
+  MvrConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4136,7 +4136,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
+  MvrConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4147,7 +4147,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
+  MvrConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4159,7 +4159,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstFunctor4C(T *obj, void (T::*func)(P1, P2, P3, P4), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
 	
@@ -4254,21 +4254,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class T, class P1, class P2, class P3, class P4, class P5>
-class ArConstFunctor5C : public ArFunctor5<P1, P2, P3, P4, P5>
+class MvrConstFunctor5C : public MvrFunctor5<P1, P2, P3, P4, P5>
 {
 public:
 
   /// Constructor
-  ArConstFunctor5C() {}
+  MvrConstFunctor5C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5) const) :
+  MvrConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5) const) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4277,7 +4277,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4287,7 +4287,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4298,7 +4298,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4310,7 +4310,7 @@ public:
      @param p3 default third parameter
       @param p4 default fourth parameter
  */
-  ArConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
 
@@ -4324,7 +4324,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
  */
-  ArConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrConstFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Constructor - supply function pointer
@@ -4332,7 +4332,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5) const) :
+  MvrConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5) const) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4341,7 +4341,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
+  MvrConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4351,7 +4351,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
+  MvrConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4362,7 +4362,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
+  MvrConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4374,7 +4374,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
 
@@ -4388,7 +4388,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
   */
-  ArConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrConstFunctor5C(T *obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
 	
@@ -4501,7 +4501,7 @@ protected:
 //////
 //////
 //////
-////// ArFunctors for const member functions with return values
+////// MvrFunctors for const member functions with return values
 //////
 //////
 //////
@@ -4518,28 +4518,28 @@ protected:
    should be instantiated by code that wishes to pass off a functor to
    another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class Ret, class T>
-class ArConstRetFunctorC : public ArRetFunctor<Ret>
+class MvrConstRetFunctorC : public MvrRetFunctor<Ret>
 {
 public:
 
   /// Constructor
-  ArConstRetFunctorC() {}
+  MvrConstRetFunctorC() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctorC(T &obj, Ret (T::*func)(void) const) : myObj(&obj), myFunc(func) {}
+  MvrConstRetFunctorC(T &obj, Ret (T::*func)(void) const) : myObj(&obj), myFunc(func) {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctorC(T *obj, Ret (T::*func)(void) const) : myObj(obj), myFunc(func) {}
+  MvrConstRetFunctorC(T *obj, Ret (T::*func)(void) const) : myObj(obj), myFunc(func) {}
 
   /// Destructor - supply function pointer
   virtual ~ArConstRetFunctorC() {}
@@ -4573,21 +4573,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class Ret, class T, class P1>
-class ArConstRetFunctor1C : public ArRetFunctor1<Ret, P1>
+class MvrConstRetFunctor1C : public MvrRetFunctor1<Ret, P1>
 {
 public:
 
   /// Constructor
-  ArConstRetFunctor1C() {}
+  MvrConstRetFunctor1C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor1C(T &obj, Ret (T::*func)(P1) const) :
+  MvrConstRetFunctor1C(T &obj, Ret (T::*func)(P1) const) :
     myObj(&obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4596,7 +4596,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor1C(T &obj, Ret (T::*func)(P1) const, P1 p1) :
+  MvrConstRetFunctor1C(T &obj, Ret (T::*func)(P1) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1) {}
 
   /// Constructor - supply function pointer
@@ -4604,7 +4604,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor1C(T *obj, Ret (T::*func)(P1) const) :
+  MvrConstRetFunctor1C(T *obj, Ret (T::*func)(P1) const) :
     myObj(obj), myFunc(func), myP1() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4613,7 +4613,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor1C(T *obj, Ret (T::*func)(P1) const, P1 p1) :
+  MvrConstRetFunctor1C(T *obj, Ret (T::*func)(P1) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
@@ -4661,21 +4661,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class Ret, class T, class P1, class P2>
-class ArConstRetFunctor2C : public ArRetFunctor2<Ret, P1, P2>
+class MvrConstRetFunctor2C : public MvrRetFunctor2<Ret, P1, P2>
 {
 public:
 
   /// Constructor
-  ArConstRetFunctor2C() {}
+  MvrConstRetFunctor2C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor2C(T &obj, Ret (T::*func)(P1, P2) const) :
+  MvrConstRetFunctor2C(T &obj, Ret (T::*func)(P1, P2) const) :
     myObj(&obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4684,7 +4684,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor2C(T &obj, Ret (T::*func)(P1, P2) const, P1 p1) :
+  MvrConstRetFunctor2C(T &obj, Ret (T::*func)(P1, P2) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4694,7 +4694,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor2C(T &obj, Ret (T::*func)(P1, P2) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor2C(T &obj, Ret (T::*func)(P1, P2) const, P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Constructor - supply function pointer
@@ -4702,7 +4702,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor2C(T *obj, Ret (T::*func)(P1, P2) const) :
+  MvrConstRetFunctor2C(T *obj, Ret (T::*func)(P1, P2) const) :
     myObj(obj), myFunc(func), myP1(), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4711,7 +4711,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor2C(T *obj, Ret (T::*func)(P1, P2) const, P1 p1) :
+  MvrConstRetFunctor2C(T *obj, Ret (T::*func)(P1, P2) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4721,7 +4721,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor2C(T *obj, Ret (T::*func)(P1, P2) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor2C(T *obj, Ret (T::*func)(P1, P2) const, P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
@@ -4783,21 +4783,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class Ret, class T, class P1, class P2, class P3>
-class ArConstRetFunctor3C : public ArRetFunctor3<Ret, P1, P2, P3>
+class MvrConstRetFunctor3C : public MvrRetFunctor3<Ret, P1, P2, P3>
 {
 public:
 
   /// Constructor
-  ArConstRetFunctor3C() {}
+  MvrConstRetFunctor3C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const) :
+  MvrConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4806,7 +4806,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const, P1 p1) :
+  MvrConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4816,7 +4816,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4827,7 +4827,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstRetFunctor3C(T &obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Constructor - supply function pointer
@@ -4835,7 +4835,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const) :
+  MvrConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4844,7 +4844,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const, P1 p1) :
+  MvrConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4854,7 +4854,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4865,7 +4865,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstRetFunctor3C(T *obj, Ret (T::*func)(P1, P2, P3) const, P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
@@ -4949,21 +4949,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class Ret, class T, class P1, class P2, class P3, class P4>
-class ArConstRetFunctor4C : public ArRetFunctor4<Ret, P1, P2, P3, P4>
+class MvrConstRetFunctor4C : public MvrRetFunctor4<Ret, P1, P2, P3, P4>
 {
 public:
 
   /// Constructor
-  ArConstRetFunctor4C() {}
+  MvrConstRetFunctor4C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const) :
+  MvrConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4972,7 +4972,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1) :
+  MvrConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4982,7 +4982,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -4993,7 +4993,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5005,7 +5005,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstRetFunctor4C(T &obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
 
@@ -5015,7 +5015,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const) :
+  MvrConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5024,7 +5024,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1) :
+  MvrConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5034,7 +5034,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5045,7 +5045,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5057,7 +5057,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstRetFunctor4C(T *obj, Ret (T::*func)(P1, P2, P3, P4) const, P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
@@ -5156,21 +5156,21 @@ protected:
    class should be instantiated by code that wishes to pass off a
    functor to another piece of code.
    
-   For an overall description of functors, see ArFunctor.  */
+   For an overall description of functors, see MvrFunctor.  */
 template<class Ret, class T, class P1, class P2, class P3, class P4, class P5>
-class ArConstRetFunctor5C : public ArRetFunctor5<Ret, P1, P2, P3, P4, P5>
+class MvrConstRetFunctor5C : public MvrRetFunctor5<Ret, P1, P2, P3, P4, P5>
 {
 public:
 
   /// Constructor
-  ArConstRetFunctor5C() {}
+  MvrConstRetFunctor5C() {}
 
   /// Constructor - supply function pointer
   /**
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const) :
+  MvrConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const) :
     myObj(&obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5179,7 +5179,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1) :
+  MvrConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5189,7 +5189,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5200,7 +5200,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5212,7 +5212,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
   */
-  ArConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5225,7 +5225,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
   */
-  ArConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrConstRetFunctor5C(T &obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
 
@@ -5235,7 +5235,7 @@ public:
      @param obj object to call function on
      @param func const member function pointer
   */
-  ArConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const) :
+  MvrConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const) :
     myObj(obj), myFunc(func), myP1(), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5244,7 +5244,7 @@ public:
      @param func const member function pointer
      @param p1 default first parameter
   */
-  ArConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1) :
+  MvrConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1) :
     myObj(obj), myFunc(func), myP1(p1), myP2(), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5254,7 +5254,7 @@ public:
      @param p1 default first parameter
      @param p2 default second parameter
   */
-  ArConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2) :
+  MvrConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5265,7 +5265,7 @@ public:
      @param p2 default second parameter
      @param p3 default third parameter
   */
-  ArConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3) :
+  MvrConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(), myP5() {}
 
   /// Constructor - supply function pointer, default parameters
@@ -5277,7 +5277,7 @@ public:
      @param p3 default third parameter
      @param p4 default fourth parameter
  */
-  ArConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4) :
+  MvrConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5() {}
 
 
@@ -5291,7 +5291,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
  */
-  ArConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+  MvrConstRetFunctor5C(T *obj, Ret (T::*func)(P1, P2, P3, P4, P5) const, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor

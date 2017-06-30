@@ -28,22 +28,22 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARBATTERYCONNECTOR_H
 
 #include "ariaTypedefs.h"
-#include "ArSerialConnection.h"
-#include "ArTcpConnection.h"
-#include "ArArgumentBuilder.h"
-#include "ArArgumentParser.h"
+#include "MvrSerialConnection.h"
+#include "MvrTcpConnection.h"
+#include "MvrArgumentBuilder.h"
+#include "MvrArgumentParser.h"
 #include "ariaUtil.h"
-#include "ArRobotConnector.h"
+#include "MvrRobotConnector.h"
 
-class ArBatteryMTX;
-class ArRobot;
+class MvrBatteryMTX;
+class MvrRobot;
 
 
 
 /// Connect to robot and battery based on run-time availablitily and command-line arguments
 /**
 
-   ArBatteryConnector makes a battery connection either through a serial port 
+   MvrBatteryConnector makes a battery connection either through a serial port 
    connection, or through a TCP
    port (for the simulator or for robots with Ethernet-serial bridge
    devices instead of onboard computers).
@@ -56,36 +56,36 @@ class ArRobot;
    available if you need to use it: See addBattery(); otherwise don't use
    addBattery(), setupBattery(), etc.).
   
-   When you create your ArBatteryConnector, pass it command line parameters via
+   When you create your MvrBatteryConnector, pass it command line parameters via
    either the argc and argv variables from main(), or pass it an
-   ArArgumentBuilder or ArArgumentParser object. (ArArgumentBuilder
+   MvrArgumentBuilder or MvrArgumentParser object. (MvrArgumentBuilder
    is able to obtain command line parameters from a Windows program
    that uses WinMain() instead of main()).
-   ArBatteryConnector registers a callback with the global Aria class. Use
-   Aria::parseArgs() to parse all command line parameters to the program, and
-   Aria::logOptions() to print out information about all registered command-line parameters.
+   MvrBatteryConnector registers a callback with the global Mvria class. Use
+   Mvria::parseArgs() to parse all command line parameters to the program, and
+   Mvria::logOptions() to print out information about all registered command-line parameters.
 
    The following command-line arguments are checked:
-   @verbinclude ArBatteryConnector_options
+   @verbinclude MvrBatteryConnector_options
 
    To connect to any batteries that were set up in the robot parameter file or
    via command line arguments, call connectBatteries().  If successful, 
    connectBatteries() will return true and add an entry for each battery connected
-   in the ArRobot object's list of batteries.  These ArBatteryMTX objects can be
-   accessed from your ArRobot object via ArRobot::findBattery() or ArRobot::getBatteryMap(). 
+   in the MvrRobot object's list of batteries.  These MvrBatteryMTX objects can be
+   accessed from your MvrRobot object via MvrRobot::findBattery() or MvrRobot::getBatteryMap(). 
    
 
    @since 2.8.0
 
  **/
-class ArBatteryConnector
+class MvrBatteryConnector
 {
 public:
   /// Constructor that takes argument parser
-  AREXPORT ArBatteryConnector(ArArgumentParser *parser, 
-			    ArRobot *robot, ArRobotConnector *robotConnector,
+  AREXPORT MvrBatteryConnector(MvrArgumentParser *parser, 
+			    MvrRobot *robot, MvrRobotConnector *robotConnector,
 			    bool autoParseArgs = true,
-			    ArLog::LogLevel infoLogLevel = ArLog::Verbose);
+			    MvrLog::LogLevel infoLogLevel = MvrLog::Verbose);
   /// Destructor
   AREXPORT ~ArBatteryConnector(void);
   /// Connects all the batteries the robot has that should be auto connected
@@ -96,33 +96,33 @@ public:
 			      bool powerCycleBatteryOnFailedConnect = true);
   AREXPORT bool disconnectBatteries();
   /// Sets up a battery to be connected
-  AREXPORT bool setupBattery(ArBatteryMTX *battery, 
+  AREXPORT bool setupBattery(MvrBatteryMTX *battery, 
 			   int batteryNumber = 1);
   /// Connects the battery synchronously (will take up to a minute)
-  AREXPORT bool connectBattery(ArBatteryMTX *battery,
+  AREXPORT bool connectBattery(MvrBatteryMTX *battery,
 			     int batteryNumber = 1,
 			     bool forceConnection = true);
   /// Adds a battery so parsing will get it
-  AREXPORT bool addBattery(ArBatteryMTX *battery,
+  AREXPORT bool addBattery(MvrBatteryMTX *battery,
 			 int batteryNumber = 1);
   /// Function to parse the arguments given in the constructor
   AREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(ArArgumentParser *parser);
+  AREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
   AREXPORT void logOptions(void) const;
   /// Internal function to get the battery (only useful between parseArgs and connectBatteries)
-  AREXPORT ArBatteryMTX *getBattery(int batteryNumber);
+  AREXPORT MvrBatteryMTX *getBattery(int batteryNumber);
 
   /// Internal function to replace the battery (only useful between parseArgs and connectBatteries) but not the battery data
-  AREXPORT bool replaceBattery(ArBatteryMTX *battery, int batteryNumber);
+  AREXPORT bool replaceBattery(MvrBatteryMTX *battery, int batteryNumber);
   
 protected:
 /// Class that holds information about the battery data
 class BatteryData
 {
 	public:
-		BatteryData (int number, ArBatteryMTX *battery) {
+		BatteryData (int number, MvrBatteryMTX *battery) {
 			myNumber = number;
 			myBattery = battery;
 			myConn = NULL;
@@ -163,7 +163,7 @@ class BatteryData
   std::map<int, BatteryData *> myBatteries;
   
   /// Parses the battery arguments
-  AREXPORT bool parseBatteryArgs(ArArgumentParser *parser, 
+  AREXPORT bool parseBatteryArgs(MvrArgumentParser *parser, 
 			       BatteryData *batteryData);
   /// Logs the battery command line option help text. 
   AREXPORT void logBatteryOptions(BatteryData *batterydata, bool header = true, bool metaOpts = true) const;
@@ -173,23 +173,23 @@ class BatteryData
   std::string myBatteryTypes;
 
   // our parser
-  ArArgumentParser *myParser;
+  MvrArgumentParser *myParser;
   bool myOwnParser;
   // if we should autoparse args or toss errors 
   bool myAutoParseArgs;
   bool myParsedArgs;
 
-  ArRobot *myRobot;
-  ArRobotConnector *myRobotConnector;
+  MvrRobot *myRobot;
+  MvrRobotConnector *myRobotConnector;
 
   // variables to hold if we're logging or not
   bool myBatteryLogPacketsReceived;
   bool myBatteryLogPacketsSent;
 
-  ArLog::LogLevel myInfoLogLevel;
+  MvrLog::LogLevel myInfoLogLevel;
 
-  ArRetFunctorC<bool, ArBatteryConnector> myParseArgsCB;
-  ArConstFunctorC<ArBatteryConnector> myLogOptionsCB;
+  MvrRetFunctorC<bool, MvrBatteryConnector> myParseArgsCB;
+  MvrConstFunctorC<ArBatteryConnector> myLogOptionsCB;
 };
 
 #endif // ARLASERCONNECTOR_H

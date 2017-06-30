@@ -25,11 +25,11 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArExport.h"
-#include "ArRobotConfigPacketReader.h"
-#include "ArRobot.h"
-#include "ArRobotPacket.h"
-#include "ArCommands.h"
+#include "MvrExport.h"
+#include "MvrRobotConfigPacketReader.h"
+#include "MvrRobot.h"
+#include "MvrRobotPacket.h"
+#include "MvrCommands.h"
 
 /**
    @param robot is the robot to connect this to
@@ -47,7 +47,7 @@ AREXPORT ArRobotConfigPacketReader::ArRobotConfigPacketReader(
   myConnectedCB(this, &ArRobotConfigPacketReader::connected)
 {
   myRobot = robot;
-  myPacketHandlerCB.setName("ArRobotConfigPacketReader");
+  myPacketHandlerCB.setName("MvrRobotConfigPacketReader");
   myRobot->addPacketHandler(&myPacketHandlerCB);
   myRobot->addConnectCB(&myConnectedCB);
   myOnlyOneRequest = onlyOneRequest;
@@ -74,17 +74,17 @@ AREXPORT bool ArRobotConfigPacketReader::requestPacket(void)
   myPacketArrived = false;
   myPacketRequested = true;
   myLastPacketRequest.setToNow();
-  myRobot->comInt(ArCommands::CONFIG, 1);
+  myRobot->comInt(MvrCommands::CONFIG, 1);
   return true;
 }
 
 AREXPORT void ArRobotConfigPacketReader::connected(void)
 {
   if (myPacketRequested)
-    myRobot->comInt(ArCommands::CONFIG, 1);
+    myRobot->comInt(MvrCommands::CONFIG, 1);
 }
 
-AREXPORT bool ArRobotConfigPacketReader::packetHandler(ArRobotPacket *packet)
+AREXPORT bool ArRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
 {
   char buf[256];
 
@@ -205,14 +205,14 @@ AREXPORT void ArRobotConfigPacketReader::log(void) const
 {
   std::string str;
   str = buildString();
-  ArLog::log(ArLog::Terse, str.c_str());
+  ArLog::log(MvrLog::Terse, str.c_str());
 }
 
 AREXPORT void ArRobotConfigPacketReader::logMovement(void) const
 {
   std::string str;
   str = buildStringMovement();
-  ArLog::log(ArLog::Terse, str.c_str());
+  ArLog::log(MvrLog::Terse, str.c_str());
 }
 
 /**

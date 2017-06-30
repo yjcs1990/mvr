@@ -24,9 +24,9 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaUtil.h"
-#include "ArCameraCommands.h"
+#include "MvrCameraCommands.h"
 
 
 AREXPORT const char *ArCameraCommands::GET_CAMERA_DATA = "getCameraData";
@@ -48,7 +48,7 @@ AREXPORT const char *ArCameraCommands::CAMERA_MODE_UPDATED = "cameraModeUpdated"
 AREXPORT const char *ArCameraCommands::SET_CAMERA_MODE = "setCameraMode";
 
 AREXPORT const char *ArCameraCommands::RESET_CAMERA = "resetCamera";
-// TODO Make these the original packet names?  Move to ArNetworking?
+// TODO Make these the original packet names?  Move to MvrNetworking?
 
 AREXPORT const char *ArCameraCommands::GET_CAMERA_DATA_INT = "getCameraDataInt";
 AREXPORT const char *ArCameraCommands::GET_CAMERA_INFO_INT = "getCameraInfoInt";

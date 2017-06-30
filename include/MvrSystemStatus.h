@@ -29,12 +29,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSYSTEMSTATUS_H
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 #include "ariaUtil.h"
-#include "ArMutex.h"
+#include "MvrMutex.h"
 #include <string>
 
-class ArSystemStatusRefreshThread;
+class MvrSystemStatusRefreshThread;
 
 /** @brief Utility to get statistics about the  host operating system
  *  (CPU usage, wireless link data, etc).
@@ -53,7 +53,7 @@ class ArSystemStatusRefreshThread;
 
   @ingroup UtilityClasses
  */
-class ArSystemStatus {
+class MvrSystemStatus {
 public:
 
   /** Create a new thread which periodically invalidates cached data,
@@ -64,7 +64,7 @@ public:
    *  accessing the data occasionally, you do not need to start the update
    *  thread, it will be updated each time you read a value.
    */
-  AREXPORT static void startPeriodicUpdate(int refreshFrequency = 5000, ArLog::LogLevel logLevel = ArLog::Verbose);
+  AREXPORT static void startPeriodicUpdate(int refreshFrequency = 5000, MvrLog::LogLevel logLevel = MvrLog::Verbose);
 
   /** Stop periodic update thread. Henceforth any access of data will
    *  cause it to be re-read and recalculated. */
@@ -109,16 +109,16 @@ public:
   AREXPORT static std::string getUptimeHoursAsString();
 
   /** @return Pointer to a functor which can be used to retrieve the current CPU percentage */
-  AREXPORT static ArRetFunctor<double>* getCPUPercentFunctor();
+  AREXPORT static MvrRetFunctor<double>* getCPUPercentFunctor();
 
   /** @return Pointer to a functor which can be used to retrieve the current uptime (hours) */
-  AREXPORT static ArRetFunctor<double>* getUptimeHoursFunctor();
+  AREXPORT static MvrRetFunctor<double>* getUptimeHoursFunctor();
 
   /** @return Pointer to a functor which can be used to retrieve the current uptime (hours) */
-  AREXPORT static ArRetFunctor<unsigned long>* getUptimeFunctor();
+  AREXPORT static MvrRetFunctor<unsigned long>* getUptimeFunctor();
 
   /** @return Pointer to a functor which can be used to retrieve the current uptime (hours) */
-  AREXPORT static ArRetFunctor<unsigned long>* getProgramUptimeFunctor();
+  AREXPORT static MvrRetFunctor<unsigned long>* getProgramUptimeFunctor();
 
 
 
@@ -162,12 +162,12 @@ public:
 
 
 
-  AREXPORT static ArRetFunctor<int>* getWirelessLinkQualityFunctor();
-  AREXPORT static ArRetFunctor<int>* getWirelessLinkNoiseFunctor();
-  AREXPORT static ArRetFunctor<int>* getWirelessLinkSignalFunctor();
+  AREXPORT static MvrRetFunctor<int>* getWirelessLinkQualityFunctor();
+  AREXPORT static MvrRetFunctor<int>* getWirelessLinkNoiseFunctor();
+  AREXPORT static MvrRetFunctor<int>* getWirelessLinkSignalFunctor();
 
-  AREXPORT static ArRetFunctor<int>* getMTXWirelessLinkFunctor();
-  AREXPORT static ArRetFunctor<int>* getMTXWirelessQualityFunctor();
+  AREXPORT static MvrRetFunctor<int>* getMTXWirelessLinkFunctor();
+  AREXPORT static MvrRetFunctor<int>* getMTXWirelessQualityFunctor();
 
 
   /** @internal */
@@ -178,29 +178,29 @@ public:
 private:
   
 
-	static ArMutex ourCPUMutex;
+	static MvrMutex ourCPUMutex;
 	static double ourCPU;
 	static unsigned long ourUptime;
 	static unsigned long ourFirstUptime;
 	static unsigned long ourLastCPUTime;
-	static ArTime ourLastCPURefreshTime;
-	static ArGlobalRetFunctor<double> ourGetCPUPercentCallback;
-	static ArGlobalRetFunctor<double> ourGetUptimeHoursCallback;
-	static ArGlobalRetFunctor<unsigned long> ourGetUptimeCallback;
-	static ArGlobalRetFunctor<unsigned long> ourGetProgramUptimeCallback;
+	static MvrTime ourLastCPURefreshTime;
+	static MvrGlobalRetFunctor<double> ourGetCPUPercentCallback;
+	static MvrGlobalRetFunctor<double> ourGetUptimeHoursCallback;
+	static MvrGlobalRetFunctor<unsigned long> ourGetUptimeCallback;
+	static MvrGlobalRetFunctor<unsigned long> ourGetProgramUptimeCallback;
 
-	static ArMutex ourWirelessMutex;
+	static MvrMutex ourWirelessMutex;
 	static int ourLinkQuality, ourLinkSignal, ourLinkNoise,
 		ourDiscardedTotal, ourDiscardedDecrypt, ourDiscardedConflict;
-	static ArGlobalRetFunctor<int> ourGetWirelessLinkQualityCallback;
-	static ArGlobalRetFunctor<int> ourGetWirelessLinkNoiseCallback;
-	static ArGlobalRetFunctor<int> ourGetWirelessLinkSignalCallback;
+	static MvrGlobalRetFunctor<int> ourGetWirelessLinkQualityCallback;
+	static MvrGlobalRetFunctor<int> ourGetWirelessLinkNoiseCallback;
+	static MvrGlobalRetFunctor<int> ourGetWirelessLinkSignalCallback;
 
-	static ArMutex ourMTXWirelessMutex;
+	static MvrMutex ourMTXWirelessMutex;
 	static int ourMTXWirelessLink, ourMTXWirelessQuality, ourMTXIp1, ourMTXIp2, ourMTXIp3, ourMTXIp4;
 	static std::string ourMTXIpString;
-	static ArGlobalRetFunctor<int> ourGetMTXWirelessLinkCallback;
-	static ArGlobalRetFunctor<int> ourGetMTXWirelessQualityCallback;
+	static MvrGlobalRetFunctor<int> ourGetMTXWirelessLinkCallback;
+	static MvrGlobalRetFunctor<int> ourGetMTXWirelessQualityCallback;
 
 	static void refreshCPU(); ///< Refresh CPU, if neccesary
 	static void refreshWireless(); ///< Refresh Wireless stats, if neccesary
@@ -208,7 +208,7 @@ private:
 	static void refreshMTXWireless(); ///< Refresh MTX Wireless stats, if neccesary
 
 
-	static ArSystemStatusRefreshThread* ourPeriodicUpdateThread;
+	static MvrSystemStatusRefreshThread* ourPeriodicUpdateThread;
 	static bool ourShouldRefreshWireless;
 	static bool ourShouldRefreshCPU;
 

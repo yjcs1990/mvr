@@ -75,11 +75,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
   @ingroup OptionalClasses
 */
-class ArJoyHandler
+class MvrJoyHandler
 {
  public:
   /// Constructor
-  AREXPORT ArJoyHandler(bool useOSCal = true, bool useOldJoystick = false);
+  AREXPORT MvrJoyHandler(bool useOSCal = true, bool useOldJoystick = false);
   /// Destructor
   AREXPORT ~ArJoyHandler();
   /// Intializes the joystick, returns true if successful
@@ -140,7 +140,7 @@ class ArJoyHandler
   bool myUseOSCal;
   bool myUseOld;
   bool myFirstData;
-  ArTime myLastDataGathered;
+  MvrTime myLastDataGathered;
 #ifdef WIN32
   unsigned int myJoyID;
   int myLastZ;
@@ -149,7 +149,7 @@ class ArJoyHandler
 #else // if not win32
   int myJoyNumber;
   char myJoyNameTemp[512];
-  ArTime myLastOpenTry;
+  MvrTime myLastOpenTry;
   void getOldData(void);
   void getNewData(void);
   #ifdef linux 

@@ -27,7 +27,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARLOGFILECONNECTION_H
 #define ARLOGFILECONNECTION_H
 
-#include "ArDeviceConnection.h"
+#include "MvrDeviceConnection.h"
 #include <string>
 #include <stdio.h>
 
@@ -36,11 +36,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /** For connecting through a specially formatted log file
     @deprecated
 */
-class ArLogFileConnection: public ArDeviceConnection
+class MvrLogFileConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT ArLogFileConnection();
+  AREXPORT MvrLogFileConnection();
   /// Destructor also closes connection
   AREXPORT virtual ~ArLogFileConnection();
 
@@ -55,7 +55,7 @@ class ArLogFileConnection: public ArDeviceConnection
 			    unsigned int msWait = 0);
   AREXPORT virtual int write(const char *data, unsigned int size);
   AREXPORT virtual const char * getOpenMessage(int messageNumber);
-  AREXPORT virtual ArTime getTimeRead(int index);
+  AREXPORT virtual MvrTime getTimeRead(int index);
   AREXPORT virtual bool isTimeStamping(void);
 
   /// Gets the name of the host connected to
@@ -63,7 +63,7 @@ class ArLogFileConnection: public ArDeviceConnection
 
   /* This doens't exist in the C++ file so I'm commenting it out
   /// Gets the initial pose of the robot
-  AREXPORT ArPose getLogPose(void);
+  AREXPORT MvrPose getLogPose(void);
   */
 
   /// Internal function used by open and openSimple
@@ -75,7 +75,7 @@ class ArLogFileConnection: public ArDeviceConnection
   };
 
   // robot parameters
-  ArPose myPose;     
+  MvrPose myPose;     
   bool havePose;
   char myName[100];
   char myType[20];
@@ -83,7 +83,7 @@ class ArLogFileConnection: public ArDeviceConnection
 
 protected:
   void buildStrMap(void);
-  ArStrMap myStrMap;
+  MvrStrMap myStrMap;
 
   int myStatus;
   int stopAfter;                // temp here for returning one packet at a time

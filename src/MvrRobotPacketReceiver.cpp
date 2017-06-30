@@ -24,12 +24,12 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArDeviceConnection.h"
-#include "ArRobotPacketReceiver.h"
-#include "ArLogFileConnection.h"
-#include "ArLog.h"
+#include "MvrDeviceConnection.h"
+#include "MvrRobotPacketReceiver.h"
+#include "MvrLogFileConnection.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
 
 
@@ -157,7 +157,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
       myDeviceConn->getStatus() != ArDeviceConnection::STATUS_OPEN)
   {
     if (myTracking)
-      ArLog::log(ArLog::Normal, "%s: receivePacket: connection not open", myTrackingLogName.c_str());
+      ArLog::log(MvrLog::Normal, "%s: receivePacket: connection not open", myTrackingLogName.c_str());
     myDeviceConn->debugEndPacket(false, -10);
     if (myAllocatePackets)
       delete packet;
@@ -166,8 +166,8 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
   
   timeDone.setToNow();
   if (!timeDone.addMSec(msWait)) {
-    ArLog::log(ArLog::Normal,
-               "ArRobotPacketReceiver::receivePacket() error adding msecs (%i)",
+    ArLog::log(MvrLog::Normal,
+               "MvrRobotPacketReceiver::receivePacket() error adding msecs (%i)",
                msWait);
   }
 
@@ -202,7 +202,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
 					j +=3;
 				}
 
-				ArLog::log (ArLog::Normal,
+				ArLog::log (MvrLog::Normal,
 				            "Recv Packet: %s packet = %s", 
 										myTrackingLogName.c_str(), obuf);
 
@@ -240,7 +240,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
               if (myAllocatePackets)
                 delete packet; 
               if (myTracking)
-                ArLog::log(ArLog::Normal, "%s: waiting for sync1 (got 0x%x).", myTrackingLogName.c_str(), c);
+                ArLog::log(MvrLog::Normal, "%s: waiting for sync1 (got 0x%x).", myTrackingLogName.c_str(), c);
               return NULL;
             }
           else
@@ -259,7 +259,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
         if (c == mySync1) // move on, resetting packet
           {
             if (myTracking)
-              ArLog::log(ArLog::Normal, "%s: got sync1 0x%x", myTrackingLogName.c_str(), c);
+              ArLog::log(MvrLog::Normal, "%s: got sync1 0x%x", myTrackingLogName.c_str(), c);
             state = STATE_SYNC2;
             packet->empty();
             packet->setLength(0);
@@ -269,7 +269,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
           }
         else
 	      {
-          if(myTracking) ArLog::log(ArLog::Normal, "%s: Not sync1 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync1);
+          if(myTracking) ArLog::log(MvrLog::Normal, "%s: Not sync1 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync1);
 	      }
         break;
       case STATE_SYNC2:
@@ -277,14 +277,14 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
        if (c == mySync2) // move on, adding this byte
           {
             if (myTracking)
-              ArLog::log(ArLog::Normal, "%s: got sync2 0x%x", myTrackingLogName.c_str(), c);
+              ArLog::log(MvrLog::Normal, "%s: got sync2 0x%x", myTrackingLogName.c_str(), c);
 
             state = STATE_ACQUIRE_DATA;
             packet->uByteToBuf(c);
           }
         else // go back to beginning, packet hosed
           {
-	          if(myTracking) ArLog::log(ArLog::Normal, "%s: Bad sync2 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync2);
+	          if(myTracking) ArLog::log(MvrLog::Normal, "%s: Bad sync2 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync2);
             state = STATE_SYNC1;
           }
         break;
@@ -298,7 +298,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
 	/** this case can't happen since c can't be over that so taking it out
         if (c > 255) 
           {
-            ArLog::log(ArLog::Normal, "ArRobotPacketReceiver::receivePacket: bad packet, more than 255 bytes");
+            ArLog::log(MvrLog::Normal, "MvrRobotPacketReceiver::receivePacket: bad packet, more than 255 bytes");
             state = STATE_SYNC1;
             break;
           }
@@ -359,7 +359,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
 					j= j+3;
 				}
 
-				ArLog::log (ArLog::Normal,
+				ArLog::log (MvrLog::Normal,
 				            "Recv Packet: %s packet = %s", 
 										myTrackingLogName.c_str(), obuf);
 
@@ -374,8 +374,8 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
                printf("Bad Input ");
                packet->printHex();
 	       */
-            ArLog::log(ArLog::Normal, 
-                       "ArRobotPacketReceiver::receivePacket: bad packet, bad checksum");
+            ArLog::log(MvrLog::Normal, 
+                       "MvrRobotPacketReceiver::receivePacket: bad packet, bad checksum");
             state = STATE_SYNC1;
 	    myDeviceConn->debugEndPacket(false, -50);
             break;

@@ -27,28 +27,28 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARROBOTCONFIG_H
 #define ARROBOTCONFIG_H
 
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
-class ArRobot;
-class ArAnalogGyro;
+class MvrRobot;
+class MvrAnalogGyro;
 
 /// Class for controlling robot movement parameters from config
-class ArRobotConfig
+class MvrRobotConfig
 {
 public:
   /// Constructor
-  AREXPORT ArRobotConfig(ArRobot *robot);
+  AREXPORT MvrRobotConfig(MvrRobot *robot);
   /// Destructor
   AREXPORT virtual ~ArRobotConfig();
   /// Adds a gyro to turn on and off
-  AREXPORT void addAnalogGyro(ArAnalogGyro *gyro);
+  AREXPORT void addAnalogGyro(MvrAnalogGyro *gyro);
   /// Called when we process the config
   AREXPORT bool processFile(void);
   /// Called when we connect to the robot
   AREXPORT void connectCallback(void);
 protected:
-  ArRobot *myRobot;
-  ArAnalogGyro *myAnalogGyro;
+  MvrRobot *myRobot;
+  MvrAnalogGyro *myAnalogGyro;
 
   bool mySavedOriginalMovementParameters;
   int myOriginalTransVelMax;
@@ -69,8 +69,8 @@ protected:
   bool myAddedGyro;
   bool myUseGyro;
 
-  ArFunctorC<ArRobotConfig> myConnectCB;  
-  ArRetFunctorC<bool, ArRobotConfig> myProcessFileCB;
+  MvrFunctorC<ArRobotConfig> myConnectCB;  
+  MvrRetFunctorC<bool, MvrRobotConfig> myProcessFileCB;
 };
 
 #endif

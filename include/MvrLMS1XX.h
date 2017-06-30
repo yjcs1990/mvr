@@ -28,9 +28,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARLMS1XX_H
 
 #include "ariaTypedefs.h"
-#include "ArRobotPacket.h"
-#include "ArLaser.h"   
-#include "ArFunctor.h"
+#include "MvrRobotPacket.h"
+#include "MvrLaser.h"   
+#include "MvrFunctor.h"
 
 /** @internal 
   Constructs packets for LMS1xx ASCII protocol. 
@@ -38,11 +38,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 they are written as ascii strings, the protocol is space delimited not fixed
 width values (as in other Packet implementations), so they don't imply number of bytes used in packet output.
 */
-class ArLMS1XXPacket : public ArBasePacket
+class MvrLMS1XXPacket : public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArLMS1XXPacket();
+  AREXPORT MvrLMS1XXPacket();
   /// Destructor
   AREXPORT virtual ~ArLMS1XXPacket();
 
@@ -56,27 +56,27 @@ public:
   AREXPORT virtual void resetRead(void);
   
   /// Gets the time the packet was received at
-  AREXPORT ArTime getTimeReceived(void);
+  AREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(ArTime timeReceived);
+  AREXPORT void setTimeReceived(MvrTime timeReceived);
 
-  AREXPORT virtual void duplicatePacket(ArLMS1XXPacket *packet);
+  AREXPORT virtual void duplicatePacket(MvrLMS1XXPacket *packet);
   AREXPORT virtual void empty(void);
   
-  AREXPORT virtual void byteToBuf(ArTypes::Byte val);
-  AREXPORT virtual void byte2ToBuf(ArTypes::Byte2 val);
-  AREXPORT virtual void byte4ToBuf(ArTypes::Byte4 val);
-  AREXPORT virtual void uByteToBuf(ArTypes::UByte val);
-  AREXPORT virtual void uByte2ToBuf(ArTypes::UByte2 val);
-  AREXPORT virtual void uByte4ToBuf(ArTypes::UByte4 val);
+  AREXPORT virtual void byteToBuf(MvrTypes::Byte val);
+  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
+  AREXPORT virtual void byte4ToBuf(MvrTypes::Byte4 val);
+  AREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
+  AREXPORT virtual void uByte2ToBuf(MvrTypes::UByte2 val);
+  AREXPORT virtual void uByte4ToBuf(MvrTypes::UByte4 val);
   AREXPORT virtual void strToBuf(const char *str);
 
-  AREXPORT virtual ArTypes::Byte bufToByte(void);
-  AREXPORT virtual ArTypes::Byte2 bufToByte2(void);
-  AREXPORT virtual ArTypes::Byte4 bufToByte4(void);
-  AREXPORT virtual ArTypes::UByte bufToUByte(void);
-  AREXPORT virtual ArTypes::UByte2 bufToUByte2(void);
-  AREXPORT virtual ArTypes::UByte4 bufToUByte4(void);
+  AREXPORT virtual MvrTypes::Byte bufToByte(void);
+  AREXPORT virtual MvrTypes::Byte2 bufToByte2(void);
+  AREXPORT virtual MvrTypes::Byte4 bufToByte4(void);
+  AREXPORT virtual MvrTypes::UByte bufToUByte(void);
+  AREXPORT virtual MvrTypes::UByte2 bufToUByte2(void);
+  AREXPORT virtual MvrTypes::UByte4 bufToUByte4(void);
   AREXPORT virtual void bufToStr(char *buf, int len);
 
   // adds a raw char to the buf
@@ -84,7 +84,7 @@ public:
 protected:
   int deascii(char c);
 
-  ArTime myTimeReceived;
+  MvrTime myTimeReceived;
   bool myFirstAdd;
 
   char myCommandType[1024]; 
@@ -94,30 +94,30 @@ protected:
 
 /// Given a device connection it receives packets from the sick through it
 /// @internal
-class ArLMS1XXPacketReceiver
+class MvrLMS1XXPacketReceiver
 {
 public:
   /// Constructor with assignment of a device connection
-  AREXPORT ArLMS1XXPacketReceiver();
+  AREXPORT MvrLMS1XXPacketReceiver();
   /// Destructor
   AREXPORT virtual ~ArLMS1XXPacketReceiver();
   
   /// Receives a packet from the robot if there is one available
-  AREXPORT ArLMS1XXPacket *receivePacket(unsigned int msWait = 0,
+  AREXPORT MvrLMS1XXPacket *receivePacket(unsigned int msWait = 0,
 					 bool shortcut = false, 
 					 bool ignoreRemainders = false);
 
-  AREXPORT ArLMS1XXPacket *receiveTiMPacket(unsigned int msWait = 0,
+  AREXPORT MvrLMS1XXPacket *receiveTiMPacket(unsigned int msWait = 0,
 					 bool shortcut = false, 
 					 bool ignoreRemainders = false);
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(ArDeviceConnection *conn);
+  AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  AREXPORT ArDeviceConnection *getDeviceConnection(void);
+  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
   // PS - added to pass info to this class
-  AREXPORT void	setmyInfoLogLevel(ArLog::LogLevel infoLogLevel)
+  AREXPORT void	setmyInfoLogLevel(MvrLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
   AREXPORT void setLaserModel(int laserModel)
   { myLaserModel = laserModel; }
@@ -131,8 +131,8 @@ public:
 
 
 protected:
-  ArDeviceConnection *myConn;
-  ArLMS1XXPacket myPacket;
+  MvrDeviceConnection *myConn;
+  MvrLMS1XXPacket myPacket;
   
   enum State 
   {
@@ -149,20 +149,20 @@ protected:
 
 	int myLaserModel;
 
-  ArLog::LogLevel myInfoLogLevel;
+  MvrLog::LogLevel myInfoLogLevel;
 };
 
 /**
-  @since Aria 2.7.2
-  @see ArLaserConnector
-  Use ArLaserConnector to connect to a laser, determining type based on robot and program configuration  parameters.
+  @since Mvria 2.7.2
+  @see MvrLaserConnector
+  Use MvrLaserConnector to connect to a laser, determining type based on robot and program configuration  parameters.
 
-  This is the ArLaser implementation for SICK LMS1xx, LMS5xx, TiM310/510
-  (aka TiM3xx), TiM551, TiM561, and TiM571  lasers. To use these lasers with ArLaserConnector, specify 
+  This is the MvrLaser implementation for SICK LMS1xx, LMS5xx, TiM310/510
+  (aka TiM3xx), TiM551, TiM561, and TiM571  lasers. To use these lasers with MvrLaserConnector, specify 
   the appropriate type in program configuration (lms1xx, lms5xx, tim3xx or
   tim510, tim551, tim561, tim571).
 */
-class ArLMS1XX : public ArLaser
+class MvrLMS1XX : public MvrLaser
 {
 public:
 
@@ -177,7 +177,7 @@ public:
 	};
 
   /// Constructor
-	  AREXPORT ArLMS1XX(int laserNumber,
+	  AREXPORT MvrLMS1XX(int laserNumber,
 			    const char *name,
 					LaserModel laserModel);
 
@@ -210,15 +210,15 @@ public:
 protected:
   AREXPORT virtual void laserSetName(const char *name);
   AREXPORT virtual void * runThread(void *arg);
-  AREXPORT virtual void setRobot(ArRobot *robot);
-  AREXPORT ArLMS1XXPacket *sendAndRecv(
-	  ArTime timeout, ArLMS1XXPacket *sendPacket, const char *recvName);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
+  AREXPORT MvrLMS1XXPacket *sendAndRecv(
+	  MvrTime timeout, MvrLMS1XXPacket *sendPacket, const char *recvName);
   void sensorInterp(void);
   void failedToConnect(void);
   void clear(void);
 
   /// @return true if message contents matches checksum, false otherwise.
-  bool validateCheckSum(ArLMS1XXPacket *packet);
+  bool validateCheckSum(MvrLMS1XXPacket *packet);
 
   LaserModel myLaserModel;
 
@@ -263,17 +263,17 @@ protected:
   int mySecond;
   int myUSec;
 
-  ArLog::LogLevel myLogLevel;
+  MvrLog::LogLevel myLogLevel;
 
-  ArLMS1XXPacketReceiver myReceiver;
+  MvrLMS1XXPacketReceiver myReceiver;
 
-  ArMutex myPacketsMutex;
-  ArMutex myDataMutex;
+  MvrMutex myPacketsMutex;
+  MvrMutex myDataMutex;
 
   std::list<ArLMS1XXPacket *> myPackets;
 
-  ArFunctorC<ArLMS1XX> mySensorInterpTask;
-  ArRetFunctorC<bool, ArLMS1XX> myAriaExitCB;
+  MvrFunctorC<ArLMS1XX> mySensorInterpTask;
+  MvrRetFunctorC<bool, MvrLMS1XX> myAriaExitCB;
 };
 
 #endif 

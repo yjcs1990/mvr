@@ -28,59 +28,59 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSIMPLECONNECTOR_H
 
 #include "ariaTypedefs.h"
-#include "ArSerialConnection.h"
-#include "ArTcpConnection.h"
-#include "ArArgumentBuilder.h"
-#include "ArArgumentParser.h"
+#include "MvrSerialConnection.h"
+#include "MvrTcpConnection.h"
+#include "MvrArgumentBuilder.h"
+#include "MvrArgumentParser.h"
 #include "ariaUtil.h"
-#include "ArRobotConnector.h"
-#include "ArLaserConnector.h"
+#include "MvrRobotConnector.h"
+#include "MvrLaserConnector.h"
 
-class ArSick;
-class ArRobot;
+class MvrSick;
+class MvrRobot;
 
 
 
 /// Legacy connector for robot and laser
 /**
    This is deprecated but is left in for compatibility with old code,
-   Instead use ArRobotConnector to set up ArRobot's connection to the robot, and
-   ArLaserConnector to set up connections with laser rangefinder devices.
+   Instead use MvrRobotConnector to set up MvrRobot's connection to the robot, and
+   MvrLaserConnector to set up connections with laser rangefinder devices.
 
-   @deprecated Use ArRobotConnector and ArLaserConnector instead
+   @deprecated Use MvrRobotConnector and MvrLaserConnector instead
  **/
-class ArSimpleConnector
+class MvrSimpleConnector
 {
 public:
   /// Constructor that takes args from the main
-  AREXPORT ArSimpleConnector(int *argc, char **argv);
+  AREXPORT MvrSimpleConnector(int *argc, char **argv);
   /// Constructor that takes argument builder
-  AREXPORT ArSimpleConnector(ArArgumentBuilder *arguments);
+  AREXPORT MvrSimpleConnector(MvrArgumentBuilder *arguments);
   /// Constructor that takes argument parser
-  AREXPORT ArSimpleConnector(ArArgumentParser *parser);
+  AREXPORT MvrSimpleConnector(MvrArgumentParser *parser);
   /// Destructor
   AREXPORT ~ArSimpleConnector(void);
   /// Sets up the robot to be connected
-  AREXPORT bool setupRobot(ArRobot *robot);
+  AREXPORT bool setupRobot(MvrRobot *robot);
   /// Sets up the robot then connects it
-  AREXPORT bool connectRobot(ArRobot *robot);
+  AREXPORT bool connectRobot(MvrRobot *robot);
   /// Sets up the laser to be connected
-  AREXPORT bool setupLaser(ArSick *laser);
+  AREXPORT bool setupLaser(MvrSick *laser);
   /// Sets up a second laser to be connected
-  AREXPORT bool setupSecondLaser(ArSick *laser);
+  AREXPORT bool setupSecondLaser(MvrSick *laser);
   /// Sets up a laser t obe connected (make sure you setMaxNumLasers)
-  AREXPORT bool setupLaserArbitrary(ArSick *laser, 
+  AREXPORT bool setupLaserArbitrary(MvrSick *laser, 
 				    int laserNumber);
   /// Connects the laser synchronously (will take up to a minute)
-  AREXPORT bool connectLaser(ArSick *laser);
+  AREXPORT bool connectLaser(MvrSick *laser);
   /// Connects the laser synchronously (will take up to a minute)
-  AREXPORT bool connectSecondLaser(ArSick *laser);
+  AREXPORT bool connectSecondLaser(MvrSick *laser);
   /// Connects the laser synchronously  (make sure you setMaxNumLasers)
-  AREXPORT bool connectLaserArbitrary(ArSick *laser, int laserNumber);
+  AREXPORT bool connectLaserArbitrary(MvrSick *laser, int laserNumber);
   /// Function to parse the arguments given in the constructor
   AREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(ArArgumentParser *parser);
+  AREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
   AREXPORT void logOptions(void) const;
   /// Sets the number of possible lasers 
@@ -89,10 +89,10 @@ protected:
   /// Finishes the stuff the constructor needs to do
   void finishConstructor(void);
 
-  ArArgumentParser *myParser;
+  MvrArgumentParser *myParser;
   bool myOwnParser;
-  ArRobotConnector *myRobotConnector;
-  ArLaserConnector *myLaserConnector;
+  MvrRobotConnector *myRobotConnector;
+  MvrLaserConnector *myLaserConnector;
 };
 
 #endif // ARSIMPLECONNECTOR_H

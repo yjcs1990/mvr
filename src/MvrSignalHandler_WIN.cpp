@@ -25,10 +25,10 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSignalHandler.h"
-#include "ArLog.h"
+#include "MvrSignalHandler.h"
+#include "MvrLog.h"
 
 
 ArSignalHandler *ArSignalHandler::ourSignalHandler=0;
@@ -43,7 +43,7 @@ AREXPORT void ArSignalHandler::signalCB(int sig)
   for (iter=ourHandlerList.begin(); iter != ourHandlerList.end(); ++iter)
     (*iter)->invoke(sig);
   if (ourHandlerList.begin() == ourHandlerList.end())
-    ArLog::log(ArLog::Terse, "ArSignalHandler::runThread: No handler function. Unhandled signal '%s'", ourSigMap[sig].c_str());
+    ArLog::log(MvrLog::Terse, "MvrSignalHandler::runThread: No handler function. Unhandled signal '%s'", ourSigMap[sig].c_str());
 }  
 
 AREXPORT void ArSignalHandler::createHandlerNonThreaded()
@@ -79,7 +79,7 @@ AREXPORT void ArSignalHandler::unhandle(Signal sig)
 {
 }
 
-AREXPORT void ArSignalHandler::addHandlerCB(ArFunctor1<int> *func,
+AREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
 					    ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -87,11 +87,11 @@ AREXPORT void ArSignalHandler::addHandlerCB(ArFunctor1<int> *func,
   else if (position == ArListPos::LAST)
     ourHandlerList.push_back(func);
   else
-    ArLog::log(ArLog::Terse, 
-	       "ArSignalHandler::addHandler: Invalid position.");
+    ArLog::log(MvrLog::Terse, 
+	       "MvrSignalHandler::addHandler: Invalid position.");
 }
 
-AREXPORT void ArSignalHandler::delHandlerCB(ArFunctor1<int> *func)
+AREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 {
   ourHandlerList.remove(func);
 }
@@ -123,7 +123,7 @@ AREXPORT void ArSignalHandler::blockAllThisThread()
 
 ArSignalHandler::ArSignalHandler()
 {
-  setThreadName("ArSignalHandler");
+  setThreadName("MvrSignalHandler");
   initSigMap();
 }
 
@@ -183,5 +183,5 @@ AREXPORT void ArSignalHandler::logThread(void)
   if (ourSignalHandler != NULL)
     ourSignalHandler->logThreadInfo();
   else
-    ArLog::log(ArLog::Normal, "No signal handler thread running");
+    ArLog::log(MvrLog::Normal, "No signal handler thread running");
 }

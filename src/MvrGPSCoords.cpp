@@ -25,34 +25,34 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #include "ariaUtil.h"
-#include "ArLog.h"
-#include "ArGPSCoords.h"
+#include "MvrLog.h"
+#include "MvrGPSCoords.h"
 
 #include <math.h>
 
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::mya = 6378137; // meters
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::myb = 6356752.3142; // meters
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::myep = 8.2094437949696e-2; 
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::myc = 299792458; // m/sec
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::mye = 8.1819190842622e-2;
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::my1byf = 298.257223563;
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::myOmega = 7292115e-11; // rad/sec
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::myGM = 3986004.418e8; // m^3/sec^2
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::myg = 9.7976432222; // m/sec^2. Ave g.
-AREXPORT ARGPSCOORDS_CONSTANT double ArWGS84::myM = 5.9733328e24; // kg. Mass of earth.
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mya = 6378137; // meters
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myb = 6356752.3142; // meters
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myep = 8.2094437949696e-2; 
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myc = 299792458; // m/sec
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mye = 8.1819190842622e-2;
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::my1byf = 298.257223563;
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myOmega = 7292115e-11; // rad/sec
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myGM = 3986004.418e8; // m^3/sec^2
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myg = 9.7976432222; // m/sec^2. Ave g.
+AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myM = 5.9733328e24; // kg. Mass of earth.
 
 
 
-AREXPORT void Ar3DPoint::print(const char *head)
+AREXPORT void Mvr3DPoint::print(const char *head)
 {
     char buffer[2064];
     if(head != NULL)
       sprintf(buffer, "%s ", head);
     sprintf(buffer, "%s %f %f %f\n", buffer, myX, myY, myZ);
-    ArLog::log(ArLog::Normal, buffer);
+    MvrLog::log(MvrLog::Normal, buffer);
 }
 
 /*!
@@ -60,7 +60,7 @@ AREXPORT void Ar3DPoint::print(const char *head)
  * Altitude coordinates.
  *
  */
-AREXPORT ArLLACoords
+AREXPORT MvrLLACoords
 ArECEFCoords::ECEF2LLA(void)
 {
   // ECEF2LLA - convert earth-centered earth-fixed (ECEF)
@@ -90,10 +90,10 @@ ArECEFCoords::ECEF2LLA(void)
   // function [lat,lon,alt] = ecef2lla(x,y,z)
 
   // WGS84 ellipsoid constants:
-  const double a = ArWGS84::getA();
-  const double e = ArWGS84::getE();
-  const double b = ArWGS84::getB();
-  const double ep = ArWGS84::getEP();
+  const double a = MvrWGS84::getA();
+  const double e = MvrWGS84::getE();
+  const double b = MvrWGS84::getB();
+  const double ep = MvrWGS84::getEP();
   // Calculations.
   double p = sqrt(x*x + y*y);
   double th = atan2(a*z, b*p);
@@ -115,7 +115,7 @@ ArECEFCoords::ECEF2LLA(void)
   if(fabs(x) < 1 && fabs(y) < 1)
     alt = -b;
 
-  return ArLLACoords(lat, lon, alt);
+  return MvrLLACoords(lat, lon, alt);
 }
 /*!
  * Converts Earth Centered Earth Fixed coordinates into the tangential 
@@ -124,8 +124,8 @@ ArECEFCoords::ECEF2LLA(void)
  * @param ref: The ECEF coords of the origin.
  *
  */
-AREXPORT ArENUCoords
-ArECEFCoords::ECEF2ENU(ArECEFCoords ref)
+AREXPORT MvrENUCoords
+ArECEFCoords::ECEF2ENU(MvrECEFCoords ref)
 {
   //    function [e,n,u] = xyz2enuTest(Xr, Yr, Zr, X, Y, Z)
 
@@ -151,14 +151,14 @@ ArECEFCoords::ECEF2ENU(ArECEFCoords ref)
 	      cos(phiP)*sin(lambda)*(dy) + sin(phiP)*(dz)); 
 
   // Return in mm.
-  return ArENUCoords(e*1000.0, n*1000.0, u*1000.0);
+  return MvrENUCoords(e*1000.0, n*1000.0, u*1000.0);
 }
 /*!
  * Converts Latitude Longitude Altitude coordinates into Earth Centered
  * Earth Fixed coordinates.
  *
  */
-AREXPORT ArECEFCoords
+AREXPORT MvrECEFCoords
 ArLLACoords::LLA2ECEF(void)
 {
   // LLA2ECEF - convert latitude, longitude, and altitude to
@@ -191,8 +191,8 @@ ArLLACoords::LLA2ECEF(void)
   //function [x,y,z]=lla2ecef(lat,lon,alt)
 
   // WGS84 ellipsoid constants:
-  const double a = ArWGS84::getA();
-  const double e = ArWGS84::getE();
+  const double a = MvrWGS84::getA();
+  const double e = MvrWGS84::getE();
 
   // intermediate calculation
   // (prime vertical radius of curvature)
@@ -203,7 +203,7 @@ ArLLACoords::LLA2ECEF(void)
   double y = (N + alt) * cos(lat) * sin(lon);
   double z = ((1 - e*e) * N + alt) * sin(lat);
 
-  return ArECEFCoords(x, y, z);
+  return MvrECEFCoords(x, y, z);
 }
 /*!
  * Converts Tangential East North Up coordinates with ref as origin into
@@ -212,8 +212,8 @@ ArLLACoords::LLA2ECEF(void)
  * @param ref: The coordinates of the origin.
  *
  */
-AREXPORT ArECEFCoords
-ArENUCoords::ENU2ECEF(ArLLACoords ref)
+AREXPORT MvrECEFCoords
+ArENUCoords::ENU2ECEF(MvrLLACoords ref)
 {
 
   // function [X, Y, Z] = enu2xyz(refLat, refLong, refH, e, n, u)
@@ -228,7 +228,7 @@ ArENUCoords::ENU2ECEF(ArLLACoords ref)
 //  double refH = ref(2);
   double refLon = ref.getY()*M_PI/180.0;
   
-  ArECEFCoords refECEF = ref.LLA2ECEF();
+  MvrECEFCoords refECEF = ref.LLA2ECEF();
   double Xr = refECEF.getX();//refECEF(0);
   double Yr = refECEF.getY();//refECEF(1);
   double Zr = refECEF.getZ();//refECEF(2);
@@ -247,7 +247,7 @@ ArENUCoords::ENU2ECEF(ArLLACoords ref)
 
   double Z = cos(phiP)*n + sin(phiP)*u + Zr; 
 
-  return ArECEFCoords(X, Y, Z);
+  return MvrECEFCoords(X, Y, Z);
 }
 
 /*!
@@ -270,15 +270,15 @@ ArMapGPSCoords::convertLLA2MapCoords(const double lat, const double lon, const d
   if(!myOriginSet)
     return false;
 
-  ArLLACoords lla(lat, lon, alt);
-  ArECEFCoords ecef = lla.LLA2ECEF();
-  ArENUCoords enu = ecef.ECEF2ENU(*myOriginECEF);
-//  ArLog::log(ArLog::Normal, "GPSLocaLog: convertLLA2MapCoords: ENU %g %g %g",
+  MvrLLACoords lla(lat, lon, alt);
+  MvrECEFCoords ecef = lla.LLA2ECEF();
+  MvrENUCoords enu = ecef.ECEF2ENU(*myOriginECEF);
+//  MvrLog::log(MvrLog::Normal, "GPSLocaLog: convertLLA2MapCoords: ENU %g %g %g",
 //	     enu.getX(), enu.getY(), enu.getZ());
   ea = enu.getX();//enu(0);
   no = enu.getY();//enu(1);
   up = enu.getZ();//enu(2);
-//  ArLog::log(ArLog::Normal, 
+//  MvrLog::log(MvrLog::Normal, 
 //	     "GPSLocaLog: convertLLA2MapCoords: ENU + offset %g %g %g",
 //	     ea, no, up);
   return true;
@@ -302,17 +302,17 @@ ArMapGPSCoords::convertMap2LLACoords(const double ea, const double no, const dou
   if(!myOriginSet)
     return false;
 
-  ArENUCoords enu(ea, no, alt);
-  ArECEFCoords ecef = enu.ENU2ECEF(*myOriginLLA);
-  ArLLACoords lla = ecef.ECEF2LLA();
+  MvrENUCoords enu(ea, no, alt);
+  MvrECEFCoords ecef = enu.ENU2ECEF(*myOriginLLA);
+  MvrLLACoords lla = ecef.ECEF2LLA();
 
-//  ArLog::log(ArLog::Normal, "GPSLocaLog: convertMap2LLACoords: ENU %g %g %g",
+//  MvrLog::log(MvrLog::Normal, "GPSLocaLog: convertMap2LLACoords: ENU %g %g %g",
 //	     enu.getX(), enu.getY(), enu.getZ());  
   lat = lla.getX();//lla(0);
   lon = lla.getY();//lla(1);
   alt = lla.getZ();//lla(2);
   
-//  ArLog::log(ArLog::Normal, "GPSLocaLog: convertMap2LLACoords: %g %g %g",
+//  MvrLog::log(MvrLog::Normal, "GPSLocaLog: convertMap2LLACoords: %g %g %g",
 //	     lat, lon, alt);
   return true;
 }

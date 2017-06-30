@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaTypedefs.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 /** @brief Interface to digital and analog I/O and switched power outputs on MTX
  * core (used in Pioneer LX and other MTX-based robots).
@@ -40,7 +40,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   The <code>mtx</code> driver module must be loaded for this interface to work.
 
   The <code>mtx</code> interface (<code>/dev/mtx</code>) is opened automatically
-  in the ArMTXIO constructor.  If successful, isEnabled() will then return true.
+  in the MvrMTXIO constructor.  If successful, isEnabled() will then return true.
 
   The MTX IO is organized as two sets of 8-bit "banks" of inputs, and two 8-bit
   "banks" of outputs.
@@ -52,7 +52,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   setDigitalOutputControl2(), or setDigitalBankOutputs() with bank index 2 or
   3.
 
-  Multile ArMTXIO objects may be instatiated; a shared may be
+  Multile MvrMTXIO objects may be instatiated; a shared may be
   locked and unlocked by calling lock() and unlock().
 
    @ingroup OptionalClasses
@@ -63,7 +63,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 */
  
-class ArMTXIO
+class MvrMTXIO
 {
 public:
 
@@ -75,7 +75,7 @@ public:
   };
 
   /// Constructor
-  AREXPORT ArMTXIO(const char * dev = "/dev/mtx");
+  AREXPORT MvrMTXIO(const char * dev = "/dev/mtx");
   /// Destructor
   AREXPORT virtual ~ArMTXIO(void);
 
@@ -135,14 +135,14 @@ public:
       return setPeripheralPowerBankOutputs(bank, val ^ (1 << bit));
   }
 
-  /// Lock global (shared) mutex for all ArMTXIO instances.
-  /// This allows multiple access to MTX IO (through multiple ArMTXIO objects).
+  /// Lock global (shared) mutex for all MvrMTXIO instances.
+  /// This allows multiple access to MTX IO (through multiple MvrMTXIO objects).
   AREXPORT int lock(void){ return(ourMutex.lock()); }
-  /// Unlock global (shared) mutex for all ArMTXIO instances.
-  /// This allows multiple access to MTX IO (through multiple ArMTXIO objects).
+  /// Unlock global (shared) mutex for all MvrMTXIO instances.
+  /// This allows multiple access to MTX IO (through multiple MvrMTXIO objects).
   AREXPORT int unlock(void){ return(ourMutex.unlock()); }
 
-  /// Try to lock without blocking (see ArMutex::tryLock())
+  /// Try to lock without blocking (see MvrMutex::tryLock())
   AREXPORT int tryLock() {return(ourMutex.tryLock());}
 
   /// gets the Firmware Revision 
@@ -175,10 +175,10 @@ public:
   AREXPORT bool setLightPole(unsigned char *val);
 
   /// @internal
-  AREXPORT bool getLPCTimeUSec(ArTypes::UByte4 *timeUSec);
+  AREXPORT bool getLPCTimeUSec(MvrTypes::UByte4 *timeUSec);
 
   /// @internal
-  AREXPORT ArRetFunctor1<bool, ArTypes::UByte4 *> *getLPCTimeUSecCB(void)
+  AREXPORT MvrRetFunctor1<bool, MvrTypes::UByte4 *> *getLPCTimeUSecCB(void)
     { return &myLPCTimeUSecCB; }
 
   /// gets/sets the Semaphore Registers
@@ -275,7 +275,7 @@ protected:
   bool getLPCTimer3(unsigned char *val);
 	
 
-  static ArMutex ourMutex;
+  static MvrMutex ourMutex;
   int myFD;
 
   bool myEnabled;
@@ -305,8 +305,8 @@ protected:
   unsigned char myDigitalBank3;
   unsigned char myDigitalBank4;
 
-  ArRetFunctorC<bool, ArMTXIO> myDisconnectCB;
-  ArRetFunctor1C<bool, ArMTXIO, ArTypes::UByte4 *> myLPCTimeUSecCB;
+  MvrRetFunctorC<bool, MvrMTXIO> myDisconnectCB;
+  MvrRetFunctor1C<bool, MvrMTXIO, MvrTypes::UByte4 *> myLPCTimeUSecCB;
 };
 
 //#endif // SWIG

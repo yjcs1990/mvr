@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArFileParser.h"
-#include "ArLog.h"
+#include "MvrFileParser.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
 #include <ctype.h>
 
@@ -38,12 +38,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * @param isPreCompressQuotes a bool set to true if the file parser should 
  * treat strings enclosed in double-quotes as a single argument (such strings
  * must be surrounded by spaces).  This is roughly equivalent to calling 
- * ArArgumentBuilder::compressQuoted(false) on the resulting builder, but 
+ * MvrArgumentBuilder::compressQuoted(false) on the resulting builder, but 
  * is more efficient and handles embedded spaces better.  The default value
  * is false and preserves the original behavior where each argument is a 
  * space-separated alphanumeric string.
 **/
-AREXPORT ArFileParser::ArFileParser(const char *baseDirectory,
+AREXPORT MvrFileParser::ArFileParser(const char *baseDirectory,
                                     bool isPreCompressQuotes) :
   myCommentDelimiterList(),
   myPreParseFunctor(NULL),
@@ -66,24 +66,24 @@ AREXPORT ArFileParser::ArFileParser(const char *baseDirectory,
   setMaxNumArguments();
 }
 
-AREXPORT ArFileParser::~ArFileParser(void)
+AREXPORT MvrFileParser::~ArFileParser(void)
 {
-  ArUtil::deleteSetPairs(myMap.begin(), myMap.end());
+  MvrUtil::deleteSetPairs(myMap.begin(), myMap.end());
   myMap.clear();
 
   delete myRemainderHandler;
 
 }
 
-AREXPORT bool ArFileParser::addHandler(
-	const char *keyword, ArRetFunctor1<bool, ArArgumentBuilder *> *functor)
+AREXPORT bool MvrFileParser::addHandler(
+	const char *keyword, MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor)
 {
-  std::map<std::string, HandlerCBType *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   if (keyword == NULL)
   {
     if (myRemainderHandler != NULL)
     {
-      ArLog::log(ArLog::Verbose, "There is already a functor to handle unhandled lines");
+      MvrLog::log(MvrLog::Verbose, "There is already a functor to handle unhandled lines");
       return false;
     }
     else
@@ -97,12 +97,12 @@ AREXPORT bool ArFileParser::addHandler(
   if ((it = myMap.find(keyword)) != myMap.end())
   {
     if (!myIsQuiet) {
-      ArLog::log(ArLog::Verbose, "There is already a functor to handle keyword '%s'", keyword);
+      MvrLog::log(MvrLog::Verbose, "There is already a functor to handle keyword '%s'", keyword);
     }
     return false;
   }
   if (!myIsQuiet) {
-    ArLog::log(ArLog::Verbose, "keyword '%s' handler added", keyword);
+    MvrLog::log(MvrLog::Verbose, "keyword '%s' handler added", keyword);
   }
   myMap[keyword] = new HandlerCBType(functor);
   return true;
@@ -114,16 +114,16 @@ AREXPORT bool ArFileParser::addHandler(
    you'll get an error.  The rem's are the same though since that
    shouldn't matter.
 **/
-AREXPORT bool ArFileParser::addHandlerWithError(
+AREXPORT bool MvrFileParser::addHandlerWithError(
 	const char *keyword, 
-	ArRetFunctor3<bool, ArArgumentBuilder *, char *, size_t> *functor)
+	ArRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
 {
-  std::map<std::string, HandlerCBType *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   if (keyword == NULL)
   {
     if (myRemainderHandler != NULL)
     {
-      ArLog::log(ArLog::Verbose, "There is already a functor to handle unhandled lines");
+      MvrLog::log(MvrLog::Verbose, "There is already a functor to handle unhandled lines");
       return false;
     }
     else
@@ -137,21 +137,21 @@ AREXPORT bool ArFileParser::addHandlerWithError(
   if ((it = myMap.find(keyword)) != myMap.end())
   {
     if (!myIsQuiet) {
-      ArLog::log(ArLog::Verbose, "There is already a functor to handle keyword '%s'", keyword);
+      MvrLog::log(MvrLog::Verbose, "There is already a functor to handle keyword '%s'", keyword);
     }
     return false;
   }
   if (!myIsQuiet) {
-    ArLog::log(ArLog::Verbose, "keyword '%s' handler added", keyword);
+    MvrLog::log(MvrLog::Verbose, "keyword '%s' handler added", keyword);
   }
   myMap[keyword] = new HandlerCBType(functor);
   return true;
 }
 
-AREXPORT bool ArFileParser::remHandler(const char *keyword, 
+AREXPORT bool MvrFileParser::remHandler(const char *keyword, 
 				       bool logIfCannotFind)
 {
-  std::map<std::string, HandlerCBType *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   HandlerCBType *handler;
 
   if (keyword == NULL) {
@@ -161,13 +161,13 @@ AREXPORT bool ArFileParser::remHandler(const char *keyword,
       delete myRemainderHandler;
       myRemainderHandler = NULL;
       if (!myIsQuiet) {
-        ArLog::log(ArLog::Verbose, "Functor for remainder handler removed");
+        MvrLog::log(MvrLog::Verbose, "Functor for remainder handler removed");
       }
       return true;
     }
     else { // no remainder handler to remove
       if (!myIsQuiet) {
-        ArLog::log(ArLog::Verbose, "No remainder handler to remove for null keyword");
+        MvrLog::log(MvrLog::Verbose, "No remainder handler to remove for null keyword");
       }
       return false;
     } // end else no remainder handler to remove
@@ -177,12 +177,12 @@ AREXPORT bool ArFileParser::remHandler(const char *keyword,
   if ((it = myMap.find(keyword)) == myMap.end())
   {
     if (logIfCannotFind)
-      ArLog::log(ArLog::Normal, "There is no keyword '%s' to remove.", 
+      MvrLog::log(MvrLog::Normal, "There is no keyword '%s' to remove.", 
 		 keyword);
     return false;
   }
   if (!myIsQuiet) {
-    ArLog::log(ArLog::Verbose, "keyword '%s' removed", keyword);
+    MvrLog::log(MvrLog::Verbose, "keyword '%s' removed", keyword);
   }
   handler = (*it).second;
   myMap.erase(it);
@@ -192,17 +192,17 @@ AREXPORT bool ArFileParser::remHandler(const char *keyword,
 
 }
 
-AREXPORT bool ArFileParser::remHandler(
-	ArRetFunctor1<bool, ArArgumentBuilder *> *functor)
+AREXPORT bool MvrFileParser::remHandler(
+	ArRetFunctor1<bool, MvrArgumentBuilder *> *functor)
 {
-  std::map<std::string, HandlerCBType *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   HandlerCBType *handler;
 
   if (myRemainderHandler != NULL && myRemainderHandler->haveFunctor(functor))
   {
     delete myRemainderHandler;
     myRemainderHandler = NULL;
-    ArLog::log(ArLog::Verbose, "Functor for remainder handler removed");
+    MvrLog::log(MvrLog::Verbose, "Functor for remainder handler removed");
     return true;
   }
 
@@ -211,7 +211,7 @@ AREXPORT bool ArFileParser::remHandler(
     if ((*it).second->haveFunctor(functor))
     {
       if (!myIsQuiet) {
-        ArLog::log(ArLog::Verbose, "Functor for keyword '%s' removed.", 
+        MvrLog::log(MvrLog::Verbose, "Functor for keyword '%s' removed.", 
 		                     (*it).first.c_str());
       }
       handler = (*it).second;
@@ -225,17 +225,17 @@ AREXPORT bool ArFileParser::remHandler(
 
 }
 
-AREXPORT bool ArFileParser::remHandler(
-	ArRetFunctor3<bool, ArArgumentBuilder *, char *, size_t> *functor)
+AREXPORT bool MvrFileParser::remHandler(
+	ArRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
 {
-  std::map<std::string, HandlerCBType *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   HandlerCBType *handler;
 
   if (myRemainderHandler != NULL && myRemainderHandler->haveFunctor(functor))
   {
     delete myRemainderHandler;
     myRemainderHandler = NULL;
-    ArLog::log(ArLog::Verbose, "Functor for remainder handler removed");
+    MvrLog::log(MvrLog::Verbose, "Functor for remainder handler removed");
     return true;
   }
 
@@ -244,7 +244,7 @@ AREXPORT bool ArFileParser::remHandler(
     if ((*it).second->haveFunctor(functor))
     {
       if (!myIsQuiet) {
-        ArLog::log(ArLog::Verbose, "Functor for keyword '%s' removed.", 
+        MvrLog::log(MvrLog::Verbose, "Functor for keyword '%s' removed.", 
 		                     (*it).first.c_str());
       }
       handler = (*it).second;
@@ -259,20 +259,20 @@ AREXPORT bool ArFileParser::remHandler(
 }
 
 /*
-AREXPORT ArRetFunctor1<bool, ArArgumentBuilder *> *ArFileParser::getHandler(const char *keyword)
+AREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *ArFileParser::getHandler(const char *keyword)
 {
-  std::map<std::string, ArRetFunctor1<bool, ArArgumentBuilder *> *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrRetFunctor1<bool, MvrArgumentBuilder *> *, MvrStrCaseCmpOp>::iterator it;
 
   if ((it = myMap.find(keyword)) == myMap.end())
   {
-    ArLog::log(ArLog::Normal, "There is no keyword handler for '%s'", keyword);
+    MvrLog::log(MvrLog::Normal, "There is no keyword handler for '%s'", keyword);
     return NULL;
   }
   
   return (*it).second;
 }
 */
-AREXPORT void ArFileParser::setBaseDirectory(const char *baseDirectory)
+AREXPORT void MvrFileParser::setBaseDirectory(const char *baseDirectory)
 {
   if (baseDirectory != NULL && strlen(baseDirectory) > 0)
     myBaseDir = baseDirectory;
@@ -293,7 +293,7 @@ AREXPORT const char *ArFileParser::getBaseDirectory(void) const
  * a comment delimiter.  The comment delimiter and any following characters in 
  * the current line will be stripped during parsing of the file
 **/
-AREXPORT void ArFileParser::setCommentDelimiters(const std::list<std::string> &delimiters)
+AREXPORT void MvrFileParser::setCommentDelimiters(const std::list<std::string> &delimiters)
 {
   myCommentDelimiterList.clear();
 
@@ -306,8 +306,8 @@ AREXPORT void ArFileParser::setCommentDelimiters(const std::list<std::string> &d
       myCommentDelimiterList.push_back(curDelimiter);
     }
     else {
-      ArLog::log(ArLog::Normal,
-                 "ArFileParser::setCommentDelimiters cannot set empty delimiter at position %i",
+      MvrLog::log(MvrLog::Normal,
+                 "MvrFileParser::setCommentDelimiters cannot set empty delimiter at position %i",
                  i);
     }
   } // end for each given delimiter
@@ -318,19 +318,19 @@ AREXPORT void ArFileParser::setCommentDelimiters(const std::list<std::string> &d
  * Call this method to indicate that the file type to be parsed does not contain 
  * comments.
 **/
-AREXPORT void ArFileParser::clearCommentDelimiters()
+AREXPORT void MvrFileParser::clearCommentDelimiters()
 {
   myCommentDelimiterList.clear();
 
 } // end method clearCommentDelimiters
 
 
-AREXPORT void ArFileParser::resetCounters(void)
+AREXPORT void MvrFileParser::resetCounters(void)
 {
   myLineNumber = 0;
 }
 
-AREXPORT bool ArFileParser::parseLine(char *line, 
+AREXPORT bool MvrFileParser::parseLine(char *line, 
 				                              char *errorBuffer, size_t errorBufferLen)
 {
   char keyword[512];
@@ -340,7 +340,7 @@ AREXPORT bool ArFileParser::parseLine(char *line,
   size_t len;
   size_t i;
   bool noArgs;
-  std::map<std::string, HandlerCBType *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   HandlerCBType *handler;
 
   myLineNumber++;
@@ -382,7 +382,7 @@ AREXPORT bool ArFileParser::parseLine(char *line,
   // if this is 0 then we have an empty line so we continue
   if (len == 0)
   {
-    //ArLog::log(ArLog::Verbose, "line %d: empty line", myLineNumber);
+    //ArLog::log(MvrLog::Verbose, "line %d: empty line", myLineNumber);
     return true;
   }
   // first find the start of the text
@@ -399,7 +399,7 @@ AREXPORT bool ArFileParser::parseLine(char *line,
   if (i == len)
   {
     if (!myIsQuiet) {
-      ArLog::log(ArLog::Verbose, "line %d: just white space at start of line", myLineNumber);
+      MvrLog::log(MvrLog::Verbose, "line %d: just white space at start of line", myLineNumber);
     }
     return true;
   }
@@ -440,7 +440,7 @@ AREXPORT bool ArFileParser::parseLine(char *line,
   }
 
   keyword[i-textStart] = '\0';
-  //ArLog::log(ArLog::Verbose, "line %d: keyword %s", lineNumber, keyword);
+  //ArLog::log(MvrLog::Verbose, "line %d: keyword %s", lineNumber, keyword);
   // now find the start of the value (first non whitespace)
   for (; i < len; i++)
   {
@@ -452,7 +452,7 @@ AREXPORT bool ArFileParser::parseLine(char *line,
     };
   }
   // lower that keyword
-  ArUtil::lower(keyword, keyword, 512);
+  MvrUtil::lower(keyword, keyword, 512);
 
 
   // a variable for if we're using the remainder handler or not (don't
@@ -484,7 +484,7 @@ AREXPORT bool ArFileParser::parseLine(char *line,
     // if we don't just keep going
     else
     {
-      ArLog::log(ArLog::Verbose, 
+      MvrLog::log(MvrLog::Verbose, 
 		 "line %d: unknown keyword '%s' line '%s', continuing", 
 		 myLineNumber, keyword, &line[textStart]);
       return true;
@@ -492,16 +492,16 @@ AREXPORT bool ArFileParser::parseLine(char *line,
   }
   /*
   if (noArgs)
-    ArLog::log(ArLog::Verbose, "line %d: firstword '%s' no argument", 
+    MvrLog::log(MvrLog::Verbose, "line %d: firstword '%s' no argument", 
 	       myLineNumber, keyword);
   else
-    ArLog::log(ArLog::Verbose, "line %d: firstword '%s' argument '%s'", 
+    MvrLog::log(MvrLog::Verbose, "line %d: firstword '%s' argument '%s'", 
 	       myLineNumber, keyword, valueStart);
   */
   // now toss the rest of the argument into an argument builder then
   // form it up to send to the functor
   
-  ArArgumentBuilder builder(myMaxNumArguments,
+  MvrArgumentBuilder builder(myMaxNumArguments,
                             '\0',  // no special space character
                             false, // do not ignore normal spaces
                             myIsPreCompressQuotes); // whether to pre-compress quotes
@@ -538,7 +538,7 @@ AREXPORT bool ArFileParser::parseLine(char *line,
   return true;
 }
 
-AREXPORT void ArFileParser::setPreParseFunctor(ArFunctor1<const char *> *functor)
+AREXPORT void MvrFileParser::setPreParseFunctor(MvrFunctor1<const char *> *functor)
 {
   myPreParseFunctor = functor;
 
@@ -561,7 +561,7 @@ AREXPORT void ArFileParser::setPreParseFunctor(ArFunctor1<const char *> *functor
    
    @param errorBufferLen the length of @a errorBuffer
 */
-AREXPORT bool ArFileParser::parseFile(const char *fileName, 
+AREXPORT bool MvrFileParser::parseFile(const char *fileName, 
                                       bool continueOnErrors, 
                                       bool noFileNotFoundMessage,
                                       char *errorBuffer,
@@ -590,16 +590,16 @@ AREXPORT bool ArFileParser::parseFile(const char *fileName,
     realFileName += fileName;
   }
 
-  ArLog::log(ArLog::Verbose, "Opening file %s from fileName given %s and base directory %s", realFileName.c_str(), fileName, myBaseDir.c_str());
+  MvrLog::log(MvrLog::Verbose, "Opening file %s from fileName given %s and base directory %s", realFileName.c_str(), fileName, myBaseDir.c_str());
     
   //char *buf = new char[4096];
 
-  if ((file = ArUtil::fopen(realFileName.c_str(), "r")) == NULL)
+  if ((file = MvrUtil::fopen(realFileName.c_str(), "r")) == NULL)
   {
     if (errorBuffer != NULL)
       snprintf(errorBuffer, errorBufferLen, "cannot open file %s", fileName);
     if (!noFileNotFoundMessage)
-      ArLog::log(ArLog::Terse, "ArFileParser::parseFile: Could not open file %s to parse file.", realFileName.c_str());
+      MvrLog::log(MvrLog::Terse, "MvrFileParser::parseFile: Could not open file %s to parse file.", realFileName.c_str());
     return false;
   }
 /**
@@ -617,7 +617,7 @@ AREXPORT bool ArFileParser::parseFile(const char *fileName,
   {
     if (!parseLine(line, errorBuffer, errorBufferLen))
     {
-      ArLog::log(ArLog::Terse, "## Last error on line %d of file '%s'", 
+      MvrLog::log(MvrLog::Terse, "## Last error on line %d of file '%s'", 
 		             myLineNumber, realFileName.c_str());
       ret = false;
       if (!continueOnErrors)
@@ -630,7 +630,7 @@ AREXPORT bool ArFileParser::parseFile(const char *fileName,
 }
   
 
-bool ArFileParser::isInterrupted() {
+bool MvrFileParser::isInterrupted() {
 
   myInterruptMutex.lock();
   bool b = myIsInterrupted;
@@ -641,7 +641,7 @@ bool ArFileParser::isInterrupted() {
 } // end method isInterrupted
 
 
-AREXPORT void ArFileParser::cancelParsing()
+AREXPORT void MvrFileParser::cancelParsing()
 {
   myInterruptMutex.lock();
   myIsInterrupted = true;
@@ -652,7 +652,7 @@ AREXPORT void ArFileParser::cancelParsing()
 
 /**
  * @param file File pointer for a file to be parsed. The file must be open for
- *  reading (e.g. with ArUtil::fopen()) and this pointer must not be NULL.
+ *  reading (e.g. with MvrUtil::fopen()) and this pointer must not be NULL.
  * @param buffer a non-NULL char array in which to read the file
  * @param bufferLength the number of chars in the buffer; must be greater than 0
  * @param continueOnErrors a bool set to true if parsing should continue
@@ -662,7 +662,7 @@ AREXPORT void ArFileParser::cancelParsing()
  *  immediately empties the errorBuffer
  * @param errorBufferLen the length of @a errorBuffer
 */
-AREXPORT bool ArFileParser::parseFile(FILE *file, 
+AREXPORT bool MvrFileParser::parseFile(FILE *file, 
                                       char *buffer, 
                                       int bufferLength, 
                                       bool continueOnErrors,
@@ -701,7 +701,7 @@ AREXPORT bool ArFileParser::parseFile(FILE *file,
 }
 
 
-void ArFileParser::setQuiet(bool isQuiet)
+void MvrFileParser::setQuiet(bool isQuiet)
 {
   myIsQuiet = isQuiet;
 }

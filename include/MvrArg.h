@@ -29,20 +29,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
-class ArArgumentBuilder;
+class MvrArgumentBuilder;
 
-/// Argument class, mostly for actions, could be used for other things
+/// Mvrgument class, mostly for actions, could be used for other things
 /** 
     This is designed to be easy to add another type to the arguments... 
     All you have to do to do so, is add an enum to the Type enum, add a 
     newType getNewType(void), add a void setNewType(newType nt), and add
-    a case statement for the newType to ArArg::print.  You should probably also
-    add an @see newType to the documentation for ArArg::getType.
+    a case statement for the newType to MvrArg::print.  You should probably also
+    add an @see newType to the documentation for MvrArg::getType.
 
 */
-class ArArg
+class MvrArg
 {
 public:
   typedef enum 
@@ -52,9 +52,9 @@ public:
     DOUBLE, ///< Double argument
     STRING, ///< String argument
     BOOL, ///< Boolean argument
-    POSE, ///< ArPose argument
-    FUNCTOR, ///< Argument that handles things with functors
-    DESCRIPTION_HOLDER, ///< Argument that just holds a description
+    POSE, ///< MvrPose argument
+    FUNCTOR, ///< Mvrgument that handles things with functors
+    DESCRIPTION_HOLDER, ///< Mvrgument that just holds a description
     
     LAST_TYPE = DESCRIPTION_HOLDER  ///< Last value in the enumeration
   } Type;
@@ -65,38 +65,38 @@ public:
   };
 
   /// Default empty contructor
-  AREXPORT ArArg();
+  AREXPORT MvrArg();
   /// Constructor for making an integer argument
-  AREXPORT ArArg(const char * name, int *pointer, 
+  AREXPORT MvrArg(const char * name, int *pointer, 
 		 const char * description = "", 
 		 int minInt = INT_MIN, 
 		 int maxInt = INT_MAX); 
   /// Constructor for making a double argument
-  AREXPORT ArArg(const char * name, double *pointer,
+  AREXPORT MvrArg(const char * name, double *pointer,
 		 const char * description = "", 
 		 double minDouble = -HUGE_VAL,
 		 double maxDouble = HUGE_VAL); 
   /// Constructor for making a boolean argument
-  AREXPORT ArArg(const char * name, bool *pointer,
+  AREXPORT MvrArg(const char * name, bool *pointer,
 		 const char * description = ""); 
   /// Constructor for making a position argument
-  AREXPORT ArArg(const char * name, ArPose *pointer,
+  AREXPORT MvrArg(const char * name, MvrPose *pointer,
 		 const char * description = ""); 
   /// Constructor for making an argument of a string
-  AREXPORT ArArg(const char *name, char *pointer, 
+  AREXPORT MvrArg(const char *name, char *pointer, 
 		 const char *description,
 		 size_t maxStrLen);
   /// Constructor for making an argument that has functors to handle things
-  AREXPORT ArArg(const char *name, 
-		 ArRetFunctor1<bool, ArArgumentBuilder *> *setFunctor, 
-		 ArRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
+  AREXPORT MvrArg(const char *name, 
+		 MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
+		 MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
 		 const char *description);
-  /// Constructor for just holding a description (for ArConfig)
-  AREXPORT ArArg(const char *description);
+  /// Constructor for just holding a description (for MvrConfig)
+  AREXPORT MvrArg(const char *description);
   /// Copy constructor
-  AREXPORT ArArg(const ArArg & arg);
+  AREXPORT MvrArg(const MvrArg & arg);
   /// Assignment operator
-  AREXPORT ArArg &operator=(const ArArg &arg);
+  AREXPORT MvrArg &operator=(const MvrArg &arg);
   /// Destructor
   AREXPORT virtual ~ArArg();
 
@@ -112,12 +112,12 @@ public:
   AREXPORT bool setDouble(double val);
   /// Sets the argument value, for bool arguments
   AREXPORT bool setBool(bool val);
-  /// Sets the argument value, for ArPose arguments
-  AREXPORT bool setPose(ArPose pose);
-  /// Sets the argument value for ArArgumentBuilder arguments
+  /// Sets the argument value, for MvrPose arguments
+  AREXPORT bool setPose(MvrPose pose);
+  /// Sets the argument value for MvrArgumentBuilder arguments
   AREXPORT bool setString(const char *str);
   /// Sets the argument by calling the setFunctor callback
-  AREXPORT bool setArgWithFunctor(ArArgumentBuilder *argument);
+  AREXPORT bool setArgWithFunctor(MvrArgumentBuilder *argument);
   /// Gets the argument value, for int arguments
   AREXPORT int getInt(void) const; 
   /// Gets the argument value, for double arguments
@@ -125,7 +125,7 @@ public:
   /// Gets the argument value, for bool arguments
   AREXPORT bool getBool(void) const;
   /// Gets the argument value, for pose arguments
-  AREXPORT ArPose getPose(void) const;
+  AREXPORT MvrPose getPose(void) const;
   /// Gets the argument value, for string arguments
   AREXPORT const char *getString(void) const;
   /// Gets the argument value, which is a list of argumentbuilders here
@@ -142,10 +142,10 @@ public:
   AREXPORT double getMaxDouble(void) const;
   /// Gets if the config priority is set
   AREXPORT bool getConfigPrioritySet(void) const;
-  /// Gets the priority (only used by ArConfig)
-  AREXPORT ArPriority::Priority getConfigPriority(void) const;
-  /// Sets the priority (only used by ArConfig)
-  AREXPORT void setConfigPriority(ArPriority::Priority priority);
+  /// Gets the priority (only used by MvrConfig)
+  AREXPORT MvrPriority::Priority getConfigPriority(void) const;
+  /// Sets the priority (only used by MvrConfig)
+  AREXPORT void setConfigPriority(MvrPriority::Priority priority);
 
 private:
   /// Internal helper function
@@ -153,7 +153,7 @@ private:
 
 protected:
 
-  ArArg::Type myType;
+  MvrArg::Type myType;
   std::string myName;
   std::string myDescription;
   int *myIntPointer;
@@ -161,13 +161,13 @@ protected:
   double *myDoublePointer;
   double myMinDouble, myMaxDouble;
   bool *myBoolPointer;
-  ArPose *myPosePointer;
+  MvrPose *myPosePointer;
   char *myStringPointer;
   size_t myMaxStrLen;
   bool myConfigPrioritySet;
-  ArPriority::Priority myConfigPriority;
-  ArRetFunctor1<bool, ArArgumentBuilder *> *mySetFunctor;
-  ArRetFunctor<const std::list<ArArgumentBuilder *> *> *myGetFunctor;
+  MvrPriority::Priority myConfigPriority;
+  MvrRetFunctor1<bool, MvrArgumentBuilder *> *mySetFunctor;
+  MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *myGetFunctor;
 };
 
 #endif // ARARGUMENT_H

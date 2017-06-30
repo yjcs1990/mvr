@@ -25,13 +25,13 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArGPS.h"
-#include "ArDeviceConnection.h"
-#include "ArRobotPacket.h"
-#include "ArRobot.h"
-#include "ArCommands.h"
+#include "MvrGPS.h"
+#include "MvrDeviceConnection.h"
+#include "MvrRobotPacket.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
 #include "ariaInternal.h"
 
 #include <iostream>
@@ -41,7 +41,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 //#define DEBUG_ARGPS_GPRMC
 
 #ifdef DEBUG_ARGPS
-void ArGPS_printBuf(FILE *fp, const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      fprintf(fp, "[0x%X]", data[i] & 0xff);    }    else    {      fputc(data[i], fp);    }  }}
+void MvrGPS_printBuf(FILE *fp, const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      fprintf(fp, "[0x%X]", data[i] & 0xff);    }    else    {      fputc(data[i], fp);    }  }}
 #endif
 
 /* 
@@ -49,7 +49,7 @@ void ArGPS_printBuf(FILE *fp, const char *data, int size){  for(int i = 0; i < s
  * -------------------------------------------
  *
  *  You can do this by modifying this class, or (recommended) creating a
- *  subclass of ArGPS.
+ *  subclass of MvrGPS.
  *
  *  1. Create a handler method and functor for the NMEA message that provides
  *     the data. Initialize the functor in the class constructor.
@@ -59,7 +59,7 @@ void ArGPS_printBuf(FILE *fp, const char *data, int size){  for(int i = 0; i < s
  *  3. Implement the handler method to examine the fields and extract the data (don't forget that 
  *     NMEA does not require that all fields be given).
  *
- *  4. Add the new GPS type to ArGPSConnector.
+ *  4. Add the new GPS type to MvrGPSConnector.
  *
  * Some possible new NMEA message types to add are 
  * PTNLDG (Trimble proprietary
@@ -71,25 +71,25 @@ void ArGPS_printBuf(FILE *fp, const char *data, int size){  for(int i = 0; i < s
  * -------------------------------------
  *
  * If your GPS device uses NMEA and does not require any special initialization
- * commands, then it will probably work with ArGPS as a "Standard" GPS if you use the right BAUD rate. See
+ * commands, then it will probably work with MvrGPS as a "Standard" GPS if you use the right BAUD rate. See
  * above for how to add support for new NMEA messages.
  *
  * If your GPS device does not support NMEA, or it requires special
  * initialization commands to start sending NMEA data etc., then you can
- * define a subclass of ArGPS. Override connect(), setDeviceType(), and/or read() to do 
- * special things. See ArNovatelGPS as an example. Then add support to
- * it to ArGPSConnector: add a new member of the GPSType enum, a check for
- * it in parseArgs(), mention it in logArgs(), and create your ArGPS subclass
+ * define a subclass of MvrGPS. Override connect(), setDeviceType(), and/or read() to do 
+ * special things. See MvrNovatelGPS as an example. Then add support to
+ * it to MvrGPSConnector: add a new member of the GPSType enum, a check for
+ * it in parseArgs(), mention it in logArgs(), and create your MvrGPS subclass
  * in createGPS().
  *
- * You can find out the NMEA messages ArGPS wants by accessing "myHandlers",
+ * You can find out the NMEA messages MvrGPS wants by accessing "myHandlers",
  * of type HandlersMap (a std::map).
  * 
  */
 
 
 
-AREXPORT ArGPS::ArGPS() :
+AREXPORT MvrGPS::ArGPS() :
 
 
   // objects
@@ -124,13 +124,13 @@ AREXPORT ArGPS::ArGPS() :
   addNMEAHandler("MSS", &myGPMSSHandler);
   addNMEAHandler("GST", &myGPGSTHandler);
 
-  myMutex.setLogName("ArGPS::myMutex");
+  myMutex.setLogName("MvrGPS::myMutex");
 }
 
 
 
 
-AREXPORT ArGPS::Data::Data() :
+AREXPORT MvrGPS::Data::Data() :
   latitude(0.0),
   longitude(0.0),
   havePosition(false),
@@ -179,50 +179,50 @@ AREXPORT ArGPS::Data::Data() :
 
 
 
-AREXPORT bool ArGPS::connect(unsigned long connectTimeout)
+AREXPORT bool MvrGPS::connect(unsigned long connectTimeout)
 {
   if (!myDevice)
   {
-    ArLog::log(ArLog::Terse, "GPS Error: Cannot connect, device connection invalid.");
+    MvrLog::log(MvrLog::Terse, "GPS Error: Cannot connect, device connection invalid.");
     return false;
   }
 
-  if (myDevice->getStatus() != ArDeviceConnection::STATUS_OPEN) 
+  if (myDevice->getStatus() != MvrDeviceConnection::STATUS_OPEN) 
   {
-    ArLog::log(ArLog::Terse, "GPS Error: Cannot connect, device connection not open.");
+    MvrLog::log(MvrLog::Terse, "GPS Error: Cannot connect, device connection not open.");
     return false;
   }
 
   if (!initDevice()) return false;
 
-  ArLog::log(ArLog::Normal, "ArGPS: Opened connection, waiting for initial data...");
+  MvrLog::log(MvrLog::Normal, "MvrGPS: Opened connection, waiting for initial data...");
   if(!waitForData(connectTimeout))
   {
-    ArLog::log(ArLog::Terse, "ArGPS: Error: No response from GPS after %dms.", connectTimeout);
+    MvrLog::log(MvrLog::Terse, "MvrGPS: Error: No response from GPS after %dms.", connectTimeout);
     return false;
   }
   return true;
 }
 
-AREXPORT bool ArGPS::waitForData(unsigned long timeout)
+AREXPORT bool MvrGPS::waitForData(unsigned long timeout)
 {
-  ArTime start;
+  MvrTime start;
   start.setToNow();
   while ((unsigned long)start.mSecSince() <= timeout)
   {
     if (read(40) & ReadUpdated)  // read until data is sucessfully parsed 
       return true;
-    ArUtil::sleep(100);
+    MvrUtil::sleep(100);
   }
   return false;
 }
 
 
 
-AREXPORT int ArGPS::read(unsigned long maxTime)
+AREXPORT int MvrGPS::read(unsigned long maxTime)
 {
   if (!myDevice) return ReadError;
-  ArTime startTime;
+  MvrTime startTime;
   startTime.setToNow();
   int result = 0;
   while(maxTime == 0 || startTime.mSecSince() < (long)maxTime) 
@@ -231,31 +231,31 @@ AREXPORT int ArGPS::read(unsigned long maxTime)
     if(result & ReadError || result & ReadFinished)
     {
 #ifdef DEBUG_ARGPS
-      std::cerr << "ArGPS: finished reading all available data (or error reading).\n";
+      std::cerr << "MvrGPS: finished reading all available data (or error reading).\n";
 #endif
       return result;
     }
   }
 #ifdef DEBUG_ARGPS
   if(maxTime != 0)
-    fprintf(stderr, "ArGPS::read() reached maxTime %lu (time=%lu), returning.\n", maxTime, startTime.mSecSince());
+    fprintf(stderr, "MvrGPS::read() reached maxTime %lu (time=%lu), returning.\n", maxTime, startTime.mSecSince());
 #endif
     
   return result;
 }
 
 // Key navigation data (position, etc.)
-void ArGPS::handleGPRMC(ArNMEAParser::Message msg)
+void MvrGPS::handleGPRMC(MvrNMEAParser::Message msg)
 {
   parseGPRMC(msg, myData.latitude, myData.longitude, myData.qualityFlag, myData.havePosition, myData.timeGotPosition, myData.GPSPositionTimestamp, myData.haveSpeed, myData.speed);
 }
 
-void ArGPS::parseGPRMC(const ArNMEAParser::Message &msg, double &latitudeResult, double &longitudeResult, bool &qualityFlagResult, bool &gotPositionResult, ArTime &timeGotPositionResult, ArTime &gpsTimestampResult, bool &gotSpeedResult, double &speedResult)
+void MvrGPS::parseGPRMC(const MvrNMEAParser::Message &msg, double &latitudeResult, double &longitudeResult, bool &qualityFlagResult, bool &gotPositionResult, MvrTime &timeGotPositionResult, MvrTime &gpsTimestampResult, bool &gotSpeedResult, double &speedResult)
 {
 
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
 #if defined(DEBUG_ARGPS) || defined(DEBUG_ARGPS_GPRMC)
-  fprintf(stderr, "ArGPS: XXX GPRMC size=%d, stat=%s latDegMin=%s, latNS=%s, lonDegMin=%s, lonEW=%s\n", message->size(), 
+  fprintf(stderr, "MvrGPS: XXX GPRMC size=%d, stat=%s latDegMin=%s, latNS=%s, lonDegMin=%s, lonEW=%s\n", message->size(), 
     (message->size() > 2) ? (*message)[2].c_str() : "(missing)", 
     (message->size() > 3) ? (*message)[3].c_str() : "(missing)", 
     (message->size() > 4) ? (*message)[4].c_str() : "(missing)", 
@@ -303,13 +303,13 @@ void ArGPS::parseGPRMC(const ArNMEAParser::Message &msg, double &latitudeResult,
 
 
 // Fix type, number of satellites tracked, DOP and also maybe altitude
-void ArGPS::handleGPGGA(ArNMEAParser::Message msg)
+void MvrGPS::handleGPGGA(MvrNMEAParser::Message msg)
 {
 #ifdef DEBUG_ARGPS
-fprintf(stderr, "ArGPS: Got GPGGA\n");
+fprintf(stderr, "MvrGPS: Got GPGGA\n");
 #endif
 
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   if (message->size() < 7) return;
   switch((*message)[6].c_str()[0])
   {
@@ -354,17 +354,17 @@ fprintf(stderr, "ArGPS: Got GPGGA\n");
 
 
 // Error estimation in ground distance units (actually a proprietary message)
-void ArGPS::handlePGRME(ArNMEAParser::Message msg)
+void MvrGPS::handlePGRME(MvrNMEAParser::Message msg)
 {
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   myData.haveGarminPositionError = readFloatFromStringVec(message, 1, &myData.garminPositionError);
   myData.haveGarminVerticalPositionError = readFloatFromStringVec(message, 3, &myData.garminVerticalPositionError);
 }
 
 // Altitude (actually a Garmin proprietary message)
-void ArGPS::handlePGRMZ(ArNMEAParser::Message msg)
+void MvrGPS::handlePGRMZ(MvrNMEAParser::Message msg)
 {
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   // This is redundant with GPGGA and often a different value (plus the
   // conversion...) Favor this over that one, or separate into two values?
   // (this is specifically from an altimeter and the value in GGA is
@@ -375,9 +375,9 @@ void ArGPS::handlePGRMZ(ArNMEAParser::Message msg)
 }
 
 // Compass heading messages
-void ArGPS::handleHCHDx(ArNMEAParser::Message msg)
+void MvrGPS::handleHCHDx(MvrNMEAParser::Message msg)
 {
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   if(msg.id == "HDT") // true north
   {
     myData.haveCompassHeadingTrue = readFloatFromStringVec(message, 1, &myData.compassHeadingTrue);
@@ -392,13 +392,13 @@ void ArGPS::handleHCHDx(ArNMEAParser::Message msg)
 }
 
 // GPS DOP and satellite IDs
-void ArGPS::handleGPGSA(ArNMEAParser::Message msg)
+void MvrGPS::handleGPGSA(MvrNMEAParser::Message msg)
 {
 #ifdef DEBUG_ARGPS
-fprintf(stderr, "ArGPS: XXX GPGSA received\n");
+fprintf(stderr, "MvrGPS: XXX GPGSA received\n");
 #endif
 
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   // This message alse has satellite IDs, not sure if that information is
   // useful though.
   
@@ -407,12 +407,12 @@ fprintf(stderr, "ArGPS: XXX GPGSA received\n");
   myData.haveVDOP = readFloatFromStringVec(message, 17, &myData.VDOP);
 }
 
-AREXPORT const char* ArGPS::getFixTypeName() const 
+AREXPORT const char* MvrGPS::getFixTypeName() const 
 {
   return getFixTypeName(getFixType());
 }
 
-AREXPORT const char* ArGPS::getFixTypeName(FixType type) 
+AREXPORT const char* MvrGPS::getFixTypeName(FixType type) 
 {
   switch (type)
   {
@@ -430,60 +430,60 @@ AREXPORT const char* ArGPS::getFixTypeName(FixType type)
   }
 }
 
-AREXPORT void ArGPS::logData() const
+AREXPORT void MvrGPS::logData() const
 {
-  ArLog::log(ArLog::Normal, "GPS Fix=%s Num. Satellites=%d Mean SNR=%.4f", getFixTypeName(), getNumSatellitesTracked(), getMeanSNR());
+  MvrLog::log(MvrLog::Normal, "GPS Fix=%s Num. Satellites=%d Mean SNR=%.4f", getFixTypeName(), getNumSatellitesTracked(), getMeanSNR());
   
   if (havePosition())
   {
-    ArLog::log(ArLog::Normal, "GPS Latitude=%0.4fdeg Longitude=%0.4fdeg Timestamp=%d", getLatitude(), getLongitude(), getGPSPositionTimestamp().getMSec());
+    MvrLog::log(MvrLog::Normal, "GPS Latitude=%0.4fdeg Longitude=%0.4fdeg Timestamp=%d", getLatitude(), getLongitude(), getGPSPositionTimestamp().getMSec());
     // for  fun... 
-    ArLog::log(ArLog::Normal, "GPS Maps: <http://www.topozone.com/map.asp?lat=%f&lon=%f&datum=nad83&u=5>  <http://maps.google.com/maps?q=%f,+%f>", getLatitude(), getLongitude(), getLatitude(), getLongitude());
+    MvrLog::log(MvrLog::Normal, "GPS Maps: <http://www.topozone.com/map.asp?lat=%f&lon=%f&datum=nad83&u=5>  <http://maps.google.com/maps?q=%f,+%f>", getLatitude(), getLongitude(), getLatitude(), getLongitude());
   }
   
   if (haveSpeed())
-    ArLog::log(ArLog::Normal, "GPS Speed=%0.4fm/s (%0.4fmi/h)", getSpeed(), mpsToMph(getSpeed()));
+    MvrLog::log(MvrLog::Normal, "GPS Speed=%0.4fm/s (%0.4fmi/h)", getSpeed(), mpsToMph(getSpeed()));
 
   if (haveAltitude())
-    ArLog::log(ArLog::Normal, "GPS Altitude=%0.4fm (%0.4fft)", getAltitude(), metersToFeet(getAltitude()));
+    MvrLog::log(MvrLog::Normal, "GPS Altitude=%0.4fm (%0.4fft)", getAltitude(), metersToFeet(getAltitude()));
 
   if (haveCompassHeadingMag())
-    ArLog::log(ArLog::Normal, "GPS Compass Heading (Mag)=%0.4fdeg", getCompassHeadingMag());
+    MvrLog::log(MvrLog::Normal, "GPS Compass Heading (Mag)=%0.4fdeg", getCompassHeadingMag());
 
   if (haveCompassHeadingTrue())
-    ArLog::log(ArLog::Normal, "GPS Compass Heading (True)=%0.4fdeg", getCompassHeadingTrue());
+    MvrLog::log(MvrLog::Normal, "GPS Compass Heading (True)=%0.4fdeg", getCompassHeadingTrue());
 
   if(haveErrorEllipse())
-    ArLog::log(ArLog::Normal, "GPS Error Ellipse=%0.4fm X %0.4fm at %0.4fdeg", getErrorEllipse().getY(), getErrorEllipse().getX(), getErrorEllipse().getTh());
+    MvrLog::log(MvrLog::Normal, "GPS Error Ellipse=%0.4fm X %0.4fm at %0.4fdeg", getErrorEllipse().getY(), getErrorEllipse().getX(), getErrorEllipse().getTh());
 
   if(haveLatLonError())
-    ArLog::log(ArLog::Normal, "GPS Latitude Error=%0.4fm, Londitude Error=%0.4fm", getLatLonError().getX(), getLatLonError().getY());
+    MvrLog::log(MvrLog::Normal, "GPS Latitude Error=%0.4fm, Londitude Error=%0.4fm", getLatLonError().getX(), getLatLonError().getY());
   else if (haveGarminPositionError())
-    ArLog::log(ArLog::Normal, "GPS Position Error Estimate=%0.4fm", getGarminPositionError());
+    MvrLog::log(MvrLog::Normal, "GPS Position Error Estimate=%0.4fm", getGarminPositionError());
 
   if(haveAltitudeError())
-    ArLog::log(ArLog::Normal, "GPS Altitude Erro=%0.4fm", getAltitudeError());
+    MvrLog::log(MvrLog::Normal, "GPS Altitude Erro=%0.4fm", getAltitudeError());
   else if (haveGarminVerticalPositionError())
-    ArLog::log(ArLog::Normal, "GPS Vertical Position Error Estimate=%0.4fm", getGarminVerticalPositionError());
+    MvrLog::log(MvrLog::Normal, "GPS Vertical Position Error Estimate=%0.4fm", getGarminVerticalPositionError());
 
   if (havePDOP())
-    ArLog::log(ArLog::Normal, "GPS PDOP=%0.4f", getPDOP());
+    MvrLog::log(MvrLog::Normal, "GPS PDOP=%0.4f", getPDOP());
   if (haveHDOP())
-    ArLog::log(ArLog::Normal, "GPS HDOP=%0.4f", getHDOP());
+    MvrLog::log(MvrLog::Normal, "GPS HDOP=%0.4f", getHDOP());
   if (haveVDOP())
-    ArLog::log(ArLog::Normal, "GPS VDOP=%0.4f", getVDOP());
+    MvrLog::log(MvrLog::Normal, "GPS VDOP=%0.4f", getVDOP());
 
   if (haveDGPSStation())
-    ArLog::log(ArLog::Normal, "GPS DGPS Station ID=%d", getDGPSStationID());
+    MvrLog::log(MvrLog::Normal, "GPS DGPS Station ID=%d", getDGPSStationID());
 
 }
 
-AREXPORT void ArGPS::printDataLabelsHeader() const 
+AREXPORT void MvrGPS::printDataLabelsHeader() const 
 {
     printf("Latitude Longitude Speed Altitude CompassHeadingMag/True NumSatellites AvgSNR Lat.Err Lon.Err Alt.Err HDOP VDOP PDOP Fix GPSTimeSec:MSec\n");
 }
 
-AREXPORT void ArGPS::printData(bool labels) const
+AREXPORT void MvrGPS::printData(bool labels) const
 {
   if(labels) printf("GPS: ");
   if (!havePosition())
@@ -600,7 +600,7 @@ AREXPORT void ArGPS::printData(bool labels) const
 }
 
 
-double ArGPS::gpsDegminToDegrees(double degmin) 
+double MvrGPS::gpsDegminToDegrees(double degmin) 
 {
   double degrees;
   double minutes = modf(degmin / (double)100.0, &degrees) * (double)100.0;
@@ -608,13 +608,13 @@ double ArGPS::gpsDegminToDegrees(double degmin)
 }
 
 
-double ArGPS::knotsToMPS(double knots) 
+double MvrGPS::knotsToMPS(double knots) 
 {
   return(knots * (double)0.514444444);
 }
 
 
-bool ArGPS::readFloatFromString(const std::string& str, double* target, double (*convf)(double)) const
+bool MvrGPS::readFloatFromString(const std::string& str, double* target, double (*convf)(double)) const
 {
   if (str.length() == 0) return false;
   if (convf)
@@ -624,7 +624,7 @@ bool ArGPS::readFloatFromString(const std::string& str, double* target, double (
   return true;
 }
 
-bool ArGPS::readUShortFromString(const std::string& str, unsigned short* target, unsigned short (*convf)(unsigned short)) const
+bool MvrGPS::readUShortFromString(const std::string& str, unsigned short* target, unsigned short (*convf)(unsigned short)) const
 {
   if (str.length() == 0) return false;
   if (convf)
@@ -635,19 +635,19 @@ bool ArGPS::readUShortFromString(const std::string& str, unsigned short* target,
 }
 
 
-bool ArGPS::readFloatFromStringVec(const std::vector<std::string>* vec, size_t i, double* target, double (*convf)(double)) const
+bool MvrGPS::readFloatFromStringVec(const std::vector<std::string>* vec, size_t i, double* target, double (*convf)(double)) const
 {
   if (vec->size() < (i+1)) return false;
   return readFloatFromString((*vec)[i], target, convf);
 }
 
-bool ArGPS::readUShortFromStringVec(const std::vector<std::string>* vec, size_t i, unsigned short* target, unsigned short (*convf)(unsigned short)) const
+bool MvrGPS::readUShortFromStringVec(const std::vector<std::string>* vec, size_t i, unsigned short* target, unsigned short (*convf)(unsigned short)) const
 {
   if (vec->size() < (i+1)) return false;
   return readUShortFromString((*vec)[i], target, convf);
 }
 
-bool ArGPS::readTimeFromString(const std::string& s, ArTime* time) const
+bool MvrGPS::readTimeFromString(const std::string& s, MvrTime* time) const
 {
   std::string::size_type dotpos = s.find('.');
   time_t timeSec = atoi(s.substr(0, dotpos).c_str());
@@ -659,15 +659,15 @@ bool ArGPS::readTimeFromString(const std::string& s, ArTime* time) const
   return true;
 }
 
-void ArGPS::handleGPGSV(ArNMEAParser::Message msg)
+void MvrGPS::handleGPGSV(MvrNMEAParser::Message msg)
 {
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   if(message->size() < 8) return;
   unsigned short numMsgs;
   unsigned short thisMsg;
   if(!readUShortFromStringVec(message, 1, &numMsgs)) return;
   if(!readUShortFromStringVec(message, 2, &thisMsg)) return;
-  for(unsigned short offset = 0; (ArNMEAParser::MessageVector::size_type)(offset + 7) < message->size(); offset+=4) // should be less than 5 sets of data per message though
+  for(unsigned short offset = 0; (MvrNMEAParser::MessageVector::size_type)(offset + 7) < message->size(); offset+=4) // should be less than 5 sets of data per message though
   {
     unsigned short snr = 0;
     if((*message)[7+offset].length() == 0) continue;  // no SNR for this satellite.
@@ -684,9 +684,9 @@ void ArGPS::handleGPGSV(ArNMEAParser::Message msg)
   }
 }
 
-void ArGPS::handleGPMSS(ArNMEAParser::Message msg)
+void MvrGPS::handleGPMSS(MvrNMEAParser::Message msg)
 {
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   if(message->size() < 5) return;
   if(!readFloatFromStringVec(message, 1, &(myData.beaconSignalStrength))) return;
   if(!readFloatFromStringVec(message, 2, &(myData.beaconSNR))) return;
@@ -696,20 +696,20 @@ void ArGPS::handleGPMSS(ArNMEAParser::Message msg)
   myData.haveBeaconInfo = true;
 }
 
-void ArGPS::handleGPGST(ArNMEAParser::Message msg)
+void MvrGPS::handleGPGST(MvrNMEAParser::Message msg)
 {
-  ArNMEAParser::MessageVector *message = msg.message;  
+  MvrNMEAParser::MessageVector *message = msg.message;  
   // vector is:
   // 0,       1,    2,         3,             4,             5,              6,       7,       8
   // "GPGST", time, inputsRMS, ellipse major, ellipse minor, ellipse orient, lat err, lon err, alt err
 #ifdef DEBUG_ARGPS
-  printf("ArGPS: XXX GPGST size=%d\n", message->size());
+  printf("MvrGPS: XXX GPGST size=%d\n", message->size());
 #endif
   if(message->size() < 3) return;
   myData.haveInputsRMS = readFloatFromStringVec(message, 2, &(myData.inputsRMS));
   if(message->size() < 6) return;
 #ifdef DEBUG_ARGPS
-  printf("ArGPS: XXX GPGST inputsRMS=%s, ellipseMajor=%s, ellipseMinor=%s, ellipseOrient=%s\n", 
+  printf("MvrGPS: XXX GPGST inputsRMS=%s, ellipseMajor=%s, ellipseMinor=%s, ellipseOrient=%s\n", 
       (*message)[2].c_str(), (*message)[3].c_str(), (*message)[4].c_str(), (*message)[5].c_str());
 #endif
   double major, minor, orient;
@@ -724,7 +724,7 @@ void ArGPS::handleGPGST(ArNMEAParser::Message msg)
   else myData.errorEllipse.setPose(0,0,0);
   if(message->size() < 7) return;
 #ifdef DEBUG_ARGPS
-  printf("ArGPS: XXX GPGST latErr=%s, lonErr=%s\n",
+  printf("MvrGPS: XXX GPGST latErr=%s, lonErr=%s\n",
       (*message)[6].c_str(), (*message)[7].c_str());
 #endif
   double lat, lon;
@@ -733,26 +733,26 @@ void ArGPS::handleGPGST(ArNMEAParser::Message msg)
     &&
     readFloatFromStringVec(message, 7, &lon)
   );
-//printf("ArGPS: XXX GPGST haveLLE=%d, latErr=%f, lonErr=%f\n", myData.haveLatLonError, lat, lon);
+//printf("MvrGPS: XXX GPGST haveLLE=%d, latErr=%f, lonErr=%f\n", myData.haveLatLonError, lat, lon);
   if(myData.haveLatLonError) myData.latLonError.setPose(lat, lon);
   else myData.latLonError.setPose(0,0,0);
-//printf("ArGPS: XXX GPGST lle.getX=%f, lle.getY=%f\n", myData.latLonError.getX(), myData.latLonError.getY());
+//printf("MvrGPS: XXX GPGST lle.getX=%f, lle.getY=%f\n", myData.latLonError.getX(), myData.latLonError.getY());
   if(message->size() < 9) return;
 #ifdef DEBUG_ARGPS
-  printf("ArGPS: XXX GPGST altErr=%s", (*message)[8].c_str());
+  printf("MvrGPS: XXX GPGST altErr=%s", (*message)[8].c_str());
 #endif
   myData.haveAltitudeError = readFloatFromStringVec(message, 8, &(myData.altitudeError));
 }
   
-AREXPORT ArSimulatedGPS::ArSimulatedGPS(ArRobot *robot) :
-    ArGPS(), myHaveDummyPosition(false), mySimStatHandlerCB(this, &ArSimulatedGPS::handleSimStatPacket),
+AREXPORT MvrSimulatedGPS::ArSimulatedGPS(MvrRobot *robot) :
+    MvrGPS(), myHaveDummyPosition(false), mySimStatHandlerCB(this, &ArSimulatedGPS::handleSimStatPacket),
     myRobot(robot)
   {
     myData.havePosition = false;
     myData.fixType = NoFix;   // need to set a position with setDummyPosition() or get data from MobileSim to get a (simulated) fix
   }
 
-AREXPORT void ArSimulatedGPS::setDummyPosition(ArArgumentBuilder *args)
+AREXPORT void MvrSimulatedGPS::setDummyPosition(MvrArgumentBuilder *args)
 {
   double lat = 0;
   double lon = 0;
@@ -760,31 +760,31 @@ AREXPORT void ArSimulatedGPS::setDummyPosition(ArArgumentBuilder *args)
   bool haveArg = false;
   lat = args->getArgDouble(0, &haveArg);
   if(!haveArg) {
-    ArLog::log(ArLog::Terse, "ArSimulatedGPS: Can't set dummy position: No valid double precision numeric value given as first argument for latitude.");
+    MvrLog::log(MvrLog::Terse, "MvrSimulatedGPS: Can't set dummy position: No valid double precision numeric value given as first argument for latitude.");
     return;
   }
   lon = args->getArgDouble(1, &haveArg);
   if(!haveArg)  {
-    ArLog::log(ArLog::Terse, "ArSimulatedGPS: Can't set dummy position: No valid double precision numeric value given as second argument for longitude.");
+    MvrLog::log(MvrLog::Terse, "MvrSimulatedGPS: Can't set dummy position: No valid double precision numeric value given as second argument for longitude.");
     return;
   }
   alt = args->getArgDouble(2, &haveArg);
   if(haveArg) {
-    ArLog::log(ArLog::Normal, "ArSimulatedGPS: Setting dummy position %f, %f, %f", lat, lon, alt);
+    MvrLog::log(MvrLog::Normal, "MvrSimulatedGPS: Setting dummy position %f, %f, %f", lat, lon, alt);
     setDummyPosition(lat, lon, alt);
   } else {
-    ArLog::log(ArLog::Normal, "ArSimulatedGPS: Setting dummy position %f, %f", lat, lon);
+    MvrLog::log(MvrLog::Normal, "MvrSimulatedGPS: Setting dummy position %f, %f", lat, lon);
     setDummyPosition(lat, lon);
   }
 }
 
-bool ArSimulatedGPS::handleSimStatPacket(ArRobotPacket *pkt)
+bool MvrSimulatedGPS::handleSimStatPacket(MvrRobotPacket *pkt)
 {
   if(pkt->getID() != 0x62) return false;
   //puts("SIMSTAT");
   /*char c =*/ pkt->bufToByte(); // skip
   /*c =*/ pkt->bufToByte(); // skip
-  ArTypes::UByte4 flags = pkt->bufToUByte4();
+  MvrTypes::UByte4 flags = pkt->bufToUByte4();
   if(flags&ArUtil::BIT1)   // bit 1 is set if map has OriginLLA georeference point, and this packet will contain latitude and longitude.
   {
     myData.timeGotPosition.setToNow();
@@ -831,16 +831,16 @@ bool ArSimulatedGPS::handleSimStatPacket(ArRobotPacket *pkt)
   return true;
 }
 
-AREXPORT ArSimulatedGPS::~ArSimulatedGPS()
+AREXPORT MvrSimulatedGPS::~ArSimulatedGPS()
 {
   if(myRobot)
     myRobot->remPacketHandler(&mySimStatHandlerCB);
 }
 
-bool ArSimulatedGPS::connect(unsigned long connectTimeout) 
+bool MvrSimulatedGPS::connect(unsigned long connectTimeout) 
 {
   /*
-  std::list<ArRobot*> *robots = Aria::getRobotList();
+  std::list<ArRobot*> *robots = Mvria::getRobotList();
   std::list<ArRobot*>::const_iterator first = robots->begin();
   if(first != robots->end())
     myRobot = *(first);
@@ -848,12 +848,12 @@ bool ArSimulatedGPS::connect(unsigned long connectTimeout)
   if(myRobot)
   {
     myRobot->addPacketHandler(&mySimStatHandlerCB);
-    ArLog::log(ArLog::Normal, "ArSimulatedGPS: Requesting data from the simulated robot.");
-    myRobot->comInt(ArCommands::SIM_STAT, 2);
+    MvrLog::log(MvrLog::Normal, "MvrSimulatedGPS: Requesting data from the simulated robot.");
+    myRobot->comInt(MvrCommands::SIM_STAT, 2);
   }
   else
   {
-    ArLog::log(ArLog::Normal, "ArSimulatedGPS: Have no robot connection, can't receive data from a simulated robot; dummy position must be set manually instead");
+    MvrLog::log(MvrLog::Normal, "MvrSimulatedGPS: Have no robot connection, can't receive data from a simulated robot; dummy position must be set manually instead");
   }
   return true;
 }

@@ -1,40 +1,14 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ArExport.h"
-#include "ariaOSDef.h"
-#include "ArResolver.h"
-#include "ArAction.h"
-#include "ArLog.h"
-#include "ArRobot.h"
+#include "MvrExport.h"
+#include "mvriaOSDef.h"
+#include "MvrResolver.h"
+#include "MvrAction.h"
+#include "MvrLog.h"
+#include "MvrRobot.h"
 #include <string.h>
 
-AREXPORT bool ArAction::ourDefaultActivationState = true;
+AREXPORT bool MvrAction::ourDefaultActivationState = true;
 
-AREXPORT ArAction::ArAction(const char *name, const char *description)
+AREXPORT MvrAction::MvrAction(const char *name, const char *description)
 {
   myRobot = NULL;
   myNumArgs = 0;
@@ -43,36 +17,36 @@ AREXPORT ArAction::ArAction(const char *name, const char *description)
   myIsActive = ourDefaultActivationState;
 }
 
-AREXPORT ArAction::~ArAction()
+AREXPORT MvrAction::~MvrAction()
 {
   if (myRobot != NULL)
     myRobot->remAction(this);
 }
 
-AREXPORT const char *ArAction::getName(void) const
+AREXPORT const char *MvrAction::getName(void) const
 {
   return myName.c_str();
 }
 
-AREXPORT const char *ArAction::getDescription(void) const
+AREXPORT const char *MvrAction::getDescription(void) const
 {
   return myDescription.c_str();
 }
 
-AREXPORT int ArAction::getNumArgs(void) const
+AREXPORT int MvrAction::getNumArgs(void) const
 {
   return myNumArgs;
 }
 
-AREXPORT void ArAction::setNextArgument(ArArg const &arg)
+AREXPORT void MvrAction::setNextArgument(MvrArg const &arg)
 {
   myArgumentMap[myNumArgs] = arg;
   myNumArgs++;
 }
 
-AREXPORT ArArg *ArAction::getArg(int number) 
+AREXPORT MvrArg *MvrAction::getArg(int number) 
 {
-  std::map<int, ArArg>::iterator it;
+  std::map<int, MvrArg>::iterator it;
   
   it = myArgumentMap.find(number);
   if (it != myArgumentMap.end())
@@ -81,9 +55,9 @@ AREXPORT ArArg *ArAction::getArg(int number)
     return NULL;
 }
 
-AREXPORT const ArArg *ArAction::getArg(int number) const
+AREXPORT const MvrArg *MvrAction::getArg(int number) const
 {
-  std::map<int, ArArg>::const_iterator it;
+  std::map<int, MvrArg>::const_iterator it;
   
   it = myArgumentMap.find(number);
   if (it != myArgumentMap.end())
@@ -94,54 +68,54 @@ AREXPORT const ArArg *ArAction::getArg(int number) const
 
 /**
  *  @swignote If you override this method in a Java or Python subclass, use
- *  setActionRobotObj(ArRobot) instead of trying to call super.setRobot() or 
- *  ArAction.setRobot(). (SWIG's subclassing "directors" feature cannot properly
+ *  setActionRobotObj(MvrRobot) instead of trying to call super.setRobot() or 
+ *  MvrAction.setRobot(). (SWIG's subclassing "directors" feature cannot properly
  *  direct the call to the parent class, an infinite recursion results instead.)
  */
-AREXPORT void ArAction::setRobot(ArRobot *robot)
+AREXPORT void MvrAction::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
 }
 
-AREXPORT bool ArAction::isActive(void) const
+AREXPORT bool MvrAction::isActive(void) const
 {
   return myIsActive;
 }
 
-AREXPORT void ArAction::activate(void)
+AREXPORT void MvrAction::activate(void)
 {
   myIsActive = true;
 }
 
-AREXPORT void ArAction::deactivate(void)
+AREXPORT void MvrAction::deactivate(void)
 {
   myIsActive = false;
 }
 
-AREXPORT void ArAction::log(bool verbose) const
+AREXPORT void MvrAction::log(bool verbose) const
 {
   int i;
   std::string str;
-  const ArArg *arg;
-  const ArActionDesired *desired;
+  const MvrArg *arg;
+  const MvrActionDesired *desired;
 
-  ArLog::log(ArLog::Terse, "Action %s isActive %d", getName(), myIsActive);
+  MvrLog::log(MvrLog::Terse, "Action %s isActive %d", getName(), myIsActive);
   if (myIsActive && (desired = getDesired()) != NULL)
     desired->log();
   if (!verbose)
     return;
   if (strlen(getDescription()) != 0)
-    ArLog::log(ArLog::Terse, "Action %s is described as: %s", 
+    MvrLog::log(MvrLog::Terse, "Action %s is described as: %s", 
 	       getName(), getDescription());
   else
-    ArLog::log(ArLog::Terse, "Action %s has no description.", 
+    MvrLog::log(MvrLog::Terse, "Action %s has no description.", 
 	       getName());
   if (getNumArgs() == 0)
-    ArLog::log(ArLog::Terse, "Action %s has no arguments.\n", 
+    MvrLog::log(MvrLog::Terse, "Action %s has no arguments.\n", 
 	       getName());
   else
   {
-    ArLog::log(ArLog::Terse, "Action %s has %d arguments, of type(s):", 
+    MvrLog::log(MvrLog::Terse, "Action %s has %d arguments, of type(s):", 
 	       (getName()), getNumArgs());
 
     for (i = 0; i < getNumArgs(); i++) 
@@ -151,7 +125,7 @@ AREXPORT void ArAction::log(bool verbose) const
 	continue;
       arg->log();
     }
-    ArLog::log(ArLog::Terse, "");
+    MvrLog::log(MvrLog::Terse, "");
   }
 }
 

@@ -25,16 +25,16 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArExport.h"
-#include "ArCommands.h"
-#include "ArRobot.h"
-#include "ArTCMCompassRobot.h"
+#include "MvrExport.h"
+#include "MvrCommands.h"
+#include "MvrRobot.h"
+#include "MvrTCMCompassRobot.h"
 
-AREXPORT ArTCMCompassRobot::ArTCMCompassRobot(ArRobot *robot) :
+AREXPORT ArTCMCompassRobot::ArTCMCompassRobot(MvrRobot *robot) :
   myPacketHandlerCB(this, &ArTCMCompassRobot::packetHandler)
 {
   myRobot = robot;
-  myPacketHandlerCB.setName("ArTCMCompassRobot");
+  myPacketHandlerCB.setName("MvrTCMCompassRobot");
   if (myRobot != NULL)
     myRobot->addPacketHandler(&myPacketHandlerCB);
 }
@@ -45,7 +45,7 @@ AREXPORT ArTCMCompassRobot::~ArTCMCompassRobot()
     myRobot->remPacketHandler(&myPacketHandlerCB);
 }
 
-bool ArTCMCompassRobot::packetHandler(ArRobotPacket *packet)
+bool ArTCMCompassRobot::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xC0)
     return false;

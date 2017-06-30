@@ -25,8 +25,8 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArExport.h"
-#include "ArJoyHandler.h"
+#include "MvrExport.h"
+#include "MvrJoyHandler.h"
 #include "ariaUtil.h"
 
 /**
@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param useOld use the old linux interface to the joystick
 **/
 
-AREXPORT ArJoyHandler::ArJoyHandler(bool useOSCal, bool useOld)
+AREXPORT MvrJoyHandler::ArJoyHandler(bool useOSCal, bool useOld)
 {
   myInitialized = false;
   myUseOSCal = useOSCal;
@@ -46,7 +46,7 @@ AREXPORT ArJoyHandler::ArJoyHandler(bool useOSCal, bool useOld)
   myFirstData = true;
 }
 
-AREXPORT ArJoyHandler::~ArJoyHandler()
+AREXPORT MvrJoyHandler::~ArJoyHandler()
 {
 }
 
@@ -57,7 +57,7 @@ AREXPORT ArJoyHandler::~ArJoyHandler()
    max and use those values for calibration
 **/
 
-AREXPORT void ArJoyHandler::setUseOSCal(bool useOSCal)
+AREXPORT void MvrJoyHandler::setUseOSCal(bool useOSCal)
 {
   myUseOSCal = useOSCal;
 }
@@ -68,7 +68,7 @@ AREXPORT void ArJoyHandler::setUseOSCal(bool useOSCal)
    max and use those values for calibration
 **/
 
-AREXPORT bool ArJoyHandler::getUseOSCal(void)
+AREXPORT bool MvrJoyHandler::getUseOSCal(void)
 {
   return myUseOSCal;
 }
@@ -77,7 +77,7 @@ AREXPORT bool ArJoyHandler::getUseOSCal(void)
    Starts the calibration, which resets all the min and max variables as well
    as the center variables.
    @see endCal */
-AREXPORT void ArJoyHandler::startCal(void)
+AREXPORT void MvrJoyHandler::startCal(void)
 {
   int x, y;
   getUnfiltered(&x, &y);
@@ -96,7 +96,7 @@ AREXPORT void ArJoyHandler::startCal(void)
     @see startCal
 */
     
-AREXPORT void ArJoyHandler::endCal(void)
+AREXPORT void MvrJoyHandler::endCal(void)
 {
   int x, y;
   
@@ -105,7 +105,7 @@ AREXPORT void ArJoyHandler::endCal(void)
   myCenY = y;
 }
 
-AREXPORT void ArJoyHandler::getStats(int *maxX, int *minX, int *maxY, 
+AREXPORT void MvrJoyHandler::getStats(int *maxX, int *minX, int *maxY, 
 				     int *minY, int *cenX, int *cenY)
 {
   *maxX = myMaxX;
@@ -116,7 +116,7 @@ AREXPORT void ArJoyHandler::getStats(int *maxX, int *minX, int *maxY,
   *cenY = myCenY;
 }
 
-AREXPORT void ArJoyHandler::setStats(int maxX, int minX, int maxY, int minY, 
+AREXPORT void MvrJoyHandler::setStats(int maxX, int minX, int maxY, int minY, 
 			   int cenX, int cenY)
 {
   myMaxX = maxX;
@@ -128,9 +128,9 @@ AREXPORT void ArJoyHandler::setStats(int maxX, int minX, int maxY, int minY,
 }
 
 /**
-   @swignote   Use the version of this method returning ArJoyVec3i
+   @swignote   Use the version of this method returning MvrJoyVec3i
 */
-AREXPORT void ArJoyHandler::getSpeeds(int *x, int *y, int *z)
+AREXPORT void MvrJoyHandler::getSpeeds(int *x, int *y, int *z)
 {
   *x = myTopX;
   *y = myTopY;
@@ -151,21 +151,21 @@ AREXPORT void ArJoyHandler::getSpeeds(int *x, int *y, int *z)
    will be within the range [-1 * y given in setSpeeds(), y given in setSpeeds()]
    @param z pointer to an integer in which to store the z value, which
    will be within the range [-1 * z given in setSpeeds(), z given in setSpeeds()]
-   @java   Use the version of this method returning ArJoyVec3i
+   @java   Use the version of this method returning MvrJoyVec3i
    @python returns a tuple of (x, y, z) instead
 **/
 
-AREXPORT void ArJoyHandler::getAdjusted(int *x, int *y, int *z)
+AREXPORT void MvrJoyHandler::getAdjusted(int *x, int *y, int *z)
 {
   int curX, curY, curZ;
 
   getUnfiltered(&curX, &curY, &curZ);
   if (myUseOSCal)
   {
-    *x = ArMath::roundInt(((double)curX) / 128.0 * ((double)myTopX));
-    *y = ArMath::roundInt(((double)curY) / 128.0 * ((double)myTopY));
+    *x = MvrMath::roundInt(((double)curX) / 128.0 * ((double)myTopX));
+    *y = MvrMath::roundInt(((double)curY) / 128.0 * ((double)myTopY));
     if (z != NULL)
-      *z = ArMath::roundInt(((double)curZ) / 128.0 * ((double)myTopZ));
+      *z = MvrMath::roundInt(((double)curZ) / 128.0 * ((double)myTopZ));
     return;
   }
 
@@ -186,7 +186,7 @@ AREXPORT void ArJoyHandler::getAdjusted(int *x, int *y, int *z)
   } else 
     *y = 0;
   if (z != NULL)
-    *z = ArMath::roundInt(((double)curZ) / 128.0 * ((double)myTopZ));
+    *z = MvrMath::roundInt(((double)curZ) / 128.0 * ((double)myTopZ));
   
 }
 
@@ -207,11 +207,11 @@ AREXPORT void ArJoyHandler::getAdjusted(int *x, int *y, int *z)
     Will be within the range [-1.0, 1.0]
 
    @python Returns a tuple of (x, y, z) instead
-   @java   Use the version of this method returning ArJoyVec3f
+   @java   Use the version of this method returning MvrJoyVec3f
    @python Returns a tuple of (x, y, z) instead
 **/
 
-AREXPORT void ArJoyHandler::getDoubles(double *x, double *y, double *z)
+AREXPORT void MvrJoyHandler::getDoubles(double *x, double *y, double *z)
 {
   int curX, curY, curZ;
 
@@ -253,10 +253,10 @@ AREXPORT void ArJoyHandler::getDoubles(double *x, double *y, double *z)
    @param x pointer to an integer in which to store x value
    @param y pointer to an integer in which to store y value
    @param z pointer to an integer in which to store z value
-   @java   Use the version of this method returning ArJoyVec3i
+   @java   Use the version of this method returning MvrJoyVec3i
    @python Returns a tuple of (x, y, z) instead
 */
-AREXPORT void ArJoyHandler::getUnfiltered(int *x, int* y, int *z)
+AREXPORT void MvrJoyHandler::getUnfiltered(int *x, int* y, int *z)
 {
   getData();
   *x = myAxes[1];
@@ -269,7 +269,7 @@ AREXPORT void ArJoyHandler::getUnfiltered(int *x, int* y, int *z)
    @param axis axis to get, should range from 1 through getNumAxes()
 **/
 
-AREXPORT double ArJoyHandler::getAxis(unsigned int axis)
+AREXPORT double MvrJoyHandler::getAxis(unsigned int axis)
 {
   // make sure we have that axis
   if (axis < 1 || axis > myAxes.size())
@@ -297,7 +297,7 @@ AREXPORT double ArJoyHandler::getAxis(unsigned int axis)
    @return true if the button is pressed, false otherwise
 **/
 
-AREXPORT bool ArJoyHandler::getButton(unsigned int button)
+AREXPORT bool MvrJoyHandler::getButton(unsigned int button)
 {
   getData();
   // make sure we have that axis
@@ -315,7 +315,7 @@ AREXPORT bool ArJoyHandler::getButton(unsigned int button)
    @return the number of axes (axes are indexed as 1 through this number)
 **/
 
-AREXPORT unsigned int ArJoyHandler::getNumAxes(void)
+AREXPORT unsigned int MvrJoyHandler::getNumAxes(void)
 {
   return (unsigned int) myAxes.size();
 }
@@ -324,7 +324,7 @@ AREXPORT unsigned int ArJoyHandler::getNumAxes(void)
    @return the number of buttons (buttons are indexed as 1 through this number)
 **/
 
-AREXPORT unsigned int ArJoyHandler::getNumButtons(void)
+AREXPORT unsigned int MvrJoyHandler::getNumButtons(void)
 {
   return (unsigned int) myButtons.size();
 }

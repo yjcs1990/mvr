@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArMutex.h"
-#include "ArLog.h"
-#include "ArFunctor.h"
-#include "ArThread.h"
+#include "MvrMutex.h"
+#include "MvrLog.h"
+#include "MvrFunctor.h"
+#include "MvrThread.h"
 #include "ariaInternal.h"
-#include "ArThread.h"
+#include "MvrThread.h"
 
 //#include <process.h> // for getpid()
 
@@ -51,7 +51,7 @@ ArMutex::ArMutex(bool recursive) :
   if (!myMutex)
   {
     myFailedInit=true;
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::ArMutex: Failed to initialize mutex %s", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::ArMutex: Failed to initialize mutex %s", myLogName.c_str());
   }
   else
     unlock();
@@ -81,7 +81,7 @@ AREXPORT ArMutex::ArMutex(const ArMutex &mutex) :
   if(!myMutex)
   {
     myFailedInit=true;
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::ArMutex: Failed to initialize mutex in copy of %s", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::ArMutex: Failed to initialize mutex in copy of %s", myLogName.c_str());
   }
   else
     unlock();
@@ -98,7 +98,7 @@ AREXPORT ArMutex::ArMutex(const ArMutex &mutex) :
 ArMutex::~ArMutex()
 {
   if (!myFailedInit && !CloseHandle(myMutex))
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::~ArMutex: Failed to destroy mutex.");
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::~ArMutex: Failed to destroy mutex.");
 
   uninitLockTiming();
 }
@@ -108,10 +108,10 @@ int ArMutex::lock()
   DWORD ret;
 
   if (myLog)
-    ArLog::log(ArLog::Terse, "Locking %s", myLogName.c_str());
+    ArLog::log(MvrLog::Terse, "Locking %s", myLogName.c_str());
   if (myFailedInit)
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Initialization of mutex %s failed, failed lock", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Initialization of mutex %s failed, failed lock", myLogName.c_str());
     return(STATUS_FAILED_INIT);
   }
 
@@ -119,7 +119,7 @@ int ArMutex::lock()
   ret=WaitForSingleObject(myMutex, INFINITE);
   if (ret == WAIT_ABANDONED)
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Tried to lock a mutex %s which was locked by a different thread and never unlocked before that thread exited. This is a recoverable error", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Tried to lock a mutex %s which was locked by a different thread and never unlocked before that thread exited. This is a recoverable error", myLogName.c_str());
     return(lock());
   }
   else if (ret == WAIT_OBJECT_0)
@@ -131,7 +131,7 @@ int ArMutex::lock()
   }
   else
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Failed to lock %s due to an unknown error", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Failed to lock %s due to an unknown error", myLogName.c_str());
     return(STATUS_FAILED);
   }
 
@@ -142,8 +142,8 @@ int ArMutex::lock()
       
       if (ourNonRecursiveDeadlockFunctor != NULL)
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, thread '%s' %d, invoking functor '%s'", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, thread '%s' %d, invoking functor '%s'", 
 			 myLogName.c_str(),
 			 ArThread::getThisThreadName(), ArThread::getThisThread(),
 			 ourNonRecursiveDeadlockFunctor->getName());
@@ -152,8 +152,8 @@ int ArMutex::lock()
       }
       else
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d, calling Aria::shutdown", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d, calling Aria::shutdown", 
 			 myLogName.c_str(),
 			 ArThread::getThisThreadName(), ArThread::getThisThread());
 	Aria::shutdown();
@@ -176,7 +176,7 @@ int ArMutex::tryLock()
 
   if (myFailedInit)
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Initialization of mutex %s failed, failed lock", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Initialization of mutex %s failed, failed lock", myLogName.c_str());
     return(STATUS_FAILED_INIT);
   }
 
@@ -184,20 +184,20 @@ int ArMutex::tryLock()
   ret=WaitForSingleObject(myMutex, 1);
   if (ret == WAIT_ABANDONED)
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Tried to lock mutex %s nwhich was locked by a different thread and never unlocked before that thread exited. This is a recoverable error", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Tried to lock mutex %s nwhich was locked by a different thread and never unlocked before that thread exited. This is a recoverable error", myLogName.c_str());
     return(lock());
   }
   else if (ret == WAIT_TIMEOUT)
   {
 	// we really don't need to log when the reason for this call at all happens
-    //ArLog::logNoLock(ArLog::Terse, "ArMutex::tryLock: Could not lock mutex %s because it is already locked", myLogName.c_str());
+    //ArLog::logNoLock(MvrLog::Terse, "MvrMutex::tryLock: Could not lock mutex %s because it is already locked", myLogName.c_str());
     return(STATUS_ALREADY_LOCKED);
   }
   else if (ret == WAIT_OBJECT_0)
     return(0);
   else
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::lock: Failed to lock %s due to an unknown error", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::lock: Failed to lock %s due to an unknown error", myLogName.c_str());
     return(STATUS_FAILED);
   }
 
@@ -209,8 +209,8 @@ int ArMutex::tryLock()
       
       if (ourNonRecursiveDeadlockFunctor != NULL)
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, thread '%s' %d, invoking functor '%s'", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, thread '%s' %d, invoking functor '%s'", 
 			 myLogName.c_str(),
 			 ArThread::getThisThreadName(), ArThread::getThisThread(),
 			 ourNonRecursiveDeadlockFunctor->getName());
@@ -219,8 +219,8 @@ int ArMutex::tryLock()
       }
       else
       {
-	ArLog::logNoLock(ArLog::Terse, 
-			 "ArMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d, calling Aria::shutdown", 
+	ArLog::logNoLock(MvrLog::Terse, 
+			 "MvrMutex: '%s' tried to lock recursively even though it is nonrecursive, from thread '%s' %d, calling Aria::shutdown", 
 			 myLogName.c_str(),
 			 ArThread::getThisThreadName(), ArThread::getThisThread());
 	Aria::shutdown();
@@ -238,10 +238,10 @@ int ArMutex::tryLock()
 int ArMutex::unlock()
 {
   if (myLog)
-    ArLog::log(ArLog::Terse, "Unlocking %s", myLogName.c_str());
+    ArLog::log(MvrLog::Terse, "Unlocking %s", myLogName.c_str());
   if (myFailedInit)
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::unlock: Initialization of mutex %s failed, failed unlock", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::unlock: Initialization of mutex %s failed, failed unlock", myLogName.c_str());
     return(STATUS_FAILED_INIT);
   }
 
@@ -249,7 +249,7 @@ int ArMutex::unlock()
 
   if (!ReleaseMutex(myMutex))
   {
-    ArLog::logNoLock(ArLog::Terse, "ArMutex::unlock: Failed to unlock %s due to an unknown error", myLogName.c_str());
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::unlock: Failed to unlock %s due to an unknown error", myLogName.c_str());
     return(STATUS_FAILED);
   }
   if (myNonRecursive)

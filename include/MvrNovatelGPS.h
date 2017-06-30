@@ -30,9 +30,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 #include "ariaUtil.h"
-#include "ArGPS.h"
+#include "MvrGPS.h"
 
 /** @brief GPS subclass to support the NovAtel ProPak G2 and other NovAtel
  * "OEM4" devices.
@@ -41,7 +41,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *  to NovAtel GPS devices.
  *  On connect, it initiazes SBAS (satellite-based augmentation) to
  *  "auto", which uses WAAS, EGNOS, or MSAS if available,
- *  and then requests NMEA messages to be interpreted by ArGPS.
+ *  and then requests NMEA messages to be interpreted by MvrGPS.
  *
  *  It does not initialize corrections sent by your own DGPS fixed
  *  base station over radio, or the wide-area L-Band services such as OmniStar or 
@@ -56,12 +56,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *  for more information on doing this.
  *
  */
-class ArNovatelGPS : public virtual ArGPS {
+class MvrNovatelGPS : public virtual MvrGPS {
 protected:
-  void handleNovatelGPGGA(ArNMEAParser::Message msg);
-  ArFunctor1C<ArNovatelGPS, ArNMEAParser::Message> myNovatelGPGGAHandler;
+  void handleNovatelGPGGA(MvrNMEAParser::Message msg);
+  MvrFunctor1C<ArNovatelGPS, MvrNMEAParser::Message> myNovatelGPGGAHandler;
 public:
-  AREXPORT ArNovatelGPS();
+  AREXPORT MvrNovatelGPS();
   AREXPORT virtual ~ArNovatelGPS();
 protected:
   AREXPORT virtual bool initDevice();
@@ -70,27 +70,27 @@ protected:
 /** @brief GPS subclass to support the NovAtel SPAN GPS with integrated IMU. 
 
     This subclass requests the INGLL NMEA message for combined IMU and GPS
-    position, and updates the GPS position in ArGPS using this data.
-    It replaces the normal GPRMC handler from ArGPS, and instead saves the uncorrected
-    GPS data separately. (use dynamic_cast to cast an ArGPS object to an
-    ArNovatelSPAN object to access this data).
+    position, and updates the GPS position in MvrGPS using this data.
+    It replaces the normal GPRMC handler from MvrGPS, and instead saves the uncorrected
+    GPS data separately. (use dynamic_cast to cast an MvrGPS object to an
+    MvrNovatelSPAN object to access this data).
 
     @since ARIA 2.7.2
 */
-class ArNovatelSPAN : public virtual ArNovatelGPS {
+class MvrNovatelSPAN : public virtual MvrNovatelGPS {
 protected:
-  /** overrides ArNovatelGPS::handleGPRMC(), and keeps results of parsing the
-  * message in this class rather than ArGPS. */
-  void handleGPRMC(ArNMEAParser::Message msg);
-  void handleINGLL(ArNMEAParser::Message msg);
+  /** overrides MvrNovatelGPS::handleGPRMC(), and keeps results of parsing the
+  * message in this class rather than MvrGPS. */
+  void handleGPRMC(MvrNMEAParser::Message msg);
+  void handleINGLL(MvrNMEAParser::Message msg);
   AREXPORT virtual bool initDevice();
-  ArFunctor1C<ArNovatelSPAN, ArNMEAParser::Message> myGPRMCHandler;
-  ArFunctor1C<ArNovatelSPAN, ArNMEAParser::Message> myINGLLHandler;
+  MvrFunctor1C<ArNovatelSPAN, MvrNMEAParser::Message> myGPRMCHandler;
+  MvrFunctor1C<ArNovatelSPAN, MvrNMEAParser::Message> myINGLLHandler;
 public:
   double GPSLatitude, GPSLongitude;
   bool haveGPSPosition, GPSValidFlag;
-  ArTime timeGotGPSPosition, GPSTimestamp;
-  AREXPORT ArNovatelSPAN();
+  MvrTime timeGotGPSPosition, GPSTimestamp;
+  AREXPORT MvrNovatelSPAN();
   AREXPORT virtual ~ArNovatelSPAN();
 };
 

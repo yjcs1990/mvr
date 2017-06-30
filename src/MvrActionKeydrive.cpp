@@ -24,36 +24,36 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionKeydrive.h"
-#include "ArRobot.h"
+#include "MvrActionKeydrive.h"
+#include "MvrRobot.h"
 #include "ariaInternal.h"
-#include "ArKeyHandler.h"
+#include "MvrKeyHandler.h"
 
-AREXPORT ArActionKeydrive::ArActionKeydrive(const char *name,
+AREXPORT MvrActionKeydrive::ArActionKeydrive(const char *name,
 					    double transVelMax,
 					    double turnAmountMax,
 					    double velIncrement,
 					    double turnIncrement)
   :
-  ArAction(name, "This action reads the keyboard arrow keys and sets the translational and rotational velocities based on this."),
+  MvrAction(name, "This action reads the keyboard arrow keys and sets the translational and rotational velocities based on this."),
   myUpCB(this, &ArActionKeydrive::up),
   myDownCB(this, &ArActionKeydrive::down),
   myLeftCB(this, &ArActionKeydrive::left),
   myRightCB(this, &ArActionKeydrive::right),
   mySpaceCB(this, &ArActionKeydrive::space)
 {
-  setNextArgument(ArArg("trans vel max", &myTransVelMax, "The maximum speed to go (mm/sec)"));
+  setNextArgument(MvrArg("trans vel max", &myTransVelMax, "The maximum speed to go (mm/sec)"));
   myTransVelMax = transVelMax;
 
-  setNextArgument(ArArg("turn amount max", &myTurnAmountMax, "The maximum amount to turn (deg/cycle)"));
+  setNextArgument(MvrArg("turn amount max", &myTurnAmountMax, "The maximum amount to turn (deg/cycle)"));
   myTurnAmountMax = turnAmountMax;
 
-  setNextArgument(ArArg("vel increment per keypress", &myVelIncrement, "The amount to increment velocity by per keypress (mm/sec)"));
+  setNextArgument(MvrArg("vel increment per keypress", &myVelIncrement, "The amount to increment velocity by per keypress (mm/sec)"));
   myVelIncrement = velIncrement;
   
-  setNextArgument(ArArg("turn increment per keypress", &myVelIncrement, "The amount to turn by per keypress (deg)"));
+  setNextArgument(MvrArg("turn increment per keypress", &myVelIncrement, "The amount to turn by per keypress (deg)"));
   myTurnIncrement = turnIncrement;
 
   myDesiredSpeed = 0;
@@ -62,131 +62,131 @@ AREXPORT ArActionKeydrive::ArActionKeydrive(const char *name,
   mySpeedReset = true;
 }
 
-AREXPORT ArActionKeydrive::~ArActionKeydrive()
+AREXPORT MvrActionKeydrive::~ArActionKeydrive()
 {
 
 }
 
-AREXPORT void ArActionKeydrive::setRobot(ArRobot *robot)
+AREXPORT void MvrActionKeydrive::setRobot(MvrRobot *robot)
 {
-  ArKeyHandler *keyHandler;
+  MvrKeyHandler *keyHandler;
   myRobot = robot;
   if (robot == NULL)
     return;
    
   // see if there is already a keyhandler, if not make one for ourselves
-  if ((keyHandler = Aria::getKeyHandler()) == NULL)
+  if ((keyHandler = Mvria::getKeyHandler()) == NULL)
   {
-    keyHandler = new ArKeyHandler;
-    Aria::setKeyHandler(keyHandler);
+    keyHandler = new MvrKeyHandler;
+    Mvria::setKeyHandler(keyHandler);
     myRobot->attachKeyHandler(keyHandler);
   }
   takeKeys();
 }
 
-AREXPORT void ArActionKeydrive::takeKeys(void)
+AREXPORT void MvrActionKeydrive::takeKeys(void)
 {
-  ArKeyHandler *keyHandler;
-  if ((keyHandler = Aria::getKeyHandler()) == NULL)
+  MvrKeyHandler *keyHandler;
+  if ((keyHandler = Mvria::getKeyHandler()) == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-	       "ArActionKeydrive::takeKeys: There is no key handler, keydrive will not work.");
+    MvrLog::log(MvrLog::Terse, 
+	       "MvrActionKeydrive::takeKeys: There is no key handler, keydrive will not work.");
   }
   // now that we have one, add our keys as callbacks, print out big
   // warning messages if they fail
-  if (!keyHandler->addKeyHandler(ArKeyHandler::UP, &myUpCB))
-    ArLog::log(ArLog::Terse, "The key handler already has a key for up, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::DOWN, &myDownCB))
-    ArLog::log(ArLog::Terse, "The key handler already has a key for down, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::LEFT, &myLeftCB))
-    ArLog::log(ArLog::Terse,  
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::UP, &myUpCB))
+    MvrLog::log(MvrLog::Terse, "The key handler already has a key for up, keydrive will not work correctly.");
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::DOWN, &myDownCB))
+    MvrLog::log(MvrLog::Terse, "The key handler already has a key for down, keydrive will not work correctly.");
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::LEFT, &myLeftCB))
+    MvrLog::log(MvrLog::Terse,  
 	       "The key handler already has a key for left, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::RIGHT, &myRightCB))
-    ArLog::log(ArLog::Terse,  
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::RIGHT, &myRightCB))
+    MvrLog::log(MvrLog::Terse,  
 	       "The key handler already has a key for right, keydrive will not work correctly.");
-  if (!keyHandler->addKeyHandler(ArKeyHandler::SPACE, &mySpaceCB))
-    ArLog::log(ArLog::Terse,  
+  if (!keyHandler->addKeyHandler(MvrKeyHandler::SPACE, &mySpaceCB))
+    MvrLog::log(MvrLog::Terse,  
 	       "The key handler already has a key for space, keydrive will not work correctly.");
 }
 
-AREXPORT void ArActionKeydrive::giveUpKeys(void)
+AREXPORT void MvrActionKeydrive::giveUpKeys(void)
 {
-  ArKeyHandler *keyHandler;
-  if ((keyHandler = Aria::getKeyHandler()) == NULL)
+  MvrKeyHandler *keyHandler;
+  if ((keyHandler = Mvria::getKeyHandler()) == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-	       "ArActionKeydrive::giveUpKeys: There is no key handler, something is probably horribly wrong .");
+    MvrLog::log(MvrLog::Terse, 
+	       "MvrActionKeydrive::giveUpKeys: There is no key handler, something is probably horribly wrong .");
   }
   // now that we have one, add our keys as callbacks, print out big
   // warning messages if they fail
   if (!keyHandler->remKeyHandler(&myUpCB))
-    ArLog::log(ArLog::Terse, "ArActionKeydrive: The key handler already didn't have a key for up, something is wrong.");
+    MvrLog::log(MvrLog::Terse, "MvrActionKeydrive: The key handler already didn't have a key for up, something is wrong.");
   if (!keyHandler->remKeyHandler(&myDownCB))
-    ArLog::log(ArLog::Terse, "ArActionKeydrive: The key handler already didn't have a key for down, something is wrong.");
+    MvrLog::log(MvrLog::Terse, "MvrActionKeydrive: The key handler already didn't have a key for down, something is wrong.");
   if (!keyHandler->remKeyHandler(&myLeftCB))
-    ArLog::log(ArLog::Terse,  
-	       "ArActionKeydrive: The key handler already didn't have a key for left, something is wrong.");
+    MvrLog::log(MvrLog::Terse,  
+	       "MvrActionKeydrive: The key handler already didn't have a key for left, something is wrong.");
   if (!keyHandler->remKeyHandler(&myRightCB))
-    ArLog::log(ArLog::Terse,  
-	       "ArActionKeydrive: The key handler already didn't have a key for right, something is wrong.");
+    MvrLog::log(MvrLog::Terse,  
+	       "MvrActionKeydrive: The key handler already didn't have a key for right, something is wrong.");
   if (!keyHandler->remKeyHandler(&mySpaceCB))
-    ArLog::log(ArLog::Terse,  
-	       "ArActionKeydrive: The key handler didn't have a key for space, something is wrong.");
+    MvrLog::log(MvrLog::Terse,  
+	       "MvrActionKeydrive: The key handler didn't have a key for space, something is wrong.");
 }
 
-AREXPORT void ArActionKeydrive::setSpeeds(double transVelMax, 
+AREXPORT void MvrActionKeydrive::setSpeeds(double transVelMax, 
 					  double turnAmountMax)
 {
   myTransVelMax = transVelMax;
   myTurnAmountMax = turnAmountMax;
 }
 
-AREXPORT void ArActionKeydrive::setIncrements(double velIncrement, 
+AREXPORT void MvrActionKeydrive::setIncrements(double velIncrement, 
 					      double turnIncrement)
 {
   myVelIncrement = velIncrement;
   myTurnIncrement = turnIncrement;
 }
 
-AREXPORT void ArActionKeydrive::up(void)
+AREXPORT void MvrActionKeydrive::up(void)
 {
   myDeltaVel += myVelIncrement;
 }
 
-AREXPORT void ArActionKeydrive::down(void)
+AREXPORT void MvrActionKeydrive::down(void)
 {
   myDeltaVel -= myVelIncrement;
 }
 
-AREXPORT void ArActionKeydrive::left(void)
+AREXPORT void MvrActionKeydrive::left(void)
 {
   myTurnAmount += myTurnIncrement;
   if (myTurnAmount > myTurnAmountMax)
     myTurnAmount = myTurnAmountMax;
 }
 
-AREXPORT void ArActionKeydrive::right(void)
+AREXPORT void MvrActionKeydrive::right(void)
 {
   myTurnAmount -= myTurnIncrement;
   if (myTurnAmount < -myTurnAmountMax)
     myTurnAmount = -myTurnAmountMax;
 }
 
-AREXPORT void ArActionKeydrive::space(void)
+AREXPORT void MvrActionKeydrive::space(void)
 {
   mySpeedReset = false;
   myDesiredSpeed = 0;
   myTurnAmount = 0;
 }
 
-AREXPORT void ArActionKeydrive::activate(void)
+AREXPORT void MvrActionKeydrive::activate(void)
 {
   if (!myIsActive)
     takeKeys();
   myIsActive = true;
 }
 
-AREXPORT void ArActionKeydrive::deactivate(void)
+AREXPORT void MvrActionKeydrive::deactivate(void)
 {
   if (myIsActive)
     giveUpKeys();
@@ -195,7 +195,7 @@ AREXPORT void ArActionKeydrive::deactivate(void)
   myTurnAmount = 0;
 }
 
-AREXPORT ArActionDesired *ArActionKeydrive::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *ArActionKeydrive::fire(MvrActionDesired currentDesired)
 {
   myDesired.reset();
 

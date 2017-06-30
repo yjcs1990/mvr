@@ -24,34 +24,34 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include <errno.h>
 #include <time.h>
 #include <math.h>
 #include <sys/time.h>
 #include <string.h>
 #include "ariaOSDef.h"
-#include "ArCondition.h"
-#include "ArLog.h"
+#include "MvrCondition.h"
+#include "MvrLog.h"
 
 #include <time.h>
 
 
-ArStrMap ArCondition::ourStrMap;
+ArStrMap MvrCondition::ourStrMap;
 
 
-AREXPORT ArCondition::ArCondition() :
+AREXPORT MvrCondition::ArCondition() :
   myFailedInit(false),
   myCond(),
   myMutex(false)
 {
-  myMutex.setLogName("ArCondition::myMutex");
+  myMutex.setLogName("MvrCondition::myMutex");
   pthread_condattr_t attr;
 
   pthread_condattr_init(&attr);
   if (pthread_cond_init(&myCond, &attr) != 0)
   {
-    ArLog::log(ArLog::Terse, "ArCondition::ArCondition: Unknown error trying to create the condition.");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::ArCondition: Unknown error trying to create the condition.");
     myFailedInit=true;
   }
 
@@ -66,65 +66,65 @@ AREXPORT ArCondition::ArCondition() :
   ourStrMap[STATUS_MUTEX_FAILED]="The underlying mutex failed in some fashion";
 }
 
-AREXPORT ArCondition::~ArCondition()
+AREXPORT MvrCondition::~ArCondition()
 {
   int ret;
 
   ret=pthread_cond_destroy(&myCond);
   if (ret == EBUSY)
-    ArLog::log(ArLog::Terse, "ArCondition::~ArCondition: Trying to destroy a condition that another thread is waiting on.");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::~ArCondition: Trying to destroy a condition that another thread is waiting on.");
   else if (ret != 0)
-    ArLog::log(ArLog::Terse, "ArCondition::~ArCondition: Unknown error while trying to destroy the condition.");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::~ArCondition: Unknown error while trying to destroy the condition.");
 }
 
-AREXPORT int ArCondition::signal()
+AREXPORT int MvrCondition::signal()
 {
   if (myFailedInit)
   {
-    ArLog::log(ArLog::Terse, "ArCondition::signal: Initialization of condition failed, failed to signal");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::signal: Initialization of condition failed, failed to signal");
     return(STATUS_FAILED_INIT);
   }
 
   if (pthread_cond_signal(&myCond) != 0)
   {
-    ArLog::log(ArLog::Terse, "ArCondition::signal: Unknown error while trying to signal the condition.");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::signal: Unknown error while trying to signal the condition.");
     return(STATUS_FAILED);
   }
 
   return(0);
 }
 
-AREXPORT int ArCondition::broadcast()
+AREXPORT int MvrCondition::broadcast()
 {
   if (myFailedInit)
   {
-    ArLog::log(ArLog::Terse, "ArCondition::broadcast: Initialization of condition failed, failed to broadcast");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::broadcast: Initialization of condition failed, failed to broadcast");
     return(STATUS_FAILED_INIT);
   }
 
   if (pthread_cond_broadcast(&myCond) != 0)
   {
-    ArLog::log(ArLog::Terse, "ArCondition::broadcast: Unknown error while trying to broadcast the condition.");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::broadcast: Unknown error while trying to broadcast the condition.");
     return(STATUS_FAILED);
   }
 
   return(0);
 }
 
-AREXPORT int ArCondition::wait()
+AREXPORT int MvrCondition::wait()
 {
   int ret;
 
   if (myFailedInit)
   {
-    ArLog::log(ArLog::Terse, "ArCondition::wait: Initialization of condition failed, failed to wait");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::wait: Initialization of condition failed, failed to wait");
     return(STATUS_FAILED_INIT);
   }
 
   ret=myMutex.lock();
   if (ret != 0)
   {
-    if (ret == ArMutex::STATUS_FAILED_INIT)
+    if (ret == MvrMutex::STATUS_FAILED_INIT)
       return(STATUS_MUTEX_FAILED_INIT);
     else
       return(STATUS_MUTEX_FAILED);
@@ -137,7 +137,7 @@ AREXPORT int ArCondition::wait()
       return(STATUS_WAIT_INTR);
     else
     {
-      ArLog::log(ArLog::Terse, "ArCondition::wait: Unknown error while trying to wait on the condition.");
+      MvrLog::log(MvrLog::Terse, "MvrCondition::wait: Unknown error while trying to wait on the condition.");
       return(STATUS_FAILED);
     }
   }
@@ -145,7 +145,7 @@ AREXPORT int ArCondition::wait()
   ret=myMutex.unlock();
   if (ret != 0)
   {
-    if (ret == ArMutex::STATUS_FAILED_INIT)
+    if (ret == MvrMutex::STATUS_FAILED_INIT)
       return(STATUS_MUTEX_FAILED_INIT);
     else
       return(STATUS_MUTEX_FAILED);
@@ -154,21 +154,21 @@ AREXPORT int ArCondition::wait()
   return(0);
 }
 
-AREXPORT int ArCondition::timedWait(unsigned int msecs)
+AREXPORT int MvrCondition::timedWait(unsigned int msecs)
 {
   int ret;
   int retUnlock;
 
   if (myFailedInit)
   {
-    ArLog::log(ArLog::Terse, "ArCondition::wait: Initialization of condition failed, failed to wait");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::wait: Initialization of condition failed, failed to wait");
     return(STATUS_FAILED_INIT);
   }
 
   ret=myMutex.lock();
   if (ret != 0)
   {
-    if (ret == ArMutex::STATUS_FAILED_INIT)
+    if (ret == MvrMutex::STATUS_FAILED_INIT)
       return(STATUS_MUTEX_FAILED_INIT);
     else
       return(STATUS_MUTEX_FAILED);
@@ -213,7 +213,7 @@ AREXPORT int ArCondition::timedWait(unsigned int msecs)
 
   /*
   if (ret != 0)
-    ArLog::logErrorFromOS(ArLog::Terse, "ArCondition::timedWait: Unknown error while trying to wait on the condition. Ret %d, %s", ret, strerror(ret));
+    MvrLog::logErrorFromOS(MvrLog::Terse, "MvrCondition::timedWait: Unknown error while trying to wait on the condition. Ret %d, %s", ret, strerror(ret));
   */
 
   // must unlock the mutex, even if we fail, since we reacquire lock
@@ -228,7 +228,7 @@ AREXPORT int ArCondition::timedWait(unsigned int msecs)
       return(STATUS_WAIT_TIMEDOUT);
     else
     {
-      ArLog::logErrorFromOS(ArLog::Terse, "ArCondition::timedWait: Unknown error while trying to wait on the condition. Ret %d, %s.  Errno %d, %s.", 
+      MvrLog::logErrorFromOS(MvrLog::Terse, "MvrCondition::timedWait: Unknown error while trying to wait on the condition. Ret %d, %s.  Errno %d, %s.", 
 			    ret, strerror(ret),
 			    timedWaitErrno, strerror(timedWaitErrno));
 
@@ -238,7 +238,7 @@ AREXPORT int ArCondition::timedWait(unsigned int msecs)
 
   if (retUnlock != 0)
   {
-    if (retUnlock == ArMutex::STATUS_FAILED_INIT)
+    if (retUnlock == MvrMutex::STATUS_FAILED_INIT)
       return(STATUS_MUTEX_FAILED_INIT);
     else
       return(STATUS_MUTEX_FAILED);
@@ -247,9 +247,9 @@ AREXPORT int ArCondition::timedWait(unsigned int msecs)
   return(0);
 }
 
-AREXPORT const char * ArCondition::getError(int messageNumber) const
+AREXPORT const char * MvrCondition::getError(int messageNumber) const
 {
-  ArStrMap::const_iterator it;
+  MvrStrMap::const_iterator it;
   if ((it = ourStrMap.find(messageNumber)) != ourStrMap.end())
     return (*it).second.c_str();
   else

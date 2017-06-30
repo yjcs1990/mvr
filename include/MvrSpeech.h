@@ -30,8 +30,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSPEECH_H
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
-#include "ArConfig.h"
+#include "MvrFunctor.h"
+#include "MvrConfig.h"
 #include <list>
 #include <string>
 
@@ -39,26 +39,26 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /** @brief Abstract interface to speech synthesis.  
  *
  *  This class defines the abstract interface for speech synthesizers 
- *  used with Aria.
- *  Implementations are provided in the separate ArSpeechSynth_Cepstral and
- *  ArSpeechSynth_Festival libraries.
+ *  used with Mvria.
+ *  Implementations are provided in the separate MvrSpeechSynth_Cepstral and
+ *  MvrSpeechSynth_Festival libraries.
  *  This class provides a common-denominator
- *  interface. Implementations (especially ArCepstral) may support more
+ *  interface. Implementations (especially MvrCepstral) may support more
  *  features, or behave differently; refer to their documentation for more
  *  information.
  *
- *  This class registers one parameter with the global ArConfig object in the
+ *  This class registers one parameter with the global MvrConfig object in the
  *  "Speech Synthesis" section:  The parameter is named "voice" and sets the voice
  *  used for speech synthesis, if multiple voices is supported and the 
  *  new voice can be loaded. 
  */
 
-class ArSpeechSynth
+class MvrSpeechSynth
 {
 public:
 
   /** Don't forget to call this from derived classes. */
-  AREXPORT ArSpeechSynth();  
+  AREXPORT MvrSpeechSynth();  
 
   AREXPORT virtual ~ArSpeechSynth();
 
@@ -71,10 +71,10 @@ public:
    */
   AREXPORT virtual bool init(); 
 
-  /** Use the given ArConfig object to read parameters such as voice, speaking
+  /** Use the given MvrConfig object to read parameters such as voice, speaking
    * rate, volume.
    */
-  AREXPORT virtual void addToConfig(ArConfig *config);
+  AREXPORT virtual void addToConfig(MvrConfig *config);
 
   /** Speaks the given text. 
    * @param str The text to speak.
@@ -86,7 +86,7 @@ public:
    * @param sampleRate if given, temporarily use this sample rate for this
    *    speech, then restore. If 0, use current sample rate.
    */
-  AREXPORT virtual bool speak(const char *str, const char* voiceParams, ArRetFunctor2<bool, ArTypes::Byte2*, int>* audioOutputCB, unsigned short sampleRate = 0) = 0;
+  AREXPORT virtual bool speak(const char *str, const char* voiceParams, MvrRetFunctor2<bool, MvrTypes::Byte2*, int>* audioOutputCB, unsigned short sampleRate = 0) = 0;
 
   /** Speaks the given text. 
    * @param str The text to speak.
@@ -104,15 +104,15 @@ public:
    */
   AREXPORT virtual void interrupt() = 0; 
 
-  /** @return a functor for init() to use with ArSoundsQueue */
-  AREXPORT ArRetFunctorC<bool, ArSpeechSynth>* getInitCallback();
+  /** @return a functor for init() to use with MvrSoundsQueue */
+  AREXPORT MvrRetFunctorC<bool, MvrSpeechSynth>* getInitCallback();
 
-  /** @return a functor for speak() to use with ArSoundsQueue */
-  AREXPORT ArRetFunctor2C<bool, ArSpeechSynth, const char*, const char*>* getSpeakCallback(void) ;
+  /** @return a functor for speak() to use with MvrSoundsQueue */
+  AREXPORT MvrRetFunctor2C<bool, MvrSpeechSynth, const char*, const char*>* getSpeakCallback(void) ;
 
 
   /** @return a functor for interrupt() */
-  AREXPORT ArFunctorC<ArSpeechSynth>* getInterruptCallback();
+  AREXPORT MvrFunctorC<ArSpeechSynth>* getInterruptCallback();
 
 
   /** Instead of playing synthesized audio using the synthesizer's internal
@@ -122,7 +122,7 @@ public:
    *  changed with setAudioSampleRate(). The second parameter is the number
    *  of samples.  The return value from the callback is ignored.
    */
-  AREXPORT void setAudioCallback(ArRetFunctor2<bool, ArTypes::Byte2*, int>* cb);
+  AREXPORT void setAudioCallback(MvrRetFunctor2<bool, MvrTypes::Byte2*, int>* cb);
 
 
   /** Change audio sample rate (Hz). Normal rate is 16000 Hz.
@@ -150,15 +150,15 @@ public:
   AREXPORT virtual std::list<std::string> getVoiceNames() = 0;
 
 protected:
-  ArRetFunctor2C<bool, ArSpeechSynth, const char*, const char*> mySpeakCB;
-  ArRetFunctorC<bool, ArSpeechSynth> myInitCB;
-  ArFunctorC<ArSpeechSynth> myInterruptCB;
-  ArRetFunctor2<bool, ArTypes::Byte2*, int> *myAudioPlaybackCB; ///< If set, send audio to this callback instead of playing it directly
+  MvrRetFunctor2C<bool, MvrSpeechSynth, const char*, const char*> mySpeakCB;
+  MvrRetFunctorC<bool, MvrSpeechSynth> myInitCB;
+  MvrFunctorC<ArSpeechSynth> myInterruptCB;
+  MvrRetFunctor2<bool, MvrTypes::Byte2*, int> *myAudioPlaybackCB; ///< If set, send audio to this callback instead of playing it directly
 private:
-  ArRetFunctorC<bool, ArSpeechSynth> myProcessConfigCB;
+  MvrRetFunctorC<bool, MvrSpeechSynth> myProcessConfigCB;
   char myConfigVoice[32];
   bool processConfig();
-  void addVoiceConfigParam(ArConfig *config);
+  void addVoiceConfigParam(MvrConfig *config);
 
 };
 

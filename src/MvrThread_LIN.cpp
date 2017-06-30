@@ -24,7 +24,7 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 // ArThread.cc -- Thread classes
 
 
@@ -34,9 +34,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <sys/types.h>
 #include <unistd.h>
 #include "ariaOSDef.h"
-#include "ArThread.h"
-#include "ArLog.h"
-#include "ArSignalHandler.h"
+#include "MvrThread.h"
+#include "MvrLog.h"
+#include "MvrSignalHandler.h"
 
 #ifndef MINGW
 #include <sys/syscall.h>
@@ -44,14 +44,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 static void * run(void *arg)
 {
-  ArThread *t=(ArThread*)arg;
+  ArThread *t=(MvrThread*)arg;
   void *ret=NULL;
 
   if (t->getBlockAllSignals())
     ArSignalHandler::blockCommonThisThread();
 
   if (dynamic_cast<ArRetFunctor<void*>*>(t->getFunc()))
-    ret=((ArRetFunctor<void*>*)t->getFunc())->invokeR();
+    ret=((MvrRetFunctor<void*>*)t->getFunc())->invokeR();
   else
     t->getFunc()->invoke();
 
@@ -73,7 +73,7 @@ void ArThread::init()
 
   pt=pthread_self();
 
-  ourThreadsMutex.setLogName("ArThread::ourThreadsMutex");
+  ourThreadsMutex.setLogName("MvrThread::ourThreadsMutex");
 
   ourThreadsMutex.lock();
   if (ourThreads.size())
@@ -120,8 +120,8 @@ AREXPORT void ArThread::shutdown()
     delete (*listIter);
   }
   if (!ourThreads.empty()) {
-    ArLog::log(ArLog::Normal,
-               "ArThread::shutdown() unexpected thread leftover");
+    ArLog::log(MvrLog::Normal,
+               "MvrThread::shutdown() unexpected thread leftover");
   }
   ourThreadsMutex.unlock();
 
@@ -183,7 +183,7 @@ void ArThread::cancelAll()
   ourThreadsMutex.unlock();
 }
 
-int ArThread::create(ArFunctor *func, bool joinable, bool lowerPriority)
+int ArThread::create(MvrFunctor *func, bool joinable, bool lowerPriority)
 {
   int ret;
   pthread_attr_t attr;
@@ -205,17 +205,17 @@ int ArThread::create(ArFunctor *func, bool joinable, bool lowerPriority)
     pthread_attr_destroy(&attr);
     if (ret == EAGAIN)
     {
-      ArLog::log(ArLog::Terse, "ArThread::create: Error in create, not enough system resources in pthread_create() (EAGAIN)");
+      ArLog::log(MvrLog::Terse, "MvrThread::create: Error in create, not enough system resources in pthread_create() (EAGAIN)");
       return(STATUS_NORESOURCE);
     }
     else if(ret == ENOMEM)
     {
-      ArLog::log(ArLog::Terse, "ArThread::create: Error in create, not enough system resources in pthread_create() (ENOMEM)");
+      ArLog::log(MvrLog::Terse, "MvrThread::create: Error in create, not enough system resources in pthread_create() (ENOMEM)");
       return(STATUS_NORESOURCE);
     }
     else
     {
-      ArLog::log(ArLog::Terse, "ArThread::create: Unknown error in create.");
+      ArLog::log(MvrLog::Terse, "MvrThread::create: Unknown error in create.");
       return(STATUS_FAILED);
     }
   }
@@ -225,7 +225,7 @@ int ArThread::create(ArFunctor *func, bool joinable, bool lowerPriority)
     {
       ArLog::log(ourLogLevel, "Created anonymous thread with ID %d", 
 		 myThread);
-      //ArLog::logBacktrace(ArLog::Normal);
+      //ArLog::logBacktrace(MvrLog::Normal);
     }
     else
     {
@@ -250,17 +250,17 @@ int ArThread::doJoin(void **iret)
   {
     if (ret == ESRCH)
     {
-      ArLog::log(ArLog::Terse, "ArThread::join: Error in join: No such thread found");
+      ArLog::log(MvrLog::Terse, "MvrThread::join: Error in join: No such thread found");
       return(STATUS_NO_SUCH_THREAD);
     }
     else if (ret == EINVAL)
     {
-      ArLog::log(ArLog::Terse, "ArThread::join: Error in join: Thread is detached or another thread is waiting");
+      ArLog::log(MvrLog::Terse, "MvrThread::join: Error in join: Thread is detached or another thread is waiting");
       return(STATUS_INVALID);
     }
     else if (ret == EDEADLK)
     {
-      ArLog::log(ArLog::Terse, "ArThread::join: Error in join: Trying to join on self");
+      ArLog::log(MvrLog::Terse, "MvrThread::join: Error in join: Trying to join on self");
       return(STATUS_JOIN_SELF);
     }
   }
@@ -276,12 +276,12 @@ int ArThread::detach()
   {
     if (ret == ESRCH)
     {
-      ArLog::log(ArLog::Terse, "ArThread::detach: Error in detach: No such thread found");
+      ArLog::log(MvrLog::Terse, "MvrThread::detach: Error in detach: No such thread found");
       return(STATUS_NO_SUCH_THREAD);
     }
     else if (ret == EINVAL)
     {
-      ArLog::log(ArLog::Terse, "ArThread::detach: Error in detach: ArThread is already detached");
+      ArLog::log(MvrLog::Terse, "MvrThread::detach: Error in detach: ArThread is already detached");
       return(STATUS_ALREADY_DETATCHED);
     }
   }

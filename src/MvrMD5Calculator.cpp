@@ -24,15 +24,15 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
-#include "ArMD5Calculator.h"
+#include "MvrExport.h"
+#include "MvrMD5Calculator.h"
 
 #include "ariaOSDef.h"
 #include "ariaInternal.h"
 
-#include "ArLog.h"
+#include "MvrLog.h"
 
-AREXPORT ArMD5Calculator::ArMD5Calculator(ArFunctor1<const char*> *secondFunctor) :
+AREXPORT ArMD5Calculator::ArMD5Calculator(MvrFunctor1<const char*> *secondFunctor) :
   myFunctor(this, &ArMD5Calculator::append),
   mySecondFunctor(secondFunctor),
   myState(),
@@ -65,7 +65,7 @@ AREXPORT ArFunctor1<const char *> *ArMD5Calculator::getSecondFunctor()
   return mySecondFunctor;
 }
 
-AREXPORT void ArMD5Calculator::setSecondFunctor(ArFunctor1<const char *> *secondFunctor)
+AREXPORT void ArMD5Calculator::setSecondFunctor(MvrFunctor1<const char *> *secondFunctor)
 {
   mySecondFunctor = secondFunctor;
 }
@@ -106,8 +106,8 @@ AREXPORT void ArMD5Calculator::toDisplay(const unsigned char *digestBuf,
     snprintf(&displayBuf[j], 3, "%02x", digestBuf[i]);
 
     /***
-    ArLog::log(ArLog::Normal,
-               "ArMD5Calculator::toDisplay()  i = %i  j = %i,  \"%02x\" = \"%x,%x\"",
+    ArLog::log(MvrLog::Normal,
+               "MvrMD5Calculator::toDisplay()  i = %i  j = %i,  \"%02x\" = \"%x,%x\"",
                i, j, digestBuf[i], displayBuf[j], displayBuf[j + 1]);
     ***/
   } // end for each char
@@ -115,8 +115,8 @@ AREXPORT void ArMD5Calculator::toDisplay(const unsigned char *digestBuf,
   displayBuf[displayLength - 1] = '\0'; 
 
   /***
-  ArLog::log(ArLog::Normal,
-             "ArMD5Calculator::toDisplay() returns %s displayLength = %i",
+  ArLog::log(MvrLog::Normal,
+             "MvrMD5Calculator::toDisplay() returns %s displayLength = %i",
              displayBuf,
              displayLength);
   ***/
@@ -129,7 +129,7 @@ AREXPORT bool ArMD5Calculator::calculateChecksum(const char *fileName,
 {
   ArTime calcTime;
 
-  if (ArUtil::isStrEmpty(fileName)) {
+  if (MvrUtil::isStrEmpty(fileName)) {
     // TODO ArLog
     return false;
   }
@@ -163,8 +163,8 @@ AREXPORT bool ArMD5Calculator::calculateChecksum(const char *fileName,
 
   int elapsed = calcTime.mSecSince();
   
-  ArLog::log(ArLog::Normal,
-             "ArMD5Calculator::calculateChecksum(%s) took %i msecs",
+  ArLog::log(MvrLog::Normal,
+             "MvrMD5Calculator::calculateChecksum(%s) took %i msecs",
              fileName, elapsed);
 
   return true;
@@ -177,8 +177,8 @@ AREXPORT bool ArMD5Calculator::calculateChecksum(const char *fileName,
 AREXPORT void ArMD5Calculator::append(const char *str)
 {
   if (str == NULL) {
-    ArLog::log(ArLog::Terse,
-               "ArMD5Calculator::append cannot append null string");
+    ArLog::log(MvrLog::Terse,
+               "MvrMD5Calculator::append cannot append null string");
   }
   // YUCK to the cast!
   md5_append(&myState, (unsigned char *) str, strlen(str));

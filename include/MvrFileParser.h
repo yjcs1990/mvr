@@ -28,8 +28,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARFILEPARSER_H
 
 #include "ariaTypedefs.h"
-#include "ArArgumentParser.h"
-#include "ArFunctor.h"
+#include "MvrArgumentParser.h"
+#include "MvrFunctor.h"
 #include "ariaUtil.h"
 
 /// Class for parsing files more easily
@@ -58,17 +58,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
   @ingroup OptionalClasses
 
- * @note ArFileParser does not escape any special characters when writing or
+ * @note MvrFileParser does not escape any special characters when writing or
  * loading to/from a file. Therefore in general keywords, values,
  * and comments must not contain characters which have special meaning
  * in a config file, such as '#', ';', tab or newline. 
  **/
-class ArFileParser
+class MvrFileParser
 {
 public:
 
   /// Constructor
-  AREXPORT ArFileParser(const char *baseDirectory = "./",
+  AREXPORT MvrFileParser(const char *baseDirectory = "./",
                         bool isPreCompressQuotes = false);
 
 
@@ -78,25 +78,25 @@ public:
 
   /// Adds a functor to handle a keyword that wants an easily parsable string
   AREXPORT bool addHandler(const char *keyword, 
-			   ArRetFunctor1<bool, ArArgumentBuilder *> *functor);
+			   MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor);
   /// Adds a functor to handle a keyword that wants an easily parsable string and returns error messages
   AREXPORT bool addHandlerWithError(const char *keyword, 
-			   ArRetFunctor3<bool, ArArgumentBuilder *, 
+			   MvrRetFunctor3<bool, MvrArgumentBuilder *, 
 				    char *, size_t> *functor);
   /// Removes a handler for a keyword
   AREXPORT bool remHandler(const char *keyword, bool logIfCannotFind = true);
   /// Removes any handlers with this functor
-  AREXPORT bool remHandler(ArRetFunctor1<bool, ArArgumentBuilder *> *functor);
+  AREXPORT bool remHandler(MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor);
   /// Removes any handlers with this functor
   AREXPORT bool remHandler(
-	  ArRetFunctor3<bool, ArArgumentBuilder *, char *, size_t> *functor);
+	  MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor);
   /* this shouldn't be needed and would be inelegant with the new scheme, 
      if someone needs it let us know and I'll update it somehow
   /// Gets handler data for some keyword
-  AREXPORT ArRetFunctor1<bool, ArArgumentBuilder *> *getHandler(const char *keyword);
+  AREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *getHandler(const char *keyword);
   */
   
-	AREXPORT void setPreParseFunctor(ArFunctor1<const char *> *functor);
+	AREXPORT void setPreParseFunctor(MvrFunctor1<const char *> *functor);
 
 
   /// Opens, parses, and then closes the specified file.
@@ -153,18 +153,18 @@ protected:
   {
     public:
     HandlerCBType(
-	    ArRetFunctor3<bool, ArArgumentBuilder *, char *, size_t> *functor)
+	    MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
     {
       myCallbackWithError = functor;
       myCallback = NULL;
     }
-    HandlerCBType(ArRetFunctor1<bool, ArArgumentBuilder *> *functor)
+    HandlerCBType(MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor)
     {
       myCallbackWithError = NULL;
       myCallback = functor;
     }
     ~HandlerCBType() {}
-    bool call(ArArgumentBuilder *arg, char *errorBuffer, 
+    bool call(MvrArgumentBuilder *arg, char *errorBuffer, 
 	      size_t errorBufferLen) 
     { 
       if (myCallbackWithError != NULL) 
@@ -172,18 +172,18 @@ protected:
       else if (myCallback != NULL) 
 	return myCallback->invokeR(arg); 
       // if we get here there's a problem
-      ArLog::log(ArLog::Terse, "ArFileParser: Horrible problem with process callbacks");
+      MvrLog::log(MvrLog::Terse, "MvrFileParser: Horrible problem with process callbacks");
       return false;
     }
     bool haveFunctor(
-	    ArRetFunctor3<bool, ArArgumentBuilder *, char *, size_t> *functor)
+	    MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
     { 
       if (myCallbackWithError == functor) 
 	return true; 
       else 
 	return false; 
     }
-    bool haveFunctor(ArRetFunctor1<bool, ArArgumentBuilder *> *functor)
+    bool haveFunctor(MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor)
     { 
       if (myCallback == functor) 
 	return true; 
@@ -197,27 +197,27 @@ protected:
       else if (myCallback != NULL)
 	return myCallback->getName();
       // if we get here there's a problem
-      ArLog::log(ArLog::Terse, "ArFileParser: Horrible problem with process callback names");
+      MvrLog::log(MvrLog::Terse, "MvrFileParser: Horrible problem with process callback names");
       return NULL;
     }
     protected:
-    ArRetFunctor3<bool, ArArgumentBuilder *, char *, size_t> *myCallbackWithError;
-    ArRetFunctor1<bool, ArArgumentBuilder *> *myCallback;
+    MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *myCallbackWithError;
+    MvrRetFunctor1<bool, MvrArgumentBuilder *> *myCallback;
   };
   size_t myMaxNumArguments;
   int myLineNumber;
   std::string myBaseDir;
   std::list<std::string> myCommentDelimiterList;
 
-  ArFunctor1<const char *> *myPreParseFunctor;
+  MvrFunctor1<const char *> *myPreParseFunctor;
 
-  std::map<std::string, HandlerCBType *, ArStrCaseCmpOp> myMap;
+  std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp> myMap;
   // handles that NULL case
   HandlerCBType *myRemainderHandler;
   bool myIsQuiet;
   bool myIsPreCompressQuotes;
   bool myIsInterrupted;
-  ArMutex myInterruptMutex;
+  MvrMutex myInterruptMutex;
 };
 
 #endif // ARFILEPARSER_H

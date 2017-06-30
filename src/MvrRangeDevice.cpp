@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRangeDevice.h"
-#include "ArRobot.h"
+#include "MvrRangeDevice.h"
+#include "MvrRobot.h"
 
 /**
    @param currentBufferSize number of readings to store in the current
@@ -80,7 +80,7 @@ AREXPORT ArRangeDevice::ArRangeDevice(size_t currentBufferSize,
   myCumulativeBuffer(cumulativeBufferSize),
   myFilterCB(this, &ArRangeDevice::filterCallback)
 {
-  myDeviceMutex.setLogName("ArRangeDevice::myDeviceMutex");
+  myDeviceMutex.setLogName("MvrRangeDevice::myDeviceMutex");
   myRobot = NULL;
   myName = name;
   myMaxRange = maxRange;
@@ -138,7 +138,7 @@ AREXPORT const char * ArRangeDevice::getName(void) const
   return myName.c_str(); 
 }
 
-AREXPORT void ArRangeDevice::setRobot(ArRobot *robot) 
+AREXPORT void ArRangeDevice::setRobot(MvrRobot *robot) 
 { 
   char buf[512];
   sprintf(buf, "filter %s", getName());
@@ -313,7 +313,7 @@ AREXPORT double ArRangeDevice::currentReadingPolar(double startAngle,
     pose = myRobot->getPose();
   else
     {
-      ArLog::log(ArLog::Normal, "ArRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
+      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
       pose.setPose(0, 0);
     }
   return myCurrentBuffer.getClosestPolar(startAngle, endAngle, 
@@ -354,7 +354,7 @@ AREXPORT double ArRangeDevice::cumulativeReadingPolar(double startAngle,
     pose = myRobot->getPose();
   else
     {
-      ArLog::log(ArLog::Normal, "ArRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
+      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
       pose.setPose(0, 0);
     }
   return myCumulativeBuffer.getClosestPolar(startAngle, endAngle, 
@@ -384,7 +384,7 @@ AREXPORT double ArRangeDevice::currentReadingBox(double x1, double y1,
       robotPose = myRobot->getPose();
   else
     {
-      ArLog::log(ArLog::Normal, "ArRangeDevice %s: NULL robot, won't get reading box correctly", getName());
+      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get reading box correctly", getName());
       robotPose.setPose(0, 0);
     }
   return myCurrentBuffer.getClosestBox(x1, y1, x2, y2, robotPose,
@@ -413,7 +413,7 @@ AREXPORT double ArRangeDevice::cumulativeReadingBox(double x1, double y1,
     robotPose = myRobot->getPose();
   else
     {
-      ArLog::log(ArLog::Normal, "ArRangeDevice %s: NULL robot, won't get reading box correctly", getName());
+      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get reading box correctly", getName());
       robotPose.setPose(0, 0);
     }
   return myCumulativeBuffer.getClosestBox(x1, y1, x2, y2, 
@@ -428,7 +428,7 @@ AREXPORT double ArRangeDevice::cumulativeReadingBox(double x1, double y1,
     @param trans the transform to apply to the data
     @param doCumulative whether to transform the cumulative buffer or not
 */    
-AREXPORT void ArRangeDevice::applyTransform(ArTransform trans, 
+AREXPORT void ArRangeDevice::applyTransform(MvrTransform trans, 
 					    bool doCumulative)
 {
   myCurrentBuffer.applyTransform(trans);
@@ -476,7 +476,7 @@ AREXPORT std::vector<ArSensorReading> *ArRangeDevice::getAdjustedRawReadingsAsVe
 }
 
 
-AREXPORT void ArRangeDevice::setCurrentDrawingData(ArDrawingData *data, 
+AREXPORT void ArRangeDevice::setCurrentDrawingData(MvrDrawingData *data, 
 						   bool takeOwnershipOfData)
 {
   if (myCurrentDrawingData != NULL && myOwnCurrentDrawingData)
@@ -617,7 +617,7 @@ AREXPORT void ArRangeDevice::adjustRawReadings(bool interlaced)
 	     corEncPose.getX()) > 1 ||
 	fabs(adjReading->getEncoderPoseTaken().getY() - 
 	     corEncPose.getY()) > 1 || 
-	fabs(ArMath::subAngle(adjReading->getEncoderPoseTaken().getTh(), 
+	fabs(MvrMath::subAngle(adjReading->getEncoderPoseTaken().getTh(), 
 			      corEncPose.getTh())) > .2)
       printf("(%.0f %.0f %.0f) should be (%.0f %.0f %.0f)\n", 
 	     adjReading->getEncoderPoseTaken().getX(),

@@ -28,11 +28,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARLCDMTX_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
-#include "ArFunctor.h"
-#include "ArRobot.h"
-#include "ArRobotPacket.h"
-#include "ArRobotConnector.h"
+#include "MvrRangeDevice.h"
+#include "MvrFunctor.h"
+#include "MvrRobot.h"
+#include "MvrRobotPacket.h"
+#include "MvrRobotConnector.h"
 
 
 
@@ -47,21 +47,21 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /** Interface to LCD interface panel on an MTX-type robot.
 
 This interface can be used to display text strings on the MTX LCD panel.
-One or more ArLCDMTX objects are automatically created by
-ArRobotConnector (or ArLCDConnector if used separately from
+One or more MvrLCDMTX objects are automatically created by
+ArRobotConnector (or MvrLCDConnector if used separately from
 ArRobotConnector) if connecting to an MTX robot, and a successful
 connection to the LCD panel was also made. A pointer
-to the first ArLCDMTX object can be obtained via ArRobot::findLCD(),
+to the first MvrLCDMTX object can be obtained via MvrRobot::findLCD(),
 passing an index of 1.
 
 @since 2.8.0
 @ingroup MTX
 */
-class ArLCDMTX : public ArASyncTask
+class MvrLCDMTX : public MvrASyncTask
 {
 public:
 	/// Constructor
-	AREXPORT ArLCDMTX(
+	AREXPORT MvrLCDMTX(
 		int lcdBoardNum = 0,
 		const char * name = "MTXLCD",
 		ArDeviceConnection *conn = NULL,
@@ -80,15 +80,15 @@ public:
 
 	/// Sets the robot pointer, also attaches its process function to the
 	/// robot as a Sensor Interpretation task.
-	AREXPORT virtual void setRobot(ArRobot *robot);
+	AREXPORT virtual void setRobot(MvrRobot *robot);
 
 	/// Sets the device this instance receives packets from
-	AREXPORT void setDeviceConnection(ArDeviceConnection *conn);
+	AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
 	/// Gets the device this instance receives packets from
-	AREXPORT ArDeviceConnection *getDeviceConnection(void);
+	AREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
 	AREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking,
-		int lcdNumber, ArFunctor1<int> *onCallback,
+		int lcdNumber, MvrFunctor1<int> *onCallback,
 		ArFunctor1<int> *offCallback);
 	AREXPORT virtual bool disconnect(void);
 	AREXPORT virtual bool isConnected(void) { return myIsConnected; }
@@ -112,7 +112,7 @@ public:
 
 	AREXPORT virtual const char *getName(void) const;
 
-	AREXPORT void	setInfoLogLevel(ArLog::LogLevel infoLogLevel)
+	AREXPORT void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
 	{
 		myInfoLogLevel = infoLogLevel;
 	}
@@ -132,7 +132,7 @@ public:
 	/// Sets the numter of seconds without a response until connection assumed lost
 	AREXPORT virtual void setConnectionTimeoutSeconds(double seconds)
 	{
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setConnectionTimeoutSeconds: Setting timeout to %g secs",
 			getName(), seconds);
 		myTimeoutSeconds = seconds;
@@ -154,14 +154,14 @@ public:
 	// reading was received
 
 	/// Adds a callback for when disconnection happens because of an error
-	void addDisconnectOnErrorCB(ArFunctor *functor,
+	void addDisconnectOnErrorCB(MvrFunctor *functor,
 		int position = 51)
 	{
 		myDisconnectOnErrorCBList.addCallback(functor, position);
 	}
 
 	/// Removes a callback for when disconnection happens because of an error
-	void remDisconnectOnErrorCB(ArFunctor *functor)
+	void remDisconnectOnErrorCB(MvrFunctor *functor)
 	{
 		myDisconnectOnErrorCBList.remCallback(functor);
 	}
@@ -393,7 +393,7 @@ protected:
 	std::string myIpAddress;
 
 	ArFunctorC<ArLCDMTX> mySensorInterpTask;
-	ArRetFunctorC<bool, ArLCDMTX> myAriaExitCB;
+	ArRetFunctorC<bool, MvrLCDMTX> myAriaExitCB;
 
 	static std::string ourFirmwareBaseDir;
 };

@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARLMS2XXPACKET_H
 
 #include "ariaTypedefs.h"
-#include "ArBasePacket.h"
+#include "MvrBasePacket.h"
 #include "ariaUtil.h"
 
 /// Represents the packets sent to the LMS2xx as well as those received from it
@@ -36,16 +36,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    This class reimplements some of the buf operations since the robot is 
    little endian. 
    
-   You can just look at the documentation for the ArBasePacket except
+   You can just look at the documentation for the MvrBasePacket except
    for these functions here, setAddress, getAddress, verifyCheckSum,
    print, getID, and calcCheckSum.  
 */
 
-class ArLMS2xxPacket: public ArBasePacket
+class MvrLMS2xxPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArLMS2xxPacket(unsigned char sendingAddress = 0);
+  AREXPORT MvrLMS2xxPacket(unsigned char sendingAddress = 0);
   /// Destructor
   AREXPORT virtual ~ArLMS2xxPacket();
 
@@ -62,27 +62,27 @@ public:
   AREXPORT bool verifyCRC(void);
   
   /// returns the ID of the packet (first byte of data)
-  AREXPORT ArTypes::UByte getID(void);
+  AREXPORT MvrTypes::UByte getID(void);
 
   /// returns the crc, probably used only internally
-  AREXPORT ArTypes::Byte2 calcCRC(void);
+  AREXPORT MvrTypes::Byte2 calcCRC(void);
   
   // only call finalizePacket before a send
   AREXPORT virtual void finalizePacket(void);
   AREXPORT virtual void resetRead(void);
   
   /// Gets the time the packet was received at
-  AREXPORT ArTime getTimeReceived(void);
+  AREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(ArTime timeReceived);
+  AREXPORT void setTimeReceived(MvrTime timeReceived);
 
   /// Duplicates the packet
-  AREXPORT virtual void duplicatePacket(ArLMS2xxPacket *packet);
+  AREXPORT virtual void duplicatePacket(MvrLMS2xxPacket *packet);
 protected:
-  ArTime myTimeReceived;
+  MvrTime myTimeReceived;
   unsigned char mySendingAddress;
 };
 
-typedef ArLMS2xxPacket ArSickPacket;
+typedef MvrLMS2xxPacket MvrSickPacket;
 
 #endif // ARSICKPACKET_H

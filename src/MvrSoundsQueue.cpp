@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
-#include "ArLog.h"
+#include "MvrExport.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
-#include "ArSoundsQueue.h"
-#include "ArSoundPlayer.h"
+#include "MvrSoundsQueue.h"
+#include "MvrSoundPlayer.h"
 #include <assert.h>
 
 
@@ -40,7 +40,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef __PRETTY_FUNCTION__
 #define __PRETTY_FUNCTION__ __FUNCTION__
 #endif
-#define debuglog(msg) ArLog::log(ArLog::Verbose, "%s: %s", __PRETTY_FUNCTION__, (msg));
+#define debuglog(msg) ArLog::log(MvrLog::Verbose, "%s: %s", __PRETTY_FUNCTION__, (msg));
 #else
 #define debuglog(msg) {}
 #endif
@@ -169,7 +169,7 @@ class ItemComparator_WithTypePriorityLessThan : public virtual ItemComparator {
   ArSoundsQueue::ItemType myType;
   int myPriority;
 public:
-  ItemComparator_WithTypePriorityLessThan(ArSoundsQueue::ItemType type, int priority) : myType(type), myPriority(priority)
+  ItemComparator_WithTypePriorityLessThan(MvrSoundsQueue::ItemType type, int priority) : myType(type), myPriority(priority)
   {}
   virtual bool operator()(const ArSoundsQueue::Item& other)
   {
@@ -184,7 +184,7 @@ public:
 class ItemComparator_WithType : public virtual ItemComparator {
   ArSoundsQueue::ItemType myType;
 public:
-  ItemComparator_WithType(ArSoundsQueue::ItemType type) : myType(type)
+  ItemComparator_WithType(MvrSoundsQueue::ItemType type) : myType(type)
   {}
   virtual bool operator()(const ArSoundsQueue::Item& other)
   {
@@ -203,11 +203,11 @@ AREXPORT ArSoundsQueue::ArSoundsQueue()  :
   myPauseRequestCount(0),
   myDefaultPlayConditionCB(0)
 {
-  setThreadName("ArSoundsQueue");
-  myQueueMutex.setLogName("ArSoundsQueue::myQueueMutex");
+  setThreadName("MvrSoundsQueue");
+  myQueueMutex.setLogName("MvrSoundsQueue::myQueueMutex");
 }
 
-AREXPORT ArSoundsQueue::ArSoundsQueue(ArRetFunctor<bool> *speakInitCB, 
+AREXPORT ArSoundsQueue::ArSoundsQueue(MvrRetFunctor<bool> *speakInitCB, 
 		    PlayItemFunctor *speakCB, 
         InterruptItemFunctor *interruptSpeechCB,
         ArRetFunctor<bool> *playInitCB, 
@@ -219,7 +219,7 @@ AREXPORT ArSoundsQueue::ArSoundsQueue(ArRetFunctor<bool> *speakInitCB,
   myPauseRequestCount(0),
   myDefaultPlayConditionCB(0)
 { 
-  setThreadName("ArSoundsQueue");
+  setThreadName("MvrSoundsQueue");
   if(speakInitCB)
     myInitCallbacks.push_back(speakInitCB);
   if(playInitCB)
@@ -230,7 +230,7 @@ AREXPORT ArSoundsQueue::ArSoundsQueue(ArRetFunctor<bool> *speakInitCB,
     myDefaultInterruptFileCB = ArSoundPlayer::getStopPlayingCallback();
 }
 
-AREXPORT ArSoundsQueue::ArSoundsQueue(ArSpeechSynth* speechSynth, 
+AREXPORT ArSoundsQueue::ArSoundsQueue(MvrSpeechSynth* speechSynth, 
 		    ArRetFunctor<bool> *playInitCB,
 		    PlayItemFunctor *playFileCB,
         InterruptItemFunctor *interruptFileCB) 
@@ -240,7 +240,7 @@ AREXPORT ArSoundsQueue::ArSoundsQueue(ArSpeechSynth* speechSynth,
   myPauseRequestCount(0),
   myDefaultPlayConditionCB(0)
 {
-  setThreadName("ArSoundsQueue");
+  setThreadName("MvrSoundsQueue");
   if(playInitCB)
     myInitCallbacks.push_back(playInitCB);
   if(speechSynth)
@@ -262,7 +262,7 @@ void ArSoundsQueue::invokeCallbacks(const std::list<ArFunctor*>& lst)
   for(std::list<ArFunctor*>::const_iterator i = lst.begin(); i != lst.end(); i++)
   {
     if(*i) (*i)->invoke();
-    else ArLog::log(ArLog::Verbose, "ArSoundsQueue: warning: skipped NULL callback (simple functor).");
+    else ArLog::log(MvrLog::Verbose, "MvrSoundsQueue: warning: skipped NULL callback (simple functor).");
   }
 }
 
@@ -271,7 +271,7 @@ void ArSoundsQueue::invokeCallbacks(const std::list<ArRetFunctor<bool>*>& lst)
   for(std::list<ArRetFunctor<bool>*>::const_iterator i = lst.begin(); i != lst.end(); i++)
   {
     if(*i) (*i)->invokeR();
-    else ArLog::log(ArLog::Verbose, "ArSoundsQueue: warning: skipped NULL callback (bool ret. funct.).");
+    else ArLog::log(MvrLog::Verbose, "MvrSoundsQueue: warning: skipped NULL callback (bool ret. funct.).");
   }
 }
 
@@ -286,13 +286,13 @@ AREXPORT void ArSoundsQueue::addItem(ItemType type, const char* data, std::list<
 
 // This is the public method, but all we have to do is call the private push
 // method.
-AREXPORT void ArSoundsQueue::addItem(ArSoundsQueue::Item item)
+AREXPORT void ArSoundsQueue::addItem(MvrSoundsQueue::Item item)
 {
   pushQueueItem(item);
 }
 
 // Class-protected version.
-void ArSoundsQueue::pushQueueItem(ArSoundsQueue::Item item)
+void ArSoundsQueue::pushQueueItem(MvrSoundsQueue::Item item)
 {
   lock();
   pushQueueItem_NoLock(item);
@@ -301,9 +301,9 @@ void ArSoundsQueue::pushQueueItem(ArSoundsQueue::Item item)
 
 // Class-protected version that does not lock (so caller can do it manually as
 // needed)
-void ArSoundsQueue::pushQueueItem_NoLock(ArSoundsQueue::Item item)
+void ArSoundsQueue::pushQueueItem_NoLock(MvrSoundsQueue::Item item)
 {
-  ArLog::log(ArLog::Verbose, "ArSoundsQueue: pushing \"%s\" with type=%d, priority=%d, params=\"%s\".", item.data.c_str(), item.type, item.priority, item.params.c_str());
+  ArLog::log(MvrLog::Verbose, "MvrSoundsQueue: pushing \"%s\" with type=%d, priority=%d, params=\"%s\".", item.data.c_str(), item.type, item.priority, item.params.c_str());
   myQueue.push_back(item);
 }
 
@@ -458,7 +458,7 @@ AREXPORT ArSoundsQueue::Item ArSoundsQueue::createDefaultFileItem(const char* fi
   if(myDefaultPlayFileCB)
     item.playCallbacks.push_back(myDefaultPlayFileCB);
   else
-    ArLog::log(ArLog::Normal, "ArSoundsQueue: Internal Warning: no default PlayFile callback.");
+    ArLog::log(MvrLog::Normal, "MvrSoundsQueue: Internal Warning: no default PlayFile callback.");
   if(myDefaultInterruptFileCB)
     item.interruptCallbacks.push_back(myDefaultInterruptFileCB);
   if(filename)
@@ -491,7 +491,7 @@ AREXPORT void *ArSoundsQueue::runThread(void *arg)
       myLastItem = popQueueItem_NoLock();
 
 #ifdef DEBUG
-      ArLog::log(ArLog::Normal, "* DEBUG * ArSoundsQueue: Popped an item from the queue. There are %d condition callbacks for this item.", myLastItem.playbackConditionCallbacks.size());
+      ArLog::log(MvrLog::Normal, "* DEBUG * ArSoundsQueue: Popped an item from the queue. There are %d condition callbacks for this item.", myLastItem.playbackConditionCallbacks.size());
 #endif
 
       // Call some callbacks to tell them that play is about to begin
@@ -512,15 +512,15 @@ AREXPORT void *ArSoundsQueue::runThread(void *arg)
       {
         if( (*i) && (*i)->invokeR() == false) {
           if( (*i)->getName() && strlen((*i)->getName()) > 0 )
-            ArLog::log(ArLog::Normal, "ArSoundsQueue: the \"%s\" condition is preventing this item from playing. Skipping this item.", (*i)->getName());
+            ArLog::log(MvrLog::Normal, "MvrSoundsQueue: the \"%s\" condition is preventing this item from playing. Skipping this item.", (*i)->getName());
           else
-            ArLog::log(ArLog::Normal, "ArSoundsQueue: an unnamed condition is preventing this item from playing. Skipping this item.");
+            ArLog::log(MvrLog::Normal, "MvrSoundsQueue: an unnamed condition is preventing this item from playing. Skipping this item.");
           doPlayback = false;
           break;
         }
 #ifdef DEBUG
         else {
-          ArLog::log(ArLog::Normal, "* DEBUG * ArSoundsQueue: Condition callback returned true.");
+          ArLog::log(MvrLog::Normal, "* DEBUG * ArSoundsQueue: Condition callback returned true.");
         }
 #endif
       }
@@ -533,7 +533,7 @@ AREXPORT void *ArSoundsQueue::runThread(void *arg)
 
       // Play the item.
 #ifdef DEBUG
-        ArLog::log(ArLog::Normal, "* DEBUG* Acting on item. type=%d", myLastItem.type);
+        ArLog::log(MvrLog::Normal, "* DEBUG* Acting on item. type=%d", myLastItem.type);
 #endif
         myLastItem.play();
 
@@ -591,12 +591,12 @@ AREXPORT void ArSoundsQueue::pause()
 
 AREXPORT void ArSoundsQueue::resume()
 {
-  ArLog::log(ArLog::Verbose, "ArSoundsQueue::resume: requested.");
+  ArLog::log(MvrLog::Verbose, "MvrSoundsQueue::resume: requested.");
   lock();
   if(--myPauseRequestCount <= 0) 
   {
     myPauseRequestCount = 0;
-    ArLog::log(ArLog::Verbose, "ArSoundsQueue::resume: unpausing.");
+    ArLog::log(MvrLog::Verbose, "MvrSoundsQueue::resume: unpausing.");
     unlock();
     myPausedCondition.signal();
   } else {

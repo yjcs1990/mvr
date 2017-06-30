@@ -24,12 +24,12 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSyncLoop.h"
-#include "ArLog.h"
+#include "MvrSyncLoop.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 
 AREXPORT ArSyncLoop::ArSyncLoop() :
@@ -37,7 +37,7 @@ AREXPORT ArSyncLoop::ArSyncLoop() :
   myStopRunIfNotConnected(false),
   myRobot(0)
 {
-  setThreadName("ArRobotSyncLoop");
+  setThreadName("MvrRobotSyncLoop");
   myInRun = false;
 }
 
@@ -45,7 +45,7 @@ AREXPORT ArSyncLoop::~ArSyncLoop()
 {
 }
 
-AREXPORT void ArSyncLoop::setRobot(ArRobot *robot)
+AREXPORT void ArSyncLoop::setRobot(MvrRobot *robot)
 {
   myRobot=robot;
 }
@@ -69,13 +69,13 @@ AREXPORT void * ArSyncLoop::runThread(void *arg)
 
   if (!myRobot)
   {
-    ArLog::log(ArLog::Terse, "ArSyncLoop::runThread: Trying to run the synchronous loop without a robot.");
+    ArLog::log(MvrLog::Terse, "MvrSyncLoop::runThread: Trying to run the synchronous loop without a robot.");
     return(0);
   }
 
   if (!myRobot->getSyncTaskRoot())
   {
-    ArLog::log(ArLog::Terse, "ArSyncLoop::runThread: Can not run the synchronous loop without a task tree");
+    ArLog::log(MvrLog::Terse, "MvrSyncLoop::runThread: Can not run the synchronous loop without a task tree");
     return(0);
   }
 
@@ -88,9 +88,9 @@ AREXPORT void * ArSyncLoop::runThread(void *arg)
 	myRobot->getCycleWarningTime() > 0 && 
 	lastLoop.mSecSince() > (signed int) myRobot->getCycleWarningTime())
     {
-      ArLog::log(ArLog::Normal, 
+      ArLog::log(MvrLog::Normal, 
  "Warning: ArRobot cycle took too long because the loop was waiting for lock.");
-      ArLog::log(ArLog::Normal,
+      ArLog::log(MvrLog::Normal,
 		 "\tThe cycle took %u ms, (%u ms normal %u ms warning)", 
 		 lastLoop.mSecSince(), myRobot->getCycleTime(), 
 		 myRobot->getCycleWarningTime());
@@ -102,8 +102,8 @@ AREXPORT void * ArSyncLoop::runThread(void *arg)
 
     loopEndTime.setToNow();
     if (!loopEndTime.addMSec(myRobot->getCycleTime())) {
-      ArLog::log(ArLog::Normal,
-                 "ArSyncLoop::runThread() error adding msecs (%i)",
+      ArLog::log(MvrLog::Normal,
+                 "MvrSyncLoop::runThread() error adding msecs (%i)",
                  myRobot->getCycleTime());
     }
     myRobot->incCounter();
@@ -117,7 +117,7 @@ AREXPORT void * ArSyncLoop::runThread(void *arg)
     if (myStopRunIfNotConnected && !myRobot->isConnected())
     {
       if (myRunning)
-	ArLog::log(ArLog::Normal, "Exiting robot run because of lost connection.");
+	ArLog::log(MvrLog::Normal, "Exiting robot run because of lost connection.");
       break;
     }
     timeToSleep = loopEndTime.mSecTo();
@@ -131,7 +131,7 @@ AREXPORT void * ArSyncLoop::runThread(void *arg)
 	myRobot->getCycleWarningTime() > 0 && 
 	lastLoop.mSecSince() > (signed int) myRobot->getCycleWarningTime())
     {
-      ArLog::log(ArLog::Normal, 
+      ArLog::log(MvrLog::Normal, 
 	"Warning: ArRobot sync tasks too long at %u ms, (%u ms normal %u ms warning)", 
 		 lastLoop.mSecSince(), myRobot->getCycleTime(), 
 		 myRobot->getCycleWarningTime());

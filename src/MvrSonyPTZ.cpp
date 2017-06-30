@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArSonyPTZ.h"
-#include "ArRobot.h"
-#include "ArCommands.h"
+#include "MvrSonyPTZ.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
 
-AREXPORT ArSonyPacket::ArSonyPacket(ArTypes::UByte2 bufferSize) :
+AREXPORT ArSonyPacket::ArSonyPacket(MvrTypes::UByte2 bufferSize) :
   ArBasePacket(bufferSize)
 {
   
@@ -41,22 +41,22 @@ AREXPORT ArSonyPacket::~ArSonyPacket()
 
 }
 
-AREXPORT void ArSonyPacket::uByteToBuf(ArTypes::UByte val)
+AREXPORT void ArSonyPacket::uByteToBuf(MvrTypes::UByte val)
 {
   if (myLength + 1 > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArSonyPacket::uByteToBuf: Trying to add beyond length of buffer.");
+    ArLog::log(MvrLog::Terse, "MvrSonyPacket::uByteToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = val;
   ++myLength;
 }
 
-AREXPORT void ArSonyPacket::byte2ToBuf(ArTypes::Byte2 val)
+AREXPORT void ArSonyPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 4) > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    ArLog::log(MvrLog::Terse, "MvrSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = (val & 0xf000) >> 12;
@@ -79,14 +79,14 @@ AREXPORT void ArSonyPacket::byte2ToBuf(ArTypes::Byte2 val)
    @param val the Byte2 to put into the packet
    @param pose the position in the packets array to put the value
 */
-AREXPORT void ArSonyPacket::byte2ToBufAtPos(ArTypes::Byte2 val,
+AREXPORT void ArSonyPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 					    ArTypes::UByte2 pose)
 {
   ArTypes::Byte2 prevLength = myLength;
 
   if ((pose + 4) > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    ArLog::log(MvrLog::Terse, "MvrSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myLength = pose;
@@ -95,7 +95,7 @@ AREXPORT void ArSonyPacket::byte2ToBufAtPos(ArTypes::Byte2 val,
 }
 
 
-AREXPORT ArSonyPTZ::ArSonyPTZ(ArRobot *robot) :
+AREXPORT ArSonyPTZ::ArSonyPTZ(MvrRobot *robot) :
   ArPTZ(robot),
   myPacket(255), 
   myZoomPacket(9)
@@ -215,8 +215,8 @@ AREXPORT bool ArSonyPTZ::panTilt_i(double degreesPan, double degreesTilt)
     degreesTilt = getMinTilt();
   myTilt = degreesTilt;
 
-  myPanTiltPacket.byte2ToBufAtPos(ArMath::roundInt(myPan * myDegToPan), 6);
-  myPanTiltPacket.byte2ToBufAtPos(ArMath::roundInt(myTilt * myDegToTilt), 10);
+  myPanTiltPacket.byte2ToBufAtPos(MvrMath::roundInt(myPan * myDegToPan), 6);
+  myPanTiltPacket.byte2ToBufAtPos(MvrMath::roundInt(myTilt * myDegToTilt), 10);
   return sendPacket(&myPanTiltPacket);
 }
 
@@ -253,7 +253,7 @@ AREXPORT bool ArSonyPTZ::zoom(int zoomValue)
     zoomValue = getMinZoom();
   myZoom = zoomValue;
     
-  myZoomPacket.byte2ToBufAtPos(ArMath::roundInt(myZoom), 4);
+  myZoomPacket.byte2ToBufAtPos(MvrMath::roundInt(myZoom), 4);
   return sendPacket(&myZoomPacket);
 }
 
@@ -264,7 +264,7 @@ AREXPORT bool ArSonyPTZ::zoomRel(int zoomValue)
 
 
 /*
-AREXPORT bool ArSonyPTZ::packetHandler(ArRobotPacket *packet)
+AREXPORT bool ArSonyPTZ::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xE0)
     return false;

@@ -28,17 +28,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONTRIANGLEDRIVETO
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
-#include "ArLineFinder.h"
+#include "MvrAction.h"
+#include "MvrLineFinder.h"
 
-/// Action to drive up to a triangle target (e.g. docking station) found from an ArLineFinder
+/// Action to drive up to a triangle target (e.g. docking station) found from an MvrLineFinder
 /**
- * This action uses ArLineFinder to find continuous "lines" in
+ * This action uses MvrLineFinder to find continuous "lines" in
  * laser range finder data that meet at an angle, forming the point of a
  * triangular shape, towards which the robot is driven and aligned.
- * If an ArLineFinder object is not given in the constructor, then it will
- * search for an ArRangeDevice on the ArRobot with a name "laser" and create its
- * own ArLineFinder object using that range device.
+ * If an MvrLineFinder object is not given in the constructor, then it will
+ * search for an MvrRangeDevice on the MvrRobot with a name "laser" and create its
+ * own MvrLineFinder object using that range device.
 
    The parameters describing the shape of the triangle target may be set with setTriangleParams(). The default values are for a trianrgle target consisting of two lines of at least 254 mm. meeting
    at a 135 degree angle. This is the shape of the triangular
@@ -69,11 +69,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @ingroup ActionClasses
  **/
 
-class ArActionTriangleDriveTo : public ArAction
+class MvrActionTriangleDriveTo : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionTriangleDriveTo(const char *name = "triangleDriveTo", 
+  AREXPORT MvrActionTriangleDriveTo(const char *name = "triangleDriveTo", 
 				   double finalDistFromVertex = 400,
 				   double approachDistFromVertex = 1000,
 				   double speed = 200, 
@@ -158,9 +158,9 @@ public:
   /// Gets if we've seen the vertex ever for this attempted drive (it gets reset in searching, but that's the only time, so will only be set once an activation by default (unless setAcquire is called)
   bool getVertexSeen(void) { return myVertexSeen; }
   /// Sets the line finder to use
-  AREXPORT void setLineFinder(ArLineFinder *lineFinder);
+  AREXPORT void setLineFinder(MvrLineFinder *lineFinder);
   /// Sets the line finder used
-  AREXPORT ArLineFinder *getLineFinder(void) { return myLineFinder; }
+  AREXPORT MvrLineFinder *getLineFinder(void) { return myLineFinder; }
   
   /// Sets whether we're logging the driving or not
   void setLogging(bool logging) { myPrinting = logging; }
@@ -168,11 +168,11 @@ public:
   bool setLogging(void) { return myPrinting; }
   AREXPORT virtual void activate(void);
   AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void setRobot(ArRobot *robot);
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual void setRobot(MvrRobot *robot);
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 
@@ -190,11 +190,11 @@ public:
     { myFinalSet = false; myApproachSet = false; myLinesAndVertexSet = false; 
     myVertexSeenThisCycle = false; myVertexSeen = false; }
     ~Data() {}
-    void setLinesAndVertex(std::map<int, ArLineFinderSegment *> *lines, 
-			   ArPose vertex)
+    void setLinesAndVertex(std::map<int, MvrLineFinderSegment *> *lines, 
+			   MvrPose vertex)
     {
       myLines.clear();
-      std::map<int, ArLineFinderSegment *>::iterator it;
+      std::map<int, MvrLineFinderSegment *>::iterator it;
       for (it = lines->begin(); it != lines->end(); it++)
       {
 	myLines.push_front(*(*it).second);
@@ -202,8 +202,8 @@ public:
       myVertex = vertex;
       myLinesAndVertexSet = true;
     }
-    void setFinal(ArPose final) { myFinalSet = true; myFinal = final; }
-    void setApproach(ArPose approach) 
+    void setFinal(MvrPose final) { myFinalSet = true; myFinal = final; }
+    void setApproach(MvrPose approach) 
     { myApproachSet = true; myApproach = approach; }
     void setVertexSeenThisCycle(bool vertexSeenThisCycle)
     { myVertexSeenThisCycle = vertexSeenThisCycle; }
@@ -213,11 +213,11 @@ public:
 
     bool myLinesAndVertexSet;
     std::list<ArLineSegment> myLines;
-    ArPose myVertex;
+    MvrPose myVertex;
     bool myFinalSet;
-    ArPose myFinal;
+    MvrPose myFinal;
     bool myApproachSet;
-    ArPose myApproach;
+    MvrPose myApproach;
     bool myVertexSeenThisCycle;
     bool myVertexSeen;
   };
@@ -238,20 +238,20 @@ protected:
   // Find our triangle, Internal function
   AREXPORT void findTriangle(bool initial, bool goStraight = false);
   // Finds a pose this dist from the vertex along the line from the vertex
-  AREXPORT ArPose findPoseFromVertex(double distFromVertex);
+  AREXPORT MvrPose findPoseFromVertex(double distFromVertex);
   // where the vertex was in encoder coords
-  ArPose myVertex;
+  MvrPose myVertex;
 
-  ArRangeDevice *myLaser;
+  MvrRangeDevice *myLaser;
   //ArLaser *myLaser;
-  ArMutex myDataMutex;
+  MvrMutex myDataMutex;
   bool mySaveData;
   Data *myData;
-  std::map<int, ArLineFinderSegment *> *myLines;
+  std::map<int, MvrLineFinderSegment *> *myLines;
   unsigned int myGotLinesCounter;
   bool myVertexSeen;
   bool myPrinting;
-  ArTime myVertexSeenLast;
+  MvrTime myVertexSeenLast;
   State myState;
   double myOriginalAngle;
   bool myAcquire;
@@ -265,8 +265,8 @@ protected:
   double myAngleBetween;
   double myLine2Length;
   int myVertexUnseenStopMSecs;
-  ArActionDesired myDesired;
-  ArLineFinder *myLineFinder;
+  MvrActionDesired myDesired;
+  MvrLineFinder *myLineFinder;
   bool myOwnLineFinder;
   bool myAdjustVertex;
   bool myGotoVertex;

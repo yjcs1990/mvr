@@ -28,23 +28,23 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARURG_H
 
 #include "ariaTypedefs.h"
-#include "ArLaser.h"
-#include "ArDeviceConnection.h"
+#include "MvrLaser.h"
+#include "MvrDeviceConnection.h"
 
 /** Hokuyo Urg laser range device.
  *  Connects using the Urg's serial port connector (not USB).
- *  Supports URG-04LX using SCIP 1.1 protocol only. See ArLaserConnector for instructions on 
+ *  Supports URG-04LX using SCIP 1.1 protocol only. See MvrLaserConnector for instructions on 
  *  using lasers in a program.
-    @sa ArUrg_2_0
-    @sa ArLaserConnector
-    @sa ArLaser
+    @sa MvrUrg_2_0
+    @sa MvrLaserConnector
+    @sa MvrLaser
  *  @since 2.7.0
  */
-class ArUrg : public ArLaser
+class MvrUrg : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT ArUrg(int laserNumber,
+  AREXPORT MvrUrg(int laserNumber,
 		 const char *name = "urg");
   /// Destructor
   AREXPORT ~ArUrg();
@@ -85,15 +85,15 @@ protected:
 	  char *status, unsigned int size, unsigned int msWait);
   
   void sensorInterp(void);
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   AREXPORT virtual bool laserCheckParams(void);
   AREXPORT virtual void laserSetName(const char *name);
   
   void failedToConnect(void);
-  ArMutex myReadingMutex;
-  ArMutex myDataMutex;
+  MvrMutex myReadingMutex;
+  MvrMutex myDataMutex;
 
-  ArTime myReadingRequested;
+  MvrTime myReadingRequested;
   std::string myReading;
 
   int myStartingStep;
@@ -121,8 +121,8 @@ protected:
   
   bool myLogMore;
   
-  ArFunctorC<ArUrg> mySensorInterpTask;
-  ArRetFunctorC<bool, ArUrg> myAriaExitCB;
+  MvrFunctorC<ArUrg> mySensorInterpTask;
+  MvrRetFunctorC<bool, MvrUrg> myAriaExitCB;
 };
 
 #endif // ARURG_H

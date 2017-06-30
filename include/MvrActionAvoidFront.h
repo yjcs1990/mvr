@@ -29,13 +29,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
-#include "ArAction.h"
+#include "MvrFunctor.h"
+#include "MvrAction.h"
 
 /// This action does obstacle avoidance, controlling both trans and rot
 /**
    This action uses whatever available range device have been added to
-   the robot to avoid obstacles.  See the ArActionAvoidFront
+   the robot to avoid obstacles.  See the MvrActionAvoidFront
    constructor documentation to see the parameters it takes.
 
    Also note that this action does something most others don't, which
@@ -49,19 +49,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    @ingroup ActionClasses
 */
-class ArActionAvoidFront : public ArAction
+class MvrActionAvoidFront : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionAvoidFront(const char *name = "avoid front obstacles", 
+  AREXPORT MvrActionAvoidFront(const char *name = "avoid front obstacles", 
 		     double obstacleDistance = 450, double avoidVelocity = 200,
 		     double turnAmount = 15, bool useTableIRIfAvail = true);
   /// Destructor
   AREXPORT virtual ~ArActionAvoidFront();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
@@ -71,9 +71,9 @@ protected:
   double myTurnAmountParam;
   bool myUseTableIRIfAvail;
   int myTurning; // 1 for turning left, 0 for not turning, -1 for turning right
-  ArActionDesired myDesired;
-  ArSectors myQuadrants;
-  ArFunctorC<ArActionAvoidFront> myConnectCB;
+  MvrActionDesired myDesired;
+  MvrSectors myQuadrants;
+  MvrFunctorC<ArActionAvoidFront> myConnectCB;
 };
 
 #endif // ARACTIONAVOIDFRONT_H

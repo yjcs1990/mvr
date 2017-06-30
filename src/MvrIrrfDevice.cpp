@@ -24,15 +24,15 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 
 #include "ariaOSDef.h"
-#include "ArIrrfDevice.h"
-#include "ArCommands.h"
+#include "MvrIrrfDevice.h"
+#include "MvrCommands.h"
 
-AREXPORT ArIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
+AREXPORT MvrIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
                              size_t cumulativeBufferSize, const char *name) :
-  ArRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000),
+  MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000),
   myPacketHandler(this, &ArIrrfDevice::packetHandler)
 {
   int i;
@@ -43,14 +43,14 @@ AREXPORT ArIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
   myFilterFarDist = 7000;
   myFilterNearDist = 50;
 
-  myPacketHandler.setName("ArIrrfDevice");
+  myPacketHandler.setName("MvrIrrfDevice");
   // The 91 readings start at -81 degrees, and move in 1.8 degree steps
   myRawReadings = new std::list<ArSensorReading *>;
   for(i=0;i<91;i++)
-    myRawReadings->push_back(new ArSensorReading(0, 0, (1.8*i - 81)));
+    myRawReadings->push_back(new MvrSensorReading(0, 0, (1.8*i - 81)));
 }
 
-AREXPORT ArIrrfDevice::~ArIrrfDevice()
+AREXPORT MvrIrrfDevice::~ArIrrfDevice()
 {
   if (myRobot != NULL)
   {
@@ -59,18 +59,18 @@ AREXPORT ArIrrfDevice::~ArIrrfDevice()
   }
 }
 
-AREXPORT void ArIrrfDevice::setRobot(ArRobot *robot)
+AREXPORT void MvrIrrfDevice::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
-    myRobot->addPacketHandler(&myPacketHandler, ArListPos::LAST);
+    myRobot->addPacketHandler(&myPacketHandler, MvrListPos::LAST);
 }
 
-AREXPORT void ArIrrfDevice::processReadings(void)
+AREXPORT void MvrIrrfDevice::processReadings(void)
 {
   int i;
   double rx, ry, nx, ny, dx, dy, dist;
-  ArSensorReading *reading;
+  MvrSensorReading *reading;
   std::list<ArSensorReading *>::iterator rawIt;
   std::list<ArPoseWithTime *> *readingList;
   std::list<ArPoseWithTime *>::iterator readIt;
@@ -143,16 +143,16 @@ AREXPORT void ArIrrfDevice::processReadings(void)
   and then call processReadings to filter add the data to the current and
   cumulative buffers.
 */
-AREXPORT bool ArIrrfDevice::packetHandler(ArRobotPacket *packet)
+AREXPORT bool MvrIrrfDevice::packetHandler(MvrRobotPacket *packet)
 {
   int portNum, i, dist, packetCounter;
   double conv;
-  ArTransform packetTrans;
+  MvrTransform packetTrans;
   std::list<ArSensorReading *>::iterator it;
-  ArSensorReading *reading;
-  ArPose pose;
-  ArTransform encoderTrans;
-  ArPose encoderPose;
+  MvrSensorReading *reading;
+  MvrPose pose;
+  MvrTransform encoderTrans;
+  MvrPose encoderPose;
 
   pose = myRobot->getPose();
   conv = 2.88;

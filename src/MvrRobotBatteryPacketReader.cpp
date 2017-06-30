@@ -25,11 +25,11 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include "ariaOSDef.h"
-#include "ArExport.h"
-#include "ArRobotBatteryPacketReader.h"
-#include "ArRobot.h"
-#include "ArRobotPacket.h"
-#include "ArCommands.h"
+#include "MvrExport.h"
+#include "MvrRobotBatteryPacketReader.h"
+#include "MvrRobot.h"
+#include "MvrRobotPacket.h"
+#include "MvrCommands.h"
 
 AREXPORT ArRobotBatteryPacketReader::ArRobotBatteryPacketReader(
 	ArRobot *robot) : 
@@ -41,8 +41,8 @@ AREXPORT ArRobotBatteryPacketReader::ArRobotBatteryPacketReader(
   myNumBatteries = 0;
   myNumBytesPerBattery = 0;
   myRequestedBatteryPackets = false;
-  myPacketHandlerCB.setName("ArRobotBatteryPacketReader");
-  myConnectCB.setName("ArRobotBatteryPacketReader");
+  myPacketHandlerCB.setName("MvrRobotBatteryPacketReader");
+  myConnectCB.setName("MvrRobotBatteryPacketReader");
   myRobot->addPacketHandler(&myPacketHandlerCB);
   myRobot->addConnectCB(&myConnectCB);
 }
@@ -60,19 +60,19 @@ AREXPORT void ArRobotBatteryPacketReader::connectCallback(void)
 
 AREXPORT void ArRobotBatteryPacketReader::requestSinglePacket(void)
 {
-  myRobot->comInt(ArCommands::BATTERYINFO, 1);
+  myRobot->comInt(MvrCommands::BATTERYINFO, 1);
   myRequestedBatteryPackets = false;
 }
 
 AREXPORT void ArRobotBatteryPacketReader::requestContinuousPackets(void)
 {
-  myRobot->comInt(ArCommands::BATTERYINFO, 2);
+  myRobot->comInt(MvrCommands::BATTERYINFO, 2);
   myRequestedBatteryPackets = true;
 }
 
 AREXPORT void ArRobotBatteryPacketReader::stopPackets(void)
 {
-  myRobot->comInt(ArCommands::BATTERYINFO, 0);
+  myRobot->comInt(MvrCommands::BATTERYINFO, 0);
   myRequestedBatteryPackets = false;
 }
 
@@ -81,7 +81,7 @@ AREXPORT bool ArRobotBatteryPacketReader::haveRequestedPackets(void)
   return myRequestedBatteryPackets;
 }
 
-AREXPORT bool ArRobotBatteryPacketReader::packetHandler(ArRobotPacket *packet)
+AREXPORT bool ArRobotBatteryPacketReader::packetHandler(MvrRobotPacket *packet)
 {
   //char buf[256];
 

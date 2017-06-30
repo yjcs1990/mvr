@@ -24,47 +24,47 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionGoto.h"
-#include "ArRobot.h"
+#include "MvrActionGoto.h"
+#include "MvrRobot.h"
 
-AREXPORT ArActionGoto::ArActionGoto(const char *name, ArPose goal, 
+AREXPORT MvrActionGoto::ArActionGoto(const char *name, MvrPose goal, 
 				    double closeDist, double speed,
 				    double speedToTurnAt, double turnAmount) :
-  ArAction(name, "Goes to the given goal.")
+  MvrAction(name, "Goes to the given goal.")
 {
   myDirectionToTurn = myCurTurnDir = 1;
   myTurnedBack = false;
   myPrinting = false;
 
-  setNextArgument(ArArg("goal", &myGoal, "ArPose to go to. (ArPose)"));
+  setNextArgument(MvrArg("goal", &myGoal, "MvrPose to go to. (MvrPose)"));
   setGoal(goal);
   
-  setNextArgument(ArArg("close dist", &myCloseDist, 
+  setNextArgument(MvrArg("close dist", &myCloseDist, 
 			"Distance that is close enough to goal. (mm)"));
   myCloseDist = closeDist;
 
-  setNextArgument(ArArg("speed", &mySpeed, 
+  setNextArgument(MvrArg("speed", &mySpeed, 
 			"Speed to travel to goal at. (mm/sec)"));
   mySpeed = speed;
 
-  setNextArgument(ArArg("speed to turn at", &mySpeedToTurnAt,
+  setNextArgument(MvrArg("speed to turn at", &mySpeedToTurnAt,
 			"Speed to start obstacle avoiding at (mm/sec)"));
   mySpeedToTurnAt = speedToTurnAt;
   
-  setNextArgument(ArArg("amount to turn", &myTurnAmount,
+  setNextArgument(MvrArg("amount to turn", &myTurnAmount,
 			"Amount to turn when avoiding (deg)"));
   myTurnAmount = turnAmount;
   
 }
 
-AREXPORT ArActionGoto::~ArActionGoto()
+AREXPORT MvrActionGoto::~ArActionGoto()
 {
 
 }
 
-AREXPORT bool ArActionGoto::haveAchievedGoal(void)
+AREXPORT bool MvrActionGoto::haveAchievedGoal(void)
 {
   if (myState == STATE_ACHIEVED_GOAL)
     return true;
@@ -72,12 +72,12 @@ AREXPORT bool ArActionGoto::haveAchievedGoal(void)
     return false;
 }
 
-AREXPORT void ArActionGoto::cancelGoal(void)
+AREXPORT void MvrActionGoto::cancelGoal(void)
 {
   myState = STATE_NO_GOAL;
 }
 
-AREXPORT void ArActionGoto::setGoal(ArPose goal)
+AREXPORT void MvrActionGoto::setGoal(MvrPose goal)
 {
   myState = STATE_GOING_TO_GOAL;
   myGoal = goal;
@@ -86,7 +86,7 @@ AREXPORT void ArActionGoto::setGoal(ArPose goal)
   myOldGoal = myGoal;
 }
 
-AREXPORT ArActionDesired *ArActionGoto::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *ArActionGoto::fire(MvrActionDesired currentDesired)
 {
   double angle;
   double dist;
@@ -103,7 +103,7 @@ AREXPORT ArActionDesired *ArActionGoto::fire(ArActionDesired currentDesired)
     return NULL;
 
   dist = myRobot->getPose().findDistanceTo(myGoal);
-  if (dist < myCloseDist && ArMath::fabs(myRobot->getVel() < 5))
+  if (dist < myCloseDist && MvrMath::fabs(myRobot->getVel() < 5))
   {
     if (myPrinting)
       printf("Achieved goal\n");
@@ -118,7 +118,7 @@ AREXPORT ArActionDesired *ArActionGoto::fire(ArActionDesired currentDesired)
   // see where we want to point
   angle = myRobot->getPose().findAngleTo(myGoal);
 
-  if (ArMath::fabs(ArMath::subAngle(angle, myRobot->getTh())) > 120)
+  if (MvrMath::fabs(MvrMath::subAngle(angle, myRobot->getTh())) > 120)
   {
     myCurTurnDir *= -1;
   }
@@ -137,9 +137,9 @@ AREXPORT ArActionDesired *ArActionGoto::fire(ArActionDesired currentDesired)
     if (myPrinting)
       printf("Can speed up and turn back again.  ");
     // see if we want to just point at the goal or not
-    if (ArMath::fabs(
-	    ArMath::subAngle(angle, 
-			     ArMath::addAngle(myTurnAmount * 
+    if (MvrMath::fabs(
+	    MvrMath::subAngle(angle, 
+			     MvrMath::addAngle(myTurnAmount * 
 					      myCurTurnDir * -1, 
 					      myRobot->getTh())))
 	> myTurnAmount/2)
@@ -155,7 +155,7 @@ AREXPORT ArActionDesired *ArActionGoto::fire(ArActionDesired currentDesired)
       myDesired.setDeltaHeading(myTurnAmount * myCurTurnDir * -1);
     }
   }
-  if (dist < myCloseDist && ArMath::fabs(myRobot->getVel() < 5))
+  if (dist < myCloseDist && MvrMath::fabs(myRobot->getVel() < 5))
   {
     if (myPrinting)
       printf("#achieved\n");

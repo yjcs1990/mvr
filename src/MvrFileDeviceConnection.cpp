@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #include "ariaTypedefs.h"
-#include "ArFileDeviceConnection.h"
-#include "ArLog.h"
+#include "MvrFileDeviceConnection.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
 #include <stdio.h>
 #ifdef WIN32
@@ -42,13 +42,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <string.h>
 #include <errno.h>
 
-AREXPORT ArFileDeviceConnection::ArFileDeviceConnection() :
+AREXPORT MvrFileDeviceConnection::ArFileDeviceConnection() :
   myInFD(-1), myOutFD(-1), myStatus(STATUS_NEVER_OPENED),
   myForceReadBufferSize(0), myReadByteDelay(0.0)
 {
 }
 
-AREXPORT ArFileDeviceConnection::~ArFileDeviceConnection()
+AREXPORT MvrFileDeviceConnection::~ArFileDeviceConnection()
 {
   close();
 }
@@ -61,17 +61,17 @@ AREXPORT ArFileDeviceConnection::~ArFileDeviceConnection()
  * the output file in addition to O_WRONLY. For example, pass O_APPEND to append rather than rewrite the
  * file.
  */
-AREXPORT int ArFileDeviceConnection::open(const char *infilename, const char *outfilename, int outflags)
+AREXPORT int MvrFileDeviceConnection::open(const char *infilename, const char *outfilename, int outflags)
 {
   myStatus = STATUS_OPEN_FAILED;
 
   if(infilename)
   {
     myInFileName = infilename;
-    myInFD = ArUtil::open(infilename, O_RDONLY);
+    myInFD = MvrUtil::open(infilename, O_RDONLY);
     if(myInFD == -1)
     {
-      ArLog::log(ArLog::Terse, "ArFileDeviceConnection: error opening input file \"%s\": %s", infilename, strerror(errno));
+      MvrLog::log(MvrLog::Terse, "MvrFileDeviceConnection: error opening input file \"%s\": %s", infilename, strerror(errno));
       return errno;
     }
   }
@@ -87,10 +87,10 @@ AREXPORT int ArFileDeviceConnection::open(const char *infilename, const char *ou
   if(outfilename)
   {
     myOutFileName = outfilename;
-    myOutFD = ArUtil::open(outfilename, O_WRONLY|outflags);
+    myOutFD = MvrUtil::open(outfilename, O_WRONLY|outflags);
     if(myInFD == -1)
     {
-      ArLog::log(ArLog::Terse, "ArFileDeviceConnection: error opening output file \"%s\": %s", outfilename, strerror(errno));
+      MvrLog::log(MvrLog::Terse, "MvrFileDeviceConnection: error opening output file \"%s\": %s", outfilename, strerror(errno));
       return errno;
     }
   }
@@ -108,30 +108,30 @@ AREXPORT int ArFileDeviceConnection::open(const char *infilename, const char *ou
   return 0;
 }
 
-AREXPORT bool ArFileDeviceConnection::close(void)
+AREXPORT bool MvrFileDeviceConnection::close(void)
 {
-  ArUtil::close(myInFD);
-  ArUtil::close(myOutFD);
+  MvrUtil::close(myInFD);
+  MvrUtil::close(myOutFD);
   myStatus = STATUS_CLOSED_NORMALLY;
   return true;
 }
 
-AREXPORT int ArFileDeviceConnection::read(const char *data, unsigned int size, unsigned int msWait)
+AREXPORT int MvrFileDeviceConnection::read(const char *data, unsigned int size, unsigned int msWait)
 {
-  unsigned int s = myForceReadBufferSize > 0 ? ArUtil::findMinU(size, myForceReadBufferSize) : size;
+  unsigned int s = myForceReadBufferSize > 0 ? MvrUtil::findMinU(size, myForceReadBufferSize) : size;
 #ifdef WIN32
   int r = _read(myInFD, (void*)data, s);
 #else
   int r =  ::read(myInFD, (void*)data, s);
 #endif
   if(myReadByteDelay > 0)
-    ArUtil::sleep(r * myReadByteDelay);
+    MvrUtil::sleep(r * myReadByteDelay);
   // TODO add option for intermittent data by returning 0 until a timeout has passed.
   // TODO add option to delay full lines (up to \n\r or \n) in above behavior
   return r;
 }
 
-AREXPORT int ArFileDeviceConnection::write(const char *data, unsigned int size)
+AREXPORT int MvrFileDeviceConnection::write(const char *data, unsigned int size)
 {
 #ifdef WIN32
   return (int) _write(myOutFD, (void*)data, (size_t)size);
@@ -141,19 +141,19 @@ AREXPORT int ArFileDeviceConnection::write(const char *data, unsigned int size)
 }
 
 
-AREXPORT bool ArFileDeviceConnection::isTimeStamping(void)
+AREXPORT bool MvrFileDeviceConnection::isTimeStamping(void)
 {
   return false;
 }
 
-AREXPORT ArTime ArFileDeviceConnection::getTimeRead(int index)
+AREXPORT MvrTime MvrFileDeviceConnection::getTimeRead(int index)
 {
-  ArTime now;
+  MvrTime now;
   now.setToNow();
   return now;
 }
 
-AREXPORT const char * ArFileDeviceConnection::getOpenMessage(int err)
+AREXPORT const char * MvrFileDeviceConnection::getOpenMessage(int err)
 {
   return strerror(err);
 }

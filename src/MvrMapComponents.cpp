@@ -24,8 +24,8 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
-#include "ArMapComponents.h"
+#include "MvrExport.h"
+#include "MvrMapComponents.h"
 
 #include <algorithm>
 #include <iterator>
@@ -34,9 +34,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif 
 #include <ctype.h>
 
-#include "ArFileParser.h"
-#include "ArMapUtils.h"
-#include "ArMD5Calculator.h"
+#include "MvrFileParser.h"
+#include "MvrMapUtils.h"
+#include "MvrMD5Calculator.h"
 
 //#define ARDEBUG_MAP_COMPONENTS
 #ifdef ARDEBUG_MAP_COMPONENTS
@@ -46,12 +46,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif 
 
 // ---------------------------------------------------------------------------- 
-// ArMapScan
+// MvrMapScan
 // ---------------------------------------------------------------------------- 
 
 const char *ArMapScan::EOL_CHARS = "";
 
-AREXPORT ArMapScan::ArMapScan(const char *scanType) :
+AREXPORT MvrMapScan::ArMapScan(const char *scanType) :
 
   myScanType(!ArUtil::isStrEmpty(scanType) ? scanType : ""),
   myIsSummaryScan(isSummaryScanType(scanType)),
@@ -94,7 +94,7 @@ AREXPORT ArMapScan::ArMapScan(const char *scanType) :
 {
 
   if (isDefaultScanType(myScanType.c_str()) ||
-      (ArUtil::strcasecmp(myScanType.c_str(), "SickLaser") == 0)) {
+      (MvrUtil::strcasecmp(myScanType.c_str(), "SickLaser") == 0)) {
     myKeywordPrefix = "";
     myPointsKeyword = "DATA";
     myLinesKeyword = "LINES";
@@ -114,7 +114,7 @@ AREXPORT ArMapScan::ArMapScan(const char *scanType) :
 } // end constructor
 
 
-AREXPORT ArMapScan::ArMapScan(const ArMapScan &other) :
+AREXPORT MvrMapScan::ArMapScan(const MvrMapScan &other) :
   myScanType(other.myScanType),
   myIsSummaryScan(other.myIsSummaryScan),
   myLogPrefix(other.myLogPrefix),
@@ -162,7 +162,7 @@ AREXPORT ArMapScan::ArMapScan(const ArMapScan &other) :
     myNumLines = other.myNumLines;
   }
   if (myNumLines != other.myNumLines) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
               "%sArMapScan copy constructor adjusted numLines from %i to %i",
               myLogPrefix.c_str(),
               other.myNumLines,
@@ -176,7 +176,7 @@ AREXPORT ArMapScan::ArMapScan(const ArMapScan &other) :
     myNumPoints = other.myNumPoints;
   }
   if (myNumPoints != other.myNumPoints) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan copy constructor adjusted numPoints from %i to %i",
                myLogPrefix.c_str(),
                other.myNumPoints,
@@ -186,7 +186,7 @@ AREXPORT ArMapScan::ArMapScan(const ArMapScan &other) :
 } // end copy constructor
 
 
-AREXPORT ArMapScan &ArMapScan::operator=(const ArMapScan &other) 
+AREXPORT MvrMapScan &ArMapScan::operator=(const MvrMapScan &other) 
 {
   if (&other != this) {
   
@@ -210,7 +210,7 @@ AREXPORT ArMapScan &ArMapScan::operator=(const ArMapScan &other)
       myNumLines = other.myNumLines;
     }
     if (myNumLines != other.myNumLines) {
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                 "%sArMapScan operator= adjusted numLines from %i to %i",
                 myLogPrefix.c_str(),
                 other.myNumLines,
@@ -224,7 +224,7 @@ AREXPORT ArMapScan &ArMapScan::operator=(const ArMapScan &other)
       myNumPoints = other.myNumPoints;
     }
     if (myNumPoints != other.myNumPoints) {
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                 "%sArMapScan operator= adjusted numPoints from %i to %i",
                 myLogPrefix.c_str(),
                 other.myNumPoints,
@@ -245,11 +245,11 @@ AREXPORT ArMapScan &ArMapScan::operator=(const ArMapScan &other)
 }
 
 
-AREXPORT ArMapScan::~ArMapScan()
+AREXPORT MvrMapScan::~ArMapScan()
 {
 }
 
-AREXPORT bool ArMapScan::addToFileParser(ArFileParser *fileParser)
+AREXPORT bool MvrMapScan::addToFileParser(MvrFileParser *fileParser)
 {
   if (fileParser == NULL) {
     return false;
@@ -265,12 +265,12 @@ AREXPORT bool ArMapScan::addToFileParser(ArFileParser *fileParser)
       !addHandlerToFileParser(fileParser, "Resolution:", &myResolutionCB) ||
       !addHandlerToFileParser(fileParser, "Display:", &myDisplayStringCB))
        {
-    ArLog::log(ArLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
                "%sArMapScan::addToFileParser: could not add handlers",
                myLogPrefix.c_str());
     return false;
   }  
-  ArLog::log(ArLog::Verbose,
+  MvrLog::log(MvrLog::Verbose,
              "%sArMapScan::addToFileParser() successfully added handlers",
              myLogPrefix.c_str());
 
@@ -279,7 +279,7 @@ AREXPORT bool ArMapScan::addToFileParser(ArFileParser *fileParser)
 } // end method addToFileParser
 
 
-AREXPORT bool ArMapScan::remFromFileParser(ArFileParser *fileParser)
+AREXPORT bool MvrMapScan::remFromFileParser(MvrFileParser *fileParser)
 {
  if (fileParser == NULL) {
     return false;
@@ -302,7 +302,7 @@ AREXPORT bool ArMapScan::remFromFileParser(ArFileParser *fileParser)
 } // end method remFromFileParser
 
 
-AREXPORT bool ArMapScan::addExtraToFileParser(ArFileParser *fileParser,
+AREXPORT bool MvrMapScan::addExtraToFileParser(MvrFileParser *fileParser,
                                               bool isAddLineHandler)
 {
   if (fileParser == NULL) {
@@ -323,7 +323,7 @@ AREXPORT bool ArMapScan::addExtraToFileParser(ArFileParser *fileParser,
 } // end method addExtraToFileParser
 
 
-AREXPORT bool ArMapScan::remExtraFromFileParser(ArFileParser *fileParser)
+AREXPORT bool MvrMapScan::remExtraFromFileParser(MvrFileParser *fileParser)
 {
   if (fileParser == NULL) {
     return false;
@@ -337,13 +337,13 @@ AREXPORT bool ArMapScan::remExtraFromFileParser(ArFileParser *fileParser)
 
 
 
-AREXPORT ArTime ArMapScan::getTimeChanged() const
+AREXPORT MvrTime MvrMapScan::getTimeChanged() const
 {
   return myTimeChanged;
 }
   
 
-AREXPORT void ArMapScan::clear()
+AREXPORT void MvrMapScan::clear()
 {
   myTimeChanged.setToNow();
   myNumPoints = 0;
@@ -376,56 +376,56 @@ AREXPORT std::vector<ArLineSegment> *ArMapScan::getLines(const char *scanType)
   return &myLines;
 }
 
-AREXPORT ArPose ArMapScan::getMinPose(const char *scanType)
+AREXPORT MvrPose MvrMapScan::getMinPose(const char *scanType)
 {
   return myMin;
 }
 
-AREXPORT ArPose ArMapScan::getMaxPose(const char *scanType)
+AREXPORT MvrPose MvrMapScan::getMaxPose(const char *scanType)
 {
   return myMax;
 }
 
-AREXPORT int ArMapScan::getNumPoints(const char *scanType)
+AREXPORT int MvrMapScan::getNumPoints(const char *scanType)
 {
   return myNumPoints;
 }
 
-AREXPORT ArPose ArMapScan::getLineMinPose(const char *scanType)
+AREXPORT MvrPose MvrMapScan::getLineMinPose(const char *scanType)
 {
   return myLineMin;
 }
 
-AREXPORT ArPose ArMapScan::getLineMaxPose(const char *scanType)
+AREXPORT MvrPose MvrMapScan::getLineMaxPose(const char *scanType)
 {
   return myLineMax;
 }
 
-AREXPORT int ArMapScan::getNumLines(const char *scanType)
+AREXPORT int MvrMapScan::getNumLines(const char *scanType)
 { 
   return myNumLines;
 }
 
-AREXPORT int ArMapScan::getResolution(const char *scanType)
+AREXPORT int MvrMapScan::getResolution(const char *scanType)
 {
   return myResolution;
 }
 
-AREXPORT bool ArMapScan::isSortedPoints(const char *scanType) const
+AREXPORT bool MvrMapScan::isSortedPoints(const char *scanType) const
 {
   return myIsSortedPoints;
 }
 
-AREXPORT bool ArMapScan::isSortedLines(const char *scanType) const
+AREXPORT bool MvrMapScan::isSortedLines(const char *scanType) const
 {
   return myIsSortedLines;
 }
 
 
-AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
+AREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
                                    const char *scanType,
                                    bool isSorted,
-                                   ArMapChangeDetails *changeDetails)
+                                   MvrMapChangeDetails *changeDetails)
 {
   if (!myIsSortedPoints) {
 	  std::sort(myPoints.begin(), myPoints.end());
@@ -445,32 +445,32 @@ AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
     
     if (newPoints != NULL) {
     
-      ArTime timeToDiff;
+      MvrTime timeToDiff;
 
       set_difference(myPoints.begin(), myPoints.end(), 
                      newPoints->begin(), newPoints->end(),
                      std::inserter(*(changeDetails->getChangedPoints
-                                    (ArMapChangeDetails::DELETIONS, scanType)), 
+                                    (MvrMapChangeDetails::DELETIONS, scanType)), 
                               changeDetails->getChangedPoints
-                                    (ArMapChangeDetails::DELETIONS, scanType)->begin()));
+                                    (MvrMapChangeDetails::DELETIONS, scanType)->begin()));
       set_difference(newPoints->begin(), newPoints->end(),
                      myPoints.begin(), myPoints.end(), 
                      std::inserter(*(changeDetails->getChangedPoints
-                                    (ArMapChangeDetails::ADDITIONS, scanType)), 
+                                    (MvrMapChangeDetails::ADDITIONS, scanType)), 
                               changeDetails->getChangedPoints
-                                    (ArMapChangeDetails::ADDITIONS, scanType)->begin()));
+                                    (MvrMapChangeDetails::ADDITIONS, scanType)->begin()));
 
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "%sArMapScan::setPoints() %i points were deleted, %i added",
                  myLogPrefix.c_str(),
                  changeDetails->getChangedPoints
-                                    (ArMapChangeDetails::DELETIONS, scanType)->size(),
+                                    (MvrMapChangeDetails::DELETIONS, scanType)->size(),
                  changeDetails->getChangedPoints
-                                    (ArMapChangeDetails::ADDITIONS, scanType)->size());
+                                    (MvrMapChangeDetails::ADDITIONS, scanType)->size());
 
       long int elapsed = timeToDiff.mSecSince();
 
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                 "%sArMapScan::setPoints() took %i msecs to find changes in %i points for %s",
                 myLogPrefix.c_str(),
                 elapsed,
@@ -480,19 +480,19 @@ AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
     }
     else { // null points means none added and all deleted
 
-      *(changeDetails->getChangedPoints(ArMapChangeDetails::DELETIONS, scanType)) = myPoints;
+      *(changeDetails->getChangedPoints(MvrMapChangeDetails::DELETIONS, scanType)) = myPoints;
     }
   } // end if track changes
 
   int origNumPoints = myNumPoints;
-  ArPose origMin = myMin;
-  ArPose origMax = myMax;
+  MvrPose origMin = myMin;
+  MvrPose origMax = myMax;
 
   myTimeChanged.setToNow();
 
   if ((newPoints != NULL) && (!newPoints->empty())) {
 
-    ArTime timeToCopy;
+    MvrTime timeToCopy;
 
     double maxX = INT_MIN;
     double maxY = INT_MIN;
@@ -503,7 +503,7 @@ AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
          it != newPoints->end(); 
          it++)
     {
-      const ArPose &pose = (*it);
+      const MvrPose &pose = (*it);
 
       if (pose.getX() > maxX)
         maxX = pose.getX();
@@ -520,7 +520,7 @@ AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
     myPoints = *newPoints;  
     if (myNumPoints != (int) myPoints.size()) {
 
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "%sArMapScan::setPoints() point count changed from %i to %i",
                  myLogPrefix.c_str(),
                  myNumPoints,
@@ -533,7 +533,7 @@ AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
 
     long int elapsed = timeToCopy.mSecSince();
 
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::setPoints() took %i msecs to find min/max of %i points",
                myLogPrefix.c_str(),
                elapsed,
@@ -554,40 +554,40 @@ AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
 
   if (changeDetails != NULL) {
 
-    ArMapFileLineSetWriter deletionWriter(changeDetails->getChangedSummaryLines
-                                          (ArMapChangeDetails::DELETIONS, scanType));
-    ArMapFileLineSetWriter additionWriter(changeDetails->getChangedSummaryLines
-                                          (ArMapChangeDetails::ADDITIONS, scanType));
+    MvrMapFileLineSetWriter deletionWriter(changeDetails->getChangedSummaryLines
+                                          (MvrMapChangeDetails::DELETIONS, scanType));
+    MvrMapFileLineSetWriter additionWriter(changeDetails->getChangedSummaryLines
+                                          (MvrMapChangeDetails::ADDITIONS, scanType));
 
     if (origNumPoints != myNumPoints) {
-      ArUtil::functorPrintf(&deletionWriter, "%sNumPoints: %d%s",
+      MvrUtil::functorPrintf(&deletionWriter, "%sNumPoints: %d%s",
                             getKeywordPrefix(),
 			                      origNumPoints, EOL_CHARS);
-      ArUtil::functorPrintf(&additionWriter, "%sNumPoints: %d%s", 
+      MvrUtil::functorPrintf(&additionWriter, "%sNumPoints: %d%s", 
                             getKeywordPrefix(),
 			                      myNumPoints, EOL_CHARS);
     }
 
     if (origMin != myMin) {
       if (origNumPoints != 0) {
-        ArUtil::functorPrintf(&deletionWriter, "%sMinPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&deletionWriter, "%sMinPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        origMin.getX(), origMin.getY(),  EOL_CHARS);
       }
       if (myNumPoints != 0) {
-        ArUtil::functorPrintf(&additionWriter, "%sMinPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&additionWriter, "%sMinPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        myMin.getX(), myMin.getY(),  EOL_CHARS);
       }
     } // end if min changed
     if (origMax != myMax) {
       if (origNumPoints != 0) {
-        ArUtil::functorPrintf(&deletionWriter, "%sMaxPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&deletionWriter, "%sMaxPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        origMax.getX(), origMax.getY(),  EOL_CHARS);
       }
       if (myNumPoints != 0) {
-        ArUtil::functorPrintf(&additionWriter, "%sMaxPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&additionWriter, "%sMaxPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        myMax.getX(), myMax.getY(),  EOL_CHARS);
       }
@@ -602,10 +602,10 @@ AREXPORT void ArMapScan::setPoints(const std::vector<ArPose> *points,
 } // end method setPoints
 
 
-AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
+AREXPORT void MvrMapScan::setLines(const std::vector<ArLineSegment> *lines,
                                   const char *scanType,
                                   bool isSorted,
-                                  ArMapChangeDetails *changeDetails)
+                                  MvrMapChangeDetails *changeDetails)
 {
   if (!myIsSortedLines) {
 	  std::sort(myLines.begin(), myLines.end());
@@ -629,42 +629,42 @@ AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
       set_difference(myLines.begin(), myLines.end(), 
                      newLines->begin(), newLines->end(),
                      std::inserter(*(changeDetails->getChangedLineSegments
-                                    (ArMapChangeDetails::DELETIONS, scanType)), 
+                                    (MvrMapChangeDetails::DELETIONS, scanType)), 
                               changeDetails->getChangedLineSegments
-                                    (ArMapChangeDetails::DELETIONS, scanType)->begin()));
+                                    (MvrMapChangeDetails::DELETIONS, scanType)->begin()));
       set_difference(newLines->begin(), newLines->end(),
                      myLines.begin(), myLines.end(), 
                      std::inserter(*(changeDetails->getChangedLineSegments
-                                    (ArMapChangeDetails::ADDITIONS, scanType)), 
+                                    (MvrMapChangeDetails::ADDITIONS, scanType)), 
                               changeDetails->getChangedLineSegments
-                                    (ArMapChangeDetails::ADDITIONS, scanType)->begin()));
+                                    (MvrMapChangeDetails::ADDITIONS, scanType)->begin()));
 
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "%sArMapScan::setLines() %i lines were deleted, %i added",
                  myLogPrefix.c_str(),
                  changeDetails->getChangedLineSegments
-                                    (ArMapChangeDetails::DELETIONS, scanType)->size(),
+                                    (MvrMapChangeDetails::DELETIONS, scanType)->size(),
                  changeDetails->getChangedLineSegments
-                                    (ArMapChangeDetails::ADDITIONS, scanType)->size());
+                                    (MvrMapChangeDetails::ADDITIONS, scanType)->size());
 
     }
     else { // null lines means none added and all deleted
 
-      *(changeDetails->getChangedLineSegments(ArMapChangeDetails::DELETIONS, scanType)) 
+      *(changeDetails->getChangedLineSegments(MvrMapChangeDetails::DELETIONS, scanType)) 
                   = myLines;
     }
   } // end if track changes
  
 
   int origNumLines = myNumLines;
-  ArPose origLineMin = myLineMin;
-  ArPose origLineMax = myLineMax;
+  MvrPose origLineMin = myLineMin;
+  MvrPose origLineMax = myLineMax;
 
   myTimeChanged.setToNow();
 
   if ((newLines != NULL) && (!newLines->empty())) {
 
-    ArTime timeToCopy;
+    MvrTime timeToCopy;
 
     double maxX = INT_MIN;
     double maxY = INT_MIN;
@@ -675,7 +675,7 @@ AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
          it != newLines->end(); 
          it++)
     {
-      const ArLineSegment &line = (*it);
+      const MvrLineSegment &line = (*it);
 
       if (line.getX1() > maxX)
         maxX = line.getX1();
@@ -702,7 +702,7 @@ AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
     myLines = *newLines;  
    
     if (myNumLines != (int) myLines.size()) {
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "%sArMapScan::setLines() line count changed from %i to %i",
                  myLogPrefix.c_str(),
                  myNumLines,
@@ -715,7 +715,7 @@ AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
 
     long int elapsed = timeToCopy.mSecSince();
 
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::setLines() took %i msecs to find min/max of %i lines",
                myLogPrefix.c_str(),
                elapsed,
@@ -736,28 +736,28 @@ AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
 
   if (changeDetails != NULL) {
 
-    ArMapFileLineSetWriter deletionWriter(changeDetails->getChangedSummaryLines
-                                          (ArMapChangeDetails::DELETIONS, scanType));
-    ArMapFileLineSetWriter additionWriter(changeDetails->getChangedSummaryLines
-                                          (ArMapChangeDetails::ADDITIONS, scanType));
+    MvrMapFileLineSetWriter deletionWriter(changeDetails->getChangedSummaryLines
+                                          (MvrMapChangeDetails::DELETIONS, scanType));
+    MvrMapFileLineSetWriter additionWriter(changeDetails->getChangedSummaryLines
+                                          (MvrMapChangeDetails::ADDITIONS, scanType));
 
     if (origNumLines != myNumLines) {
-      ArUtil::functorPrintf(&deletionWriter, "%sNumLines: %d%s", 
+      MvrUtil::functorPrintf(&deletionWriter, "%sNumLines: %d%s", 
                             getKeywordPrefix(),
 			                      origNumLines, EOL_CHARS);
-      ArUtil::functorPrintf(&additionWriter, "%sNumLines: %d%s", 
+      MvrUtil::functorPrintf(&additionWriter, "%sNumLines: %d%s", 
                             getKeywordPrefix(),
 			                      myNumLines, EOL_CHARS);
     }
 
     if (origLineMin != myLineMin) {
       if (origNumLines != 0) {
-        ArUtil::functorPrintf(&deletionWriter, "%sLineMinPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&deletionWriter, "%sLineMinPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        origLineMin.getX(), origLineMin.getY(),  EOL_CHARS);
       }
       if (myNumLines != 0) {
-        ArUtil::functorPrintf(&additionWriter, "%sLineMinPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&additionWriter, "%sLineMinPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        myLineMin.getX(), myLineMin.getY(),  EOL_CHARS);
       }
@@ -765,12 +765,12 @@ AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
 
     if (origLineMax != myLineMax) {
       if (origNumLines != 0) {
-        ArUtil::functorPrintf(&deletionWriter, "%sLineMaxPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&deletionWriter, "%sLineMaxPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        origLineMax.getX(), origLineMax.getY(),  EOL_CHARS);
       }
       if (myNumLines != 0) {
-        ArUtil::functorPrintf(&additionWriter, "%sLineMaxPos: %.0f %.0f%s", 
+        MvrUtil::functorPrintf(&additionWriter, "%sLineMaxPos: %.0f %.0f%s", 
                               getKeywordPrefix(),
 			                        myLineMax.getX(), myLineMax.getY(),  EOL_CHARS);
       }
@@ -785,9 +785,9 @@ AREXPORT void ArMapScan::setLines(const std::vector<ArLineSegment> *lines,
 } // end method setLines
 
 
-AREXPORT void ArMapScan::setResolution(int resolution,
+AREXPORT void MvrMapScan::setResolution(int resolution,
                                        const char *scanType,
-                                       ArMapChangeDetails *changeDetails)
+                                       MvrMapChangeDetails *changeDetails)
 {
 
 
@@ -795,23 +795,23 @@ AREXPORT void ArMapScan::setResolution(int resolution,
     return;
   }
 
-  ArMapFileLineSet origLines;
+  MvrMapFileLineSet origLines;
 
   if (changeDetails != NULL) {
-    ArMapFileLineSetWriter origWriter(changeDetails->getChangedSummaryLines
-                                  (ArMapChangeDetails::DELETIONS, scanType));
+    MvrMapFileLineSetWriter origWriter(changeDetails->getChangedSummaryLines
+                                  (MvrMapChangeDetails::DELETIONS, scanType));
 
-    ArUtil::functorPrintf(&origWriter, "%sResolution: %d%s", myResolution, 
+    MvrUtil::functorPrintf(&origWriter, "%sResolution: %d%s", myResolution, 
                           getKeywordPrefix(),
 			                    EOL_CHARS);
   }
 	myResolution = resolution;
 
   if (changeDetails != NULL) {
-    ArMapFileLineSetWriter newWriter(changeDetails->getChangedSummaryLines
-                                  (ArMapChangeDetails::ADDITIONS, scanType));
+    MvrMapFileLineSetWriter newWriter(changeDetails->getChangedSummaryLines
+                                  (MvrMapChangeDetails::ADDITIONS, scanType));
 
-    ArUtil::functorPrintf(&newWriter, "%sResolution: %d%s", myResolution, 
+    MvrUtil::functorPrintf(&newWriter, "%sResolution: %d%s", myResolution, 
                           getKeywordPrefix(),
     			                EOL_CHARS);
   }
@@ -820,14 +820,14 @@ AREXPORT void ArMapScan::setResolution(int resolution,
 
 
 
-AREXPORT void ArMapScan::writePointsToFunctor
-		                         (ArFunctor2<int, std::vector<ArPose> *> *functor,
+AREXPORT void MvrMapScan::writePointsToFunctor
+		                         (MvrFunctor2<int, std::vector<ArPose> *> *functor,
                               const char *scanType,
-                              ArFunctor1<const char *> *keywordFunctor)
+                              MvrFunctor1<const char *> *keywordFunctor)
 {
  
   if (keywordFunctor != NULL) {
-    ArUtil::functorPrintf(keywordFunctor, "%s%s", 
+    MvrUtil::functorPrintf(keywordFunctor, "%s%s", 
                           getPointsKeyword(),
                           "");
   }
@@ -836,13 +836,13 @@ AREXPORT void ArMapScan::writePointsToFunctor
 } // end method writePointsToFunctor
 
 
-AREXPORT void ArMapScan::writeLinesToFunctor
-	                           (ArFunctor2<int, std::vector<ArLineSegment> *> *functor,
+AREXPORT void MvrMapScan::writeLinesToFunctor
+	                           (MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
                               const char *scanType,
-                              ArFunctor1<const char *> *keywordFunctor)
+                              MvrFunctor1<const char *> *keywordFunctor)
 {
   if (keywordFunctor != NULL) {
-    ArUtil::functorPrintf(keywordFunctor, "%s%s", 
+    MvrUtil::functorPrintf(keywordFunctor, "%s%s", 
                           getLinesKeyword(),
                           "");
   }
@@ -850,14 +850,14 @@ AREXPORT void ArMapScan::writeLinesToFunctor
 } // end method writeLinesToFunctor
 
 
-AREXPORT void ArMapScan::writeScanToFunctor
-                             (ArFunctor1<const char *> *functor, 
+AREXPORT void MvrMapScan::writeScanToFunctor
+                             (MvrFunctor1<const char *> *functor, 
 			                        const char *endOfLineChars,
                               const char *scanType)
 {
   if (!myDisplayString.empty()) {
 
-    ArUtil::functorPrintf(functor, "%sDisplay: \"%s\"%s",
+    MvrUtil::functorPrintf(functor, "%sDisplay: \"%s\"%s",
                           getKeywordPrefix(),
 			                    myDisplayString.c_str(),  endOfLineChars);
 
@@ -865,39 +865,39 @@ AREXPORT void ArMapScan::writeScanToFunctor
 
   if (myNumPoints != 0)
   {
-    ArUtil::functorPrintf(functor, "%sMinPos: %.0f %.0f%s",
+    MvrUtil::functorPrintf(functor, "%sMinPos: %.0f %.0f%s",
                           getKeywordPrefix(),
 			                    myMin.getX(), myMin.getY(),  endOfLineChars);
-    ArUtil::functorPrintf(functor, "%sMaxPos: %.0f %.0f%s", 
+    MvrUtil::functorPrintf(functor, "%sMaxPos: %.0f %.0f%s", 
                           getKeywordPrefix(),
 			                    myMax.getX(), myMax.getY(),  endOfLineChars);
-    ArUtil::functorPrintf(functor, "%sNumPoints: %d%s", 
+    MvrUtil::functorPrintf(functor, "%sNumPoints: %d%s", 
                           getKeywordPrefix(),
 			                    myNumPoints, endOfLineChars);
-    ArUtil::functorPrintf(functor, "%sPointsAreSorted: %s%s", 
+    MvrUtil::functorPrintf(functor, "%sPointsAreSorted: %s%s", 
                           getKeywordPrefix(),
                           (myIsSortedPoints ? "true" : "false"), endOfLineChars);
 
   }
 
   if (myResolution != -1) {
-    ArUtil::functorPrintf(functor, "%sResolution: %d%s", 
+    MvrUtil::functorPrintf(functor, "%sResolution: %d%s", 
                           getKeywordPrefix(),
                           myResolution, endOfLineChars);
   }
 
   if (myNumLines != 0)
   {
-    ArUtil::functorPrintf(functor, "%sLineMinPos: %.0f %.0f%s", 
+    MvrUtil::functorPrintf(functor, "%sLineMinPos: %.0f %.0f%s", 
                           getKeywordPrefix(),
                           myLineMin.getX(), myLineMin.getY(),  endOfLineChars);
-    ArUtil::functorPrintf(functor, "%sLineMaxPos: %.0f %.0f%s", 
+    MvrUtil::functorPrintf(functor, "%sLineMaxPos: %.0f %.0f%s", 
                           getKeywordPrefix(),
                           myLineMax.getX(), myLineMax.getY(),  endOfLineChars);
-    ArUtil::functorPrintf(functor, "%sNumLines: %d%s", 
+    MvrUtil::functorPrintf(functor, "%sNumLines: %d%s", 
                           getKeywordPrefix(),
                           myNumLines, endOfLineChars);
-    ArUtil::functorPrintf(functor, "%sLinesAreSorted: %s%s", 
+    MvrUtil::functorPrintf(functor, "%sLinesAreSorted: %s%s", 
                           getKeywordPrefix(),
                           (myIsSortedLines ? "true" : "false"), endOfLineChars);
   }
@@ -906,12 +906,12 @@ AREXPORT void ArMapScan::writeScanToFunctor
 } // end method writeScanToFunctor
 
 
-AREXPORT void ArMapScan::writePointsToFunctor
-                                (ArFunctor1<const char *> *functor, 
+AREXPORT void MvrMapScan::writePointsToFunctor
+                                (MvrFunctor1<const char *> *functor, 
 			                           const char *endOfLineChars,
                                  const char *scanType)
 {
-  ArUtil::functorPrintf(functor, "%s%s", 
+  MvrUtil::functorPrintf(functor, "%s%s", 
                         getPointsKeyword(),
                         endOfLineChars);
 
@@ -948,7 +948,7 @@ AREXPORT void ArMapScan::writePointsToFunctor
          pointIt != myPoints.end();
          pointIt++)
     {
-      ArUtil::functorPrintf(functor, "%.0f %.0f%s", 
+      MvrUtil::functorPrintf(functor, "%.0f %.0f%s", 
                                      (*pointIt).getX(), 
                                      (*pointIt).getY(), 
                                      endOfLineChars);
@@ -958,8 +958,8 @@ AREXPORT void ArMapScan::writePointsToFunctor
 
 } // end method writePointsToFunctor
 
-AREXPORT void ArMapScan::writeLinesToFunctor
-                                (ArFunctor1<const char *> *functor, 
+AREXPORT void MvrMapScan::writeLinesToFunctor
+                                (MvrFunctor1<const char *> *functor, 
                                  const char *endOfLineChars,
                                  const char *scanType)
 {
@@ -968,8 +968,8 @@ AREXPORT void ArMapScan::writeLinesToFunctor
 } // end method writeLinesToFunctor
 
 
-AREXPORT void ArMapScan::writeLinesToFunctor
-                                (ArFunctor1<const char *> *functor, 
+AREXPORT void MvrMapScan::writeLinesToFunctor
+                                (MvrFunctor1<const char *> *functor, 
                                  const std::vector<ArLineSegment> &lines,
                                  const char *endOfLineChars,
                                  const char *scanType)
@@ -978,7 +978,7 @@ AREXPORT void ArMapScan::writeLinesToFunctor
     return;
   }
     
-  ArUtil::functorPrintf(functor, "%s%s", 
+  MvrUtil::functorPrintf(functor, "%s%s", 
                         getLinesKeyword(), 
                         endOfLineChars);
 
@@ -1012,7 +1012,7 @@ AREXPORT void ArMapScan::writeLinesToFunctor
          lineIt != lines.end();
          lineIt++)
     {
-      ArUtil::functorPrintf(functor, "%.0f %.0f %.0f %.0f%s", 
+      MvrUtil::functorPrintf(functor, "%.0f %.0f %.0f %.0f%s", 
                                     (*lineIt).getX1(), 
                                     (*lineIt).getY1(),
                                     (*lineIt).getX2(), 
@@ -1024,7 +1024,7 @@ AREXPORT void ArMapScan::writeLinesToFunctor
 } // end method writeLinesToFunctor
 
 
-bool ArMapScan::parseNumber(char *line, 
+bool MvrMapScan::parseNumber(char *line, 
                             size_t lineLen, 
                             size_t *charCountOut,
                             int *numOut) const
@@ -1075,7 +1075,7 @@ bool ArMapScan::parseNumber(char *line,
 } // end method parseNumber
 
 
-bool ArMapScan::parseWhitespace(char *line,
+bool MvrMapScan::parseWhitespace(char *line,
                                 size_t lineLen,
                                 size_t *charCountOut) const
 {
@@ -1114,7 +1114,7 @@ bool ArMapScan::parseWhitespace(char *line,
 } // end method parseWhitespace
 
 
-AREXPORT bool ArMapScan::readDataPoint( char *line)
+AREXPORT bool MvrMapScan::readDataPoint( char *line)
 {
   if (line == NULL) {
     return false;
@@ -1134,7 +1134,7 @@ AREXPORT bool ArMapScan::readDataPoint( char *line)
   lineLen -= parsedCount;
 
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readDataPoint error parsing x (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1148,7 +1148,7 @@ AREXPORT bool ArMapScan::readDataPoint( char *line)
   lineLen -= parsedCount;
   
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readDataPoint error parsing first whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1162,7 +1162,7 @@ AREXPORT bool ArMapScan::readDataPoint( char *line)
   lineLen -= parsedCount;
   
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readDataPoint error parsing y (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1177,7 +1177,7 @@ AREXPORT bool ArMapScan::readDataPoint( char *line)
 } // end method readDataPoint
 
 
-AREXPORT bool ArMapScan::readLineSegment( char *line)
+AREXPORT bool MvrMapScan::readLineSegment( char *line)
 {
   if (line == NULL) {
     return false;
@@ -1199,7 +1199,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
   lineLen -= parsedCount;
 
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readLineSegment error parsing x1 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1213,7 +1213,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
   lineLen -= parsedCount;
   
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readLineSegment error parsing first whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1227,7 +1227,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
   lineLen -= parsedCount;
   
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readLineSegment error parsing y1 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1241,7 +1241,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
   lineLen -= parsedCount;
   
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readLineSegment error parsing second whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1255,7 +1255,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
   lineLen -= parsedCount;
 
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readLineSegment error parsing x2 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1269,7 +1269,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
   lineLen -= parsedCount;
   
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readLineSegment error parsing third whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1283,7 +1283,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
   lineLen -= parsedCount;
 
   if (!isSuccess) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "%sArMapScan::readLineSegment error parsing y2 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
@@ -1298,7 +1298,7 @@ AREXPORT bool ArMapScan::readLineSegment( char *line)
 } // end method readLineSegment
 
 
-AREXPORT void ArMapScan::loadDataPoint(double x, double y)
+AREXPORT void MvrMapScan::loadDataPoint(double x, double y)
 {
   if (x > myMax.getX())
     myMax.setX(x);
@@ -1310,12 +1310,12 @@ AREXPORT void ArMapScan::loadDataPoint(double x, double y)
   if (y < myMin.getY())
     myMin.setY(y);
   
-  myPoints.push_back(ArPose(x, y));
+  myPoints.push_back(MvrPose(x, y));
   
 } // end method loadDataPoint
 
 
-AREXPORT void ArMapScan::loadLineSegment(double x1, double y1, 
+AREXPORT void MvrMapScan::loadLineSegment(double x1, double y1, 
                                          double x2, double y2)
 {
   if (x1 > myLineMax.getX())
@@ -1338,12 +1338,12 @@ AREXPORT void ArMapScan::loadLineSegment(double x1, double y1,
   if (y2 < myLineMin.getY())
     myLineMin.setY(y2);
   
-  myLines.push_back(ArLineSegment(x1, y1, x2, y2));
+  myLines.push_back(MvrLineSegment(x1, y1, x2, y2));
 
 } // end method loadLineSegment
 
 
-AREXPORT bool ArMapScan::unite(ArMapScan *other,
+AREXPORT bool MvrMapScan::unite(MvrMapScan *other,
                                bool isIncludeDataPointsAndLines)
 {
   if (other == NULL) {
@@ -1464,19 +1464,19 @@ AREXPORT bool ArMapScan::unite(ArMapScan *other,
 } // end method unite
 
 
-bool ArMapScan::handleMinPos(ArArgumentBuilder *arg)
+bool MvrMapScan::handleMinPos(MvrArgumentBuilder *arg)
 {
   return parsePose(arg, "MinPos:", &myMin);
 
 } // end method handleMinPos
 
 
-bool ArMapScan::handleMaxPos(ArArgumentBuilder *arg)
+bool MvrMapScan::handleMaxPos(MvrArgumentBuilder *arg)
 {
   return parsePose(arg, "MaxPos:", &myMax);
 }
 
-bool ArMapScan::handleNumPoints(ArArgumentBuilder *arg)
+bool MvrMapScan::handleNumPoints(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() >= 1) {
 
@@ -1488,7 +1488,7 @@ bool ArMapScan::handleNumPoints(ArArgumentBuilder *arg)
       myNumPoints = numPoints;
       // myNumPoints = 0;
 
-      ArLog::log(ArLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "%sArMapScan::handleNumPoints() set num points to %i",
                  myLogPrefix.c_str(),
                  numPoints);
@@ -1512,7 +1512,7 @@ bool ArMapScan::handleNumPoints(ArArgumentBuilder *arg)
   } // end if enough args
 
   // If this is reached, then an error has occurred...  
-  ArLog::log(ArLog::Terse, 
+  MvrLog::log(MvrLog::Terse, 
 	           "%sArMapScan: '%sNumPoints:' bad argument, should be one integer (number of data points)",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str());
@@ -1522,7 +1522,7 @@ bool ArMapScan::handleNumPoints(ArArgumentBuilder *arg)
 } // end method handleNumPoints
 
 
-bool ArMapScan::handleIsSortedPoints(ArArgumentBuilder *arg)
+bool MvrMapScan::handleIsSortedPoints(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() >= 1) {
     bool ok = true;
@@ -1533,31 +1533,31 @@ bool ArMapScan::handleIsSortedPoints(ArArgumentBuilder *arg)
     }
   } // end if correct arg count
     
-  ArLog::log(ArLog::Terse, 
-             "ArMapScan: 'PointsAreSorted:' bad arguments, should be a boolean");
+  MvrLog::log(MvrLog::Terse, 
+             "MvrMapScan: 'PointsAreSorted:' bad arguments, should be a boolean");
   return false;
 
 } // end method handleIsSortedPoints
 
 
-bool ArMapScan::handleLineMinPos(ArArgumentBuilder *arg)
+bool MvrMapScan::handleLineMinPos(MvrArgumentBuilder *arg)
 {
   return parsePose(arg, "LineMinPos:", &myLineMin);
 }
 
-bool ArMapScan::handleLineMaxPos(ArArgumentBuilder *arg)
+bool MvrMapScan::handleLineMaxPos(MvrArgumentBuilder *arg)
 {
   return parsePose(arg, "LineMaxPos:", &myLineMax);
 }
 
 
-bool ArMapScan::parsePose(ArArgumentBuilder *arg,
+bool MvrMapScan::parsePose(MvrArgumentBuilder *arg,
                           const char *keyword,
-                          ArPose *poseOut) 
+                          MvrPose *poseOut) 
 {
   if ((arg == NULL) || (keyword == NULL) || (poseOut == NULL)) {
-    ArLog::log(ArLog::Normal,
-               "ArMapScan::parsePose() invalid NULL parameters");
+    MvrLog::log(MvrLog::Normal,
+               "MvrMapScan::parsePose() invalid NULL parameters");
     return false;
   }
 
@@ -1574,7 +1574,7 @@ bool ArMapScan::parsePose(ArArgumentBuilder *arg,
     }
   } // end if correct arg count
 
-  ArLog::log(ArLog::Terse, 
+  MvrLog::log(MvrLog::Terse, 
  	           "%sArMapScan: '%s%s' bad arguments, should be two integers x y",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str(),
@@ -1585,7 +1585,7 @@ bool ArMapScan::parsePose(ArArgumentBuilder *arg,
 } // end method parsePose
 
 
-bool ArMapScan::handleNumLines(ArArgumentBuilder *arg)
+bool MvrMapScan::handleNumLines(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() >= 1) {
 
@@ -1616,7 +1616,7 @@ bool ArMapScan::handleNumLines(ArArgumentBuilder *arg)
   } // end if enough args
 
   // If this is reached, then an error has occurred...  
-  ArLog::log(ArLog::Terse, 
+  MvrLog::log(MvrLog::Terse, 
 	           "%sArMapScan: '%sNumLines:' bad argument, should be one integer (number of data points)",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str());
@@ -1626,7 +1626,7 @@ bool ArMapScan::handleNumLines(ArArgumentBuilder *arg)
 } // end method handleNumLines
 
 
-bool ArMapScan::handleIsSortedLines(ArArgumentBuilder *arg)
+bool MvrMapScan::handleIsSortedLines(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() >= 1) {
     bool ok = true;
@@ -1637,7 +1637,7 @@ bool ArMapScan::handleIsSortedLines(ArArgumentBuilder *arg)
     }
   } // end if correct arg count
     
-  ArLog::log(ArLog::Terse, 
+  MvrLog::log(MvrLog::Terse, 
  	           "%sArMapScan: '%sLinesAreSorted' bad arguments, should be a boolean",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str());
@@ -1647,7 +1647,7 @@ bool ArMapScan::handleIsSortedLines(ArArgumentBuilder *arg)
 
 
 
-bool ArMapScan::handleResolution(ArArgumentBuilder *arg)
+bool MvrMapScan::handleResolution(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() == 1)
   {
@@ -1659,14 +1659,14 @@ bool ArMapScan::handleResolution(ArArgumentBuilder *arg)
     }
   } // end if correct arg count
 
-  ArLog::log(ArLog::Terse, 
-	           "ArMapScan: 'Resolution:' bad argument, should be one integer (resolution in mm)");
+  MvrLog::log(MvrLog::Terse, 
+	           "MvrMapScan: 'Resolution:' bad argument, should be one integer (resolution in mm)");
   return false;
 
 } // end method handleResolution
 
 
-bool ArMapScan::handleDisplayString(ArArgumentBuilder *arg)
+bool MvrMapScan::handleDisplayString(MvrArgumentBuilder *arg)
 {
   arg->compressQuoted();
 
@@ -1676,18 +1676,18 @@ bool ArMapScan::handleDisplayString(ArArgumentBuilder *arg)
     int displayBufferLen = strlen(displayArg) + 1;
     char *displayBuffer = new char[displayBufferLen];
   
-     if (ArUtil::stripQuotes(displayBuffer, displayArg, displayBufferLen))
+     if (MvrUtil::stripQuotes(displayBuffer, displayArg, displayBufferLen))
      {
         myDisplayString = displayBuffer;
 
-        ArLog::log(ArLog::Normal, 
+        MvrLog::log(MvrLog::Normal, 
                   "%sArMapScan: '%sDisplay' setting display '%s'",
                   myLogPrefix.c_str(),
                   myKeywordPrefix.c_str(),
                   myDisplayString.c_str());
      }
      else {
-      ArLog::log(ArLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 	                "%sArMapScan: '%sDisplay:' couldn't strip quotes from '%s'", 
                   myLogPrefix.c_str(),
                   myKeywordPrefix.c_str(),
@@ -1701,7 +1701,7 @@ bool ArMapScan::handleDisplayString(ArArgumentBuilder *arg)
     return true;
   }
   else {
-    ArLog::log(ArLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	            "%sArMapScan: '%sDisplay:' insufficient args '%s'", 
               myLogPrefix.c_str(),
               myKeywordPrefix.c_str(),
@@ -1713,7 +1713,7 @@ bool ArMapScan::handleDisplayString(ArArgumentBuilder *arg)
 } // end method handleDisplayString
 
 
-bool ArMapScan::handlePoint(ArArgumentBuilder *arg)
+bool MvrMapScan::handlePoint(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() == 2) {
 
@@ -1729,8 +1729,8 @@ bool ArMapScan::handlePoint(ArArgumentBuilder *arg)
     }
   } // end if correct arg count
 
-  ArLog::log(ArLog::Terse, 
-	           "ArMapScan::handlePoint: map point wrong, should be x and y int coords (in mm) but is %s", 
+  MvrLog::log(MvrLog::Terse, 
+	           "MvrMapScan::handlePoint: map point wrong, should be x and y int coords (in mm) but is %s", 
              arg->getFullString());
     
   return false;
@@ -1738,7 +1738,7 @@ bool ArMapScan::handlePoint(ArArgumentBuilder *arg)
 } // end method handlePoint
 
 
-bool ArMapScan::handleLine(ArArgumentBuilder *arg)
+bool MvrMapScan::handleLine(MvrArgumentBuilder *arg)
 {
  
   if (arg->getArgc() == 4) {
@@ -1759,18 +1759,18 @@ bool ArMapScan::handleLine(ArArgumentBuilder *arg)
     }
   } // end if correct arg count
 
-  ArLog::log(ArLog::Verbose, 
-	            "ArMapScan::handleLine: line wrong, should be 2 x, y points (in mm) but is %s", 
+  MvrLog::log(MvrLog::Verbose, 
+	            "MvrMapScan::handleLine: line wrong, should be 2 x, y points (in mm) but is %s", 
               arg->getFullString());
   return false;
 
 } // end method handleLine
 
   
-bool ArMapScan::addHandlerToFileParser
-                    (ArFileParser *fileParser,
+bool MvrMapScan::addHandlerToFileParser
+                    (MvrFileParser *fileParser,
                      const char *keyword,
-                     ArRetFunctor1<bool, ArArgumentBuilder *> *handler)
+                     MvrRetFunctor1<bool, MvrArgumentBuilder *> *handler)
 {
   if ((fileParser == NULL) || (handler == NULL)) {
     return false;
@@ -1816,14 +1816,14 @@ const char *ArMapScan::getKeywordPrefix() const
 
 
 // ---------------------------------------------------------------------------- 
-// ArMapObjects
+// MvrMapObjects
 // ---------------------------------------------------------------------------- 
 
 
 const char *ArMapObjects::DEFAULT_KEYWORD = "Cairn:";
 
 
-AREXPORT ArMapObjects::ArMapObjects(const char *keyword) :
+AREXPORT MvrMapObjects::ArMapObjects(const char *keyword) :
   myTimeChanged(),
   myIsSortedObjects(false),
   myKeyword((keyword != NULL) ? keyword : DEFAULT_KEYWORD),
@@ -1833,7 +1833,7 @@ AREXPORT ArMapObjects::ArMapObjects(const char *keyword) :
 }
 
 
-AREXPORT ArMapObjects::ArMapObjects(const ArMapObjects &other) :
+AREXPORT MvrMapObjects::ArMapObjects(const MvrMapObjects &other) :
   myTimeChanged(other.myTimeChanged),
   myIsSortedObjects(other.myIsSortedObjects),
   myKeyword(other.myKeyword),
@@ -1844,17 +1844,17 @@ AREXPORT ArMapObjects::ArMapObjects(const ArMapObjects &other) :
        it != other.myMapObjects.end(); 
        it++)
   {
-    myMapObjects.push_back(new ArMapObject(*(*it)));
+    myMapObjects.push_back(new MvrMapObject(*(*it)));
   }
 
 } // end copy ctor
 
 
-AREXPORT ArMapObjects &ArMapObjects::operator=(const ArMapObjects &other)
+AREXPORT MvrMapObjects &ArMapObjects::operator=(const MvrMapObjects &other)
 {
   if (&other != this) {
 
-    ArUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
+    MvrUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
     myMapObjects.clear();
   
     myTimeChanged = other.myTimeChanged;
@@ -1866,7 +1866,7 @@ AREXPORT ArMapObjects &ArMapObjects::operator=(const ArMapObjects &other)
          it != other.myMapObjects.end(); 
          it++)
     {
-      myMapObjects.push_back(new ArMapObject(*(*it)));
+      myMapObjects.push_back(new MvrMapObject(*(*it)));
     }
   }
   return *this;
@@ -1874,14 +1874,14 @@ AREXPORT ArMapObjects &ArMapObjects::operator=(const ArMapObjects &other)
 } // end method operator=
 
 
-AREXPORT ArMapObjects::~ArMapObjects()
+AREXPORT MvrMapObjects::~ArMapObjects()
 {
-  ArUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
+  MvrUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
   myMapObjects.clear();
 }
 
 
-AREXPORT bool ArMapObjects::addToFileParser(ArFileParser *fileParser) 
+AREXPORT bool MvrMapObjects::addToFileParser(MvrFileParser *fileParser) 
 {
   if (fileParser == NULL) {
     return false;
@@ -1890,7 +1890,7 @@ AREXPORT bool ArMapObjects::addToFileParser(ArFileParser *fileParser)
   // make sure we can add all our handlers
   if (!fileParser->addHandler(myKeyword.c_str(), &myMapObjectCB))
   {
-    ArLog::log(ArLog::Terse, "ArMapObjects::addToFileParser: could not add handlers");
+    MvrLog::log(MvrLog::Terse, "MvrMapObjects::addToFileParser: could not add handlers");
     return false;
   }  
 
@@ -1899,7 +1899,7 @@ AREXPORT bool ArMapObjects::addToFileParser(ArFileParser *fileParser)
 } // end method addToFileParser
 
 
-AREXPORT bool ArMapObjects::remFromFileParser(ArFileParser *fileParser)
+AREXPORT bool MvrMapObjects::remFromFileParser(MvrFileParser *fileParser)
 {
   if (fileParser == NULL) {
     return false;
@@ -1912,23 +1912,23 @@ AREXPORT bool ArMapObjects::remFromFileParser(ArFileParser *fileParser)
 } // end method remFromFileParser
 
   
-AREXPORT ArTime ArMapObjects::getTimeChanged() const
+AREXPORT MvrTime MvrMapObjects::getTimeChanged() const
 {
   return myTimeChanged;
 }
 
 
-AREXPORT void ArMapObjects::clear() 
+AREXPORT void MvrMapObjects::clear() 
 {
   myTimeChanged.setToNow();
 
-  ArUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
+  MvrUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
   myMapObjects.clear();
 
 } // end method clear
 
 
-AREXPORT ArMapObject *ArMapObjects::findFirstMapObject(const char *name, 
+AREXPORT MvrMapObject *ArMapObjects::findFirstMapObject(const char *name, 
 														                           const char *type,
                                                        bool isIncludeWithHeading)
 {
@@ -1936,7 +1936,7 @@ AREXPORT ArMapObject *ArMapObjects::findFirstMapObject(const char *name,
        objIt != getMapObjects()->end(); 
        objIt++)
   {
-    ArMapObject* obj = (*objIt);
+    MvrMapObject* obj = (*objIt);
     if(obj == NULL)
       return NULL;
     // if we're searching any type or its the right type then check the name
@@ -1956,12 +1956,12 @@ AREXPORT ArMapObject *ArMapObjects::findFirstMapObject(const char *name,
 } // end method findFirstMapObject
 
 
-AREXPORT ArMapObject *ArMapObjects::findMapObject(const char *name, 
+AREXPORT MvrMapObject *ArMapObjects::findMapObject(const char *name, 
 				                                          const char *type,
                                                   bool isIncludeWithHeading)
 {
   std::list<ArMapObject *>::iterator objIt;
-  ArMapObject* obj = NULL;
+  MvrMapObject* obj = NULL;
 
   for (objIt = getMapObjects()->begin(); 
        objIt != getMapObjects()->end(); 
@@ -2001,7 +2001,7 @@ AREXPORT ArMapObject *ArMapObjects::findMapObject(const char *name,
    @param isIncludeWithHeading also match "WithHeading" versions of @a type
    ("<i>type</i>WithHeading")
  **/
-AREXPORT std::list<ArMapObject *> ArMapObjects::findMapObjectsOfType
+AREXPORT std::list<ArMapObject *> MvrMapObjects::findMapObjectsOfType
                                                   (const char *type,
                                                    bool isIncludeWithHeading)
 {
@@ -2011,7 +2011,7 @@ AREXPORT std::list<ArMapObject *> ArMapObjects::findMapObjectsOfType
        objIt != myMapObjects.end(); 
        objIt++)
   {
-    ArMapObject* obj = (*objIt);
+    MvrMapObject* obj = (*objIt);
     if (obj == NULL)
       continue;
     // if we're searching any type or its the right type then add it
@@ -2038,9 +2038,9 @@ AREXPORT std::list<ArMapObject *> *ArMapObjects::getMapObjects(void)
 } // end method getMapObjects
 
 
-void ArMapObjects::sortMapObjects(std::list<ArMapObject *> *mapObjects)
+void MvrMapObjects::sortMapObjects(std::list<ArMapObject *> *mapObjects)
 {
-  ArMapObjectCompare compare;
+  MvrMapObjectCompare compare;
 
   std::vector<ArMapObject *> tempObjects;
   for (std::list<ArMapObject *>::iterator iter1 = mapObjects->begin();
@@ -2060,9 +2060,9 @@ void ArMapObjects::sortMapObjects(std::list<ArMapObject *> *mapObjects)
 } // end method sortMapObjects
 
 
-AREXPORT void ArMapObjects::setMapObjects(const std::list<ArMapObject *> *mapObjects,
+AREXPORT void MvrMapObjects::setMapObjects(const std::list<ArMapObject *> *mapObjects,
                                           bool isSortedObjects,
-                                          ArMapChangeDetails *changeDetails) 
+                                          MvrMapChangeDetails *changeDetails) 
 {
 
   myTimeChanged.setToNow();
@@ -2084,7 +2084,7 @@ AREXPORT void ArMapObjects::setMapObjects(const std::list<ArMapObject *> *mapObj
   }
   
 
-  ArMapFileLineSet origLines;
+  MvrMapFileLineSet origLines;
 
   if (changeDetails != NULL) {
     createMultiSet(&origLines);
@@ -2102,39 +2102,39 @@ AREXPORT void ArMapObjects::setMapObjects(const std::list<ArMapObject *> *mapObj
         it != newMapObjects->end(); 
         it++)
     {
-      ArMapObject *obj = *it;
+      MvrMapObject *obj = *it;
       if (obj == NULL) {
         continue;
       }
-      myMapObjects.push_back(new ArMapObject(*obj));
+      myMapObjects.push_back(new MvrMapObject(*obj));
       origMapObjects.remove(obj);
     }
   }
 
   if (changeDetails != NULL) {
 
-    ArMapFileLineSet newLines;
+    MvrMapFileLineSet newLines;
     createMultiSet(&newLines);
 
-    bool isSuccess = ArMapFileLineSet::calculateChanges
+    bool isSuccess = MvrMapFileLineSet::calculateChanges
                         (origLines,
                          newLines,
                          changeDetails->getChangedObjectLines
-                                          (ArMapChangeDetails::DELETIONS),
+                                          (MvrMapChangeDetails::DELETIONS),
                          changeDetails->getChangedObjectLines
-                                          (ArMapChangeDetails::ADDITIONS),
+                                          (MvrMapChangeDetails::ADDITIONS),
                          false);
 
     if (!isSuccess) {
-      ArLog::log(ArLog::Normal,
-                 "ArMapObjects::setMapObjects() error calculating changes"); 
+      MvrLog::log(MvrLog::Normal,
+                 "MvrMapObjects::setMapObjects() error calculating changes"); 
     }
   } // end if accumulate changes
 
   // Anything that is left in the original map objects list was not passed
   // in via the given map object list.  Delete all of the remaining objects.
   // The caller is responsible for deleting the objects in the given list.
-  ArUtil::deleteSet(origMapObjects.begin(), origMapObjects.end());
+  MvrUtil::deleteSet(origMapObjects.begin(), origMapObjects.end());
 
   if (mapObjectsCopy != NULL) {
     delete mapObjectsCopy;
@@ -2143,7 +2143,7 @@ AREXPORT void ArMapObjects::setMapObjects(const std::list<ArMapObject *> *mapObj
 } // end method setMapObjects
 
 
-AREXPORT void ArMapObjects::writeObjectListToFunctor(ArFunctor1<const char *> *functor, 
+AREXPORT void MvrMapObjects::writeObjectListToFunctor(MvrFunctor1<const char *> *functor, 
 		                                                 const char *endOfLineChars)
 {
   // TODO: Ideally it would probably be nice to cache this string in the object...
@@ -2153,9 +2153,9 @@ AREXPORT void ArMapObjects::writeObjectListToFunctor(ArFunctor1<const char *> *f
        mapObjectIt != myMapObjects.end(); 
        mapObjectIt++)
   {
-    ArMapObject *object = (*mapObjectIt);
+    MvrMapObject *object = (*mapObjectIt);
 
-    ArUtil::functorPrintf(functor, 
+    MvrUtil::functorPrintf(functor, 
 	                        "%s %s%s",
                           myKeyword.c_str(),
                           object->toString(),
@@ -2164,9 +2164,9 @@ AREXPORT void ArMapObjects::writeObjectListToFunctor(ArFunctor1<const char *> *f
 } // end method writeObjectListToFunctor
 
 
-bool ArMapObjects::handleMapObject(ArArgumentBuilder *arg)
+bool MvrMapObjects::handleMapObject(MvrArgumentBuilder *arg)
 {
-  ArMapObject *object = ArMapObject::createMapObject(arg);
+  MvrMapObject *object = MvrMapObject::createMapObject(arg);
 
   if (object == NULL) {
     return false;
@@ -2181,34 +2181,34 @@ bool ArMapObjects::handleMapObject(ArArgumentBuilder *arg)
 
 
 
-void ArMapObjects::createMultiSet(ArMapFileLineSet *multiSet)
+void MvrMapObjects::createMultiSet(MvrMapFileLineSet *multiSet)
 {
-  ArMapFileLineSetWriter origWriter(multiSet);
+  MvrMapFileLineSetWriter origWriter(multiSet);
 
   writeObjectListToFunctor(&origWriter, "\n");
 
 } // end method createMultiSet
 
-void ArMapObjects::logMultiSet(const char *prefix,
-                               ArMapFileLineSet *multiSet)
+void MvrMapObjects::logMultiSet(const char *prefix,
+                               MvrMapFileLineSet *multiSet)
 {
   if (prefix != NULL) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                prefix);
   }
   if (multiSet == NULL) {
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "NULL");
     return;
   }
 
-  for (ArMapFileLineSet::iterator mIter = multiSet->begin();
+  for (MvrMapFileLineSet::iterator mIter = multiSet->begin();
        mIter != multiSet->end();
        mIter++) {
-    ArMapFileLineGroup &fileLine = *mIter;
+    MvrMapFileLineGroup &fileLine = *mIter;
     fileLine.log();
     /**
-    ArLog::log(ArLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "#%-3i : %s",
                fileLine.getLineNum(),
                fileLine.getLineText());
@@ -2218,12 +2218,12 @@ void ArMapObjects::logMultiSet(const char *prefix,
 
 
 // ---------------------------------------------------------------------------- 
-// ArMapInfo
+// MvrMapInfo
 // ---------------------------------------------------------------------------- 
 
 
 
-void ArMapInfo::setDefaultInfoNames()
+void MvrMapInfo::setDefaultInfoNames()
 {
   myInfoTypeToNameMap[MAP_INFO] = "MapInfo:";
   myInfoTypeToNameMap[META_INFO] = "MetaInfo:";
@@ -2238,7 +2238,7 @@ void ArMapInfo::setDefaultInfoNames()
 
 
 
-ArMapInfo::ArMapInfoData::ArMapInfoData(ArMapInfo *parent,
+ArMapInfo::ArMapInfoData::ArMapInfoData(MvrMapInfo *parent,
                                         const char *keyword,
                                         int type) :
   myParent(parent),
@@ -2248,7 +2248,7 @@ ArMapInfo::ArMapInfoData::ArMapInfoData(ArMapInfo *parent,
   myInfoCB(NULL)
 {
   if (myParent != NULL) {
-    myInfoCB = new ArRetFunctor1C<bool, ArMapInfo, ArArgumentBuilder *>
+    myInfoCB = new MvrRetFunctor1C<bool, MvrMapInfo, MvrArgumentBuilder *>
 							                                (parent,
 							                                 &ArMapInfo::handleInfo,
 								                               NULL);
@@ -2256,8 +2256,8 @@ ArMapInfo::ArMapInfoData::ArMapInfoData(ArMapInfo *parent,
 
 }
 
-ArMapInfo::ArMapInfoData::ArMapInfoData(ArMapInfo *parent,
-                                        const ArMapInfoData &other) :
+ArMapInfo::ArMapInfoData::ArMapInfoData(MvrMapInfo *parent,
+                                        const MvrMapInfoData &other) :
   myParent(parent),
   myType(other.myType),
   myKeyword(other.myKeyword),
@@ -2265,7 +2265,7 @@ ArMapInfo::ArMapInfoData::ArMapInfoData(ArMapInfo *parent,
   myInfoCB(NULL) // Don't copy callbacks
 {
   if (myParent != NULL) {
-    myInfoCB = new ArRetFunctor1C<bool, ArMapInfo, ArArgumentBuilder *>
+    myInfoCB = new MvrRetFunctor1C<bool, MvrMapInfo, MvrArgumentBuilder *>
 							                                (parent,
 							                                 &ArMapInfo::handleInfo,
 								                               NULL);
@@ -2273,33 +2273,33 @@ ArMapInfo::ArMapInfoData::ArMapInfoData(ArMapInfo *parent,
   for (std::list<ArArgumentBuilder *>::const_iterator iter = other.myInfo.begin();
         iter != other.myInfo.end();
         iter++) {
-    ArArgumentBuilder *arg = *iter;
+    MvrArgumentBuilder *arg = *iter;
     if (arg == NULL) {
       continue;
     }
-    myInfo.push_back(new ArArgumentBuilder(*arg));
+    myInfo.push_back(new MvrArgumentBuilder(*arg));
   }
 } // end pseudo-copy-constructor
 
 
-ArMapInfo::ArMapInfoData &ArMapInfo::ArMapInfoData::operator=(const ArMapInfoData &other) 
+ArMapInfo::ArMapInfoData &ArMapInfo::ArMapInfoData::operator=(const MvrMapInfoData &other) 
 {
   if (this != &other) {
     // Don't change parents
     myType = other.myType;
     myKeyword = other.myKeyword;
 
-    ArUtil::deleteSet(myInfo.begin(), myInfo.end());
+    MvrUtil::deleteSet(myInfo.begin(), myInfo.end());
     myInfo.clear();
 
     for (std::list<ArArgumentBuilder *>::const_iterator iter = other.myInfo.begin();
          iter != other.myInfo.end();
          iter++) {
-      ArArgumentBuilder *arg = *iter;
+      MvrArgumentBuilder *arg = *iter;
       if (arg == NULL) {
         continue;
       }
-      myInfo.push_back(new ArArgumentBuilder(*arg));
+      myInfo.push_back(new MvrArgumentBuilder(*arg));
     }
     // myInfoCB = other.myInfoCB;  // Don't copy callbacks
   }
@@ -2308,7 +2308,7 @@ ArMapInfo::ArMapInfoData &ArMapInfo::ArMapInfoData::operator=(const ArMapInfoDat
 
 ArMapInfo::ArMapInfoData::~ArMapInfoData()
 {
-  ArUtil::deleteSet(myInfo.begin(), myInfo.end());
+  MvrUtil::deleteSet(myInfo.begin(), myInfo.end());
   myInfo.clear();
 
   delete myInfoCB;
@@ -2317,10 +2317,10 @@ ArMapInfo::ArMapInfoData::~ArMapInfoData()
 
 
 
-AREXPORT ArMapInfo::ArMapInfo(const char **infoNameList,
+AREXPORT MvrMapInfo::ArMapInfo(const char **infoNameList,
                               size_t infoNameCount,
                               const char *keywordPrefix) :
-  ArMapInfoInterface(),
+  MvrMapInfoInterface(),
   myTimeChanged(),
   myNumInfos(0), 
   myPrefix((keywordPrefix != NULL) ? keywordPrefix : ""),
@@ -2341,7 +2341,7 @@ AREXPORT ArMapInfo::ArMapInfo(const char **infoNameList,
 
       std::string dataName = myPrefix + iter->second.c_str();
      
-      ArMapInfoData *data = new ArMapInfoData(this, dataName.c_str(), iter->first);
+      MvrMapInfoData *data = new MvrMapInfoData(this, dataName.c_str(), iter->first);
       myInfoNameToDataMap[iter->second] = data;
       myKeywordToInfoNameMap[dataName.c_str()] = iter->second;
       myNumInfos++;
@@ -2351,12 +2351,12 @@ AREXPORT ArMapInfo::ArMapInfo(const char **infoNameList,
 
     for (size_t i = 0; i < infoNameCount; i++) {
       const char *curName = infoNameList[i];
-      if (ArUtil::isStrEmpty(curName)) {
+      if (MvrUtil::isStrEmpty(curName)) {
         continue;
       }
       std::string dataName = myPrefix + curName;
 
-      ArMapInfoData *data = new ArMapInfoData(this, dataName.c_str());
+      MvrMapInfoData *data = new MvrMapInfoData(this, dataName.c_str());
       myInfoNameToDataMap[curName] = data;
       myKeywordToInfoNameMap[dataName.c_str()] = curName;
       myNumInfos++;
@@ -2367,8 +2367,8 @@ AREXPORT ArMapInfo::ArMapInfo(const char **infoNameList,
 
 
 
-AREXPORT ArMapInfo::ArMapInfo(const ArMapInfo &other) :
-  ArMapInfoInterface(),
+AREXPORT MvrMapInfo::ArMapInfo(const MvrMapInfo &other) :
+  MvrMapInfoInterface(),
   myTimeChanged(other.myTimeChanged),
   myNumInfos(other.myNumInfos), 
   myPrefix(other.myPrefix),
@@ -2377,20 +2377,20 @@ AREXPORT ArMapInfo::ArMapInfo(const ArMapInfo &other) :
   myKeywordToInfoNameMap(other.myKeywordToInfoNameMap)
 {
 
-  for (std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::const_iterator iter = other.myInfoNameToDataMap.begin();
+  for (std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::const_iterator iter = other.myInfoNameToDataMap.begin();
        iter != other.myInfoNameToDataMap.end();
        iter++) {
-    const ArMapInfoData *otherData = iter->second;
+    const MvrMapInfoData *otherData = iter->second;
     if (otherData == NULL) {
       continue;
     }
-    myInfoNameToDataMap[iter->first] = new ArMapInfoData(this, *otherData);
+    myInfoNameToDataMap[iter->first] = new MvrMapInfoData(this, *otherData);
   }
   
 } // end copy ctor
 
 
-AREXPORT ArMapInfo &ArMapInfo::operator=(const ArMapInfo &other)
+AREXPORT MvrMapInfo &ArMapInfo::operator=(const MvrMapInfo &other)
 {
   if (&other != this) {
 
@@ -2399,17 +2399,17 @@ AREXPORT ArMapInfo &ArMapInfo::operator=(const ArMapInfo &other)
     myPrefix = other.myPrefix;
     myInfoTypeToNameMap = other.myInfoTypeToNameMap;
 
-    ArUtil::deleteSetPairs(myInfoNameToDataMap.begin(), myInfoNameToDataMap.end());
+    MvrUtil::deleteSetPairs(myInfoNameToDataMap.begin(), myInfoNameToDataMap.end());
     myInfoNameToDataMap.clear();
 
-    for (std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::const_iterator iter = other.myInfoNameToDataMap.begin();
+    for (std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::const_iterator iter = other.myInfoNameToDataMap.begin();
          iter != other.myInfoNameToDataMap.end();
          iter++) {
-      const ArMapInfoData *otherData = iter->second;
+      const MvrMapInfoData *otherData = iter->second;
       if (otherData == NULL) {
         continue;
       }
-      myInfoNameToDataMap[iter->first] = new ArMapInfoData(this, *otherData);
+      myInfoNameToDataMap[iter->first] = new MvrMapInfoData(this, *otherData);
     }
 
     myKeywordToInfoNameMap = other.myKeywordToInfoNameMap;
@@ -2421,33 +2421,33 @@ AREXPORT ArMapInfo &ArMapInfo::operator=(const ArMapInfo &other)
 } // end operator=
 
 
-AREXPORT ArMapInfo::~ArMapInfo()
+AREXPORT MvrMapInfo::~ArMapInfo()
 {
-  ArUtil::deleteSetPairs(myInfoNameToDataMap.begin(), myInfoNameToDataMap.end());
+  MvrUtil::deleteSetPairs(myInfoNameToDataMap.begin(), myInfoNameToDataMap.end());
   myInfoNameToDataMap.clear();
 
 } // end dtor
 
 
-AREXPORT bool ArMapInfo::addToFileParser(ArFileParser *fileParser)
+AREXPORT bool MvrMapInfo::addToFileParser(MvrFileParser *fileParser)
 {
   if (fileParser == NULL) {
     return false;
   }
 
-  for (std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
+  for (std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
       iter != myInfoNameToDataMap.end();
       iter++) {
 
-    ArMapInfoData *data = iter->second;
+    MvrMapInfoData *data = iter->second;
     if (data == NULL) {
       continue;
     }
 	  if (!fileParser->addHandler(data->myKeyword.c_str(), 
 									              data->myInfoCB)) {
 
- 	    ArLog::log(ArLog::Terse, 
-                 "ArMapInfo::addToFileParser: could not add handler for %s",
+ 	    MvrLog::log(MvrLog::Terse, 
+                 "MvrMapInfo::addToFileParser: could not add handler for %s",
                  data->myKeyword.c_str());
                   
       return false;
@@ -2459,16 +2459,16 @@ AREXPORT bool ArMapInfo::addToFileParser(ArFileParser *fileParser)
 } // end method addToFileParser
 
 
-AREXPORT bool ArMapInfo::remFromFileParser(ArFileParser *fileParser)
+AREXPORT bool MvrMapInfo::remFromFileParser(MvrFileParser *fileParser)
 {
   if (fileParser == NULL) {
     return false;
   }
 
-  for (std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
+  for (std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
       iter != myInfoNameToDataMap.end();
       iter++) {
-    ArMapInfoData *data = iter->second;
+    MvrMapInfoData *data = iter->second;
     if (data == NULL) {
       continue;
     }
@@ -2479,28 +2479,28 @@ AREXPORT bool ArMapInfo::remFromFileParser(ArFileParser *fileParser)
 } // end method remFromFileParser
 
 
-AREXPORT ArTime ArMapInfo::getTimeChanged() const
+AREXPORT MvrTime MvrMapInfo::getTimeChanged() const
 {
   return myTimeChanged;
 }
 
-void ArMapInfo::setChanged()
+void MvrMapInfo::setChanged()
 {
   myTimeChanged.setToNow();
 }
 
-AREXPORT void ArMapInfo::clear()
+AREXPORT void MvrMapInfo::clear()
 {
   myTimeChanged.setToNow();
 
-  for (std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
+  for (std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
       iter != myInfoNameToDataMap.end();
       iter++) {
-    ArMapInfoData *data = iter->second;
+    MvrMapInfoData *data = iter->second;
     if (data == NULL) {
       continue;
     }
-    ArUtil::deleteSet(data->myInfo.begin(), data->myInfo.end());
+    MvrUtil::deleteSet(data->myInfo.begin(), data->myInfo.end());
     data->myInfo.clear();
 
   } // end for each info
@@ -2520,7 +2520,7 @@ AREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getInfo(int infoType)
 }
 AREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getInfo(const char *infoName)
 {
-  ArMapInfoData *data = findData(infoName);
+  MvrMapInfoData *data = findData(infoName);
 
   if (data != NULL) {
     return &data->myInfo;
@@ -2537,15 +2537,15 @@ AREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getMapInfo(void)
   return getInfo(MAP_INFO_NAME);
 }
 
-AREXPORT int ArMapInfo::getInfoCount() const
+AREXPORT int MvrMapInfo::getInfoCount() const
 {
   return myNumInfos;
 }
 
-AREXPORT std::list<std::string> ArMapInfo::getInfoNames() const
+AREXPORT std::list<std::string> MvrMapInfo::getInfoNames() const
 {
   std::list<std::string> infoNames;
-  for (std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::const_iterator iter =
+  for (std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::const_iterator iter =
             myInfoNameToDataMap.begin();
        iter != myInfoNameToDataMap.end();
        iter++) {
@@ -2557,13 +2557,13 @@ AREXPORT std::list<std::string> ArMapInfo::getInfoNames() const
 
 
   
-void ArMapInfo::createMultiSet(const char *infoName, 
-                               ArMapFileLineSet *multiSet,
-                               ArMapChangeDetails *changeDetails)
+void MvrMapInfo::createMultiSet(const char *infoName, 
+                               MvrMapFileLineSet *multiSet,
+                               MvrMapChangeDetails *changeDetails)
 {
-  ArMapFileLineSetWriter origWriter(multiSet);
+  MvrMapFileLineSetWriter origWriter(multiSet);
 
-  ArMapInfoData *data = findData(infoName);
+  MvrMapInfoData *data = findData(infoName);
   if (data == NULL) {
     return;
   }
@@ -2573,7 +2573,7 @@ void ArMapInfo::createMultiSet(const char *infoName,
        infoIt != data->myInfo.end();
        infoIt++) {
 
-    ArArgumentBuilder *arg = *infoIt;
+    MvrArgumentBuilder *arg = *infoIt;
     if (arg == NULL) {
       continue;
     }
@@ -2583,7 +2583,7 @@ void ArMapInfo::createMultiSet(const char *infoName,
     }
     origWriter.setAddingChildren(isAddingChildren);
 
-    ArUtil::functorPrintf(&origWriter, "%s %s%s", 
+    MvrUtil::functorPrintf(&origWriter, "%s %s%s", 
                           data->myKeyword.c_str(),
                           (*infoIt)->getFullString(), 
                           "");  // TODO: What to do about endOfLineChars
@@ -2593,14 +2593,14 @@ void ArMapInfo::createMultiSet(const char *infoName,
 } // end method createMultiSet
 
 
-AREXPORT ArMapInfo::ArMapInfoData *ArMapInfo::findData(const char *infoName)
+AREXPORT MvrMapInfo::ArMapInfoData *ArMapInfo::findData(const char *infoName)
 {
-  if (ArUtil::isStrEmpty(infoName)) {
+  if (MvrUtil::isStrEmpty(infoName)) {
     return NULL;
   }
 
-  ArMapInfoData *data = NULL;
-  std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::iterator iter1 = 
+  MvrMapInfoData *data = NULL;
+  std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::iterator iter1 = 
                                             myInfoNameToDataMap.find(infoName);
 
   if (iter1 != myInfoNameToDataMap.end()) {
@@ -2611,12 +2611,12 @@ AREXPORT ArMapInfo::ArMapInfoData *ArMapInfo::findData(const char *infoName)
 
 } // end method findData
 
-AREXPORT ArMapInfo::ArMapInfoData *ArMapInfo::findDataByKeyword(const char *keyword)
+AREXPORT MvrMapInfo::ArMapInfoData *ArMapInfo::findDataByKeyword(const char *keyword)
 {
-  if (ArUtil::isStrEmpty(keyword)) {
+  if (MvrUtil::isStrEmpty(keyword)) {
     return NULL;
   }
-  std::map<std::string, std::string, ArStrCaseCmpOp>::iterator iter = myKeywordToInfoNameMap.find(keyword);
+  std::map<std::string, std::string, MvrStrCaseCmpOp>::iterator iter = myKeywordToInfoNameMap.find(keyword);
   if (iter != myKeywordToInfoNameMap.end()) {
     return findData(iter->second.c_str());
   }
@@ -2624,27 +2624,27 @@ AREXPORT ArMapInfo::ArMapInfoData *ArMapInfo::findDataByKeyword(const char *keyw
 
 } // end method findDataByKeyword
 
-AREXPORT bool ArMapInfo::setInfo(int infoType,
+AREXPORT bool MvrMapInfo::setInfo(int infoType,
 						                     const std::list<ArArgumentBuilder *> *infoList,
-                                 ArMapChangeDetails *changeDetails)
+                                 MvrMapChangeDetails *changeDetails)
 
 {
   return setInfo(getInfoName(infoType), infoList, changeDetails);
 }
 
 
-AREXPORT bool ArMapInfo::setInfo(const char *infoName,
+AREXPORT bool MvrMapInfo::setInfo(const char *infoName,
                                  const std::list<ArArgumentBuilder *> *infoList,
-                                 ArMapChangeDetails *changeDetails)
+                                 MvrMapChangeDetails *changeDetails)
 
 {
-  ArMapInfoData *data = findData(infoName);
+  MvrMapInfoData *data = findData(infoName);
   if (data == NULL) {
     return false;
   }
 
   
-  ArMapFileLineSet origLines;
+  MvrMapFileLineSet origLines;
 
   if (changeDetails != NULL) {
     createMultiSet(infoName, &origLines, changeDetails);
@@ -2653,12 +2653,12 @@ AREXPORT bool ArMapInfo::setInfo(const char *infoName,
   // Make sure that the original list is not being passed back into this method.
   // TODO Fix this
   if (&(data->myInfo) == infoList) {
-    ArLog::log(ArLog::Terse,
-               "ArMapInfo::setInfo() cannot set to original list");
+    MvrLog::log(MvrLog::Terse,
+               "MvrMapInfo::setInfo() cannot set to original list");
     return false;
   }
 
-  ArUtil::deleteSet(data->myInfo.begin(), data->myInfo.end());
+  MvrUtil::deleteSet(data->myInfo.begin(), data->myInfo.end());
   data->myInfo.clear();
 
 // TODO   myInfoChangedArray[infoType].setToNow();
@@ -2670,27 +2670,27 @@ AREXPORT bool ArMapInfo::setInfo(const char *infoName,
         it != infoList->end(); 
         it++)
     {
-      data->myInfo.push_back(new ArArgumentBuilder(*(*it)));
+      data->myInfo.push_back(new MvrArgumentBuilder(*(*it)));
     }
   }
 
   if (changeDetails != NULL) {
 
-    ArMapFileLineSet newLines;
+    MvrMapFileLineSet newLines;
     createMultiSet(infoName, &newLines, changeDetails);
 
-    bool isSuccess = ArMapFileLineSet::calculateChanges
+    bool isSuccess = MvrMapFileLineSet::calculateChanges
                         (origLines,
                          newLines,
                          changeDetails->getChangedInfoLines
                                           (infoName,
-                                           ArMapChangeDetails::DELETIONS),
+                                           MvrMapChangeDetails::DELETIONS),
                          changeDetails->getChangedInfoLines
                                           (infoName,
-                                           ArMapChangeDetails::ADDITIONS));
+                                           MvrMapChangeDetails::ADDITIONS));
     if (!isSuccess) {
-      ArLog::log(ArLog::Normal,
-                 "ArMapInfo::setInfo() error calculating changes");
+      MvrLog::log(MvrLog::Normal,
+                 "MvrMapInfo::setInfo() error calculating changes");
     }
   } // end if changeDetails
 
@@ -2699,24 +2699,24 @@ AREXPORT bool ArMapInfo::setInfo(const char *infoName,
 } // end method setInfo
 
 
-AREXPORT bool ArMapInfo::setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
-                                    ArMapChangeDetails *changeDetails)
+AREXPORT bool MvrMapInfo::setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
+                                    MvrMapChangeDetails *changeDetails)
 {
   return setInfo(MAP_INFO_NAME, mapInfo, changeDetails);
 }
 
 
-AREXPORT void ArMapInfo::writeInfoToFunctor
-				                     (ArFunctor1<const char *> *functor, 
+AREXPORT void MvrMapInfo::writeInfoToFunctor
+				                     (MvrFunctor1<const char *> *functor, 
 			                        const char *endOfLineChars)
 {
 
   // TODO: Write the info list?
 
-  for (std::map<std::string, ArMapInfoData*, ArStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
+  for (std::map<std::string, MvrMapInfoData*, MvrStrCaseCmpOp>::iterator iter = myInfoNameToDataMap.begin();
        iter != myInfoNameToDataMap.end();
        iter++) {
-    ArMapInfoData *data = iter->second;
+    MvrMapInfoData *data = iter->second;
     if (data == NULL) {
       continue;
     }
@@ -2724,7 +2724,7 @@ AREXPORT void ArMapInfo::writeInfoToFunctor
          infoIt != data->myInfo.end();
          infoIt++) {
 
-      ArUtil::functorPrintf(functor, "%s %s%s", 
+      MvrUtil::functorPrintf(functor, "%s %s%s", 
                             data->myKeyword.c_str(),
                             (*infoIt)->getFullString(), 
                             endOfLineChars);
@@ -2748,21 +2748,21 @@ AREXPORT const char *ArMapInfo::getInfoName(int infoType)
 } // end method getInfoName
 
 
-bool ArMapInfo::handleInfo(ArArgumentBuilder *arg)
+bool MvrMapInfo::handleInfo(MvrArgumentBuilder *arg)
 {
   arg->compressQuoted();
 
   const char *keyword = arg->getExtraString();
 
-  ArMapInfoData *data = findDataByKeyword(keyword);
+  MvrMapInfoData *data = findDataByKeyword(keyword);
 
   if (data == NULL) {
-    ArLog::log(ArLog::Normal,
-               "ArMapInfo::handleInfo cannot process %s",
+    MvrLog::log(MvrLog::Normal,
+               "MvrMapInfo::handleInfo cannot process %s",
                keyword);
     return false;
   }
-  ArArgumentBuilder *infoBuilder = new ArArgumentBuilder(*arg);
+  MvrArgumentBuilder *infoBuilder = new MvrArgumentBuilder(*arg);
   data->myInfo.push_back(infoBuilder);
 
   return true;
@@ -2774,7 +2774,7 @@ bool ArMapInfo::handleInfo(ArArgumentBuilder *arg)
 
 const char *ArMapSupplement::EOL_CHARS = "";
 
-AREXPORT ArMapSupplement::ArMapSupplement() :
+AREXPORT MvrMapSupplement::ArMapSupplement() :
   myTimeChanged(),
   myHasOriginLatLongAlt(false),
   myOriginLatLong(),
@@ -2783,7 +2783,7 @@ AREXPORT ArMapSupplement::ArMapSupplement() :
 {
 }
 
-AREXPORT ArMapSupplement::ArMapSupplement(const ArMapSupplement &other) :
+AREXPORT MvrMapSupplement::ArMapSupplement(const MvrMapSupplement &other) :
   myTimeChanged(other.myTimeChanged),
   myHasOriginLatLongAlt(other.myHasOriginLatLongAlt),
   myOriginLatLong(other.myOriginLatLong),
@@ -2794,7 +2794,7 @@ AREXPORT ArMapSupplement::ArMapSupplement(const ArMapSupplement &other) :
 }
 
 
-AREXPORT ArMapSupplement &ArMapSupplement::operator=(const ArMapSupplement &other) 
+AREXPORT MvrMapSupplement &ArMapSupplement::operator=(const MvrMapSupplement &other) 
 {
   if (&other != this) {
     myTimeChanged = other.myTimeChanged;
@@ -2806,30 +2806,30 @@ AREXPORT ArMapSupplement &ArMapSupplement::operator=(const ArMapSupplement &othe
 }
 
 
-AREXPORT ArMapSupplement::~ArMapSupplement()
+AREXPORT MvrMapSupplement::~ArMapSupplement()
 {
 }
 
-AREXPORT bool ArMapSupplement::addToFileParser(ArFileParser *fileParser)
+AREXPORT bool MvrMapSupplement::addToFileParser(MvrFileParser *fileParser)
 {
   if (fileParser == NULL) {
     return false;
   }
   if (!fileParser->addHandler("OriginLatLongAlt:", &myOriginLatLongAltCB))
   {
-    ArLog::log(ArLog::Terse, 
-               "ArMapSupplement::addToFileParser: could not add handlers");
+    ArLog::log(MvrLog::Terse, 
+               "MvrMapSupplement::addToFileParser: could not add handlers");
     return false;
   }  
-  ArLog::log(ArLog::Verbose,
-             "ArMapSupplement::addToFileParser() successfully added handlers");
+  ArLog::log(MvrLog::Verbose,
+             "MvrMapSupplement::addToFileParser() successfully added handlers");
 
   return true;
 
 } // end method addToFileParser
 
 
-AREXPORT bool ArMapSupplement::remFromFileParser(ArFileParser *fileParser)
+AREXPORT bool ArMapSupplement::remFromFileParser(MvrFileParser *fileParser)
 {
  if (fileParser == NULL) {
     return false;
@@ -2894,7 +2894,7 @@ AREXPORT void ArMapSupplement::setOriginLatLongAlt(bool hasOriginLatLongAlt,
 
   if (changeDetails != NULL) {
     ArMapFileLineSetWriter origWriter(changeDetails->getChangedSupplementLines
-                                  (ArMapChangeDetails::DELETIONS));
+                                  (MvrMapChangeDetails::DELETIONS));
 
     if (myHasOriginLatLongAlt) {
       ArUtil::functorPrintf(&origWriter, "OriginLatLongAlt: %f %f %f%s", 
@@ -2912,7 +2912,7 @@ AREXPORT void ArMapSupplement::setOriginLatLongAlt(bool hasOriginLatLongAlt,
 
   if (changeDetails != NULL) {
     ArMapFileLineSetWriter newWriter(changeDetails->getChangedSupplementLines
-                                  (ArMapChangeDetails::ADDITIONS));
+                                  (MvrMapChangeDetails::ADDITIONS));
 
     if (myHasOriginLatLongAlt) {
       ArUtil::functorPrintf(&newWriter, "OriginLatLongAlt: %f %f %f%s", 
@@ -2929,7 +2929,7 @@ AREXPORT void ArMapSupplement::setOriginLatLongAlt(bool hasOriginLatLongAlt,
 
 
 AREXPORT void ArMapSupplement::writeSupplementToFunctor
-                              (ArFunctor1<const char *> *functor, 
+                              (MvrFunctor1<const char *> *functor, 
 			                         const char *endOfLineChars)
 {
  
@@ -2942,7 +2942,7 @@ AREXPORT void ArMapSupplement::writeSupplementToFunctor
 } // end method writeSupplementToFunctor
 
 
-bool ArMapSupplement::handleOriginLatLongAlt(ArArgumentBuilder *arg)
+bool ArMapSupplement::handleOriginLatLongAlt(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() >= 3) {
  
@@ -2973,8 +2973,8 @@ bool ArMapSupplement::handleOriginLatLongAlt(ArArgumentBuilder *arg)
 
   }
 
-  ArLog::log(ArLog::Verbose, 
-	           "ArMap::handleOriginLatLongAlt: line wrong, should be x, y, altitude point (in lat long altitude) as doulbles but is %s", arg->getFullString());
+  ArLog::log(MvrLog::Verbose, 
+	           "MvrMap::handleOriginLatLongAlt: line wrong, should be x, y, altitude point (in lat long altitude) as doulbles but is %s", arg->getFullString());
 
   return false;
 
@@ -3022,8 +3022,8 @@ AREXPORT int ArMapSimple::getNextFileNumber()
 AREXPORT void ArMapSimple::invokeCallbackList(std::list<ArFunctor*> *cbList)
 {
   if (cbList == NULL) {
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::invokeCallbackList failed because list is null");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::invokeCallbackList failed because list is null");
     return;
   }
   for (std::list<ArFunctor*>::iterator iter = cbList->begin();
@@ -3037,18 +3037,18 @@ AREXPORT void ArMapSimple::invokeCallbackList(std::list<ArFunctor*> *cbList)
   } 
 } // end method invokeCallbackList
   
-AREXPORT void ArMapSimple::addToCallbackList(ArFunctor *functor,
+AREXPORT void ArMapSimple::addToCallbackList(MvrFunctor *functor,
                                              ArListPos::Pos position,
                                              std::list<ArFunctor*> *cbList)
 {
   if (functor == NULL) {
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::addToCallbackList cannot add null functor");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::addToCallbackList cannot add null functor");
     return;
   }
   if (cbList == NULL) {
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::addToCallbackList cannot add functor to null list");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::addToCallbackList cannot add functor to null list");
     return;
   }
 
@@ -3060,23 +3060,23 @@ AREXPORT void ArMapSimple::addToCallbackList(ArFunctor *functor,
     cbList->push_back(functor);
     break;
   default:
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::addToCallbackList invalid position (%i)",
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::addToCallbackList invalid position (%i)",
                position);
   } // end switch
 } // end method addToCallbackList
 
-AREXPORT void ArMapSimple::remFromCallbackList(ArFunctor *functor,
+AREXPORT void ArMapSimple::remFromCallbackList(MvrFunctor *functor,
                                                std::list<ArFunctor*> *cbList)
 {
   if (functor == NULL) {
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::remFromCallbackList cannot remove null functor");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::remFromCallbackList cannot remove null functor");
     return;
   }
   if (cbList == NULL) {
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::addToCallbackList cannot remove functor to null list");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::addToCallbackList cannot remove functor to null list");
     return;
   }
   cbList->remove(functor);
@@ -3154,7 +3154,7 @@ AREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
 
 {
   if (overrideMutexName == NULL) {
-    myMutex.setLogName("ArMapSimple::myMutex");
+    myMutex.setLogName("MvrMapSimple::myMutex");
   }
   else {
     myMutex.setLogName(overrideMutexName);
@@ -3256,12 +3256,12 @@ AREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
   myIsReadInProgress(false),
   myIsCancelRead(false)
 {
-  myMapId.log("ArMapSimple::copy_ctor");
+  myMapId.log("MvrMapSimple::copy_ctor");
 
-  myMutex.setLogName("ArMapSimple::myMutex");
+  myMutex.setLogName("MvrMapSimple::myMutex");
   
 
-  for (ArTypeToScanMap::const_iterator iter = 
+  for (MvrTypeToScanMap::const_iterator iter = 
             other.myTypeToScanMap.begin();
        iter != other.myTypeToScanMap.end();
        iter++) {
@@ -3310,7 +3310,7 @@ AREXPORT ArMapSimple &ArMapSimple::operator=(const ArMapSimple &other)
 
     myMapId = other.myMapId;
 
-    myMapId.log("ArMapSimple::operator=");
+    myMapId.log("MvrMapSimple::operator=");
     //myLoadingParser = NULL; // TODO
 
     //myConfigParam = other.myConfigParam;
@@ -3340,7 +3340,7 @@ AREXPORT ArMapSimple &ArMapSimple::operator=(const ArMapSimple &other)
     ArUtil::deleteSetPairs(myTypeToScanMap.begin(), myTypeToScanMap.end());
     myTypeToScanMap.clear();
 
-    for (ArTypeToScanMap::const_iterator iter = 
+    for (MvrTypeToScanMap::const_iterator iter = 
               other.myTypeToScanMap.begin();
          iter != other.myTypeToScanMap.end();
          iter++) {
@@ -3417,8 +3417,8 @@ AREXPORT ArMapSimple::~ArMapSimple(void)
 
   if (myIsReadInProgress) {
 
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::dtor() map file is being read");
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::dtor() map file is being read");
     myIsCancelRead = true;
     if (myLoadingParser != NULL) {
       myLoadingParser->cancelParsing();
@@ -3429,8 +3429,8 @@ AREXPORT ArMapSimple::~ArMapSimple(void)
       ArUtil::sleep(5);
     }
     if (myIsReadInProgress) {
-      ArLog::log(ArLog::Normal,
-                 "ArMapSimple::dtor() map file is still being read");
+      ArLog::log(MvrLog::Normal,
+                 "MvrMapSimple::dtor() map file is still being read");
     }
 
   } // end if read in progress
@@ -3490,7 +3490,7 @@ AREXPORT ArMapInterface *ArMapSimple::clone()
   return new ArMapSimple(*this);
 }
 
-AREXPORT bool ArMapSimple::set(ArMapInterface *other)
+AREXPORT bool ArMapSimple::set(MvrMapInterface *other)
 {
   if (other == NULL) {
     return false;
@@ -3515,7 +3515,7 @@ AREXPORT bool ArMapSimple::set(ArMapInterface *other)
 
   other->getMapId(&myMapId);
 
-  myMapId.log("ArMapSimple::set");
+  myMapId.log("MvrMapSimple::set");
   
   myLoadingLinesAndDataStarted = 
                           other->isLoadingLinesAndDataStarted();
@@ -3614,13 +3614,13 @@ AREXPORT void ArMapSimple::clear()
 
   myFileName = "";
   myMapId = ArMapId();
-  myMapId.log("ArMapSimple::clear");
+  myMapId.log("MvrMapSimple::clear");
 
   myMapInfo->clear();
   myMapObjects->clear();
   myMapSupplement->clear();
  
-  for (ArTypeToScanMap::iterator iter =
+  for (MvrTypeToScanMap::iterator iter =
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
@@ -3697,8 +3697,8 @@ AREXPORT void ArMapSimple::reset()
        iter++) {
 
     if (!myLoadingParser->addHandler((*iter).c_str(), &myMapCategoryCB)) {
-      ArLog::log(ArLog::Terse, 
-                 "ArMapSimple::reset() could not add map category handler for %s",
+      ArLog::log(MvrLog::Terse, 
+                 "MvrMapSimple::reset() could not add map category handler for %s",
                  (*iter).c_str());
     }
   } // end for each map category
@@ -3708,8 +3708,8 @@ AREXPORT void ArMapSimple::reset()
   
 AREXPORT bool ArMapSimple::refresh()
 {
-  ArLog::log(ArLog::Terse, 
-             "ArMapSimple::refresh() not implemented");
+  ArLog::log(MvrLog::Terse, 
+             "MvrMapSimple::refresh() not implemented");
   return true;
 }
 
@@ -3741,7 +3741,7 @@ AREXPORT void ArMapSimple::updateMapFileInfo(const char *realFileName)
 
   } // end else checksums turned off
     
-  myMapId.log("ArMapSimple::updateMapFileInfo");
+  myMapId.log("MvrMapSimple::updateMapFileInfo");
 
   // TODO ArMapRegistry::getIt()->registerMap(realFileName, myMapId);
 
@@ -3799,8 +3799,8 @@ AREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
 
     if (mapInfoContains("GroupType")) {
       if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_COMPOSITE) != 0) {
-        ArLog::log(ArLog::Normal,
-                   "ArMapSimple::updateMapCategory() changing category to %s from %s because %s found",
+        ArLog::log(MvrLog::Normal,
+                   "MvrMapSimple::updateMapCategory() changing category to %s from %s because %s found",
                    MAP_CATEGORY_2D_COMPOSITE,
                    myMapCategory.c_str(),
                    "GroupType");
@@ -3831,8 +3831,8 @@ AREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
     if ((getInfo(extendedInfoNames[i]) != NULL) && 
         (!getInfo(extendedInfoNames[i])->empty())) {
       if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_EXTENDED) != 0) {
-        ArLog::log(ArLog::Normal,
-                    "ArMapSimple::updateMapCategory() changing category to %s from %s because %s found",
+        ArLog::log(MvrLog::Normal,
+                    "MvrMapSimple::updateMapCategory() changing category to %s from %s because %s found",
                     MAP_CATEGORY_2D_EXTENDED,
                     myMapCategory.c_str(),
                     extendedInfoNames[i]);
@@ -3849,14 +3849,14 @@ AREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
   if ((updatedInfoName == NULL) || 
       (strcasecmp(updatedInfoName, MAP_INFO_NAME) == 0)) {
 
-    if (mapInfoContains("ArgDesc")) {
+    if (mapInfoContains("MvrgDesc")) {
       if ((strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_COMPOSITE) != 0) &&
           (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_EXTENDED) != 0)) {
-        ArLog::log(ArLog::Normal,
-                  "ArMapSimple::updateMapCategory() changing category to %s from %s because %s found",
+        ArLog::log(MvrLog::Normal,
+                  "MvrMapSimple::updateMapCategory() changing category to %s from %s because %s found",
                   MAP_CATEGORY_2D_EXTENDED,
                   myMapCategory.c_str(),
-                  "ArgDesc");
+                  "MvrgDesc");
         myMapCategory = MAP_CATEGORY_2D_EXTENDED;
       }
       return;
@@ -3877,8 +3877,8 @@ AREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
   if (scanTypeList.size() > 1) {
 
     if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_MULTI_SOURCES) != 0) {
-      ArLog::log(ArLog::Normal,
-                  "ArMapSimple::updateMapCategory() changing category to %s from %s because %i scan types",
+      ArLog::log(MvrLog::Normal,
+                  "MvrMapSimple::updateMapCategory() changing category to %s from %s because %i scan types",
                   MAP_CATEGORY_2D_MULTI_SOURCES,
                   myMapCategory.c_str(),
                   getScanTypes().size());
@@ -3896,8 +3896,8 @@ AREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
     if (!isDefaultScanType(scanType) && 
         (strcasecmp(scanType, "SickLaser") != 0)) {
       if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_MULTI_SOURCES) != 0) {
-        ArLog::log(ArLog::Normal,
-                    "ArMapSimple::updateMapCategory() changing category to %s from %s because scan type is %s",
+        ArLog::log(MvrLog::Normal,
+                    "MvrMapSimple::updateMapCategory() changing category to %s from %s because scan type is %s",
                     MAP_CATEGORY_2D_MULTI_SOURCES,
                     myMapCategory.c_str(),
                     scanType);
@@ -3909,8 +3909,8 @@ AREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
   
 
   if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D) != 0) {
-    ArLog::log(ArLog::Normal,
-                "ArMapSimple::updateMapCategory() changing category to %s from %s because no special cases found",
+    ArLog::log(MvrLog::Normal,
+                "MvrMapSimple::updateMapCategory() changing category to %s from %s because no special cases found",
                 MAP_CATEGORY_2D,
                 myMapCategory.c_str());
     myMapCategory = MAP_CATEGORY_2D;
@@ -3923,7 +3923,7 @@ AREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
 
 AREXPORT bool ArMapSimple::mapInfoContains(const char *arg0Text) 
 {
-  if (ArUtil::isStrEmpty(arg0Text)) {
+  if (MvrUtil::isStrEmpty(arg0Text)) {
     return false;
   }
 
@@ -3950,27 +3950,27 @@ AREXPORT bool ArMapSimple::mapInfoContains(const char *arg0Text)
 } // end method mapInfoContains
 
 
-AREXPORT void ArMapSimple::addPreWriteFileCB(ArFunctor *functor,
+AREXPORT void ArMapSimple::addPreWriteFileCB(MvrFunctor *functor,
                                              ArListPos::Pos position)
 {
   addToCallbackList(functor, position, &myPreWriteCBList);
 
 } // end method addPreWriteFileCB
 
-AREXPORT void ArMapSimple::remPreWriteFileCB(ArFunctor *functor)
+AREXPORT void ArMapSimple::remPreWriteFileCB(MvrFunctor *functor)
 {
   remFromCallbackList(functor, &myPreWriteCBList);
 
 } // end method remPreWriteFileCB
 
-AREXPORT void ArMapSimple::addPostWriteFileCB(ArFunctor *functor,
+AREXPORT void ArMapSimple::addPostWriteFileCB(MvrFunctor *functor,
                                               ArListPos::Pos position)
 {
   addToCallbackList(functor, position, &myPostWriteCBList);
 
 } // end method addPostWriteFileCB
 
-AREXPORT void ArMapSimple::remPostWriteFileCB(ArFunctor *functor)
+AREXPORT void ArMapSimple::remPostWriteFileCB(MvrFunctor *functor)
 {
   remFromCallbackList(functor, &myPostWriteCBList);
 
@@ -3983,15 +3983,15 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
                                     size_t md5DigestBufferLen)
 {
 
-  if (ArUtil::isStrEmpty(fileName)) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::readFile() cannot read empty file name");
+  if (MvrUtil::isStrEmpty(fileName)) {
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::readFile() cannot read empty file name");
     return false;
   }
 
   IFDEBUG(
-  ArLog::log(ArLog::Normal, 
-             "ArMapSimple::readFile() reading %s",
+  ArLog::log(MvrLog::Normal, 
+             "MvrMapSimple::readFile() reading %s",
              fileName);
   );
 
@@ -4007,7 +4007,7 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
   if (myMapSupplement != NULL) {
     myMapSupplement->clear();
   }
-  for (ArTypeToScanMap::iterator iter =
+  for (MvrTypeToScanMap::iterator iter =
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
@@ -4036,7 +4036,7 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
 
   std::string realFileName = createRealFileName(fileName);
 
-  ArLog::log(ArLog::Normal, 
+  ArLog::log(MvrLog::Normal, 
              "Opening map file %s, given %s", 
              realFileName.c_str(), fileName);
 
@@ -4045,7 +4045,7 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
   // This is necessary so that a consistent checksum value is obtained.
   if ((file = ArUtil::fopen(realFileName.c_str(), "rb")) == NULL)
   {
-    ArLog::log(ArLog::Terse, "Cannot open file '%s'", realFileName.c_str());
+    ArLog::log(MvrLog::Terse, "Cannot open file '%s'", realFileName.c_str());
     // TODO This used to put the config param name into the error buffer
     if (errorBuffer != NULL) {
       snprintf(errorBuffer, errorBufferLen, 
@@ -4108,7 +4108,7 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
         errorBuffer[errorBufferLen - 1] = '\0';
       }
       //unlock();
-      ArLog::log(ArLog::Terse, "Could not load map file '%s'", fileName);
+      ArLog::log(MvrLog::Terse, "Could not load map file '%s'", fileName);
 
       isSuccess = false;
     }
@@ -4127,7 +4127,7 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
     }
 
     //unlock();
-    ArLog::log(ArLog::Terse, 
+    ArLog::log(MvrLog::Terse, 
                "Could not load map file '%s' it was not a recognized map format",              fileName);
     isSuccess = false;
   }
@@ -4158,8 +4158,8 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
       }
       if (isLineDataTag && !readLineSegment(line))
       {
-        ArLog::log(ArLog::Normal,
-                   "ArMapSimple::readFile() error reading line data '%s'",
+        ArLog::log(MvrLog::Normal,
+                   "MvrMapSimple::readFile() error reading line data '%s'",
                    line);
         continue;
       }
@@ -4177,15 +4177,15 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
 
       if (myLoadingScan != NULL) {
 
-        ArLog::log(ArLog::Verbose,
-                   "ArMapSimple::readFile() found scan type %s for data tag %s (is line = %i)",
+        ArLog::log(MvrLog::Verbose,
+                   "MvrMapSimple::readFile() found scan type %s for data tag %s (is line = %i)",
                    myLoadingScan->getScanType(),
                    myLoadingDataTag.c_str(),
                    isLineDataTag);
       }
       else {
-        ArLog::log(ArLog::Normal,
-                   "ArMapSimple::readFile() cannot find scan for data tag %s (is line = %i)",
+        ArLog::log(MvrLog::Normal,
+                   "MvrMapSimple::readFile() cannot find scan for data tag %s (is line = %i)",
                    myLoadingDataTag.c_str(),
                    isLineDataTag);
       }
@@ -4193,8 +4193,8 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
     else { // else must be end of file
 
       isEndOfFile = true;
-      ArLog::log(ArLog::Verbose,
-                 "ArMapSimple::readFile() end of file found");
+      ArLog::log(MvrLog::Verbose,
+                 "MvrMapSimple::readFile() end of file found");
 
     } // end else end of file
 
@@ -4206,8 +4206,8 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
 
   int elapsed = parseTime.mSecSince();
 
-  ArLog::log(ArLog::Normal, 
-             "ArMapSimple::readFile() %s took %i msecs to read map of %i points",
+  ArLog::log(MvrLog::Normal, 
+             "MvrMapSimple::readFile() %s took %i msecs to read map of %i points",
              realFileName.c_str(),
              elapsed,
              getNumPoints(ARMAP_SUMMARY_SCAN_TYPE));	
@@ -4235,10 +4235,10 @@ AREXPORT bool ArMapSimple::readFile(const char *fileName,
       myFileName = fileName;
     
       ArLog::log(myMapChangedHelper->getMapChangedLogLevel(), 
-                "ArMapSimple:: Calling mapChanged()");	
+                "MvrMapSimple:: Calling mapChanged()");	
       mapChanged();
       ArLog::log(myMapChangedHelper->getMapChangedLogLevel(), 
-                "ArMapSimple:: Finished mapChanged()");
+                "MvrMapSimple:: Finished mapChanged()");
 
     }
   } // end if not cancelling
@@ -4270,11 +4270,11 @@ AREXPORT ArMapScan *ArMapSimple::findScanWithDataKeyword
                                      (const char *loadingDataTag,
                                       bool *isLineDataTagOut)
 {
-  //ArLog::log(ArLog::Normal,
-  //           "ArMapSimple::findScanWithDataKeyword() looking for scan with tag %s",
+  //ArLog::log(MvrLog::Normal,
+  //           "MvrMapSimple::findScanWithDataKeyword() looking for scan with tag %s",
   //           loadingDataTag);
 
-  if (ArUtil::isStrEmpty(loadingDataTag)) {
+  if (MvrUtil::isStrEmpty(loadingDataTag)) {
     return NULL;
   }
   ArDataTagToScanTypeMap::iterator typeIter =  
@@ -4295,11 +4295,11 @@ AREXPORT ArMapScan *ArMapSimple::findScanWithDataKeyword
     return NULL;
   }
 
-  bool isLineDataTag = (ArUtil::strcasecmp(loadingDataTag,
+  bool isLineDataTag = (MvrUtil::strcasecmp(loadingDataTag,
                                            mapScan->getLinesKeyword()) == 0);
  
-  //ArLog::log(ArLog::Normal,
-  //           "ArMapSimple::findScanWithDataKeyword() found scan for tag %s, isLineData = %i",
+  //ArLog::log(MvrLog::Normal,
+  //           "MvrMapSimple::findScanWithDataKeyword() found scan for tag %s, isLineData = %i",
   //           loadingDataTag,
   //           isLineDataTag);
 
@@ -4360,7 +4360,7 @@ AREXPORT bool ArMapSimple::writeFile(const char *fileName,
              myTempDirectory.c_str(), getpid(), fileNumber);
 #endif  // end else linux
 
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
                "Writing map %s to temp file %s\n",
                fileName,
                tempFileName);
@@ -4383,8 +4383,8 @@ AREXPORT bool ArMapSimple::writeFile(const char *fileName,
   {
     bool isFileSuccess = false;
 
-    ArLog::log(ArLog::Terse, 
-               "ArMap: Cannot open file '%s' for writing",
+    ArLog::log(MvrLog::Terse, 
+               "MvrMap: Cannot open file '%s' for writing",
 	             writeFileName.c_str());
   
     invokeCallbackList(&myPostWriteCBList);
@@ -4406,8 +4406,8 @@ AREXPORT bool ArMapSimple::writeFile(const char *fileName,
 
   
   if (myChecksumCalculator != NULL) { 
-    ArLog::log(ArLog::Normal, 
-               "ArMapSimple::writeFile() recalculating checksum");
+    ArLog::log(MvrLog::Normal, 
+               "MvrMapSimple::writeFile() recalculating checksum");
 
     myChecksumCalculator->reset();
 
@@ -4424,8 +4424,8 @@ AREXPORT bool ArMapSimple::writeFile(const char *fileName,
     
   int elapsed = writeTime.mSecSince();
 
-  ArLog::log(ArLog::Normal, 
-             "ArMapSimple::writeFile() took %i msecs to write map of %i points",
+  ArLog::log(MvrLog::Normal, 
+             "MvrMapSimple::writeFile() took %i msecs to write map of %i points",
              elapsed,
              getNumPoints());	
 
@@ -4462,7 +4462,7 @@ AREXPORT bool ArMapSimple::writeFile(const char *fileName,
   
     if (ret != 0) {
 
-      ArLog::log(ArLog::Terse, 
+      ArLog::log(MvrLog::Terse, 
                  "Error saving map file %s.  Temp file cannot be moved. (%s)", 
                  fileName,
                  systemBuf);
@@ -4481,8 +4481,8 @@ AREXPORT bool ArMapSimple::writeFile(const char *fileName,
 
   if (fileTimestamp != -1) {
 
-    ArLog::log(ArLog::Normal, 
-               "ArMapSimple::writeFile() setting time of %s",
+    ArLog::log(MvrLog::Normal, 
+               "MvrMapSimple::writeFile() setting time of %s",
                realFileName.c_str());	
     bool isTimeChanged = ArUtil::changeFileTimestamp(realFileName.c_str(), 
                                                      fileTimestamp);
@@ -4517,7 +4517,7 @@ AREXPORT bool ArMapSimple::writeFile(const char *fileName,
     
   invokeCallbackList(&myPostWriteCBList);
 
-  ArLog::log(ArLog::Normal, "Saved map file %s", fileName);
+  ArLog::log(MvrLog::Normal, "Saved map file %s", fileName);
   if (!internalCall)
     unlock();
 
@@ -4664,8 +4664,8 @@ AREXPORT void ArMapSimple::setSourceFileName(const char *sourceName,
                                            realFileName.length() - (dirLen + 1));
       }
 
-      ArLog::log(ArLog::Normal,
-                 "ArMapSimple::setSourceFileName(%s, %s) stripped base dir = %s",
+      ArLog::log(MvrLog::Normal,
+                 "MvrMapSimple::setSourceFileName(%s, %s) stripped base dir = %s",
                  sourceName,
                  fileName,
                  realFileName.c_str());
@@ -4681,7 +4681,7 @@ AREXPORT void ArMapSimple::setSourceFileName(const char *sourceName,
 } // end method setSourceFileName
 
 
-AREXPORT bool ArMapSimple::getMapId(ArMapId *mapIdOut,
+AREXPORT bool ArMapSimple::getMapId(MvrMapId *mapIdOut,
                                     bool isInternalCall)
 {
   if (mapIdOut != NULL) {
@@ -4695,8 +4695,8 @@ AREXPORT bool ArMapSimple::getMapId(ArMapId *mapIdOut,
     return true;
   }
   else {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::getMapId() null map ID param");
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::getMapId() null map ID param");
   }
   return false;
 
@@ -4706,7 +4706,7 @@ AREXPORT bool ArMapSimple::getMapId(ArMapId *mapIdOut,
 AREXPORT ArArgumentBuilder *ArMapSimple::findMapObjectParams
                                            (const char *mapObjectName)
 {
-  if (ArUtil::isStrEmpty(mapObjectName)) {
+  if (MvrUtil::isStrEmpty(mapObjectName)) {
     return NULL;
   }
 
@@ -4789,7 +4789,7 @@ AREXPORT bool ArMapSimple::setMapObjectParams(const char *mapObjectName,
                                               ArArgumentBuilder *params,
                                               ArMapChangeDetails *changeDetails)
 {
-  if (ArUtil::isStrEmpty(mapObjectName)) {
+  if (MvrUtil::isStrEmpty(mapObjectName)) {
     return false;
   }
   
@@ -4854,7 +4854,7 @@ AREXPORT bool ArMapSimple::setMapObjectParams(const char *mapObjectName,
         continue;
       }
       
-      if (ArUtil::strcasequotecmp(mapObjectName, curArg->getArg(1)) <= 0) {
+      if (MvrUtil::strcasequotecmp(mapObjectName, curArg->getArg(1)) <= 0) {
         cairnInfoList->insert(infoIter, newInfo);
         isInserted = true;
         break;
@@ -4884,8 +4884,8 @@ AREXPORT bool ArMapSimple::setMapObjectParams(const char *mapObjectName,
                                           (CAIRN_INFO_NAME,
                                            ArMapChangeDetails::ADDITIONS));
     if (!isSuccess) {
-      ArLog::log(ArLog::Normal,
-                 "ArMapInfo::setInfo() error calculating changes");
+      ArLog::log(MvrLog::Normal,
+                 "MvrMapInfo::setInfo() error calculating changes");
     }
   } // end if changeDetails
 
@@ -4899,9 +4899,9 @@ std::list<ArArgumentBuilder *>::iterator ArMapSimple::findMapObjectParamInfo
               std::list<ArArgumentBuilder*> &cairnInfoList)
 {
   // If the map object has parameters, then it must have a name.
-  if (ArUtil::isStrEmpty(mapObjectName)) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::findMapObjectParamInfo() cannot find empty map object name");
+  if (MvrUtil::isStrEmpty(mapObjectName)) {
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::findMapObjectParamInfo() cannot find empty map object name");
     return cairnInfoList.end();
   }
 
@@ -4914,14 +4914,14 @@ std::list<ArArgumentBuilder *>::iterator ArMapSimple::findMapObjectParamInfo
     // and the second arg name of the map object...
     if ((arg == NULL) || 
         (arg->getArgc() < 2) || 
-        (ArUtil::isStrEmpty(arg->getArg(1)))) {
-      ArLog::log(ArLog::Normal,
-                 "AramMapInfoMinder::findObjectParams() skipping: %s",
+        (MvrUtil::isStrEmpty(arg->getArg(1)))) {
+      ArLog::log(MvrLog::Normal,
+                 "MvramMapInfoMinder::findObjectParams() skipping: %s",
                  ((arg != NULL) ? arg->getFullString(): "NULL"));
       continue;
     }
 
-    if (ArUtil::strcasequotecmp(arg->getArg(1), mapObjectName) == 0) {
+    if (MvrUtil::strcasequotecmp(arg->getArg(1), mapObjectName) == 0) {
       return iter;
     }
   } // end for each cairn info list item
@@ -4948,14 +4948,14 @@ AREXPORT void ArMapSimple::setQuiet(bool isQuiet)
 AREXPORT void ArMapSimple::mapChanged(void)
 { 
   ArTime maxScanTimeChanged = findMaxMapScanTimeChanged();
-//  ArLog::log(level, "ArMap: Calling mapChanged callbacks");
+//  ArLog::log(level, "MvrMap: Calling mapChanged callbacks");
   if (!myTimeMapInfoChanged.isAt(myMapInfo->getTimeChanged()) ||
       !myTimeMapObjectsChanged.isAt(myMapObjects->getTimeChanged()) ||
       !myTimeMapSupplementChanged.isAt(myMapSupplement->getTimeChanged()) ||
       !myTimeMapScanChanged.isAt(maxScanTimeChanged)) {
     
     ArLog::log(myMapChangedHelper->getMapChangedLogLevel(),
-	       "ArMapSimple::mapChanged() msecs-objects: %i, msecs-points: %i, msecs-mapInfo: %i msecs-supplement: %i",
+	       "MvrMapSimple::mapChanged() msecs-objects: %i, msecs-points: %i, msecs-mapInfo: %i msecs-supplement: %i",
 	       myTimeMapObjectsChanged.isAt(myMapObjects->getTimeChanged()),
 	       !myTimeMapScanChanged.isAt(maxScanTimeChanged),
 	       !myTimeMapInfoChanged.isAt(myMapInfo->getTimeChanged()),
@@ -4977,12 +4977,12 @@ AREXPORT void ArMapSimple::mapChanged(void)
     myMapChangedHelper->invokeMapChangedCallbacks();
     
     ArLog::log(myMapChangedHelper->getMapChangedLogLevel(),
-	       "ArMapSimple: Done calling mapChanged callbacks");
+	       "MvrMapSimple: Done calling mapChanged callbacks");
   }
   else { // nothing changed
     
-    ArLog::log(ArLog::Verbose,
-	       "ArMapSimple::mapChanged(): Map was not changed");
+    ArLog::log(MvrLog::Verbose,
+	       "MvrMapSimple::mapChanged(): Map was not changed");
     
   } // end else nothing changed
   
@@ -5000,7 +5000,7 @@ AREXPORT void ArMapSimple::updateSummaryScan()
     
     mySummaryScan->clear();
 
-    for (ArTypeToScanMap::iterator iter = myTypeToScanMap.begin();
+    for (MvrTypeToScanMap::iterator iter = myTypeToScanMap.begin();
          iter != myTypeToScanMap.end();
          iter++) {
       mySummaryScan->unite(iter->second); 
@@ -5014,7 +5014,7 @@ AREXPORT ArTime ArMapSimple::findMaxMapScanTimeChanged()
   ArTime maxMapScanTimeChanged;
   bool isFirst = true;
 
-  for (ArTypeToScanMap::iterator iter = 
+  for (MvrTypeToScanMap::iterator iter = 
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
@@ -5034,7 +5034,7 @@ AREXPORT ArTime ArMapSimple::findMaxMapScanTimeChanged()
 } // end method findMaxMapScanTimeChanged
 
 
-AREXPORT void ArMapSimple::addMapChangedCB(ArFunctor *functor, 
+AREXPORT void ArMapSimple::addMapChangedCB(MvrFunctor *functor, 
 					   int position)
 { 
   myMapChangedHelper->addMapChangedCB(functor, position);
@@ -5042,28 +5042,28 @@ AREXPORT void ArMapSimple::addMapChangedCB(ArFunctor *functor,
 } // end method addMapChangedCB
 
 
-AREXPORT void ArMapSimple::remMapChangedCB(ArFunctor *functor)
+AREXPORT void ArMapSimple::remMapChangedCB(MvrFunctor *functor)
 { 
   myMapChangedHelper->remMapChangedCB(functor);
 
 } // end method remMapChangedCB
 
 
-AREXPORT void ArMapSimple::addPreMapChangedCB(ArFunctor *functor,
+AREXPORT void ArMapSimple::addPreMapChangedCB(MvrFunctor *functor,
                                               int position)
 { 
   myMapChangedHelper->addPreMapChangedCB(functor, position);
 } // end method addPreMapChangedCB
 
 
-AREXPORT void ArMapSimple::remPreMapChangedCB(ArFunctor *functor)
+AREXPORT void ArMapSimple::remPreMapChangedCB(MvrFunctor *functor)
 { 
   myMapChangedHelper->remPreMapChangedCB(functor);
 
 } // end method remPreMapChangedCB
 
 
-AREXPORT void ArMapSimple::setMapChangedLogLevel(ArLog::LogLevel level)
+AREXPORT void ArMapSimple::setMapChangedLogLevel(MvrLog::LogLevel level)
 { 
   myMapChangedHelper->setMapChangedLogLevel(level);
 
@@ -5112,7 +5112,7 @@ AREXPORT std::list<ArArgumentBuilder *> *ArMapSimple::getInfo(int infoType)
 
 AREXPORT std::list<ArArgumentBuilder *> *ArMapSimple::getMapInfo(void)
 { 
-  return myMapInfo->getInfo(ArMapInfo::MAP_INFO_NAME);
+  return myMapInfo->getInfo(MvrMapInfo::MAP_INFO_NAME);
 
 } // end method getMapInfo
 
@@ -5153,9 +5153,9 @@ AREXPORT bool ArMapSimple::setInfo(int infoType,
 AREXPORT bool ArMapSimple::setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
                                       ArMapChangeDetails *changeDetails)
 { 
-  bool b = myMapInfo->setInfo(ArMapInfo::MAP_INFO_NAME, mapInfo, changeDetails);
+  bool b = myMapInfo->setInfo(MvrMapInfo::MAP_INFO_NAME, mapInfo, changeDetails);
 
-  // updateMapCategory(ArMapInfo::MAP_INFO_NAME);
+  // updateMapCategory(MvrMapInfo::MAP_INFO_NAME);
 
   return b;
 
@@ -5163,7 +5163,7 @@ AREXPORT bool ArMapSimple::setMapInfo(const std::list<ArArgumentBuilder *> *mapI
 
 
 AREXPORT void ArMapSimple::writeInfoToFunctor
-				(ArFunctor1<const char *> *functor, 
+				(MvrFunctor1<const char *> *functor, 
 			        const char *endOfLineChars)
 { 
   return myMapInfo->writeInfoToFunctor(functor, endOfLineChars);
@@ -5224,7 +5224,7 @@ AREXPORT void ArMapSimple::setMapObjects
 } // end method setMapObjects
 
 
-AREXPORT void ArMapSimple::writeObjectsToFunctor(ArFunctor1<const char *> *functor, 
+AREXPORT void ArMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *functor, 
 			                                           const char *endOfLineChars,
                                                  bool isOverrideAsSingleScan,
                                                  const char *maxCategory)
@@ -5288,7 +5288,7 @@ AREXPORT void ArMapSimple::writeObjectsToFunctor(ArFunctor1<const char *> *funct
 } // end method writeObjectsToFunctor
 
 
-AREXPORT void ArMapSimple::writeObjectListToFunctor(ArFunctor1<const char *> *functor, 
+AREXPORT void ArMapSimple::writeObjectListToFunctor(MvrFunctor1<const char *> *functor, 
 			                                              const char *endOfLineChars)
 { 
   myMapObjects->writeObjectListToFunctor(functor, endOfLineChars);
@@ -5306,8 +5306,8 @@ AREXPORT const char *ArMapSimple::getDisplayString(const char *scanType)
 {
   if (isSummaryScanType(scanType)) {
     // TODO Could return a special "Summary" string instead...
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::getDisplayString() summary display is not supported");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::getDisplayString() summary display is not supported");
     return "";
   }
 
@@ -5323,8 +5323,8 @@ AREXPORT const char *ArMapSimple::getDisplayString(const char *scanType)
 AREXPORT std::vector<ArPose> *ArMapSimple::getPoints(const char *scanType)
 {
   if (isSummaryScanType(scanType)) {
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::getPoints() summary of points is not supported");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::getPoints() summary of points is not supported");
     return NULL;
   }
 
@@ -5340,8 +5340,8 @@ AREXPORT std::vector<ArPose> *ArMapSimple::getPoints(const char *scanType)
 AREXPORT std::vector<ArLineSegment> *ArMapSimple::getLines(const char *scanType)
 { 
   if (isSummaryScanType(scanType)) {
-    ArLog::log(ArLog::Terse,
-               "ArMapSimple::getLines() summary of lines is not supported");
+    ArLog::log(MvrLog::Terse,
+               "MvrMapSimple::getLines() summary of lines is not supported");
     return NULL;
   }
   
@@ -5489,7 +5489,7 @@ AREXPORT void ArMapSimple::setResolution(int resolution,
 
 
 
-AREXPORT void ArMapSimple::writeScanToFunctor(ArFunctor1<const char *> *functor, 
+AREXPORT void ArMapSimple::writeScanToFunctor(MvrFunctor1<const char *> *functor, 
 			                                        const char *endOfLineChars,
                                               const char *scanType)
 {
@@ -5502,7 +5502,7 @@ AREXPORT void ArMapSimple::writeScanToFunctor(ArFunctor1<const char *> *functor,
 
 
 AREXPORT void ArMapSimple::writePointsToFunctor
-		(ArFunctor2<int, std::vector<ArPose> *> *functor,
+		(MvrFunctor2<int, std::vector<ArPose> *> *functor,
      const char *scanType,
      ArFunctor1<const char *> *keywordFunctor)
 {
@@ -5514,7 +5514,7 @@ AREXPORT void ArMapSimple::writePointsToFunctor
 } // end method writePointsToFunctor
 
 AREXPORT void ArMapSimple::writeLinesToFunctor
-	(ArFunctor2<int, std::vector<ArLineSegment> *> *functor,
+	(MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
    const char *scanType,
    ArFunctor1<const char *> *keywordFunctor)
 { 
@@ -5542,8 +5542,8 @@ AREXPORT bool ArMapSimple::readLineSegment( char *line)
     return myLoadingScan->readLineSegment(line);
   }
   else {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::readLineSegment() NULL loading scan for '%s'",
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::readLineSegment() NULL loading scan for '%s'",
                line);
   }
   return false;
@@ -5568,16 +5568,16 @@ AREXPORT void ArMapSimple::loadLineSegment(double x1, double y1, double x2, doub
 } // end method loadLineSegment
 
 
-AREXPORT bool ArMapSimple::addToFileParser(ArFileParser *fileParser)
+AREXPORT bool ArMapSimple::addToFileParser(MvrFileParser *fileParser)
 {
   if (myTypeToScanMap.empty()) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::addToFileParser() error: no scans in map");
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::addToFileParser() error: no scans in map");
     return false;
   }
   bool isAdded = true;
 
-  for (ArTypeToScanMap::iterator iter = myTypeToScanMap.begin();
+  for (MvrTypeToScanMap::iterator iter = myTypeToScanMap.begin();
        iter != myTypeToScanMap.end(); iter++) {
     ArMapScan *mapScan = iter->second;
     if (mapScan != NULL) {
@@ -5587,14 +5587,14 @@ AREXPORT bool ArMapSimple::addToFileParser(ArFileParser *fileParser)
   return isAdded; 
 }
 
-AREXPORT bool ArMapSimple::remFromFileParser(ArFileParser *fileParser)
+AREXPORT bool ArMapSimple::remFromFileParser(MvrFileParser *fileParser)
 {
   if (myTypeToScanMap.empty()) {
     return false;
   }
   bool isRemoved = true;
 
-  for (ArTypeToScanMap::iterator iter = myTypeToScanMap.begin();
+  for (MvrTypeToScanMap::iterator iter = myTypeToScanMap.begin();
        iter != myTypeToScanMap.end(); iter++) {
     ArMapScan *mapScan = iter->second;
     if (mapScan != NULL) {
@@ -5606,7 +5606,7 @@ AREXPORT bool ArMapSimple::remFromFileParser(ArFileParser *fileParser)
 
 
 AREXPORT void ArMapSimple::writeScanTypesToFunctor
-                                (ArFunctor1<const char *> *functor, 
+                                (MvrFunctor1<const char *> *functor, 
 			                           const char *endOfLineChars)
 {
   bool hasSourceList = false;
@@ -5668,7 +5668,7 @@ AREXPORT void ArMapSimple::setOriginLatLongAlt
                                        changeDetails);
 } // end method setOriginLatLongAlt
 
-AREXPORT void ArMapSimple::writeSupplementToFunctor(ArFunctor1<const char *> *functor, 
+AREXPORT void ArMapSimple::writeSupplementToFunctor(MvrFunctor1<const char *> *functor, 
 			                                              const char *endOfLineChars)
 {
   myMapSupplement->writeSupplementToFunctor(functor, 
@@ -5681,7 +5681,7 @@ AREXPORT void ArMapSimple::writeSupplementToFunctor(ArFunctor1<const char *> *fu
 
 // ---------------------------------------------------------------------------
 
-AREXPORT void ArMapSimple::writeToFunctor(ArFunctor1<const char *> *functor, 
+AREXPORT void ArMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor, 
 			                                    const char *endOfLineChars)
 { 
   // Write the header information and Cairn objects...
@@ -5809,10 +5809,10 @@ std::string ArMapSimple::createRealFileName(const char *fileName)
 
 } // end method createRealFileName
 
-bool ArMapSimple::handleMapCategory(ArArgumentBuilder *arg)
+bool ArMapSimple::handleMapCategory(MvrArgumentBuilder *arg)
 { 
-  ArLog::log(ArLog::Verbose, 
-             "ArMapSimple::handleMapCategory() read category %s",
+  ArLog::log(MvrLog::Verbose, 
+             "MvrMapSimple::handleMapCategory() read category %s",
              arg->getExtraString());
 
 
@@ -5827,8 +5827,8 @@ bool ArMapSimple::handleMapCategory(ArArgumentBuilder *arg)
       // Add a handler for unrecognized lines...
       !myLoadingParser->addHandler(NULL, &myRemCB)) 
   {
-    ArLog::log(ArLog::Terse, 
-               "ArMapSimple::handleMapCategory: could not add handlers");
+    ArLog::log(MvrLog::Terse, 
+               "MvrMapSimple::handleMapCategory: could not add handlers");
     return false;
   }  
   
@@ -5850,8 +5850,8 @@ bool ArMapSimple::handleMapCategory(ArArgumentBuilder *arg)
   } // end for each category
 
   if (myMapCategory.empty()) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::handleMapCategory() error finding category for %s",
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::handleMapCategory() error finding category for %s",
                arg->getExtraString());
     arg->getExtraString();
   }
@@ -5863,21 +5863,21 @@ bool ArMapSimple::handleMapCategory(ArArgumentBuilder *arg)
 } // end method handleMapCategory
   
   
-bool ArMapSimple::handleSources(ArArgumentBuilder *arg)
+bool ArMapSimple::handleSources(MvrArgumentBuilder *arg)
 {
   
   std::list<std::string> scanTypeList;
 
   for (size_t i = 0; i < arg->getArgc(); i++) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::handleSources() source #%i = %s",
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::handleSources() source #%i = %s",
                i, arg->getArg(i));
     scanTypeList.push_back(arg->getArg(i));
   }
 
   if (scanTypeList.empty()) {
-    ArLog::log(ArLog::Terse,
-              "ArMapSimple::handleSources() at least one source must be specified");
+    ArLog::log(MvrLog::Terse,
+              "MvrMapSimple::handleSources() at least one source must be specified");
     return false;
   }
 
@@ -5895,8 +5895,8 @@ bool ArMapSimple::handleSources(ArArgumentBuilder *arg)
 bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
 {
   if (scanTypeList.empty()) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::createScans() scan type list must be non-empty");
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::createScans() scan type list must be non-empty");
 
     return false;
   }
@@ -5913,10 +5913,10 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
         iter1 != scanTypeList.end();
         iter1++) {
       const char *scanType = (*iter1).c_str();
-      if (ArUtil::isStrEmpty(scanType)) {
+      if (MvrUtil::isStrEmpty(scanType)) {
         isListValid = false;
-        ArLog::log(ArLog::Normal,
-                   "ArMapSimple::createScans() empty scan name is valid only when there is one scan type");
+        ArLog::log(MvrLog::Normal,
+                   "MvrMapSimple::createScans() empty scan name is valid only when there is one scan type");
         break;
       }
     
@@ -5925,8 +5925,8 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
                                                 typeToExistsMap.find(scanType);
       if (tIter != typeToExistsMap.end()) {
         isListValid = false;
-        ArLog::log(ArLog::Normal,
-                   "ArMapSimple::createScans() duplicate scan names are not allowed (%s)",
+        ArLog::log(MvrLog::Normal,
+                   "MvrMapSimple::createScans() duplicate scan names are not allowed (%s)",
                    scanType);
         break;
       }
@@ -5938,8 +5938,8 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
 
   if (!isListValid) {
 
-    ArLog::log(ArLog::Terse,
-                "ArMapSimple error setting up map for multiple scan types");
+    ArLog::log(MvrLog::Terse,
+                "MvrMapSimple error setting up map for multiple scan types");
     return false;
 
   }
@@ -5977,19 +5977,19 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
 bool ArMapSimple::addScansToParser()
 {
   if (myLoadingParser == NULL) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::addScansToParser() error, loading parser is null");
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::addScansToParser() error, loading parser is null");
     return false;
   }
   if (myTypeToScanMap.empty()) {
-    ArLog::log(ArLog::Normal,
-               "ArMapSimple::addScansToParser() error, no maps scans");
+    ArLog::log(MvrLog::Normal,
+               "MvrMapSimple::addScansToParser() error, no maps scans");
     return false;
   }
 
   bool isLoaded = true;
   
-  for (ArTypeToScanMap::iterator iter = myTypeToScanMap.begin();
+  for (MvrTypeToScanMap::iterator iter = myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
 
@@ -5998,15 +5998,15 @@ bool ArMapSimple::addScansToParser()
       continue;
     }
     if (!mapScan->addToFileParser(myLoadingParser)) {
-      ArLog::log(ArLog::Normal,
-                 "ArMapSimple::addScansToParser() error, could not add scan for %s",
+      ArLog::log(MvrLog::Normal,
+                 "MvrMapSimple::addScansToParser() error, could not add scan for %s",
                  iter->first.c_str());
       isLoaded = false;
       continue;
     }
 
-    ArLog::log(ArLog::Verbose,
-               "ArMapSimple::addScansToParser() adding for type %s points keyword %s lines keyword %s",
+    ArLog::log(MvrLog::Verbose,
+               "MvrMapSimple::addScansToParser() adding for type %s points keyword %s lines keyword %s",
                mapScan->getScanType(),
                mapScan->getPointsKeyword(),
                mapScan->getLinesKeyword());
@@ -6016,8 +6016,8 @@ bool ArMapSimple::addScansToParser()
       myDataTagToScanTypeMap[mapScan->getPointsKeyword()] = iter->first;
       if (!myLoadingParser->addHandler(mapScan->getPointsKeyword(), 
                                        &myDataIntroCB)) {
-        ArLog::log(ArLog::Normal,
-                   "ArMapSimple::addScansToParser() error, could not handler for %s",
+        ArLog::log(MvrLog::Normal,
+                   "MvrMapSimple::addScansToParser() error, could not handler for %s",
                    mapScan->getPointsKeyword());
         isLoaded = false;
       }
@@ -6026,8 +6026,8 @@ bool ArMapSimple::addScansToParser()
       myDataTagToScanTypeMap[mapScan->getLinesKeyword()] = iter->first;
       if (!myLoadingParser->addHandler(mapScan->getLinesKeyword(), 
                                        &myDataIntroCB)) {
-        ArLog::log(ArLog::Normal,
-                   "ArMapSimple::addScansToParser() error, could not handler for %s",
+        ArLog::log(MvrLog::Normal,
+                   "MvrMapSimple::addScansToParser() error, could not handler for %s",
                    mapScan->getLinesKeyword());
         isLoaded = false;
       }
@@ -6049,7 +6049,7 @@ bool ArMapSimple::remScansFromParser(bool isRemovePointsAndLinesKeywords)
   }
   bool isRemoved = true;
 
-  for (ArTypeToScanMap::iterator iter =
+  for (MvrTypeToScanMap::iterator iter =
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
@@ -6083,7 +6083,7 @@ bool ArMapSimple::remScansFromParser(bool isRemovePointsAndLinesKeywords)
 } // end method remScansFromParser
 
 
-bool ArMapSimple::handleDataIntro(ArArgumentBuilder *arg)
+bool ArMapSimple::handleDataIntro(MvrArgumentBuilder *arg)
 {
   remScansFromParser(false);
 
@@ -6104,8 +6104,8 @@ bool ArMapSimple::handleDataIntro(ArArgumentBuilder *arg)
   // an extended one, then update the map's category.
   updateMapCategory();
   
-  ArLog::log(ArLog::Verbose,
-             "ArMapSimple::handleDataIntro %s",
+  ArLog::log(MvrLog::Verbose,
+             "MvrMapSimple::handleDataIntro %s",
              arg->getExtraString());
 
   // The "extra string" contains the keyword - in all lowercase 
@@ -6138,7 +6138,7 @@ bool ArMapSimple::handleDataIntro(ArArgumentBuilder *arg)
 } // end method handleDataIntro
 
 
-bool ArMapSimple::handleRemainder(ArArgumentBuilder *arg)
+bool ArMapSimple::handleRemainder(MvrArgumentBuilder *arg)
 {
   if (arg != NULL) {
     myRemainderList.push_back(new ArArgumentBuilder(*arg));

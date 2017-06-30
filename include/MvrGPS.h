@@ -29,16 +29,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARGPS_H
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 #include "ariaUtil.h"
-#include "ArMutex.h"
-#include "ArNMEAParser.h"
-#include "ArGPSCoords.h"
+#include "MvrMutex.h"
+#include "MvrNMEAParser.h"
+#include "MvrGPSCoords.h"
 #include <math.h>
 #include <string>
 #include <vector>
 
-class ArDeviceConnection; // for pointer in ArGPS
+class MvrDeviceConnection; // for pointer in MvrGPS
 
 /** @brief GPS Device Interface 
  *
@@ -49,16 +49,16 @@ class ArDeviceConnection; // for pointer in ArGPS
  *  If your GPS device supports several data formats or modes, select
  *  NMEA output in its configuration.
  *
- *  The preferred method of creating and setting up a new ArGPS object is to use
- *  ArGPSConnector, which creates an instance of ArGPS or a subclass, and
+ *  The preferred method of creating and setting up a new MvrGPS object is to use
+ *  MvrGPSConnector, which creates an instance of MvrGPS or a subclass, and
  *  creates and opens its device connection, based on command-line parameters.
- *  (To manually create an ArGPS object, create an ArDeviceConnection instance
+ *  (To manually create an MvrGPS object, create an MvrDeviceConnection instance
  *  and call setDeviceConnection(), then open that device connection and call
  *  connect().
  *
  *  For either method, to get new data from the GPS, must call read() or readWithLock() periodically, 
  *  ideally at a rate equal to or faster than your GPS sends data (usually one second). 
- *  You can do this from a Sensor Intetrpretation Task in ArRobot, or a seperate thread. 
+ *  You can do this from a Sensor Intetrpretation Task in MvrRobot, or a seperate thread. 
  *  If you are calling read() from a loop in a new thread, 
  *
  *  Here is an example of calling readWithLock() from a sensor interpretation
@@ -67,11 +67,11 @@ class ArDeviceConnection; // for pointer in ArGPS
  *  It is important to do this in a robot task, or the robot task cycle will be
  *  blocked and cause problems.
  *  @code
- *    ArRetFunctor1C<ArGPS, int, unsigned int> gpsReadFunc(myGPS, &ArGPS::readWithLock, 10);
+ *    MvrRetFunctor1C<ArGPS, int, unsigned int> gpsReadFunc(myGPS, &ArGPS::readWithLock, 10);
  *    myRobot->addSensorInterpretationTask("GPS read", 100, &gpsReadFunc);
  *  @endcode
  *
- *  If you use your own loop or thread, then it ought to include a call to ArUtil::sleep() for at least several hundred 
+ *  If you use your own loop or thread, then it ought to include a call to MvrUtil::sleep() for at least several hundred 
  *  miliseconds to avoid starving other threads, since read() will return
  *  immediately if there is no data to read rather than blocking.
  *
@@ -93,28 +93,28 @@ class ArDeviceConnection; // for pointer in ArGPS
  *  when done.   You can also call readWithLock() to do a locked read in one
  *  function call. 
  *
- *  @note ArGPS only provides access to the data reported by a GPS. The position
+ *  @note MvrGPS only provides access to the data reported by a GPS. The position
  *  reported by a GPS is in degrees on the surface of the earth (WGS84 datum), not in the
- *  cartesian coordinate system used by the robot odometry or ArMap. You can use 
- *  the subclasses of Ar3DPoint (ArLLACoords, etc) to convert between different
+ *  cartesian coordinate system used by the robot odometry or MvrMap. You can use 
+ *  the subclasses of Mvr3DPoint (MvrLLACoords, etc) to convert between different
  *  geographical coordinate systems, which may help you match GPS coordinates to
  *  the robot pose coordinate system.
 
   @ingroup OptionalClasses
    @ingroup DeviceClasses
  */
-class ArGPS {
+class MvrGPS {
 
 public:
-    AREXPORT ArGPS();
+    AREXPORT MvrGPS();
 
     virtual ~ArGPS() { }
 
     /** @brief Set device connection to use */
-    void setDeviceConnection(ArDeviceConnection* deviceConn) { myDevice = deviceConn; }
+    void setDeviceConnection(MvrDeviceConnection* deviceConn) { myDevice = deviceConn; }
 
     /** @brief Return device connection in use (or NULL if none) */
-    ArDeviceConnection* getDeviceConnection() const { return myDevice; }
+    MvrDeviceConnection* getDeviceConnection() const { return myDevice; }
 
 
     /** @brief Check that the device connection (e.g. serial port) is open, and
@@ -144,13 +144,13 @@ public:
      *  (result & ReadUpdated). To check if there was an error, use (result &
      *  ReadError). 
      *
-     *  These happen to match the flags in ArNMEAParser.
+     *  These happen to match the flags in MvrNMEAParser.
      */
     enum {
-      ReadFinished = ArNMEAParser::ParseFinished,
-      ReadError = ArNMEAParser::ParseError, 
-      ReadData = ArNMEAParser::ParseData,
-      ReadUpdated = ArNMEAParser::ParseUpdated
+      ReadFinished = MvrNMEAParser::ParseFinished,
+      ReadError = MvrNMEAParser::ParseError, 
+      ReadData = MvrNMEAParser::ParseData,
+      ReadUpdated = MvrNMEAParser::ParseUpdated
     } ReadFlags;
 
     /** @brief Read some data from the device connection, and update stored data as complete messages are received. 
@@ -162,26 +162,26 @@ public:
      * ReadError if there was as error reading from the device connection,
      * ReadData if some data was read,
      * ReadUpdated if data was read and a full message was successfully read and
-     * stored data was updated in ArGPS,
+     * stored data was updated in MvrGPS,
      * ReadFinished if all available data was read.
      */
     AREXPORT virtual int read(unsigned long maxTime = 0);
 
     /** Calls lock(), calls read(maxTime), then calls unlock(). Note, this could
-     * end up keeping ArGPS locked until @a maxTime is reached, or for any amount
+     * end up keeping MvrGPS locked until @a maxTime is reached, or for any amount
      * of time if @a maxTime is 0, so watch out for that. */
     int readWithLock(unsigned int maxTime) { lock(); int r = read(maxTime); unlock(); return r; }
 
     /** Locks a mutex object contained by this class.
-     *  No other method (except readWithLock()) in ArGPS locks or unlocks this
-     *  mutex, it is provided for you to use when accessing ArGPS from multiple
+     *  No other method (except readWithLock()) in MvrGPS locks or unlocks this
+     *  mutex, it is provided for you to use when accessing MvrGPS from multiple
      *  threads.
      */
     void lock() { myMutex.lock(); }
 
     /** Unlocks a mutex object contained by this class.
-     *  No other method (except readWithLock()) in ArGPS locks or unlocks this
-     *  mutex, it is provided for you to use when accessing ArGPS from multiple
+     *  No other method (except readWithLock()) in MvrGPS locks or unlocks this
+     *  mutex, it is provided for you to use when accessing MvrGPS from multiple
      *  threads.
      */
     void unlock() { myMutex.unlock(); }
@@ -190,7 +190,7 @@ public:
     /** @brief Set whether checksum sent with NMEA messages is ignored */
     void setIgnoreChecksum(bool ignore) { myNMEAParser.setIgnoreChecksum(ignore); }
 
-    /** @brief Log last received data using ArLog. */
+    /** @brief Log last received data using MvrLog. */
     AREXPORT void logData() const;
 
     /** Print basic navigation data on one line to standard output, with no newline at end. */
@@ -216,11 +216,11 @@ public:
         double latitude; ///< (from NMEA GPRMC)
         double longitude; ///< (from NMEA GPRMC)
         bool havePosition; ///< (from NMEA GPRMC)
-        ArTime timeGotPosition;   ///< Local computer time when ArGPS class received the position message from the GPS. (From NMEA GPRMC)
+        MvrTime timeGotPosition;   ///< Local computer time when MvrGPS class received the position message from the GPS. (From NMEA GPRMC)
         double speed; ///< (From NMEA GPRMC, if provided)
         bool haveSpeed; ///< (From NMEA GPRMC)
-        ArTime GPSPositionTimestamp;   ///< Timestamp provided by GPS device along with latitude and longitude. (from NMEA GPRMC)
-        ArGPS::FixType fixType; ///< (from NMEA GPGGA)
+        MvrTime GPSPositionTimestamp;   ///< Timestamp provided by GPS device along with latitude and longitude. (from NMEA GPRMC)
+        MvrGPS::FixType fixType; ///< (from NMEA GPGGA)
         unsigned short numSatellitesTracked;
         double altitude;    ///< receiver provides this based on GPS data.  meters above sea level. (from NMEA GPGGA)
         bool haveAltitude; //< (from NMEA GPGGA)
@@ -255,16 +255,16 @@ public:
         bool haveBeaconInfo; ///< (from NMEA GPMSS)
         double inputsRMS; ///< (from NMEA GPGST)
         bool haveInputsRMS; ///< (from NMEA GPGST)
-        ArPose errorEllipse; ///< Ellipse shows standard deviation, in meters. Orientation is degrees from true north. (from NMEA GPGST)
+        MvrPose errorEllipse; ///< Ellipse shows standard deviation, in meters. Orientation is degrees from true north. (from NMEA GPGST)
         bool haveErrorEllipse; ///< (from NMEA GPGST)
-        ArPose latLonError; ///< Std.deviation, meters. Theta is unused. May only be provided by the GPS in certain fix modes. Note, values could be inf or nan (GPS sends these in some situations). Use isinf() and isnan() to check.
+        MvrPose latLonError; ///< Std.deviation, meters. Theta is unused. May only be provided by the GPS in certain fix modes. Note, values could be inf or nan (GPS sends these in some situations). Use isinf() and isnan() to check.
         bool haveLatLonError;
         double altitudeError; ///< Std. deviation, meters. Note, value could be inf or nan (GPS sends these in some situations). use isinf() and isnan() to check.
         bool haveAltitudeError;
     };
 
-    /** Access all of the internally stored data directly. @see ArGPS::Data  */
-    const ArGPS::Data& getCurrentDataRef() const { return myData; } 
+    /** Access all of the internally stored data directly. @see MvrGPS::Data  */
+    const MvrGPS::Data& getCurrentDataRef() const { return myData; } 
 
     /** (from NMEA GPGGA) */
     FixType getFixType() const { return myData.fixType; }
@@ -288,14 +288,14 @@ public:
     double getLongitude() const { return myData.longitude; }
 
     /// @return latitude, longitude and altitude
-    ArLLACoords getLLA() const { return ArLLACoords(myData.latitude, myData.longitude, myData.altitude); }
+    MvrLLACoords getLLA() const { return MvrLLACoords(myData.latitude, myData.longitude, myData.altitude); }
 
-    /// @return latitude and longitude in an ArPose object. Theta will be 0.
-    ArPose getPose() const { return ArPose(myData.latitude, myData.longitude); }
+    /// @return latitude and longitude in an MvrPose object. Theta will be 0.
+    MvrPose getPose() const { return MvrPose(myData.latitude, myData.longitude); }
 
-    /** @return copy of an ArTime object set to the time that ArGPS read and received latitude and longitude data from the GPS. 
+    /** @return copy of an MvrTime object set to the time that MvrGPS read and received latitude and longitude data from the GPS. 
         (from NMEA GPRMC) */
-    ArTime getTimeReceivedPosition() const { return myData.timeGotPosition; }
+    MvrTime getTimeReceivedPosition() const { return myData.timeGotPosition; }
 
     /** (from NMEA GPRMC) */
     bool haveSpeed() const { return myData.haveSpeed; }
@@ -306,7 +306,7 @@ public:
     double getSpeed() const { return myData.speed; }
 
     /** Timestamp provided by GPS device along with position. (from NMEA GPRMC) */
-    ArTime getGPSPositionTimestamp() const { return myData.GPSPositionTimestamp; }
+    MvrTime getGPSPositionTimestamp() const { return myData.GPSPositionTimestamp; }
 
     int getNumSatellitesTracked() const { return (int) myData.numSatellitesTracked; }
     /** (from NMEA GPGGA) */
@@ -412,23 +412,23 @@ public:
 
     /** Whether we have a position error estimate (as standard deviations in latitude and longitude) (from NMEA GPGST) */
     bool haveErrorEllipse() const { return myData.haveErrorEllipse; }
-    /** Standard deviation of position error (latitude and longitude), meters. Theta in ArPose is orientation of ellipse from true north, Y is the length of the major axis on that orientation, X the minor.
+    /** Standard deviation of position error (latitude and longitude), meters. Theta in MvrPose is orientation of ellipse from true north, Y is the length of the major axis on that orientation, X the minor.
         (from NMEA GPGST)
         @note Values may be inf or NaN (if GPS supplies "Inf" or "NAN")
     */
-    ArPose getErrorEllipse() const {return myData.errorEllipse; }
+    MvrPose getErrorEllipse() const {return myData.errorEllipse; }
     
     /** Whether we have latitude or longitude error estimates  (from NMEA GPGST) */
     bool haveLatLonError() const { return myData.haveLatLonError; }
     /** Standard deviation of latitude and longitude error, meters. 
-        Theta value in ArPose is unused. 
+        Theta value in MvrPose is unused. 
         @note May only be provided by GPS in certain fix modes
           (e.g. Trimble AgGPS provides it in Omnistar and RTK modes, but not in GPS
           or DGPS modes).
         @note Values may be inf or NaN (if GPS supplies "Inf" or "NAN")
         (from NMEA GPGST)
     */
-    ArPose getLatLonError() const { return myData.latLonError; }
+    MvrPose getLatLonError() const { return myData.latLonError; }
     /** @copydoc getLatLonError() */
     double getLatitudeError() const { return myData.latLonError.getX(); }
     /** @copydoc getLatLonError() */
@@ -447,12 +447,12 @@ public:
 
     /** Set a handler for an NMEA message. Mostly for internal use or to be used
      * by related classes, but you could use for ususual or custom messages
-     * emitted by a device that you wish to be handled outside of the ArGPS
+     * emitted by a device that you wish to be handled outside of the MvrGPS
      * class. 
      */
-    void addNMEAHandler(const char *message, ArNMEAParser::Handler *handler) { myNMEAParser.addHandler(message, handler); }
+    void addNMEAHandler(const char *message, MvrNMEAParser::Handler *handler) { myNMEAParser.addHandler(message, handler); }
     void removeNMEAHandler(const char *message) { myNMEAParser.removeHandler(message); }
-    void replaceNMEAHandler(const char *message, ArNMEAParser::Handler *handler) { 
+    void replaceNMEAHandler(const char *message, MvrNMEAParser::Handler *handler) { 
       myNMEAParser.removeHandler(message);
       myNMEAParser.addHandler(message, handler); 
     }
@@ -508,75 +508,75 @@ protected:
 
 
     /* Mutex */
-    ArMutex myMutex;
+    MvrMutex myMutex;
 
 
     /* Connection info */
-    ArDeviceConnection *myDevice;
+    MvrDeviceConnection *myDevice;
     bool myCreatedOwnDeviceCon;
-    ArRetFunctorC<bool, ArGPS> myParseArgsCallback; 
-    ArArgumentParser* myArgParser;
+    MvrRetFunctorC<bool, MvrGPS> myParseArgsCallback; 
+    MvrArgumentParser* myArgParser;
     
     /* NMEA Parser */
-    ArNMEAParser myNMEAParser;
+    MvrNMEAParser myNMEAParser;
 
     /* GPS message handlers */
 
-    void handleGPRMC(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myGPRMCHandler;
+    void handleGPRMC(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPRMCHandler;
 
-    void handleGPGGA(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myGPGGAHandler;
+    void handleGPGGA(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGGAHandler;
 
-    void handlePGRME(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myPGRMEHandler;
+    void handlePGRME(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myPGRMEHandler;
 
-    void handlePGRMZ(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myPGRMZHandler;
+    void handlePGRMZ(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myPGRMZHandler;
 
-    void handleHCHDx(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myHCHDxHandler;
+    void handleHCHDx(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myHCHDxHandler;
 
-    void handleGPGSA(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myGPGSAHandler;
+    void handleGPGSA(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGSAHandler;
 
-    void handleGPGSV(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myGPGSVHandler;
+    void handleGPGSV(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGSVHandler;
 
     /* For calculating SNR averages based on multiple GPGSV messages. */
     unsigned int mySNRSum;
     unsigned short mySNRNum;
 
-    void handleGPMSS(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myGPMSSHandler;
+    void handleGPMSS(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPMSSHandler;
 
-    void handleGPGST(ArNMEAParser::Message msg);
-    ArFunctor1C<ArGPS, ArNMEAParser::Message> myGPGSTHandler;
+    void handleGPGST(MvrNMEAParser::Message msg);
+    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGSTHandler;
 
-    /* Set an ArTime object using a time read from a string as decimal seconds (SSS.SS) */
-    bool readTimeFromString(const std::string& s, ArTime* time) const;
+    /* Set an MvrTime object using a time read from a string as decimal seconds (SSS.SS) */
+    bool readTimeFromString(const std::string& s, MvrTime* time) const;
 
     /** Parse a GPRMC message (in @a msg) and place results in provided
      * variables. (Can be used by subclasses to store results of GPRMC differently
      * than normal.)
-     * @since Aria 2.7.2
+     * @since Mvria 2.7.2
      */
-    void parseGPRMC(const ArNMEAParser::Message &msg, double &latitudeResult, double &longitudeResult, bool &qualityFlagResult, bool &gotPosition, ArTime &timeGotPositionResult, ArTime &gpsTimestampResult, bool &gotSpeedResult, double &speedResult);
+    void parseGPRMC(const MvrNMEAParser::Message &msg, double &latitudeResult, double &longitudeResult, bool &qualityFlagResult, bool &gotPosition, MvrTime &timeGotPositionResult, MvrTime &gpsTimestampResult, bool &gotSpeedResult, double &speedResult);
 
 };
 
 
-class ArRobotPacket;
-class ArRobot;
+class MvrRobotPacket;
+class MvrRobot;
 
-/// @since Aria 2.7.4
-class ArSimulatedGPS : public virtual ArGPS
+/// @since Mvria 2.7.4
+class MvrSimulatedGPS : public virtual MvrGPS
 {
   bool myHaveDummyPosition;
-  ArRetFunctor1C<bool, ArSimulatedGPS, ArRobotPacket*> mySimStatHandlerCB;
-  ArRobot *myRobot;
+  MvrRetFunctor1C<bool, MvrSimulatedGPS, MvrRobotPacket*> mySimStatHandlerCB;
+  MvrRobot *myRobot;
 public:
-  AREXPORT ArSimulatedGPS(ArRobot *robot = NULL);
+  AREXPORT MvrSimulatedGPS(MvrRobot *robot = NULL);
   AREXPORT virtual ~ArSimulatedGPS();
   void setDummyPosition(double latitude, double longitude) {
     myData.latitude = latitude;
@@ -609,8 +609,8 @@ public:
     myData.altitude = altitude;
     setDummyPosition(latitude, longitude);
   }
-  AREXPORT void setDummyPosition(ArArgumentBuilder *args); 
-  void setDummyPositionFromArgs(ArArgumentBuilder *args) { setDummyPosition(args); } // non-overloaded function can be used in functors
+  AREXPORT void setDummyPosition(MvrArgumentBuilder *args); 
+  void setDummyPositionFromArgs(MvrArgumentBuilder *args) { setDummyPosition(args); } // non-overloaded function can be used in functors
   AREXPORT virtual bool connect(unsigned long connectTimeout = 10000);
   virtual bool initDevice() { return true; }
   virtual int read(unsigned long maxTime = 0) {
@@ -622,7 +622,7 @@ public:
   }
 private:
 #ifndef SWIG
-  bool handleSimStatPacket(ArRobotPacket *pkt); 
+  bool handleSimStatPacket(MvrRobotPacket *pkt); 
 #endif
 };
 

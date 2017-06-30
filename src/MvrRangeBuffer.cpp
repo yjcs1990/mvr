@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRangeBuffer.h"
-#include "ArLog.h"
+#include "MvrRangeBuffer.h"
+#include "MvrLog.h"
 
 /** @param size The size of the buffer, in number of readings */
 AREXPORT ArRangeBuffer::ArRangeBuffer(int size)
@@ -51,7 +51,7 @@ AREXPORT ArPose ArRangeBuffer::getPoseTaken() const
   return myBufferPose;
 }
 
-AREXPORT void ArRangeBuffer::setPoseTaken(ArPose p)
+AREXPORT void ArRangeBuffer::setPoseTaken(MvrPose p)
 {
   myBufferPose = p;
 }
@@ -61,7 +61,7 @@ AREXPORT ArPose ArRangeBuffer::getEncoderPoseTaken() const
   return myEncoderBufferPose;
 }
 
-AREXPORT void ArRangeBuffer::setEncoderPoseTaken(ArPose p)
+AREXPORT void ArRangeBuffer::setEncoderPoseTaken(MvrPose p)
 {
   myEncoderBufferPose = p;
 }
@@ -176,7 +176,7 @@ AREXPORT double ArRangeBuffer::getClosestPolarInList(
     angle1=startPos.findAngleTo(*reading);
     angle2=startPos.getTh();
     th = ArMath::subAngle(angle1, angle2);
-    if (ArMath::angleBetween(th, startAngle, endAngle))
+    if (MvrMath::angleBetween(th, startAngle, endAngle))
     {
       if (!foundOne || (dist = reading->findDistanceTo(startPos)) < closest)
       {
@@ -314,7 +314,7 @@ AREXPORT double ArRangeBuffer::getClosestBoxInList(
     to/from local/global coords, but may have other uses
     @param trans the transform to apply to the data
 */    
-AREXPORT void ArRangeBuffer::applyTransform(ArTransform trans)
+AREXPORT void ArRangeBuffer::applyTransform(MvrTransform trans)
 {
   trans.doTransform(&myBuffer);
 }
@@ -425,7 +425,7 @@ AREXPORT void ArRangeBuffer::addReadingConditional(
     for (it = myBuffer.begin(); it != myBuffer.end(); ++it)
     {
       pose = (*it);
-      if (ArMath::squaredDistanceBetween(pose->getX(), pose->getY(),
+      if (MvrMath::squaredDistanceBetween(pose->getX(), pose->getY(),
 					 x, y) < closeDistSquared)
       {
 	pose->setTimeToNow();

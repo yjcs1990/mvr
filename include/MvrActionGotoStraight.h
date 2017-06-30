@@ -29,12 +29,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
-/// This action goes to a given ArPose very naively
+/// This action goes to a given MvrPose very naively
 
 /**
-   This action naively drives straight towards a given ArPose. The
+   This action naively drives straight towards a given MvrPose. The
    action stops the robot when it has travelled the distance that that
    pose is away. It travels at 'speed' mm/sec.
 
@@ -48,16 +48,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    you wanted within close distance.
 
    This doesn't avoid obstacles or anything, you could add have an obstacle
-   avoidance ArAction at a higher priority to try to do this. (For
+   avoidance MvrAction at a higher priority to try to do this. (For
    truly intelligent navigation, see the ARNL and SONARNL software libraries.)
   @ingroup ActionClasses
 **/
 
 
-class ArActionGotoStraight : public ArAction
+class MvrActionGotoStraight : public MvrAction
 {
 public:
-  AREXPORT ArActionGotoStraight(const char *name = "goto", 
+  AREXPORT MvrActionGotoStraight(const char *name = "goto", 
 				double speed = 400);
   AREXPORT virtual ~ArActionGotoStraight();
 
@@ -66,24 +66,24 @@ public:
   /// Cancels the goal the robot has
   AREXPORT void cancelGoal(void);
   /// Sets a new goal and sets the action to go there
-  AREXPORT void setGoal(ArPose goal, bool backwards = false, 
+  AREXPORT void setGoal(MvrPose goal, bool backwards = false, 
 			bool justDistance = true);
   /// Sets the goal in a relative way
   AREXPORT void setGoalRel(double dist, double deltaHeading, 
 			   bool backwards = false, bool justDistance = true);
   /// Gets the goal the action has
-  ArPose getGoal(void) { return myGoal; }
+  MvrPose getGoal(void) { return myGoal; }
   /// Gets whether we're using the encoder goal or the normal goal
   bool usingEncoderGoal(void) { return myUseEncoderGoal; }
   /// Sets a new goal and sets the action to go there
-  AREXPORT void setEncoderGoal(ArPose encoderGoal, bool backwards = false,
+  AREXPORT void setEncoderGoal(MvrPose encoderGoal, bool backwards = false,
 			       bool justDistance = true);
   /// Sets the goal in a relative way
   AREXPORT void setEncoderGoalRel(double dist, double deltaHeading, 
 				  bool backwards = false, 
 				  bool justDistance = true);
   /// Gets the goal the action has
-  ArPose getEncoderGoal(void) { return myEncoderGoal; }
+  MvrPose getEncoderGoal(void) { return myEncoderGoal; }
   /// Sets the speed the action will travel to the goal at (mm/sec)
   void setSpeed(double speed) { mySpeed = speed; }
   /// Gets the speed the action will travel to the goal at (mm/sec)
@@ -94,19 +94,19 @@ public:
   double getCloseDist(void) { return myCloseDist; }
   /// Sets whether we're backing up there or not (set in the setGoals)
   bool getBacking(void) { return myBacking; }
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
-  ArPose myGoal;
+  MvrPose myGoal;
   bool myUseEncoderGoal;
-  ArPose myEncoderGoal;
+  MvrPose myEncoderGoal;
   double mySpeed;
   bool myBacking;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
   bool myPrinting;
   double myDist;
   double myCloseDist;
@@ -114,7 +114,7 @@ protected:
   bool myJustDist;
 
   double myDistTravelled;
-  ArPose myLastPose;
+  MvrPose myLastPose;
   
   enum State
   {

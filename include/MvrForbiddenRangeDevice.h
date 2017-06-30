@@ -28,16 +28,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARFORBIDDENRANGEDEVICE_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
-#include "ArMapInterface.h"
+#include "MvrRangeDevice.h"
+#include "MvrMapInterface.h"
 
 /// Class that takes forbidden lines and turns them into range readings
 ///  @ingroup OptionalClasses
-class ArForbiddenRangeDevice : public ArRangeDevice
+class MvrForbiddenRangeDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT ArForbiddenRangeDevice(ArMapInterface *armap, 
+  AREXPORT MvrForbiddenRangeDevice(MvrMapInterface *armap, 
                                   double distanceIncrement = 100,
 				                          unsigned int maxRange = 4000,
 				                          const char *name = "forbidden");
@@ -48,7 +48,7 @@ public:
   /// Remakes the readings 
   AREXPORT void processReadings(void);
   /// Sets the robot pointer and attachs its process function
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
 
   /// Enable readings 
   AREXPORT void enable(void);
@@ -57,19 +57,19 @@ public:
   /// Sees if this device is active or not
   AREXPORT bool isEnabled(void) const { return myIsEnabled;; }
   /// Gets a callback to enable the device
-  AREXPORT ArFunctor *getEnableCB(void) { return &myEnableCB; } 
+  AREXPORT MvrFunctor *getEnableCB(void) { return &myEnableCB; } 
   /// Gets a callback to disable the device
-  AREXPORT ArFunctor *getDisableCB(void) { return &myDisableCB; } 
+  AREXPORT MvrFunctor *getDisableCB(void) { return &myDisableCB; } 
 protected:
-  ArMutex myDataMutex;
-  ArMapInterface *myMap;
+  MvrMutex myDataMutex;
+  MvrMapInterface *myMap;
   double myDistanceIncrement;
   std::list<ArLineSegment *> mySegments;
-  ArFunctorC<ArForbiddenRangeDevice> myProcessCB;
-  ArFunctorC<ArForbiddenRangeDevice> myMapChangedCB;
+  MvrFunctorC<ArForbiddenRangeDevice> myProcessCB;
+  MvrFunctorC<ArForbiddenRangeDevice> myMapChangedCB;
   bool myIsEnabled;
-  ArFunctorC<ArForbiddenRangeDevice> myEnableCB;
-  ArFunctorC<ArForbiddenRangeDevice> myDisableCB;
+  MvrFunctorC<ArForbiddenRangeDevice> myEnableCB;
+  MvrFunctorC<ArForbiddenRangeDevice> myDisableCB;
 };
 
 #endif // ARFORBIDDENRANGEDEVICE_H

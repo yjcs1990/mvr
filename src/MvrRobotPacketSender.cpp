@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArDeviceConnection.h"
-#include "ArRobotPacketSender.h"
+#include "MvrDeviceConnection.h"
+#include "MvrRobotPacketSender.h"
 
 /**
    Use setDeviceConnection() to set the device connection before use.
@@ -45,7 +45,7 @@ AREXPORT ArRobotPacketSender::ArRobotPacketSender(unsigned char sync1,
   myDeviceConn = NULL;
 	myTracking = false;
 	myTrackingLogName.clear();
-  mySendingMutex.setLogName("ArRobotPacketSender");
+  mySendingMutex.setLogName("MvrRobotPacketSender");
   myPacketSentCallback = NULL;
 }
 
@@ -67,7 +67,7 @@ AREXPORT ArRobotPacketSender::ArRobotPacketSender(
   myDeviceConn = deviceConnection;
 	myTracking = false;
 	myTrackingLogName.clear();
-  mySendingMutex.setLogName("ArRobotPacketSender");
+  mySendingMutex.setLogName("MvrRobotPacketSender");
   myPacketSentCallback = NULL;
 }
 
@@ -94,7 +94,7 @@ AREXPORT ArRobotPacketSender::ArRobotPacketSender(
 	myTrackingLogName(trackingLogName)
 {
   myDeviceConn = deviceConnection;
-  mySendingMutex.setLogName("ArRobotPacketSender");
+  mySendingMutex.setLogName("MvrRobotPacketSender");
   myPacketSentCallback = NULL;
 }
 
@@ -233,7 +233,7 @@ AREXPORT bool ArRobotPacketSender::comStr(unsigned char command,
   
   myPacket.setID(command);
   myPacket.uByteToBuf(STRARG);
-  myPacket.uByteToBuf((ArTypes::UByte)size);
+  myPacket.uByteToBuf((MvrTypes::UByte)size);
   myPacket.strToBuf(argument);
   
   myPacket.finalizePacket();
@@ -301,7 +301,7 @@ AREXPORT bool ArRobotPacketSender::comStrN(unsigned char command,
    @param packet ArRobotPacket
    @return whether the command could be sent or not
 */
-AREXPORT bool ArRobotPacketSender::sendPacket(ArRobotPacket *packet)
+AREXPORT bool ArRobotPacketSender::sendPacket(MvrRobotPacket *packet)
 {
   if (!connValid())
     return false;
@@ -327,7 +327,7 @@ AREXPORT bool ArRobotPacketSender::sendPacket(ArRobotPacket *packet)
 			sprintf (&obuf[j], "_%02x", buf[i]);
 			j= j+3;
 		}
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 				            "Send Packet: %s packet = %s", 
 										myTrackingLogName.c_str(), obuf);
 

@@ -24,15 +24,15 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
 #ifdef WIN32
 #else
 #include <dlfcn.h>
 #endif
-#include "ArModuleLoader.h"
-#include "ArModule.h"
-#include "ArLog.h"
+#include "MvrModuleLoader.h"
+#include "MvrModule.h"
+#include "MvrLog.h"
 
 
 std::map<std::string, ArModuleLoader::DllRef> ArModuleLoader::ourModMap;
@@ -105,7 +105,7 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::load(const char *modName,
   std::string name;
   std::map<std::string, DllRef>::iterator iter;
   DllRef handle;
-  bool (*func)(ArRobot*,void*);
+  bool (*func)(MvrRobot*,void*);
   bool ret;
 
   name=modName;
@@ -126,16 +126,16 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::load(const char *modName,
   if (!handle || dlerror() != NULL)
   {
     if (!quiet)
-      ArLog::log(ArLog::Terse, "Failure to load module '%s': %s",
+      ArLog::log(MvrLog::Terse, "Failure to load module '%s': %s",
 		 name.c_str(), dlerror());
     return(STATUS_FAILED_OPEN);
   }
 
-  func=(bool(*)(ArRobot*,void*))dlsym(handle, "ariaInitModule");
+  func=(bool(*)(MvrRobot*,void*))dlsym(handle, "ariaInitModule");
   if (!func || dlerror() != NULL)
   {
     if (!quiet)
-      ArLog::log(ArLog::Terse, "No module initializer for %s.", modName);
+      ArLog::log(MvrLog::Terse, "No module initializer for %s.", modName);
     ourModMap.insert(std::map<std::string, DllRef>::value_type(name,
 							       handle));
     return(STATUS_SUCCESS);
@@ -153,7 +153,7 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::load(const char *modName,
   else
   {
     if (!quiet)
-      ArLog::log(ArLog::Terse, "Module '%s' failed its init sequence",
+      ArLog::log(MvrLog::Terse, "Module '%s' failed its init sequence",
 		 name.c_str());
     dlclose(handle);
     return(STATUS_INIT_FAILED);
@@ -206,7 +206,7 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::close(const char *modName,
   iter=ourModMap.find(name.c_str());
   if (iter == ourModMap.end())
   {
-    ArLog::log(ArLog::Terse, "Module '%s' could not be found to be closed.",
+    ArLog::log(MvrLog::Terse, "Module '%s' could not be found to be closed.",
 	       modName);
     return(STATUS_NOT_FOUND);
   }
@@ -217,9 +217,9 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::close(const char *modName,
     if (!func)
     {
       if (!quiet)
-	ArLog::log(ArLog::Verbose, 
+	ArLog::log(MvrLog::Verbose, 
 		   "Failure to find module exit function for '%s'", (*iter).first.c_str());
-      //ArLog::log(ArLog::Terse, "Failure to find module exit function: '%s'",
+      //ArLog::log(MvrLog::Terse, "Failure to find module exit function: '%s'",
       //dlerror());
       //ret=STATUS_INVALID;
       ourModMap.erase(name);
@@ -231,7 +231,7 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::close(const char *modName,
     else
     {
       if (!quiet)
-	ArLog::log(ArLog::Terse, "Module '%s' failed its exit sequence",
+	ArLog::log(MvrLog::Terse, "Module '%s' failed its exit sequence",
 		   modName);
       ret=STATUS_INIT_FAILED;
     }

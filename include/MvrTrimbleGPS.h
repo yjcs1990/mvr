@@ -30,22 +30,22 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 #include "ariaUtil.h"
-#include "ArGPS.h"
-#include "ArDeviceConnection.h"
-#include "ArMutex.h"
+#include "MvrGPS.h"
+#include "MvrDeviceConnection.h"
+#include "MvrMutex.h"
 
 #include <deque>
 
-class ArTrimbleAuxDeviceConnection;
+class MvrTrimbleAuxDeviceConnection;
 
 /** @brief GPS subclass to support the Trimble AgGPS and other Trimble GPS devices.
  *  
- *  This subclass extends ArGPS to send initialization commands specific
+ *  This subclass extends MvrGPS to send initialization commands specific
  *  to Trimble GPS devices, and to handle the PTNLAG001 message which
  *  is specific to the Trimble GPS (this message contains data received 
- *  from an auxilliary device connected to the GPS; ArTrimbleGPS
+ *  from an auxilliary device connected to the GPS; MvrTrimbleGPS
  *  simply parses its contents as a new NMEA message; i.e. data received
  *  by the Trimble is assumed to be NMEA messages that it forwards
  *  via the PTNLAG001 message.)
@@ -64,12 +64,12 @@ class ArTrimbleAuxDeviceConnection;
  *
  *  @since 2.6.0
  */
-class ArTrimbleGPS : public virtual ArGPS {
+class MvrTrimbleGPS : public virtual MvrGPS {
 private:
-  ArFunctor1C<ArTrimbleGPS, ArNMEAParser::Message> myAuxDataHandler;
-  void handlePTNLAG001(ArNMEAParser::Message message);
+  MvrFunctor1C<ArTrimbleGPS, MvrNMEAParser::Message> myAuxDataHandler;
+  void handlePTNLAG001(MvrNMEAParser::Message message);
 public:
-  AREXPORT ArTrimbleGPS();
+  AREXPORT MvrTrimbleGPS();
   AREXPORT virtual ~ArTrimbleGPS();
 
   /** Send a TSIP command to the Trimble GPS.

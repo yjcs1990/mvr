@@ -24,16 +24,16 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArBatteryConnector.h"
-#include "ArRobot.h"
-#include "ArBatteryMTX.h"
+#include "MvrBatteryConnector.h"
+#include "MvrRobot.h"
+#include "MvrBatteryMTX.h"
 #include "ariaInternal.h"
-#include "ArCommands.h"
-#include "ArRobotConfigPacketReader.h"
+#include "MvrCommands.h"
+#include "MvrRobotConfigPacketReader.h"
 /** @warning do not delete @a parser during the lifetime of this
- ArBatteryConnector, which may need to access its contents later.
+ MvrBatteryConnector, which may need to access its contents later.
  @param parser the parser with the arguments to parse
  @param robot the robot these batteries are attached to (or NULL for none)
  @param robotConnector the connector used for connecting to the robot
@@ -44,10 +44,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  batteries and such, this is also passed to all the batteries created as
  their infoLogLevel too
  */
-AREXPORT ArBatteryConnector::ArBatteryConnector (
-  ArArgumentParser *parser, ArRobot *robot,
-  ArRobotConnector *robotConnector, bool autoParseArgs,
-  ArLog::LogLevel infoLogLevel) :
+AREXPORT MvrBatteryConnector::ArBatteryConnector (
+  MvrArgumentParser *parser, MvrRobot *robot,
+  MvrRobotConnector *robotConnector, bool autoParseArgs,
+  MvrLog::LogLevel infoLogLevel) :
 	myParseArgsCB (this, &ArBatteryConnector::parseArgs),
 	myLogOptionsCB (this, &ArBatteryConnector::logOptions)
 {
@@ -60,29 +60,29 @@ AREXPORT ArBatteryConnector::ArBatteryConnector (
   myBatteryLogPacketsReceived = false;
   myBatteryLogPacketsSent = false;
 	myInfoLogLevel = infoLogLevel;
-	myParseArgsCB.setName ("ArBatteryConnector");
+	myParseArgsCB.setName ("MvrBatteryConnector");
 	Aria::addParseArgsCB (&myParseArgsCB, 60);
-	myLogOptionsCB.setName ("ArBatteryConnector");
+	myLogOptionsCB.setName ("MvrBatteryConnector");
 	Aria::addLogOptionsCB (&myLogOptionsCB, 80);
 }
-AREXPORT ArBatteryConnector::~ArBatteryConnector (void)
+AREXPORT MvrBatteryConnector::~ArBatteryConnector (void)
 {
-//  Aria::remLogOptionsCB(&myLogOptionsCB);
-//  Aria::remParseArgsCB(&myParseArgsCB);
+//  Mvria::remLogOptionsCB(&myLogOptionsCB);
+//  Mvria::remParseArgsCB(&myParseArgsCB);
 }
 /**
- * Parse command line arguments using the ArArgumentParser given in the ArBatteryConnector constructor.
+ * Parse command line arguments using the MvrArgumentParser given in the MvrBatteryConnector constructor.
  *
- * See parseArgs(ArArgumentParser*) for details about argument parsing.
+ * See parseArgs(MvrArgumentParser*) for details about argument parsing.
  *
   @return true if the arguments were parsed successfully false if not
  **/
-AREXPORT bool ArBatteryConnector::parseArgs (void)
+AREXPORT bool MvrBatteryConnector::parseArgs (void)
 {
 	return parseArgs (myParser);
 }
 /**
- * Parse command line arguments held by the given ArArgumentParser.
+ * Parse command line arguments held by the given MvrArgumentParser.
  *
   @return true if the arguments were parsed successfully false if not
 
@@ -99,7 +99,7 @@ AREXPORT bool ArBatteryConnector::parseArgs (void)
     <dt>-dncb</dt>
   </dl>
  **/
-AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
+AREXPORT bool MvrBatteryConnector::parseArgs (MvrArgumentParser *parser)
 {
 
 	if (myParsedArgs)
@@ -114,7 +114,7 @@ AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
 	bool wasReallySetOnlyTrue = parser->getWasReallySetOnlyTrue();
 	parser->setWasReallySetOnlyTrue (true);
 
-	for (i = 1; i <= Aria::getMaxNumBatteries(); i++) {
+	for (i = 1; i <= Mvria::getMaxNumBatteries(); i++) {
 		if (i == 1)
 			buf[0] = '\0';
 		else
@@ -125,8 +125,8 @@ AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
 		    "-batteryType%s", buf) ||
 		    !parser->checkParameterArgumentStringVar (&typeReallySet, &type,
 		        "-bt%s", buf)) {
-			ArLog::log (ArLog::Normal,
-			            "ArBatteryConnector: Bad battery type given for battery number %d",
+			ArLog::log (MvrLog::Normal,
+			            "MvrBatteryConnector: Bad battery type given for battery number %d",
 			            i);
 			parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 
@@ -136,7 +136,7 @@ AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
 		if (!typeReallySet)
 			continue;
 		if ( (it = myBatteries.find (i)) != myBatteries.end()) {
-			ArLog::log (ArLog::Normal, "ArBatteryConnector: A battery already exists for battery number %d, replacing it with a new one of type %s",
+			ArLog::log (MvrLog::Normal, "MvrBatteryConnector: A battery already exists for battery number %d, replacing it with a new one of type %s",
 			            i, type);
 			batteryData = (*it).second;
 			delete batteryData;
@@ -144,16 +144,16 @@ AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
 		}
 		if (typeReallySet && type != NULL) {
 			ArBatteryMTX *battery = NULL;
-			if ( (battery = Aria::batteryCreate (type, i, "ArBatteryConnector: ")) != NULL) {
+			if ( (battery = Mvria::batteryCreate (type, i, "MvrBatteryConnector: ")) != NULL) {
 				ArLog::log (myInfoLogLevel,
-				            "ArBatteryConnector: Created %s as battery %d from arguments",
+				            "MvrBatteryConnector: Created %s as battery %d from arguments",
 				            battery->getName(), i);
 				myBatteries[i] = new BatteryData (i, battery);
 				battery->setInfoLogLevel (myInfoLogLevel);
 			} else {
-				ArLog::log (ArLog::Normal,
+				ArLog::log (MvrLog::Normal,
 				            "Unknown battery type %s for battery %d, choices are %s",
-				            type, i, Aria::batteryGetTypes());
+				            type, i, Mvria::batteryGetTypes());
 				parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 				return false;
 			}
@@ -170,13 +170,13 @@ AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
 
 	// go through the robot param list and add the batteries defined
 	// in the parameter file.
-	const ArRobotParams *params = NULL;
+	const MvrRobotParams *params = NULL;
 	if (myRobot != NULL) {
 		params = myRobot->getRobotParams();
 		if (params != NULL) {
 
 
-			for (i = 1; i <= Aria::getMaxNumBatteries(); i++) {
+			for (i = 1; i <= Mvria::getMaxNumBatteries(); i++) {
 				// if we already have a battery for this then don't add one from
 				// the param file, since it was added either explicitly by a
 				// program or from the command line
@@ -195,22 +195,22 @@ AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
 
 				ArBatteryMTX *battery = NULL;
 				if ( (battery =
-				        Aria::batteryCreate (type, i, "ArBatteryConnector: ")) != NULL) {
+				        Mvria::batteryCreate (type, i, "MvrBatteryConnector: ")) != NULL) {
 					ArLog::log (myInfoLogLevel,
-					            "ArBatteryConnector::parseArgs() Created %s as battery %d from parameter file",
+					            "MvrBatteryConnector::parseArgs() Created %s as battery %d from parameter file",
 					            battery->getName(), i);
 					myBatteries[i] = new BatteryData (i, battery);
 					battery->setInfoLogLevel (myInfoLogLevel);
 				} else {
-					ArLog::log (ArLog::Normal,
-					            "ArBatteryConnector::parseArgs() Unknown battery type %s for battery %d from the .p file, choices are %s",
-					            type, i, Aria::batteryGetTypes());
+					ArLog::log (MvrLog::Normal,
+					            "MvrBatteryConnector::parseArgs() Unknown battery type %s for battery %d from the .p file, choices are %s",
+					            type, i, Mvria::batteryGetTypes());
 					parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 					return false;
 				}
 			}
 		} else {
-			ArLog::log (ArLog::Normal, "ArBatteryConnector::parseArgs() Have robot, but robot has NULL params, so cannot configure its battery");
+			ArLog::log (MvrLog::Normal, "MvrBatteryConnector::parseArgs() Have robot, but robot has NULL params, so cannot configure its battery");
 		}
 	}
 	// now go through and parse the args for any battery that we have
@@ -228,17 +228,17 @@ AREXPORT bool ArBatteryConnector::parseArgs (ArArgumentParser *parser)
 
 } // end parseArgs
 
-AREXPORT bool ArBatteryConnector::parseBatteryArgs (ArArgumentParser *parser,
+AREXPORT bool MvrBatteryConnector::parseBatteryArgs (MvrArgumentParser *parser,
     BatteryData *batteryData)
 {
 	char buf[512];
 	if (batteryData == NULL) {
-		ArLog::log (ArLog::Terse, "ArBatteryConnector::parseBatteryArgs() Was given NULL battery");
+		ArLog::log (MvrLog::Terse, "MvrBatteryConnector::parseBatteryArgs() Was given NULL battery");
 		return false;
 	}
 	if (batteryData->myBattery == NULL) {
-		ArLog::log (ArLog::Normal,
-		            "ArBatteryConnector::parseBatteryArgs() There is no battery for battery number %d but there should be",
+		ArLog::log (MvrLog::Normal,
+		            "MvrBatteryConnector::parseBatteryArgs() There is no battery for battery number %d but there should be",
 		            batteryData->myNumber);
 		return false;
 	}
@@ -298,39 +298,39 @@ AREXPORT bool ArBatteryConnector::parseBatteryArgs (ArArgumentParser *parser,
 } // end parseBatteryArgs
 
 
-bool ArBatteryConnector::internalConfigureBattery (
+bool MvrBatteryConnector::internalConfigureBattery (
   BatteryData *batteryData)
 {
 	if(batteryData->myConnectReallySet && ! batteryData->myConnect)
 	{
-		ArLog::log(ArLog::Terse, "ArBatteryConnector::internalConfigure: Warning: connection to battery %d explicitly disabled by options", batteryData->myNumber);
+		ArLog::log(MvrLog::Terse, "MvrBatteryConnector::internalConfigure: Warning: connection to battery %d explicitly disabled by options", batteryData->myNumber);
 		return true;
 	}
 	ArBatteryMTX *battery = batteryData->myBattery;
 	if (battery == NULL) {
-		ArLog::log (ArLog::Terse, "ArBatteryConnector::internalConfigureBattery() No battery for number %d",
+		ArLog::log (MvrLog::Terse, "MvrBatteryConnector::internalConfigureBattery() No battery for number %d",
 		            batteryData->myNumber);
 		return false;
 	}
 	// the rest handles all the connection stuff
-	const ArRobotParams *params;
+	const MvrRobotParams *params;
 	if (batteryData->myBattery == NULL) {
-		ArLog::log (ArLog::Terse, "ArBatteryConnector::internalConfigureBattery() There is no battery, cannot connect");
+		ArLog::log (MvrLog::Terse, "MvrBatteryConnector::internalConfigureBattery() There is no battery, cannot connect");
 		return false;
 	}
 	char portBuf[8];
 	strncpy(portBuf, batteryData->myBattery->getDefaultTcpPort(), 7); portBuf[8] = 0;
 	if (myRobotConnector == NULL) {
-		ArLog::log (ArLog::Terse, "ArBatteryConnector::internalConfigureBattery() No ArRobotConnector is passed in so simulators and remote hosts will not work correctly");
+		ArLog::log (MvrLog::Terse, "MvrBatteryConnector::internalConfigureBattery() No MvrRobotConnector is passed in so simulators and remote hosts will not work correctly");
 	}
 	if ( (batteryData->myPort == NULL || strlen (batteryData->myPort) == 0) &&
 	     (batteryData->myPortType != NULL && strlen (batteryData->myPortType) > 0)) {
-		ArLog::log (ArLog::Normal, "ArBatteryConnector::internalConfigureBattery() There is a battery port type given ('%s') for battery %d (%s), but no battery port given, cannot configure battery",
+		ArLog::log (MvrLog::Normal, "MvrBatteryConnector::internalConfigureBattery() There is a battery port type given ('%s') for battery %d (%s), but no battery port given, cannot configure battery",
 		            batteryData->myPortType, batteryData->myNumber, battery->getName());
 		return false;
 	}
 
-	ArLog::log (ArLog::Verbose, "ArBatteryConnector::internalConfigureBattery() command line battery #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
+	ArLog::log (MvrLog::Verbose, "MvrBatteryConnector::internalConfigureBattery() command line battery #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
 							batteryData->myNumber, 
 							batteryData->myType,
 							batteryData->myPort,
@@ -342,12 +342,12 @@ bool ArBatteryConnector::internalConfigureBattery (
 
 	if ( (batteryData->myPort != NULL && strlen (batteryData->myPort) > 0) &&
 	     (batteryData->myPortType != NULL && strlen (batteryData->myPortType) > 0)) {
-		ArLog::log (ArLog::Normal, "ArBatteryConnector::internalConfigureBattery() Connection type and port given for battery %d (%s), so overriding everything and using that information",
+		ArLog::log (MvrLog::Normal, "MvrBatteryConnector::internalConfigureBattery() Connection type and port given for battery %d (%s), so overriding everything and using that information",
 		            batteryData->myNumber, battery->getName());
 		
-		if ( (batteryData->myConn = Aria::deviceConnectionCreate (
+		if ( (batteryData->myConn = Mvria::deviceConnectionCreate (
 		                              batteryData->myPortType, batteryData->myPort, portBuf,
-		                              "ArBatteryConnector:")) == NULL) {
+		                              "MvrBatteryConnector:")) == NULL) {
 			return false;
 		}
 		battery->setDeviceConnection (batteryData->myConn);
@@ -358,40 +358,40 @@ bool ArBatteryConnector::internalConfigureBattery (
 		if (myRobot != NULL && (params = myRobot->getRobotParams()) != NULL) {
 			if (params->getBatteryMTXBoardPortType (batteryData->myNumber) != NULL &&
 			    params->getBatteryMTXBoardPortType (batteryData->myNumber) [0] != '\0') {
-				ArLog::log (ArLog::Normal, "ArBatteryConnector::internalConfigureBattery() There is a port given, but no port type given so using the robot parameters port type");
-				if ( (batteryData->myConn = Aria::deviceConnectionCreate (
+				ArLog::log (MvrLog::Normal, "MvrBatteryConnector::internalConfigureBattery() There is a port given, but no port type given so using the robot parameters port type");
+				if ( (batteryData->myConn = Mvria::deviceConnectionCreate (
 				                              params->getBatteryMTXBoardPortType (batteryData->myNumber),
 				                              batteryData->myPort, portBuf,
-				                              "ArBatteryConnector: ")) == NULL) {
+				                              "MvrBatteryConnector: ")) == NULL) {
 					return false;
 				}
 			} else if (battery->getDefaultPortType() != NULL &&
 			           battery->getDefaultPortType() [0] != '\0') {
-				ArLog::log (ArLog::Normal, "ArBatteryConnector::internalConfigureBattery() There is a port given for battery %d (%s), but no port type given and no robot parameters port type so using the battery's default port type", batteryData->myNumber, battery->getName());
-				if ( (batteryData->myConn = Aria::deviceConnectionCreate (
+				ArLog::log (MvrLog::Normal, "MvrBatteryConnector::internalConfigureBattery() There is a port given for battery %d (%s), but no port type given and no robot parameters port type so using the battery's default port type", batteryData->myNumber, battery->getName());
+				if ( (batteryData->myConn = Mvria::deviceConnectionCreate (
 				                              battery->getDefaultPortType(),
 				                              batteryData->myPort, portBuf,
-				                              "ArBatteryConnector: ")) == NULL) {
+				                              "MvrBatteryConnector: ")) == NULL) {
 					return false;
 				}
 			} else {
-				ArLog::log (ArLog::Normal, "ArBatteryConnector::internalConfigureBattery() There is a port given for battery %d (%s), but no port type given, no robot parameters port type, and no battery default port type, so using serial",
+				ArLog::log (MvrLog::Normal, "MvrBatteryConnector::internalConfigureBattery() There is a port given for battery %d (%s), but no port type given, no robot parameters port type, and no battery default port type, so using serial",
 				            batteryData->myNumber, battery->getName());
-				if ( (batteryData->myConn = Aria::deviceConnectionCreate (
+				if ( (batteryData->myConn = Mvria::deviceConnectionCreate (
 				                              "serial",
 				                              batteryData->myPort, portBuf,
-				                              "ArBatteryConnector: ")) == NULL) {
+				                              "MvrBatteryConnector: ")) == NULL) {
 					return false;
 				}
 			}
 			battery->setDeviceConnection (batteryData->myConn);
 			return true;
 		} else {
-			ArLog::log (ArLog::Normal, "ArBatteryConnector::internalConfigureBattery() There is a battery port given ('%s') for battery %d (%s), but no battery port type given and there are no robot params to find the information in, so assuming serial",
+			ArLog::log (MvrLog::Normal, "MvrBatteryConnector::internalConfigureBattery() There is a battery port given ('%s') for battery %d (%s), but no battery port type given and there are no robot params to find the information in, so assuming serial",
 			            batteryData->myPort, batteryData->myNumber, battery->getName());
-			if ( (batteryData->myConn = Aria::deviceConnectionCreate (
+			if ( (batteryData->myConn = Mvria::deviceConnectionCreate (
 			                              batteryData->myPortType, batteryData->myPort, portBuf,
-			                              "ArBatteryConnector: ")) == NULL) {
+			                              "MvrBatteryConnector: ")) == NULL) {
 				return false;
 			}
 			battery->setDeviceConnection (batteryData->myConn);
@@ -400,11 +400,11 @@ bool ArBatteryConnector::internalConfigureBattery (
 	}
 	// if we get down here there was no information provided by the command line or in a battery connector, so see if we have params... if not then fail, if so then use those
 	if (myRobot == NULL || (params = myRobot->getRobotParams()) == NULL) {
-		ArLog::log (ArLog::Normal, "ArBatteryConnector::internalConfigureBattery() No robot params are available, and no command line information given on how to connect to the battery %d (%s), so cannot connect", batteryData->myNumber, battery->getName());
+		ArLog::log (MvrLog::Normal, "MvrBatteryConnector::internalConfigureBattery() No robot params are available, and no command line information given on how to connect to the battery %d (%s), so cannot connect", batteryData->myNumber, battery->getName());
 		return false;
 	}
 
-	ArLog::log (ArLog::Verbose, "ArBatteryConnector::internalConfigureBattery() .p battery #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
+	ArLog::log (MvrLog::Verbose, "MvrBatteryConnector::internalConfigureBattery() .p battery #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
 							batteryData->myNumber, 
 							params->getBatteryMTXBoardType (batteryData->myNumber),
 							params->getBatteryMTXBoardPort (batteryData->myNumber),
@@ -419,28 +419,28 @@ bool ArBatteryConnector::internalConfigureBattery (
 		batteryData->myConnectReallySet = true;
 	}
 
-	ArLog::log (ArLog::Verbose, "ArBatteryConnector: Using robot params for connecting to battery %d (%s)", batteryData->myNumber, battery->getName());
+	ArLog::log (MvrLog::Verbose, "MvrBatteryConnector: Using robot params for connecting to battery %d (%s)", batteryData->myNumber, battery->getName());
 
-	if ( (batteryData->myConn = Aria::deviceConnectionCreate (
+	if ( (batteryData->myConn = Mvria::deviceConnectionCreate (
 	                              params->getBatteryMTXBoardPortType (batteryData->myNumber),
 	                              params->getBatteryMTXBoardPort (batteryData->myNumber), portBuf,
-	                              "ArBatteryConnector: ")) == NULL) {
+	                              "MvrBatteryConnector: ")) == NULL) {
 		return false;
 	}
 	battery->setDeviceConnection (batteryData->myConn);
 	return true;
 }
-AREXPORT void ArBatteryConnector::logOptions (void) const
+AREXPORT void MvrBatteryConnector::logOptions (void) const
 {
-	ArLog::log (ArLog::Terse, "Options for ArBatteryConnector:");
-  ArLog::log(ArLog::Terse, "-batteryLogPacketsReceived");
-  ArLog::log(ArLog::Terse, "-blpr");
-  ArLog::log(ArLog::Terse, "-batteryLogPacketsSent");
-  ArLog::log(ArLog::Terse, "-blps");
-	ArLog::log (ArLog::Terse, "\nOptions shown are for currently set up batteries.  Activate batteries with -batteryType<N> option");
-	ArLog::log (ArLog::Terse, "to see options for that battery (e.g. \"-help -batteryType1 batteryMTX\").");
-	ArLog::log (ArLog::Terse, "Valid battery types are: %s", Aria::batteryGetTypes());
-	ArLog::log (ArLog::Terse, "\nSee docs for details.");
+	ArLog::log (MvrLog::Terse, "Options for MvrBatteryConnector:");
+  MvrLog::log(MvrLog::Terse, "-batteryLogPacketsReceived");
+  MvrLog::log(MvrLog::Terse, "-blpr");
+  MvrLog::log(MvrLog::Terse, "-batteryLogPacketsSent");
+  MvrLog::log(MvrLog::Terse, "-blps");
+	ArLog::log (MvrLog::Terse, "\nOptions shown are for currently set up batteries.  Activate batteries with -batteryType<N> option");
+	ArLog::log (MvrLog::Terse, "to see options for that battery (e.g. \"-help -batteryType1 batteryMTX\").");
+	ArLog::log (MvrLog::Terse, "Valid battery types are: %s", Mvria::batteryGetTypes());
+	ArLog::log (MvrLog::Terse, "\nSee docs for details.");
 	std::map<int, BatteryData *>::const_iterator it;
 	BatteryData *batteryData;
 	for (it = myBatteries.begin(); it != myBatteries.end(); it++) {
@@ -448,18 +448,18 @@ AREXPORT void ArBatteryConnector::logOptions (void) const
 		logBatteryOptions (batteryData);
 	}
 }
-AREXPORT void ArBatteryConnector::logBatteryOptions (
+AREXPORT void MvrBatteryConnector::logBatteryOptions (
   BatteryData *batteryData, bool header, bool metaOpts) const
 {
 	char buf[512];
 	if (batteryData == NULL) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "Tried to log battery options with NULL battery data");
 		return;
 	}
 	if (batteryData->myBattery == NULL) {
-		ArLog::log (ArLog::Normal,
-		            "ArBatteryConnector: There is no battery for battery number %d but there should be",
+		ArLog::log (MvrLog::Normal,
+		            "MvrBatteryConnector: There is no battery for battery number %d but there should be",
 		            batteryData->myNumber);
 		return;
 	}
@@ -469,33 +469,33 @@ AREXPORT void ArBatteryConnector::logBatteryOptions (
 	else
 		sprintf (buf, "%d", batteryData->myNumber);
 	if (header) {
-		ArLog::log (ArLog::Terse, "");
-		ArLog::log (ArLog::Terse, "Battery%s: (\"%s\")", buf, battery->getName());
+		ArLog::log (MvrLog::Terse, "");
+		ArLog::log (MvrLog::Terse, "Battery%s: (\"%s\")", buf, battery->getName());
 	}
 	if (metaOpts) {
-		ArLog::log (ArLog::Terse, "-batteryType%s <%s>", buf, Aria::batteryGetTypes());
-		ArLog::log (ArLog::Terse, "-bt%s <%s>", buf, Aria::batteryGetTypes());
-		ArLog::log (ArLog::Terse, "-doNotConnectBattery%s", buf);
-		ArLog::log (ArLog::Terse, "-dncb%s", buf);
+		ArLog::log (MvrLog::Terse, "-batteryType%s <%s>", buf, Mvria::batteryGetTypes());
+		ArLog::log (MvrLog::Terse, "-bt%s <%s>", buf, Mvria::batteryGetTypes());
+		ArLog::log (MvrLog::Terse, "-doNotConnectBattery%s", buf);
+		ArLog::log (MvrLog::Terse, "-dncb%s", buf);
 	}
-	ArLog::log (ArLog::Terse, "-batteryPort%s <batteryPort>", buf);
-	ArLog::log (ArLog::Terse, "-bp%s <batteryPort>", buf);
-	ArLog::log (ArLog::Terse, "-batteryPortType%s <%s>", buf, Aria::deviceConnectionGetTypes());
-	ArLog::log (ArLog::Terse, "-bpt%s <%s>", buf, Aria::deviceConnectionGetTypes());
-	ArLog::log (ArLog::Terse, "-remoteBatteryTcpPort%s <remoteBatteryTcpPort>", buf);
-	ArLog::log (ArLog::Terse, "-rbtp%s <remoteBatteryTcpPort>", buf);
+	ArLog::log (MvrLog::Terse, "-batteryPort%s <batteryPort>", buf);
+	ArLog::log (MvrLog::Terse, "-bp%s <batteryPort>", buf);
+	ArLog::log (MvrLog::Terse, "-batteryPortType%s <%s>", buf, Mvria::deviceConnectionGetTypes());
+	ArLog::log (MvrLog::Terse, "-bpt%s <%s>", buf, Mvria::deviceConnectionGetTypes());
+	ArLog::log (MvrLog::Terse, "-remoteBatteryTcpPort%s <remoteBatteryTcpPort>", buf);
+	ArLog::log (MvrLog::Terse, "-rbtp%s <remoteBatteryTcpPort>", buf);
 }
 /**
    Normally adding batteries is done from the .p file, you can use this
    if you want to add them explicitly in a program (which will
    override the .p file, and may cause some problems).
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArBatteryConnector::connectBatteries.()
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrBatteryConnector::connectBatteries.()
    @internal
 **/
-AREXPORT bool ArBatteryConnector::addBattery (
-  ArBatteryMTX *battery, int batteryNumber)
+AREXPORT bool MvrBatteryConnector::addBattery (
+  MvrBatteryMTX *battery, int batteryNumber)
 {
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;
@@ -503,12 +503,12 @@ AREXPORT bool ArBatteryConnector::addBattery (
 		batteryData = (*it).second;
 	if (batteryData != NULL) {
 		if (batteryData->myBattery != NULL)
-			ArLog::log (ArLog::Terse,
-			            "ArBatteryConnector::addBattery: Already have battery for number #%d of type %s but a replacement battery of type %s was passed in",
+			ArLog::log (MvrLog::Terse,
+			            "MvrBatteryConnector::addBattery: Already have battery for number #%d of type %s but a replacement battery of type %s was passed in",
 			            batteryNumber, batteryData->myBattery->getName(), battery->getName());
 		else
-			ArLog::log (ArLog::Terse,
-			            "ArBatteryConnector::addBattery: Already have battery for number #%d but a replacement battery of type %s was passed in",
+			ArLog::log (MvrLog::Terse,
+			            "MvrBatteryConnector::addBattery: Already have battery for number #%d but a replacement battery of type %s was passed in",
 			            batteryNumber, battery->getName());
 		delete batteryData;
 		myBatteries.erase (batteryNumber);
@@ -516,7 +516,7 @@ AREXPORT bool ArBatteryConnector::addBattery (
 	myBatteries[batteryNumber] = new BatteryData (batteryNumber, battery);
 	return true;
 }
-AREXPORT ArBatteryMTX *ArBatteryConnector::getBattery (int batteryNumber)
+AREXPORT MvrBatteryMTX *ArBatteryConnector::getBattery (int batteryNumber)
 {
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;
@@ -528,8 +528,8 @@ AREXPORT ArBatteryMTX *ArBatteryConnector::getBattery (int batteryNumber)
 	// otherwise, return the battery
 	return batteryData->myBattery;
 }
-AREXPORT bool ArBatteryConnector::replaceBattery (
-  ArBatteryMTX *battery, int batteryNumber)
+AREXPORT bool MvrBatteryConnector::replaceBattery (
+  MvrBatteryMTX *battery, int batteryNumber)
 {
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;
@@ -540,42 +540,42 @@ AREXPORT bool ArBatteryConnector::replaceBattery (
 		return false;
 	if (batteryData->myBattery != NULL)
 		ArLog::log (myInfoLogLevel,
-		            "ArBatteryConnector::replaceBattery: Already have battery for number #%d of type %s but a replacement battery of type %s was passed in",
+		            "MvrBatteryConnector::replaceBattery: Already have battery for number #%d of type %s but a replacement battery of type %s was passed in",
 		            batteryNumber, batteryData->myBattery->getName(), battery->getName());
 	else
-		ArLog::log (ArLog::Normal,
-		            "ArBatteryConnector::replaceBattery: Replacing a non existant battery number #%d with a battery of type %s passed in",
+		ArLog::log (MvrLog::Normal,
+		            "MvrBatteryConnector::replaceBattery: Replacing a non existant battery number #%d with a battery of type %s passed in",
 		            batteryNumber, battery->getName());
 	batteryData->myBattery = battery;
 	return true;
 }
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArBatteryConnector::connectBatteries().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrBatteryConnector::connectBatteries().
    @internal
 **/
-AREXPORT bool ArBatteryConnector::setupBattery (ArBatteryMTX *battery,
+AREXPORT bool MvrBatteryConnector::setupBattery (MvrBatteryMTX *battery,
     int batteryNumber)
 {
 	if (myRobot == NULL && myRobotConnector != NULL)
 		myRobot = myRobotConnector->getRobot();
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;
-	//const ArRobotParams *params;
+	//const MvrRobotParams *params;
 	if ( (it = myBatteries.find (batteryNumber)) != myBatteries.end())
 		batteryData = (*it).second;
 	if (batteryData == NULL && battery == NULL) {
-		ArLog::log (ArLog::Terse, "ArBatteryConnector::setupBattery: Do not have battery #%d", batteryNumber) ;
+		ArLog::log (MvrLog::Terse, "MvrBatteryConnector::setupBattery: Do not have battery #%d", batteryNumber) ;
 		return false;
 	}
 	if (batteryData != NULL && battery != NULL &&
 	    batteryData->myBattery != battery) {
 		if (batteryData->myBattery != NULL)
-			ArLog::log (ArLog::Terse, "ArBatteryConnector::setupBattery: Already have battery for number #%d (%s) but a replacement battery (%s) was passed in, this will replace all of the command line arguments for that battery",
+			ArLog::log (MvrLog::Terse, "MvrBatteryConnector::setupBattery: Already have battery for number #%d (%s) but a replacement battery (%s) was passed in, this will replace all of the command line arguments for that battery",
 			            batteryNumber, batteryData->myBattery->getName(), battery->getName());
 		else
-			ArLog::log (ArLog::Terse, "ArBatteryConnector::setupBattery: Already have battery for number #%d but a replacement battery (%s) was passed in, this will replace all of the command line arguments for that battery",
+			ArLog::log (MvrLog::Terse, "MvrBatteryConnector::setupBattery: Already have battery for number #%d but a replacement battery (%s) was passed in, this will replace all of the command line arguments for that battery",
 			            batteryNumber, battery->getName());
 		delete batteryData;
 		myBatteries.erase (batteryNumber);
@@ -585,7 +585,7 @@ AREXPORT bool ArBatteryConnector::setupBattery (ArBatteryMTX *battery,
 		batteryData = new BatteryData (batteryNumber, battery);
 		myBatteries[batteryNumber] = batteryData;
 		if (myAutoParseArgs && !parseBatteryArgs (myParser, batteryData)) {
-			ArLog::log (ArLog::Verbose, "ArBatteryConnector: Auto parsing args for battery %s (num %d)", batteryData->myBattery->getName(), batteryNumber);
+			ArLog::log (MvrLog::Verbose, "MvrBatteryConnector: Auto parsing args for battery %s (num %d)", batteryData->myBattery->getName(), batteryNumber);
 			return false;
 		}
 	}
@@ -605,17 +605,17 @@ AREXPORT bool ArBatteryConnector::setupBattery (ArBatteryMTX *battery,
 		myRobot->addBattery (battery, batteryNumber);
 		//myRobot->addRangeDevice(battery);
 	} else {
-		ArLog::log (ArLog::Normal, "ArBatteryConnector::setupBattery: No robot, so battery cannot be added to robot");
+		ArLog::log (MvrLog::Normal, "MvrBatteryConnector::setupBattery: No robot, so battery cannot be added to robot");
 	}
 	return true;
 }
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArBatteryConnector::connectBatteries().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrBatteryConnector::connectBatteries().
    @internal
 **/
-AREXPORT bool ArBatteryConnector::connectBattery (ArBatteryMTX *battery,
+AREXPORT bool MvrBatteryConnector::connectBattery (MvrBatteryMTX *battery,
     int batteryNumber,
     bool forceConnection)
 {
@@ -631,7 +631,7 @@ AREXPORT bool ArBatteryConnector::connectBattery (ArBatteryMTX *battery,
 	if ( (it = myBatteries.find (batteryNumber)) != myBatteries.end())
 		batteryData = (*it).second;
 	if (batteryData == NULL) {
-		ArLog::log (ArLog::Normal, "ArBatteryConnector::connectBattery: Some horrendous error in connectBattery with battery number %d", batteryNumber);
+		ArLog::log (MvrLog::Normal, "MvrBatteryConnector::connectBattery: Some horrendous error in connectBattery with battery number %d", batteryNumber);
 		return false;
 	}
 	// see if we want to connect
@@ -641,7 +641,7 @@ AREXPORT bool ArBatteryConnector::connectBattery (ArBatteryMTX *battery,
 		return battery->blockingConnect(myBatteryLogPacketsSent, myBatteryLogPacketsReceived);
 }
 
-AREXPORT bool ArBatteryConnector::connectBatteries (
+AREXPORT bool MvrBatteryConnector::connectBatteries (
   bool continueOnFailedConnect, bool addConnectedBatteriesToRobot,
   bool addAllBatteriesToRobot, bool turnOnBatteries,
   bool powerCycleBatteryOnFailedConnect)
@@ -649,30 +649,30 @@ AREXPORT bool ArBatteryConnector::connectBatteries (
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;
 	ArLog::log (myInfoLogLevel,
-	            "ArBatteryConnector::connectBatteries() Connecting batteries");
+	            "MvrBatteryConnector::connectBatteries() Connecting batteries");
 	if (myAutoParseArgs && !myParsedArgs) {
-		ArLog::log (ArLog::Verbose,
-		            "ArBatteryConnector::connectBatteries() Auto parsing args for batteries");
+		ArLog::log (MvrLog::Verbose,
+		            "MvrBatteryConnector::connectBatteries() Auto parsing args for batteries");
 		if (!parseArgs()) {
 			return false;
 		}
 	}
 	if (addAllBatteriesToRobot) {
 
-			ArLog::log (ArLog::Verbose,
-		            "ArBatteryConnector::connectBatteries() addAllBatteriesToRobot");
+			ArLog::log (MvrLog::Verbose,
+		            "MvrBatteryConnector::connectBatteries() addAllBatteriesToRobot");
 
 		if (myRobot != NULL) {
 
 			for (it = myBatteries.begin(); it != myBatteries.end(); it++) {
 				batteryData = (*it).second;
 				myRobot->addBattery (batteryData->myBattery, batteryData->myNumber);
-				ArLog::log (ArLog::Verbose,
-				            "ArBatteryConnector::connectBatteries: Added %s to robot as battery %d",
+				ArLog::log (MvrLog::Verbose,
+				            "MvrBatteryConnector::connectBatteries: Added %s to robot as battery %d",
 				            batteryData->myBattery->getName(), batteryData->myNumber);
 			}
 		} else {
-			ArLog::log (ArLog::Normal, "ArBatteryConnector::connectBatteries: Supposed to add all batteries to robot, but there is no robot");
+			ArLog::log (MvrLog::Normal, "MvrBatteryConnector::connectBatteries: Supposed to add all batteries to robot, but there is no robot");
 			return false;
 		}
 	}
@@ -685,7 +685,7 @@ AREXPORT bool ArBatteryConnector::connectBatteries (
 
 		if (batteryData->myConnectReallySet && batteryData->myConnect) {
 			ArLog::log (myInfoLogLevel,
-			            "ArBatteryConnector::connectBatteries: Connecting %s",
+			            "MvrBatteryConnector::connectBatteries: Connecting %s",
 			            batteryData->myBattery->getName());
 			batteryData->myBattery->setRobot (myRobot);
 			bool connected = false;
@@ -695,46 +695,46 @@ AREXPORT bool ArBatteryConnector::connectBatteries (
 					if (myRobot != NULL) {
 						myRobot->addBattery (batteryData->myBattery, batteryData->myNumber);
 						//myRobot->addRangeDevice(batteryData->myBattery);
-						ArLog::log (ArLog::Verbose,
-						            "ArBatteryConnector::connectBatteries: Added %s to robot",
+						ArLog::log (MvrLog::Verbose,
+						            "MvrBatteryConnector::connectBatteries: Added %s to robot",
 						            batteryData->myBattery->getName());
 					} else {
-						ArLog::log (ArLog::Normal,
-						            "ArBatteryConnector::connectBatteries: Could not add %s to robot, since there is no robot",
+						ArLog::log (MvrLog::Normal,
+						            "MvrBatteryConnector::connectBatteries: Could not add %s to robot, since there is no robot",
 						            batteryData->myBattery->getName());
 					}
 				} else if (addAllBatteriesToRobot && myRobot != NULL) {
-					ArLog::log (ArLog::Verbose,
-					            "ArBatteryConnector::connectBatteries: %s already added to robot)",
+					ArLog::log (MvrLog::Verbose,
+					            "MvrBatteryConnector::connectBatteries: %s already added to robot)",
 					            batteryData->myBattery->getName());
 				} else if (myRobot != NULL) {
-					ArLog::log (ArLog::Verbose,
-					            "ArBatteryConnector::connectBatteries: Did not add %s to robot",
+					ArLog::log (MvrLog::Verbose,
+					            "MvrBatteryConnector::connectBatteries: Did not add %s to robot",
 					            batteryData->myBattery->getName());
 				}
 			} else {
 				if (!continueOnFailedConnect) {
-					ArLog::log (ArLog::Normal,
-					            "ArBatteryConnector::connectBatteries: Could not connect %s, stopping",
+					ArLog::log (MvrLog::Normal,
+					            "MvrBatteryConnector::connectBatteries: Could not connect %s, stopping",
 					            batteryData->myBattery->getName());
 					return false;
 				} else
-					ArLog::log (ArLog::Normal,
-					            "ArBatteryConnector::connectBatteries: Could not connect %s, continuing with remainder of batteries",
+					ArLog::log (MvrLog::Normal,
+					            "MvrBatteryConnector::connectBatteries: Could not connect %s, continuing with remainder of batteries",
 					            batteryData->myBattery->getName());
 			}
 		}
 	}
 	ArLog::log (myInfoLogLevel,
-	            "ArBatteryConnector: Done connecting batteries");
+	            "MvrBatteryConnector: Done connecting batteries");
 	return true;
 }
 
-AREXPORT bool ArBatteryConnector::disconnectBatteries()
+AREXPORT bool MvrBatteryConnector::disconnectBatteries()
 {
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;
-	ArLog::log (myInfoLogLevel, "ArBatteryConnector: Disconnecting from batteries");
+	ArLog::log (myInfoLogLevel, "MvrBatteryConnector: Disconnecting from batteries");
   for (it = myBatteries.begin(); it != myBatteries.end(); it++) 
   {
     batteryData = (*it).second;

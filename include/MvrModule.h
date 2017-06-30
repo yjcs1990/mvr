@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaTypedefs.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 
 /// Dynamicly loaded module base class, read warning in more
@@ -41,16 +41,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    This class defines a dyanicmly loaded module of code. This is usefull
    for an application to load piece of code that it does not know about.
-   The ArModule defines and interface in which to invoke that piece of code
+   The MvrModule defines and interface in which to invoke that piece of code
    that the program does not know about. For instance, a module could
-   contain an ArAction and the modules init() could instantiate the ArAction
-   and add it to the supplied ArRobot. The init() takes a reference to an
-   ArRobot. The module should use that robot for its purposes. If the module
+   contain an MvrAction and the modules init() could instantiate the MvrAction
+   and add it to the supplied MvrRobot. The init() takes a reference to an
+   MvrRobot. The module should use that robot for its purposes. If the module
    wants to use more robots, assuming there are multiple robots, it can use
-   Aria::getRobotList() to find all the ArRobot instantiated. The module
+   Mvria::getRobotList() to find all the MvrRobot instantiated. The module
    should do all its clean up in exit().
 
-   The user should derive their own class from ArModule and implement the
+   The user should derive their own class from MvrModule and implement the
    init() and exit() functions. The users code should always clean up
    when exit() is called. exit() is called right before the module (dynamic
    library .dll/.so) is closed and removed from the program.
@@ -58,29 +58,29 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    The macro ARDEF_MODULE() must be called within the .cpp file of the users
    module. A global instance of the users module must be defined and a
    reference to that instance must be passed to ARDEF_MODULE(). This allows
-   the ArModuleLoader to find the users module class and invoke it.
+   the MvrModuleLoader to find the users module class and invoke it.
 
-   One thing to note about the use of code wrapped in ArModules and staticly
+   One thing to note about the use of code wrapped in MvrModules and staticly
    linking in that code. To be able to staticly link .cpp files which contain
-   an ArModule, the ARIA_STATIC preprocessor symbol should be defined. This will cause
+   an MvrModule, the ARIA_STATIC preprocessor symbol should be defined. This will cause
    the ARDEF_MODULE() to do nothing. If it defined its normal functions and
    variables, the linker would fail to staticly link in multiple modules
    since they all have symbols with the same name.
 
-   Refer to ArModuleLoader to see how to load an ArModule into a program.
+   Refer to MvrModuleLoader to see how to load an MvrModule into a program.
 
    For examples, see the programs advanced/simpleMod.cpp and advanced/simpleModule.cpp. 
 */
-class ArModule
+class MvrModule
 {
 public:
 
   /// Constructor
-  AREXPORT ArModule();
+  AREXPORT MvrModule();
   /// Destructor
   AREXPORT virtual ~ArModule();
 
-  /// Initialize the module. The module should use the supplied ArRobot pointer
+  /// Initialize the module. The module should use the supplied MvrRobot pointer
   /**
      @param robot Robot this module should attach to or operate on. Note, may be NULL.
 
@@ -88,22 +88,22 @@ public:
      is NULL.  The module can interpret this in any way, it is recommended
      that you make sure this is documented if used. 
   */
-  AREXPORT virtual bool init(ArRobot *robot, 
+  AREXPORT virtual bool init(MvrRobot *robot, 
 			     void *argument = NULL) = 0;
 
   /// Close down the module and have it exit
   AREXPORT virtual bool exit() = 0;
 
-  /// Get the ArRobot pointer the module should be using
-  AREXPORT ArRobot * getRobot() {return(myRobot);}
+  /// Get the MvrRobot pointer the module should be using
+  AREXPORT MvrRobot * getRobot() {return(myRobot);}
 
-  /// Set the ArRobot pointer
-  AREXPORT void setRobot(ArRobot *robot) {myRobot=robot;}
+  /// Set the MvrRobot pointer
+  AREXPORT void setRobot(MvrRobot *robot) {myRobot=robot;}
 
 protected:
 
-  /// Stored ArRobot pointer that the module should use
-  ArRobot *myRobot;
+  /// Stored MvrRobot pointer that the module should use
+  MvrRobot *myRobot;
 };
 
 
@@ -122,9 +122,9 @@ protected:
 
 #define ARDEF_MODULE(mod) \
 extern "C" {\
-static ArModule *__AriaModule_##mod = &mod; \
+static MvrModule *__AriaModule_##mod = &mod; \
 _declspec(dllexport) bool \
-ariaInitModule(ArRobot *robot, void *argument = NULL) \
+ariaInitModule(MvrRobot *robot, void *argument = NULL) \
 { \
   if (__AriaModule_##mod) \
   { \
@@ -144,9 +144,9 @@ _declspec(dllexport) bool ariaExitModule() \
 #else // WIN32
 
 #define ARDEF_MODULE(mod) \
-static ArModule *__AriaModule_##mod = &mod; \
+static MvrModule *__AriaModule_##mod = &mod; \
 extern "C" {\
-bool ariaInitModule(ArRobot *robot, void *argument = NULL) \
+bool ariaInitModule(MvrRobot *robot, void *argument = NULL) \
 { \
   if (__AriaModule_##mod) \
   { \

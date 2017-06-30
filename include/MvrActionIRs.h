@@ -28,8 +28,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONIRS_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
-#include "ArRobotParams.h"
+#include "MvrAction.h"
+#include "MvrRobotParams.h"
 #include <vector>
 
 /// Action to back up if short-range IR sensors trigger
@@ -43,24 +43,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 * @ingroup ActionClasses
  */
 
-class ArActionIRs : public ArAction
+class MvrActionIRs : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionIRs(const char *name = "IRs", 
+  AREXPORT MvrActionIRs(const char *name = "IRs", 
 		       double backOffSpeed = 100, int backOffTime = 5000,
 		       int turnTime = 3000, bool setMaximums = false);
   /// Destructor
   AREXPORT virtual ~ArActionIRs();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual void setRobot(ArRobot *robot);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
   bool mySetMaximums;
   double myBackOffSpeed;
   int myBackOffTime;
@@ -69,9 +69,9 @@ protected:
   bool myFiring;
   double mySpeed;
   double myHeading;
-  ArTime myStartBack;
-  ArTime stoppedSince;
-  ArRobotParams myParams;
+  MvrTime myStartBack;
+  MvrTime stoppedSince;
+  MvrRobotParams myParams;
   std::vector<int> cycleCounters;
 };
 

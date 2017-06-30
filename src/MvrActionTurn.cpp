@@ -24,25 +24,25 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionTurn.h"
-#include "ArRobot.h"
+#include "MvrActionTurn.h"
+#include "MvrRobot.h"
 
-AREXPORT ArActionTurn::ArActionTurn(const char *name, double speedStartTurn,
+AREXPORT MvrActionTurn::ArActionTurn(const char *name, double speedStartTurn,
 				    double speedFullTurn, double turnAmount) :
-  ArAction(name, 
+  MvrAction(name, 
 	   "Turns the robot depending on actions by higher priority actions.")
 {
-  setNextArgument(ArArg("speed start turn", &mySpeedStart,
+  setNextArgument(MvrArg("speed start turn", &mySpeedStart,
 			"max vel at which to start turning (mm/sec)"));
   mySpeedStart = speedStartTurn;
 
-  setNextArgument(ArArg("speed full turn", &mySpeedFull,
+  setNextArgument(MvrArg("speed full turn", &mySpeedFull,
 			"max vel at which to turn the full amount (mm/sec)"));
   mySpeedFull = speedFullTurn;
 
-  setNextArgument(ArArg("turn amount", &myTurnAmount,
+  setNextArgument(MvrArg("turn amount", &myTurnAmount,
 			"max vel at which to start turning (mm/sec)"));
   myTurnAmount = turnAmount;
 
@@ -50,12 +50,12 @@ AREXPORT ArActionTurn::ArActionTurn(const char *name, double speedStartTurn,
 
 }
 
-AREXPORT ArActionTurn::~ArActionTurn()
+AREXPORT MvrActionTurn::~ArActionTurn()
 {
 
 }
 
-AREXPORT ArActionDesired *ArActionTurn::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *ArActionTurn::fire(MvrActionDesired currentDesired)
 {
   myDesired.reset();
   double turnAmount;

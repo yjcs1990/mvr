@@ -28,28 +28,28 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONSTOP_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action for stopping the robot
 /**
    This action simply sets the robot to a 0 velocity and a deltaHeading of 0.
    @ingroup ActionClasses
 */
-class ArActionStop : public ArAction
+class MvrActionStop : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionStop(const char *name = "stop");
+  AREXPORT MvrActionStop(const char *name = "stop");
   /// Destructor
   AREXPORT virtual ~ArActionStop();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 };
 
 #endif // ARACTIONSTOP_H

@@ -28,11 +28,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARAMPTU_H
 
 #include "ariaTypedefs.h"
-#include "ArBasePacket.h"
-#include "ArPTZ.h"
+#include "MvrBasePacket.h"
+#include "MvrPTZ.h"
 
 /// A class with the commands for the AMPTU
-class ArAMPTUCommands
+class MvrAMPTUCommands
 {
 public:
   enum {
@@ -68,11 +68,11 @@ public:
     @see getUnitNumber
     @see setUnitNumber
 */
-class ArAMPTUPacket: public ArBasePacket
+class MvrAMPTUPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArAMPTUPacket(ArTypes::UByte2 bufferSize = 30);
+  AREXPORT MvrAMPTUPacket(MvrTypes::UByte2 bufferSize = 30);
   /// Destructor
   AREXPORT virtual ~ArAMPTUPacket();
 
@@ -81,8 +81,8 @@ public:
   /// Sets the unit number htis packet is for
   AREXPORT bool setUnitNumber(unsigned char unitNumber);
   
-  AREXPORT virtual void byteToBuf(ArTypes::Byte val);
-  AREXPORT virtual void byte2ToBuf(ArTypes::Byte2 val);
+  AREXPORT virtual void byteToBuf(MvrTypes::Byte val);
+  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
   
   AREXPORT virtual void finalizePacket(void);
 
@@ -92,11 +92,11 @@ protected:
 
 /// Driver for the AMPTU
 /// @ingroup ObscureClasses
-class ArAMPTU : public ArPTZ
+class MvrAMPTU : public MvrPTZ
 {
 public:
   /// Constructor
-  AREXPORT ArAMPTU(ArRobot *robot, int unitNumber = 0);
+  AREXPORT MvrAMPTU(MvrRobot *robot, int unitNumber = 0);
   /// Destructor
   AREXPORT virtual ~ArAMPTU();
   AREXPORT virtual bool init(void);
@@ -136,8 +136,8 @@ public:
     MAX_PAN_SLEW = 120
   };
 protected:
-  ArRobot *myRobot;
-  ArAMPTUPacket myPacket;
+  MvrRobot *myRobot;
+  MvrAMPTUPacket myPacket;
   int myUnitNumber;
   double myPan;
   double myTilt;

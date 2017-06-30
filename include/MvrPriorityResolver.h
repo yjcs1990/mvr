@@ -27,25 +27,25 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARPRIORITYRESOLVER_H
 #define ARPRIORITYRESOLVER_H
 
-#include "ArResolver.h"
+#include "MvrResolver.h"
 
 /// (Default resolver), takes the action list and uses the priority to resolve
 /** 
-    This is the default resolver for ArRobot, meaning if you don't do a 
+    This is the default resolver for MvrRobot, meaning if you don't do a 
     non-normal init on the robot, or a setResolver, you'll have one these.
 */
-class ArPriorityResolver : public ArResolver
+class MvrPriorityResolver : public MvrResolver
 {
 public:
   /// Constructor
-  AREXPORT ArPriorityResolver();
+  AREXPORT MvrPriorityResolver();
   /// Destructor
   AREXPORT virtual ~ArPriorityResolver();
-  AREXPORT virtual ArActionDesired *resolve(ArResolver::ActionMap *actions,
-					    ArRobot *robot,
+  AREXPORT virtual MvrActionDesired *resolve(MvrResolver::ActionMap *actions,
+					    MvrRobot *robot,
 					    bool logActions = false);
 protected:
-  ArActionDesired myActionDesired;
+  MvrActionDesired myActionDesired;
 };
 
 #endif // ARPRIORITYRESOLVER_H

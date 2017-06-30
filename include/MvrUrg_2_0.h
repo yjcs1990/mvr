@@ -28,8 +28,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARURG_2_0_H
 
 #include "ariaTypedefs.h"
-#include "ArLaser.h"
-#include "ArDeviceConnection.h"
+#include "MvrLaser.h"
+#include "MvrDeviceConnection.h"
 
 /** 
     Hokuyo URG laser range device (SCIP 2.0).
@@ -39,22 +39,22 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     reading, and if the max range is more than that it'll use 3 bytes
     per range reading.
 
-    Supports (probably) any URG using SCIP 2.0 protocol (use ArUrg aka
+    Supports (probably) any URG using SCIP 2.0 protocol (use MvrUrg aka
     'urg' for SCIP 1.1 instead). 
 	
-	See ArLaserConnector for instructions on configuring and using lasers.
+	See MvrLaserConnector for instructions on configuring and using lasers.
 
 	See http://robots.mobilerobots.com/wiki/Hokuyo_URG for more information and links to downloads from Hokuyo including the USB Windows driver.
 
-    @sa ArUrg
-    @sa ArLaserConnector
-    @sa ArLaser
+    @sa MvrUrg
+    @sa MvrLaserConnector
+    @sa MvrLaser
  */
-class ArUrg_2_0 : public ArLaser
+class MvrUrg_2_0 : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT ArUrg_2_0(int laserNumber,
+  AREXPORT MvrUrg_2_0(int laserNumber,
 		 const char *name = "urg2.0");
   /// Destructor
   AREXPORT ~ArUrg_2_0();
@@ -97,15 +97,15 @@ protected:
 	  char *status, unsigned int size, unsigned int msWait);
 
   void sensorInterp(void);
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   AREXPORT virtual bool laserCheckParams(void);
   AREXPORT virtual void laserSetName(const char *name);
   
   void failedToConnect(void);
-  ArMutex myReadingMutex;
-  ArMutex myDataMutex;
+  MvrMutex myReadingMutex;
+  MvrMutex myDataMutex;
 
-  ArTime myReadingRequested;
+  MvrTime myReadingRequested;
   std::string myReading;
 
   int myStartingStep;
@@ -146,8 +146,8 @@ protected:
 
   bool myLogMore;
   
-  ArFunctorC<ArUrg_2_0> mySensorInterpTask;
-  ArRetFunctorC<bool, ArUrg_2_0> myAriaExitCB;
+  MvrFunctorC<ArUrg_2_0> mySensorInterpTask;
+  MvrRetFunctorC<bool, MvrUrg_2_0> myAriaExitCB;
 };
 
 #endif // ARURG_2_0_H

@@ -498,7 +498,7 @@ MVREXPORT void MvrArgumentBuilder::log(void) const
   size_t i;
   MvrLog::log(MvrLog::Terse, "num arguments: %d", myArgc);
   for (i=0; i<myArgc; ++i)
-    MvrLog::log(MvrLog::Terse, "Arg %d: %s", i, myArgv[i]);
+    MvrLog::log(MvrLog::Terse, "Mvrg %d: %s", i, myArgv[i]);
 }
 
 MVREXPORT bool MvrArgumentBuilder::isArgBool(size_t whichArg) const

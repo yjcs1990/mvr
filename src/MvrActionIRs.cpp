@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionIRs.h"
-#include "ArRobot.h"
-#include "ArCommands.h"
+#include "MvrActionIRs.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
 
 /**
    @param name name of the action
@@ -37,27 +37,27 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param turnTime number of msec to alow for turn (msec)
    @param setMaximums if true, set desired maximum speed limits to backOffSpeed when performing the action; otherwise use existing speed limits.
 */
-AREXPORT ArActionIRs::ArActionIRs(const char *name, 
+AREXPORT MvrActionIRs::ArActionIRs(const char *name, 
 					  double backOffSpeed,
 					  int backOffTime, int turnTime,
 					  bool setMaximums) :
-  ArAction(name, "Reacts to the IRs triggering")
+  MvrAction(name, "Reacts to the IRs triggering")
 {
-  setNextArgument(ArArg("back off speed", &myBackOffSpeed, 
+  setNextArgument(MvrArg("back off speed", &myBackOffSpeed, 
 			"Speed at which to back away (mm/sec)"));
   myBackOffSpeed = backOffSpeed;
 
-  setNextArgument(ArArg("back off time", &myBackOffTime,
+  setNextArgument(MvrArg("back off time", &myBackOffTime,
 			"Number of msec to back up for (msec)"));
   myBackOffTime = backOffTime;
 
   myStopTime = 1000;
 
-  setNextArgument(ArArg("turn time", &myTurnTime,
+  setNextArgument(MvrArg("turn time", &myTurnTime,
 			"Number of msec to allow for turn (msec)"));
   myTurnTime = turnTime;
 
-  setNextArgument(ArArg("set maximums", &mySetMaximums,
+  setNextArgument(MvrArg("set maximums", &mySetMaximums,
 			"Whether to set maximum vels or not (bool)"));
   mySetMaximums = setMaximums;
   
@@ -66,15 +66,15 @@ AREXPORT ArActionIRs::ArActionIRs(const char *name,
   myHeading = 0.0;
 }
 
-AREXPORT ArActionIRs::~ArActionIRs()
+AREXPORT MvrActionIRs::~ArActionIRs()
 {
 
 }
 
-AREXPORT void ArActionIRs::setRobot(ArRobot *robot)
+AREXPORT void MvrActionIRs::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
-  const ArRobotParams *params;
+  const MvrRobotParams *params;
   params = myRobot->getRobotParams();
   myParams = *params;
   
@@ -82,7 +82,7 @@ AREXPORT void ArActionIRs::setRobot(ArRobot *robot)
     cycleCounters.push_back(1);
 }
 
-AREXPORT ArActionDesired *ArActionIRs::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *ArActionIRs::fire(MvrActionDesired currentDesired)
 {
   myDesired.reset();
 
@@ -90,7 +90,7 @@ AREXPORT ArActionDesired *ArActionIRs::fire(ArActionDesired currentDesired)
   int counter = 0;
   double turnRange = 135;
 
-  ArUtil::BITS bit;
+  MvrUtil::BITS bit;
 
   if(myFiring)
     {  
@@ -101,7 +101,7 @@ AREXPORT ArActionDesired *ArActionIRs::fire(ArActionDesired currentDesired)
 	  return &myDesired;
 	}
       else if (myStartBack.mSecSince() < myBackOffTime + myTurnTime &&
-	     ArMath::fabs(ArMath::subAngle(myRobot->getTh(), myHeading)) > 3)
+	     MvrMath::fabs(MvrMath::subAngle(myRobot->getTh(), myHeading)) > 3)
 	{
 	  myDesired.setVel(0);
 	  myDesired.setHeading(myHeading);
@@ -125,28 +125,28 @@ AREXPORT ArActionDesired *ArActionIRs::fire(ArActionDesired currentDesired)
 	  switch(i)
 	    {
 	    case 0:
-	      bit = ArUtil::BIT0;
+	      bit = MvrUtil::BIT0;
 	      break;
 	    case 1:
-	      bit = ArUtil::BIT1;
+	      bit = MvrUtil::BIT1;
 	      break;
 	    case 2:
-	      bit = ArUtil::BIT2;
+	      bit = MvrUtil::BIT2;
 	      break;
 	    case 3:
-	      bit = ArUtil::BIT3;
+	      bit = MvrUtil::BIT3;
 	      break;
 	    case 4:
-	      bit = ArUtil::BIT4;
+	      bit = MvrUtil::BIT4;
 	      break;
 	    case 5:
-	      bit = ArUtil::BIT5;
+	      bit = MvrUtil::BIT5;
 	      break;
 	    case 6:
-	      bit = ArUtil::BIT6;
+	      bit = MvrUtil::BIT6;
 	      break;
 	    case 7:
-	      bit = ArUtil::BIT7;
+	      bit = MvrUtil::BIT7;
 	      break;
 	    }
 	  if(myParams.haveNewTableSensingIR() && myRobot->getIODigInSize() > 3)
@@ -162,7 +162,7 @@ AREXPORT ArActionDesired *ArActionIRs::fire(ArActionDesired currentDesired)
 		  {
 		    cycleCounters[i] = 1;
 		   
-		    ArPose pose;
+		    MvrPose pose;
 		    pose.setX(myParams.getIRX(i));
 		    pose.setY(myParams.getIRY(i));
 		    if(pose.getX() > 0)
@@ -190,7 +190,7 @@ AREXPORT ArActionDesired *ArActionIRs::fire(ArActionDesired currentDesired)
 		  {
 		    cycleCounters[i] = 1;
 		    
-		    ArPose pose;
+		    MvrPose pose;
 		    pose.setX(myParams.getIRX(i));
 		    pose.setY(myParams.getIRY(i));
 		    if(pose.getX() > 0)
@@ -220,11 +220,11 @@ AREXPORT ArActionDesired *ArActionIRs::fire(ArActionDesired currentDesired)
 	  if(angle < 0) angle = ((turnRange / 2) + angle) * -1;
 	  else angle = ((turnRange / 2) - angle);
 	
-	  myHeading = ArMath::addAngle(myRobot->getTh(), angle);
+	  myHeading = MvrMath::addAngle(myRobot->getTh(), angle);
 	  mySpeed = -myBackOffSpeed;
 	  myStartBack.setToNow();
-	  ArLog::log(ArLog::Normal, "ArActionIRS: estopping");
-	  myRobot->comInt(ArCommands::ESTOP, 0);
+	  MvrLog::log(MvrLog::Normal, "MvrActionIRS: estopping");
+	  myRobot->comInt(MvrCommands::ESTOP, 0);
 	  myFiring = true;
 	  
 	  myDesired.setVel(mySpeed);

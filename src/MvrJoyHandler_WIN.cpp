@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArJoyHandler.h"
+#include "MvrJoyHandler.h"
 
-AREXPORT bool ArJoyHandler::init(void)
+AREXPORT bool MvrJoyHandler::init(void)
 {
 
   myPhysMax = 1;
@@ -45,9 +45,9 @@ AREXPORT bool ArJoyHandler::init(void)
     // z, so only one is used
     myPhysMax  = myJoyCaps.wXmax - myJoyCaps.wXmin;
 	/*
-	ArLog::log(ArLog::Normal, "caps 0x%x numAxes %d maxAxes %d %s",
+	ArLog::log(MvrLog::Normal, "caps 0x%x numAxes %d maxAxes %d %s",
 			myJoyCaps.wCaps, myJoyCaps.wNumAxes, myJoyCaps.wMaxAxes, myJoyCaps.szPname);
-	ArLog::log(ArLog::Normal, 
+	ArLog::log(MvrLog::Normal, 
 		"xMin %d xMax %d yMin %d yMax %d zMin %d zMax %d rMin %d rMax %d uMin %d uMax %d",
 			myJoyCaps.wXmin, myJoyCaps.wXmax, myJoyCaps.wYmin, myJoyCaps.wYmax, 
 			myJoyCaps.wRmin, myJoyCaps.wRmax, myJoyCaps.wZmin, 
@@ -69,9 +69,9 @@ AREXPORT bool ArJoyHandler::init(void)
     // z, so only one is used
     myPhysMax = myJoyCaps.wXmax - myJoyCaps.wXmin;
 	/*
-	ArLog::log(ArLog::Normal, "2 caps 0x%x numAxes %d maxAxes %d %s",
+	ArLog::log(MvrLog::Normal, "2 caps 0x%x numAxes %d maxAxes %d %s",
 			myJoyCaps.wCaps, myJoyCaps.wNumAxes, myJoyCaps.wMaxAxes, myJoyCaps.szPname);
-	ArLog::log(ArLog::Normal, 
+	ArLog::log(MvrLog::Normal, 
 		"2 xMin %d xMax %d yMin %d yMax %d zMin %d zMax %d rMin %d rMax %d uMin %d uMax %d",
 			myJoyCaps.wXmin, myJoyCaps.wXmax, myJoyCaps.wYmin, myJoyCaps.wYmax, 
 			myJoyCaps.wRmin, myJoyCaps.wRmax, myJoyCaps.wZmin, 
@@ -98,7 +98,7 @@ AREXPORT bool ArJoyHandler::init(void)
 }
 
 
-void ArJoyHandler::getData(void)
+void MvrJoyHandler::getData(void)
 {
   int x, y, z, r, u, v;
   if (!myFirstData && myLastDataGathered.mSecSince() < 5)
@@ -128,7 +128,7 @@ void ArJoyHandler::getData(void)
 		axes += " y ";
 	if (joyInfoEx.dwFlags & JOY_RETURNZ)
 		axes += " z ";
-	ArLog::log(ArLog::Normal, "Axes %s\n", axes.c_str());
+	ArLog::log(MvrLog::Normal, "Axes %s\n", axes.c_str());
   }
   */
 
@@ -232,7 +232,7 @@ void ArJoyHandler::getData(void)
 
 #if 0
 
-void ArJoyHandler::getData(void)
+void MvrJoyHandler::getData(void)
 {
   int x, y, z;
   if (!myFirstData && myLastDataGathered.mSecSince() < 5)

@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArTransform.h"
+#include "MvrTransform.h"
 
 /// Used to convert and store data from  and/or about a range sensor
 /** This class holds sensor information and a sensor reading position and other
@@ -45,42 +45,42 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     data or not.   (Used to disable sensors data in robot and application
     configuration.)
 
-    Typical use is to create an ArSensorReading object representing an indidiual
+    Typical use is to create an MvrSensorReading object representing an indidiual
     sensor that can sense distance (range) in one direction, or a set of
-    ArSensorReadings corresponding to the set of range data returned by a sensor
+    MvrSensorReadings corresponding to the set of range data returned by a sensor
     that provides multiple range measurements (e.g. most scanning laser
     rangefinders provide a set of readings, each at different angles but from the
-    same measurement origin point. The ArRangeDevice subclasses for laser
-    rangefinders in ARIA use a set of ArSensorReading objects to store and convert
+    same measurement origin point. The MvrRangeDevice subclasses for laser
+    rangefinders in ARIA use a set of MvrSensorReading objects to store and convert
     the raw range data read from the laser rangefinder device, then those are used
-    to update the "raw", "current" and other ArRangeBuffer objects in
-    ArRangeDevice.)
+    to update the "raw", "current" and other MvrRangeBuffer objects in
+    MvrRangeDevice.)
 
     Provide the position and orientation of the sensor reading relative to the
-    center of the robot in the ArSensorReading constructor, or call
+    center of the robot in the MvrSensorReading constructor, or call
     resetSensorPosition() to change.  
 
-    Update data in an ArSensorReading object by calling newData().  The range
+    Update data in an MvrSensorReading object by calling newData().  The range
     value provided will be projected to a local cartesian cooridate based on the
-    ArSensorReadings sensor position on the robot as supplied in the constructor or call to
+    MvrSensorReadings sensor position on the robot as supplied in the constructor or call to
     resetSensorPosition(), and alrso transformed a global coordinate system based on a supplied 
     transform (usually this is the robot's global coordinate system using
-    ArRobot::getToGlobalTransform()).  An incrementing counter must also be provided, and
+    MvrRobot::getToGlobalTransform()).  An incrementing counter must also be provided, and
     a timestamp.  The counter is used to check for updated data (by this class
-    and other classes using ArSensorReading objects), so it should 
+    and other classes using MvrSensorReading objects), so it should 
     increment when data is updated.  The timestamp may be used by other classes 
     to determine age of data.  
 */
 
-class ArSensorReading
+class MvrSensorReading
 {
 public:
   /// Constructor, the three args are the physical location of the sensor
-  AREXPORT ArSensorReading(double xPos = 0.0, double yPos = 0.0, double thPos = 0.0);
+  AREXPORT MvrSensorReading(double xPos = 0.0, double yPos = 0.0, double thPos = 0.0);
    /// Copy constructor
-  AREXPORT ArSensorReading(const ArSensorReading & reading);
+  AREXPORT MvrSensorReading(const MvrSensorReading & reading);
   /// Assignment operator
-  AREXPORT ArSensorReading &operator=(const ArSensorReading &reading);
+  AREXPORT MvrSensorReading &operator=(const MvrSensorReading &reading);
   /// Destructor
   AREXPORT virtual ~ArSensorReading();
 
@@ -103,7 +103,7 @@ public:
   double getY(void) const { return myReading.getY(); }
   /// Gets the position of the reading 
   /// @return the position of the reading (ie where the sonar pinged back)
-  ArPose getPose(void) const { return myReading; }
+  MvrPose getPose(void) const { return myReading; }
 
   /// Gets the X location of the sensor reading in local coords
   double getLocalX(void) const { return myLocalReading.getX(); }
@@ -111,20 +111,20 @@ public:
   double getLocalY(void) const { return myLocalReading.getY(); }
   /// Gets the position of the reading 
   /// @return the position of the reading (ie the obstacle where the sonar pinged back)
-  ArPose getLocalPose(void) const { return myLocalReading; }
+  MvrPose getLocalPose(void) const { return myLocalReading; }
 
   /** Gets the pose of the robot at which the reading was taken 
       @sa getEncoderPoseTaken()
       @sa getTimeTaken()
-      @sa ArRobot::getPose()
+      @sa MvrRobot::getPose()
   */
-  ArPose getPoseTaken(void) const { return myReadingTaken; }
+  MvrPose getPoseTaken(void) const { return myReadingTaken; }
 
   /** Gets the robot's encoder pose the reading was taken at
       @sa getPoseTaken()
-      @sa ArRobot::getEncoderPose()
+      @sa MvrRobot::getEncoderPose()
   */
-  ArPose getEncoderPoseTaken(void) const { return myEncoderPoseTaken; }
+  MvrPose getEncoderPoseTaken(void) const { return myEncoderPoseTaken; }
 
   /** Gets the X location of the sonar on the robot
       @sa getSensorPosition()
@@ -161,7 +161,7 @@ public:
   /** 
       @return the position of the sensor on the robot
   */
-  ArPose getSensorPosition(void) const { return mySensorPos; }
+  MvrPose getSensorPosition(void) const { return mySensorPos; }
 
   /// Gets the cosine component of the heading of the sensor reading
   double getSensorDX(void) const { return mySensorCos; }
@@ -188,7 +188,7 @@ public:
   */
   unsigned int getCounterTaken(void) const { return myCounterTaken; }
 
-  ArTime getTimeTaken(void) const { return myTimeTaken; }
+  MvrTime getTimeTaken(void) const { return myTimeTaken; }
   
   /**
     Update data. 
@@ -196,23 +196,23 @@ public:
     @param robotPose Robot position in global coordinates space when the sensor data was received.
     @param encoderPose Robot encoder-only position in global coordinate space when the sensor data was received.
     @param trans Transform reading position from robot-local coordinate system.
-For example, pass result of ArRobot::getToGlobalTransform() transform to robot's global
+For example, pass result of MvrRobot::getToGlobalTransform() transform to robot's global
 coordinate system.
     @param counter an incrementing counter used to check for updated data (by this class
-    and other classes using ArSensorReading objects)
+    and other classes using MvrSensorReading objects)
     @param timeTaken System time when this measurement was taken or received.
     @param ignoreThisReading Set the "ignore" flag for this reading. Data is stored but applications (e.g. navigation) may use this flag to ignore some sensor readings based on robot or user configuration.
     @param extraInt extra device-specific data. @see getExtraInt()
 */
-  AREXPORT void newData(int range, ArPose robotPose, ArPose encoderPose,
+  AREXPORT void newData(int range, MvrPose robotPose, MvrPose encoderPose,
 			ArTransform trans, unsigned int counter, 
 			ArTime timeTaken, bool ignoreThisReading = false,
 			int extraInt = 0);
 
   /**
-    @copydoc newData(int, ArPose, ArPose, ArTransform, unsigned int, ArTime, bool, int)
+    @copydoc newData(int, MvrPose, MvrPose, MvrTransform, unsigned int, MvrTime, bool, int)
   */
-  AREXPORT void newData(int sx, int sy, ArPose robotPose,
+  AREXPORT void newData(int sx, int sy, MvrPose robotPose,
 			ArPose encoderPose,
 			ArTransform trans, 
 			unsigned int counter,
@@ -235,10 +235,10 @@ coordinate system.
 
   /// Applies a transform to the reading position, and where it was taken
   /// @internal
-  AREXPORT void applyTransform(ArTransform trans);
+  AREXPORT void applyTransform(MvrTransform trans);
   /// Applies a transform to the encoder pose taken
   /// @internal
-  AREXPORT void applyEncoderTransform(ArTransform trans);
+  AREXPORT void applyEncoderTransform(MvrTransform trans);
   /// Whether a transform to this reading's position was applied (An adjustment
   /// transform due to robot position and motion, etc. is normally initiated
   /// automatically by the range device class which is providing this sensor
@@ -249,16 +249,16 @@ coordinate system.
   AREXPORT void setAdjusted(bool adjusted) { myAdjusted = adjusted; }
 protected:
   unsigned int myCounterTaken;
-  ArPose myReading;
-  ArPose myLocalReading;  
-  ArPose myReadingTaken;
-  ArPose myEncoderPoseTaken;
-  ArPose mySensorPos;
+  MvrPose myReading;
+  MvrPose myLocalReading;  
+  MvrPose myReadingTaken;
+  MvrPose myEncoderPoseTaken;
+  MvrPose mySensorPos;
   double mySensorCos, mySensorSin;
   double myDistToCenter;
   double myAngleToCenter;
   int myRange;
-  ArTime myTimeTaken;
+  MvrTime myTimeTaken;
   bool myIgnoreThisReading;
   int myExtraInt;
   bool myAdjusted;

@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ArExport.h"
-#include "ariaOSDef.h"
-#include "ArActionAvoidSide.h"
-#include "ArRobot.h"
+#include "MvrExport.h"
+#include "mvriaOSDef.h"
+#include "MvrActionAvoidSide.h"
+#include "MvrRobot.h"
 
 /**
    @param name name of the action
@@ -35,15 +9,15 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param turnAmount degrees at which to turn (deg)
 */
 
-AREXPORT ArActionAvoidSide::ArActionAvoidSide(const char *name,
+AREXPORT MvrActionAvoidSide::MvrActionAvoidSide(const char *name,
 					      double obstacleDistance,
 					      double turnAmount) :
-  ArAction(name, "Avoids side obstacles, ie walls")
+  MvrAction(name, "Avoids side obstacles, ie walls")
 {
-  setNextArgument(ArArg("obstacle distance", &myObsDist, 
+  setNextArgument(MvrArg("obstacle distance", &myObsDist, 
 			"Distance at which to start avoiding (mm)"));
   myObsDist = obstacleDistance;
-  setNextArgument(ArArg("turn amount", &myTurnAmount,
+  setNextArgument(MvrArg("turn amount", &myTurnAmount,
 			"Degrees at which to turn (deg)"));
   myTurnAmount = turnAmount;
 
@@ -51,13 +25,13 @@ AREXPORT ArActionAvoidSide::ArActionAvoidSide(const char *name,
 
 }
 
-AREXPORT ArActionAvoidSide::~ArActionAvoidSide()
+AREXPORT MvrActionAvoidSide::~MvrActionAvoidSide()
 {
 
 }
 
-AREXPORT ArActionDesired *ArActionAvoidSide::fire(
-	ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *MvrActionAvoidSide::fire(
+	MvrActionDesired currentDesired)
 {
   double leftDist, rightDist;
 

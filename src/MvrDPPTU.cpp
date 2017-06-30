@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArDPPTU.h"
-#include "ArCommands.h"
-#include "ArBasePacket.h"
+#include "MvrDPPTU.h"
+#include "MvrCommands.h"
+#include "MvrBasePacket.h"
 #include "ariaInternal.h"
-#include "ArDeviceConnection.h"
+#include "MvrDeviceConnection.h"
 
 #define DO_DEBUG(code) {code;}
 
@@ -50,29 +50,29 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define DEBUG_POS(code) {}
 #endif
 
-AREXPORT ArDPPTUPacket::ArDPPTUPacket(ArTypes::UByte2 bufferSize) :
-  ArBasePacket(bufferSize, 0)
+AREXPORT MvrDPPTUPacket::ArDPPTUPacket(MvrTypes::UByte2 bufferSize) :
+  MvrBasePacket(bufferSize, 0)
 {
 }
 
-AREXPORT ArDPPTUPacket::~ArDPPTUPacket()
+AREXPORT MvrDPPTUPacket::~ArDPPTUPacket()
 {
 
 }
 
-AREXPORT void ArDPPTUPacket::byte2ToBuf(int val)
+AREXPORT void MvrDPPTUPacket::byte2ToBuf(int val)
 {
-  //ArLog::log(ArLog::Normal, "Putting %d in an DPPTU packet...", val);
+  //ArLog::log(MvrLog::Normal, "Putting %d in an DPPTU packet...", val);
   int i;
   char buf[8];
   if (myLength + 4 > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArDPPTUPacket::byte2ToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrDPPTUPacket::byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
 
   if(val > 9999999 || val < -999999) 
-	  ArLog::log(ArLog::Terse, "ArDPPTUPacket::byte2ToBuf: Warning: truncating value %d to 7 digits!", val);
+	  MvrLog::log(MvrLog::Terse, "MvrDPPTUPacket::byte2ToBuf: Warning: truncating value %d to 7 digits!", val);
 
   snprintf(buf, 8, "%d", val);
 
@@ -83,9 +83,9 @@ AREXPORT void ArDPPTUPacket::byte2ToBuf(int val)
   }
 }
 
-AREXPORT void ArDPPTUPacket::finalizePacket(void)
+AREXPORT void MvrDPPTUPacket::finalizePacket(void)
 {
-    ArDPPTUPacket::uByteToBuf(ArDPPTUCommands::DELIM);
+    MvrDPPTUPacket::uByteToBuf(MvrDPPTUCommands::DELIM);
 }
 
 /** @a deviceType If a type other than PANTILT_DEFAULT is given, then manually
@@ -97,8 +97,8 @@ AREXPORT void ArDPPTUPacket::finalizePacket(void)
  * specifies one device to power on at startup and power off on exit. If -1
  * (default value), then all possible PTU power ports are powered on.
  */
-AREXPORT ArDPPTU::ArDPPTU(ArRobot *robot, DeviceType deviceType, int deviceIndex) :
-  ArPTZ(robot),
+AREXPORT MvrDPPTU::ArDPPTU(MvrRobot *robot, DeviceType deviceType, int deviceIndex) :
+  MvrPTZ(robot),
   myCanGetRealPanTilt(true),
   myInit(false),
   myQueryCB(this, &ArDPPTU::query),
@@ -112,7 +112,7 @@ AREXPORT ArDPPTU::ArDPPTU(ArRobot *robot, DeviceType deviceType, int deviceIndex
     case PANTILT_PTUD47:
 	  myPanConvert = 0.0514;
       myTiltConvert = 0.0129;
-	  ArPTZ::setLimits(158, -158, 30, -46);
+	  MvrPTZ::setLimits(158, -158, 30, -46);
 	  /*
       myMaxPan = 158;
       myMinPan = -158;
@@ -135,7 +135,7 @@ AREXPORT ArDPPTU::ArDPPTU(ArRobot *robot, DeviceType deviceType, int deviceIndex
 	  // if DEFAULT, then in init() we will query the PTU to get the real conversion factors and limits (but start out assuming same as D46)
 	  myPanConvert = 0.0514;
       myTiltConvert = 0.0514;
-	  ArPTZ::setLimits(158, -158, 30, -46);
+	  MvrPTZ::setLimits(158, -158, 30, -46);
 	  /*
       myMaxPan = 158;
       myMinPan = -158;
@@ -169,7 +169,7 @@ AREXPORT ArDPPTU::ArDPPTU(ArRobot *robot, DeviceType deviceType, int deviceIndex
   else if(deviceIndex == 2)
     myPowerPorts.push_back(23);
   else
-    ArLog::log(ArLog::Terse, "ArDPPTU: Warning: No Seekur power port assignment known for PTU device #%d, won't turn any on.");
+    MvrLog::log(MvrLog::Terse, "MvrDPPTU: Warning: No Seekur power port assignment known for PTU device #%d, won't turn any on.");
 
   if(myRobot)
   {
@@ -179,20 +179,20 @@ AREXPORT ArDPPTU::ArDPPTU(ArRobot *robot, DeviceType deviceType, int deviceIndex
     }
     //myRobot->addDisconnectNormallyCallback(&myShutdownCB);
     //myRobot->addDisconnectOnErrorCallback(&myShutdownCB);
-    //myRobot->addUserTask("ArDPPTU", 65, &myQueryCB);
+    //myRobot->addUserTask("MvrDPPTU", 65, &myQueryCB);
   }
 
- // Aria::addExitCallback(&myShutdownCB);
+ // Mvria::addExitCallback(&myShutdownCB);
     
 }
 
-AREXPORT ArDPPTU::~ArDPPTU()
+AREXPORT MvrDPPTU::~ArDPPTU()
 {
   shutdown();
-  Aria::remExitCallback(&myShutdownCB);
+  Mvria::remExitCallback(&myShutdownCB);
 }
 
-void ArDPPTU::shutdown()
+void MvrDPPTU::shutdown()
 {
   if(!myInit) return;
   haltAll();
@@ -209,19 +209,19 @@ void ArDPPTU::shutdown()
   myInit = false;
 }
 
-void ArDPPTU::preparePacket(void)
+void MvrDPPTU::preparePacket(void)
 {
   myPacket.empty();
-  myPacket.byteToBuf(ArDPPTUCommands::DELIM);
+  myPacket.byteToBuf(MvrDPPTUCommands::DELIM);
 }
 
-AREXPORT bool ArDPPTU::init(void)
+AREXPORT bool MvrDPPTU::init(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::INIT);
+  myPacket.byteToBuf(MvrDPPTUCommands::INIT);
   if (!sendPacket(&myPacket))
   {
-    ArLog::log(ArLog::Terse, "ArDPPTU: Error sending INIT to PTU! (Write error?)");
+    MvrLog::log(MvrLog::Terse, "MvrDPPTU: Error sending INIT to PTU! (Write error?)");
     return false;
   }
 
@@ -266,11 +266,11 @@ AREXPORT bool ArDPPTU::init(void)
     myPacket.byteToBuf('P');
     myPacket.byteToBuf('R');
     if(!sendPacket(&myPacket))
-      ArLog::log(ArLog::Terse, "ArDPPTU: Warning: write error sending pan resolution query");
+      MvrLog::log(MvrLog::Terse, "MvrDPPTU: Warning: write error sending pan resolution query");
     // We can't distinguish PR and TR responses based on their content alone, so
     // we have to query pan resolution (PR), then after receiving resolution
     // response, query TR. (see readPacket() for TR).
-	///@todo query the device for pan and tilt limits, and when response is received, call ArPTZ::setLimits() to change.
+	///@todo query the device for pan and tilt limits, and when response is received, call MvrPTZ::setLimits() to change.
   }
 
   query();   // do first position query
@@ -284,15 +284,15 @@ AREXPORT bool ArDPPTU::init(void)
 }
 
 /** A blank packet can be sent to exit monitor mode **/
-AREXPORT bool ArDPPTU::blank(void)
+AREXPORT bool MvrDPPTU::blank(void)
 {
   myPacket.empty();
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::pan_i(double pdeg)
+AREXPORT bool MvrDPPTU::pan_i(double pdeg)
 {
-  //ArLog::log(ArLog::Normal, "ArDPPTU::panTilt(%f, %f)", pdeg, tdeg);
+  //ArLog::log(MvrLog::Normal, "MvrDPPTU::panTilt(%f, %f)", pdeg, tdeg);
   if (pdeg > getMaxPosPan_i())
     pdeg = getMaxPosPan_i();
   if (pdeg < getMaxNegPan_i())
@@ -300,14 +300,14 @@ AREXPORT bool ArDPPTU::pan_i(double pdeg)
 
   if (pdeg != myPanSent)
   {
-	  DEBUG_CMD(ArLog::log(ArLog::Normal, 
-      "ArDPPTU::pan: sending command to pan to %f deg (maxPosPan=%f, minNegPan=%f, myPanSent=%f)", 
+	  DEBUG_CMD(MvrLog::log(MvrLog::Normal, 
+      "MvrDPPTU::pan: sending command to pan to %f deg (maxPosPan=%f, minNegPan=%f, myPanSent=%f)", 
       pdeg, getMaxPosPan_i(), getMaxNegPan_i(), myPanSent); 
     )
     preparePacket();
     myPacket.byteToBuf('P');
     myPacket.byteToBuf('P');
-    myPacket.byte2ToBuf(ArMath::roundInt(pdeg/myPanConvert));
+    myPacket.byte2ToBuf(MvrMath::roundInt(pdeg/myPanConvert));
 
     myPanSent = pdeg;
     if(!myCanGetRealPanTilt) myPan = myPanSent;
@@ -316,7 +316,7 @@ AREXPORT bool ArDPPTU::pan_i(double pdeg)
 return true;
 }
 
-AREXPORT bool ArDPPTU::tilt_i(double tdeg)
+AREXPORT bool MvrDPPTU::tilt_i(double tdeg)
 {
   if (tdeg > getMaxPosTilt_i())
     tdeg = getMaxPosTilt_i();
@@ -325,14 +325,14 @@ AREXPORT bool ArDPPTU::tilt_i(double tdeg)
 
   if (tdeg != myTiltSent)
   {
-	  DEBUG_CMD(ArLog::log(ArLog::Normal, 
-      "ArDPPTU::tilt: sending command to tilt to %f deg (maxPosTilt=%f, minNegTilt=%f, myTiltSent=%f)", 
+	  DEBUG_CMD(MvrLog::log(MvrLog::Normal, 
+      "MvrDPPTU::tilt: sending command to tilt to %f deg (maxPosTilt=%f, minNegTilt=%f, myTiltSent=%f)", 
       tdeg, getMaxPosTilt_i(), getMaxNegTilt_i(), myTiltSent)
     );
     preparePacket();
     myPacket.byteToBuf('T');
     myPacket.byteToBuf('P');
-    myPacket.byte2ToBuf(ArMath::roundInt(tdeg/myTiltConvert));
+    myPacket.byte2ToBuf(MvrMath::roundInt(tdeg/myTiltConvert));
 
     myTiltSent = tdeg;
     if(!myCanGetRealPanTilt) myTilt = myTiltSent;
@@ -342,7 +342,7 @@ AREXPORT bool ArDPPTU::tilt_i(double tdeg)
   return true;
 }
 
-AREXPORT bool ArDPPTU::panSlew(double deg)
+AREXPORT bool MvrDPPTU::panSlew(double deg)
 {
   if (deg > getMaxPanSlew())
     deg = getMaxPanSlew();
@@ -351,15 +351,15 @@ AREXPORT bool ArDPPTU::panSlew(double deg)
   
   myPanSlew = deg;
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::PAN);
-  myPacket.byteToBuf(ArDPPTUCommands::SPEED);
+  myPacket.byteToBuf(MvrDPPTUCommands::PAN);
+  myPacket.byteToBuf(MvrDPPTUCommands::SPEED);
 
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myPanConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myPanConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::tiltSlew(double deg)
+AREXPORT bool MvrDPPTU::tiltSlew(double deg)
 {
   if (deg > getMaxTiltSlew())
     deg = getMaxTiltSlew();
@@ -368,58 +368,58 @@ AREXPORT bool ArDPPTU::tiltSlew(double deg)
   
   myTiltSlew = deg;
   preparePacket();
-  myPacket.byteToBuf('T');// ArDPPTUCommands::TILT);
-  myPacket.byteToBuf('S');// ArDPPTUCommands::SPEED);
+  myPacket.byteToBuf('T');// MvrDPPTUCommands::TILT);
+  myPacket.byteToBuf('S');// MvrDPPTUCommands::SPEED);
 
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myTiltConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myTiltConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::resetCalib(void)
+AREXPORT bool MvrDPPTU::resetCalib(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::RESET);
+  myPacket.byteToBuf(MvrDPPTUCommands::RESET);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::disableReset(void)
+AREXPORT bool MvrDPPTU::disableReset(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::RESET);
-  myPacket.byteToBuf(ArDPPTUCommands::DISABLE);
+  myPacket.byteToBuf(MvrDPPTUCommands::RESET);
+  myPacket.byteToBuf(MvrDPPTUCommands::DISABLE);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::resetTilt(void)
+AREXPORT bool MvrDPPTU::resetTilt(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::RESET);
-  myPacket.byteToBuf(ArDPPTUCommands::TILT);
+  myPacket.byteToBuf(MvrDPPTUCommands::RESET);
+  myPacket.byteToBuf(MvrDPPTUCommands::TILT);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::resetPan(void)
+AREXPORT bool MvrDPPTU::resetPan(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::RESET);
-  myPacket.byteToBuf(ArDPPTUCommands::PAN);
+  myPacket.byteToBuf(MvrDPPTUCommands::RESET);
+  myPacket.byteToBuf(MvrDPPTUCommands::PAN);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::resetAll(void)
+AREXPORT bool MvrDPPTU::resetAll(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::RESET);
-  myPacket.byteToBuf(ArDPPTUCommands::ENABLE);
+  myPacket.byteToBuf(MvrDPPTUCommands::RESET);
+  myPacket.byteToBuf(MvrDPPTUCommands::ENABLE);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::saveSet(void)
+AREXPORT bool MvrDPPTU::saveSet(void)
 {
   preparePacket();
   myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
@@ -428,7 +428,7 @@ AREXPORT bool ArDPPTU::saveSet(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::restoreSet(void)
+AREXPORT bool MvrDPPTU::restoreSet(void)
 {
   preparePacket();
   myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
@@ -437,7 +437,7 @@ AREXPORT bool ArDPPTU::restoreSet(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::factorySet(void)
+AREXPORT bool MvrDPPTU::factorySet(void)
 {
   preparePacket();
   myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
@@ -446,28 +446,28 @@ AREXPORT bool ArDPPTU::factorySet(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::limitEnforce(bool val)
+AREXPORT bool MvrDPPTU::limitEnforce(bool val)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::LIMIT);
+  myPacket.byteToBuf(MvrDPPTUCommands::LIMIT);
 
   if (val)
-    myPacket.byteToBuf(ArDPPTUCommands::ENABLE);
+    myPacket.byteToBuf(MvrDPPTUCommands::ENABLE);
   else
-    myPacket.byteToBuf(ArDPPTUCommands::DISABLE);
+    myPacket.byteToBuf(MvrDPPTUCommands::DISABLE);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::immedExec(void)
+AREXPORT bool MvrDPPTU::immedExec(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::IMMED);
+  myPacket.byteToBuf(MvrDPPTUCommands::IMMED);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::slaveExec(void)
+AREXPORT bool MvrDPPTU::slaveExec(void)
 {
   preparePacket();
   myPacket.byteToBuf('S'); //ArDPPTUCommands::SPEED);
@@ -475,7 +475,7 @@ AREXPORT bool ArDPPTU::slaveExec(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::awaitExec(void)
+AREXPORT bool MvrDPPTU::awaitExec(void)
 {
   preparePacket();
   myPacket.byteToBuf('A'); //ArDPPTUCommands::ACCEL);
@@ -484,34 +484,34 @@ AREXPORT bool ArDPPTU::awaitExec(void)
 }
 
 
-AREXPORT bool ArDPPTU::haltAll(void)
+AREXPORT bool MvrDPPTU::haltAll(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::HALT);
+  myPacket.byteToBuf(MvrDPPTUCommands::HALT);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::haltPan(void)
+AREXPORT bool MvrDPPTU::haltPan(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::HALT);
-  myPacket.byteToBuf(ArDPPTUCommands::PAN);
+  myPacket.byteToBuf(MvrDPPTUCommands::HALT);
+  myPacket.byteToBuf(MvrDPPTUCommands::PAN);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::haltTilt(void)
+AREXPORT bool MvrDPPTU::haltTilt(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::HALT);
-  myPacket.byteToBuf(ArDPPTUCommands::TILT);
+  myPacket.byteToBuf(MvrDPPTUCommands::HALT);
+  myPacket.byteToBuf(MvrDPPTUCommands::TILT);
 
   return sendPacket(&myPacket);
 }
 
 
-AREXPORT bool ArDPPTU::panAccel(double deg)
+AREXPORT bool MvrDPPTU::panAccel(double deg)
 {
   if (deg > getMaxPanAccel())
     deg = getMaxPanAccel();
@@ -520,9 +520,9 @@ AREXPORT bool ArDPPTU::panAccel(double deg)
 
   if (myPanAccel != deg) {
     preparePacket();
-    myPacket.byteToBuf(ArDPPTUCommands::PAN);
-    myPacket.byteToBuf(ArDPPTUCommands::ACCEL);
-    myPacket.byte2ToBuf(ArMath::roundInt(deg/myPanConvert));
+    myPacket.byteToBuf(MvrDPPTUCommands::PAN);
+    myPacket.byteToBuf(MvrDPPTUCommands::ACCEL);
+    myPacket.byte2ToBuf(MvrMath::roundInt(deg/myPanConvert));
 
     return sendPacket(&myPacket);
   }
@@ -530,7 +530,7 @@ AREXPORT bool ArDPPTU::panAccel(double deg)
   return true;
 }
 
-AREXPORT bool ArDPPTU::tiltAccel(double deg)
+AREXPORT bool MvrDPPTU::tiltAccel(double deg)
 {
   if (deg > getMaxPanAccel())
     deg = getMaxPanAccel();
@@ -539,9 +539,9 @@ AREXPORT bool ArDPPTU::tiltAccel(double deg)
 
   if (myTiltAccel != deg) {
     preparePacket();
-    myPacket.byteToBuf(ArDPPTUCommands::TILT);
-    myPacket.byteToBuf(ArDPPTUCommands::ACCEL);
-    myPacket.byte2ToBuf(ArMath::roundInt(deg/myTiltConvert));
+    myPacket.byteToBuf(MvrDPPTUCommands::TILT);
+    myPacket.byteToBuf(MvrDPPTUCommands::ACCEL);
+    myPacket.byte2ToBuf(MvrMath::roundInt(deg/myTiltConvert));
 
     return sendPacket(&myPacket);
   }
@@ -549,125 +549,125 @@ AREXPORT bool ArDPPTU::tiltAccel(double deg)
   return true;
 }
 
-AREXPORT bool ArDPPTU::basePanSlew(double deg)
+AREXPORT bool MvrDPPTU::basePanSlew(double deg)
 {
   myBasePanSlew = deg;
 
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::PAN);
-  myPacket.byteToBuf(ArDPPTUCommands::BASE);
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myPanConvert));
+  myPacket.byteToBuf(MvrDPPTUCommands::PAN);
+  myPacket.byteToBuf(MvrDPPTUCommands::BASE);
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myPanConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::baseTiltSlew(double deg)
+AREXPORT bool MvrDPPTU::baseTiltSlew(double deg)
 {
   myBaseTiltSlew = deg;
 
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::TILT);
-  myPacket.byteToBuf(ArDPPTUCommands::BASE);
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myTiltConvert));
+  myPacket.byteToBuf(MvrDPPTUCommands::TILT);
+  myPacket.byteToBuf(MvrDPPTUCommands::BASE);
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myTiltConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::upperPanSlew(double deg)
+AREXPORT bool MvrDPPTU::upperPanSlew(double deg)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::PAN);
-  myPacket.byteToBuf(ArDPPTUCommands::UPPER);
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myPanConvert));
+  myPacket.byteToBuf(MvrDPPTUCommands::PAN);
+  myPacket.byteToBuf(MvrDPPTUCommands::UPPER);
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myPanConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::lowerPanSlew(double deg)
+AREXPORT bool MvrDPPTU::lowerPanSlew(double deg)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::PAN);
+  myPacket.byteToBuf(MvrDPPTUCommands::PAN);
   myPacket.byteToBuf('L'); //ArDPPTUCommands::LIMIT);
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myPanConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myPanConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::upperTiltSlew(double deg)
+AREXPORT bool MvrDPPTU::upperTiltSlew(double deg)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::TILT);
-  myPacket.byteToBuf(ArDPPTUCommands::UPPER);
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myTiltConvert));
+  myPacket.byteToBuf(MvrDPPTUCommands::TILT);
+  myPacket.byteToBuf(MvrDPPTUCommands::UPPER);
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myTiltConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::lowerTiltSlew(double deg)
+AREXPORT bool MvrDPPTU::lowerTiltSlew(double deg)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::TILT);
+  myPacket.byteToBuf(MvrDPPTUCommands::TILT);
   myPacket.byteToBuf('L'); //ArDPPTUCommands::LIMIT);
-  myPacket.byte2ToBuf(ArMath::roundInt(deg/myTiltConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg/myTiltConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::indepMove(void)
+AREXPORT bool MvrDPPTU::indepMove(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::CONTROL);
+  myPacket.byteToBuf(MvrDPPTUCommands::CONTROL);
   myPacket.byteToBuf('I'); //ArDPPTUCommands::IMMED);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::velMove(void)
+AREXPORT bool MvrDPPTU::velMove(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::CONTROL);
-  myPacket.byteToBuf(ArDPPTUCommands::VELOCITY);
+  myPacket.byteToBuf(MvrDPPTUCommands::CONTROL);
+  myPacket.byteToBuf(MvrDPPTUCommands::VELOCITY);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::enMon(void)
+AREXPORT bool MvrDPPTU::enMon(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::MONITOR);
-  myPacket.byteToBuf(ArDPPTUCommands::ENABLE);
+  myPacket.byteToBuf(MvrDPPTUCommands::MONITOR);
+  myPacket.byteToBuf(MvrDPPTUCommands::ENABLE);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::disMon(void)
+AREXPORT bool MvrDPPTU::disMon(void)
 {
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::MONITOR);
-  myPacket.byteToBuf(ArDPPTUCommands::DISABLE);
+  myPacket.byteToBuf(MvrDPPTUCommands::MONITOR);
+  myPacket.byteToBuf(MvrDPPTUCommands::DISABLE);
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::initMon(double deg1, double deg2, 
+AREXPORT bool MvrDPPTU::initMon(double deg1, double deg2, 
 			       double deg3, double deg4)
 {
 
   preparePacket();
-  myPacket.byteToBuf(ArDPPTUCommands::MONITOR);
+  myPacket.byteToBuf(MvrDPPTUCommands::MONITOR);
 
-  myPacket.byte2ToBuf(ArMath::roundInt(deg1/myPanConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg1/myPanConvert));
   myPacket.byteToBuf(',');
-  myPacket.byte2ToBuf(ArMath::roundInt(deg2/myPanConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg2/myPanConvert));
   myPacket.byteToBuf(',');
-  myPacket.byte2ToBuf(ArMath::roundInt(deg3/myTiltConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg3/myTiltConvert));
   myPacket.byteToBuf(',');
-  myPacket.byte2ToBuf(ArMath::roundInt(deg4/myTiltConvert));
+  myPacket.byte2ToBuf(MvrMath::roundInt(deg4/myTiltConvert));
 
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::setHoldPower(Axis axis, PowerMode mode)
+AREXPORT bool MvrDPPTU::setHoldPower(Axis axis, PowerMode mode)
 {
   preparePacket();
   myPacket.byteToBuf(axis);
@@ -676,7 +676,7 @@ AREXPORT bool ArDPPTU::setHoldPower(Axis axis, PowerMode mode)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArDPPTU::setMovePower(Axis axis, PowerMode mode)
+AREXPORT bool MvrDPPTU::setMovePower(Axis axis, PowerMode mode)
 {
   preparePacket();
   myPacket.byteToBuf(axis);
@@ -686,7 +686,7 @@ AREXPORT bool ArDPPTU::setMovePower(Axis axis, PowerMode mode)
 }
 
 
-AREXPORT ArBasePacket *ArDPPTU::readPacket()
+AREXPORT MvrBasePacket *ArDPPTU::readPacket()
 {
   if(!myConn)
     return NULL;
@@ -722,7 +722,7 @@ AREXPORT ArBasePacket *ArDPPTU::readPacket()
     if(myConn->read(&c, 1, 1) <= 0)
       break; // no data, abort read until next robot cycle
 
-    //printf("ArDPPTU::read[%d]= %c (0x%x)\n", i, c, c);
+    //printf("MvrDPPTU::read[%d]= %c (0x%x)\n", i, c, c);
 
     if(c == '*')
       state = start; // jump into start of new message no matter what the previous state was. (start state will see * again and proceed to state after that)
@@ -777,7 +777,7 @@ AREXPORT ArBasePacket *ArDPPTU::readPacket()
           databuf[databufp++] = c;
           if(databufp > databufsize)
           {
-            ArLog::log(ArLog::Terse, "ArDPPTU: Internal parse error, data in incoming message is too large for buffer, aborting.");
+            MvrLog::log(MvrLog::Terse, "MvrDPPTU: Internal parse error, data in incoming message is too large for buffer, aborting.");
             state = start;
           }
         }
@@ -828,7 +828,7 @@ AREXPORT ArBasePacket *ArDPPTU::readPacket()
         if(!myGotPanRes)
         {
           myPanConvert = res / (60.0*60.0);  // convert from arcsecond to degr
-          ArLog::log(ArLog::Normal, "ArDPPTU: Received pan resolution response from PTU: %f deg / %f arcsec. Now requesting tilt resolution...", myPanConvert, res);
+          MvrLog::log(MvrLog::Normal, "MvrDPPTU: Received pan resolution response from PTU: %f deg / %f arcsec. Now requesting tilt resolution...", myPanConvert, res);
 
           // Now ask for tilt resolution (there is no way to distinguish the
           // responses from the PTU so we have to ask for them in sequence.)
@@ -841,18 +841,18 @@ AREXPORT ArBasePacket *ArDPPTU::readPacket()
         else if(!myGotTiltRes)
         {
           myTiltConvert = res / (60.0*60.0);
-          ArLog::log(ArLog::Normal, "ArDPPTU: Received tilt resolution response from PTU: %f deg / %f arcsec", myTiltConvert, res);
+          MvrLog::log(MvrLog::Normal, "MvrDPPTU: Received tilt resolution response from PTU: %f deg / %f arcsec", myTiltConvert, res);
           myGotTiltRes = true;
         }
         else
         {
-          ArLog::log(ArLog::Normal, "ArDPPTU: Warning: got unexpected resolution response (already received both pan and tilt resolution responses). Ignoring.");
+          MvrLog::log(MvrLog::Normal, "MvrDPPTU: Warning: got unexpected resolution response (already received both pan and tilt resolution responses). Ignoring.");
         }
       }
       else
       {
         // unrecognized message.
-        ArLog::log(ArLog::Normal, "ArDPPTU: Warning: received unrecognized message from PTU: %s", databuf);
+        MvrLog::log(MvrLog::Normal, "MvrDPPTU: Warning: received unrecognized message from PTU: %s", databuf);
       }
 
       state = start; // start looking for next message
@@ -866,7 +866,7 @@ AREXPORT ArBasePacket *ArDPPTU::readPacket()
   if(gotpan && gottilt)
   {
       // a message was recognized and handled above.
-      DEBUG_TIME(ArLog::log(ArLog::Normal, "ArDPPTU recieve interval=%ld", myLastPositionMessageHandled.mSecSince()));
+      DEBUG_TIME(MvrLog::log(MvrLog::Normal, "MvrDPPTU recieve interval=%ld", myLastPositionMessageHandled.mSecSince()));
       myLastPositionMessageHandled.setToNow();
       myWarnedOldPositionData = false;
 
@@ -877,13 +877,13 @@ AREXPORT ArBasePacket *ArDPPTU::readPacket()
 
   if(myLastPositionMessageHandled.mSecSince() > 2000 && !myWarnedOldPositionData)
   {
-    ArLog::log(ArLog::Terse, "ArDPPTU: Warning: Have not received pan and tilt position for more than 2 seconds! Data will be incorrect.");
+    MvrLog::log(MvrLog::Terse, "MvrDPPTU: Warning: Have not received pan and tilt position for more than 2 seconds! Data will be incorrect.");
     myWarnedOldPositionData = true;
   }
 
   if(i >= maxbytes)
   {
-    ArLog::log(ArLog::Normal, "ArDPPTU: Warning: parse or communications error: no valid message found in %d bytes read from PTU.", maxbytes);
+    MvrLog::log(MvrLog::Normal, "MvrDPPTU: Warning: parse or communications error: no valid message found in %d bytes read from PTU.", maxbytes);
   }
 
   // next time.
@@ -891,9 +891,9 @@ AREXPORT ArBasePacket *ArDPPTU::readPacket()
 }
 
 
-void ArDPPTU::query()
+void MvrDPPTU::query()
 {
-  DEBUG_TIME(ArLog::log(ArLog::Normal, "ArDPPTU query interval=%ld", myLastQuerySent.mSecSince()));
+  DEBUG_TIME(MvrLog::log(MvrLog::Normal, "MvrDPPTU query interval=%ld", myLastQuerySent.mSecSince()));
   // ask for pan and tilt positions.
   if(myConn)
   {
@@ -903,14 +903,14 @@ void ArDPPTU::query()
 }
 
 
-ArPTZConnector::GlobalPTZCreateFunc ArDPPTU::ourCreateFunc(&ArDPPTU::create);
+ArPTZConnector::GlobalPTZCreateFunc MvrDPPTU::ourCreateFunc(&ArDPPTU::create);
 
-ArPTZ* ArDPPTU::create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot)
+ArPTZ* MvrDPPTU::create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot)
 {
-  return new ArDPPTU(robot);
+  return new MvrDPPTU(robot);
 }
 
-void ArDPPTU::registerPTZType()
+void MvrDPPTU::registerPTZType()
 {
-  ArPTZConnector::registerPTZType("dpptu", &ourCreateFunc);
+  MvrPTZConnector::registerPTZType("dpptu", &ourCreateFunc);
 }

@@ -24,299 +24,299 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionGroup.h"
-#include "ArActionGroups.h"
-#include "ArActionLimiterTableSensor.h"
-#include "ArActionLimiterForwards.h"
-#include "ArActionLimiterBackwards.h"
-#include "ArActionInput.h"
-#include "ArActionStop.h"
-#include "ArActionStallRecover.h"
-#include "ArActionBumpers.h"
-#include "ArActionAvoidFront.h"
-#include "ArActionConstantVelocity.h"
-#include "ArActionJoydrive.h"
-#include "ArActionKeydrive.h"
-#include "ArActionDeceleratingLimiter.h"
-#include "ArActionRatioInput.h"
-#include "ArRatioInputKeydrive.h"
-#include "ArRatioInputJoydrive.h"
-#include "ArRatioInputRobotJoydrive.h"
+#include "MvrActionGroup.h"
+#include "MvrActionGroups.h"
+#include "MvrActionLimiterTableSensor.h"
+#include "MvrActionLimiterForwards.h"
+#include "MvrActionLimiterBackwards.h"
+#include "MvrActionInput.h"
+#include "MvrActionStop.h"
+#include "MvrActionStallRecover.h"
+#include "MvrActionBumpers.h"
+#include "MvrActionAvoidFront.h"
+#include "MvrActionConstantVelocity.h"
+#include "MvrActionJoydrive.h"
+#include "MvrActionKeydrive.h"
+#include "MvrActionDeceleratingLimiter.h"
+#include "MvrActionRatioInput.h"
+#include "MvrRatioInputKeydrive.h"
+#include "MvrRatioInputJoydrive.h"
+#include "MvrRatioInputRobotJoydrive.h"
 
-AREXPORT ArActionGroupInput::ArActionGroupInput(ArRobot *robot)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupInput::ArActionGroupInput(MvrRobot *robot)
+  : MvrActionGroup(robot)
 {
-  addAction(new ArActionLimiterTableSensor, 100);
-  addAction(new ArActionLimiterForwards("Speed Limiter Near", 
+  addAction(new MvrActionLimiterTableSensor, 100);
+  addAction(new MvrActionLimiterForwards("Speed Limiter Near", 
                                                       300, 600, 250),
                           90);
-  addAction(new ArActionLimiterForwards("Speed Limiter Far",
+  addAction(new MvrActionLimiterForwards("Speed Limiter Far",
                                                       300, 1100, 400),
                           89);
-  addAction(new ArActionLimiterBackwards, 80);
-  myInput = new ArActionInput;
+  addAction(new MvrActionLimiterBackwards, 80);
+  myInput = new MvrActionInput;
   addAction(myInput, 70);
 }
 
-AREXPORT ArActionGroupInput::~ArActionGroupInput()
+AREXPORT MvrActionGroupInput::~ArActionGroupInput()
 {
   removeActions();
   deleteActions();
 }
 
-AREXPORT void ArActionGroupInput::setVel(double vel)
+AREXPORT void MvrActionGroupInput::setVel(double vel)
 {
   myInput->setVel(vel);
 }
 
-AREXPORT void ArActionGroupInput::setRotVel(double rotVel)
+AREXPORT void MvrActionGroupInput::setRotVel(double rotVel)
 {
   myInput->setRotVel(rotVel);
 }
 
-AREXPORT void ArActionGroupInput::deltaHeadingFromCurrent(double delta)
+AREXPORT void MvrActionGroupInput::deltaHeadingFromCurrent(double delta)
 {
   myInput->deltaHeadingFromCurrent(delta);
 }
 
-AREXPORT void ArActionGroupInput::setHeading(double heading)
+AREXPORT void MvrActionGroupInput::setHeading(double heading)
 {
   myInput->setHeading(heading);
 }
 
-AREXPORT void ArActionGroupInput::clear(void)
+AREXPORT void MvrActionGroupInput::clear(void)
 {
   myInput->clear();
 }
 
-AREXPORT ArActionInput *ArActionGroupInput::getActionInput(void)
+AREXPORT MvrActionInput *ArActionGroupInput::getActionInput(void)
 {
   return myInput;
 }
 
-AREXPORT ArActionGroupStop::ArActionGroupStop(ArRobot *robot)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupStop::ArActionGroupStop(MvrRobot *robot)
+  : MvrActionGroup(robot)
 {
-  myActionStop = new ArActionStop;
+  myActionStop = new MvrActionStop;
   addAction(myActionStop, 100);
 }
 
-AREXPORT ArActionGroupStop::~ArActionGroupStop()
+AREXPORT MvrActionGroupStop::~ArActionGroupStop()
 {
   removeActions();
   deleteActions();
 }
 
-AREXPORT ArActionStop *ArActionGroupStop::getActionStop(void)
+AREXPORT MvrActionStop *ArActionGroupStop::getActionStop(void)
 {
   return myActionStop;
 }
 
-AREXPORT ArActionGroupTeleop::ArActionGroupTeleop(ArRobot *robot)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupTeleop::ArActionGroupTeleop(MvrRobot *robot)
+  : MvrActionGroup(robot)
 {
-  addAction(new ArActionLimiterTableSensor, 100);
-  addAction(new ArActionLimiterForwards("Speed Limiter Near", 
+  addAction(new MvrActionLimiterTableSensor, 100);
+  addAction(new MvrActionLimiterForwards("Speed Limiter Near", 
                                                       300, 600, 250),
                           90);
-  addAction(new ArActionLimiterForwards("Speed Limiter Far",
+  addAction(new MvrActionLimiterForwards("Speed Limiter Far",
                                                       300, 1100, 400),
                           89);
-  addAction(new ArActionLimiterBackwards, 80);
-  myJoydrive = new ArActionJoydrive;
+  addAction(new MvrActionLimiterBackwards, 80);
+  myJoydrive = new MvrActionJoydrive;
   myJoydrive->setStopIfNoButtonPressed(false);
   addAction(myJoydrive, 70);
-  addAction(new ArActionKeydrive, 69);
+  addAction(new MvrActionKeydrive, 69);
 }
 
-AREXPORT ArActionGroupTeleop::~ArActionGroupTeleop()
+AREXPORT MvrActionGroupTeleop::~ArActionGroupTeleop()
 {
   removeActions();
   deleteActions();
 }
 
-AREXPORT void ArActionGroupTeleop::setThrottleParams(int lowSpeed, 
+AREXPORT void MvrActionGroupTeleop::setThrottleParams(int lowSpeed, 
 						     int highSpeed)
 {
   myJoydrive->setThrottleParams(lowSpeed, highSpeed);
 }
 
-AREXPORT ArActionGroupUnguardedTeleop::ArActionGroupUnguardedTeleop(ArRobot *robot)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupUnguardedTeleop::ArActionGroupUnguardedTeleop(MvrRobot *robot)
+  : MvrActionGroup(robot)
 {
-  myJoydrive = new ArActionJoydrive;
+  myJoydrive = new MvrActionJoydrive;
   myJoydrive->setStopIfNoButtonPressed(false);
   addAction(myJoydrive, 70);
-  addAction(new ArActionKeydrive, 69);
+  addAction(new MvrActionKeydrive, 69);
 }
 
-AREXPORT ArActionGroupUnguardedTeleop::~ArActionGroupUnguardedTeleop()
+AREXPORT MvrActionGroupUnguardedTeleop::~ArActionGroupUnguardedTeleop()
 {
   removeActions();
   deleteActions();
 }
 
-AREXPORT void ArActionGroupUnguardedTeleop::setThrottleParams(int lowSpeed, 
+AREXPORT void MvrActionGroupUnguardedTeleop::setThrottleParams(int lowSpeed, 
 							 int highSpeed)
 {
   myJoydrive->setThrottleParams(lowSpeed, highSpeed);
 }
 
-AREXPORT ArActionGroupWander::ArActionGroupWander(ArRobot *robot, int forwardVel, int avoidFrontDist, int avoidVel, int avoidTurnAmt)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupWander::ArActionGroupWander(MvrRobot *robot, int forwardVel, int avoidFrontDist, int avoidVel, int avoidTurnAmt)
+  : MvrActionGroup(robot)
 {
-  addAction(new ArActionBumpers, 100);
-  addAction(new ArActionStallRecover, 90);
-  //addAction(new ArActionAvoidFront("Avoid Front Near", 250, 0), 80);
-  addAction(new ArActionAvoidFront("Avoid Front", avoidFrontDist, avoidVel, avoidTurnAmt), 79);
-  addAction(new ArActionConstantVelocity("Constant Velocity",
+  addAction(new MvrActionBumpers, 100);
+  addAction(new MvrActionStallRecover, 90);
+  //addAction(new MvrActionAvoidFront("Avoid Front Near", 250, 0), 80);
+  addAction(new MvrActionAvoidFront("Avoid Front", avoidFrontDist, avoidVel, avoidTurnAmt), 79);
+  addAction(new MvrActionConstantVelocity("Constant Velocity",
                                          forwardVel),
 					 50);
 
 }
 
-AREXPORT ArActionGroupWander::~ArActionGroupWander()
+AREXPORT MvrActionGroupWander::~ArActionGroupWander()
 {
   removeActions();
   deleteActions();
 }
 
 // The color follow action group
-AREXPORT ArActionGroupColorFollow::ArActionGroupColorFollow(ArRobot *robot, ArACTS_1_2 *acts, ArPTZ *camera)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupColorFollow::ArActionGroupColorFollow(MvrRobot *robot, MvrACTS_1_2 *acts, MvrPTZ *camera)
+  : MvrActionGroup(robot)
 {
   // Add the limiters so the robot is less likely to run into things
-  addAction(new ArActionLimiterTableSensor, 100);
-  addAction(new ArActionLimiterForwards("Speed Limiter Near", 
+  addAction(new MvrActionLimiterTableSensor, 100);
+  addAction(new MvrActionLimiterForwards("Speed Limiter Near", 
                                                       300, 600, 250),
                           90);
-  addAction(new ArActionLimiterForwards("Speed Limiter Far",
+  addAction(new MvrActionLimiterForwards("Speed Limiter Far",
                                                       300, 1100, 400),
                           89);
-  addAction(new ArActionLimiterBackwards, 80);
+  addAction(new MvrActionLimiterBackwards, 80);
 
   // Construct the color follower and add it
-  myColorFollow = new ArActionColorFollow("Follow a color.", acts, camera);
+  myColorFollow = new MvrActionColorFollow("Follow a color.", acts, camera);
   addAction(myColorFollow, 70);
 }
 
 // Destructor
-AREXPORT ArActionGroupColorFollow::~ArActionGroupColorFollow()
+AREXPORT MvrActionGroupColorFollow::~ArActionGroupColorFollow()
 {
   removeActions();
   deleteActions();
 }
 
 // Set the channel to get blob info from
-AREXPORT void ArActionGroupColorFollow::setChannel(int channel)
+AREXPORT void MvrActionGroupColorFollow::setChannel(int channel)
 {
   myColorFollow->setChannel(channel);
 }
 
 // Set the camera to control
-AREXPORT void ArActionGroupColorFollow::setCamera(ArPTZ *camera)
+AREXPORT void MvrActionGroupColorFollow::setCamera(MvrPTZ *camera)
 {
   myColorFollow->setCamera(camera);
 }
 
 // Allow the robot to move
-AREXPORT void ArActionGroupColorFollow::startMovement()
+AREXPORT void MvrActionGroupColorFollow::startMovement()
 {
   myColorFollow->startMovement();
 }
 
 // Keep the robot from moving
-AREXPORT void ArActionGroupColorFollow::stopMovement()
+AREXPORT void MvrActionGroupColorFollow::stopMovement()
 {
   myColorFollow->stopMovement();
 }
 
 // Toggle whether or not the robot will try to actively
 // acquire a color blob
-AREXPORT void ArActionGroupColorFollow::setAcquire(bool acquire)
+AREXPORT void MvrActionGroupColorFollow::setAcquire(bool acquire)
 {
   myColorFollow->setAcquire(acquire);
 }
 
 // Return the channel that the robot is looking on
-AREXPORT int ArActionGroupColorFollow::getChannel()
+AREXPORT int MvrActionGroupColorFollow::getChannel()
 {
   return myColorFollow->getChannel();
 }
 
 // Return whether the robot is allowed to actively
 // acquire a color blob
-AREXPORT bool ArActionGroupColorFollow::getAcquire()
+AREXPORT bool MvrActionGroupColorFollow::getAcquire()
 {
   return myColorFollow->getAcquire();
 }
 
 // Return whether the robot is allowed to move
-AREXPORT bool ArActionGroupColorFollow::getMovement()
+AREXPORT bool MvrActionGroupColorFollow::getMovement()
 {
   return myColorFollow->getMovement();
 }
 
 // Return if the robot is targeting a color blob
-AREXPORT bool ArActionGroupColorFollow::getBlob()
+AREXPORT bool MvrActionGroupColorFollow::getBlob()
 {
   return myColorFollow->getBlob();
 }
 
-AREXPORT ArActionGroupRatioDrive::ArActionGroupRatioDrive(ArRobot *robot)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupRatioDrive::ArActionGroupRatioDrive(MvrRobot *robot)
+  : MvrActionGroup(robot)
 {
   // add the actions, put the ratio input on top, then have the
   // limiters since the ratio doesn't touch decel except lightly
   // whereas the limiter will touch it strongly
 
-  myInput = new ArActionRatioInput;
+  myInput = new MvrActionRatioInput;
   addAction(myInput, 50); 
 
-  myKeydrive = new ArRatioInputKeydrive(robot, myInput);
-  myJoydrive = new ArRatioInputJoydrive(robot, myInput);
-  myRobotJoydrive = new ArRatioInputRobotJoydrive(robot, myInput);
+  myKeydrive = new MvrRatioInputKeydrive(robot, myInput);
+  myJoydrive = new MvrRatioInputJoydrive(robot, myInput);
+  myRobotJoydrive = new MvrRatioInputRobotJoydrive(robot, myInput);
 
-  myDeceleratingLimiterForward = new ArActionDeceleratingLimiter(
-	  "DeceleratingLimiterForward", ArActionDeceleratingLimiter::FORWARDS);
+  myDeceleratingLimiterForward = new MvrActionDeceleratingLimiter(
+	  "DeceleratingLimiterForward", MvrActionDeceleratingLimiter::FORWARDS);
   addAction(myDeceleratingLimiterForward, 40);
 
-  myDeceleratingLimiterBackward = new ArActionDeceleratingLimiter(
+  myDeceleratingLimiterBackward = new MvrActionDeceleratingLimiter(
 	  "DeceleratingLimiterBackward", 
-	  ArActionDeceleratingLimiter::BACKWARDS);
+	  MvrActionDeceleratingLimiter::BACKWARDS);
   addAction(myDeceleratingLimiterBackward, 39);
 
   myDeceleratingLimiterLateralLeft = NULL;
   myDeceleratingLimiterLateralRight = NULL;
   if (myRobot->hasLatVel())
   {
-    myDeceleratingLimiterLateralLeft = new ArActionDeceleratingLimiter(
+    myDeceleratingLimiterLateralLeft = new MvrActionDeceleratingLimiter(
 	    "DeceleratingLimiterLateral", 
-	    ArActionDeceleratingLimiter::LATERAL_LEFT);
+	    MvrActionDeceleratingLimiter::LATERAL_LEFT);
     addAction(myDeceleratingLimiterLateralLeft, 38);
-    myDeceleratingLimiterLateralRight = new ArActionDeceleratingLimiter(
+    myDeceleratingLimiterLateralRight = new MvrActionDeceleratingLimiter(
 	    "DeceleratingLimiterLateralRight", 
-	    ArActionDeceleratingLimiter::LATERAL_RIGHT);
+	    MvrActionDeceleratingLimiter::LATERAL_RIGHT);
     addAction(myDeceleratingLimiterLateralRight, 37);
   }
 
 }
 
-AREXPORT ArActionGroupRatioDrive::~ArActionGroupRatioDrive()
+AREXPORT MvrActionGroupRatioDrive::~ArActionGroupRatioDrive()
 {
   removeActions();
   deleteActions();
 }
 
 
-AREXPORT ArActionRatioInput *ArActionGroupRatioDrive::getActionRatioInput(void)
+AREXPORT MvrActionRatioInput *ArActionGroupRatioDrive::getActionRatioInput(void)
 {
   return myInput;
 }
 
-AREXPORT void ArActionGroupRatioDrive::addToConfig(ArConfig *config, 
+AREXPORT void MvrActionGroupRatioDrive::addToConfig(MvrConfig *config, 
 						 const char *section)
 {
   myInput->addToConfig(config, section);
@@ -324,34 +324,34 @@ AREXPORT void ArActionGroupRatioDrive::addToConfig(ArConfig *config,
   myDeceleratingLimiterBackward->addToConfig(config, section, "Backward");
 }
 
-AREXPORT ArActionGroupRatioDriveUnsafe::ArActionGroupRatioDriveUnsafe(ArRobot *robot)
-  : ArActionGroup(robot)
+AREXPORT MvrActionGroupRatioDriveUnsafe::ArActionGroupRatioDriveUnsafe(MvrRobot *robot)
+  : MvrActionGroup(robot)
 {
   // add the actions, put the ratio input on top, then have the
   // limiters since the ratio doesn't touch decel except lightly
   // whereas the limiter will touch it strongly
 
-  myInput = new ArActionRatioInput;
+  myInput = new MvrActionRatioInput;
   addAction(myInput, 50); 
 
-  myKeydrive = new ArRatioInputKeydrive(robot, myInput);
-  myJoydrive = new ArRatioInputJoydrive(robot, myInput);
-  myRobotJoydrive = new ArRatioInputRobotJoydrive(robot, myInput);
+  myKeydrive = new MvrRatioInputKeydrive(robot, myInput);
+  myJoydrive = new MvrRatioInputJoydrive(robot, myInput);
+  myRobotJoydrive = new MvrRatioInputRobotJoydrive(robot, myInput);
 }
 
-AREXPORT ArActionGroupRatioDriveUnsafe::~ArActionGroupRatioDriveUnsafe()
+AREXPORT MvrActionGroupRatioDriveUnsafe::~ArActionGroupRatioDriveUnsafe()
 {
   removeActions();
   deleteActions();  
 }
 
 
-AREXPORT ArActionRatioInput *ArActionGroupRatioDriveUnsafe::getActionRatioInput(void)
+AREXPORT MvrActionRatioInput *ArActionGroupRatioDriveUnsafe::getActionRatioInput(void)
 {
   return myInput;
 }
 
-AREXPORT void ArActionGroupRatioDriveUnsafe::addToConfig(ArConfig *config, 
+AREXPORT void MvrActionGroupRatioDriveUnsafe::addToConfig(MvrConfig *config, 
 						 const char *section)
 {
   myInput->addToConfig(config, section);

@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArArg.h"
-#include "ArLog.h"
-#include "ArArgumentBuilder.h"
+#include "MvrArg.h"
+#include "MvrLog.h"
+#include "MvrArgumentBuilder.h"
 
-AREXPORT ArArg::ArArg()
+AREXPORT MvrArg::ArArg()
 {
   myType = INVALID;
   myName = "";
@@ -38,7 +38,7 @@ AREXPORT ArArg::ArArg()
   clear();
 }
 
-AREXPORT ArArg::ArArg(const char * name, int *pointer, 
+AREXPORT MvrArg::ArArg(const char * name, int *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   myType = INT;
@@ -50,7 +50,7 @@ AREXPORT ArArg::ArArg(const char * name, int *pointer,
   myIntPointer = pointer;
 }
 
-AREXPORT ArArg::ArArg(const char * name, double *pointer,
+AREXPORT MvrArg::ArArg(const char * name, double *pointer,
 		      const char * description, double minDouble, 
 		      double maxDouble) 
 { 
@@ -63,7 +63,7 @@ AREXPORT ArArg::ArArg(const char * name, double *pointer,
   myDoublePointer = pointer;
 }
 
-AREXPORT ArArg::ArArg(const char * name, bool *pointer, 
+AREXPORT MvrArg::ArArg(const char * name, bool *pointer, 
 		      const char * description) 
 { 
   myType = BOOL;
@@ -73,7 +73,7 @@ AREXPORT ArArg::ArArg(const char * name, bool *pointer,
   myBoolPointer = pointer;
 }
 
-AREXPORT ArArg::ArArg(const char * name, ArPose *pointer, 
+AREXPORT MvrArg::ArArg(const char * name, MvrPose *pointer, 
 		      const char * description) 
 { 
   myType = POSE;
@@ -83,7 +83,7 @@ AREXPORT ArArg::ArArg(const char * name, ArPose *pointer,
   myPosePointer = pointer;
 }
 
-AREXPORT ArArg::ArArg(const char * name, char *pointer, 
+AREXPORT MvrArg::ArArg(const char * name, char *pointer, 
 		      const char * description, size_t maxStrLen) 
 { 
   myType = STRING;
@@ -110,9 +110,9 @@ AREXPORT ArArg::ArArg(const char * name, char *pointer,
    @param getFunctor since parameter files need to be written too,
    this get functor will get a list of strings to be written to the file
 **/
-AREXPORT ArArg::ArArg(const char *name, 
-		      ArRetFunctor1<bool, ArArgumentBuilder *> *setFunctor, 
-	      ArRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
+AREXPORT MvrArg::ArArg(const char *name, 
+		      MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
+	      MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
 		      const char *description)
 {
   myType = FUNCTOR;
@@ -123,14 +123,14 @@ AREXPORT ArArg::ArArg(const char *name,
   myGetFunctor = getFunctor;
 }
 
-AREXPORT ArArg::ArArg(const char * description)
+AREXPORT MvrArg::ArArg(const char * description)
 { 
   myType = DESCRIPTION_HOLDER;
   myDescription = description;
   clear();
 }
 
-AREXPORT ArArg::ArArg(const ArArg & arg) 
+AREXPORT MvrArg::ArArg(const MvrArg & arg) 
 {
   myType = arg.myType;
   myName = arg.myName;
@@ -151,7 +151,7 @@ AREXPORT ArArg::ArArg(const ArArg & arg)
   myConfigPriority = arg.myConfigPriority;
 }
 
-AREXPORT ArArg &ArArg::operator=(const ArArg & arg) 
+AREXPORT MvrArg &ArArg::operator=(const MvrArg & arg) 
 {
 	if (this != &arg) {
 		myType = arg.myType;
@@ -176,11 +176,11 @@ AREXPORT ArArg &ArArg::operator=(const ArArg & arg)
 }
 
 
-AREXPORT ArArg::~ArArg()
+AREXPORT MvrArg::~ArArg()
 {
 }
 
-AREXPORT void ArArg::clear(void)
+AREXPORT void MvrArg::clear(void)
 {
   myIntPointer = NULL;
   myDoublePointer = NULL;
@@ -195,7 +195,7 @@ AREXPORT void ArArg::clear(void)
   mySetFunctor = NULL;
   myGetFunctor = NULL;  
   myConfigPrioritySet = false;
-  myConfigPriority = ArPriority::NORMAL;
+  myConfigPriority = MvrPriority::NORMAL;
 }
 
 /**
@@ -204,27 +204,27 @@ AREXPORT void ArArg::clear(void)
    @see DOUBLE
    @see BOOL
    @see POSE */
-AREXPORT ArArg::Type ArArg::getType(void) const
+AREXPORT MvrArg::Type MvrArg::getType(void) const
 {
   return myType;
 }
 
-AREXPORT int ArArg::getMinInt(void) const
+AREXPORT int MvrArg::getMinInt(void) const
 {
   return myMinInt;
 }
 
-AREXPORT int ArArg::getMaxInt(void) const
+AREXPORT int MvrArg::getMaxInt(void) const
 {
   return myMaxInt;
 }
 
-AREXPORT double ArArg::getMinDouble(void) const
+AREXPORT double MvrArg::getMinDouble(void) const
 {
   return myMinDouble;
 }
 
-AREXPORT double ArArg::getMaxDouble(void) const
+AREXPORT double MvrArg::getMaxDouble(void) const
 {
   return myMaxDouble;
 }
@@ -239,7 +239,7 @@ AREXPORT const char *ArArg::getDescription(void) const
   return myDescription.c_str();
 }
 
-AREXPORT int ArArg::getInt(void) const
+AREXPORT int MvrArg::getInt(void) const
 { 
   if (myIntPointer != NULL)
     return *myIntPointer;
@@ -247,7 +247,7 @@ AREXPORT int ArArg::getInt(void) const
     return 0;
 }
 
-AREXPORT double ArArg::getDouble(void) const 
+AREXPORT double MvrArg::getDouble(void) const 
 {
   if (myDoublePointer != NULL)
     return *myDoublePointer; 
@@ -255,7 +255,7 @@ AREXPORT double ArArg::getDouble(void) const
     return 0;
 }
 
-AREXPORT bool ArArg::getBool(void) const
+AREXPORT bool MvrArg::getBool(void) const
 {
   if (myBoolPointer != NULL)
     return *myBoolPointer;
@@ -271,9 +271,9 @@ AREXPORT const char *ArArg::getString(void) const
     return NULL;
 }
 
-AREXPORT ArPose ArArg::getPose(void) const
+AREXPORT MvrPose MvrArg::getPose(void) const
 {
-  ArPose pose;
+  MvrPose pose;
   if (myPosePointer != NULL)
     return *myPosePointer;
   else
@@ -288,42 +288,42 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArArg::getArgsWithFunctor(void) c
     return myGetFunctor->invokeR();
 }
 
-AREXPORT bool ArArg::setInt(int val)
+AREXPORT bool MvrArg::setInt(int val)
 {
   if (val < myMinInt)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setInt value %d below range [%d, %d]", getName(), val, myMinInt, myMaxInt);
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setInt value %d below range [%d, %d]", getName(), val, myMinInt, myMaxInt);
     return false;
   }
   if (val > myMaxInt)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setInt value %d above range [%d, %d]", getName(), val, myMinInt, myMaxInt);
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setInt value %d above range [%d, %d]", getName(), val, myMinInt, myMaxInt);
     return false;
   }
   if (myIntPointer == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setInt called with NULL int pointer.", getName());
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setInt called with NULL int pointer.", getName());
   }
   // if we got to here we're good
   *myIntPointer = val;
   return true;
 }
 
-AREXPORT bool ArArg::setDouble(double val)
+AREXPORT bool MvrArg::setDouble(double val)
 { 
   if (val < myMinDouble)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setDouble value %g below range [%g, %g]", getName(), val, myMinDouble, myMaxDouble);
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setDouble value %g below range [%g, %g]", getName(), val, myMinDouble, myMaxDouble);
     return false;
   }
   if (val > myMaxDouble)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setDouble value %g above range [%g, %g]", getName(), val, myMinDouble, myMaxDouble);
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setDouble value %g above range [%g, %g]", getName(), val, myMinDouble, myMaxDouble);
     return false;
   }
   if (myDoublePointer == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setDouble called with NULL pointer.", getName());
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setDouble called with NULL pointer.", getName());
     return false;
   }
   // if we got to here we're good
@@ -332,41 +332,41 @@ AREXPORT bool ArArg::setDouble(double val)
 }
 
 
-AREXPORT bool ArArg::setBool(bool val)
+AREXPORT bool MvrArg::setBool(bool val)
 {
   if (myBoolPointer == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setBool called with NULL pointer.", getName());
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setBool called with NULL pointer.", getName());
     return false;
   }
   *myBoolPointer = val;
   return true;
 }
 
-AREXPORT bool ArArg::setString(const char *str)
+AREXPORT bool MvrArg::setString(const char *str)
 {
   size_t len;
   if (myStringPointer == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setString called with NULL pointer.", getName());
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setString called with NULL pointer.", getName());
     return false;
   }
   // this is >= so that if it wouldn't have room with NULL that's
   // taken care of too
   if ((len = strlen(str)) >= myMaxStrLen)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setString called with argument %d long, when max length is %d.", getName(), len, myMaxStrLen);
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setString called with argument %d long, when max length is %d.", getName(), len, myMaxStrLen);
     return false;
   }
   strcpy(myStringPointer, str);
   return true;
 }
 
-AREXPORT bool ArArg::setPose(ArPose pose)
+AREXPORT bool MvrArg::setPose(MvrPose pose)
 {
   if (myPosePointer == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setPose called with NULL pointer.", getName());
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setPose called with NULL pointer.", getName());
     return false;
   }
   *myPosePointer = pose;
@@ -374,114 +374,114 @@ AREXPORT bool ArArg::setPose(ArPose pose)
 
 }
 
-AREXPORT bool ArArg::setArgWithFunctor(ArArgumentBuilder *argument)
+AREXPORT bool MvrArg::setArgWithFunctor(MvrArgumentBuilder *argument)
 {
   if (mySetFunctor == NULL)
   {
-    ArLog::log(ArLog::Normal, "ArArg of %s: setArgWithFunctor called with NULL pointer.", getName());
+    MvrLog::log(MvrLog::Normal, "MvrArg of %s: setArgWithFunctor called with NULL pointer.", getName());
     return false;
   }
   return mySetFunctor->invokeR(argument);
 }
 
 
-AREXPORT void ArArg::log(void) const
+AREXPORT void MvrArg::log(void) const
 {
   std::list<ArArgumentBuilder *>::const_iterator it;
   const std::list<ArArgumentBuilder *> *argList;
 
   switch (getType()) 
   {
-  case ArArg::INVALID:
-    ArLog::log(ArLog::Terse, 
+  case MvrArg::INVALID:
+    MvrLog::log(MvrLog::Terse, 
 	       "\tType: %10s.  This argument was not created properly.", 
 	       "invalid");
-  case ArArg::INT:
-    ArLog::log(ArLog::Terse, "\tType: %10s name: %12s value: %d", "int", 
+  case MvrArg::INT:
+    MvrLog::log(MvrLog::Terse, "\tType: %10s name: %12s value: %d", "int", 
 	       getName(), getInt());
     if (strlen(getDescription()) != 0)
-      ArLog::log(ArLog::Terse, "\t\tDescription: %s",
+      MvrLog::log(MvrLog::Terse, "\t\tDescription: %s",
 		 getDescription());
     break;
-  case ArArg::DOUBLE:
-    ArLog::log(ArLog::Terse, "\tType: %10s name: %12s value: %f", "double",
+  case MvrArg::DOUBLE:
+    MvrLog::log(MvrLog::Terse, "\tType: %10s name: %12s value: %f", "double",
 	       getName(), getDouble());
     if (strlen(getDescription()) != 0)
-      ArLog::log(ArLog::Terse, "\t\tDescription: %s",
+      MvrLog::log(MvrLog::Terse, "\t\tDescription: %s",
 		 getDescription());
     break; 
-  case ArArg::STRING:
-    ArLog::log(ArLog::Terse, "\tType: %10s name: %12s value: %s", "string", 
+  case MvrArg::STRING:
+    MvrLog::log(MvrLog::Terse, "\tType: %10s name: %12s value: %s", "string", 
                getName(), getString());
     if (strlen(getDescription()) != 0)
-      ArLog::log(ArLog::Terse, "\t\tDescription: %s",
+      MvrLog::log(MvrLog::Terse, "\t\tDescription: %s",
                  getDescription());
     break;
-  case ArArg::BOOL:
-    ArLog::log(ArLog::Terse, "\tType: %10s name: %12s value: %d", "bool",
+  case MvrArg::BOOL:
+    MvrLog::log(MvrLog::Terse, "\tType: %10s name: %12s value: %d", "bool",
 	       getName(), getBool());
     if (strlen(getDescription()) != 0)
-      ArLog::log(ArLog::Terse, "\t\tDescription: %s",
+      MvrLog::log(MvrLog::Terse, "\t\tDescription: %s",
 		 getDescription());
     break;
-  case ArArg::POSE:
-    ArLog::log(ArLog::Terse, "\tType: %10s name: %12s value: (%.1f %.1f %.1f)",
+  case MvrArg::POSE:
+    MvrLog::log(MvrLog::Terse, "\tType: %10s name: %12s value: (%.1f %.1f %.1f)",
 	       "pose", getName(), getPose().getX(), getPose().getY(),
 	       getPose().getTh());
     if (strlen(getDescription()) != 0)
-      ArLog::log(ArLog::Terse, "\t\tDescription: %s",
+      MvrLog::log(MvrLog::Terse, "\t\tDescription: %s",
 		 getDescription());
     break;
-  case ArArg::FUNCTOR:
-    ArLog::log(ArLog::Terse, "\tType: %10s name: %12s", 
+  case MvrArg::FUNCTOR:
+    MvrLog::log(MvrLog::Terse, "\tType: %10s name: %12s", 
 	       "functor", getName(), getPose().getX(), getPose().getY(),
 	       getPose().getTh());
     if (strlen(getDescription()) != 0)
-      ArLog::log(ArLog::Terse, "\t\tDescription: %s",
+      MvrLog::log(MvrLog::Terse, "\t\tDescription: %s",
 		 getDescription());
-    ArLog::log(ArLog::Terse, "\t\tValues:");
+    MvrLog::log(MvrLog::Terse, "\t\tValues:");
     argList = myGetFunctor->invokeR();
     for (it = argList->begin(); it != argList->end(); it++)
-      ArLog::log(ArLog::Terse, "\t\t\t%s", (*it)->getFullString());
+      MvrLog::log(MvrLog::Terse, "\t\t\t%s", (*it)->getFullString());
     break;
-  case ArArg::DESCRIPTION_HOLDER:
-    ArLog::log(ArLog::Terse, "\tType: %20s Description: %s", 
+  case MvrArg::DESCRIPTION_HOLDER:
+    MvrLog::log(MvrLog::Terse, "\tType: %20s Description: %s", 
 	       "description_holder", getDescription());
 
   default:
-    ArLog::log(ArLog::Terse, 
-	       "\tType: %10s.  This type doesn't have a case in ArArg::print.",
+    MvrLog::log(MvrLog::Terse, 
+	       "\tType: %10s.  This type doesn't have a case in MvrArg::print.",
 	       "unknown");
     break;
   }
 
   if (myConfigPrioritySet)
-    ArLog::log(ArLog::Terse, "\t\tPriority: %s", 
-	       ArPriority::getPriorityName(myConfigPriority));
+    MvrLog::log(MvrLog::Terse, "\t\tPriority: %s", 
+	       MvrPriority::getPriorityName(myConfigPriority));
 }
 
 /**
    If this is true then the config priority is set and you can use
    getConfigPriority.
 **/
-AREXPORT bool ArArg::getConfigPrioritySet(void) const
+AREXPORT bool MvrArg::getConfigPrioritySet(void) const
 {
   return myConfigPrioritySet;
 }
 
 /**
-   The priority of this argument when used in ArConfig.
+   The priority of this argument when used in MvrConfig.
  **/
-AREXPORT ArPriority::Priority ArArg::getConfigPriority(void) const
+AREXPORT MvrPriority::Priority MvrArg::getConfigPriority(void) const
 {
   return myConfigPriority;
 }
 
 /**
-   The priority of this argument when used in ArConfig.
+   The priority of this argument when used in MvrConfig.
  **/
 
-AREXPORT void ArArg::setConfigPriority(ArPriority::Priority priority)
+AREXPORT void MvrArg::setConfigPriority(MvrPriority::Priority priority)
 {
   myConfigPriority = priority;
   myConfigPrioritySet = true;

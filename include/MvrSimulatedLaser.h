@@ -28,13 +28,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSIMULATEDLASER_H
 
 #include "ariaTypedefs.h"
-#include "ArLaser.h"
+#include "MvrLaser.h"
 
-class ArRobot;
-class ArRobotPacket;
+class MvrRobot;
+class MvrRobotPacket;
 
 /**
-   This class is a subclass of ArRangeDeviceThreaded meant for any
+   This class is a subclass of MvrRangeDeviceThreaded meant for any
    planar scanning lasers, like the SICK lasers, Hokoyo URG series
    lasers, etc.  Unlike most base classes this contains the superset
    of everything that may need to be configured on any of the sensors,
@@ -53,11 +53,11 @@ class ArRobotPacket;
    @since 2.7.0
 **/
 
-class ArSimulatedLaser : public ArLaser
+class MvrSimulatedLaser : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT ArSimulatedLaser(ArLaser *laser);
+  AREXPORT MvrSimulatedLaser(MvrLaser *laser);
   /// Destructor
   AREXPORT virtual ~ArSimulatedLaser();
 
@@ -80,17 +80,17 @@ protected:
   AREXPORT virtual void * runThread(void *arg);
   AREXPORT virtual bool laserCheckParams(void);
   AREXPORT bool finishParams(void);
-  AREXPORT bool simPacketHandler(ArRobotPacket *packet);
-  ArLaser *myLaser;
+  AREXPORT bool simPacketHandler(MvrRobotPacket *packet);
+  MvrLaser *myLaser;
 
   double mySimBegin;
   double mySimEnd;
   double mySimIncrement;
 
   // stuff for the sim packet
-  ArPose mySimPacketStart;
-  ArTransform mySimPacketTrans;
-  ArTransform mySimPacketEncoderTrans;
+  MvrPose mySimPacketStart;
+  MvrTransform mySimPacketTrans;
+  MvrTransform mySimPacketEncoderTrans;
   unsigned int mySimPacketCounter;
   unsigned int myWhichReading;
   unsigned int myTotalNumReadings;
@@ -105,7 +105,7 @@ protected:
   std::list<ArSensorReading *> *myAssembleReadings;
   std::list<ArSensorReading *> *myCurrentReadings;
 
-  ArRetFunctor1C<bool, ArSimulatedLaser, ArRobotPacket *> mySimPacketHandler;
+  MvrRetFunctor1C<bool, MvrSimulatedLaser, MvrRobotPacket *> mySimPacketHandler;
 };
 
 #endif // ARSIMULATEDLASER_H

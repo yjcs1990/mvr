@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARROBOTPARAMS_H
 
 #include "ariaTypedefs.h"
-#include "ArConfig.h"
+#include "MvrConfig.h"
 #include <vector>
 
 #ifndef SWIG
@@ -36,7 +36,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /// Stores a set of video device parameters read from one of the video sections of a robot parameter file.
 /// @internal
 /// @swigomit
-class ArVideoParams
+class MvrVideoParams
 {
 public:
 	std::string type;
@@ -69,8 +69,8 @@ public:
 	/// Copy values of any parameters from @a other into @a this, if the param in
 	/// @a other is not a missing/null/empty value (exactly how
 	///"empty/null/missing/default" is represented depends on the specific
-	///parameter, see parameter documentation and definition of merge() method in ArRobotParams.cpp)
-	AREXPORT void merge(const ArVideoParams& other);
+	///parameter, see parameter documentation and definition of merge() method in MvrRobotParams.cpp)
+	AREXPORT void merge(const MvrVideoParams& other);
 	void setType(const std::string& t) { type = t; }
 	void setConnect(bool c) { connect = c; connectSet = true; }
 	void setImageSize(int w, int h) { imageWidth = w; imageHeight = h; }
@@ -88,7 +88,7 @@ public:
 /// Stores a set of PTZ/PTU device parameters read from one of the PTZ sections of a robot parameter file.
 /// @internal
 /// @swigomit
-class ArPTZParams
+class MvrPTZParams
 {
 public:
 	std::string type;
@@ -111,7 +111,7 @@ public:
 		invertedSet(false)
 	{}
 	/// Copy values of any parameters in @a other into @a this, if given in @a other
-	void merge(const ArPTZParams& other);
+	void merge(const MvrPTZParams& other);
 	void setType(const std::string& t) { type = t; }
 	void setConnect(bool c) { connect = c; connectSet = true; }
 	void setSerialPort(const std::string& sp) { serialPort = sp; }
@@ -125,20 +125,20 @@ public:
 
 ///Stores parameters read from the robot's parameter files
 /** 
-    Use ArRobot::getRobotParams() after a successful robot 
-    connection to obtain a pointer to an ArRobotParams instance containing the
+    Use MvrRobot::getRobotParams() after a successful robot 
+    connection to obtain a pointer to an MvrRobotParams instance containing the
     values read from the files.  
 
     See @ref ParamFiles for a description of the robot parameter files.
 
-    ArRobotParams is a subclass of ArConfig which contains some useful methods
+    MvrRobotParams is a subclass of MvrConfig which contains some useful methods
     and features.
 */
-class ArRobotParams : public ArConfig
+class MvrRobotParams : public MvrConfig
 {
 public:
   /// Constructor
-  AREXPORT ArRobotParams();
+  AREXPORT MvrRobotParams();
   /// Destructor
   AREXPORT virtual ~ArRobotParams();
   /// Returns the class from the parameter file
@@ -263,7 +263,7 @@ public:
   **/
   bool getLaserPossessed(void) const 
     { 
-      ArLog::log(ArLog::Normal, "Something called ArRobotParams::getLaserPossessed, but this is obsolete and doesn't mean anything.");
+      MvrLog::log(MvrLog::Normal, "Something called MvrRobotParams::getLaserPossessed, but this is obsolete and doesn't mean anything.");
       return false; 
     }
 
@@ -849,7 +849,7 @@ public:
   int getLatAccel(void) const { return myTransAccel; }
   /// Gets the lat decel from param file (0 uses microcontroller param)
   int getLatDecel(void) const { return myTransDecel; }
-  /// Saves it to the subtype.p in Aria::getDirectory/params
+  /// Saves it to the subtype.p in Mvria::getDirectory/params
   AREXPORT bool save(void);
 
   /// The X (forward-back) location of the GPS (antenna) on the robot
@@ -887,7 +887,7 @@ public:
   static bool internalGetUseDefaultBehavior(void);
 
   /// Adds things to the config for the commercial software
-  void internalAddToConfigCommercial(ArConfig *config);
+  void internalAddToConfigCommercial(MvrConfig *config);
 
   /// Internal call that adds to this config the same way it's always
   /// been done (this is only exposed for some internal testing)
@@ -905,32 +905,32 @@ protected:
   static std::string ourPowerOutputChoices;
 
   // Adds a laser to the config
-  AREXPORT void addLaserToConfig(int laserNumber, ArConfig *config, 
+  AREXPORT void addLaserToConfig(int laserNumber, MvrConfig *config, 
 				 bool useDefaultBehavior, 
 				 const char *section);
 
   // Adds a battery to the config 
-  AREXPORT void addBatteryToConfig(int batteryNumber, ArConfig *config, 
+  AREXPORT void addBatteryToConfig(int batteryNumber, MvrConfig *config, 
 				   bool useDefaultBehavior);
 
   // Adds an LCD to the config 
-  AREXPORT void addLCDToConfig(int lcdNumber, ArConfig *config, 
+  AREXPORT void addLCDToConfig(int lcdNumber, MvrConfig *config, 
 			       bool useDefaultBehavior);
 
   // Adds the sonar to the config (it's added automatically for
   // non-commercial)
-  AREXPORT void addSonarToConfigCommercial(ArConfig *config, bool isMTXSonar);
+  AREXPORT void addSonarToConfigCommercial(MvrConfig *config, bool isMTXSonar);
 
   // Processes the 
-  AREXPORT void processSonarCommercial(ArConfig *config);
+  AREXPORT void processSonarCommercial(MvrConfig *config);
 
   // Adds a sonarBoard to the config 
   AREXPORT void addSonarBoardToConfig(int sonarBoardNumber, 
-				      ArConfig *config,
+				      MvrConfig *config,
 				      bool useDefaultBehavior);
 
-  AREXPORT void addPTZToConfig(int i, ArConfig *config);
-  AREXPORT void addVideoToConfig(int i, ArConfig *config);
+  AREXPORT void addPTZToConfig(int i, MvrConfig *config);
+  AREXPORT void addVideoToConfig(int i, MvrConfig *config);
   
   // Processes the config for commercial
   AREXPORT bool commercialProcessFile(void);
@@ -1227,13 +1227,13 @@ protected:
   };
   AREXPORT void internalSetSonar(int num, int x, int y, int th, 
     int mtxboard = 0, int mtxunit = 0, int mtxgain = 0, int mtxthresh = 0, int mtxmax = 0);
-  AREXPORT bool parseSonarUnit(ArArgumentBuilder *builder);
-  AREXPORT bool parseMTXSonarUnit(ArArgumentBuilder *builder);
+  AREXPORT bool parseSonarUnit(MvrArgumentBuilder *builder);
+  AREXPORT bool parseMTXSonarUnit(MvrArgumentBuilder *builder);
 	AREXPORT const std::list<ArArgumentBuilder *> *getSonarUnits(void);
 	//AREXPORT const std::list<ArArgumentBuilder *> *getMTXSonarUnits(void);
   std::list<ArArgumentBuilder *> myGetSonarUnitList;
-  ArRetFunctorC<const std::list<ArArgumentBuilder *> *, ArRobotParams> mySonarUnitGetFunctor;
-  ArRetFunctor1C<bool, ArRobotParams, ArArgumentBuilder *> mySonarUnitSetFunctor;
+  MvrRetFunctorC<const std::list<ArArgumentBuilder *> *, MvrRobotParams> mySonarUnitGetFunctor;
+  MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> mySonarUnitSetFunctor;
 
 
   // Battery
@@ -1256,11 +1256,11 @@ protected:
     IR_CYCLES
   };
   AREXPORT void internalSetIR(int num, int type, int cycles, int x, int y);
-  AREXPORT bool parseIRUnit(ArArgumentBuilder *builder);
+  AREXPORT bool parseIRUnit(MvrArgumentBuilder *builder);
   AREXPORT const std::list<ArArgumentBuilder *> *getIRUnits(void);
   std::list<ArArgumentBuilder *> myGetIRUnitList;
-  ArRetFunctorC<const std::list<ArArgumentBuilder *> *, ArRobotParams> myIRUnitGetFunctor;
-  ArRetFunctor1C<bool, ArRobotParams, ArArgumentBuilder *> myIRUnitSetFunctor;
+  MvrRetFunctorC<const std::list<ArArgumentBuilder *> *, MvrRobotParams> myIRUnitGetFunctor;
+  MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> myIRUnitSetFunctor;
 
   // GPS
   bool myGPSPossessed;
@@ -1286,7 +1286,7 @@ protected:
   // Video device parameters
   std::vector<ArVideoParams> myVideoParams;  
 
-  ArConfig *myCommercialConfig;
+  MvrConfig *myCommercialConfig;
   bool myCommercialAddedConnectables;
   bool myCommercialProcessedSonar;
   int myCommercialNumSonar;
@@ -1298,7 +1298,7 @@ protected:
   /// argument number to the sonar map above
   std::map<int, int> myCommercialSonarFieldMap;
 
-  ArRetFunctorC<bool, ArRobotParams> myCommercialProcessFileCB;
+  MvrRetFunctorC<bool, MvrRobotParams> myCommercialProcessFileCB;
 };
 
 #endif // ARROBOTPARAMS_H

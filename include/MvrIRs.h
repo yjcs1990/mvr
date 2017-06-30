@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARIRS_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
+#include "MvrRangeDevice.h"
 
 
 /// A class that treats a robot's infrared sensors as a range device.
@@ -38,21 +38,21 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   @ingroup OptionalClasses  
   @ingroup DeviceClasses
 */
-class ArIRs : public ArRangeDevice
+class MvrIRs : public MvrRangeDevice
 {
 public:
-  AREXPORT ArIRs(size_t currentBufferSize = 10, 
+  AREXPORT MvrIRs(size_t currentBufferSize = 10, 
 		     size_t cumulativeBufferSize = 10,
 		     const char *name = "irs",
 		     int maxSecondsToKeepCurrent = 15);
   AREXPORT virtual ~ArIRs(void);
 
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   AREXPORT void processReadings(void);
 
 protected:
-  ArFunctorC<ArIRs> myProcessCB;
-  ArRobotParams myParams;
+  MvrFunctorC<ArIRs> myProcessCB;
+  MvrRobotParams myParams;
   std::vector<int> cycleCounters;
 };
 

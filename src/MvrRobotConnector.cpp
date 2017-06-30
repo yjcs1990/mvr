@@ -24,16 +24,16 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRobotConnector.h"
-#include "ArRobot.h"
-#include "ArSick.h"
+#include "MvrRobotConnector.h"
+#include "MvrRobot.h"
+#include "MvrSick.h"
 #include "ariaInternal.h"
-#include "ArCommands.h"
-#include "ArSonarConnector.h"
-#include "ArBatteryConnector.h"
-//#include "ArLCDConnector.h"
+#include "MvrCommands.h"
+#include "MvrSonarConnector.h"
+#include "MvrBatteryConnector.h"
+//#include "MvrLCDConnector.h"
 #include <assert.h>
 
 
@@ -70,9 +70,9 @@ AREXPORT ArRobotConnector::ArRobotConnector(
   myHaveParsedArgs = false;
   myConnectAllComponents = connectAllComponents;
 
-  myParseArgsCB.setName("ArRobotConnector");
+  myParseArgsCB.setName("MvrRobotConnector");
   Aria::addParseArgsCB(&myParseArgsCB, 75);
-  myLogOptionsCB.setName("ArRobotConnector");
+  myLogOptionsCB.setName("MvrRobotConnector");
   Aria::addLogOptionsCB(&myLogOptionsCB, 90);
 
   myRemoteHost = NULL;
@@ -112,7 +112,7 @@ AREXPORT ArRobotConnector::~ArRobotConnector(void)
 /**
  * Parse command line arguments using the ArArgumentParser given in the ArRobotConnector constructor.
  *
- * See parseArgs(ArArgumentParser*) for details about argument parsing.
+ * See parseArgs(MvrArgumentParser*) for details about argument parsing.
  * 
   @return true if the arguments were parsed successfully false if not
  **/
@@ -167,7 +167,7 @@ AREXPORT bool ArRobotConnector::parseArgs(void)
 
  **/
 
-AREXPORT bool ArRobotConnector::parseArgs(ArArgumentParser *parser)
+AREXPORT bool ArRobotConnector::parseArgs(MvrArgumentParser *parser)
 {
   myHaveParsedArgs = true;
 
@@ -240,34 +240,34 @@ AREXPORT bool ArRobotConnector::parseArgs(ArArgumentParser *parser)
 /** Normally called by Aria::logOptions(). */
 AREXPORT void ArRobotConnector::logOptions(void) const
 {
-  ArLog::log(ArLog::Terse, "Options for ArRobotConnector (see docs for more details):");
-  ArLog::log(ArLog::Terse, "");
+  ArLog::log(MvrLog::Terse, "Options for ArRobotConnector (see docs for more details):");
+  ArLog::log(MvrLog::Terse, "");
 
-  ArLog::log(ArLog::Terse, "Robot options:");
-  ArLog::log(ArLog::Terse, "-remoteHost <remoteHostNameOrIP>");
-  ArLog::log(ArLog::Terse, "-rh <remoteHostNameOrIP>");
-  ArLog::log(ArLog::Terse, "-robotPort <robotSerialPort>");
-  ArLog::log(ArLog::Terse, "-rp <robotSerialPort>");
-  ArLog::log(ArLog::Terse, "-robotBaud <baud>");
-  ArLog::log(ArLog::Terse, "-rb <baud>");
-  ArLog::log(ArLog::Terse, "-remoteRobotTcpPort <remoteRobotTcpPort>");
-  ArLog::log(ArLog::Terse, "-rrtp <remoteRobotTcpPort>");
-  ArLog::log(ArLog::Terse, "-remoteIsSim");
-  ArLog::log(ArLog::Terse, "-ris");
-  ArLog::log(ArLog::Terse, "-remoteIsNotSim");
-  ArLog::log(ArLog::Terse, "-rins");
-  ArLog::log(ArLog::Terse, "-robotLogPacketsReceived");
-  ArLog::log(ArLog::Terse, "-rlpr");
-  ArLog::log(ArLog::Terse, "-robotLogPacketsSent");
-  ArLog::log(ArLog::Terse, "-rlps");
-  ArLog::log(ArLog::Terse, "-robotLogMovementReceived");
-  ArLog::log(ArLog::Terse, "-rlmr");
-  ArLog::log(ArLog::Terse, "-robotLogMovementSent");
-  ArLog::log(ArLog::Terse, "-rlms");
-  ArLog::log(ArLog::Terse, "-robotLogVelocitiesReceived");
-  ArLog::log(ArLog::Terse, "-rlvr");
-  ArLog::log(ArLog::Terse, "-robotLogActions");
-  ArLog::log(ArLog::Terse, "-rla");
+  ArLog::log(MvrLog::Terse, "Robot options:");
+  ArLog::log(MvrLog::Terse, "-remoteHost <remoteHostNameOrIP>");
+  ArLog::log(MvrLog::Terse, "-rh <remoteHostNameOrIP>");
+  ArLog::log(MvrLog::Terse, "-robotPort <robotSerialPort>");
+  ArLog::log(MvrLog::Terse, "-rp <robotSerialPort>");
+  ArLog::log(MvrLog::Terse, "-robotBaud <baud>");
+  ArLog::log(MvrLog::Terse, "-rb <baud>");
+  ArLog::log(MvrLog::Terse, "-remoteRobotTcpPort <remoteRobotTcpPort>");
+  ArLog::log(MvrLog::Terse, "-rrtp <remoteRobotTcpPort>");
+  ArLog::log(MvrLog::Terse, "-remoteIsSim");
+  ArLog::log(MvrLog::Terse, "-ris");
+  ArLog::log(MvrLog::Terse, "-remoteIsNotSim");
+  ArLog::log(MvrLog::Terse, "-rins");
+  ArLog::log(MvrLog::Terse, "-robotLogPacketsReceived");
+  ArLog::log(MvrLog::Terse, "-rlpr");
+  ArLog::log(MvrLog::Terse, "-robotLogPacketsSent");
+  ArLog::log(MvrLog::Terse, "-rlps");
+  ArLog::log(MvrLog::Terse, "-robotLogMovementReceived");
+  ArLog::log(MvrLog::Terse, "-rlmr");
+  ArLog::log(MvrLog::Terse, "-robotLogMovementSent");
+  ArLog::log(MvrLog::Terse, "-rlms");
+  ArLog::log(MvrLog::Terse, "-robotLogVelocitiesReceived");
+  ArLog::log(MvrLog::Terse, "-rlvr");
+  ArLog::log(MvrLog::Terse, "-robotLogActions");
+  ArLog::log(MvrLog::Terse, "-rla");
 }
 
 /**
@@ -311,15 +311,15 @@ AREXPORT bool ArRobotConnector::setupRobot(void)
  * @return false if -remoteHost was given and there was an error connecting to
  * the remote host, true otherwise.
  **/
-AREXPORT bool ArRobotConnector::setupRobot(ArRobot *robot)
+AREXPORT bool ArRobotConnector::setupRobot(MvrRobot *robot)
 {
   if (myRobot == NULL)
     myRobot = robot;
 
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArRobotConnector::setupRobot: NULL robot, cannot setup robot");
+    ArLog::log(MvrLog::Normal, 
+	       "MvrRobotConnector::setupRobot: NULL robot, cannot setup robot");
     return false;
   }
 
@@ -329,7 +329,7 @@ AREXPORT bool ArRobotConnector::setupRobot(ArRobot *robot)
   }
   else if (!myHaveParsedArgs)
   {
-    ArLog::log(ArLog::Normal, "ArRobotConnector: Args not parsed and are not autoparsed, so connection may fail and command line arguments won't be used");
+    ArLog::log(MvrLog::Normal, "MvrRobotConnector: Args not parsed and are not autoparsed, so connection may fail and command line arguments won't be used");
   }
 
   // set up all that logging
@@ -348,8 +348,8 @@ AREXPORT bool ArRobotConnector::setupRobot(ArRobot *robot)
 
   if (myRobot->getDeviceConnection() != NULL)
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArRobotConnector::setupRobot: robot already has device connection, will not setup robot");
+    ArLog::log(MvrLog::Normal, 
+	       "MvrRobotConnector::setupRobot: robot already has device connection, will not setup robot");
     return true;
   }
 
@@ -364,14 +364,14 @@ AREXPORT bool ArRobotConnector::setupRobot(ArRobot *robot)
     myRobotTcpConn.setPort("localhost", myRemoteRobotTcpPort);
 
   // see if we can get to the simulator  (true is success)
-  ArLog::log(ArLog::Normal, "Connnecting to robot using TCP connection to %s...", myRobotTcpConn.getPortName());// , myRemoteHost, myRobotTcpConn.getPort());
+  ArLog::log(MvrLog::Normal, "Connnecting to robot using TCP connection to %s...", myRobotTcpConn.getPortName());// , myRemoteHost, myRobotTcpConn.getPort());
   if (myRobotTcpConn.openSimple())
   {
     robot->setDeviceConnection(&myRobotTcpConn);
     // we could get to the sim, so set the robots device connection to the sim
     if (myRemoteHost != NULL)
     {
-      ArLog::log(ArLog::Normal, "Connected to remote host %s through tcp.\n", 
+      ArLog::log(MvrLog::Normal, "Connected to remote host %s through tcp.\n", 
 		 myRemoteHost);
       if (myRemoteIsSim)
 	myUsingSim = true;
@@ -380,7 +380,7 @@ AREXPORT bool ArRobotConnector::setupRobot(ArRobot *robot)
     }
     else
     {
-      ArLog::log(ArLog::Normal, "Connecting to simulator through tcp.\n");
+      ArLog::log(MvrLog::Normal, "Connecting to simulator through tcp.\n");
       myUsingSim = true;
     }
   }
@@ -389,7 +389,7 @@ AREXPORT bool ArRobotConnector::setupRobot(ArRobot *robot)
     // if we were trying for a remote host and it failed, just exit
     if (myRemoteHost != NULL)
     {
-      ArLog::log(ArLog::Terse, "Could not connect robot to remote host %s, port %d.\n", myRemoteHost, myRemoteRobotTcpPort);
+      ArLog::log(MvrLog::Terse, "Could not connect robot to remote host %s, port %d.\n", myRemoteHost, myRemoteRobotTcpPort);
       return false;
     }
     // we couldn't get to the sim, so set the port on the serial
@@ -398,7 +398,7 @@ AREXPORT bool ArRobotConnector::setupRobot(ArRobot *robot)
 
     myRobotSerConn.setPort(myRobotPort);
     myRobotSerConn.setBaud(myRobotBaud);
-    ArLog::log(ArLog::Normal,
+    ArLog::log(MvrLog::Normal,
 	       "Could not connect to simulator, connecting to robot through serial port %s.", 
 	       myRobotSerConn.getPort());
     robot->setDeviceConnection(&myRobotSerConn);
@@ -436,17 +436,17 @@ AREXPORT bool ArRobotConnector::connectRobot(void)
   {
     if(getRemoteIsSim() )
     {
-      ArLog::log(ArLog::Normal, "ArRobotConnector: Connected to simulator, not connecting to additional hardware components.");
+      ArLog::log(MvrLog::Normal, "MvrRobotConnector: Connected to simulator, not connecting to additional hardware components.");
     }
     else
     {
       
       if(myBatteryConnector)
       {
-        ArLog::log(ArLog::Normal, "ArRobotConnector: Connecting to MTX batteries (if neccesary)...");
+        ArLog::log(MvrLog::Normal, "MvrRobotConnector: Connecting to MTX batteries (if neccesary)...");
         if(!myBatteryConnector->connectBatteries())
         {
-          ArLog::log(ArLog::Terse, "ArRobotConnector: Error: Could not connect to robot batteries.");
+          ArLog::log(MvrLog::Terse, "MvrRobotConnector: Error: Could not connect to robot batteries.");
           return false;
         }
       }
@@ -454,10 +454,10 @@ AREXPORT bool ArRobotConnector::connectRobot(void)
 /*
       if(myLCDConnector)
       {
-        ArLog::log(ArLog::Normal, "ArRobotConnector: Connecting to MTX LCD (if neccesary)...");
+        ArLog::log(MvrLog::Normal, "MvrRobotConnector: Connecting to MTX LCD (if neccesary)...");
         if(!myLCDConnector->connectLCDs())
         {
-          ArLog::log(ArLog::Terse, "ArRobotConnector: Error: Could not connect to robot LCD interface.");
+          ArLog::log(MvrLog::Terse, "MvrRobotConnector: Error: Could not connect to robot LCD interface.");
           return false;
         }
       }
@@ -466,10 +466,10 @@ AREXPORT bool ArRobotConnector::connectRobot(void)
 assert(mySonarConnector);
       if(mySonarConnector)
       {
-        ArLog::log(ArLog::Normal, "ArRobotConnector: Connecting to MTX sonar (if neccesary)...");
+        ArLog::log(MvrLog::Normal, "MvrRobotConnector: Connecting to MTX sonar (if neccesary)...");
         if(!mySonarConnector->connectSonars())
         {
-          ArLog::log(ArLog::Terse, "ArRobotConnector: Error: Could not connect to sonar(s).");
+          ArLog::log(MvrLog::Terse, "MvrRobotConnector: Error: Could not connect to sonar(s).");
           return false;
         }
         
@@ -485,7 +485,7 @@ assert(mySonarConnector);
  * If you wish to simply prepare the ArRobot object, but not begin
  * the connection, then use setupRobot().
  */
-AREXPORT bool ArRobotConnector::connectRobot(ArRobot *robot)
+AREXPORT bool ArRobotConnector::connectRobot(MvrRobot *robot)
 {
   if (!setupRobot(robot))
     return false;

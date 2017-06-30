@@ -27,13 +27,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARCONFIG_H
 #define ARCONFIG_H
 
-#include "ArConfigArg.h"
-#include "ArFileParser.h"
-#include "ArHasFileName.h"
+#include "MvrConfigArg.h"
+#include "MvrFileParser.h"
+#include "MvrHasFileName.h"
 #include <set>
 
-class ArArgumentBuilder;
-class ArConfigSection;
+class MvrArgumentBuilder;
+class MvrConfigSection;
 
 
 /// Stores configuration information which may be read to and from files or other sources
@@ -46,8 +46,8 @@ class ArConfigSection;
  * After adding a parameter to the configuration, its value may be changed
  * when the configuration is loaded or reloaded from a file.
  * Various program modules may register callbacks to be notified
- * when a shared global configuration (such as the static ArConfig object kept
- * by the Aria class) is loaded or otherwise changed.
+ * when a shared global configuration (such as the static MvrConfig object kept
+ * by the Mvria class) is loaded or otherwise changed.
  *
  * Classes dealing with more specialized kinds of config files 
  * inherit from this one.
@@ -57,19 +57,19 @@ class ArConfigSection;
  *
  * Usually, configuration data are read from and written to a file using
  * parseFile() and writeFile(), or are set
- * by a remote client via ArNetworking.  It is also possible to import 
- * configuration settings from an ArArgumentParser (which, for example, may 
+ * by a remote client via MvrNetworking.  It is also possible to import 
+ * configuration settings from an MvrArgumentParser (which, for example, may 
  * contain a program's command line arguments) using useArgumentParser().
  *
- * @warning ArConfig does not escape any special characters when writing or
+ * @warning MvrConfig does not escape any special characters when writing or
  * loading to/from a file. Therefore in general parameter names, values, section
  * names, and comments must not contain characters which have special meaning
- * in a config file, such as '#', ';', tab or newline. (see also ArFileParser) Parameter names may 
+ * in a config file, such as '#', ';', tab or newline. (see also MvrFileParser) Parameter names may 
  * have spaces, though by convention they generally do not.  
 
   @ingroup OptionalClasses
 */
-class ArConfig : public ArHasFileName
+class MvrConfig : public MvrHasFileName
 {
 private:
 
@@ -103,7 +103,7 @@ public:
 
 public:
   /// Constructor
-  AREXPORT ArConfig(const char *baseDirectory = NULL, 
+  AREXPORT MvrConfig(const char *baseDirectory = NULL, 
 		                bool noBlanksBetweenParams = false,
 		                bool ignoreBounds = false,
 		                bool failOnBadSection = false,
@@ -112,13 +112,13 @@ public:
   AREXPORT virtual ~ArConfig();
 
   /// Copy constructor
-  AREXPORT ArConfig(const ArConfig &config);
+  AREXPORT MvrConfig(const MvrConfig &config);
 
   /// Assignment operator
-  AREXPORT ArConfig &operator=(const ArConfig &config);
+  AREXPORT MvrConfig &operator=(const MvrConfig &config);
 
   /// Copies the given config to this one, detaching any pointers so they are not shared
-  AREXPORT virtual void copyAndDetach(const ArConfig &config);
+  AREXPORT virtual void copyAndDetach(const MvrConfig &config);
 
   /// Stores an optional config and robot name to be used in log messages.
   AREXPORT virtual void setConfigName(const char *configName,
@@ -129,10 +129,10 @@ public:
 
 
   /// Sets an associate config that provides translations for each parameter (as read from a resource file).
-  AREXPORT virtual void setTranslator(ArConfig *xlatorConfig);
+  AREXPORT virtual void setTranslator(MvrConfig *xlatorConfig);
 
   /// Returns the associated translator config, or NULL if none.
-  AREXPORT virtual ArConfig *getTranslator() const;
+  AREXPORT virtual MvrConfig *getTranslator() const;
 
 
   /// Parse a config file
@@ -142,9 +142,9 @@ public:
                           char *errorBuffer = NULL,
                           size_t errorBufferLen = 0,
                           std::list<std::string> *sectionsToParse = NULL,
-                          ArPriority::Priority highestPriority = ArPriority::FIRST_PRIORITY,
-                          ArPriority::Priority lowestPriority  = ArPriority::LAST_PRIORITY,
-                          ArConfigArg::RestartLevel *restartLevelNeeded = NULL);
+                          MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
+                          MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY,
+                          MvrConfigArg::RestartLevel *restartLevelNeeded = NULL);
       
   /// Write out a config file
   AREXPORT bool writeFile(const char *fileName, 
@@ -152,8 +152,8 @@ public:
                           std::set<std::string> *alreadyWritten = NULL,
                           bool writeExtras = false,
                           std::list<std::string> *sectionsToWrite = NULL,
-                          ArPriority::Priority highestPriority = ArPriority::FIRST_PRIORITY,
-                          ArPriority::Priority lowestPriority  = ArPriority::LAST_PRIORITY);
+                          MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
+                          MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY);
 
   /// Parse a set of text lines, in the same format as the config file.
   AREXPORT bool parseText(const std::list<std::string> &configLines,
@@ -163,9 +163,9 @@ public:
                           char *errorBuffer = NULL,
                           size_t errorBufferLen = 0,
                           std::list<std::string> *sectionsToParse = NULL,
-                          ArPriority::Priority highestPriority = ArPriority::FIRST_PRIORITY,
-                          ArPriority::Priority lowestPriority  = ArPriority::LAST_PRIORITY,
-                          ArConfigArg::RestartLevel *restartLevelNeeded = NULL);
+                          MvrPriority::Priority highestPriority = MvrPriority::FIRST_PRIORITY,
+                          MvrPriority::Priority lowestPriority  = MvrPriority::LAST_PRIORITY,
+                          MvrConfigArg::RestartLevel *restartLevelNeeded = NULL);
 
   
   /// Parse a config resource file, for translation.
@@ -176,7 +176,7 @@ public:
                                   std::list<std::string> *sectionsToParse = NULL);
                                         
   /// Parse a config resource file with parameters suitable for custom commands.
-  AREXPORT void parseResourceFile(ArArgumentBuilder *builder);
+  AREXPORT void parseResourceFile(MvrArgumentBuilder *builder);
   
   /// Write a config resource file, for translation.
   AREXPORT bool writeResourceFile(const char *fileName, 
@@ -185,7 +185,7 @@ public:
                                   std::list<std::string> *sectionsToWrite = NULL);
 
   /// Write a config resource file with parameters suitable for custom commands.
-  AREXPORT void writeResourceFile(ArArgumentBuilder *builder);
+  AREXPORT void writeResourceFile(MvrArgumentBuilder *builder);
   
   /// Command to add a section and its description to the specified category.
   /**
@@ -199,19 +199,19 @@ public:
 
 
   /// Command to add a parameter to the given section with given priority
-  AREXPORT bool addParam(const ArConfigArg &arg, 
+  AREXPORT bool addParam(const MvrConfigArg &arg, 
                          const char *sectionName = "", 
-                         ArPriority::Priority priority = ArPriority::NORMAL,
+                         MvrPriority::Priority priority = MvrPriority::NORMAL,
                          const char *displayHint = NULL,
-                         ArConfigArg::RestartLevel restart = ArConfigArg::NO_RESTART);
+                         MvrConfigArg::RestartLevel restart = MvrConfigArg::NO_RESTART);
 
   /// Command to add a new comment to the given section with given priority
   AREXPORT bool addComment(const char *comment, const char *sectionName = "", 
-			                     ArPriority::Priority priority = ArPriority::NORMAL);
+			                     MvrPriority::Priority priority = MvrPriority::NORMAL);
 
   /// Adds a parameter that has all the other information on it
   /// already set
-  AREXPORT bool addParamAsIs(const ArConfigArg &arg, 
+  AREXPORT bool addParamAsIs(const MvrConfigArg &arg, 
 			     const char *sectionName = "");
 
   /// Sets the comment for a section
@@ -220,11 +220,11 @@ public:
 
 
   /// Uses this argument parser after it parses a file before it processes
-  AREXPORT void useArgumentParser(ArArgumentParser *parser);
+  AREXPORT void useArgumentParser(MvrArgumentParser *parser);
 
   /// for inheritors this is called after the file is processed
   /**
-     For classes that inherit from ArConfig this function is called
+     For classes that inherit from MvrConfig this function is called
      after parseFile and all of the processFileCBs are called... If
      you want to call something before the processFileCBs then just
      add a processFileCB... this is only called if there were no
@@ -237,57 +237,57 @@ public:
   AREXPORT virtual bool processFile(void) { return true; }
   /// Adds a callback to be invoked when the configuration is loaded or
   /// reloaded.
-  AREXPORT void addProcessFileCB(ArRetFunctor<bool> *functor, 
+  AREXPORT void addProcessFileCB(MvrRetFunctor<bool> *functor, 
 				 int priority = 0);
   /// Adds a callback to be invoked when the configuration is loaded
   /// or reloaded.... if you really want errors you should use
   /// addProcessFileWithErrorCB, this is just to catch mistakes
-  AREXPORT void addProcessFileCB(ArRetFunctor2<bool, char *, size_t> *functor, 
+  AREXPORT void addProcessFileCB(MvrRetFunctor2<bool, char *, size_t> *functor, 
 				 int priority = 0);
   /// Adds a callback to be invoked when the configuration is loaded or
   /// reloaded, which may also receive error messages
   AREXPORT void addProcessFileWithErrorCB(
-	  ArRetFunctor2<bool, char *, size_t> *functor, 
+	  MvrRetFunctor2<bool, char *, size_t> *functor, 
 	  int priority = 0);
   /// Removes a processedFile callback
-  AREXPORT void remProcessFileCB(ArRetFunctor<bool> *functor);
+  AREXPORT void remProcessFileCB(MvrRetFunctor<bool> *functor);
   /// Removes a processedFile callback
   AREXPORT void remProcessFileCB(
-	  ArRetFunctor2<bool, char *, size_t> *functor);
+	  MvrRetFunctor2<bool, char *, size_t> *functor);
   /// Call the processFileCBs
   AREXPORT bool callProcessFileCallBacks(bool continueOnError,
 					 char *errorBuffer = NULL,
 					 size_t errorBufferLen = 0);
   /// This parses the argument given (for parser or other use)
-  AREXPORT bool parseArgument(ArArgumentBuilder *arg, 
+  AREXPORT bool parseArgument(MvrArgumentBuilder *arg, 
 			      char *errorBuffer = NULL,
 			      size_t errorBufferLen = 0);
 
   /// Parses the config file version information.
-  AREXPORT bool parseVersion(ArArgumentBuilder *arg, 
+  AREXPORT bool parseVersion(MvrArgumentBuilder *arg, 
 			                       char *errorBuffer = NULL,
 			                        size_t errorBufferLen = 0);
 
   /// This parses the section change (for parser or other use)
-  AREXPORT bool parseSection(ArArgumentBuilder *arg, 
+  AREXPORT bool parseSection(MvrArgumentBuilder *arg, 
 			      char *errorBuffer = NULL,
 			      size_t errorBufferLen = 0);
 
-  AREXPORT bool parseListBegin(ArArgumentBuilder *arg,
+  AREXPORT bool parseListBegin(MvrArgumentBuilder *arg,
 				                       char *errorBuffer,
 				                       size_t errorBufferLen);
 
-  AREXPORT bool parseListEnd(ArArgumentBuilder *arg,
+  AREXPORT bool parseListEnd(MvrArgumentBuilder *arg,
 				                     char *errorBuffer,
 				                     size_t errorBufferLen);
 
   /// This parses an unknown argument (so we can save it)
-  AREXPORT bool parseUnknown(ArArgumentBuilder *arg, 
+  AREXPORT bool parseUnknown(MvrArgumentBuilder *arg, 
 			     char *errorBuffer = NULL,
 			     size_t errorBufferLen = 0);
 
   /// Gets the restart level needed
-  AREXPORT ArConfigArg::RestartLevel getRestartLevelNeeded(void) const;
+  AREXPORT MvrConfigArg::RestartLevel getRestartLevelNeeded(void) const;
 
   /// Gets the restart level needed
   AREXPORT void resetRestartLevelNeeded(void);
@@ -306,7 +306,7 @@ public:
   AREXPORT bool getNoBlanksBetweenParams(void);
 
   /// Use an argument parser to change the config
-  AREXPORT bool parseArgumentParser(ArArgumentParser *parser,
+  AREXPORT bool parseArgumentParser(MvrArgumentParser *parser,
 				    bool continueOnError = false,
 				    char *errorBuffer = NULL,
 				    size_t errorBufferLen = 0);
@@ -328,13 +328,13 @@ public:
 
   /// Find the section with the given name.  
   /// @return section object, or NULL if not found.
-  AREXPORT ArConfigSection *findSection(const char *sectionName) const;
+  AREXPORT MvrConfigSection *findSection(const char *sectionName) const;
 
   /// Set the log level used when loading or reloading the configuration
-  AREXPORT void setProcessFileCallbacksLogLevel(ArLog::LogLevel level) 
+  AREXPORT void setProcessFileCallbacksLogLevel(MvrLog::LogLevel level) 
     {  myProcessFileCallbacksLogLevel = level; }
   /// Get the log level used when loading or reloading the configuration
-  AREXPORT ArLog::LogLevel getProcessFileCallbacksLogLevel(void)
+  AREXPORT MvrLog::LogLevel getProcessFileCallbacksLogLevel(void)
     {  return myProcessFileCallbacksLogLevel; }
 
   /// Sets whether we save unknown items (if we don't save 'em we ignore 'em)
@@ -377,24 +377,24 @@ public:
   AREXPORT void remSectionNotToParse(const char *section);
  
   /// Adds the children of the given parent arg to the config parser. 
-  AREXPORT void addListNamesToParser(const ArConfigArg &parent);
+  AREXPORT void addListNamesToParser(const MvrConfigArg &parent);
 
 protected:
 
   /// Write out a section  
-  AREXPORT void writeSection(ArConfigSection *section, 
+  AREXPORT void writeSection(MvrConfigSection *section, 
                              FILE *file,
                              std::set<std::string> *alreadyWritten,
                              bool writeExtras,
-                             ArPriority::Priority highestPriority,
-                             ArPriority::Priority lowestPriority);
+                             MvrPriority::Priority highestPriority,
+                             MvrPriority::Priority lowestPriority);
 
   /// Write out a section in CSV format for translation
-  AREXPORT void writeSectionResource(ArConfigSection *section, 
+  AREXPORT void writeSectionResource(MvrConfigSection *section, 
                                      FILE *file,
                                      std::set<std::string> *alreadyWritten);
 
-  AREXPORT void translateSection(ArConfigSection *section);
+  AREXPORT void translateSection(MvrConfigSection *section);
 
   void copySectionsToParse(std::list<std::string> *from);
 
@@ -420,12 +420,12 @@ protected:
   {
     public:
     ProcessFileCBType(
-	    ArRetFunctor2<bool, char *, size_t> *functor)
+	    MvrRetFunctor2<bool, char *, size_t> *functor)
     {
       myCallbackWithError = functor;
       myCallback = NULL;
     }
-    ProcessFileCBType(ArRetFunctor<bool> *functor)
+    ProcessFileCBType(MvrRetFunctor<bool> *functor)
     {
       myCallbackWithError = NULL;
       myCallback = functor;
@@ -438,17 +438,17 @@ protected:
       else if (myCallback != NULL) 
         return myCallback->invokeR(); 
       // if we get here there's a problem
-      ArLog::log(ArLog::Terse, "ArConfig: Horrible problem with process callbacks");
+      MvrLog::log(MvrLog::Terse, "MvrConfig: Horrible problem with process callbacks");
       return false;
     }
-    bool haveFunctor(ArRetFunctor2<bool, char *, size_t> *functor)
+    bool haveFunctor(MvrRetFunctor2<bool, char *, size_t> *functor)
     { 
       if (myCallbackWithError == functor) 
         return true; 
       else 
         return false; 
     }
-    bool haveFunctor(ArRetFunctor<bool> *functor)
+    bool haveFunctor(MvrRetFunctor<bool> *functor)
     { 
       if (myCallback == functor) 
         return true; 
@@ -462,12 +462,12 @@ protected:
       else if (myCallback != NULL)
         return myCallback->getName();
       // if we get here there's a problem
-      ArLog::log(ArLog::Terse, "ArConfig: Horrible problem with process callback names");
+      MvrLog::log(MvrLog::Terse, "MvrConfig: Horrible problem with process callback names");
       return NULL;
     }
     protected:
-    ArRetFunctor2<bool, char *, size_t> *myCallbackWithError;
-    ArRetFunctor<bool> *myCallback;
+    MvrRetFunctor2<bool, char *, size_t> *myCallbackWithError;
+    MvrRetFunctor<bool> *myCallback;
   };
 
   void addParserHandlers(void);
@@ -480,23 +480,23 @@ protected:
   /// Prefix to be inserted in log messages (contains the robot and config names).
   std::string myLogPrefix;
 
-  ArArgumentParser *myArgumentParser;
+  MvrArgumentParser *myArgumentParser;
   std::multimap<int, ProcessFileCBType *> myProcessFileCBList;
   bool myNoBlanksBetweenParams;
 
   /// Version information read from config file
   std::string myConfigVersion;
 
-  ArConfig *myTranslator;
+  MvrConfig *myTranslator;
   char myCsvSeparatorChar;
 
   std::string mySection;
   std::list<std::string> *mySectionsToParse;
   std::set<std::string> mySectionsNotToParse;
-  ArPriority::Priority myHighestPriorityToParse;
-  ArPriority::Priority myLowestPriorityToParse;
+  MvrPriority::Priority myHighestPriorityToParse;
+  MvrPriority::Priority myLowestPriorityToParse;
   
-  ArConfigArg::RestartLevel myRestartLevelNeeded;
+  MvrConfigArg::RestartLevel myRestartLevelNeeded;
   bool myCheckingForRestartLevel;
 
   bool mySectionBroken;
@@ -508,7 +508,7 @@ protected:
 
   std::string myFileName;
   std::string myBaseDirectory;
-  ArFileParser myParser;
+  MvrFileParser myParser;
 
   bool myIgnoreBounds;
   bool myFailOnBadSection;
@@ -519,7 +519,7 @@ protected:
   bool myPermissionAllowFactory;
   bool myPermissionSaveUnknown;
 
-  ArLog::LogLevel myProcessFileCallbacksLogLevel;
+  MvrLog::LogLevel myProcessFileCallbacksLogLevel;
 
   /// Map that defines the section names contained in each category. 
   std::map<std::string, std::list<std::string> > myCategoryToSectionsMap;
@@ -528,40 +528,40 @@ protected:
   std::list<ArConfigSection *> mySections;
 
   // callback for the file parser
-  ArRetFunctor3C<bool, ArConfig, ArArgumentBuilder *, char *, size_t> myParserCB;
+  MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder *, char *, size_t> myParserCB;
   // callback for the config version in the file parser
-  ArRetFunctor3C<bool, ArConfig, ArArgumentBuilder *, char *, size_t> myVersionCB;
+  MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder *, char *, size_t> myVersionCB;
   // callback for the section in the file parser
-  ArRetFunctor3C<bool, ArConfig, ArArgumentBuilder *, char *, size_t> mySectionCB;
+  MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder *, char *, size_t> mySectionCB;
 
   // callback for the _listBegin in the file parser
-  ArRetFunctor3C<bool, ArConfig, ArArgumentBuilder *, char *, size_t> myListBeginCB;
+  MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder *, char *, size_t> myListBeginCB;
   // callback for the _listEnd in the file parser
-  ArRetFunctor3C<bool, ArConfig, ArArgumentBuilder *, char *, size_t> myListEndCB;
+  MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder *, char *, size_t> myListEndCB;
 
   // callback for the unknown param (or whatever) file parser
-  ArRetFunctor3C<bool, ArConfig, ArArgumentBuilder *, char *, size_t> myUnknownCB;
+  MvrRetFunctor3C<bool, MvrConfig, MvrArgumentBuilder *, char *, size_t> myUnknownCB;
 
 };
 
 
 /** Represents a section in the configuration. Sections are used to
- *  group items used by separate parts of Aria.
+ *  group items used by separate parts of Mvria.
  */
-class ArConfigSection
+class MvrConfigSection
 {
 public:
-  AREXPORT ArConfigSection(const char *name = NULL, 
+  AREXPORT MvrConfigSection(const char *name = NULL, 
 						               const char *comment = NULL,
                            bool isQuiet = false,
                            const char *categoryName = NULL);
 
   AREXPORT virtual ~ArConfigSection();
-  AREXPORT ArConfigSection(const ArConfigSection &section);
-  AREXPORT ArConfigSection &operator=(const ArConfigSection &section);
+  AREXPORT MvrConfigSection(const MvrConfigSection &section);
+  AREXPORT MvrConfigSection &operator=(const MvrConfigSection &section);
 
   /// Copies the given section to this one, detaching any pointers so they are not shared
-  AREXPORT virtual void copyAndDetach(const ArConfigSection &section);
+  AREXPORT virtual void copyAndDetach(const MvrConfigSection &section);
 
   /** @return The name of this section */
   const char *getName(void) const { return myName.c_str(); }
@@ -585,21 +585,21 @@ public:
   AREXPORT bool remFlag(const char *dataFlag);
 
   /// Finds a parameter item in this section with the given name.  Returns NULL if not found.
-  AREXPORT ArConfigArg *findParam(const char *paramName,
+  AREXPORT MvrConfigArg *findParam(const char *paramName,
                                   bool isAllowStringHolders = false);
 
   /// Finds a list member parameter with the specified name path.  Returns NULL if not found.
-  AREXPORT ArConfigArg *findParam(const std::list<std::string> &paramNamePath,
+  AREXPORT MvrConfigArg *findParam(const std::list<std::string> &paramNamePath,
                                   bool isAllowHolders = false); 
 
   /// Finds a list member parameter with the specified name path.  Returns NULL if not found.
-  AREXPORT ArConfigArg *findParam(const char **paramNamePath, 
+  AREXPORT MvrConfigArg *findParam(const char **paramNamePath, 
                                   int pathLength,
                                   bool isAllowHolders = false); 
 
   /// Determines whether the current section contains parameters in the specified priority ran
-  AREXPORT bool containsParamsOfPriority(ArPriority::Priority highestPriority,
-                                         ArPriority::Priority lowestPriority);
+  AREXPORT bool containsParamsOfPriority(MvrPriority::Priority highestPriority,
+                                         MvrPriority::Priority lowestPriority);
 
   /// Removes a string holder for this param, returns true if it found one
   AREXPORT bool remStringHolder(const char *paramName); 
@@ -610,7 +610,7 @@ public:
 protected:
 
   /// Give the config access to the protected category name setter.
-  friend class ArConfig;
+  friend class MvrConfig;
   
   /// Sets the name of the category to which this section belongs.
   void setCategoryName(const char *categoryName);
@@ -621,11 +621,11 @@ protected:
   std::string myComment;
   std::string myCategoryName;
   std::string myDisplayName; // Not yet supported
-  ArArgumentBuilder *myFlags;
+  MvrArgumentBuilder *myFlags;
   std::list<ArConfigArg> myParams;
   bool myIsQuiet;
 
-}; // end class ArConfigSection
+}; // end class MvrConfigSection
 
 #endif // ARCONFIG
 

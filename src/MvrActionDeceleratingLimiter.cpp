@@ -1,51 +1,25 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ArExport.h"
-#include "ariaOSDef.h"
-#include "ArActionDeceleratingLimiter.h"
-#include "ArRobot.h"
-#include "ArCommands.h"
-#include "ariaInternal.h"
-#include "ArRobotConfigPacketReader.h"
-#include "ArRangeDevice.h"
+#include "MvrExport.h"
+#include "mvriaOSDef.h"
+#include "MvrActionDeceleratingLimiter.h"
+#include "MvrRobot.h"
+#include "MvrCommands.h"
+#include "mvriaInternal.h"
+#include "MvrRobotConfigPacketReader.h"
+#include "MvrRangeDevice.h"
 
 /**
    @param name name of the action
-   @param type whether we're an action for going forwards (ArActionDeceleratingLimiter::FORWARDS) 
-   backwards (ArActionDeceleratingLimiter::BACKWARDS), or laterally to the left
-   (ArActionDeceleratingLimiter::LATERAL_LEFT) or laterally
-   to the right (ArActionDeceleratingLimiter::LATERAL_RIGHT). This causes
-   ArActionDeceleratingLimiter to choose the right values and choose X or Y translation
+   @param type whether we're an action for going forwards (MvrActionDeceleratingLimiter::FORWARDS) 
+   backwards (MvrActionDeceleratingLimiter::BACKWARDS), or laterally to the left
+   (MvrActionDeceleratingLimiter::LATERAL_LEFT) or laterally
+   to the right (MvrActionDeceleratingLimiter::LATERAL_RIGHT). This causes
+   MvrActionDeceleratingLimiter to choose the right values and choose X or Y translation
    decelerations and speeds.
 */
-AREXPORT ArActionDeceleratingLimiter::ArActionDeceleratingLimiter(
+AREXPORT MvrActionDeceleratingLimiter::MvrActionDeceleratingLimiter(
 	const char *name, 
 	LimiterType type) :
-  ArAction(name,
+  MvrAction(name,
 	   "Slows the robot down and cranks up deceleration so as not to hit anything in front of it.")
 {
   myType = type;
@@ -57,7 +31,7 @@ AREXPORT ArActionDeceleratingLimiter::ArActionDeceleratingLimiter(
 
 }
 
-AREXPORT ArActionDeceleratingLimiter::~ArActionDeceleratingLimiter()
+AREXPORT MvrActionDeceleratingLimiter::~MvrActionDeceleratingLimiter()
 {
 
 }
@@ -74,7 +48,7 @@ AREXPORT ArActionDeceleratingLimiter::~ArActionDeceleratingLimiter()
    @param useEStop if something is detected within the clearance, cause an immediate emergecy stop
    @param maxEmergencyDecel ultimate limit on deceleration to apply when slowing for an obstacle detected within clearance  (mm/sec/sec); if 0, use the robot's maximum decel parameter.
 */
-AREXPORT void ArActionDeceleratingLimiter::setParameters(
+AREXPORT void MvrActionDeceleratingLimiter::setParameters(
 	double clearance,
 	double sideClearanceAtSlowSpeed,
 	double paddingAtSlowSpeed,
@@ -98,7 +72,7 @@ AREXPORT void ArActionDeceleratingLimiter::setParameters(
   myMaxEmergencyDecel = maxEmergencyDecel;
 }
 
-AREXPORT void ArActionDeceleratingLimiter::addToConfig(ArConfig *config, 
+AREXPORT void MvrActionDeceleratingLimiter::addToConfig(MvrConfig *config, 
 						       const char *section, 
 						       const char *prefix)
 {
@@ -109,102 +83,102 @@ AREXPORT void ArActionDeceleratingLimiter::addToConfig(ArConfig *config,
   else
     strPrefix = prefix;
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);  
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);  
 
   name = strPrefix;
   name += "Clearance";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myClearance, 
+	  MvrConfigArg(name.c_str(), &myClearance, 
 		      "Don't get closer than this to something in front or back. (mm)"), 
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "SlowSpeed";
   config->addParam(
-	  ArConfigArg(name.c_str(),
+	  MvrConfigArg(name.c_str(),
 		      &mySlowSpeed,
 		      "Consider this speed slow (mm/sec)"),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "SideClearanceAtSlowSpeed";
   config->addParam(
-	  ArConfigArg(name.c_str(),
+	  MvrConfigArg(name.c_str(),
 		      &mySideClearanceAtSlowSpeed, 
 		      "Don't get closer than this to something on the side if we're going at slow speed or below. (mm)"),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "PaddingAtSlowSpeed";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myPaddingAtSlowSpeed, 
+	  MvrConfigArg(name.c_str(), &myPaddingAtSlowSpeed, 
 		      "Try to stop this far away from clearance at slow speed or below. (mm)", 0), 
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "FastSpeed";
   config->addParam(
-	  ArConfigArg(name.c_str(),
+	  MvrConfigArg(name.c_str(),
 		      &myFastSpeed,
 		      "Consider this speed fast (mm/sec)"),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "SideClearanceAtFastSpeed";
   config->addParam(
-	  ArConfigArg(name.c_str(),
+	  MvrConfigArg(name.c_str(),
 		      &mySideClearanceAtFastSpeed, 
 		      "Don't get closer than this to something on the side if we're going at fast speed or above. (mm)"),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "PaddingAtFastSpeed";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myPaddingAtFastSpeed, 
+	  MvrConfigArg(name.c_str(), &myPaddingAtFastSpeed, 
 		      "Try to stop this far away from clearance at fast speed or below. (mm)", 0), 
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "PreferredDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(),
+	  MvrConfigArg(name.c_str(),
 		      &myPreferredDecel,
 		      "The maximum decel we'll use until something might infringe on clearance and sideClearanceAtSlowSpeed (mm/sec/sec"),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "MaxEmergencyDecel";
   config->addParam(
-	  ArConfigArg(name.c_str(),
+	  MvrConfigArg(name.c_str(),
 		      &myMaxEmergencyDecel,
 		      "The maximum decel we'll ever use, 0 means use the robot's maximum (mm/sec/sec"),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
   name = strPrefix;
   name += "UseEStop";
   config->addParam(
-	  ArConfigArg(name.c_str(),
+	  MvrConfigArg(name.c_str(),
 		      &myUseEStop,
 		      "Whether to use an EStop to stop if something will intrude on our clearance"),
-	  section, ArPriority::NORMAL);
+	  section, MvrPriority::NORMAL);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
 }
 
-AREXPORT ArActionDesired *
-ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *
+MvrActionDeceleratingLimiter::fire(MvrActionDesired currentDesired)
 {
   double dist;
-  const ArRangeDevice *distRangeDevice = NULL;
+  const MvrRangeDevice *distRangeDevice = NULL;
   double distInner;
-  const ArRangeDevice *distInnerRangeDevice = NULL;
+  const MvrRangeDevice *distInnerRangeDevice = NULL;
   double absVel;
   bool printing = false;
 
-  //ArLog::LogLevel verboseLogLevel = ArLog::Verbose;
-  ArLog::LogLevel verboseLogLevel = ArLog::Verbose;
+  //MvrLog::LogLevel verboseLogLevel = MvrLog::Verbose;
+  MvrLog::LogLevel verboseLogLevel = MvrLog::Verbose;
   if (printing)
-    verboseLogLevel = ArLog::Normal;
+    verboseLogLevel = MvrLog::Normal;
 
   double lookAhead = 16000;
   
@@ -222,9 +196,9 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
   else if (myType == LATERAL_RIGHT && myRobot->getLatVel() > 100)
     return NULL;
   if (myType != LATERAL_LEFT && myType != LATERAL_RIGHT)
-    absVel = ArMath::fabs(myRobot->getVel());
+    absVel = MvrMath::fabs(myRobot->getVel());
   else
-    absVel = ArMath::fabs(myRobot->getLatVel());
+    absVel = MvrMath::fabs(myRobot->getLatVel());
 
   double sideClearance;
   double padding;
@@ -258,10 +232,10 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
   
   
   //if (printing)
-  //ArLog::log(ArLog::Normal, "%d side %.0f padding %.0f", myType, sideClearance, padding);
+  //MvrLog::log(MvrLog::Normal, "%d side %.0f padding %.0f", myType, sideClearance, padding);
 		
-  ArPose obstaclePose(-1, -1, -1);
-  ArPose obstacleInnerPose(-1, -1, -1);
+  MvrPose obstaclePose(-1, -1, -1);
+  MvrPose obstacleInnerPose(-1, -1, -1);
 
   if (myType == FORWARDS)
     dist = myRobot->checkRangeDevicesCurrentBox(
@@ -349,32 +323,32 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
   distInner -= myClearance;
 
   if (printing)
-    ArLog::log(ArLog::Normal, "%d dist %.0f (%.0f %.0f from %s)", myType, dist,
+    MvrLog::log(MvrLog::Normal, "%d dist %.0f (%.0f %.0f from %s)", myType, dist,
 	       obstaclePose.getX(), obstaclePose.getY(),
 	       distRangeDevice != NULL ? distRangeDevice->getName() : "none");
   // see if we need to throw an estop
   if (distInner < 1 && absVel > 5)
   {
     if (printing && !myLastStopped)
-      ArLog::log(ArLog::Normal, "%s: Stopping", getName());
+      MvrLog::log(MvrLog::Normal, "%s: Stopping", getName());
     if (absVel > 100)
     {
       if (myUseEStop)
       {
 	if (distInnerRangeDevice != NULL)
-	  ArLog::log(ArLog::Normal, "%s: estopping because of reading from %s", getName(), distInnerRangeDevice->getName());
+	  MvrLog::log(MvrLog::Normal, "%s: estopping because of reading from %s", getName(), distInnerRangeDevice->getName());
 	else
-	  ArLog::log(ArLog::Normal, "%s: estopping because of reading from unknown", getName());
-	myRobot->comInt(ArCommands::ESTOP, 1);
+	  MvrLog::log(MvrLog::Normal, "%s: estopping because of reading from unknown", getName());
+	myRobot->comInt(MvrCommands::ESTOP, 1);
       }
       else
       {
 	if (distInnerRangeDevice != NULL)
-	  ArLog::log(ArLog::Normal, 
+	  MvrLog::log(MvrLog::Normal, 
 		     "%s: maximum deceleration because of reading from %s", 
 		     getName(), distInnerRangeDevice->getName());
 	else
-	  ArLog::log(ArLog::Normal, 
+	  MvrLog::log(MvrLog::Normal, 
 	     "%s: maximum deceleration because of reading from unknown", 
 		     getName());
       }
@@ -382,7 +356,7 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
       if (fabs(myMaxEmergencyDecel) > 1)
       {
 	if (printing)
-	  ArLog::log(ArLog::Normal, "Max emergency decel %.0f", 
+	  MvrLog::log(MvrLog::Normal, "Max emergency decel %.0f", 
 		 myMaxEmergencyDecel);
 	if (myType != LATERAL_LEFT && myType != LATERAL_RIGHT)
 	  myDesired.setTransDecel(myMaxEmergencyDecel);
@@ -394,10 +368,10 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
 	  myRobot->getOrigRobotConfig()->hasPacketArrived())
       {
 	if (myType != LATERAL_LEFT && myType != LATERAL_RIGHT)
-	  ArLog::log(ArLog::Normal, "Robots max decel %d", 
+	  MvrLog::log(MvrLog::Normal, "Robots max decel %d", 
 		 myRobot->getOrigRobotConfig()->getTransAccelTop());
 	else
-	  ArLog::log(ArLog::Normal, "Robots max lat decel %d", 
+	  MvrLog::log(MvrLog::Normal, "Robots max lat decel %d", 
 		 myRobot->getOrigRobotConfig()->getLatAccelTop());
 	if (myType != LATERAL_LEFT && myType != LATERAL_RIGHT)
 	  myDesired.setTransDecel(
@@ -410,7 +384,7 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
       else
       {
 	if (printing)
-	  ArLog::log(ArLog::Normal, "Prefered decel %g", myPreferredDecel);
+	  MvrLog::log(MvrLog::Normal, "Prefered decel %g", myPreferredDecel);
 	if (myType != LATERAL_LEFT && myType != LATERAL_RIGHT)
 	  myDesired.setTransDecel(myPreferredDecel);
 	else
@@ -434,17 +408,17 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
     if (myStopRotationToo)
       myDesired.setRotVel(0);
     if (distInnerRangeDevice != NULL)
-      ArLog::log(verboseLogLevel,
+      MvrLog::log(verboseLogLevel,
 		 "%s: Stopping (inner) because of reading from %s", getName(),
 		 distInnerRangeDevice->getName());
     else
-      ArLog::log(verboseLogLevel,
+      MvrLog::log(verboseLogLevel,
 		 "%s: Stopping (inner) because of reading from unknown", 
 		 getName());
     return &myDesired;
   }
   // if our distance is greater than how far it'd take us to stop
-  //ArLog::log(ArLog::Normal, "%.0f %.0f %.0f", dist, absVel, absVel * absVel / 2.0 / myRobot->getTransDecel());
+  //MvrLog::log(MvrLog::Normal, "%.0f %.0f %.0f", dist, absVel, absVel * absVel / 2.0 / myRobot->getTransDecel());
   double robotDeceleration;
   if (myType != LATERAL_LEFT && myType != LATERAL_RIGHT)
     robotDeceleration = myRobot->getTransDecel();
@@ -453,14 +427,14 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
   if (dist > absVel * absVel / 2.0 / robotDeceleration)
   {
     if (printing)
-      ArLog::log(ArLog::Normal, "%d Nothing", myType);
+      MvrLog::log(MvrLog::Normal, "%d Nothing", myType);
     return NULL;
   }
 
   if (printing && myLastStopped)
-    ArLog::log(ArLog::Normal, "%d moving", myType);
+    MvrLog::log(MvrLog::Normal, "%d moving", myType);
   myLastStopped = false;
-  //ArLog::log(ArLog::Normal, "%f ", dist);
+  //MvrLog::log(MvrLog::Normal, "%f ", dist);
   //maxVel = (dist - clearance);
   double deceleration = - absVel * absVel / dist / 2.0;
   double decelerationInner = - absVel * absVel / distInner / 2.0;
@@ -473,14 +447,14 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
   // higher than decelerationInner
 
 
-  //ArLog::log(ArLog::Normal, "%.0f %.0f %.0f %.0f", deceleration, myRobot->getTransDecel(), 	 currentDesired.getTransDecelStrength(), currentDesired.getTransDecel());
+  //MvrLog::log(MvrLog::Normal, "%.0f %.0f %.0f %.0f", deceleration, myRobot->getTransDecel(), 	 currentDesired.getTransDecelStrength(), currentDesired.getTransDecel());
   if ((myType != LATERAL_LEFT &&  myType != LATERAL_RIGHT &&
        fabs(deceleration) > fabs(myRobot->getTransDecel()) &&
-       (currentDesired.getTransDecelStrength() < ArActionDesired::MIN_STRENGTH 
+       (currentDesired.getTransDecelStrength() < MvrActionDesired::MIN_STRENGTH 
 	|| fabs(deceleration) > fabs(currentDesired.getTransDecel()))) ||
       ((myType == LATERAL_LEFT || myType == LATERAL_RIGHT) && 
        fabs(deceleration) > fabs(myRobot->getLatDecel()) &&
-       (currentDesired.getLatDecelStrength() < ArActionDesired::MIN_STRENGTH 
+       (currentDesired.getLatDecelStrength() < MvrActionDesired::MIN_STRENGTH 
 	|| fabs(deceleration) > fabs(currentDesired.getLatDecel()))))
   {
     double decelDesired;
@@ -504,7 +478,7 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
     else
       myDesired.setLatDecel(decelDesired);
     if (printing)
-      ArLog::log(ArLog::Normal, "Set deceleration to %g", decelDesired);
+      MvrLog::log(MvrLog::Normal, "Set deceleration to %g", decelDesired);
   }
   else
   {
@@ -517,21 +491,21 @@ ArActionDeceleratingLimiter::fire(ArActionDesired currentDesired)
   //double maxVel = absVel - deceleration  / 10.0;
 
   if (printing)
-    ArLog::log(ArLog::Normal, "%d accel %.0f", myType, deceleration);
-  //ArLog::log(ArLog::Normal, "Max vel %f (stopdist %.1f slowdist %.1f slowspeed %.1f", maxVel,	 myStopDist, mySlowDist, mySlowSpeed);
+    MvrLog::log(MvrLog::Normal, "%d accel %.0f", myType, deceleration);
+  //MvrLog::log(MvrLog::Normal, "Max vel %f (stopdist %.1f slowdist %.1f slowspeed %.1f", maxVel,	 myStopDist, mySlowDist, mySlowSpeed);
 
   /*
-  ArLog::log(ArLog::Normal, "%s: Stopping because of reading from %s (%.0f %.0f %.0f %.0f)", 
+  MvrLog::log(MvrLog::Normal, "%s: Stopping because of reading from %s (%.0f %.0f %.0f %.0f)", 
 	     getName(), distInnerRangeDevice->getName(),
 	     dist, deceleration, robotDeceleration, 
 	     absVel * absVel / 2.0 / robotDeceleration);
   */
   if (distInnerRangeDevice != NULL)
-    ArLog::log(verboseLogLevel,
+    MvrLog::log(verboseLogLevel,
 	       "%s: Stopping because of reading from %s", 
 	       getName(), distInnerRangeDevice->getName());
   else
-    ArLog::log(verboseLogLevel, 
+    MvrLog::log(verboseLogLevel, 
 	       "%s: Stopping because of reading from unknown", 
 	       getName());
 

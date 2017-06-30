@@ -25,11 +25,11 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
-#include "ArMutex.h"
+#include "MvrExport.h"
+#include "MvrMutex.h"
 #include "ariaOSDef.h"
 #include "ariaUtil.h"
-#include "ArThread.h"
+#include "MvrThread.h"
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -104,7 +104,7 @@ void ArMutex::checkUnlockTime() {
 	//printf("checking unlock time: warningms=%d, myFirstLock=%d, msecSince=%d\n", ourUnlockWarningMS, myFirstLock, myLockTime->mSecSince());
   if (ourUnlockWarningMS > 0 && !myFirstLock &&  myLockTime &&
         myLockTime->mSecSince() >= ourUnlockWarningMS)
-    ArLog::logNoLock(ArLog::Normal, 
+    ArLog::logNoLock(MvrLog::Normal, 
 		    "LockWarning: unlocking '%s' from thread ('%s' %d pid %d) was locked for %.3f sec", 
 		    myLogName.c_str(), 
 		    ArThread::getThisThreadName(), 

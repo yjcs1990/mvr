@@ -33,10 +33,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /// Interface to access and modify a specified zip file.
 /**
- * ArZippable is an abstract base class that defines the methods to add
+ * MvrZippable is an abstract base class that defines the methods to add
  * and extract files from a zip file.
  * 
- * An ArZippable is expected to be used in a rather "atomic" manner.  It can
+ * An MvrZippable is expected to be used in a rather "atomic" manner.  It can
  * be opened in one of two modes (ZIP_MODE or UNZIP_MODE), and the available 
  * operations are subsequently restricted based on the mode:  
  * <ul>
@@ -47,7 +47,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * close()'ed.
  * 
 **/
-class ArZippable
+class MvrZippable
 {
 public:
 
@@ -59,7 +59,7 @@ public:
   };
 
   /// Constructor
-	AREXPORT ArZippable() 
+	AREXPORT MvrZippable() 
   {}
 	
   /// Destructor
@@ -192,14 +192,14 @@ public:
 private:
 
   /// Disabled copy constructor
-  ArZippable( const ArZippable & );
+  MvrZippable( const MvrZippable & );
 	/// Disabled assignment operator.
-  ArZippable &operator=( const ArZippable & );
+  MvrZippable &operator=( const MvrZippable & );
 
 protected:
 
 
-}; // end class ArZippable
+}; // end class MvrZippable
 
 
 #endif // ARZIPPABLE_H

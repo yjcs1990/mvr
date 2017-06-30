@@ -28,17 +28,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTS_H
 
 #include "ariaTypedefs.h"
-#include "ArTcpConnection.h"
+#include "MvrTcpConnection.h"
 #include "ariaUtil.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 
 /// A class for the acts blob
-class ArACTSBlob
+class MvrACTSBlob
 {
 public:
   /// Constructor
-  ArACTSBlob() {}
+  MvrACTSBlob() {}
   /// Destructor
   virtual ~ArACTSBlob() {}
   /// Gets the number of pixels (area) covered by the blob
@@ -72,7 +72,7 @@ public:
   /// Prints the stats of the blob
   void log(void)
     {
-      ArLog::log(ArLog::Terse, "Area: %3d X: %3d Y: %3d l: %3d r: %3d t: %3d: b: %3d", 
+      MvrLog::log(MvrLog::Terse, "Mvrea: %3d X: %3d Y: %3d l: %3d r: %3d t: %3d: b: %3d", 
 		 myArea, myXCG, myYCG, myLeft, myRight, myTop, myBottom);
     }
 protected:
@@ -87,16 +87,16 @@ protected:
 
 /// Communicate with ACTS
 /// @ingroup OptionalClasses
-class ArACTS_1_2
+class MvrACTS_1_2
 {
 public:
   /// Constructor
-  AREXPORT ArACTS_1_2();
+  AREXPORT MvrACTS_1_2();
   /// Destructor
   AREXPORT virtual ~ArACTS_1_2();
 
   /// Opens the connection to ACTS
-  AREXPORT bool openPort(ArRobot *robot, const char *host = "localhost", int port = 5001);
+  AREXPORT bool openPort(MvrRobot *robot, const char *host = "localhost", int port = 5001);
   /// Closes the connection
   AREXPORT bool closePort(void);
 
@@ -104,9 +104,9 @@ public:
   AREXPORT bool isConnected(void);
 
   /// Gets the robot this class is connected to
-  AREXPORT ArRobot *getRobot(void);
+  AREXPORT MvrRobot *getRobot(void);
   /// Sets the robot this class is connected to
-  AREXPORT void setRobot(ArRobot *robot);
+  AREXPORT void setRobot(MvrRobot *robot);
 
   /// Requests another packet
   AREXPORT bool requestPacket(void);
@@ -119,7 +119,7 @@ public:
   AREXPORT int getNumBlobs(int channel);
   
   /// Gets the given blob from the given channel
-  AREXPORT bool getBlob(int channel, int blobNumber, ArACTSBlob *blob);
+  AREXPORT bool getBlob(int channel, int blobNumber, MvrACTSBlob *blob);
 
   /// A function that reads information from acts and requests packets
   AREXPORT void actsHandler(void);
@@ -139,9 +139,9 @@ protected:
   int invertY(int before);
   /// an iternal function to strip out the information from some bytes
   int getData(char *rawData);
-  ArFunctorC<ArACTS_1_2> mySensorTaskCB;
-  ArRobot *myRobot;
-  ArTcpConnection myConn;
+  MvrFunctorC<ArACTS_1_2> mySensorTaskCB;
+  MvrRobot *myRobot;
+  MvrTcpConnection myConn;
   int myBlobNum[NUM_CHANNELS];
   int myBlobIndex[NUM_CHANNELS];
   char myData[MAX_DATA];

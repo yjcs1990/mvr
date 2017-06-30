@@ -29,12 +29,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
+#include "MvrFunctor.h"
 
-class ArRobot;
-class ArRobotPacket;
+class MvrRobot;
+class MvrRobotPacket;
 
-/// Use onboard gyro to improve the heading in an ArRobot object's pose value
+/// Use onboard gyro to improve the heading in an MvrRobot object's pose value
 /**
    The gyro is an accessory connected to the robot's microcontroller.
    The gyro's purpose is to improve large errors due to wheel
@@ -42,20 +42,20 @@ class ArRobotPacket;
    (or for the skid steer of an AT). The gyro also happens to provide
    temperature readings as well.
 
-   When an ArAnalogGyro object is created, it registers callbacks with the
+   When an MvrAnalogGyro object is created, it registers callbacks with the
    robot, and automatic heading correction will begin when new data arrives
    from the robot.
    If you delete the object, it will remove itself from the robot.  
    
    The readings come back from the gyro over the robot microcontroller's analog ports.  
    The microcontroller then sends the readings to us just before
-   sending us the standard packet.  ArAnalogGyro uses these  readings to
+   sending us the standard packet.  MvrAnalogGyro uses these  readings to
    calculate a better heading of the robot (integrating the velocities to
-   give position).  Then when the standard packet comes in, ArRobot calls
-   an encoder correction callback in ArAnalogGyro which does a simple 
+   give position).  Then when the standard packet comes in, MvrRobot calls
+   an encoder correction callback in MvrAnalogGyro which does a simple 
    Kalman filter and fuses the encoder information's heading with the gyro's heading
    to compute the most probable heading which it then returns to the
-   ArRobot object to use as its heading.
+   MvrRobot object to use as its heading.
 
    The robot's normal dead reconing angle is fairly good if you have properly
    inflated tires (if you have pneumatic tires) and if you have
@@ -93,11 +93,11 @@ class ArRobotPacket;
    @ingroup OptionalClasses
 
 */
-class ArAnalogGyro
+class MvrAnalogGyro
 {
 public:
   /// Constructor
-  AREXPORT ArAnalogGyro(ArRobot *robot);
+  AREXPORT MvrAnalogGyro(MvrRobot *robot);
   /// Destructor
   AREXPORT virtual ~ArAnalogGyro();
   /// Gets if we really have a gyro or not
@@ -144,16 +144,16 @@ public:
   //second)
   AREXPORT double getAverage(void) const { return myLastAverage; }
   /// Gets the time the last average was taken 
-  AREXPORT ArTime getAverageTaken(void) const { return myLastAverageTaken; }
+  AREXPORT MvrTime getAverageTaken(void) const { return myLastAverageTaken; }
   /// Gets the scaling factor used for multiplying the reading values received (default 1.626)
   AREXPORT double getScalingFactor(void) const { return myScalingFactor; }
   /// Sets the scaling factor used for multiplying the readings
   AREXPORT void setScalingFactor(double factor) { myScalingFactor = factor; }
 
   /// Internal packet handler for the gyro packets
-  AREXPORT bool handleGyroPacket(ArRobotPacket *packet);
+  AREXPORT bool handleGyroPacket(MvrRobotPacket *packet);
   /// internal function for correcting the encoder readings with the gyro data
-  AREXPORT double encoderCorrect(ArPoseWithTime deltaPose);
+  AREXPORT double encoderCorrect(MvrPoseWithTime deltaPose);
   /// Internal connection callback; delays for a short amount of time to give the gyro enough time to stabilize before we try to use it
   AREXPORT void stabilizingCallback(void);
   /// Internal user task callback
@@ -177,9 +177,9 @@ protected:
   time_t myTimeLastPacket;
 
   // data for averaging
-  ArTime myAverageStarted;
+  MvrTime myAverageStarted;
   double myLastAverage;
-  ArTime myLastAverageTaken;
+  MvrTime myLastAverageTaken;
   double myAverageTotal;
   int myAverageCount;
 
@@ -197,11 +197,11 @@ protected:
   double myHeading;
   int myTemperature;
   double myLastHeading;
-  ArRobot *myRobot;
-  ArRetFunctor1C<bool, ArAnalogGyro, ArRobotPacket *> myHandleGyroPacketCB;
-  ArRetFunctor1C<double, ArAnalogGyro, ArPoseWithTime> myEncoderCorrectCB;
-  ArFunctorC<ArAnalogGyro> myStabilizingCB;
-  ArFunctorC<ArAnalogGyro> myUserTaskCB;
+  MvrRobot *myRobot;
+  MvrRetFunctor1C<bool, MvrAnalogGyro, MvrRobotPacket *> myHandleGyroPacketCB;
+  MvrRetFunctor1C<double, MvrAnalogGyro, MvrPoseWithTime> myEncoderCorrectCB;
+  MvrFunctorC<ArAnalogGyro> myStabilizingCB;
+  MvrFunctorC<ArAnalogGyro> myUserTaskCB;
 
   /// Gyro type
   enum GyroType

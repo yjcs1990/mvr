@@ -25,9 +25,9 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
-#include "ArSoundPlayer.h"
-#include "ArLog.h"
+#include "MvrExport.h"
+#include "MvrSoundPlayer.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
 #include <string.h>
 #include <errno.h>
@@ -74,7 +74,7 @@ AREXPORT void ArSoundPlayer::stopPlaying()
 
 AREXPORT bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
 {
-  ArLog::log(ArLog::Terse, "INTERNAL ERROR: ArSoundPlayer::playSoundPCM16() is not implemented for Windows yet! Bug reed@activmedia.com about it!");
+  ArLog::log(MvrLog::Terse, "INTERNAL ERROR: ArSoundPlayer::playSoundPCM16() is not implemented for Windows yet! Bug reed@activmedia.com about it!");
   assert(false);
 
   return false;
@@ -106,8 +106,8 @@ bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
   int file_fd = ArUtil::open(filename, O_RDONLY);
   if(file_fd < 0)
   {
-    ArLog::logErrorFromOS(ArLog::Normal, 
-			  "ArSoundPlayer::playNativeFile: open failed");
+    ArLog::logErrorFromOS(MvrLog::Normal, 
+			  "MvrSoundPlayer::playNativeFile: open failed");
     return false;
   }
   int len;
@@ -116,8 +116,8 @@ bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
   while((len = read(file_fd, buf, buflen)) > 0)
   {
     if (write(snd_fd, buf, len) != len) {
-      ArLog::logErrorFromOS(ArLog::Normal, 
-			  "ArSoundPlayer::playNativeFile: write failed");
+      ArLog::logErrorFromOS(MvrLog::Normal, 
+			  "MvrSoundPlayer::playNativeFile: write failed");
     }
   }
   close(file_fd);
@@ -133,20 +133,20 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
   builder.add("-v %.2f", ourVolume);
   builder.addPlain(filename);
   builder.addPlain(params);
-  ArLog::log(ArLog::Normal, "ArSoundPlayer: Playing file \"%s\" with \"%s\"", 
+  ArLog::log(MvrLog::Normal, "MvrSoundPlayer: Playing file \"%s\" with \"%s\"", 
 	     filename, builder.getFullString());
   
   int ret;
   if ((ret = system(builder.getFullString())) != -1)
   {
-    ArLog::log(ArLog::Normal, "ArSoundPlayer: Played file \"%s\" with \"%s\" (got %d)", 
+    ArLog::log(MvrLog::Normal, "MvrSoundPlayer: Played file \"%s\" with \"%s\" (got %d)", 
 	       filename, builder.getFullString(), ret);
     return true;
   }
   else
   {
-    ArLog::logErrorFromOS(ArLog::Normal, 
-			  "ArSoundPlayer::playWaveFile: system call failed");
+    ArLog::logErrorFromOS(MvrLog::Normal, 
+			  "MvrSoundPlayer::playWaveFile: system call failed");
     return false;
   }
 
@@ -170,7 +170,7 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
     snprintf(volstr, 4, "%f", ourVolume);
   }  
 
-  ArLog::log(ArLog::Normal, "ArSoundPlayer: Playing file \"%s\" using playback program \"%s\" with argument: -v %s", filename, prog, volstr);
+  ArLog::log(MvrLog::Normal, "MvrSoundPlayer: Playing file \"%s\" using playback program \"%s\" with argument: -v %s", filename, prog, volstr);
   ourPlayChildPID = fork();
 
   //ourPlayChildPID = vfork(); // XXX rh experimental, avoids the memory copy cost of fork()
@@ -179,12 +179,12 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
   // parent, will result in problems.
   if(ourPlayChildPID == -1) 
   {
-    ArLog::log(ArLog::Terse, "ArSoundPlayer: error forking! (%d: %s)", errno, 
+    ArLog::log(MvrLog::Terse, "MvrSoundPlayer: error forking! (%d: %s)", errno, 
       (errno == EAGAIN) ? "EAGAIN reached process limit, or insufficient memory to copy page tables" : 
         ( (errno == ENOMEM) ? "ENOMEM out of kernel memory" : "unknown error" ) );
 
-    ArLog::logErrorFromOS(ArLog::Normal, 
-			  "ArSoundPlayer::playWaveFile: fork failed");
+    ArLog::logErrorFromOS(MvrLog::Normal, 
+			  "MvrSoundPlayer::playWaveFile: fork failed");
     return false;
   }
   if(ourPlayChildPID == 0)
@@ -196,22 +196,22 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
     {
       int err = errno;
       const char *errstr = strerror(err);
-      printf("ArSoundPlayer (child process): Error executing Wav file playback program \"%s %s\" (%d: %s)\n", prog, filename, err, errstr);
+      printf("MvrSoundPlayer (child process): Error executing Wav file playback program \"%s %s\" (%d: %s)\n", prog, filename, err, errstr);
       //_exit(-1);   // need to use _exit with vfork
       exit(-1);
     }
   } 
   // parent process: wait for child to finish
-  ArLog::log(ArLog::Verbose, "ArSoundPlayer: created child process %d to play wav file \"%s\".", 
+  ArLog::log(MvrLog::Verbose, "MvrSoundPlayer: created child process %d to play wav file \"%s\".", 
       ourPlayChildPID, filename);
   int status;
   waitpid(ourPlayChildPID, &status, 0);
   if(WEXITSTATUS(status) != 0) {
-    ArLog::log(ArLog::Terse, "ArSoundPlayer: Error: Wav file playback program \"%s\" with file \"%s\" exited with error code %d.", prog, filename, WEXITSTATUS(status));
+    ArLog::log(MvrLog::Terse, "MvrSoundPlayer: Error: Wav file playback program \"%s\" with file \"%s\" exited with error code %d.", prog, filename, WEXITSTATUS(status));
     ourPlayChildPID = -1;
     return false;
   }
-  ArLog::log(ArLog::Verbose, "ArSoundPlayer: child process %d finished.", ourPlayChildPID);
+  ArLog::log(MvrLog::Verbose, "MvrSoundPlayer: child process %d finished.", ourPlayChildPID);
   ourPlayChildPID = -1;
   return true;
   */
@@ -222,8 +222,8 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
 void ArSoundPlayer::stopPlaying()
 {
 
-  ArLog::log(ArLog::Normal, 
-	     "ArSoundPlayer::stopPlaying: killing play and sox");
+  ArLog::log(MvrLog::Normal, 
+	     "MvrSoundPlayer::stopPlaying: killing play and sox");
 
   // so if the system call below is "killall -9 play; killall -9 sox"
   // then on linux 2.4 kernels a sound played immediately afterwards
@@ -233,15 +233,15 @@ void ArSoundPlayer::stopPlaying()
 
   if ((ret = system("killall play; killall -9 sox")) != -1)
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArSoundPlayer::stopPlaying: killed play and sox (got %d)", 
+    ArLog::log(MvrLog::Normal, 
+	       "MvrSoundPlayer::stopPlaying: killed play and sox (got %d)", 
 	       ret);
     return;
   }
   else
   {
-    ArLog::logErrorFromOS(ArLog::Normal, 
-			  "ArSoundPlayer::stopPlaying: system call failed");
+    ArLog::logErrorFromOS(MvrLog::Normal, 
+			  "MvrSoundPlayer::stopPlaying: system call failed");
     return;
   }
 
@@ -252,7 +252,7 @@ void ArSoundPlayer::stopPlaying()
   // Kill a child processes (created by playWavFile) if it exists.
   if(ourPlayChildPID > 0)
   {
-    ArLog::log(ArLog::Verbose, "ArSoundPlayer: Sending SIGTERM to child process %d.", ourPlayChildPID);
+    ArLog::log(MvrLog::Verbose, "MvrSoundPlayer: Sending SIGTERM to child process %d.", ourPlayChildPID);
     kill(ourPlayChildPID, SIGTERM);
   }
   */
@@ -261,7 +261,7 @@ void ArSoundPlayer::stopPlaying()
 
 bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
 {
-  //ArLog::log(ArLog::Normal, "ArSoundPlayer::playSoundPCM16[linux]: opening sound device.");
+  //ArLog::log(MvrLog::Normal, "MvrSoundPlayer::playSoundPCM16[linux]: opening sound device.");
   int fd = ArUtil::open("/dev/dsp", O_WRONLY); // | O_NONBLOCK);
   if(fd < 0)
     return false;
@@ -283,7 +283,7 @@ bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
     close(fd);
     return false;
   }
-  //ArLog::log(ArLog::Normal, "ArSoundPlayer::playSoundPCM16[linux]: writing %d bytes to sound device.", 2*numSamples);
+  //ArLog::log(MvrLog::Normal, "MvrSoundPlayer::playSoundPCM16[linux]: writing %d bytes to sound device.", 2*numSamples);
   int r;
   if((r = write(fd, data, 2*numSamples) < 0))
   {
@@ -291,7 +291,7 @@ bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
     return false;
   }
   close(fd);
-  ArLog::log(ArLog::Verbose, "ArSoundPlayer::playSoundPCM16[linux]: finished playing sound. (wrote %d bytes of 16-bit monaural signed sound data to /dev/dsp)", r);
+  ArLog::log(MvrLog::Verbose, "MvrSoundPlayer::playSoundPCM16[linux]: finished playing sound. (wrote %d bytes of 16-bit monaural signed sound data to /dev/dsp)", r);
   return true;
 }
 

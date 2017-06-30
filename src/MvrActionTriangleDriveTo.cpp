@@ -24,36 +24,36 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionTriangleDriveTo.h"
-#include "ArRobot.h"
-#include "ArLaser.h"
+#include "MvrActionTriangleDriveTo.h"
+#include "MvrRobot.h"
+#include "MvrLaser.h"
 #include "ariaInternal.h"
 
-AREXPORT ArActionTriangleDriveTo::ArActionTriangleDriveTo(
+AREXPORT MvrActionTriangleDriveTo::ArActionTriangleDriveTo(
 	const char *name, double finalDistFromVertex,  
 	double approachDistFromVertex, double speed,
 	double closeDist, double acquireTurnSpeed) :
-  ArAction(name, "Finds a triangle and drives in front of it")
+  MvrAction(name, "Finds a triangle and drives in front of it")
 {
-  myDataMutex.setLogName("ArActionTriangleDriveTo::myDataMutex");
-  setNextArgument(ArArg("final dist from vertex", &myFinalDistFromVertex, 
+  myDataMutex.setLogName("MvrActionTriangleDriveTo::myDataMutex");
+  setNextArgument(MvrArg("final dist from vertex", &myFinalDistFromVertex, 
 			"Distance from vertex we want to be at (mm)"));
   myFinalDistFromVertex = finalDistFromVertex;
 
-  setNextArgument(ArArg("approach dist from vertex", &myApproachDistFromVertex,
+  setNextArgument(MvrArg("approach dist from vertex", &myApproachDistFromVertex,
 			"Distance from vertex we'll go to before going to final (0 goes straight to final) (mm)"));
   myApproachDistFromVertex = approachDistFromVertex;
 
-  setNextArgument(ArArg("speed", &mySpeed, "speed to drive at (mm/sec)"));
+  setNextArgument(MvrArg("speed", &mySpeed, "speed to drive at (mm/sec)"));
   mySpeed = speed;
 
-  setNextArgument(ArArg("close dist", &myCloseDist, 
+  setNextArgument(MvrArg("close dist", &myCloseDist, 
 			"how close we have to get to our final point (mm)"));
   myCloseDist = closeDist;
 
-  setNextArgument(ArArg("acquire turn speed", &myAcquireTurnSpeed,
+  setNextArgument(MvrArg("acquire turn speed", &myAcquireTurnSpeed,
 		"if we are aqcquiring the rot vel to turn at (deg/sec)"));
   myAcquireTurnSpeed = acquireTurnSpeed;
 
@@ -82,7 +82,7 @@ AREXPORT ArActionTriangleDriveTo::ArActionTriangleDriveTo(
   myUseLegacyVertexOffset = false;
 }
 
-AREXPORT void ArActionTriangleDriveTo::setParameters(
+AREXPORT void MvrActionTriangleDriveTo::setParameters(
 	double finalDistFromVertex,  
 	double approachDistFromVertex, double speed,
 	double closeDist, double acquireTurnSpeed)
@@ -94,17 +94,17 @@ AREXPORT void ArActionTriangleDriveTo::setParameters(
   myAcquireTurnSpeed = acquireTurnSpeed;
 }
 
-AREXPORT ArActionTriangleDriveTo::~ArActionTriangleDriveTo()
+AREXPORT MvrActionTriangleDriveTo::~ArActionTriangleDriveTo()
 {
   if (myOwnLineFinder)
     delete myLineFinder;
 }
 
-AREXPORT void ArActionTriangleDriveTo::activate(void)
+AREXPORT void MvrActionTriangleDriveTo::activate(void)
 {
   if (myPrinting)
-    ArLog::log(ArLog::Normal, "ArActionTriangleDriveTo: Activating");
-  ArAction::activate();
+    MvrLog::log(MvrLog::Normal, "MvrActionTriangleDriveTo: Activating");
+  MvrAction::activate();
   myVertexSeen = false;
   myVertexSeenLast.setToNow();
   myDataMutex.lock();
@@ -124,25 +124,25 @@ AREXPORT void ArActionTriangleDriveTo::activate(void)
 
 }
 
-AREXPORT void ArActionTriangleDriveTo::deactivate(void)
+AREXPORT void MvrActionTriangleDriveTo::deactivate(void)
 {
-  ArAction::deactivate();
+  MvrAction::deactivate();
   myState = STATE_INACTIVE;
 }
 
-AREXPORT void ArActionTriangleDriveTo::setRobot(ArRobot *robot)
+AREXPORT void MvrActionTriangleDriveTo::setRobot(MvrRobot *robot)
 {
-  ArAction::setRobot(robot);
+  MvrAction::setRobot(robot);
   if (myLineFinder == NULL && myRobot != NULL)
   {
     int ii;
-    for (ii = 1; ii <= Aria::getMaxNumLasers(); ii++)
+    for (ii = 1; ii <= Mvria::getMaxNumLasers(); ii++)
     {
       if (myRobot->findLaser(ii) != NULL && 
 	  myRobot->findLaser(ii)->isConnected())
       {
 	myLaser = myRobot->findLaser(ii);
-	myLineFinder = new ArLineFinder(myLaser);
+	myLineFinder = new MvrLineFinder(myLaser);
 	myOwnLineFinder = true;
 	break;
       }
@@ -150,7 +150,7 @@ AREXPORT void ArActionTriangleDriveTo::setRobot(ArRobot *robot)
   }
 }
 
-AREXPORT void ArActionTriangleDriveTo::setLineFinder(ArLineFinder *lineFinder)
+AREXPORT void MvrActionTriangleDriveTo::setLineFinder(MvrLineFinder *lineFinder)
 {
   if (myLineFinder != NULL && myOwnLineFinder)
     delete myLineFinder;
@@ -159,15 +159,15 @@ AREXPORT void ArActionTriangleDriveTo::setLineFinder(ArLineFinder *lineFinder)
   myOwnLineFinder = false;
 }
 
-AREXPORT ArPose ArActionTriangleDriveTo::findPoseFromVertex(
+AREXPORT MvrPose MvrActionTriangleDriveTo::findPoseFromVertex(
 	double distFromVertex)
 {
-  ArPose ret;
-  ArPose vertex;
+  MvrPose ret;
+  MvrPose vertex;
   vertex = myRobot->getEncoderTransform().doTransform(myVertex);
 
-  ret.setX((vertex.getX() + ArMath::cos(vertex.getTh()) * distFromVertex));
-  ret.setY((vertex.getY() + ArMath::sin(vertex.getTh()) * distFromVertex));
+  ret.setX((vertex.getX() + MvrMath::cos(vertex.getTh()) * distFromVertex));
+  ret.setY((vertex.getY() + MvrMath::sin(vertex.getTh()) * distFromVertex));
   return ret;
 }
 
@@ -184,12 +184,12 @@ AREXPORT ArPose ArActionTriangleDriveTo::findPoseFromVertex(
    @param goStraight we're just driving straight in to the vertex in the second
    stage.
 **/
-AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial, 
+AREXPORT void MvrActionTriangleDriveTo::findTriangle(bool initial, 
 						    bool goStraight)
 {
   if (myGotLinesCounter != myRobot->getCounter())
   {
-    ArTime now;
+    MvrTime now;
     now.setToNow();
     myLineFinder->setMaxDistBetweenPoints(myMaxDistBetweenLinePoints);
     myLines = myLineFinder->getLines();
@@ -201,7 +201,7 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
   int start;
   int len = myLines->size();
   FILE *corners = NULL;
-  /*if ((corners = ArUtil::fopen("corners", "w+")) == NULL)
+  /*if ((corners = MvrUtil::fopen("corners", "w+")) == NULL)
   {
     printf("Couldn't open corners file\n");
   }
@@ -223,15 +223,15 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
   // the score for the line evaluated
   double lineScore;
   // our position of this vertex
-  ArPose vertex;
+  MvrPose vertex;
   // the score for our good line
   double goodLineScore = 0.0;
   // my pose for the good vertex
-  ArPose goodVertex;
-  ArLineSegment vertexLine;
-  ArPose adjustedVertex;
+  MvrPose goodVertex;
+  MvrLineSegment vertexLine;
+  MvrPose adjustedVertex;
 
-  ArPose lastVertex;
+  MvrPose lastVertex;
   bool printing = false;
 
   lastVertex = myRobot->getEncoderTransform().doTransform(myVertex);
@@ -246,29 +246,29 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 	      (*myLines)[start+1]->getEndPoint2());
       distLine1ToLine2 = (*myLines)[start]->getEndPoint2().findDistanceTo(
 	      (*myLines)[start+1]->getEndPoint1());
-      angleBetween = ArMath::subAngle(180, 
-			   ArMath::subAngle((*myLines)[start]->getLineAngle(),
+      angleBetween = MvrMath::subAngle(180, 
+			   MvrMath::subAngle((*myLines)[start]->getLineAngle(),
 					   (*myLines)[start+1]->getLineAngle()));
 
       if (myAngleBetween != 0)
-	angleDelta = ArMath::fabs(ArMath::subAngle(
+	angleDelta = MvrMath::fabs(MvrMath::subAngle(
 					  angleBetween, myAngleBetween));
       else
 	angleDelta = 0;
 
       if (myLine1Length != 0)
-	line1Delta = ArMath::fabs(line1Dist - myLine1Length);
+	line1Delta = MvrMath::fabs(line1Dist - myLine1Length);
       else
 	line1Delta = 0;
 
       if (myLine2Length != 0)
-	line2Delta = ArMath::fabs(line2Dist - myLine2Length);
+	line2Delta = MvrMath::fabs(line2Dist - myLine2Length);
       else
 	line2Delta = 0;
 
 
       if (printing)
-	ArLog::log(ArLog::Normal, "dl1l2 %5.0f l1d %5.0f l2d %5.0f ab %5.0f thdt %5.0f l1dt %5.0f l2dt %5.0f", 
+	ArLog::log(MvrLog::Normal, "dl1l2 %5.0f l1d %5.0f l2d %5.0f ab %5.0f thdt %5.0f l1dt %5.0f l2dt %5.0f", 
 		   distLine1ToLine2,
 		   line1Dist,
 		   line2Dist,
@@ -282,14 +282,14 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 	continue;
 
 
-      ArPose intersection;
+      MvrPose intersection;
 
 
-      ArLine *line1Line = new ArLine(*(*myLines)[start]->getLine());
-      ArLine *line2Line = new ArLine(*(*myLines)[start+1]->getLine());
+      MvrLine *line1Line = new MvrLine(*(*myLines)[start]->getLine());
+      MvrLine *line2Line = new MvrLine(*(*myLines)[start+1]->getLine());
       if (!line1Line->intersects(line2Line, &intersection))
       {
-	ArLog::log(ArLog::Terse, "ArActionTriangeDriveTo: couldn't find intersection of lines (shouldn't happen)");
+	ArLog::log(MvrLog::Terse, "MvrActionTriangeDriveTo: couldn't find intersection of lines (shouldn't happen)");
 	return;
       }
       delete line1Line;
@@ -311,7 +311,7 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
       
       vertex.setPose(intersection);
       /*
-      vertex.setTh(ArMath::subAngle(ArMath::atan2((*myLines)[start]->getY1() - 
+      vertex.setTh(MvrMath::subAngle(MvrMath::atan2((*myLines)[start]->getY1() - 
 						  (*myLines)[start+1]->getY2(),
 						  (*myLines)[start]->getX1() - 
 					  (*myLines)[start+1]->getX2()),
@@ -320,18 +320,18 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
       // if we don't care about the angle or it's a non-inverted
       // triangle use the old way
       if (myAngleBetween > -.1)
-	vertex.setTh(ArMath::addAngle((*myLines)[start]->getLineAngle(),
+	vertex.setTh(MvrMath::addAngle((*myLines)[start]->getLineAngle(),
 				      angleBetween / 2));
       // if it's an inverted triangle flip the angle so that things
       // work right
       else
-	vertex.setTh(ArMath::addAngle(180, 
-				      ArMath::addAngle((*myLines)[start]->getLineAngle(),
+	vertex.setTh(MvrMath::addAngle(180, 
+				      MvrMath::addAngle((*myLines)[start]->getLineAngle(),
 						       angleBetween / 2)));
 
       vertexLine.newEndPoints(vertex.getX(), vertex.getY(),
-		      vertex.getX() + ArMath::cos(vertex.getTh()) * 20000,
-		       vertex.getY() + ArMath::sin(vertex.getTh()) * 20000);
+		      vertex.getX() + MvrMath::cos(vertex.getTh()) * 20000,
+		       vertex.getY() + MvrMath::sin(vertex.getTh()) * 20000);
 
       if (myMaxLateralDist > 0)
       {
@@ -339,13 +339,13 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 	
 	robotLine.newEndPoints(
 		myRobot->getX(), myRobot->getY(),
-		myRobot->getX() + ArMath::cos(myRobot->getTh()) * 20000,
-		myRobot->getY() + ArMath::sin(myRobot->getTh()) * 20000);
+		myRobot->getX() + MvrMath::cos(myRobot->getTh()) * 20000,
+		myRobot->getY() + MvrMath::sin(myRobot->getTh()) * 20000);
 
 	if (robotLine.getDistToLine(vertex) > myMaxLateralDist)
 	{
 	  if (printing)
-	    ArLog::log(ArLog::Normal, 
+	    MvrLog::log(MvrLog::Normal, 
 		   "Robot off possible vertex line by %.0f, ignoring it", 
 		       robotLine.getDistToLine(vertex));
 	  continue;
@@ -354,16 +354,16 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 
       if (myMaxAngleMisalignment > 0)
       {
-	//if (fabs(ArMath::subAngle(ArMath::subAngle(myRobot->getTh(), 180), 
+	//if (fabs(MvrMath::subAngle(MvrMath::subAngle(myRobot->getTh(), 180), 
 	//vertex.getTh())) > myMaxAngleMisalignment)
-	if (fabs(ArMath::subAngle(ArMath::subAngle(myOriginalAngle, 180), 
+	if (fabs(MvrMath::subAngle(MvrMath::subAngle(myOriginalAngle, 180), 
 				  vertex.getTh())) > myMaxAngleMisalignment)
 	{
 	  if (printing)
-	    ArLog::log(ArLog::Normal, 
+	    MvrLog::log(MvrLog::Normal, 
 	   "Robot misaligned from possible vertex line by %.0f (original %.0f robot %.0f line %.0f), ignoring it", 
-		       fabs(ArMath::subAngle(
-				    ArMath::subAngle(myOriginalAngle, 180), 
+		       fabs(MvrMath::subAngle(
+				    MvrMath::subAngle(myOriginalAngle, 180), 
 				    vertex.getTh())),
 		       myOriginalAngle, myRobot->getTh(), vertex.getTh());
 	  continue;
@@ -382,7 +382,7 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 	ArPose closest;
 	/* old way that checked too large an area
 	myLaser->currentReadingBox(0, end1.getY(),
-				   ArUtil::findMax(end1.getX(), end2.getX()),
+				   MvrUtil::findMax(end1.getX(), end2.getX()),
 				   end2.getY(),
 				   &closest);
 	*/
@@ -393,7 +393,7 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 	// at an angle deep enough we probably won't see the other
 	// side the of the triangle so we should be okay
 	myLaser->currentReadingBox(vertexLocal.getX() - 100, end1.getY(),
-				   ArUtil::findMax(end1.getX(), end2.getX()),
+				   MvrUtil::findMax(end1.getX(), end2.getX()),
 				   end2.getY(),
 				   &closest);
 	closest = myRobot->getToGlobalTransform().doTransform(closest);
@@ -426,9 +426,9 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
       {
 	if (printing)
 	  printf("init %.0f (%.3f) %.0f\n", 
-		 ArMath::subAngle(myRobot->getTh(),
+		 MvrMath::subAngle(myRobot->getTh(),
 				  myRobot->getPose().findAngleTo(vertex)),
-		 90 - ArMath::fabs(myRobot->findDeltaHeadingTo(vertex)) / 90,
+		 90 - MvrMath::fabs(myRobot->findDeltaHeadingTo(vertex)) / 90,
 		 vertexLine.getDistToLine(myRobot->getPose()));
 	
 	//ArMath::subAngle(myRobot->getTh(),
@@ -448,7 +448,7 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 
 	// weight it more heavily if the vertex points towards along
 	// the same line as the line from the robot to the vertex
-	lineScore *= .5 + .5 * (30 - fabs(ArMath::subAngle(
+	lineScore *= .5 + .5 * (30 - fabs(MvrMath::subAngle(
 						  vertex.getTh(), vertex.findAngleTo(myRobot->getPose()))));
 	
 	if (printing)
@@ -474,7 +474,7 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 	else
 	  lineScore *= 0;
 
-	double angleFromLast = fabs(ArMath::subAngle(lastVertex.getTh(), 
+	double angleFromLast = fabs(MvrMath::subAngle(lastVertex.getTh(), 
 						vertex.getTh()));
 	//printf("AngleFromLast %.0f %.0f %.0f\n", angleFromLast, lastVertex.getTh(), vertex.getTh());
 	if (angleFromLast < 5)
@@ -527,38 +527,38 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
 	if (myLocalXOffset != 0 || myLocalYOffset != 0 || 
 	    fabs(myThOffset) > .00001)
 	{
-	  ArPose before = usedVertex;
-	    //ArLog::log(ArLog::Normal, 
+	  MvrPose before = usedVertex;
+	    //ArLog::log(MvrLog::Normal, 
 	    //"@@ Before %.0f %.0f %.0f (%d %d %.1f)",
 	    //usedVertex.getX(), usedVertex.getY(), usedVertex.getTh(),
 	    //myLocalXOffset, myLocalYOffset, myThOffset);
 	  // old wrong code
 	  if (myUseLegacyVertexOffset)
 	  {
-	    ArLog::log(ArLog::Normal, "Legacy vertex mode...");
+	    MvrLog::log(MvrLog::Normal, "Legacy vertex mode...");
 	    usedVertex.setX(usedVertex.getX() + 
-			    myLocalXOffset * ArMath::cos(usedVertex.getTh()) + 
-			    myLocalYOffset * ArMath::sin(usedVertex.getTh()));
+			    myLocalXOffset * MvrMath::cos(usedVertex.getTh()) + 
+			    myLocalYOffset * MvrMath::sin(usedVertex.getTh()));
 	    usedVertex.setY(usedVertex.getY() - 
-			    myLocalXOffset * ArMath::sin(usedVertex.getTh()) -
-			    myLocalYOffset * ArMath::cos(usedVertex.getTh()));
-	    usedVertex.setTh(ArMath::addAngle(vertex.getTh(), myThOffset));
-	    //ArLog::log(ArLog::Normal, "@@ After %.0f %.0f %.0f (%.0f angle from before to after)",
+			    myLocalXOffset * MvrMath::sin(usedVertex.getTh()) -
+			    myLocalYOffset * MvrMath::cos(usedVertex.getTh()));
+	    usedVertex.setTh(MvrMath::addAngle(vertex.getTh(), myThOffset));
+	    //ArLog::log(MvrLog::Normal, "@@ After %.0f %.0f %.0f (%.0f angle from before to after)",
 	    //usedVertex.getX(), usedVertex.getY(), usedVertex.getTh(),
 	    //before.findAngleTo(usedVertex));
 	  }
 	  else
 	  {
-	    ArLog::log(ArLog::Normal, "New vertex mode...");
+	    MvrLog::log(MvrLog::Normal, "New vertex mode...");
 	    // new code that uses a transform and does it right
 	    // make a transform so that our existing vertex becomes the origin
-	    ArTransform localTrans(before, ArPose(0, 0));
+	    MvrTransform localTrans(before, MvrPose(0, 0));
 	    // then do an inverse transform to pull the local offset out of 
-	    ArPose transformed = localTrans.doInvTransform(ArPose(myLocalXOffset, myLocalYOffset));
+	    MvrPose transformed = localTrans.doInvTransform(MvrPose(myLocalXOffset, myLocalYOffset));
 	    usedVertex.setX(transformed.getX());
 	    usedVertex.setY(transformed.getY());
-	    usedVertex.setTh(ArMath::addAngle(vertex.getTh(), myThOffset));
-	    //ArLog::log(ArLog::Normal, "@@ Transformed %.0f %.0f %.0f (%.0f angle from before to after)",
+	    usedVertex.setTh(MvrMath::addAngle(vertex.getTh(), myThOffset));
+	    //ArLog::log(MvrLog::Normal, "@@ Transformed %.0f %.0f %.0f (%.0f angle from before to after)",
 	    //transformed.getX(), transformed.getY(), transformed.getTh(),
 	    //before.findAngleTo(transformed));
 	  }	  
@@ -590,16 +590,16 @@ AREXPORT void ArActionTriangleDriveTo::findTriangle(bool initial,
   myDataMutex.unlock();
 }
 
-AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
+AREXPORT MvrActionDesired *ArActionTriangleDriveTo::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();
   double dist;
   double angle;
   double vel;
-  ArPose approach;
-  ArPose final;
-  ArPose vertex;
+  MvrPose approach;
+  MvrPose final;
+  MvrPose vertex;
   
   myDataMutex.lock();
   if (myData != NULL)
@@ -629,7 +629,7 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
     return &myDesired;
   case STATE_ACQUIRE:
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "Acquire");
+      MvrLog::log(MvrLog::Normal, "Acquire");
     findTriangle(true);
     if (!myVertexSeen && 
 	myVertexSeenLast.mSecSince() > myVertexUnseenStopMSecs)
@@ -642,7 +642,7 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
       else
       {
 	if (myPrinting)
-	  ArLog::log(ArLog::Normal, "Failed");
+	  MvrLog::log(MvrLog::Normal, "Failed");
 	myState = STATE_FAILED;
 	return fire(currentDesired);
       }
@@ -664,23 +664,23 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
       // if we aren't approaching or if its behind us go straight to
       // final
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "%.0f", ArMath::fabs(myRobot->findDeltaHeadingTo(approach)));
+	ArLog::log(MvrLog::Normal, "%.0f", MvrMath::fabs(myRobot->findDeltaHeadingTo(approach)));
       if (myApproachDistFromVertex <= 0 || 
-	  ArMath::fabs(myRobot->findDeltaHeadingTo(approach)) > 90 ||
-	  (ArMath::fabs(myRobot->findDeltaHeadingTo(approach)) > 45 &&  
+	  MvrMath::fabs(myRobot->findDeltaHeadingTo(approach)) > 90 ||
+	  (MvrMath::fabs(myRobot->findDeltaHeadingTo(approach)) > 45 &&  
 	   myRobot->findDistanceTo(final) < myRobot->findDistanceTo(approach)))
 
       {
 	if (myGotoVertex)
 	{
 	  if (myPrinting)
-	    ArLog::log(ArLog::Normal, "Going to vertex");
+	    MvrLog::log(MvrLog::Normal, "Going to vertex");
 	  myState = STATE_GOTO_VERTEX;
 	}
 	else
 	{
 	  if (myPrinting)
-	    ArLog::log(ArLog::Normal, "Going to final");
+	    MvrLog::log(MvrLog::Normal, "Going to final");
 	  myState = STATE_GOTO_FINAL;
 	}
 	return fire(currentDesired);
@@ -697,7 +697,7 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
     return &myDesired;
   case STATE_SEARCHING:
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "Searching");
+      MvrLog::log(MvrLog::Normal, "Searching");
     myVertexSeen = false;
     myDataMutex.lock();
     if (mySaveData && myData != NULL)
@@ -726,7 +726,7 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
       }
       else
       {
-	ArLog::log(ArLog::Normal, "ArActionTriangleDriveTo: Failed");
+	ArLog::log(MvrLog::Normal, "MvrActionTriangleDriveTo: Failed");
 	myState = STATE_FAILED;
 	return fire(currentDesired);
       }
@@ -743,43 +743,43 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
     angle = myRobot->getPose().findAngleTo(approach);
     if (dist < myCloseDist || 
 	(dist < myCloseDist * 2 && 
-	 ArMath::fabs(myRobot->findDeltaHeadingTo(approach)) > 30))
+	 MvrMath::fabs(myRobot->findDeltaHeadingTo(approach)) > 30))
     {
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "Goto approach there");
+	ArLog::log(MvrLog::Normal, "Goto approach there");
       myState = STATE_ALIGN_APPROACH;
       return fire(currentDesired);
     }
     myDesired.setHeading(angle);
     vel = sqrt(dist * 400 * 2);
-    vel *= (180 - ArMath::fabs(myRobot->findDeltaHeadingTo(approach))) / 180;
+    vel *= (180 - MvrMath::fabs(myRobot->findDeltaHeadingTo(approach))) / 180;
     if (vel < 0)
       vel = 0;
     if (vel > mySpeed)
       vel = mySpeed;
     myDesired.setVel(vel);
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "Goto approach speed %.0f dist %.0f angle %.0f", vel, dist, angle);
+      MvrLog::log(MvrLog::Normal, "Goto approach speed %.0f dist %.0f angle %.0f", vel, dist, angle);
     return &myDesired;
   case STATE_ALIGN_APPROACH:
     angle = myRobot->getPose().findAngleTo(vertex);
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "Align approach %.0f %.0f", myRobot->getTh(),
+      MvrLog::log(MvrLog::Normal, "Align approach %.0f %.0f", myRobot->getTh(),
 		 angle);
-    if (ArMath::fabs(ArMath::subAngle(myRobot->getTh(), angle)) < 2 &&
+    if (MvrMath::fabs(MvrMath::subAngle(myRobot->getTh(), angle)) < 2 &&
 	ArMath::fabs(myRobot->getVel()) < 5)
     {
-      //ArLog::log(ArLog::Normal, "finaldist %.0f", ArMath::fabs(myFinalDistFromVertex));
+      //ArLog::log(MvrLog::Normal, "finaldist %.0f", MvrMath::fabs(myFinalDistFromVertex));
       if (myGotoVertex)
       {
 	if (myPrinting)
-	  ArLog::log(ArLog::Normal, "Going to vertex");
+	  MvrLog::log(MvrLog::Normal, "Going to vertex");
 	myState = STATE_GOTO_VERTEX;
       }
       else
       {
 	if (myPrinting)
-	  ArLog::log(ArLog::Normal, "Going to final");
+	  MvrLog::log(MvrLog::Normal, "Going to final");
 	myState = STATE_GOTO_FINAL;
       }
       return fire(currentDesired);
@@ -797,7 +797,7 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
     if (!myVertexSeen && 
 	myVertexSeenLast.mSecSince() > myVertexUnseenStopMSecs)
     {
-      ArLog::log(ArLog::Normal, "ActionTriangle: Failed");
+      MvrLog::log(MvrLog::Normal, "ActionTriangle: Failed");
       myState = STATE_FAILED;
       return fire(currentDesired);
     } 
@@ -812,9 +812,9 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
     dist = myRobot->findDistanceTo(final);
     dist -= myFinalDistFromVertex;
     angle = myRobot->findDeltaHeadingTo(final);
-    if (ArMath::fabs(angle) > 10)
+    if (MvrMath::fabs(angle) > 10)
       {
-	ArLog::log(ArLog::Normal, "ActionTriangle: FAILING because trying to turn %.0f degrees to something %.0f away that we saw %ld ms ago ", angle, dist, myVertexSeenLast.mSecSince());
+	ArLog::log(MvrLog::Normal, "ActionTriangle: FAILING because trying to turn %.0f degrees to something %.0f away that we saw %ld ms ago ", angle, dist, myVertexSeenLast.mSecSince());
 	myState = STATE_FAILED;
 	return fire(currentDesired);
       }
@@ -833,12 +833,12 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
     myDesired.setVel(vel);
     if (dist <= 0 && fabs(myRobot->getVel()) < 5)
     {
-      ArLog::log(ArLog::Normal, "ArActionTriangleDriveTo: Succeeded (vertex) %g", dist);
+      MvrLog::log(MvrLog::Normal, "MvrActionTriangleDriveTo: Succeeded (vertex) %g", dist);
       myState = STATE_SUCCEEDED;
       return fire(currentDesired);
     }
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "Goto vertex speed %.0f dist %.0f angle %.0f %ld ago",
+      MvrLog::log(MvrLog::Normal, "Goto vertex speed %.0f dist %.0f angle %.0f %ld ago",
 		 vel, dist, myRobot->findDeltaHeadingTo(final),
 		 myVertexSeenLast.mSecSince());
     return &myDesired;
@@ -863,7 +863,7 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
       }
       else
       {
-	ArLog::log(ArLog::Normal, "ArActionTriangleDriveTo: Failed");
+	ArLog::log(MvrLog::Normal, "MvrActionTriangleDriveTo: Failed");
 	myState = STATE_FAILED;
 	return fire(currentDesired);
       }
@@ -879,7 +879,7 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
     dist = myRobot->getPose().findDistanceTo(final);
     angle = myRobot->getPose().findAngleTo(final);
     if (myPrinting)
-      ArLog::log(ArLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "final %.0f away at %.0f vertex %.0f away %ld ago", 
 		 dist, myRobot->findDeltaHeadingTo(final),
 		 myRobot->findDistanceTo(vertex), 
@@ -887,39 +887,39 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
 
     if ((dist < 5) || 
 	(myRobot->getVel() > 0 && dist < myCloseDist && 
-	 ArMath::fabs(myRobot->findDeltaHeadingTo(final)) > 20) ||
+	 MvrMath::fabs(myRobot->findDeltaHeadingTo(final)) > 20) ||
 	(myRobot->getVel() < 0 && dist < myCloseDist && 
-	 ArMath::fabs(myRobot->findDeltaHeadingTo(final)) < 160) ||
-	(ArMath::fabs(myRobot->getVel()) < 5 && dist < myCloseDist))
+	 MvrMath::fabs(myRobot->findDeltaHeadingTo(final)) < 160) ||
+	(MvrMath::fabs(myRobot->getVel()) < 5 && dist < myCloseDist))
     {
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "Goto final there");
+	ArLog::log(MvrLog::Normal, "Goto final there");
       myState = STATE_ALIGN_FINAL;
       return fire(currentDesired);
     }
 
-    if (ArMath::fabs(ArMath::subAngle(myRobot->getTh(),
+    if (MvrMath::fabs(MvrMath::subAngle(myRobot->getTh(),
 				      angle)) < 90)
     {
       myDesired.setHeading(angle);
       vel = sqrt(dist * 100 * 2);
-      vel *= (45 - ArMath::fabs(myRobot->findDeltaHeadingTo(final))) / 45;
+      vel *= (45 - MvrMath::fabs(myRobot->findDeltaHeadingTo(final))) / 45;
       if (vel < 0)
 	vel = 0;
       if (vel > mySpeed)
 	vel = mySpeed;
       myDesired.setVel(vel);
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "Goto final speed %.0f dist %.0f angle %.0f", vel, dist, myRobot->findDeltaHeadingTo(final));
+	ArLog::log(MvrLog::Normal, "Goto final speed %.0f dist %.0f angle %.0f", vel, dist, myRobot->findDeltaHeadingTo(final));
 
       return &myDesired;
     }
     else
     {
       myDesired.setHeading(
-	      ArMath::subAngle(myRobot->getPose().findAngleTo(final), 180));
+	      MvrMath::subAngle(myRobot->getPose().findAngleTo(final), 180));
       vel = -1 * sqrt(dist * 100 * 2);
-      vel *= (45 - ArMath::fabs(ArMath::subAngle(180,
+      vel *= (45 - MvrMath::fabs(MvrMath::subAngle(180,
 				 myRobot->findDeltaHeadingTo(final)))) / 45;
       if (vel > 0)
 	vel = 0;
@@ -927,21 +927,21 @@ AREXPORT ArActionDesired *ArActionTriangleDriveTo::fire(
 	vel = -mySpeed;
       myDesired.setVel(vel);
       if (myPrinting)
-	ArLog::log(ArLog::Normal, "Goto final (backing) speed %.0f dist %.0f angle %.0f (turning to %.0f)", vel, dist, angle, 
-		   ArMath::subAngle(180, myRobot->findDeltaHeadingTo(final)));
+	ArLog::log(MvrLog::Normal, "Goto final (backing) speed %.0f dist %.0f angle %.0f (turning to %.0f)", vel, dist, angle, 
+		   MvrMath::subAngle(180, myRobot->findDeltaHeadingTo(final)));
       return &myDesired;
     }
   case STATE_ALIGN_FINAL:
     angle = myRobot->getPose().findAngleTo(vertex);
-    if (ArMath::fabs(ArMath::subAngle(myRobot->getTh(), angle)) < 2 &&
+    if (MvrMath::fabs(MvrMath::subAngle(myRobot->getTh(), angle)) < 2 &&
 	ArMath::fabs(myRobot->getVel()) < 5)
     {
-      ArLog::log(ArLog::Normal, "ArActionTriangleDriveTo: Succeeded");
+      MvrLog::log(MvrLog::Normal, "MvrActionTriangleDriveTo: Succeeded");
       myState = STATE_SUCCEEDED;
       return fire(currentDesired);
     }
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "Align final");
+      MvrLog::log(MvrLog::Normal, "Align final");
     myDesired.setHeading(angle);
     myDesired.setVel(0);
     return &myDesired;

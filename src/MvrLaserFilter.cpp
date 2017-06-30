@@ -24,16 +24,16 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
-#include "ArLaserFilter.h"
-#include "ArRobot.h"
-#include "ArConfig.h"
+#include "MvrExport.h"
+#include "MvrLaserFilter.h"
+#include "MvrRobot.h"
+#include "MvrConfig.h"
 
 //#define DEBUGRANGEFILTER
 
-AREXPORT ArLaserFilter::ArLaserFilter(
+AREXPORT MvrLaserFilter::ArLaserFilter(
 	ArLaser *laser, const char *name) :
-  ArLaser(laser->getLaserNumber(),
+  MvrLaser(laser->getLaserNumber(),
 	  name != NULL && name[0] != '\0' ? name : laser->getName(), 
 	  laser->getAbsoluteMaxRange(),
 	  laser->isLocationDependent(),
@@ -64,11 +64,11 @@ AREXPORT ArLaserFilter::ArLaserFilter(
   myAnyMinRangeGreaterThanAngle = 180;
   
   setCurrentDrawingData(
-	  new ArDrawingData(*(myLaser->getCurrentDrawingData())),
+	  new MvrDrawingData(*(myLaser->getCurrentDrawingData())),
 	  true);
 
   setCumulativeDrawingData(
-	  new ArDrawingData(*(myLaser->getCumulativeDrawingData())),
+	  new MvrDrawingData(*(myLaser->getCumulativeDrawingData())),
 	  true);
 
   // laser parameters
@@ -150,7 +150,7 @@ AREXPORT ArLaserFilter::ArLaserFilter(
 
 }
 
-AREXPORT ArLaserFilter::~ArLaserFilter()
+AREXPORT MvrLaserFilter::~ArLaserFilter()
 {
   if (myRobot != NULL)
   {
@@ -159,73 +159,73 @@ AREXPORT ArLaserFilter::~ArLaserFilter()
   }
 }
 
-AREXPORT void ArLaserFilter::addToConfig(ArConfig *config, 
+AREXPORT void MvrLaserFilter::addToConfig(MvrConfig *config, 
 					       const char *sectionName,
 					       const char *prefix)
 {
   std::string name;
   
-  config->addSection(ArConfig::CATEGORY_ROBOT_OPERATION,
+  config->addSection(MvrConfig::CATEGORY_ROBOT_OPERATION,
                      sectionName,
                      "");
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), sectionName,
-		     ArPriority::FACTORY);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), sectionName,
+		     MvrPriority::FACTORY);
   name = prefix;
   name += "AngleSpread";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myAngleToCheck,
+	  MvrConfigArg(name.c_str(), &myAngleToCheck,
 	      "Filter settings.  The angle spread to check on either side of each reading",
 		      0),
-	  sectionName, ArPriority::FACTORY);
+	  sectionName, MvrPriority::FACTORY);
 
   name = prefix;
   name += "AnyNeighborFactor";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myAnyFactor,
+	  MvrConfigArg(name.c_str(), &myAnyFactor,
 	      "Filter settings.  If a reading (decided by the anglespread) is further than any of its neighbor reading times this factor, it is ignored... so a value between 0 and 1 will check if they're all closer, a value greater than 1 will see if they're all further, negative values means this factor won't be used",
 		      -1),
-	  sectionName, ArPriority::FACTORY);
+	  sectionName, MvrPriority::FACTORY);
 
   name = prefix;
   name += "AllNeighborFactor";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myAllFactor,
+	  MvrConfigArg(name.c_str(), &myAllFactor,
 	      "Filter settings.  If a reading (decided by the anglespread) is further than all of its neighbor reading times this factor, it is ignored... so a value between 0 and 1 will check if they're all closer, a value greater than 1 will see if they're all further, negative values means this factor won't be used",
 		      -1),
-	  sectionName, ArPriority::FACTORY);
+	  sectionName, MvrPriority::FACTORY);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), sectionName,
-		   ArPriority::FACTORY);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), sectionName,
+		   MvrPriority::FACTORY);
 
   name = prefix;
   name += "AnyNeighborMinRange";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myAnyMinRange,
+	  MvrConfigArg(name.c_str(), &myAnyMinRange,
 	      "Filter settings.  If a reading itself, or if it has a neighbor (decided by the anglespread) that is closer than this value (in mm) it is ignored... negative values means this factor won't be used",
 		      -1),
-	  sectionName, ArPriority::FACTORY);
+	  sectionName, MvrPriority::FACTORY);
 
   name = prefix;
   name += "AnyNeighborMinRangeLessThanAngle";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myAnyMinRangeLessThanAngle,
+	  MvrConfigArg(name.c_str(), &myAnyMinRangeLessThanAngle,
 	      "Filter settings.  The AnyNeighborMinRange will only be applied to angles LESS than this (so the AnyNeighborMinRange filter will only apply angles below this, or above GreatestAngle)"),
-	  sectionName, ArPriority::FACTORY);
+	  sectionName, MvrPriority::FACTORY);
 
   name = prefix;
   name += "AnyNeighborMinRangeGreaterThanAngle";
   config->addParam(
-	  ArConfigArg(name.c_str(), &myAnyMinRangeGreaterThanAngle,
+	  MvrConfigArg(name.c_str(), &myAnyMinRangeGreaterThanAngle,
 	      "Filter settings.  The AnyNeighborMinRange will only be applied to angles GREATER than this (so the AnyNeighborMinRange filter will only apply above this, or below LeastAngle)"),
-	  sectionName, ArPriority::FACTORY);
+	  sectionName, MvrPriority::FACTORY);
 
-  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), sectionName,
-		   ArPriority::FACTORY);
+  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), sectionName,
+		   MvrPriority::FACTORY);
 
 }
 
-AREXPORT void ArLaserFilter::setRobot(ArRobot *robot)
+AREXPORT void MvrLaserFilter::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -233,10 +233,10 @@ AREXPORT void ArLaserFilter::setRobot(ArRobot *robot)
     myRobot->remSensorInterpTask(&myProcessCB);
     myRobot->addSensorInterpTask(myName.c_str(), 51, &myProcessCB);
   }
-  ArLaser::setRobot(robot);
+  MvrLaser::setRobot(robot);
 }
 
-void ArLaserFilter::processReadings(void)
+void MvrLaserFilter::processReadings(void)
 {
   myLaser->lockDevice();
   selfLockDevice();
@@ -256,7 +256,7 @@ void ArLaserFilter::processReadings(void)
   
   while (rawSize < rdRawSize)
   {
-    myRawReadings->push_back(new ArSensorReading);
+    myRawReadings->push_back(new MvrSensorReading);
     rawSize++;
   }
 
@@ -268,16 +268,16 @@ void ArLaserFilter::processReadings(void)
 
 
   std::list<ArSensorReading *>::iterator it;
-  ArSensorReading *rdReading;
-  ArSensorReading *reading;
+  MvrSensorReading *rdReading;
+  MvrSensorReading *reading;
 
 #ifdef DEBUGRANGEFILTER
   FILE *file = NULL;
-  //file = ArUtil::fopen("/mnt/rdsys/tmp/filter", "w");
-  file = ArUtil::fopen("/tmp/filter", "w");
+  //file = MvrUtil::fopen("/mnt/rdsys/tmp/filter", "w");
+  file = MvrUtil::fopen("/tmp/filter", "w");
 #endif
 
-  std::map<int, ArSensorReading *> readingMap;
+  std::map<int, MvrSensorReading *> readingMap;
   int numReadings = 0;
 
   // first pass to copy the readings and put them into a map
@@ -384,7 +384,7 @@ void ArLaserFilter::processReadings(void)
       goodAny = true;
     for (j = i - 1; 
 	 (j >= 0 && //good && 
-	  fabs(ArMath::subAngle(readingMap[j]->getSensorTh(),
+	  fabs(MvrMath::subAngle(readingMap[j]->getSensorTh(),
 				reading->getSensorTh())) <= myAngleToCheck);
 	 j--)
     {
@@ -420,7 +420,7 @@ void ArLaserFilter::processReadings(void)
 #endif 
     for (j = i + 1; 
 	 (j < numReadings && //good &&
-	  fabs(ArMath::subAngle(readingMap[j]->getSensorTh(),
+	  fabs(MvrMath::subAngle(readingMap[j]->getSensorTh(),
 				reading->getSensorTh())) <= myAngleToCheck);
 	 j++)
     {
@@ -484,7 +484,7 @@ void ArLaserFilter::processReadings(void)
 /**
    @return Return true if the reading is good, false if the reading is bad
 **/
-bool ArLaserFilter::checkRanges(int thisReading, int otherReading,
+bool MvrLaserFilter::checkRanges(int thisReading, int otherReading,
 				double factor)
 {
   if (thisReading == otherReading || factor <= 0)
@@ -498,17 +498,17 @@ bool ArLaserFilter::checkRanges(int thisReading, int otherReading,
 }
 
 
-AREXPORT int ArLaserFilter::selfLockDevice(void)
+AREXPORT int MvrLaserFilter::selfLockDevice(void)
 {
   return lockDevice();
 }
 
-AREXPORT int ArLaserFilter::selfTryLockDevice(void)
+AREXPORT int MvrLaserFilter::selfTryLockDevice(void)
 {
   return tryLockDevice();
 }
 
-AREXPORT int ArLaserFilter::selfUnlockDevice(void)
+AREXPORT int MvrLaserFilter::selfUnlockDevice(void)
 {
   return unlockDevice();
 }

@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArVCC4.h"
-#include "ArCommands.h"
-#include "ArRobot.h"
+#include "MvrVCC4.h"
+#include "MvrCommands.h"
+#include "MvrRobot.h"
 
 
-AREXPORT ArVCC4Packet::ArVCC4Packet(ArTypes::UByte2 bufferSize) :
+AREXPORT ArVCC4Packet::ArVCC4Packet(MvrTypes::UByte2 bufferSize) :
   ArBasePacket(bufferSize, 0)
 {
 }
@@ -42,13 +42,13 @@ AREXPORT ArVCC4Packet::~ArVCC4Packet()
 }
 
 
-AREXPORT void ArVCC4Packet::byte2ToBuf(ArTypes::Byte4 val)
+AREXPORT void ArVCC4Packet::byte2ToBuf(MvrTypes::Byte4 val)
 {
   int i;
   char buf[5];
   if (myLength + 4 > myMaxLength)
   {
-    ArLog::log(ArLog::Terse, "ArVCC4Packet::uByte2ToBuf: Trying to add beyond length of buffer.");
+    ArLog::log(MvrLog::Terse, "MvrVCC4Packet::uByte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
 
@@ -64,19 +64,19 @@ AREXPORT void ArVCC4Packet::byte2ToBuf(ArTypes::Byte4 val)
 /* Automatically tacks on footer char */
 AREXPORT void ArVCC4Packet::finalizePacket(void)
 {
-  uByteToBuf(ArVCC4Commands::FOOTER);
+  uByteToBuf(MvrVCC4Commands::FOOTER);
 }
 
 
 /*
 Creates new packet with default header, device id, and delimeter - FE 30 30 00
 */
-AREXPORT void ArVCC4::preparePacket(ArVCC4Packet *myPacket)		
+AREXPORT void ArVCC4::preparePacket(MvrVCC4Packet *myPacket)		
 {
-  myPacket->uByteToBuf(ArVCC4Commands::HEADER);
-  myPacket->uByteToBuf(ArVCC4Commands::DEVICEID);
-  myPacket->uByteToBuf(ArVCC4Commands::DEVICEID);
-  myPacket->uByteToBuf(ArVCC4Commands::DELIM);
+  myPacket->uByteToBuf(MvrVCC4Commands::HEADER);
+  myPacket->uByteToBuf(MvrVCC4Commands::DEVICEID);
+  myPacket->uByteToBuf(MvrVCC4Commands::DEVICEID);
+  myPacket->uByteToBuf(MvrVCC4Commands::DELIM);
 
   myPacketTime.setToNow();
   
@@ -111,7 +111,7 @@ AREXPORT void ArVCC4::preparePacket(ArVCC4Packet *myPacket)
 
    @param cameraType used to discriminate between VC-C4 and C50i
 **/
-AREXPORT ArVCC4::ArVCC4(ArRobot *robot, bool inverted, CommState commDirection, bool autoUpdate, bool disableLED, CameraType cameraType) :
+AREXPORT ArVCC4::ArVCC4(MvrRobot *robot, bool inverted, CommState commDirection, bool autoUpdate, bool disableLED, CameraType cameraType) :
   ArPTZ(robot),
   myTaskCB(this, &ArVCC4::camTask)
 {
@@ -139,11 +139,11 @@ AREXPORT ArVCC4::ArVCC4(ArRobot *robot, bool inverted, CommState commDirection, 
   if (myCommType == COMM_BIDIRECTIONAL || myCommType == COMM_UNKNOWN)
   {
     myStateTimeout = BIDIRECTIONAL_TIMEOUT;
-    ArLog::log(ArLog::Verbose,"ArVCC4::ArVCC4: Using bidirectional communication.");
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::ArVCC4: Using bidirectional communication.");
   }
   else
   {
-    ArLog::log(ArLog::Verbose,"ArVCC4::ArVCC4: Using unidirectional communication.");
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::ArVCC4: Using unidirectional communication.");
     myStateTimeout = UNIDIRECTIONAL_TIMEOUT;
   }
 
@@ -261,7 +261,7 @@ void ArVCC4::requestBytes(int num)
       // how to handle it
       if (num < 6)
       {
-	ArLog::log(ArLog::Terse, "ArVCC4::requestBytes: Requested fewer than 6 bytes total.  Not sending request.");
+	ArLog::log(MvrLog::Terse, "MvrVCC4::requestBytes: Requested fewer than 6 bytes total.  Not sending request.");
 	return;
       }
 
@@ -311,7 +311,7 @@ void ArVCC4::camTask(void)
       break;
     // this case is the starting case, and fallback in case of error
     case STATE_UNKNOWN:
-      ArLog::log(ArLog::Verbose,"ArVCC4::camTask: Attempting to power on and initialize.");
+      ArLog::log(MvrLog::Verbose,"MvrVCC4::camTask: Attempting to power on and initialize.");
       myPowerStateDesired = true;
       myPowerState = false;
       myResponseReceived = false;
@@ -347,7 +347,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while executing a power command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while executing a power command.");
 	  switchState(STATE_UNKNOWN);
 	}
 	myResponseReceived = false;
@@ -356,7 +356,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: No response from the camera.  Using unidirectional communication.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: No response from the camera.  Using unidirectional communication.");
 	  myCommType = COMM_UNIDIRECTIONAL;
 	  myStateTimeout = UNIDIRECTIONAL_TIMEOUT;
 	  myAutoUpdate = false;
@@ -366,7 +366,7 @@ void ArVCC4::camTask(void)
 	{
 	  if (myCommType == COMM_UNKNOWN)
 	  {
-	    ArLog::log(ArLog::Terse,"ArVCC4::camTask: No response from the camera.  Assuming unidirectional communications.");
+	    ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: No response from the camera.  Assuming unidirectional communications.");
 	    myCommType = COMM_UNIDIRECTIONAL;
 	    myStateTimeout = UNIDIRECTIONAL_TIMEOUT;
 	    myAutoUpdate = false;
@@ -395,7 +395,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while executing an init command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while executing an init command.");
 	  switchState(STATE_UNKNOWN);
 	}
 	myResponseReceived = false;
@@ -404,7 +404,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out while executing an init command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out while executing an init command.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else 
@@ -429,7 +429,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting the control mode.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting the control mode.");
 	  switchState(STATE_UNKNOWN);
 	}
 	myResponseReceived = false;
@@ -438,7 +438,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -464,7 +464,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting the pan rates.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting the pan rates.");
 	  switchState(STATE_UNKNOWN);
 	}
 	myResponseReceived = false;
@@ -473,7 +473,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding to an initialize pan slew command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding to an initialize pan slew command.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -500,7 +500,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting the tilt rate.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting the tilt rate.");
 	  switchState(STATE_UNKNOWN);
 	}
 	myResponseReceived = false;
@@ -509,7 +509,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -529,7 +529,7 @@ void ArVCC4::camTask(void)
 	  switchState(POWERED_ON);
 	  myCameraHasBeenInitted = true;
 	  myCameraIsInitted = true;
-	  ArLog::log(ArLog::Verbose,"ArVCC4::camTask: Camera initialized and ready.");
+	  ArLog::log(MvrLog::Verbose,"MvrVCC4::camTask: Camera initialized and ready.");
 	}
 	else if (myError == CAM_ERROR_BUSY)
 	{
@@ -537,7 +537,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting the default range.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting the default range.");
 	  // try to power off and see if we can recover
 	  myPowerStateDesired = false;
 	  sendPower();
@@ -550,13 +550,13 @@ void ArVCC4::camTask(void)
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
 	  // The camera sometimes responds with an error to this, or times out
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding to a set range command.  Power cycle the camera.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding to a set range command.  Power cycle the camera.");
 	  myCameraHasBeenInitted = false;
 	  switchState(STATE_UNKNOWN);
 	}
 	else
 	{
-	  ArLog::log(ArLog::Verbose,"ArVCC4::camTask: Camera initialized and ready.");
+	  ArLog::log(MvrLog::Verbose,"MvrVCC4::camTask: Camera initialized and ready.");
 	  myCameraHasBeenInitted = true;
 	  myCameraIsInitted = true;
 	  switchState(POWERED_ON);
@@ -573,7 +573,7 @@ void ArVCC4::camTask(void)
 	  myInitRequested = false;
 	  // delay the state transition by 2500ms to allow init to take place
 	  switchState(POWERED_ON, 5000);
-	  ArLog::log(ArLog::Verbose,"ArVCC4::camTask: Camera initialized.");
+	  ArLog::log(MvrLog::Verbose,"MvrVCC4::camTask: Camera initialized.");
 	}
 	else if (myError == CAM_ERROR_MODE)
 	{
@@ -586,7 +586,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while initializing the camera.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while initializing the camera.");
 	  myCameraIsInitted = false;
 	  myInitRequested = false;
 	  switchState(STATE_UNKNOWN);
@@ -598,7 +598,7 @@ void ArVCC4::camTask(void)
 	myInitRequested = false;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding to an initialization request.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding to an initialization request.");
 	  myCameraIsInitted = false;
 	  switchState(STATE_UNKNOWN);
 	}
@@ -633,7 +633,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, "ArVCC4::camTask: Error while executing power command.");
+	  ArLog::log(MvrLog::Terse, "MvrVCC4::camTask: Error while executing power command.");
 	  switchState(POWERED_OFF);
 	}
 	myResponseReceived = false;
@@ -642,7 +642,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding to a power on command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding to a power on command.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -662,7 +662,7 @@ void ArVCC4::camTask(void)
 	  myPowerState = false;
 	  myPowerStateDesired = false;
 	  switchState(POWERED_OFF);
-	  ArLog::log(ArLog::Verbose, "ArVCC4::camTask: Camera powered off.");
+	  ArLog::log(MvrLog::Verbose, "MvrVCC4::camTask: Camera powered off.");
 	}
 	else if (myError == CAM_ERROR_BUSY)
 	{
@@ -670,7 +670,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, "ArVCC4::camTask: Error while executing power command.");
+	  ArLog::log(MvrLog::Terse, "MvrVCC4::camTask: Error while executing power command.");
 	  switchState(POWERED_ON);
 	}
 	myResponseReceived = false;
@@ -679,7 +679,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -695,7 +695,7 @@ void ArVCC4::camTask(void)
     case POWERED_ON:
       if (myCameraHasBeenInitted == false || isInitted() == false)
       {
-	ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera not initialized.");
+	ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera not initialized.");
 	switchState(STATE_UNKNOWN);
       }
       else if (myPowerStateDesired == false)
@@ -753,7 +753,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, "ArVCC4::camTask: Camera type does not support digital zoom.");
+	  ArLog::log(MvrLog::Terse, "MvrVCC4::camTask: Camera type does not support digital zoom.");
 	  myDigitalZoom = 0;
 	  myDigitalZoomDesired = 0;
 	}
@@ -787,7 +787,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, "ArVCC4::camTask: Camera type does not support IR filtering.");
+	  ArLog::log(MvrLog::Terse, "MvrVCC4::camTask: Camera type does not support IR filtering.");
 	  myDesiredIRFilterMode = false;
 	}
       }
@@ -797,7 +797,7 @@ void ArVCC4::camTask(void)
 	{
 	  if (myDesiredIRLEDsMode && !myIRFilterModeEnabled)
 	  {
-	    ArLog::log(ArLog::Terse, "ArVCC4::camTask: Need to first enable IR-filter before turning on InfraRed LEDs.");
+	    ArLog::log(MvrLog::Terse, "MvrVCC4::camTask: Need to first enable IR-filter before turning on InfraRed LEDs.");
 	    myDesiredIRLEDsMode = false;
 	  }
 	  else
@@ -808,7 +808,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse, "ArVCC4::camTask: Camera model does not support IR LED functions.");
+	  ArLog::log(MvrLog::Terse, "MvrVCC4::camTask: Camera model does not support IR LED functions.");
 	  myDesiredIRLEDsMode = false;
 	}
       }
@@ -858,7 +858,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while executing a zoom command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while executing a zoom command.");
 	  myZoomDesired = myZoom;
 	  switchState(myPreviousState);
 	}
@@ -868,7 +868,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  myZoomDesired = myZoom;
 	  switchState(myPreviousState);
 	}
@@ -890,7 +890,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while executing a digital zoom command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while executing a digital zoom command.");
 	  myDigitalZoomDesired = myDigitalZoom;
 	  switchState(myPreviousState);
 	}
@@ -899,7 +899,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  myDigitalZoomDesired = myDigitalZoom;
 	  switchState(myPreviousState);
 	}
@@ -928,7 +928,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while executing a panTilt command.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while executing a panTilt command.");
 	  myPanDesired = myPan;
 	  myTiltDesired = myTilt;
 	  switchState(myPreviousState);
@@ -939,7 +939,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  myTiltDesired = myTilt;
 	  myPanDesired = myPan;
 	  if (myPowerState)
@@ -975,7 +975,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while stopping panTilt motion.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while stopping panTilt motion.");
 	  myHaltPanTiltRequested = false;
 	  switchState(myPreviousState);
 	}
@@ -985,7 +985,7 @@ void ArVCC4::camTask(void)
 	myHaltPanTiltRequested = false;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(myPreviousState);
 	}
 	else
@@ -1021,7 +1021,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while the zoom.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while the zoom.");
 	  myHaltZoomRequested = false;
 	  switchState(myPreviousState);
 	}
@@ -1031,7 +1031,7 @@ void ArVCC4::camTask(void)
 	myHaltZoomRequested = false;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(myPreviousState);
 	}
 	else
@@ -1062,7 +1062,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting pan slew.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting pan slew.");
 	  myPanSlewDesired = myPanSlew;
 	  switchState(myPreviousState);
 	}
@@ -1072,7 +1072,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  myPanSlewDesired = myPanSlew;
 	  switchState(myPreviousState);
 	}
@@ -1098,7 +1098,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{                                               
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting tilt slew.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting tilt slew.");
 	  myTiltSlewDesired = myTiltSlew;
 	  switchState(myPreviousState);
 	} 
@@ -1108,7 +1108,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  myTiltSlewDesired = myTiltSlew;
 	  switchState(myPreviousState);
 	}
@@ -1136,7 +1136,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendRealPanTiltRequest: Camera responded with an error while requesting pan/tilt information.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendRealPanTiltRequest: Camera responded with an error while requesting pan/tilt information.");
 	  switchState(myPreviousState);
 	}
 	myResponseReceived = false;
@@ -1146,7 +1146,7 @@ void ArVCC4::camTask(void)
 	myRealPanTiltRequested = false;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendRealPanTiltRequest: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendRealPanTiltRequest: Camera timed out without responding.");
 	  switchState(myPreviousState);
 	}
 	else
@@ -1171,7 +1171,7 @@ void ArVCC4::camTask(void)
 	}
 	else
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendRealZoomRequest: Camera responded with an error while requesting zoom position.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendRealZoomRequest: Camera responded with an error while requesting zoom position.");
 	  switchState(myPreviousState);
 	}
 	myResponseReceived = false;
@@ -1181,7 +1181,7 @@ void ArVCC4::camTask(void)
 	myRealZoomRequested = false;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendRealZoomRequest: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendRealZoomRequest: Camera timed out without responding.");
 	  switchState(myPreviousState);
 	}
 	else
@@ -1206,7 +1206,7 @@ void ArVCC4::camTask(void)
 	else
 	{
 	  myDesiredLEDControlMode = -1;
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting the LED control mode.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting the LED control mode.");
 	  switchState(POWERED_ON);
 	}
 	myResponseReceived = false;
@@ -1215,7 +1215,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -1244,7 +1244,7 @@ void ArVCC4::camTask(void)
 	else
 	{
 	  myIRFilterModeEnabled = myDesiredIRFilterMode;
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting the infrared cutoff control.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting the infrared cutoff control.");
 	  switchState(POWERED_ON);
 	}
 	myResponseReceived = false;
@@ -1254,7 +1254,7 @@ void ArVCC4::camTask(void)
 	myDesiredIRFilterMode = myIRFilterModeEnabled;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -1278,7 +1278,7 @@ void ArVCC4::camTask(void)
 	else
 	{
 	  myDesiredIRLEDsMode = myIRLEDsEnabled;
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera responded with an error while setting the infrared light.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera responded with an error while setting the infrared light.");
 	  switchState(POWERED_ON);
 	}
 	myResponseReceived = false;
@@ -1288,7 +1288,7 @@ void ArVCC4::camTask(void)
 	myDesiredIRLEDsMode = myIRLEDsEnabled;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::camTask: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Camera timed out without responding.");
 	  switchState(STATE_UNKNOWN);
 	}
 	else
@@ -1313,7 +1313,7 @@ void ArVCC4::camTask(void)
 	else
 	{
 	  myRequestProductName = false;
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendProductNameRequest: Camera responded with an error while requesting product name.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendProductNameRequest: Camera responded with an error while requesting product name.");
 	  switchState(myPreviousState);
 	}
 	myResponseReceived = false;
@@ -1323,7 +1323,7 @@ void ArVCC4::camTask(void)
 	myRequestProductName = false;
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendProductNameRequest: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendProductNameRequest: Camera timed out without responding.");
 	  switchState(myPreviousState);
 	}
 	else
@@ -1343,7 +1343,7 @@ void ArVCC4::camTask(void)
 	else
 	{
 	  myFocusModeDesired = myFocusMode;
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendFocus: Camera responded with an error while setting the focus.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendFocus: Camera responded with an error while setting the focus.");
 	  switchState(myPreviousState);
 	}
 	myResponseReceived = false;
@@ -1352,7 +1352,7 @@ void ArVCC4::camTask(void)
       {
 	if (myCommType == COMM_BIDIRECTIONAL)
 	{
-	  ArLog::log(ArLog::Terse,"ArVCC4::sendFocus: Camera timed out without responding.");
+	  ArLog::log(MvrLog::Terse,"MvrVCC4::sendFocus: Camera timed out without responding.");
 	  switchState(myPreviousState);
 	}
 	else
@@ -1370,7 +1370,7 @@ void ArVCC4::camTask(void)
       break;
     case STATE_ERROR:
     default:
-      ArLog::log(ArLog::Terse,"ArVCC4::camTask: Unknown case in usertask.");
+      ArLog::log(MvrLog::Terse,"MvrVCC4::camTask: Unknown case in usertask.");
       break;
   }
 
@@ -1472,7 +1472,7 @@ ArBasePacket* ArVCC4::readPacket(void)
   // Check if the connection is NULL and exit if it is
   if (myConn == NULL)
   {
-    ArLog::log(ArLog::Verbose,"ArVCC4::readPacket:  Error reading packet from serial port.  May not be open yet.");
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::readPacket:  Error reading packet from serial port.  May not be open yet.");
     return NULL;
   }
 
@@ -1501,7 +1501,7 @@ ArBasePacket* ArVCC4::readPacket(void)
       // there are no more bytes, so check the last byte for the footer
       if (data[num-1] != ArVCC4Commands::FOOTER)
       {
-        ArLog::log(ArLog::Terse, "ArVCC4::readPacket: Discarding bad packet.");
+        ArLog::log(MvrLog::Terse, "MvrVCC4::readPacket: Discarding bad packet.");
         return NULL;
       }
       else
@@ -1533,7 +1533,7 @@ ArBasePacket* ArVCC4::readPacket(void)
   to process the buffer, depending on what type of response we were 
   waiting for.
 */
-AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
+AREXPORT bool ArVCC4::packetHandler(MvrBasePacket *packet)
 {
   unsigned int errorCode;
 
@@ -1545,7 +1545,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
     return true;
   else if (myCommType == COMM_UNKNOWN)
   {
-    ArLog::log(ArLog::Verbose,"ArVCC4::packetHandler: Using bidirectional communication.");
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::packetHandler: Using bidirectional communication.");
     myCommType = COMM_BIDIRECTIONAL;
     myStateTimeout = BIDIRECTIONAL_TIMEOUT;
   }
@@ -1569,7 +1569,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
       if (myPacketBufLen != 6)
       {
 	// we don't know what this is, so scrap it and exit
-	ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Incorrect number of bytes in response packet.");
+	ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Incorrect number of bytes in response packet.");
 	myPacketBufLen = 0;
 	myError = CAM_ERROR_UNKNOWN;
 	requestBytes(0);
@@ -1582,7 +1582,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
       if (myPacketBuf[0] != ArVCC4Commands::RESPONSE ||
 	  myPacketBuf[5] != ArVCC4Commands::FOOTER)
       {
-	ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Bad header or footer character in response packet.");
+	ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Bad header or footer character in response packet.");
 	myPacketBufLen = 0;
 	myError = CAM_ERROR_UNKNOWN;
 	requestBytes(0);
@@ -1599,7 +1599,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
 	myError = errorCode;
       else
       {
-	ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Unrecognized error code sent from camera.");
+	ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Unrecognized error code sent from camera.");
 	myError = CAM_ERROR_UNKNOWN;
 	requestBytes(0);
 	return true;
@@ -1619,7 +1619,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
       // only add up to the max number of bytes
       if ((myPacketBufLen + packet->getDataLength()) > MAX_RESPONSE_BYTES)
       {
-	ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Too many bytes in response packet.  Truncating to maximum of %d.", MAX_RESPONSE_BYTES);
+	ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Too many bytes in response packet.  Truncating to maximum of %d.", MAX_RESPONSE_BYTES);
 	requestBytes(0);
 	packet->bufToData((char *)&myPacketBuf[myPacketBufLen],MAX_RESPONSE_BYTES - myPacketBufLen);
 	myPacketBufLen = MAX_RESPONSE_BYTES;
@@ -1635,7 +1635,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
       if (myPacketBuf[0] != ArVCC4Commands::RESPONSE ||
 	  myPacketBuf[myPacketBufLen-1] != ArVCC4Commands::FOOTER)
       {
-	ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Bad header or footer character in long response packet.");
+	ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Bad header or footer character in long response packet.");
 	myPacketBufLen = 0;
 	myError = CAM_ERROR_UNKNOWN;
 	requestBytes(0);
@@ -1652,7 +1652,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
 	myError = errorCode;
       else
       {
-	ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Unrecognized error code sent from camera.");
+	ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Unrecognized error code sent from camera.");
 	myError = CAM_ERROR_UNKNOWN;
 	requestBytes(0);
 	return true;
@@ -1691,7 +1691,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
     if (myPacketBufLen != 6)
     {
       // there should have been 6 bytes.  Scrap it and exit.
-      ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Incorrect number of bytes in first part of long response packet.");
+      ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Incorrect number of bytes in first part of long response packet.");
       myPacketBufLen = 0;
       myBytesLeft = 0;
       myError = CAM_ERROR_UNKNOWN;
@@ -1705,7 +1705,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
     // check the header character
     if (myPacketBuf[0] != ArVCC4Commands::RESPONSE)
     {
-      ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Bad header character in long response packet.");
+      ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Bad header character in long response packet.");
       myPacketBufLen = 0;
       myBytesLeft = 0;
       myError = CAM_ERROR_UNKNOWN;
@@ -1731,7 +1731,7 @@ AREXPORT bool ArVCC4::packetHandler(ArBasePacket *packet)
 	myError = errorCode;
       else
       {
-	ArLog::log(ArLog::Terse, "ArVCC4::packetHandler: Unrecognized error code sent from camera when expecting long response packet.");
+	ArLog::log(MvrLog::Terse, "MvrVCC4::packetHandler: Unrecognized error code sent from camera when expecting long response packet.");
 	myError = CAM_ERROR_UNKNOWN;
 	requestBytes(0);
       }
@@ -1909,16 +1909,16 @@ bool ArVCC4::sendPower(void)
 {
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::POWER);
+  myPacket.uByteToBuf(MvrVCC4Commands::POWER);
   if (myPowerStateDesired)
   {
-    ArLog::log(ArLog::Verbose,"ArVCC4::sendPower: sending power on packet\n");
-    myPacket.uByteToBuf(ArVCC4Commands::DEVICEID + 1);
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::sendPower: sending power on packet\n");
+    myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID + 1);
   }
   else
   {
-    ArLog::log(ArLog::Verbose,"ArVCC4::sendPower: sending power off packet\n");
-    myPacket.uByteToBuf(ArVCC4Commands::DEVICEID);
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::sendPower: sending power off packet\n");
+    myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID);
   }
 
 
@@ -1929,11 +1929,11 @@ bool ArVCC4::sendPower(void)
 
 bool ArVCC4::setControlMode(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::setControlMode: sending control mode packet\n");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::setControlMode: sending control mode packet\n");
   myPacket.empty();             //Send Control command
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::CONTROL);
-  myPacket.uByteToBuf(ArVCC4Commands::DEVICEID);
+  myPacket.uByteToBuf(MvrVCC4Commands::CONTROL);
+  myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID);
 
   // The camera will return 6 bytes, which fail if menu is operational
   // If failure, then power-off and power-on
@@ -1941,17 +1941,17 @@ bool ArVCC4::setControlMode(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT void ArVCC4::addErrorCB(ArFunctor *functor, ArListPos::Pos position)
+AREXPORT void ArVCC4::addErrorCB(MvrFunctor *functor, ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
     myErrorCBList.push_front(functor);
   else if (position == ArListPos::LAST)
     myErrorCBList.push_back(functor);
   else
-    ArLog::log(ArLog::Terse, "ArVCC4::addErrorCB: Invalid position.");
+    ArLog::log(MvrLog::Terse, "MvrVCC4::addErrorCB: Invalid position.");
 }
 
-AREXPORT void ArVCC4::remErrorCB(ArFunctor *functor)
+AREXPORT void ArVCC4::remErrorCB(MvrFunctor *functor)
 {
   myErrorCBList.remove(functor);
 }
@@ -1969,13 +1969,13 @@ void ArVCC4::throwError(void)
 
 bool ArVCC4::sendInit(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendInit: sending init packet\n");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendInit: sending init packet\n");
 
 
   myPacket.empty();		// Send Init command
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::INIT);
-  myPacket.uByteToBuf(ArVCC4Commands::DEVICEID);
+  myPacket.uByteToBuf(MvrVCC4Commands::INIT);
+  myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID);
 
   // The camera will return 6 bytes.  If busy, resend
   // If error, then not initted or not in control mode
@@ -1991,22 +1991,22 @@ It's necessary to set the default ranges, because the camera defaults to a max t
 bool ArVCC4::setDefaultRange(void)
 {
 
-  ArLog::log(ArLog::Verbose,"ArVCC4::setDefaultRange: setting default range for camera movements");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::setDefaultRange: setting default range for camera movements");
 
   myPacket.empty();
   preparePacket(&myPacket);
 
-  myPacket.uByteToBuf(ArVCC4Commands::SETRANGE);
-  myPacket.uByteToBuf(ArVCC4Commands::DEVICEID + 1);
+  myPacket.uByteToBuf(MvrVCC4Commands::SETRANGE);
+  myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID + 1);
 
   // Note the conversion from degrees to camera units:
   //    units = degrees / 0.1125
 
   // Set min tilt range
-  myPacket.byte2ToBuf(ArMath::roundInt(MIN_TILT/.1125) + 0x8000);
+  myPacket.byte2ToBuf(MvrMath::roundInt(MIN_TILT/.1125) + 0x8000);
 
   // Set max tilt range
-  myPacket.byte2ToBuf(ArMath::roundInt(MAX_TILT/.1125) + 0x8000);
+  myPacket.byte2ToBuf(MvrMath::roundInt(MAX_TILT/.1125) + 0x8000);
 
   requestBytes();
   return sendPacket(&myPacket);
@@ -2022,13 +2022,13 @@ bool ArVCC4::sendPanTilt()
     return true;
   }
 
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendPanTilt: sending panTilt packet");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendPanTilt: sending panTilt packet");
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::PANTILT);
-  myPacket.byte2ToBuf(ArMath::roundInt( (myPanDesired)/.1125 ) + 0x8000);
-  myPacket.byte2ToBuf(ArMath::roundInt( (myTiltDesired)/.1125 ) + 0x8000);
+  myPacket.uByteToBuf(MvrVCC4Commands::PANTILT);
+  myPacket.byte2ToBuf(MvrMath::roundInt( (myPanDesired)/.1125 ) + 0x8000);
+  myPacket.byte2ToBuf(MvrMath::roundInt( (myTiltDesired)/.1125 ) + 0x8000);
 
   // set these so that we know what was sent if the command is successful
   myPanSent = myPanDesired;
@@ -2051,13 +2051,13 @@ bool ArVCC4::sendZoom()
     return true;
   }
 
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendZoom: sending zoom packet");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendZoom: sending zoom packet");
 
   char buf[5];
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::ZOOM);
+  myPacket.uByteToBuf(MvrVCC4Commands::ZOOM);
   sprintf(buf, "%4X", myZoomDesired);
 
   for (i=0;i<3;i++)
@@ -2085,11 +2085,11 @@ bool ArVCC4::sendZoom()
  */
 bool ArVCC4::sendDigitalZoom()
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendDigitalZoom: sending digital zoom packet");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendDigitalZoom: sending digital zoom packet");
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::DIGITALZOOM);
+  myPacket.uByteToBuf(MvrVCC4Commands::DIGITALZOOM);
 
   if (myDigitalZoomDesired < 4)
   {
@@ -2114,11 +2114,11 @@ bool ArVCC4::sendDigitalZoom()
 
 bool ArVCC4::sendHaltPanTilt(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendHaltPanTilt: sending halt pantilt packet");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendHaltPanTilt: sending halt pantilt packet");
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::STOP);
-  myPacket.uByteToBuf(ArVCC4Commands::DEVICEID);
+  myPacket.uByteToBuf(MvrVCC4Commands::STOP);
+  myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID);
 
   requestBytes();
   return sendPacket(&myPacket);
@@ -2127,11 +2127,11 @@ bool ArVCC4::sendHaltPanTilt(void)
 
 bool ArVCC4::sendHaltZoom(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendHaltZoom: sending halt zoom packet");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendHaltZoom: sending halt zoom packet");
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::ZOOMSTOP);
-  myPacket.uByteToBuf(ArVCC4Commands::DEVICEID);
+  myPacket.uByteToBuf(MvrVCC4Commands::ZOOMSTOP);
+  myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID);
 
   requestBytes();
   return sendPacket(&myPacket);
@@ -2149,11 +2149,11 @@ bool ArVCC4::sendPanSlew(void)
 
   if (myPanSlewDesired != myPanSlew)
   {
-    ArLog::log(ArLog::Verbose,"ArVCC4::sendPanSlew: sending panSlew packet");
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::sendPanSlew: sending panSlew packet");
 
     myPacket.empty();
     preparePacket(&myPacket);
-    myPacket.uByteToBuf(ArVCC4Commands::PANSLEW);
+    myPacket.uByteToBuf(MvrVCC4Commands::PANSLEW);
 
     sprintf(buf,"%3X", ArMath::roundInt(myPanSlewDesired/.1125));
 
@@ -2188,11 +2188,11 @@ bool ArVCC4::sendTiltSlew(void)
 
   if (myTiltSlewDesired != myTiltSlew)
   {
-    ArLog::log(ArLog::Verbose,"ArVCC4::sendTiltSlew: sending tiltSlew packet");
+    ArLog::log(MvrLog::Verbose,"MvrVCC4::sendTiltSlew: sending tiltSlew packet");
 
     myPacket.empty();
     preparePacket(&myPacket);
-    myPacket.uByteToBuf(ArVCC4Commands::TILTSLEW);
+    myPacket.uByteToBuf(MvrVCC4Commands::TILTSLEW);
 
     sprintf(buf,"%3X", ArMath::roundInt(myTiltSlewDesired/.1125));
 
@@ -2215,11 +2215,11 @@ bool ArVCC4::sendTiltSlew(void)
 
 bool ArVCC4::sendRealPanTiltRequest(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendRealPanTiltRequest: sending request for real pan/tilt information");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendRealPanTiltRequest: sending request for real pan/tilt information");
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::PANTILTREQ);
+  myPacket.uByteToBuf(MvrVCC4Commands::PANTILTREQ);
 
   // The camera will return 6 bytes in case of error
   // 9 bytes otherwise.
@@ -2230,12 +2230,12 @@ bool ArVCC4::sendRealPanTiltRequest(void)
 
 bool ArVCC4::sendRealZoomRequest(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendRealZoomRequest: sending request for real zoom position.");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendRealZoomRequest: sending request for real zoom position.");
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::ZOOMREQ);
-  myPacket.uByteToBuf(ArVCC4Commands::DEVICEID);
+  myPacket.uByteToBuf(MvrVCC4Commands::ZOOMREQ);
+  myPacket.uByteToBuf(MvrVCC4Commands::DEVICEID);
 
   // The camera will return 6 bytes in case of error
   // bytes othewise
@@ -2254,18 +2254,18 @@ This controls the status of the LED.
 
 bool ArVCC4::sendLEDControlMode(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendLEDControlMode: sending LED control packet.");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendLEDControlMode: sending LED control packet.");
 
   if (myDesiredLEDControlMode < 0 || myDesiredLEDControlMode > 4)
   {
-    ArLog::log(ArLog::Terse,"ArVCC4::sendLEDControlMode: incorrect parameter.  Not sending packet.");
+    ArLog::log(MvrLog::Terse,"MvrVCC4::sendLEDControlMode: incorrect parameter.  Not sending packet.");
     myDesiredLEDControlMode = -1;
     return false;
   }
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::LEDCONTROL);
+  myPacket.uByteToBuf(MvrVCC4Commands::LEDCONTROL);
   myPacket.uByteToBuf(0x30 + (unsigned char) myDesiredLEDControlMode);
 
   requestBytes(6);
@@ -2275,11 +2275,11 @@ bool ArVCC4::sendLEDControlMode(void)
 
 bool ArVCC4::sendIRFilterControl(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendIRFilterControl: sending IR cut filter control packet.");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendIRFilterControl: sending IR cut filter control packet.");
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::IRCUTFILTER);
+  myPacket.uByteToBuf(MvrVCC4Commands::IRCUTFILTER);
 
   if (myDesiredIRFilterMode)
     myPacket.uByteToBuf(0x30);
@@ -2296,11 +2296,11 @@ bool ArVCC4::sendIRFilterControl(void)
  */
 bool ArVCC4::sendIRLEDControl(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendIRLEDControl: sending IR-LED control packet.");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendIRLEDControl: sending IR-LED control packet.");
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::INFRARED);
+  myPacket.uByteToBuf(MvrVCC4Commands::INFRARED);
   if (myDesiredIRLEDsMode)
     myPacket.uByteToBuf(0x36);
   else
@@ -2313,25 +2313,25 @@ bool ArVCC4::sendIRLEDControl(void)
 
 bool ArVCC4::sendProductNameRequest(void)
 {
-  ArLog::log(ArLog::Verbose,"ArVCC4::sendProductNameRequest: sending request for product name.");
+  ArLog::log(MvrLog::Verbose,"MvrVCC4::sendProductNameRequest: sending request for product name.");
 
   myPacket.empty();
   preparePacket(&myPacket);
-  myPacket.uByteToBuf(ArVCC4Commands::PRODUCTNAME);
+  myPacket.uByteToBuf(MvrVCC4Commands::PRODUCTNAME);
 
   return sendPacket(&myPacket);
 }
 
 bool ArVCC4::sendFocus(void)
 {
-  ArLog::log(ArLog::Verbose,
-    "ArVCC4::sendFocus: sending focus control packet with mode %d (value 0x%X in packet).", 
+  ArLog::log(MvrLog::Verbose,
+    "MvrVCC4::sendFocus: sending focus control packet with mode %d (value 0x%X in packet).", 
     myFocusModeDesired, 0x30+(unsigned char)myFocusModeDesired );
 
   myPacket.empty();
   preparePacket(&myPacket);
   
-  myPacket.uByteToBuf(ArVCC4Commands::AUTOFOCUS);
+  myPacket.uByteToBuf(MvrVCC4Commands::AUTOFOCUS);
   myPacket.uByteToBuf(0x30 + (unsigned char) myFocusModeDesired);
 
   requestBytes(6);

@@ -28,16 +28,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARRANGEDEVICELASER_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDeviceThreaded.h"
+#include "MvrRangeDeviceThreaded.h"
 
-class ArDeviceConnection;
+class MvrDeviceConnection;
 
 
 
-/** ArRangeDevice interface specialized for laser rangefinder sensors; see
- * ArRangeDevice for more data access methods.
+/** MvrRangeDevice interface specialized for laser rangefinder sensors; see
+ * MvrRangeDevice for more data access methods.
 
-   This class is a subclass of ArRangeDeviceThreaded meant for any
+   This class is a subclass of MvrRangeDeviceThreaded meant for any
    planar scanning lasers, like the SICK lasers, Hokoyo URG series
    lasers, etc.  Unlike other base classes this contains the superset
    of everything that may need to be configured on any of the sensors,
@@ -45,25 +45,25 @@ class ArDeviceConnection;
    and features. (This allows the configuration interfaces and parameter
    files to work for any laser type.)
 
-   Normally, a program does not define or create any ArLaser objects
+   Normally, a program does not define or create any MvrLaser objects
    directly. Instead,
-   objects (device-specific subclasses of ArLaser) are created by ArLaserConnector::connectLasers()
+   objects (device-specific subclasses of MvrLaser) are created by MvrLaserConnector::connectLasers()
    based on the robot parameter file and command line arguments, and
-   the resulting ArLaser objects are stored in the ArRobot object
-   Use ArRobot::getLaserMap() or ArRobot::findLaser() to access the ArLaser
-   objects after calling ArLaserConnector::connectLasers(). 
+   the resulting MvrLaser objects are stored in the MvrRobot object
+   Use MvrRobot::getLaserMap() or MvrRobot::findLaser() to access the MvrLaser
+   objects after calling MvrLaserConnector::connectLasers(). 
 
    The
    canSetDegrees(), canChooseRange(), canSetIncrement(),
    canChooseIncrement(), canChooseUnits(), canChooseReflectorBits(),
    canSetPowerControlled(), canChooseStartBaud(), and canChooseAutoBaud()  and
-other similar functions are used by ArLaserConnector to test if a parameter
+other similar functions are used by MvrLaserConnector to test if a parameter
    is relevant to a specific laser type.
 
 
-   @par Creating New ArLaser Subclasses
+   @par Creating New MvrLaser Subclasses
    If you want to create your own new class to implement a sensor
-   not in ARIA, create a subclass of this class.  ArUrg
+   not in ARIA, create a subclass of this class.  MvrUrg
    is the best current example of this.
    Call the laserAllow* 
    functions in its constructor depending on what features
@@ -94,15 +94,15 @@ other similar functions are used by ArLaserConnector to test if a parameter
    (and call the reading callbacks).  The internal* calls are all
    internal to the base class and shouldn't have to be used by
    inheriting classes.  After you have created a new laser type you
-   can add it to Aria by using the Aria::laserAddCreator call and then
+   can add it to Mvria by using the Mvria::laserAddCreator call and then
    it will work like any of the built in laser types (see the
    documentation for that function for what the creator needs to do,
-   and an example is ArLaserCreatorHelper in the ariaUtil.h/cpp
+   and an example is MvrLaserCreatorHelper in the ariaUtil.h/cpp
    files).  Similiarly if you need a new connection type (ie not
    serial or tcp) you implement them and then use
-   Aria::deviceConnectionAddCreator call to add new types so they too
-   will then be treated the same as the built in Aria ones
-   (ArDeviceConnectionCreatorHelper in ariaUtil.h/cpp file is the
+   Mvria::deviceConnectionAddCreator call to add new types so they too
+   will then be treated the same as the built in Mvria ones
+   (MvrDeviceConnectionCreatorHelper in ariaUtil.h/cpp file is the
    example for that one).
 
    @since 2.7.0
@@ -110,11 +110,11 @@ other similar functions are used by ArLaserConnector to test if a parameter
    @ingroup DeviceClasses
 **/
 
-class ArLaser : public ArRangeDeviceThreaded
+class MvrLaser : public MvrRangeDeviceThreaded
 {
 public:
   /// Constructor
-  AREXPORT ArLaser(int laserNumber, 
+  AREXPORT MvrLaser(int laserNumber, 
 		   const char *name, 
 		   unsigned int absoluteMaxRange,
 		   bool locationDependent = false,
@@ -139,24 +139,24 @@ public:
   AREXPORT virtual double getConnectionTimeoutSeconds(void);
 
   /// Gets the time data was last receieved
-  ArTime getLastReadingTime(void) { return myLastReading; }
+  MvrTime getLastReadingTime(void) { return myLastReading; }
   
   /// Gets the number of laser readings received in the last second
   AREXPORT int getReadingCount(void);
 
   /// Sets the device connection
-  AREXPORT virtual void setDeviceConnection(ArDeviceConnection *conn);
+  AREXPORT virtual void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device connection
-  AREXPORT virtual ArDeviceConnection *getDeviceConnection(void);
+  AREXPORT virtual MvrDeviceConnection *getDeviceConnection(void);
 
   /// Sets the position of the sensor on the robot
   AREXPORT void setSensorPosition(double x, double y, double th, double z = 0);
   /// Sets the position of the sensor on the robot
-  AREXPORT void setSensorPosition(ArPose pose, double z = 0);  
+  AREXPORT void setSensorPosition(MvrPose pose, double z = 0);  
   /// Gets if the sensor pose has been set 
   bool hasSensorPosition(void) { return myHaveSensorPose; }
   /// Gets the position of the sensor on the robot
-  ArPose getSensorPosition(void) { return mySensorPose; }
+  MvrPose getSensorPosition(void) { return mySensorPose; }
   /// Gets the X position of the sensor on the robot
   double getSensorPositionX(void) { return mySensorPose.getX(); }
   /// Gets the Y position of the sensor on the robot
@@ -170,10 +170,10 @@ public:
   int getLaserNumber(void) { return myLaserNumber; }
   
   /// Sets the log level that informational things are logged at
-  void setInfoLogLevel(ArLog::LogLevel infoLogLevel) 
+  void setInfoLogLevel(MvrLog::LogLevel infoLogLevel) 
     { myInfoLogLevel = infoLogLevel; }
   /// Gets the log level that informational things are logged at
-  ArLog::LogLevel getInfoLogLevel(void) 
+  MvrLog::LogLevel getInfoLogLevel(void) 
     { return myInfoLogLevel; }
 
   /// Cumulative readings that are this close to current beams are discarded
@@ -231,7 +231,7 @@ public:
   /// @sa setStartDegrees()
   /// @sa setEndDegrees()
   void addIgnoreReading(double ignoreReading)
-    { myIgnoreReadings.insert(ArMath::roundInt(ignoreReading)); }
+    { myIgnoreReadings.insert(MvrMath::roundInt(ignoreReading)); }
   /// Clears the degrees we ignore readings at
   void clearIgnoreReadings(void) 
     { myIgnoreReadings.clear(); }
@@ -488,53 +488,53 @@ public:
 
 
   /// Adds a connect callback
-  void addConnectCB(ArFunctor *functor,
+  void addConnectCB(MvrFunctor *functor,
 			     int position = 50) 
     { myConnectCBList.addCallback(functor, position); }
   /// Adds a disconnect callback
-  void remConnectCB(ArFunctor *functor)
+  void remConnectCB(MvrFunctor *functor)
     { myConnectCBList.remCallback(functor); }
 
   /// Adds a callback for when a connection to the robot is failed
-  void addFailedConnectCB(ArFunctor *functor, 
+  void addFailedConnectCB(MvrFunctor *functor, 
 				   int position = 50) 
     { myFailedConnectCBList.addCallback(functor, position); }
   /// Removes a callback for when a connection to the robot is failed
-  void remFailedConnectCB(ArFunctor *functor)
+  void remFailedConnectCB(MvrFunctor *functor)
     { myFailedConnectCBList.remCallback(functor); }
 
   /// Adds a callback for when disconnect is called while connected
-  void addDisconnectNormallyCB(ArFunctor *functor, 
+  void addDisconnectNormallyCB(MvrFunctor *functor, 
 			     int position = 50) 
     { myDisconnectNormallyCBList.addCallback(functor, position); }
 
   /// Removes a callback for when disconnect is called while connected
-  void remDisconnectNormallyCB(ArFunctor *functor)
+  void remDisconnectNormallyCB(MvrFunctor *functor)
     { myDisconnectNormallyCBList.remCallback(functor); }
   
   /// Adds a callback for when disconnection happens because of an error
-  void addDisconnectOnErrorCB(ArFunctor *functor, 
+  void addDisconnectOnErrorCB(MvrFunctor *functor, 
 			     int position = 50) 
     { myDisconnectOnErrorCBList.addCallback(functor, position); }
 
   /// Removes a callback for when disconnection happens because of an error
-  void remDisconnectOnErrorCB(ArFunctor *functor)
+  void remDisconnectOnErrorCB(MvrFunctor *functor)
     { myDisconnectOnErrorCBList.remCallback(functor); }
 
   /// Adds a callback that is called whenever a laser reading is processed
-  void addReadingCB(ArFunctor *functor,
+  void addReadingCB(MvrFunctor *functor,
 			     int position = 50) 
     { myDataCBList.addCallback(functor, position); }
 
   /// Removes a callback that is called whenever a laser reading is processed
-  void remReadingCB(ArFunctor *functor)
+  void remReadingCB(MvrFunctor *functor)
     { myDataCBList.remCallback(functor); }
 
   /// Gets the absolute maximum range on the sensor
   unsigned int getAbsoluteMaxRange(void) { return myAbsoluteMaxRange; }
 
   /// Copies the reading count stuff from another laser (for the laser filter)
-  AREXPORT void copyReadingCount(const ArLaser* laser);
+  AREXPORT void copyReadingCount(const MvrLaser* laser);
 
   /// override the default to bound the maxrange by the absolute max range
   AREXPORT virtual void setMaxRange(unsigned int maxRange);
@@ -565,7 +565,7 @@ public:
   AREXPORT virtual bool laserCheckParams(void) { return true; }
 
   /// Applies a transform to the buffers
-  AREXPORT virtual void applyTransform(ArTransform trans,
+  AREXPORT virtual void applyTransform(MvrTransform trans,
                                         bool doCumulative = true);
 
   /// Makes it so we'll apply simple naming to all the lasers
@@ -666,13 +666,13 @@ protected:
   int myLaserNumber;
 
 
-  ArDeviceConnection *myConn;
-  ArMutex myConnMutex;
+  MvrDeviceConnection *myConn;
+  MvrMutex myConnMutex;
 
   double myTimeoutSeconds;
   
 
-  ArPose mySensorPose;
+  MvrPose mySensorPose;
   double mySensorZ;
   bool myHaveSensorPose;
 
@@ -680,7 +680,7 @@ protected:
   double myCumulativeCleanDistSquared;
   int myCumulativeCleanInterval;
   int myCumulativeCleanOffset;
-  ArTime myCumulativeLastClean;
+  MvrTime myCumulativeLastClean;
   std::set<int> myIgnoreReadings;
 
   unsigned int myAbsoluteMaxRange;
@@ -755,15 +755,15 @@ protected:
   int myDefaultTcpPort;
   std::string myDefaultPortType;
 
-  ArCallbackList myConnectCBList;
-  ArCallbackList myFailedConnectCBList;
-  ArCallbackList myDisconnectOnErrorCBList;
-  ArCallbackList myDisconnectNormallyCBList;
-  ArCallbackList myDataCBList;
+  MvrCallbackList myConnectCBList;
+  MvrCallbackList myFailedConnectCBList;
+  MvrCallbackList myDisconnectOnErrorCBList;
+  MvrCallbackList myDisconnectNormallyCBList;
+  MvrCallbackList myDataCBList;
 
-  ArLog::LogLevel myInfoLogLevel;
+  MvrLog::LogLevel myInfoLogLevel;
 
-  ArTime myLastReading;
+  MvrTime myLastReading;
   // packet count
   time_t myTimeLastReading;
   int myReadingCurrentCount;

@@ -31,18 +31,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /// This class is to build arguments for things that require argc and argv
 /// @ingroup ImportantClasses
-class ArArgumentBuilder
+class MvrArgumentBuilder
 {
 public:
   /// Constructor
-  AREXPORT ArArgumentBuilder(size_t argvLen = 512, 
+  AREXPORT MvrArgumentBuilder(size_t argvLen = 512, 
                              char extraSpaceChar = '\0',
 			                       bool ignoreNormalSpaces = false,
                              bool isPreCompressQuotes = false);
   /// Copy Constructor
-  AREXPORT ArArgumentBuilder(const ArArgumentBuilder &builder);
+  AREXPORT MvrArgumentBuilder(const MvrArgumentBuilder &builder);
 
-  AREXPORT ArArgumentBuilder &operator=(const ArArgumentBuilder &builder);
+  AREXPORT MvrArgumentBuilder &operator=(const MvrArgumentBuilder &builder);
 
   /// Destructor
   AREXPORT virtual ~ArArgumentBuilder();
@@ -181,7 +181,7 @@ protected:
 	AREXPORT void rebuildFullString();
 
   /// Characters that may be used to separate arguments; bitwise flags so QUOTE can be combined with spaces
-  enum ArgSeparatorType {
+  enum MvrgSeparatorType {
     SPACE              = 1,               // Normal space character
     SPECIAL            = SPACE << 1,      // The special "extra" space character, if any
     ANY_SPACE          = SPACE | SPECIAL, // Either normal space or special extra space
@@ -253,14 +253,14 @@ protected:
 // ----------------------------------------------------------------------------
 
 /// Comparator that returns true if arg1's full string is less than arg2's.
-struct ArArgumentBuilderCompareOp
+struct MvrArgumentBuilderCompareOp
 {
 public:
 
   /// Compares arg1's full string to arg2's.
-  AREXPORT bool operator() (ArArgumentBuilder* arg1, ArArgumentBuilder* arg2) const;
+  AREXPORT bool operator() (MvrArgumentBuilder* arg1, MvrArgumentBuilder* arg2) const;
 
-}; // end struct ArArgumentBuilderCompareOp
+}; // end struct MvrArgumentBuilderCompareOp
 
 
 

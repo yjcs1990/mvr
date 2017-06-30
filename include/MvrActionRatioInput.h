@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONRATIOINPUT_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action that requests motion based on abstract ratios provided by diferent input sources 
 /**
@@ -43,7 +43,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    values in between request a linear percentage of the maximum.  The throttle
    input scales the other speed, and ranges from 0 (no motion) to 100 (maximum motion).
    
-   Seperate objects (e.g. ArRatioInputKeydrive, ArRatioInputJoydrive, ArRAtionInputRobotJoydrive) 
+   Seperate objects (e.g. MvrRatioInputKeydrive, MvrRatioInputJoydrive, MvrRAtionInputRobotJoydrive) 
    are used to provide input.
 
    When this action is activated it resets all its input ratios to 0
@@ -51,19 +51,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
    Configuration parameters are used to map the maximum ratios to actual robot speeds.
    These are set be default to the robot's maximum configured velocities at startup but you can
-   override them with ArConfig parameters (and call addToConfig()) or setParameters().
+   override them with MvrConfig parameters (and call addToConfig()) or setParameters().
 
    @ingroup ActionClasses
    
-   @see ArRatioInputKeydrive
-   @see ArRatioInputJoydrive
-   @see ArRatioInputRobotJoydrive
+   @see MvrRatioInputKeydrive
+   @see MvrRatioInputJoydrive
+   @see MvrRatioInputRobotJoydrive
  **/
-class ArActionRatioInput : public ArAction
+class MvrActionRatioInput : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionRatioInput(const char *name = "RatioInput");
+  AREXPORT MvrActionRatioInput(const char *name = "RatioInput");
   /// Destructor
   AREXPORT virtual ~ArActionRatioInput();
   /// Set ratios
@@ -84,19 +84,19 @@ public:
   /// Gets the throttle ratio (from 0 (stopped) to 100 (full throttle)
   double getThrottleRatio(void) { return myThrottleRatio; }
   /// Adds a callback that is called from this actions fire call
-  AREXPORT void addFireCallback(int priority, ArFunctor *functor);
+  AREXPORT void addFireCallback(int priority, MvrFunctor *functor);
   /// Removes a callback that was called from this actions fire callback
-  AREXPORT void remFireCallback(ArFunctor *functor);
+  AREXPORT void remFireCallback(MvrFunctor *functor);
   /// Adds a callback that is called when this action is activated
-  AREXPORT void addActivateCallback(ArFunctor *functor, 
-				    ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addActivateCallback(MvrFunctor *functor, 
+				    MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback that was called when this action is activated
-  AREXPORT void remActivateCallback(ArFunctor *functor);
+  AREXPORT void remActivateCallback(MvrFunctor *functor);
   /// Adds a callback that is called when this action is deactivated
-  AREXPORT void addDeactivateCallback(ArFunctor *functor, 
-			      ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addDeactivateCallback(MvrFunctor *functor, 
+			      MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback that was called when this action is deactivated
-  AREXPORT void remDeactivateCallback(ArFunctor *functor);
+  AREXPORT void remDeactivateCallback(MvrFunctor *functor);
   /// Sets the parameters
   AREXPORT void setParameters(double fullThrottleForwards, 
 			      double fullThrottleBackwards, 
@@ -107,17 +107,17 @@ public:
 			      double latAtFullBackwards = 0,
 			      double latAtStopped = 0);
   /// Adds to a section in a config
-  AREXPORT void addToConfig(ArConfig *config, const char *section);
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT void addToConfig(MvrConfig *config, const char *section);
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   AREXPORT virtual void activate(void);
   AREXPORT virtual void deactivate(void);
 protected:
-  std::multimap<int, ArFunctor *> myFireCallbacks;
+  std::multimap<int, MvrFunctor *> myFireCallbacks;
   std::list<ArFunctor *> myActivateCallbacks;
   std::list<ArFunctor *> myDeactivateCallbacks;
   // if we're printing extra information or not
@@ -137,7 +137,7 @@ protected:
   double myRotRatio;
   double myThrottleRatio;
   double myLatRatio;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 };
 
 #endif // ARACTIONSTOP_H

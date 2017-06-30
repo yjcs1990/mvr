@@ -24,12 +24,12 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionRobotJoydrive.h"
-#include "ArRobot.h"
+#include "MvrActionRobotJoydrive.h"
+#include "MvrRobot.h"
 #include "ariaInternal.h"
-#include "ArCommands.h"
+#include "MvrCommands.h"
 
 /**
  * @param name Name for this action
@@ -37,26 +37,26 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     if false we'll follow the joystick input no matter what
 **/
 
-AREXPORT ArActionRobotJoydrive::ArActionRobotJoydrive(
+AREXPORT MvrActionRobotJoydrive::ArActionRobotJoydrive(
 	const char *name, bool requireDeadmanPushed) :
-  ArAction(name, "This action reads the joystick on the robot and sets the translational and rotational velocities based on this."),
+  MvrAction(name, "This action reads the joystick on the robot and sets the translational and rotational velocities based on this."),
   myHandleJoystickPacketCB(this, &ArActionRobotJoydrive::handleJoystickPacket),
   myConnectCB(this, &ArActionRobotJoydrive::connectCallback)
 {
   myRequireDeadmanPushed = requireDeadmanPushed;
-  setNextArgument(ArArg("whether to require the deadman to be pushed or not", &myRequireDeadmanPushed, "If this is true then deadman will need to be pushed to drive, if false we'll drive based on the joystick all the time"));
+  setNextArgument(MvrArg("whether to require the deadman to be pushed or not", &myRequireDeadmanPushed, "If this is true then deadman will need to be pushed to drive, if false we'll drive based on the joystick all the time"));
   myDeadZoneLast = false;
-  myHandleJoystickPacketCB.setName("ArActionRobotJoydrive");
+  myHandleJoystickPacketCB.setName("MvrActionRobotJoydrive");
 }
 
-AREXPORT ArActionRobotJoydrive::~ArActionRobotJoydrive()
+AREXPORT MvrActionRobotJoydrive::~ArActionRobotJoydrive()
 {
 
 }
 
-AREXPORT void ArActionRobotJoydrive::setRobot(ArRobot *robot)
+AREXPORT void MvrActionRobotJoydrive::setRobot(MvrRobot *robot)
 {
-  ArAction::setRobot(robot);
+  MvrAction::setRobot(robot);
   if (myRobot != NULL)
   {
     myRobot->addConnectCB(&myConnectCB);
@@ -66,12 +66,12 @@ AREXPORT void ArActionRobotJoydrive::setRobot(ArRobot *robot)
   }
 }
 
-AREXPORT void ArActionRobotJoydrive::connectCallback(void)
+AREXPORT void MvrActionRobotJoydrive::connectCallback(void)
 {
-  myRobot->comInt(ArCommands::JOYINFO, 2);
+  myRobot->comInt(MvrCommands::JOYINFO, 2);
 }
 
-AREXPORT bool ArActionRobotJoydrive::handleJoystickPacket(
+AREXPORT bool MvrActionRobotJoydrive::handleJoystickPacket(
 	ArRobotPacket *packet)
 {
   if (packet->getID() != 0xF8)
@@ -89,7 +89,7 @@ AREXPORT bool ArActionRobotJoydrive::handleJoystickPacket(
   return true;
 }
 
-AREXPORT ArActionDesired *ArActionRobotJoydrive::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *ArActionRobotJoydrive::fire(MvrActionDesired currentDesired)
 {
   bool printing = false;
   myDesired.reset();
@@ -97,7 +97,7 @@ AREXPORT ArActionDesired *ArActionRobotJoydrive::fire(ArActionDesired currentDes
   if (myRequireDeadmanPushed && !myButton1)
   {
     if (printing)
-      printf("ArActionRobotJoydrive: Nothing\n");
+      printf("MvrActionRobotJoydrive: Nothing\n");
     myDeadZoneLast = false;
     return NULL;
   }
@@ -107,8 +107,8 @@ AREXPORT ArActionDesired *ArActionRobotJoydrive::fire(ArActionDesired currentDes
   double ratioTrans = (myJoyY - 512) / 512.0;
   double ratioThrottle = myThrottle / 1024.0;
   
-  bool doTrans = ArMath::fabs(ratioTrans) > .33;
-  bool doRot = ArMath::fabs(ratioRot) > .33;
+  bool doTrans = MvrMath::fabs(ratioTrans) > .33;
+  bool doRot = MvrMath::fabs(ratioRot) > .33;
 
   if (0)
     printf("%.0f %.0f (x %.3f y %.3f throttle %.3f)\n", ratioTrans * ratioThrottle * 1000,
@@ -120,12 +120,12 @@ AREXPORT ArActionDesired *ArActionRobotJoydrive::fire(ArActionDesired currentDes
     if (myDeadZoneLast && !myRequireDeadmanPushed) 
     {
       if (printing)
-	printf("ArActionRobotJoydrive: deadzone Nothing\n");
+	printf("MvrActionRobotJoydrive: deadzone Nothing\n");
       return NULL;
     }
     // if the deadman doesn't need to be pushed let something else happen here
     if (printing)
-      printf("ArActionRobotJoydrive: deadzone\n");
+      printf("MvrActionRobotJoydrive: deadzone\n");
     myDesired.setVel(0);
     myDesired.setDeltaHeading(0);
     myDeadZoneLast = true;
@@ -139,7 +139,7 @@ AREXPORT ArActionDesired *ArActionRobotJoydrive::fire(ArActionDesired currentDes
 		  (myRobot->getVel() < 0 && ratioTrans > 0.5)))
   {
     if (printing)
-      printf("ArActionRobotJoydrive: Decelerating trans more\n");
+      printf("MvrActionRobotJoydrive: Decelerating trans more\n");
     myDesired.setTransDecel(myRobot->getTransDecel() * 3);
   }
 
@@ -149,7 +149,7 @@ AREXPORT ArActionDesired *ArActionRobotJoydrive::fire(ArActionDesired currentDes
 		  (myRobot->getRotVel() < 0 && ratioRot > 0.5)))
   {
     if (printing)
-      printf("ArActionRobotJoydrive: Decelerating rot more\n");
+      printf("MvrActionRobotJoydrive: Decelerating rot more\n");
     myDesired.setRotDecel(myRobot->getRotDecel() * 3);
   }
 
@@ -168,7 +168,7 @@ AREXPORT ArActionDesired *ArActionRobotJoydrive::fire(ArActionDesired currentDes
     myDesired.setRotVel(0);
 
   if(printing)
-    printf("ArActionRobotJoydrive: (%ld ms ago) we got %d %d %.2f %.2f %.2f (speed %.0f %.0f)\n", 
+    printf("MvrActionRobotJoydrive: (%ld ms ago) we got %d %d %.2f %.2f %.2f (speed %.0f %.0f)\n", 
 	 myPacketReceivedTime.mSecSince(),
 	 myButton1, myButton2, ratioTrans, ratioRot, ratioThrottle,
 	 myRobot->getVel(), myRobot->getRotVel());

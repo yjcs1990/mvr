@@ -24,23 +24,23 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionGroup.h"
-#include "ArAction.h"
-#include "ArRobot.h"
-#include "ArLog.h"
+#include "MvrActionGroup.h"
+#include "MvrAction.h"
+#include "MvrRobot.h"
+#include "MvrLog.h"
 
 /**
    @param robot The robot that this action group is attached to. New actions added to this group (using addAction()) will be added to this robot object for evaluation in its action resolution task.
 **/
 
-AREXPORT ArActionGroup::ArActionGroup(ArRobot *robot)
+AREXPORT MvrActionGroup::ArActionGroup(MvrRobot *robot)
 {
   myRobot = robot;
 }
 
-AREXPORT ArActionGroup::~ArActionGroup()
+AREXPORT MvrActionGroup::~ArActionGroup()
 {
   removeActions();
 }
@@ -49,17 +49,17 @@ AREXPORT ArActionGroup::~ArActionGroup()
 /**
  * The given action will be included in this group, and then added to this
  * group's robot (specified in the constructor) by using
- * ArRobot::addAction().
+ * MvrRobot::addAction().
    @param action the action to add to the robot and to this group
-   @param priority the priority to give the action; same meaning as in ArRobot::addAction
-   @see ArRobot::addAction
+   @param priority the priority to give the action; same meaning as in MvrRobot::addAction
+   @see MvrRobot::addAction
 */
-AREXPORT void ArActionGroup::addAction(ArAction *action, int priority)
+AREXPORT void MvrActionGroup::addAction(MvrAction *action, int priority)
 {
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-            "ArActionGroup::addAction: NULL robot pointer... failed.");
+    MvrLog::log(MvrLog::Terse, 
+            "MvrActionGroup::addAction: NULL robot pointer... failed.");
     return;
   }
   myActions.push_front(action);
@@ -68,41 +68,41 @@ AREXPORT void ArActionGroup::addAction(ArAction *action, int priority)
 
 /**
    @param action the action to remove from the robot
-   @see ArRobot::remAction
+   @see MvrRobot::remAction
 */
-AREXPORT void ArActionGroup::remAction(ArAction *action)
+AREXPORT void MvrActionGroup::remAction(MvrAction *action)
 {
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-            "ArActionGroup::remAction: NULL robot pointer... failed.");
+    MvrLog::log(MvrLog::Terse, 
+            "MvrActionGroup::remAction: NULL robot pointer... failed.");
     return;
   }
   myActions.remove(action);
   myRobot->remAction(action);
 }
 
-AREXPORT void ArActionGroup::activate(void)
+AREXPORT void MvrActionGroup::activate(void)
 {
   std::list<ArAction *>::iterator it;
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-            "ArActionGroup::activate: NULL robot pointer... failed.");
+    MvrLog::log(MvrLog::Terse, 
+            "MvrActionGroup::activate: NULL robot pointer... failed.");
     return;
   }
   for (it = myActions.begin(); it != myActions.end(); it++)
     (*it)->activate();
 }
 
-AREXPORT void ArActionGroup::activateExclusive(void)
+AREXPORT void MvrActionGroup::activateExclusive(void)
 {
   std::list<ArAction *>::iterator it;
   
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-            "ArActionGroup::activateExclusive: NULL robot pointer... failed.");
+    MvrLog::log(MvrLog::Terse, 
+            "MvrActionGroup::activateExclusive: NULL robot pointer... failed.");
     return;
   }
   myRobot->deactivateActions();
@@ -110,13 +110,13 @@ AREXPORT void ArActionGroup::activateExclusive(void)
     (*it)->activate();
 }
 
-AREXPORT void ArActionGroup::deactivate(void)
+AREXPORT void MvrActionGroup::deactivate(void)
 {
   std::list<ArAction *>::iterator it;
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-            "ArActionGroup::deactivate: NULL robot pointer... failed.");
+    MvrLog::log(MvrLog::Terse, 
+            "MvrActionGroup::deactivate: NULL robot pointer... failed.");
     return;
   }
   // this was around since 2003 but it shouldn't deactivate actions on
@@ -132,14 +132,14 @@ AREXPORT std::list<ArAction *> *ArActionGroup::getActionList(void)
   return &myActions;
 }
 
-AREXPORT void ArActionGroup::removeActions(void)
+AREXPORT void MvrActionGroup::removeActions(void)
 {
   std::list<ArAction *>::iterator it;
 
   if (myRobot == NULL)
   {
-    ArLog::log(ArLog::Terse, 
-            "ArActionGroup::removeActions: NULL robot pointer... very bad.");
+    MvrLog::log(MvrLog::Terse, 
+            "MvrActionGroup::removeActions: NULL robot pointer... very bad.");
     return;
   }
 
@@ -147,7 +147,7 @@ AREXPORT void ArActionGroup::removeActions(void)
     myRobot->remAction((*it));
 }
 
-AREXPORT void ArActionGroup::deleteActions(void)
+AREXPORT void MvrActionGroup::deleteActions(void)
 {
   /* MPL removed this since it doesn't differentiate between actions it added and actions added to it, double deletes are no fun
    */

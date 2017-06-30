@@ -26,13 +26,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include <ctype.h>
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLogFileConnection.h"
-#include "ArLog.h"
+#include "MvrLogFileConnection.h"
+#include "MvrLog.h"
 #include "ariaUtil.h"
 
-AREXPORT ArLogFileConnection::ArLogFileConnection()
+AREXPORT MvrLogFileConnection::ArLogFileConnection()
 {
   myStatus = STATUS_NEVER_OPENED;
   myLogFile = NULL;
@@ -43,14 +43,14 @@ AREXPORT ArLogFileConnection::ArLogFileConnection()
   strcpy(mySubtype, "amigo");
 }
 
-AREXPORT ArLogFileConnection::~ArLogFileConnection()
+AREXPORT MvrLogFileConnection::~ArLogFileConnection()
 {
   if (myFD != NULL)
     fclose(myFD);
 }
 
 
-AREXPORT void ArLogFileConnection::setLogFile(const char *fname)
+AREXPORT void MvrLogFileConnection::setLogFile(const char *fname)
 {
   if (fname == NULL)
     myLogFile = "robot.log";
@@ -58,7 +58,7 @@ AREXPORT void ArLogFileConnection::setLogFile(const char *fname)
     myLogFile = fname;
 }
 
-AREXPORT bool ArLogFileConnection::openSimple(void)
+AREXPORT bool MvrLogFileConnection::openSimple(void)
 {
   if (internalOpen() == 0)
     return true;
@@ -71,16 +71,16 @@ AREXPORT bool ArLogFileConnection::openSimple(void)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-AREXPORT int ArLogFileConnection::open(const char *fname)
+AREXPORT int MvrLogFileConnection::open(const char *fname)
 {
   setLogFile(fname);
   return internalOpen();
 }
 
-AREXPORT int ArLogFileConnection::internalOpen(void)
+AREXPORT int MvrLogFileConnection::internalOpen(void)
 {
   havePose = false;
-  myFD = ArUtil::fopen(myLogFile, "r");
+  myFD = MvrUtil::fopen(myLogFile, "r");
   if (myFD == NULL)
     {
       myStatus = STATUS_OPEN_FAILED;
@@ -130,18 +130,18 @@ AREXPORT int ArLogFileConnection::internalOpen(void)
   return 0;
 }
 
-void ArLogFileConnection::buildStrMap(void)
+void MvrLogFileConnection::buildStrMap(void)
 {
   myStrMap[OPEN_FILE_NOT_FOUND] = "File not found.";
   myStrMap[OPEN_NOT_A_LOG_FILE] = "File is not a log file.";
 }
 
-AREXPORT const char * ArLogFileConnection::getOpenMessage(int messageNumber)
+AREXPORT const char * MvrLogFileConnection::getOpenMessage(int messageNumber)
 {
   return myStrMap[messageNumber].c_str();
 }
 
-AREXPORT bool ArLogFileConnection::close(void)
+AREXPORT bool MvrLogFileConnection::close(void)
 {
   myStatus = STATUS_CLOSED_NORMALLY;
   if (myFD != NULL)
@@ -150,24 +150,24 @@ AREXPORT bool ArLogFileConnection::close(void)
   return true;
 }
 
-AREXPORT int ArLogFileConnection::read(const char *data, unsigned int size, 
+AREXPORT int MvrLogFileConnection::read(const char *data, unsigned int size, 
 				   unsigned int msWait)
 {
-  ArTime timeDone;
+  MvrTime timeDone;
   unsigned int bytesRead = 0;
   int n;
 
   if (getStatus() != STATUS_OPEN) 
   {
-    ArLog::log(ArLog::Terse, 
-	       "ArLogFileConnection::read: Attempt to use port that is not open.");
+    MvrLog::log(MvrLog::Terse, 
+	       "MvrLogFileConnection::read: Attempt to use port that is not open.");
     return -1;
   }
   
   timeDone.setToNow();
   if (!timeDone.addMSec(msWait)) {
-    ArLog::log(ArLog::Normal,
-               "ArLogFileConnection::read() error adding msecs (%i)",
+    MvrLog::log(MvrLog::Normal,
+               "MvrLogFileConnection::read() error adding msecs (%i)",
                msWait);
   }
 
@@ -241,7 +241,7 @@ AREXPORT int ArLogFileConnection::read(const char *data, unsigned int size,
 
 
 
-AREXPORT int ArLogFileConnection::write(const char *data, unsigned int size)
+AREXPORT int MvrLogFileConnection::write(const char *data, unsigned int size)
 {
   return size;                  // always write
 }
@@ -255,19 +255,19 @@ AREXPORT const char *ArLogFileConnection::getLogFile(void)
   return myLogFile;
 }
 
-AREXPORT int ArLogFileConnection::getStatus(void)
+AREXPORT int MvrLogFileConnection::getStatus(void)
 {
   return myStatus;
 }
 
-AREXPORT bool ArLogFileConnection::isTimeStamping(void)
+AREXPORT bool MvrLogFileConnection::isTimeStamping(void)
 {
   return false;
 }
 
-AREXPORT ArTime ArLogFileConnection::getTimeRead(int index)
+AREXPORT MvrTime MvrLogFileConnection::getTimeRead(int index)
 {
-  ArTime now;
+  MvrTime now;
   now.setToNow();
   return now;
 }

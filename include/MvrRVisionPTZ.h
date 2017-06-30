@@ -28,43 +28,43 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARRVISIONPTZ_H
 
 #include "ariaTypedefs.h"
-#include "ArBasePacket.h"
-#include "ArPTZ.h"
-#include "ArSerialConnection.h"
+#include "MvrBasePacket.h"
+#include "MvrPTZ.h"
+#include "MvrSerialConnection.h"
 /// A class for for making commands to send to the RVision camera
 /** There are only two functioning ways to put things into this packet,
  * uByteToBuf() and byte2ToBuf;  You
  *  MUST use thse, if you use anything else your commands won't work.  
  *  @since 2.7.0
 */
-class ArRVisionPacket: public ArBasePacket
+class MvrRVisionPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArRVisionPacket(ArTypes::UByte2 bufferSize = 15);
+  AREXPORT MvrRVisionPacket(MvrTypes::UByte2 bufferSize = 15);
   AREXPORT virtual ~ArRVisionPacket();
   
-  AREXPORT virtual void uByteToBuf(ArTypes::UByte val);
-  AREXPORT virtual void byte2ToBuf(ArTypes::Byte2 val);
+  AREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
+  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
   /// This is a new function, read the details before you try to use it
-  AREXPORT void byte2ToBufAtPos(ArTypes::Byte2 val, ArTypes::UByte2 pose);
+  AREXPORT void byte2ToBufAtPos(MvrTypes::Byte2 val, MvrTypes::UByte2 pose);
 };
 
-//class ArRobot;
+//class MvrRobot;
 
 /** Control the RVision camera pan tilt zoom unit.
-   In addition to creating an ArRvisionPTZ instance, you will also need
-   to create an ArSerialConnection object and open the serial port connection
+   In addition to creating an MvrRvisionPTZ instance, you will also need
+   to create an MvrSerialConnection object and open the serial port connection
    (the RVision is normally on COM3 on Seekur and Seekur Jr. robots) and
    use the setDeviceConnection() method to associate the serial connection
-   with the ArRVisionPTZ object.
+   with the MvrRVisionPTZ object.
 	@since 2.7.0
 */
 
-class ArRVisionPTZ : public ArPTZ
+class MvrRVisionPTZ : public MvrPTZ
 {
 public:
-  AREXPORT ArRVisionPTZ(ArRobot *robot);
+  AREXPORT MvrRVisionPTZ(MvrRobot *robot);
   AREXPORT virtual ~ArRVisionPTZ();
   
   AREXPORT virtual bool init(void);
@@ -110,7 +110,7 @@ public:
   /// Gets the field of view at minimum zoom
   AREXPORT virtual double getFOVAtMinZoom(void) { return 48.8; }
 
-  virtual ArBasePacket* readPacket(void);
+  virtual MvrBasePacket* readPacket(void);
   enum {
     MAX_PAN = 180, ///< maximum degrees the unit can pan (clockwise from top)
     MIN_PAN = -180, ///< minimum degrees the unit can pan (counterclockwise from top)
@@ -122,7 +122,7 @@ public:
     PAN_OFFSET_IN_DEGREES = 190 ///< offset value to convert internal camera coords to world
   };
   
-  /// called automatically by Aria::init()
+  /// called automatically by Mvria::init()
   ///@since 2.7.6
   ///@internal
 #ifndef SWIG
@@ -137,16 +137,16 @@ protected:
   double myDegToPan;
   double myPanOffsetInDegrees;
   double myTiltOffsetInDegrees;
-  ArRVisionPacket myPacket;
-  ArRVisionPacket myZoomPacket; 
-  ArRVisionPacket myPanTiltPacket;
-  ArRVisionPacket myInquiryPacket;
+  MvrRVisionPacket myPacket;
+  MvrRVisionPacket myZoomPacket; 
+  MvrRVisionPacket myPanTiltPacket;
+  MvrRVisionPacket myInquiryPacket;
   const char *mySerialPort;
 
   ///@since 2.7.6
-  static ArPTZ* create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot);
+  static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
   ///@since 2.7.6
-  static ArPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
+  static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 
 };
 

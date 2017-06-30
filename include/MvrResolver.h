@@ -28,30 +28,30 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARRESOLVER_H
 
 #include "ariaTypedefs.h"
-#include "ArActionDesired.h"
+#include "MvrActionDesired.h"
 #include <string>
 
-class ArAction;
-class ArRobot;
+class MvrAction;
+class MvrRobot;
 
 /// Resolves a list of actions and returns what to do
 /**
-  ArResolver::resolve() is the function that ArRobot
+  MvrResolver::resolve() is the function that MvrRobot
   calls with the action list in order
-  to produce a combined ArActionDesired object from them, according to
+  to produce a combined MvrActionDesired object from them, according to
   the subclass's particular algorithm or policy.
 */
-class ArResolver
+class MvrResolver
 {
 public:
   /// Constructor
-  typedef std::multimap<int, ArAction *> ActionMap;
-  ArResolver(const char *name, const char * description = "")
+  typedef std::multimap<int, MvrAction *> ActionMap;
+  MvrResolver(const char *name, const char * description = "")
     { myName = name; myDescription = description; }
   /// Desturctor
   virtual ~ArResolver() {};
-  /// Figure out a single ArActionDesired from a list of ArAction s
-  virtual ArActionDesired *resolve(ActionMap *actions, ArRobot *robot,
+  /// Figure out a single MvrActionDesired from a list of MvrAction s
+  virtual MvrActionDesired *resolve(ActionMap *actions, MvrRobot *robot,
 				   bool logActions = false) = 0;
   /// Gets the name of the resolver
   virtual const char *getName(void) const { return myName.c_str(); }

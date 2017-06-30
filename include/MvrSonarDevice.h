@@ -28,19 +28,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSONARDEVICE_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
-#include "ArFunctor.h"
+#include "MvrRangeDevice.h"
+#include "MvrFunctor.h"
 
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
-/// Keep track of recent sonar readings from a robot as an ArRangeDevice
+/// Keep track of recent sonar readings from a robot as an MvrRangeDevice
 /** 
     This class is for keeping a sonar history, which you may use for obstacle 
     avoidance, display, etc.
-    Simply use ArRobot::addRangeDevice()  (or ArSonarDevice::setRobot())
-    to attach an ArSonarDevice object to an ArRobot
-    robot object; ArSonarDevice will add a Sensor Interpretation task to the
-    ArRobot which will read new sonar readings each robot cycle and add
+    Simply use MvrRobot::addRangeDevice()  (or MvrSonarDevice::setRobot())
+    to attach an MvrSonarDevice object to an MvrRobot
+    robot object; MvrSonarDevice will add a Sensor Interpretation task to the
+    MvrRobot which will read new sonar readings each robot cycle and add
     them to its sonar history.
 
     (Note that sonar range readings are from the surface of the sonar transducer disc,
@@ -49,11 +49,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     @ingroup ImportantClasses
    @ingroup DeviceClasses
 */
-class ArSonarDevice : public ArRangeDevice
+class MvrSonarDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT ArSonarDevice(size_t currentBufferSize = 24, 
+  AREXPORT MvrSonarDevice(size_t currentBufferSize = 24, 
 			 size_t cumulativeBufferSize = 64, 
 			 const char * name = "sonar");
   /// Destructor
@@ -64,31 +64,31 @@ public:
 
   /// Sets the robot pointer, also attaches its process function to the
   /// robot as a Sensor Interpretation task.
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
 
   /// Adds sonar readings to the current and cumulative buffers
-  /// Overrides the ArRangeDevice default action.
+  /// Overrides the MvrRangeDevice default action.
   /// (This method is primarily for internal use.)
   AREXPORT virtual void addReading(double x, double y);
 
   /// Sets a callback which if it returns true will ignore the reading
-  AREXPORT void setIgnoreReadingCB(ArRetFunctor1<bool, ArPose> *ignoreReadingCB);
+  AREXPORT void setIgnoreReadingCB(MvrRetFunctor1<bool, MvrPose> *ignoreReadingCB);
  
   /// Gets the callback which if it returns true will ignore the reading
-  AREXPORT ArRetFunctor1<bool, ArPose> *getIgnoreReadingCB(void)
+  AREXPORT MvrRetFunctor1<bool, MvrPose> *getIgnoreReadingCB(void)
     { return myIgnoreReadingCB; }
 
   /** @deprecated
-   *  @sa ArRangeDevice::setMaxDistToKeepCumulative()
+   *  @sa MvrRangeDevice::setMaxDistToKeepCumulative()
    */
   AREXPORT void setCumulativeMaxRange(double range) 
     { setMaxDistToKeepCumulative(range); }
 protected:
-  ArFunctorC<ArSonarDevice> myProcessCB;
+  MvrFunctorC<ArSonarDevice> myProcessCB;
   double myFilterNearDist;	// we throw out cumulative readings this close to current one
   double myFilterFarDist;	// throw out cumulative readings beyond this far from robot
 
-  ArRetFunctor1<bool, ArPose> *myIgnoreReadingCB;
+  MvrRetFunctor1<bool, MvrPose> *myIgnoreReadingCB;
 };
 
 

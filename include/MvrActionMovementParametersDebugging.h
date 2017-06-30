@@ -28,24 +28,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONMOVEMENTPARAMTERSDEBUGGING_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
-#include "ArMapObject.h"
+#include "MvrAction.h"
+#include "MvrMapObject.h"
 
-/// This is a class for setting max velocities and accels and decels via ArConfig parameters (see addToConfig());
+/// This is a class for setting max velocities and accels and decels via MvrConfig parameters (see addToConfig());
 /**
    @ingroup ActionClasses
  **/
-class ArActionMovementParametersDebugging : public ArAction
+class MvrActionMovementParametersDebugging : public MvrAction
 {
 public: 
   /// Constructor
-  AREXPORT ArActionMovementParametersDebugging(const char *name = "MovementParametersDebugging");
+  AREXPORT MvrActionMovementParametersDebugging(const char *name = "MovementParametersDebugging");
   /// Destructor
   AREXPORT virtual ~ArActionMovementParametersDebugging();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   /// Sees if this action is enabled (separate from activating it)
@@ -53,12 +53,12 @@ public:
   /// Enables this action (separate from activating it)
   AREXPORT void enable(void) { myEnabled = true; }
   /// Enables this action in a way that'll work from the sector callbacks
-  AREXPORT void enableOnceFromSector(ArMapObject *mapObject) 
+  AREXPORT void enableOnceFromSector(MvrMapObject *mapObject) 
     { myEnableOnce = true; }
   /// Disables this action (separate from deactivating it)
   AREXPORT void disable(void) { myEnabled = false; }
-  /// Adds to the ArConfig given, in section, with prefix
-  AREXPORT void addToConfig(ArConfig *config, const char *section,
+  /// Adds to the MvrConfig given, in section, with prefix
+  AREXPORT void addToConfig(MvrConfig *config, const char *section,
 			    const char *prefix = NULL);
 protected:
   bool myEnabled;
@@ -87,7 +87,7 @@ protected:
   bool mySetLatDecel;
   double myLatDecel;
   
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 
 
 };

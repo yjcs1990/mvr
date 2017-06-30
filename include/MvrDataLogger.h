@@ -28,15 +28,15 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARDATALOGGER_H
 
 #include "ariaUtil.h"
-#include "ArMutex.h"
-#include "ArFunctor.h"
+#include "MvrMutex.h"
+#include "MvrFunctor.h"
 #include <vector>
 
-class ArRobot;
-class ArConfig;
+class MvrRobot;
+class MvrConfig;
 
 
-/// This class will log data, but you have to use it through an ArConfig right now
+/// This class will log data, but you have to use it through an MvrConfig right now
 /**
    This class doesn't log anything by default, but can be set up to
    log all sorts of data.  Note that if you do an addString after you
@@ -46,31 +46,31 @@ class ArConfig;
 
   @ingroup OptionalClasses
  **/
-class ArDataLogger
+class MvrDataLogger
 {
 public:
   /// Constructor
-  AREXPORT ArDataLogger(ArRobot *robot, const char *fileName = NULL);
+  AREXPORT MvrDataLogger(MvrRobot *robot, const char *fileName = NULL);
   /// Destructor
   AREXPORT ~ArDataLogger();
   /// Adds the data logger information to the config
-  AREXPORT void addToConfig(ArConfig *config);
+  AREXPORT void addToConfig(MvrConfig *config);
   /// Adds a string to the list of options in the raw format
-  AREXPORT void addString(const char *name, ArTypes::UByte2 maxLen, 
-			  ArFunctor2<char *, ArTypes::UByte2> *functor);
+  AREXPORT void addString(const char *name, MvrTypes::UByte2 maxLen, 
+			  MvrFunctor2<char *, MvrTypes::UByte2> *functor);
 
-  /// Gets the functor for adding a string (for ArStringInfoGroup)
-  ArFunctor3<const char *, ArTypes::UByte2,
-				    ArFunctor2<char *, ArTypes::UByte2> *> *
+  /// Gets the functor for adding a string (for MvrStringInfoGroup)
+  MvrFunctor3<const char *, MvrTypes::UByte2,
+				    MvrFunctor2<char *, MvrTypes::UByte2> *> *
                      getAddStringFunctor(void) { return &myAddStringFunctor; }
 
 protected:
   AREXPORT void connectCallback(void);
   AREXPORT bool processFile(char *errorBuffer, size_t errorBufferLen);
   AREXPORT void userTask(void);
-  ArRobot *myRobot;
-  ArTime myLastLogged;
-  ArConfig *myConfig;
+  MvrRobot *myRobot;
+  MvrTime myLastLogged;
+  MvrConfig *myConfig;
   bool myAddToConfigAtConnect;
   bool myAddedToConfig;
 
@@ -111,17 +111,17 @@ protected:
   int myStringsCount;
   std::vector<bool *> myStringsEnabled;
 
-  ArMutex myMutex;
+  MvrMutex myMutex;
 
   std::vector<ArStringInfoHolder *> myStrings;
-  ArTypes::UByte2 myMaxMaxLength;
-  ArFunctor3C<ArDataLogger, const char *, ArTypes::UByte2,
-		    ArFunctor2<char *, ArTypes::UByte2> *> myAddStringFunctor;
+  MvrTypes::UByte2 myMaxMaxLength;
+  MvrFunctor3C<ArDataLogger, const char *, MvrTypes::UByte2,
+		    MvrFunctor2<char *, MvrTypes::UByte2> *> myAddStringFunctor;
   
 
-  ArFunctorC<ArDataLogger> myConnectCB;  
-  ArRetFunctor2C<bool, ArDataLogger, char *, size_t> myProcessFileCB;
-  ArFunctorC<ArDataLogger> myUserTaskCB;
+  MvrFunctorC<ArDataLogger> myConnectCB;  
+  MvrRetFunctor2C<bool, MvrDataLogger, char *, size_t> myProcessFileCB;
+  MvrFunctorC<ArDataLogger> myUserTaskCB;
 };
 
 #endif // ARDATALOGGER_H

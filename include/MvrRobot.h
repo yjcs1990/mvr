@@ -28,34 +28,34 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARROBOT_H
 
 #include "ariaTypedefs.h"
-#include "ArRobotPacketSender.h"
-#include "ArRobotPacketReceiver.h"
-#include "ArFunctor.h"
-#include "ArSyncTask.h"
-#include "ArSensorReading.h"
-#include "ArMutex.h"
-#include "ArCondition.h"
-#include "ArSyncLoop.h"
-#include "ArRobotPacketReaderThread.h"
-#include "ArRobotParams.h"
-#include "ArActionDesired.h"
-#include "ArResolver.h"
-#include "ArTransform.h"
-#include "ArInterpolation.h"
-#include "ArKeyHandler.h"
+#include "MvrRobotPacketSender.h"
+#include "MvrRobotPacketReceiver.h"
+#include "MvrFunctor.h"
+#include "MvrSyncTask.h"
+#include "MvrSensorReading.h"
+#include "MvrMutex.h"
+#include "MvrCondition.h"
+#include "MvrSyncLoop.h"
+#include "MvrRobotPacketReaderThread.h"
+#include "MvrRobotParams.h"
+#include "MvrActionDesired.h"
+#include "MvrResolver.h"
+#include "MvrTransform.h"
+#include "MvrInterpolation.h"
+#include "MvrKeyHandler.h"
 #include <list>
 
-class ArAction;
-class ArRobotConfigPacketReader;
-class ArRobotBatteryPacketReader;
-class ArDeviceConnection;
-class ArRangeDevice;
-class ArRobotPacket;
-class ArPTZ;
-class ArLaser;
-class ArBatteryMTX;
-class ArSonarMTX;
-class ArLCDMTX;
+class MvrAction;
+class MvrRobotConfigPacketReader;
+class MvrRobotBatteryPacketReader;
+class MvrDeviceConnection;
+class MvrRangeDevice;
+class MvrRobotPacket;
+class MvrPTZ;
+class MvrLaser;
+class MvrBatteryMTX;
+class MvrSonarMTX;
+class MvrLCDMTX;
 
 /// Central class for communicating with and operating the robot
 /** 
@@ -64,22 +64,22 @@ class ArLCDMTX;
     wheel odometry, digital and analog inputs, sonar data, and more). 
     It is also used
     to provide access to objects for controlling attached accessories, 
-    ArRangeDevice objects, ArAction objects, and others.  For details
+    MvrRangeDevice objects, MvrAction objects, and others.  For details
     on usage, and how the task cycle and obot state synchronization works,
-    see the @ref robot "ArRobot section" and the
+    see the @ref robot "MvrRobot section" and the
     @ref ClientCommands "Commands and Actions section" of the ARIA overview.
 
-    @note In Windows you cannot make an ArRobot object a global variable, 
+    @note In Windows you cannot make an MvrRobot object a global variable, 
     it will crash because the compiler initializes the constructors in
-    the wrong order. You can, however, make a pointer to an ArRobot and then
+    the wrong order. You can, however, make a pointer to an MvrRobot and then
     allocate it with 'new' at program start.
 
-    @see ArRobotConnector
+    @see MvrRobotConnector
 
     @ingroup ImportantClasses
    @ingroup DeviceClasses
 **/
-class ArRobot
+class MvrRobot
 {
 public:
 
@@ -101,7 +101,7 @@ public:
     CHARGING_BALANCE = 4
   };
   /// Constructor
-  AREXPORT ArRobot(const char * name = NULL, bool ignored = true,
+  AREXPORT MvrRobot(const char * name = NULL, bool ignored = true,
 		   bool doSigHandle=true, 
 		   bool normalInit = true, bool addAriaExitCallback = true);
 		   
@@ -132,9 +132,9 @@ public:
   AREXPORT void stopRunning(bool doDisconnect=true); 
 
   /// Sets the connection this instance uses
-  AREXPORT void setDeviceConnection(ArDeviceConnection *connection);
+  AREXPORT void setDeviceConnection(MvrDeviceConnection *connection);
   /// Gets the connection this instance uses
-  AREXPORT ArDeviceConnection *getDeviceConnection(void) const;
+  AREXPORT MvrDeviceConnection *getDeviceConnection(void) const;
   
   /// Questions whether the robot is connected or not
   /** 
@@ -338,7 +338,7 @@ public:
    *  @ingroup easy
    *
    */
-  ArPose getPose(void) const { return myGlobalPose; }
+  MvrPose getPose(void) const { return myGlobalPose; }
   /// Gets the global X position of the robot
   /** @sa getPose() 
       @ingroup easy
@@ -356,16 +356,16 @@ public:
   double getTh(void) const { return myGlobalPose.getTh(); }
   /// Gets the distance to a point from the robot's current position
   /// @ingroup easy
-  double findDistanceTo(const ArPose pose) 
+  double findDistanceTo(const MvrPose pose) 
     { return myGlobalPose.findDistanceTo(pose); }
   /// Gets the angle to a point from the robot's current position and orientation
   /// @ingroup easy
-  double findAngleTo(const ArPose pose) 
+  double findAngleTo(const MvrPose pose) 
     { return myGlobalPose.findAngleTo(pose); }
   /// Gets the difference between the angle to a point from the robot's current heading
   /// @ingroup easy
-  double findDeltaHeadingTo(const ArPose pose) 
-    { return ArMath::subAngle(myGlobalPose.findAngleTo(pose),
+  double findDeltaHeadingTo(const MvrPose pose) 
+    { return MvrMath::subAngle(myGlobalPose.findAngleTo(pose),
 			      myGlobalPose.getTh()); }
 
 
@@ -462,7 +462,7 @@ public:
   double getStateOfCharge(void) const 
     { if (!myHaveStateOfCharge) return 0; else return myStateOfCharge; }
   /// Gets the last time the state of charge was set
-  ArTime getStateOfChargeSetTime(void) const { return myStateOfChargeSetTime; }
+  MvrTime getStateOfChargeSetTime(void) const { return myStateOfChargeSetTime; }
   /// Gets the state of charge that is considered low
   double getStateOfChargeLow(void) const 
     { return myStateOfChargeLow; }
@@ -479,19 +479,19 @@ public:
    *  @sa isRightMotorStalled()
    *  @sa isFrontBumperTriggered()
    *  @sa isRearBumperTriggered()
-   *  @sa ArBumpers
+   *  @sa MvrBumpers
    */
   int getStallValue(void) const { return myStallValue; }
   /// Returns true if the left motor is stalled
   bool isLeftMotorStalled(void) const 
-    { return (myStallValue & 0xff) & ArUtil::BIT0; }
+    { return (myStallValue & 0xff) & MvrUtil::BIT0; }
   /// Returns true if the left motor is stalled
   bool isRightMotorStalled(void) const
-    { return ((myStallValue & 0xff00) >> 8) & ArUtil::BIT0; }
-  /// Returns true if the front bumper is triggered.   @sa ArBumpers
+    { return ((myStallValue & 0xff00) >> 8) & MvrUtil::BIT0; }
+  /// Returns true if the front bumper is triggered.   @sa MvrBumpers
   bool isFrontBumperTriggered(void) const
   { return hasFrontBumpers() && ((((myStallValue & 0xff00) >> 8) & ~ArUtil::BIT0) != 0); }
-  /// Returns true if the rear bumper is triggered. @sa ArBumpers
+  /// Returns true if the rear bumper is triggered. @sa MvrBumpers
   bool isRearBumperTriggered(void) const
   { return hasRearBumpers() && (((myStallValue & 0xff) & ~ArUtil::BIT0) !=0 ); }
 
@@ -519,7 +519,7 @@ public:
   /// Gets whether or not we're getting the fault flags values
   bool hasFlags3(void) const { return myHasFlags3; }
   /// returns true if the motors are enabled
-  bool areMotorsEnabled(void) const { return (myFlags & ArUtil::BIT0); }
+  bool areMotorsEnabled(void) const { return (myFlags & MvrUtil::BIT0); }
   /// returns true if the sonars are enabled
   /** This used to just check the low level firmware values, but
    * that's now done by areSonarsEnabledLegacy.
@@ -532,9 +532,9 @@ public:
   /// returns true if the sonars are enabled on legacy platforms (by checking the low level stuff)
   bool areSonarsEnabledLegacy(void) const { 
     return (myFlags & 
-	    (ArUtil::BIT1 | ArUtil::BIT2 | ArUtil::BIT3 | ArUtil::BIT4)); }
+	    (MvrUtil::BIT1 | MvrUtil::BIT2 | MvrUtil::BIT3 | MvrUtil::BIT4)); }
   /// returns true if the estop is pressed (or unrelieved)
-  bool isEStopPressed(void) const { return (myFlags & ArUtil::BIT5); }
+  bool isEStopPressed(void) const { return (myFlags & MvrUtil::BIT5); }
 
   /// Returns true if the E-Stop button is pressed
   bool getEstop(void) { return isEStopPressed(); }
@@ -602,7 +602,7 @@ public:
   /// Returns true if the right break beam IR is triggered
   AREXPORT bool isRightBreakBeamTriggered(void) const;
   /// Returns the time received of the last IO packet
-  ArTime getIOPacketTime(void) const { return myLastIOPacketReceivedTime; }
+  MvrTime getIOPacketTime(void) const { return myLastIOPacketReceivedTime; }
 
   /// Gets whether the robot has front bumpers (see ARCOS parameters in the robot manual)
   bool hasFrontBumpers(void) const { return myParams->haveFrontBumpers(); }
@@ -621,7 +621,7 @@ public:
    * @sa getPose()
    * @sa getRawEncoderPose()
    */
-  ArPose getEncoderPose(void) const { return myEncoderPose; }
+  MvrPose getEncoderPose(void) const { return myEncoderPose; }
   /// Gets the encoder X position of the robot
   /** @sa getEncoderPose() */
   double getEncoderX(void) const { return  myEncoderPose.getX(); }
@@ -653,7 +653,7 @@ public:
      This is so that things that might move the robot at any time
      can can make the robot look
      like it is otherwise in the TryingToMove state, even if no motion
-     is currently being requested.  For example, ArNetworking's teleoperation
+     is currently being requested.  For example, MvrNetworking's teleoperation
      mode forces TryingToMove at all times while active, not just when
      requesting motion.  This method must be called in each task cycle,
      it is reset at the end of the task cycle (in state reflection stage)
@@ -679,7 +679,7 @@ public:
   int getNumSonar(void) const { return myNumSonar; }
   /// Returns the sonar reading for the given sonar
   /// @ingroup easy
-  AREXPORT ArSensorReading *getSonarReading(int num) const;
+  AREXPORT MvrSensorReading *getSonarReading(int num) const;
   /// Returns the closest of the current sonar reading in the given range
   /// @ingroup easy
   AREXPORT int getClosestSonarRange(double startAngle, double endAngle) const;
@@ -693,9 +693,9 @@ public:
   AREXPORT void setName(const char *name);
 
   /// Change stored pose (i.e. the value returned by getPose())
-  AREXPORT void moveTo(ArPose pose, bool doCumulative = true);
+  AREXPORT void moveTo(MvrPose pose, bool doCumulative = true);
   /// Change stored pose (i.e. the value returned by getPose()) 
-  AREXPORT void moveTo(ArPose to, ArPose from, bool doCumulative = true);
+  AREXPORT void moveTo(MvrPose to, MvrPose from, bool doCumulative = true);
   /// Manually sets the current percentage that the robot is charged (argument is percentage, as a number between 0 and 100)
   AREXPORT void setStateOfCharge(double stateOfCharge);
   /// Sets the state of charge (percentage) that is considered to be low
@@ -705,7 +705,7 @@ public:
   void setStateOfChargeShutdown(double stateOfChargeShutdown) 
     { myStateOfChargeShutdown = stateOfChargeShutdown; }
   /// Sets the charge state (for use with setting the state of charge)
-  AREXPORT void setChargeState(ArRobot::ChargeState chargeState);
+  AREXPORT void setChargeState(MvrRobot::ChargeState chargeState);
   /// Sets if we're on the charger (for use with setting the state of charge)
   AREXPORT void setIsChargerPowerGood(bool onCharger);
 
@@ -767,56 +767,56 @@ public:
   AREXPORT long int getRightEncoder(void);
 
   /// Changes the transform
-  AREXPORT void setEncoderTransform(ArPose deadReconPos,
-				    ArPose globalPos);
+  AREXPORT void setEncoderTransform(MvrPose deadReconPos,
+				    MvrPose globalPos);
 
   /// Changes the transform directly
-  AREXPORT void setEncoderTransform(ArPose transformPos);
+  AREXPORT void setEncoderTransform(MvrPose transformPos);
 
   /// Changes the transform directly
-  AREXPORT void setEncoderTransform(ArTransform transform);
+  AREXPORT void setEncoderTransform(MvrTransform transform);
 
   /// Sets the encoder pose, for internal use
-  void setEncoderPose(ArPose encoderPose) 
+  void setEncoderPose(MvrPose encoderPose) 
     { myEncoderPose = encoderPose; }
 
   /// Sets the raw encoder pose, for internal use
-  void setRawEncoderPose(ArPose rawEncoderPose) 
+  void setRawEncoderPose(MvrPose rawEncoderPose) 
     { myRawEncoderPose = rawEncoderPose; }
   
   /// Adds a callback for when the encoder transform is changed
-  void addSetEncoderTransformCB(ArFunctor *functor, int position = 50)
+  void addSetEncoderTransformCB(MvrFunctor *functor, int position = 50)
     { mySetEncoderTransformCBList.addCallback(functor, position); }
 
   /// Removes a callback for when the encoder transform is changed
-  void remSetEncoderTransformCB(ArFunctor *functor)
+  void remSetEncoderTransformCB(MvrFunctor *functor)
     { mySetEncoderTransformCBList.remCallback(functor); }
 
   /// Adds a callback that'll be used to see the time on the computer side (for an MTX)
-  void setMTXTimeUSecCB(ArRetFunctor1<bool, 
-					       ArTypes::UByte4 *> *functor)
+  void setMTXTimeUSecCB(MvrRetFunctor1<bool, 
+					       MvrTypes::UByte4 *> *functor)
     { myMTXTimeUSecCB = functor; }
 
   /// Gets the encoder transform
-  AREXPORT ArTransform getEncoderTransform(void) const;
+  AREXPORT MvrTransform getEncoderTransform(void) const;
 
   /// This gets the transform from local coords to global coords
-  AREXPORT ArTransform getToGlobalTransform(void) const;
+  AREXPORT MvrTransform getToGlobalTransform(void) const;
 
   /// This gets the transform for going from global coords to local coords
-  AREXPORT ArTransform getToLocalTransform(void) const;
+  AREXPORT MvrTransform getToLocalTransform(void) const;
 
   /// This applies a transform to all the robot range devices and to the sonar
-  AREXPORT void applyTransform(ArTransform trans, bool doCumulative = true);
+  AREXPORT void applyTransform(MvrTransform trans, bool doCumulative = true);
 
   /// Sets the dead recon position of the robot
-  AREXPORT void setDeadReconPose(ArPose pose);
+  AREXPORT void setDeadReconPose(MvrPose pose);
 
   /// This gets the distance the robot has travelled since the last time resetTripOdometer() was called (mm)
   /// This is a virtual odometer that measures the total linear distance the
   /// robot has travelled since first connected, or resetTripOdometer() was
   /// called, approximated by adding linear
-  /// distance between current pose and previous pose in each ArRobot cycle.
+  /// distance between current pose and previous pose in each MvrRobot cycle.
   /// @note This value is not related to the
   /// robot's actual odometry sensor or wheel encoders. For position based on that
   /// plus possible additional correction, see getPose(). For raw encoder count
@@ -828,7 +828,7 @@ public:
   /// This is a virtual odometer (by analogy with a car odometer) that measures the total linear distance the
   /// robot has travelled since first connected, or resetTripOdometer() was last
   /// called, approximated by adding linear
-  /// distance between current pose and previous pose in each ArRobot cycle.
+  /// distance between current pose and previous pose in each MvrRobot cycle.
   /// @note This value is not related to the
   /// robot's actual odometry sensor or wheel encoders. For position based on that
   /// plus possible additional correction, see getPose(). For raw encoder count
@@ -849,7 +849,7 @@ public:
   /// This gets the total cumulative distance the robot has travelled (mm)
   /// This is a virtual odometer (by analogy with a car odometer) that measures the total linear distance the
   /// robot has travelled since ARIA connected, approximated by adding linear
-  /// distance between current pose and previous pose in each ArRobot cycle.
+  /// distance between current pose and previous pose in each MvrRobot cycle.
   /// @note This value is not related to the
   /// robot's actual odometry sensor or wheel encoders. For position based on that
   /// plus possible additional correction, see getPose(). For raw encoder count
@@ -863,7 +863,7 @@ public:
   /// This gets the total cumulative number of degrees the robot has turned (deg)
   /// This is a virtual odometer (by analogy with a car odometer) that measures the total linear distance the
   /// robot has travelled since ARIA connected, approximated by adding linear
-  /// distance between current pose and previous pose in each ArRobot cycle.
+  /// distance between current pose and previous pose in each MvrRobot cycle.
   /// @note This value is not related to the
   /// robot's actual odometry sensor or wheel encoders. For position based on that
   /// plus possible additional correction, see getPose(). For raw encoder count
@@ -880,90 +880,90 @@ public:
   
 
 
-  /// Adds a rangeDevice to the robot's list of them, and set the ArRangeDevice
-  /// object's robot pointer to this ArRobot object.
-  AREXPORT void addRangeDevice(ArRangeDevice *device);
+  /// Adds a rangeDevice to the robot's list of them, and set the MvrRangeDevice
+  /// object's robot pointer to this MvrRobot object.
+  AREXPORT void addRangeDevice(MvrRangeDevice *device);
   /// Remove a range device from the robot's list, by name
   AREXPORT void remRangeDevice(const char *name);
   /// Remove a range device from the robot's list, by instance
-  AREXPORT void remRangeDevice(ArRangeDevice *device);
+  AREXPORT void remRangeDevice(MvrRangeDevice *device);
 
   /// Finds a rangeDevice in the robot's list
-  AREXPORT const ArRangeDevice *findRangeDevice(const char *name, 
+  AREXPORT const MvrRangeDevice *findRangeDevice(const char *name, 
 						bool ignoreCase = false) const;
 
   /// Finds a rangeDevice in the robot's list
-  AREXPORT ArRangeDevice *findRangeDevice(const char *name, 
+  AREXPORT MvrRangeDevice *findRangeDevice(const char *name, 
 					  bool ignoreCase = false);
 
   /// Gets the range device list
   AREXPORT std::list<ArRangeDevice *> *getRangeDeviceList(void);
 
   /// Finds whether a particular range device is attached to this robot or not
-  AREXPORT bool hasRangeDevice(ArRangeDevice *device) const;
+  AREXPORT bool hasRangeDevice(MvrRangeDevice *device) const;
 
   /// Goes through all the range devices and checks them
   AREXPORT double checkRangeDevicesCurrentPolar(
 	  double startAngle, double endAngle, double *angle = NULL,
-	  const ArRangeDevice **rangeDevice = NULL,
+	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
   /// Goes through all the range devices and checks them
   AREXPORT double checkRangeDevicesCumulativePolar(
 	  double startAngle, double endAngle, double *angle = NULL,
-	  const ArRangeDevice **rangeDevice = NULL,
+	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
 
   // Goes through all the range devices and checks them
   AREXPORT double checkRangeDevicesCurrentBox(
 	  double x1, double y1, double x2, double y2,
-	  ArPose *readingPos = NULL,
-	  const ArRangeDevice **rangeDevice = NULL,
+	  MvrPose *readingPos = NULL,
+	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
   // Goes through all the range devices and checks them
   AREXPORT double checkRangeDevicesCumulativeBox(
 	  double x1, double y1, double x2, double y2,
-	  ArPose *readingPos = NULL, 
-	  const ArRangeDevice **rangeDevice = NULL,
+	  MvrPose *readingPos = NULL, 
+	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
   /// Adds a laser to the robot's map of them
-  AREXPORT bool addLaser(ArLaser *laser, int laserNumber, 
+  AREXPORT bool addLaser(MvrLaser *laser, int laserNumber, 
 			 bool addAsRangeDevice = true);
   /// Remove a range device from the robot's list, by instance
-  AREXPORT bool remLaser(ArLaser *laser, bool removeAsRangeDevice = true);
+  AREXPORT bool remLaser(MvrLaser *laser, bool removeAsRangeDevice = true);
   /// Remove a range device from the robot's list, by number
   AREXPORT bool remLaser(int laserNumber, bool removeAsRangeDevice = true);
 
   /// Finds a laser in the robot's list (@a laserNumber indices start at 1)
-  AREXPORT const ArLaser *findLaser(int laserNumber) const;
+  AREXPORT const MvrLaser *findLaser(int laserNumber) const;
 
   /// Finds a laser in the robot's list (@a laserNumber indices start at 1)
-  AREXPORT ArLaser *findLaser(int laserNumber);
+  AREXPORT MvrLaser *findLaser(int laserNumber);
 
   /// Gets the range device list
-  AREXPORT const std::map<int, ArLaser *> *getLaserMap(void) const;
+  AREXPORT const std::map<int, MvrLaser *> *getLaserMap(void) const;
 
   /// Gets the range device list
-  AREXPORT std::map<int, ArLaser *> *getLaserMap(void);
+  AREXPORT std::map<int, MvrLaser *> *getLaserMap(void);
 
   /// Finds whether a particular range device is attached to this robot or not
-  AREXPORT bool hasLaser(ArLaser *device) const;
+  AREXPORT bool hasLaser(MvrLaser *device) const;
 
   size_t getNumLasers() { return myLaserMap.size(); }
 
 
   /// Adds a battery to the robot's map of them
   /// @internal
-  /// (ArBatteryConnector/ArRobotConnector will automatically add ArBatteryMTX
+  /// (MvrBatteryConnector/ArRobotConnector will automatically add MvrBatteryMTX
   /// object(s) if connected.)
-  AREXPORT bool addBattery(ArBatteryMTX *battery, int batteryNumber);
+  AREXPORT bool addBattery(MvrBatteryMTX *battery, int batteryNumber);
   /// Remove a battery from the robot's list, by instance
   /// (MTX robots only)
   /// Primarily for ARIA internal use only.
-  AREXPORT bool remBattery(ArBatteryMTX *battery);
+  AREXPORT bool remBattery(MvrBatteryMTX *battery);
   /// Remove a battery from the robot's list, by number
   /// (MTX robots only)
   /// Primarily for ARIA internal use only.
@@ -971,95 +971,95 @@ public:
 
   /// Finds a battery in the robot's list (@a batteryNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT const ArBatteryMTX *findBattery(int batteryNumber) const;
+  AREXPORT const MvrBatteryMTX *findBattery(int batteryNumber) const;
 
   /// Finds a battery in the robot's list (@a batteryNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT ArBatteryMTX *findBattery(int batteryNumber);
+  AREXPORT MvrBatteryMTX *findBattery(int batteryNumber);
 
   /// Gets the battery list
-  AREXPORT const std::map<int, ArBatteryMTX *> *getBatteryMap(void) const;
+  AREXPORT const std::map<int, MvrBatteryMTX *> *getBatteryMap(void) const;
 
   /// Gets the battery list
-  AREXPORT std::map<int, ArBatteryMTX *> *getBatteryMap(void);
+  AREXPORT std::map<int, MvrBatteryMTX *> *getBatteryMap(void);
 
   /// Finds whether a particular battery is attached to this robot or not
-  AREXPORT bool hasBattery(ArBatteryMTX *device) const;
+  AREXPORT bool hasBattery(MvrBatteryMTX *device) const;
 
 
   /// Adds a lcd to the robot's map of them
   /// @internal
-  /// (ArLCDConnector/ArRobotConnector will automatically add LCD interfaces if
+  /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
   /// connected.)
-  AREXPORT bool addLCD(ArLCDMTX *lcd, int lcdNumber);
+  AREXPORT bool addLCD(MvrLCDMTX *lcd, int lcdNumber);
   /// Remove a lcd from the robot's list, by instance
   /// @internal
-  /// (ArLCDConnector/ArRobotConnector will automatically add LCD interfaces if
+  /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
   /// connected.)
-  AREXPORT bool remLCD(ArLCDMTX *lcd);
+  AREXPORT bool remLCD(MvrLCDMTX *lcd);
   /// Remove a lcd from the robot's list, by number
   /// @internal
-  /// (ArLCDConnector/ArRobotConnector will automatically add LCD interfaces if
+  /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
   /// connected.)
   AREXPORT bool remLCD(int lcdNumber);
 
   /// Finds a lcd in the robot's list (@a lcdNumber indices start at 1)
   /// (MTX robots only) 
-  AREXPORT const ArLCDMTX *findLCD(int lcdNumber = 1) const;
+  AREXPORT const MvrLCDMTX *findLCD(int lcdNumber = 1) const;
 
   /// Finds a lcd in the robot's list (@a lcdNumber indices start at 1)
   /// (MTX robots only) 
-  AREXPORT ArLCDMTX *findLCD(int lcdNumber = 1);
+  AREXPORT MvrLCDMTX *findLCD(int lcdNumber = 1);
 
   /// Gets the lcd list
   /// (MTX robots only) 
-  AREXPORT const std::map<int, ArLCDMTX *> *getLCDMap(void) const;
+  AREXPORT const std::map<int, MvrLCDMTX *> *getLCDMap(void) const;
 
   /// Gets the lcd list
   /// (MTX robots only) 
-  AREXPORT std::map<int, ArLCDMTX *> *getLCDMap(void);
+  AREXPORT std::map<int, MvrLCDMTX *> *getLCDMap(void);
 
   /// Finds whether a particular lcd is attached to this robot or not
   /// (MTX robots only) 
-  AREXPORT bool hasLCD(ArLCDMTX *device) const;
+  AREXPORT bool hasLCD(MvrLCDMTX *device) const;
 
 
 
   /// Adds a sonar to the robot's map of them
-  /// @internal (ArSonarConnector/ArRobotConnector will automatically and MTX
+  /// @internal (MvrSonarConnector/ArRobotConnector will automatically and MTX
   /// sonar interfaces upon connection)
-  AREXPORT bool addSonar(ArSonarMTX *sonar, int sonarNumber);
+  AREXPORT bool addSonar(MvrSonarMTX *sonar, int sonarNumber);
   /// Remove a sonar from the robot's list, by instance
   /// @internal
-  AREXPORT bool remSonar(ArSonarMTX *sonar);
+  AREXPORT bool remSonar(MvrSonarMTX *sonar);
   /// Remove a sonar from the robot's list, by number
   /// @internal
   AREXPORT bool remSonar(int sonarNumber);
 
   /// Finds a sonar in the robot's list (@a sonarNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT const ArSonarMTX *findSonar(int sonarNumber) const;
+  AREXPORT const MvrSonarMTX *findSonar(int sonarNumber) const;
 
   /// Finds a sonar in the robot's list (@a sonarNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT ArSonarMTX *findSonar(int sonarNumber);
+  AREXPORT MvrSonarMTX *findSonar(int sonarNumber);
 
   /// Gets the sonar list
   /// (MTX robots only)
-  AREXPORT const std::map<int, ArSonarMTX *> *getSonarMap(void) const;
+  AREXPORT const std::map<int, MvrSonarMTX *> *getSonarMap(void) const;
 
   /// Gets the sonar list
   /// (MTX robots only)
-  AREXPORT std::map<int, ArSonarMTX *> *getSonarMap(void);
+  AREXPORT std::map<int, MvrSonarMTX *> *getSonarMap(void);
 
   /// Finds whether a particular sonar is attached to this robot or not
   /// (MTX robots only)
-  AREXPORT bool hasSonar(ArSonarMTX *device) const;
+  AREXPORT bool hasSonar(MvrSonarMTX *device) const;
 
-  /// Associates an ArPTZ object with this robot (see getPTZ())
-  void setPTZ(ArPTZ *ptz) { myPtz = ptz; }
+  /// Associates an MvrPTZ object with this robot (see getPTZ())
+  void setPTZ(MvrPTZ *ptz) { myPtz = ptz; }
   /// Get PTZ interface associated with this robot.
-  ArPTZ *getPTZ(void) { return myPtz; }
+  MvrPTZ *getPTZ(void) { return myPtz; }
 
   /// Sets the number of milliseconds between state reflection refreshes
   /// if the state has not changed 
@@ -1071,49 +1071,49 @@ public:
 
   /// Adds a packet handler to the list of packet handlers
   AREXPORT void addPacketHandler(
-	  ArRetFunctor1<bool, ArRobotPacket *> *functor, 
-	  ArListPos::Pos position = ArListPos::LAST);
+	  MvrRetFunctor1<bool, MvrRobotPacket *> *functor, 
+	  MvrListPos::Pos position = MvrListPos::LAST);
   
   /// Removes a packet handler from the list of packet handlers
   AREXPORT void remPacketHandler(
-	  ArRetFunctor1<bool, ArRobotPacket *> *functor);
+	  MvrRetFunctor1<bool, MvrRobotPacket *> *functor);
 
   /// Adds a connect callback
-  AREXPORT void addConnectCB(ArFunctor *functor, 
-			     ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addConnectCB(MvrFunctor *functor, 
+			     MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a connect callback
-  AREXPORT void remConnectCB(ArFunctor *functor);
+  AREXPORT void remConnectCB(MvrFunctor *functor);
 
   /// Adds a callback for when a connection to the robot is failed
-  AREXPORT void addFailedConnectCB(ArFunctor *functor, 
-				   ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addFailedConnectCB(MvrFunctor *functor, 
+				   MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when a connection to the robot is failed
-  AREXPORT void remFailedConnectCB(ArFunctor *functor);
+  AREXPORT void remFailedConnectCB(MvrFunctor *functor);
 
   /// Adds a callback for when disconnect is called while connected
-  AREXPORT void addDisconnectNormallyCB(ArFunctor *functor, 
-				ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addDisconnectNormallyCB(MvrFunctor *functor, 
+				ArListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when disconnect is called while connected
-  AREXPORT void remDisconnectNormallyCB(ArFunctor *functor);
+  AREXPORT void remDisconnectNormallyCB(MvrFunctor *functor);
   
   /// Adds a callback for when disconnection happens because of an error
-  AREXPORT void addDisconnectOnErrorCB(ArFunctor *functor, 
-				   ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addDisconnectOnErrorCB(MvrFunctor *functor, 
+				   MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when disconnection happens because of an error
-  AREXPORT void remDisconnectOnErrorCB(ArFunctor *functor);
+  AREXPORT void remDisconnectOnErrorCB(MvrFunctor *functor);
 
   /// Adds a callback for when the run loop exits for what ever reason
-  AREXPORT void addRunExitCB(ArFunctor *functor, 
-			     ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addRunExitCB(MvrFunctor *functor, 
+			     MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when the run loop exits for what ever reason
-  AREXPORT void remRunExitCB(ArFunctor *functor);
+  AREXPORT void remRunExitCB(MvrFunctor *functor);
 
-  /// Suspend calling thread until the ArRobot is connected
+  /// Suspend calling thread until the MvrRobot is connected
   /// @ingroup easy
   AREXPORT WaitState waitForConnect(unsigned int msecs=0);
-  /// Suspend calling thread until the ArRobot is connected or fails to connect
+  /// Suspend calling thread until the MvrRobot is connected or fails to connect
   AREXPORT WaitState waitForConnectOrConnFail(unsigned int msecs=0);
-  /// Suspend calling thread until the ArRobot run loop has exited
+  /// Suspend calling thread until the MvrRobot run loop has exited
   /// @ingroup easy
   AREXPORT WaitState waitForRunExit(unsigned int msecs=0);
 
@@ -1128,57 +1128,57 @@ public:
 
   /// Adds a user task to the list of synchronous taskes
   AREXPORT bool addUserTask(const char *name, int position, 
-			       ArFunctor *functor,
-			       ArTaskState::State *state = NULL);
+			       MvrFunctor *functor,
+			       MvrTaskState::State *state = NULL);
 
 
   /// Removes a user task from the list of synchronous taskes by name
   AREXPORT void remUserTask(const char *name);
   /// Removes a user task from the list of synchronous taskes by functor
-  AREXPORT void remUserTask(ArFunctor *functor);
+  AREXPORT void remUserTask(MvrFunctor *functor);
 
   /// Finds a user task by name
-  AREXPORT ArSyncTask *findUserTask(const char *name);
+  AREXPORT MvrSyncTask *findUserTask(const char *name);
   /// Finds a user task by functor
-  AREXPORT ArSyncTask *findUserTask(ArFunctor *functor);
+  AREXPORT MvrSyncTask *findUserTask(MvrFunctor *functor);
   
   /// Logs the list of user tasks, strictly for your viewing pleasure
   AREXPORT void logUserTasks(void) const;
   /// Logs the list of all tasks, strictly for your viewing pleasure
   AREXPORT void logAllTasks(void) const;
 
-  /// Adds a sensor interpretation task. These are called during the ArRobot
+  /// Adds a sensor interpretation task. These are called during the MvrRobot
   /// task synchronous cycle after robot data has been received (from the SIP
   /// and other robot packets).
   AREXPORT bool addSensorInterpTask(const char *name, int position, 
-				       ArFunctor *functor,
-	       			       ArTaskState::State *state = NULL);
+				       MvrFunctor *functor,
+	       			       MvrTaskState::State *state = NULL);
 
 
   /// Removes a sensor interp tasks by name
   AREXPORT void remSensorInterpTask(const char *name);
   /// Removes a sensor interp tasks by functor
-  AREXPORT void remSensorInterpTask(ArFunctor *functor);
+  AREXPORT void remSensorInterpTask(MvrFunctor *functor);
 
   /// Finds a task by name
-  AREXPORT ArSyncTask *findTask(const char *name);
+  AREXPORT MvrSyncTask *findTask(const char *name);
   /// Finds a task by functor
-  AREXPORT ArSyncTask *findTask(ArFunctor *functor);
+  AREXPORT MvrSyncTask *findTask(MvrFunctor *functor);
 
   /// Adds an action to the list with the given priority 
   /// @ingroup easy
-  AREXPORT bool addAction(ArAction *action, int priority);
+  AREXPORT bool addAction(MvrAction *action, int priority);
   /// Removes an action from the list, by pointer
   /// @ingroup easy
-  AREXPORT bool remAction(ArAction *action);
+  AREXPORT bool remAction(MvrAction *action);
   /// Removes an action from the list, by name
   /// @ingroup easy
   AREXPORT bool remAction(const char *actionName);
   /// Returns the first (highest priority) action with the given name (or NULL)
-  AREXPORT ArAction *findAction(const char *actionName);
+  AREXPORT MvrAction *findAction(const char *actionName);
   /// Returns the map of actions... don't do this unless you really
   /// know what you're doing
-  AREXPORT ArResolver::ActionMap *getActionMap(void);
+  AREXPORT MvrResolver::ActionMap *getActionMap(void);
   /// Deactivates all the actions
   AREXPORT void deactivateActions(void);
 
@@ -1187,23 +1187,23 @@ public:
   AREXPORT void logActions(bool logDeactivated = false) const;
 
   /// Gets the resolver the robot is using
-  AREXPORT ArResolver *getResolver(void);
+  AREXPORT MvrResolver *getResolver(void);
 
   /// Sets the resolver the robot is using
-  AREXPORT void setResolver(ArResolver *resolver);
+  AREXPORT void setResolver(MvrResolver *resolver);
 
   /// Sets the encoderCorrectionCallback
   AREXPORT void setEncoderCorrectionCallback(
-	  ArRetFunctor1<double, ArPoseWithTime> *functor);
+	  MvrRetFunctor1<double, MvrPoseWithTime> *functor);
   /// Gets the encoderCorrectionCallback
-  AREXPORT ArRetFunctor1<double, ArPoseWithTime> *
+  AREXPORT MvrRetFunctor1<double, MvrPoseWithTime> *
           getEncoderCorrectionCallback(void) const;
   
   /// Gets the time the connection to the robot was made
-  ArTime getConnectionOpenedTime(void) const 
+  MvrTime getConnectionOpenedTime(void) const 
     { return myConnectionOpenedTime; }
 
-  // set up some of the internals of how the ArRobot class works
+  // set up some of the internals of how the MvrRobot class works
   /// Sets the number of ms between cycles
   AREXPORT void setCycleTime(unsigned int ms);
   /// Gets the number of ms between cycles
@@ -1214,9 +1214,9 @@ public:
   AREXPORT unsigned int getCycleWarningTime(void) const;
   /// Gets the number of ms between cycles to warn over
   AREXPORT unsigned int getCycleWarningTime(void);
-  /// Sets the multiplier for how many cycles ArRobot waits when connecting
+  /// Sets the multiplier for how many cycles MvrRobot waits when connecting
   AREXPORT void setConnectionCycleMultiplier(unsigned int multiplier);
-  /// Gets the multiplier for how many cycles ArRobot waits when connecting
+  /// Gets the multiplier for how many cycles MvrRobot waits when connecting
   AREXPORT unsigned int getConnectionCycleMultiplier(void) const;
   
   /// Sets whether to chain the robot cycle to when we get in SIP packets
@@ -1228,11 +1228,11 @@ public:
   /// Gets the time without a response until connection assumed lost (threadsafe)
   AREXPORT int getConnectionTimeoutTime(void);
   /// Gets the time the last packet was received (threadsafe)
-  AREXPORT ArTime getLastPacketTime(void);
+  AREXPORT MvrTime getLastPacketTime(void);
   /// Gets the time the last odometry was received (threadsafe)
-  AREXPORT ArTime getLastOdometryTime(void);
+  AREXPORT MvrTime getLastOdometryTime(void);
 
-  /// Sets the number of packets back in time the ArInterpolation goes
+  /// Sets the number of packets back in time the MvrInterpolation goes
   void setPoseInterpNumReadings(size_t numReadings) 
     { myInterpolation.setNumberOfReadings(numReadings); }
 
@@ -1242,24 +1242,24 @@ public:
   
   
   /// Gets the position the robot was at at the given timestamp
-  /** @see ArInterpolation::getPose 
+  /** @see MvrInterpolation::getPose 
    */
-  int getPoseInterpPosition(ArTime timeStamp, ArPose *position,
-				     ArPoseWithTime *mostRecent = NULL)
+  int getPoseInterpPosition(MvrTime timeStamp, MvrPose *position,
+				     MvrPoseWithTime *mostRecent = NULL)
     { return myInterpolation.getPose(timeStamp, position, mostRecent); }
 
   /// Gets the pose interpolation object, this should only really used internally
-  ArInterpolation *getPoseInterpolation(void)
+  MvrInterpolation *getPoseInterpolation(void)
     { return &myInterpolation; }
 
   /// Gets the callback that will call getPoseInterpPosition
-  ArRetFunctor3<int, ArTime, ArPose *, ArPoseWithTime *> *
+  MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *
   getPoseInterpPositionCallback(void)
   { 
     return &myPoseInterpPositionCB; 
   }
 
-  /// Sets the number of packets back in time the ArInterpolation goes for encoder readings
+  /// Sets the number of packets back in time the MvrInterpolation goes for encoder readings
   void setEncoderPoseInterpNumReadings(size_t numReadings) 
     { myEncoderInterpolation.setNumberOfReadings(numReadings); }
 
@@ -1268,31 +1268,31 @@ public:
     { return myEncoderInterpolation.getNumberOfReadings(); }
 
   /// Gets the encoder position the robot was at at the given timestamp
-  /** @see ArInterpolation::getPose 
+  /** @see MvrInterpolation::getPose 
    */
-  int getEncoderPoseInterpPosition(ArTime timeStamp, ArPose *position, 
-					    ArPoseWithTime *mostRecent = NULL)
+  int getEncoderPoseInterpPosition(MvrTime timeStamp, MvrPose *position, 
+					    MvrPoseWithTime *mostRecent = NULL)
     { return myEncoderInterpolation.getPose(timeStamp, position, mostRecent); }
 
-  ArInterpolation *getEncoderPoseInterpolation(void)
+  MvrInterpolation *getEncoderPoseInterpolation(void)
     { return &myEncoderInterpolation; }
 
   /// Gets the callback that will call getPoseInterpPosition
-  ArRetFunctor3<int, ArTime, ArPose *, ArPoseWithTime *> *
+  MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *
   getEncoderPoseInterpPositionCallback(void)
   { 
     return &myEncoderPoseInterpPositionCB; 
   }
 
-  /// Applies the encoder motion from the passed in ArPoseWithTime to the passed in ArTime
-  AREXPORT int applyEncoderOffset(ArPoseWithTime from, ArTime to, 
-				  ArPose *result);
+  /// Applies the encoder motion from the passed in MvrPoseWithTime to the passed in MvrTime
+  AREXPORT int applyEncoderOffset(MvrPoseWithTime from, MvrTime to, 
+				  MvrPose *result);
 
   /// Gets the Counter for the time through the loop
   unsigned int getCounter(void) const { return myCounter; }
 
   /// Gets the parameters the robot is using
-  AREXPORT const ArRobotParams *getRobotParams(void) const;
+  AREXPORT const MvrRobotParams *getRobotParams(void) const;
 
   /// Sets if a config packet is requried or not... 
   /** By default it is not required, since some ancient robots have no
@@ -1305,10 +1305,10 @@ public:
     { myRequireConfigPacket = requireConfigPacket; }
 
   /// Gets the original robot config packet information
-  AREXPORT const ArRobotConfigPacketReader *getOrigRobotConfig(void) const;
+  AREXPORT const MvrRobotConfigPacketReader *getOrigRobotConfig(void) const;
 
   /// Gets the battery packet reader
-  ArRobotBatteryPacketReader *getBatteryPacketReader(void) 
+  MvrRobotBatteryPacketReader *getBatteryPacketReader(void) 
     { return myBatteryPacketReader; }
 
   /// Sets the maximum translational velocity
@@ -1363,14 +1363,14 @@ public:
   /// Loads a parameter file (replacing all other params)
   AREXPORT bool loadParamFile(const char *file);
   /// Sets the robot to use a passed in set of params (passes ownership)
-  AREXPORT void setRobotParams(ArRobotParams *params);
+  AREXPORT void setRobotParams(MvrRobotParams *params);
 
   /// Attachs a key handler
-  AREXPORT void attachKeyHandler(ArKeyHandler *keyHandler,
+  AREXPORT void attachKeyHandler(MvrKeyHandler *keyHandler,
 				 bool exitOnEscape = true,
 				 bool useExitNotShutdown = true);
   /// Gets the key handler attached to this robot
-  AREXPORT ArKeyHandler *getKeyHandler(void) const;
+  AREXPORT MvrKeyHandler *getKeyHandler(void) const;
 
   /// Lock the robot instance
   int lock() {return(myMutex.lock());}
@@ -1380,9 +1380,9 @@ public:
   int unlock() {return(myMutex.unlock());}
   /// Turn on verbose locking of robot mutex
   void setMutexLogging(bool v) { myMutex.setLog(v); }
-  /// Set robot lock warning time (see ArMutex::setLockWarningTime())
+  /// Set robot lock warning time (see MvrMutex::setLockWarningTime())
   void setMutexLockWarningTime(double sec) { myMutex.setLockWarningTime(sec); }
-  /// Set robot lock-unlock warning time (see ArMutex::setUnlockWarningTime())
+  /// Set robot lock-unlock warning time (see MvrMutex::setUnlockWarningTime())
   void setMutexUnlockWarningTime(double sec) { myMutex.setUnlockWarningTime(sec); }
 
   /// This tells us if we're in the preconnection state
@@ -1396,14 +1396,14 @@ public:
 
 
   /// Adds a callback called when the robot starts stabilizing before declaring connection
-  AREXPORT void addStabilizingCB(ArFunctor *functor, 
-			     ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT void addStabilizingCB(MvrFunctor *functor, 
+			     MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes stabilizing callback
-  AREXPORT void remStabilizingCB(ArFunctor *functor);
+  AREXPORT void remStabilizingCB(MvrFunctor *functor);
   
   /// This gets the root of the syncronous task tree, only serious 
   /// developers should use it
-  AREXPORT ArSyncTask *getSyncTaskRoot(void);
+  AREXPORT MvrSyncTask *getSyncTaskRoot(void);
 
   /// This function loops once...  only serious developers should use it
   AREXPORT void loopOnce(void);
@@ -1461,9 +1461,9 @@ public:
   void setPacketsSentTracking(bool packetsSentTracking)
 		{ 
 		if (packetsSentTracking)
-			ArLog::log(ArLog::Normal, "ArRobot: tracking packets sent");
+			ArLog::log(MvrLog::Normal, "MvrRobot: tracking packets sent");
 		else
-			ArLog::log(ArLog::Normal, "ArRobot: not tracking packets sent");
+			ArLog::log(MvrLog::Normal, "MvrRobot: not tracking packets sent");
 		myPacketsSentTracking = packetsSentTracking; 
 		}
 
@@ -1517,16 +1517,16 @@ public:
 
   /// Processes a motor packet, internal 
   /// @internal 
-  AREXPORT bool processMotorPacket(ArRobotPacket *packet);
+  AREXPORT bool processMotorPacket(MvrRobotPacket *packet);
   /// Processes a new sonar reading, internal
   /// @internal
-  AREXPORT void processNewSonar(char number, int range, ArTime timeReceived);
+  AREXPORT void processNewSonar(char number, int range, MvrTime timeReceived);
   /// Processes a new encoder packet, internal
   /// @internal
-  AREXPORT bool processEncoderPacket(ArRobotPacket *packet);
+  AREXPORT bool processEncoderPacket(MvrRobotPacket *packet);
   /// Processes a new IO packet, internal
   /// @internal
-  AREXPORT bool processIOPacket(ArRobotPacket *packet);
+  AREXPORT bool processIOPacket(MvrRobotPacket *packet);
   
   /// Internal function, shouldn't be used
   /// @internal
@@ -1539,16 +1539,16 @@ public:
   /// @internal
   AREXPORT void setUpPacketHandlers(void);
 
-  ArRetFunctor1C<bool, ArRobot, ArRobotPacket *> myMotorPacketCB;
-  ArRetFunctor1C<bool, ArRobot, ArRobotPacket *> myEncoderPacketCB;
-  ArRetFunctor1C<bool, ArRobot, ArRobotPacket *> myIOPacketCB;
-  ArFunctorC<ArRobot> myPacketHandlerCB;
-  ArFunctorC<ArRobot> myActionHandlerCB;
-  ArFunctorC<ArRobot> myStateReflectorCB;
-  ArFunctorC<ArRobot> myRobotLockerCB;
-  ArFunctorC<ArRobot> myRobotUnlockerCB;
-  ArFunctorC<ArRobot> myKeyHandlerExitCB;
-  ArFunctorC<ArKeyHandler> *myKeyHandlerCB;
+  MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myMotorPacketCB;
+  MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myEncoderPacketCB;
+  MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myIOPacketCB;
+  MvrFunctorC<ArRobot> myPacketHandlerCB;
+  MvrFunctorC<ArRobot> myActionHandlerCB;
+  MvrFunctorC<ArRobot> myStateReflectorCB;
+  MvrFunctorC<ArRobot> myRobotLockerCB;
+  MvrFunctorC<ArRobot> myRobotUnlockerCB;
+  MvrFunctorC<ArRobot> myKeyHandlerExitCB;
+  MvrFunctorC<ArKeyHandler> *myKeyHandlerCB;
 
   // These four are internal... only people monkeying deeply should mess
   // with them, so they aren't documented... these process the cblists
@@ -1585,7 +1585,7 @@ public:
   /// Internal function, takes a packet and passes it to the packet handlers,
   /// returns true if handled, false otherwise
   /// @internal
-  AREXPORT bool handlePacket(ArRobotPacket *packet);
+  AREXPORT bool handlePacket(MvrRobotPacket *packet);
 
   AREXPORT std::list<ArFunctor *> * getRunExitListCopy();
   // Internal function, processes a parameter file
@@ -1599,7 +1599,7 @@ public:
    * @sa getPose()
    * @sa getEncoderPose()
    */
-  ArPose getRawEncoderPose(void) const { return myRawEncoderPose; }
+  MvrPose getRawEncoderPose(void) const { return myRawEncoderPose; }
 
   /// Internal function for sync loop and sync task to see if we should warn this cycle or not
   bool getNoTimeWarningThisCycle(void)  
@@ -1608,29 +1608,29 @@ public:
   void setNoTimeWarningThisCycle(bool noTimeWarningThisCycle)  
     { myNoTimeWarningThisCycle = noTimeWarningThisCycle; }
   // callbacks for warning time and if we should warn now to pass to sync tasks
-  ArRetFunctorC<unsigned int, ArRobot> myGetCycleWarningTimeCB;
-  ArRetFunctorC<bool, ArRobot> myGetNoTimeWarningThisCycleCB;
-  /// internal function called when Aria::exit is called
+  MvrRetFunctorC<unsigned int, MvrRobot> myGetCycleWarningTimeCB;
+  MvrRetFunctorC<bool, MvrRobot> myGetNoTimeWarningThisCycleCB;
+  /// internal function called when Mvria::exit is called
   /// @internal
   AREXPORT void ariaExitCallback(void);
   // internal call that will let the robot connect even if it can't find params
   void setConnectWithNoParams(bool connectWithNoParams) 
     { myConnectWithNoParams = connectWithNoParams; }
   // Internal call that will get the thread the robot is running in
-  ArThread::ThreadType getOSThread(void) { return mySyncLoop.getOSThread(); }
+  MvrThread::ThreadType getOSThread(void) { return mySyncLoop.getOSThread(); }
   // Internal call that will get the async connect state
   int getAsyncConnectState(void) { return myAsyncConnectState; }
   /// Very Internal call that gets the packet sender, shouldn't be used
   /// @internal
-  ArRobotPacketSender *getPacketSender(void)
+  MvrRobotPacketSender *getPacketSender(void)
     { return &mySender; }
   /// Very Internal call that gets the packet sender, shouldn't be used
   /// @internal
-  ArRobotPacketReceiver *getPacketReceiver(void)
+  MvrRobotPacketReceiver *getPacketReceiver(void)
     { return &myReceiver; }
 
   // Gets a pointer to the robot parameters in an internal way so they can be modified (only for internal use)
-  AREXPORT ArRobotParams *getRobotParamsInternal(void);
+  AREXPORT MvrRobotParams *getRobotParamsInternal(void);
 
   // Sets if we've received the first encoder pose for very internal usage
   void internalSetFakeFirstEncoderPose(bool fakeFirstEncoderPose)
@@ -1661,9 +1661,9 @@ protected:
  
 
   // the config the robot had at connection
-  ArRobotConfigPacketReader *myOrigRobotConfig;
+  MvrRobotConfigPacketReader *myOrigRobotConfig;
   // the reader for the battery packet
-  ArRobotBatteryPacketReader *myBatteryPacketReader;
+  MvrRobotBatteryPacketReader *myBatteryPacketReader;
   // the values we'll maintain for the different motion parameters
   double myRotVelMax;
   double myRotAccel;
@@ -1676,19 +1676,19 @@ protected:
   double myLatAccel;
   double myLatDecel;
 
-  ArPTZ *myPtz;
+  MvrPTZ *myPtz;
   bool myNoTimeWarningThisCycle;
 
   long int myLeftEncoder;
   long int myRightEncoder;
   bool myFirstEncoderPose;
   bool myFakeFirstEncoderPose;
-  ArPoseWithTime myRawEncoderPose;
+  MvrPoseWithTime myRawEncoderPose;
 
-  ArTransform myEncoderTransform;
-  ArCallbackList mySetEncoderTransformCBList;
+  MvrTransform myEncoderTransform;
+  MvrCallbackList mySetEncoderTransformCBList;
 
-  ArRetFunctor1<bool, ArTypes::UByte4 *> *myMTXTimeUSecCB;
+  MvrRetFunctor1<bool, MvrTypes::UByte4 *> *myMTXTimeUSecCB;
 
   bool myIgnoreNextPacket;
 
@@ -1708,19 +1708,19 @@ protected:
   bool myTryingToMove;
 
   long myPacketsReceivedTrackingCount;
-  ArTime myPacketsReceivedTrackingStarted;
+  MvrTime myPacketsReceivedTrackingStarted;
   bool myPacketsSentTracking;
-  ArMutex myMutex;
-  ArSyncTask *mySyncTaskRoot;
-  std::list<ArRetFunctor1<bool, ArRobotPacket *> *> myPacketHandlerList;
+  MvrMutex myMutex;
+  MvrSyncTask *mySyncTaskRoot;
+  std::list<ArRetFunctor1<bool, MvrRobotPacket *> *> myPacketHandlerList;
 
-  ArSyncLoop mySyncLoop;
-  ArRobotPacketReaderThread myPacketReader;
+  MvrSyncLoop mySyncLoop;
+  MvrRobotPacketReaderThread myPacketReader;
 
   // the data items for reading packets in one thread and processing them in another
-  ArMutex myPacketMutex;
+  MvrMutex myPacketMutex;
   std::list<ArRobotPacket *> myPacketList;
-  ArCondition myPacketReceivedCondition;
+  MvrCondition myPacketReceivedCondition;
   bool myRunningNonThreaded;
 
 
@@ -1731,25 +1731,25 @@ protected:
   std::list<ArFunctor *> myDisconnectOnErrorCBList;
   std::list<ArFunctor *> myRunExitCBList;
 
-  ArRetFunctor1<double, ArPoseWithTime> *myEncoderCorrectionCB;
+  MvrRetFunctor1<double, MvrPoseWithTime> *myEncoderCorrectionCB;
   std::list<ArRangeDevice *> myRangeDeviceList;
-  std::map<int, ArLaser *> myLaserMap;
+  std::map<int, MvrLaser *> myLaserMap;
 
-  std::map<int, ArBatteryMTX *> myBatteryMap;
+  std::map<int, MvrBatteryMTX *> myBatteryMap;
 
-  std::map<int, ArLCDMTX *> myLCDMap;
+  std::map<int, MvrLCDMTX *> myLCDMap;
 
-  std::map<int, ArSonarMTX *> mySonarMap;
+  std::map<int, MvrSonarMTX *> mySonarMap;
 
-  ArCondition myConnectCond;
-  ArCondition myConnOrFailCond;
-  ArCondition myRunExitCond;
+  MvrCondition myConnectCond;
+  MvrCondition myConnOrFailCond;
+  MvrCondition myRunExitCond;
 
-  ArResolver::ActionMap myActions;
+  MvrResolver::ActionMap myActions;
   bool myOwnTheResolver;
-  ArResolver *myResolver;
+  MvrResolver *myResolver;
 
-  std::map<int, ArSensorReading *> mySonars;
+  std::map<int, MvrSensorReading *> mySonars;
   int myNumSonar;
   
   unsigned int myCounter;
@@ -1765,13 +1765,13 @@ protected:
   int myAsyncConnectState;
   int myAsyncConnectNoPacketCount;
   int myAsyncConnectTimesTried;
-  ArTime myAsyncStartedConnection;
+  MvrTime myAsyncStartedConnection;
   int myAsyncConnectStartBaud;
-  ArTime myAsyncConnectStartedChangeBaud;
+  MvrTime myAsyncConnectStartedChangeBaud;
   bool myAsyncConnectSentChangeBaud;
-  ArTime myStartedStabilizing;
+  MvrTime myStartedStabilizing;
 
-  ArTime myConnectionOpenedTime;
+  MvrTime myConnectionOpenedTime;
 
   int myStabilizingTime;
 
@@ -1783,19 +1783,19 @@ protected:
   int myLastTransVal2;
   TransDesired myTransType;
   TransDesired myLastTransType;
-  ArTime myTransSetTime;
-  ArTime myLastTransSent;
+  MvrTime myTransSetTime;
+  MvrTime myLastTransSent;
   int myLastActionTransVal;
   bool myActionTransSet;
-  ArPose myTransDistStart;
+  MvrPose myTransDistStart;
   double myMoveDoneDist;
 
   double myRotVal;
   int myLastRotVal;
   RotDesired myRotType;
   RotDesired myLastRotType;
-  ArTime myRotSetTime;
-  ArTime myLastRotSent;
+  MvrTime myRotSetTime;
+  MvrTime myLastRotSent;
   int myLastActionRotVal;
   bool myLastActionRotHeading;
   bool myLastActionRotStopped;
@@ -1806,8 +1806,8 @@ protected:
   int myLastLatVal;
   LatDesired myLatType;
   LatDesired myLastLatType;
-  ArTime myLatSetTime;
-  ArTime myLastLatSent;
+  MvrTime myLatSetTime;
+  MvrTime myLastLatSent;
   int myLastActionLatVal;
   bool myActionLatSet;
 
@@ -1827,13 +1827,13 @@ protected:
   double myLastSentLatAccel;
   double myLastSentLatDecel;
 
-  ArTime myLastPulseSent;
+  MvrTime myLastPulseSent;
 
   int myDirectPrecedenceTime;
   
   int myStateReflectionRefreshTime;
 
-  ArActionDesired myActionDesired;
+  MvrActionDesired myActionDesired;
 
   std::string myName;
   std::string myRobotName;
@@ -1851,22 +1851,22 @@ protected:
   double myAbsoluteMaxLatAccel;
   double myAbsoluteMaxLatDecel;
 
-  ArDeviceConnection *myConn;
+  MvrDeviceConnection *myConn;
 
-  ArRobotPacketSender mySender;
-  ArRobotPacketReceiver myReceiver;
+  MvrRobotPacketSender mySender;
+  MvrRobotPacketReceiver myReceiver;
 
   std::string myDropConnectionReason;
   std::string myDropConnectionUserReason;
 
-  ArRobotParams *myParams;
+  MvrRobotParams *myParams;
   double myRobotLengthFront;
   double myRobotLengthRear;
 
-  ArInterpolation myInterpolation;
-  ArInterpolation myEncoderInterpolation;
+  MvrInterpolation myInterpolation;
+  MvrInterpolation myEncoderInterpolation;
 
-  ArKeyHandler *myKeyHandler;
+  MvrKeyHandler *myKeyHandler;
   bool myKeyHandlerUseExitNotShutdown;
 
   bool myConnectWithNoParams;
@@ -1883,31 +1883,31 @@ protected:
   unsigned int myCycleWarningTime;
   unsigned int myConnectionCycleMultiplier;
   bool myCycleChained;
-  ArTime myLastPacketReceivedTime;
-  ArTime myLastOdometryReceivedTime;
+  MvrTime myLastPacketReceivedTime;
+  MvrTime myLastOdometryReceivedTime;
   int myTimeoutTime;
-  ArMutex myConnectionTimeoutMutex;
+  MvrMutex myConnectionTimeoutMutex;
 
   bool myRequestedIOPackets;
   bool myRequestedEncoderPackets;
 
   // all the state reflecing variables
-  ArPoseWithTime myEncoderPose;
-  ArTime myEncoderPoseTaken;
-  ArPose myGlobalPose;
-  ArPose myLastGlobalPose;
+  MvrPoseWithTime myEncoderPose;
+  MvrTime myEncoderPoseTaken;
+  MvrPose myGlobalPose;
+  MvrPose myLastGlobalPose;
   // um, this myEncoderGlobalTrans doesn't do anything
-  ArTransform myEncoderGlobalTrans;
+  MvrTransform myEncoderGlobalTrans;
   double myLeftVel;
   double myRightVel;
   bool myIgnoreMicroControllerBatteryInfo;
   double myBatteryVoltage;
-  ArRunningAverage myBatteryAverager;
+  MvrRunningAverage myBatteryAverager;
   double myRealBatteryVoltage;
-  ArRunningAverage myRealBatteryAverager;
+  MvrRunningAverage myRealBatteryAverager;
   bool myHaveStateOfCharge;
   double myStateOfCharge;
-  ArTime myStateOfChargeSetTime;
+  MvrTime myStateOfChargeSetTime;
   double myStateOfChargeLow;
   double myStateOfChargeShutdown;
 
@@ -1930,7 +1930,7 @@ protected:
   int myIOAnalogSize;
   int myIODigInSize;
   int myIODigOutSize;
-  ArTime myLastIOPacketReceivedTime;
+  MvrTime myLastIOPacketReceivedTime;
   double myVel;
   double myRotVel;
   double myLatVel;
@@ -1946,23 +1946,23 @@ protected:
 
   double myTripOdometerDistance;
   double myTripOdometerDegrees;
-  ArTime myTripOdometerStart;
+  MvrTime myTripOdometerStart;
 
   double myOdometerDistance;
   double myOdometerDegrees;
-  ArTime myOdometerStart;
+  MvrTime myOdometerStart;
   
   int myOdometryDelay;
 
   bool myDoNotSwitchBaud;
   
   bool myAddedAriaExitCB;
-  ArFunctorC<ArRobot> myAriaExitCB;
+  MvrFunctorC<ArRobot> myAriaExitCB;
 
-  ArRetFunctor3C<int, ArRobot, ArTime, ArPose *, 
-		 ArPoseWithTime *> myPoseInterpPositionCB;
-  ArRetFunctor3C<int, ArRobot, ArTime, ArPose *, 
-		 ArPoseWithTime *> myEncoderPoseInterpPositionCB;
+  MvrRetFunctor3C<int, MvrRobot, MvrTime, MvrPose *, 
+		 MvrPoseWithTime *> myPoseInterpPositionCB;
+  MvrRetFunctor3C<int, MvrRobot, MvrTime, MvrPose *, 
+		 MvrPoseWithTime *> myEncoderPoseInterpPositionCB;
 };
 
 

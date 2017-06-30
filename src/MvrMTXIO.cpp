@@ -24,9 +24,9 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArMTXIO.h"
+#include "MvrMTXIO.h"
 #include "ariaInternal.h"
 #include <errno.h>
 
@@ -111,19 +111,19 @@ AREXPORT ArMTXIO::ArMTXIO(const char * dev) :
   myDisconnectCB(this, &ArMTXIO::closeIO),
   myLPCTimeUSecCB(this, &ArMTXIO::getLPCTimeUSec)
 {
-  ourMutex.setLogName("ArMTXIO::ourMutex");
+  ourMutex.setLogName("MvrMTXIO::ourMutex");
 
 	myFirmwareRevision = 0;
 	myFirmwareVersion = 0;
 	myCompatibilityCode = 0;
 	myFPGAType = 0x20;
 
-  ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: opening device %s", dev);
+  ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: opening device %s", dev);
   myFD = ArUtil::open(dev, O_RDWR);
 
   if (myFD == -1)
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: open %s failed.  Disabling class (errno %d)", dev, errno);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: open %s failed.  Disabling class (errno %d)", dev, errno);
     myEnabled = false;
   }
   else
@@ -139,13 +139,13 @@ AREXPORT ArMTXIO::ArMTXIO(const char * dev) :
 
 		if (ioctl(myFD, MTX_READ_REG, &mtxIO) != 0)
 		{
-      ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: failed to get the Version Registers");
+      ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: failed to get the Version Registers");
       close(myFD);
 			myEnabled = false;
 		}
 		else
 		{
-      ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: FPGA version registers = 0x%08x", mtxIO.myData.myVal32);
+      ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: FPGA version registers = 0x%08x", mtxIO.myData.myVal32);
 
 			myFirmwareRevision = (mtxIO.myData.myVal32 & 0x000000ff);
 			myFirmwareVersion = (mtxIO.myData.myVal32 & 0x0000ff00) >> 8;
@@ -153,13 +153,13 @@ AREXPORT ArMTXIO::ArMTXIO(const char * dev) :
 			myFPGAType = (mtxIO.myData.myVal32 & 0xff000000) >> 24;
 			myEnabled = true;
 
-			ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: Firmware Revision = 0x%02x", myFirmwareRevision);
-			ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: Firmware Version = 0x%02x", myFirmwareVersion);
-			ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: Compatibility Code = 0x%02x", myCompatibilityCode);
-			ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: FPGA Type = 0x%02x", myFPGAType);
+			ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: Firmware Revision = 0x%02x", myFirmwareRevision);
+			ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: Firmware Version = 0x%02x", myFirmwareVersion);
+			ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: Compatibility Code = 0x%02x", myCompatibilityCode);
+			ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: FPGA Type = 0x%02x", myFPGAType);
 
 			Aria::addExitCallback(&myDisconnectCB);
-			ArLog::log(ArLog::Normal, "ArMTXIO::ArMTXIO: device opened");
+			ArLog::log(MvrLog::Normal, "MvrMTXIO::ArMTXIO: device opened");
 
 			// there will be be 4 banks for MTX, 2 input consisting of 8 bits each
 			// and 2 output consisting of 8 bits each
@@ -188,12 +188,12 @@ AREXPORT bool ArMTXIO::closeIO(void)
 
   if (close(myFD) == -1)
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::~ArMTXIO: close failed on file descriptor!");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::~ArMTXIO: close failed on file descriptor!");
     return false;
   }
   else
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::~ArMTXIO: closed device");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::~ArMTXIO: closed device");
     myFD = -1;
     return true;
   }
@@ -317,13 +317,13 @@ AREXPORT bool ArMTXIO::getAnalogValueRaw(int port, int *val)
 
   if (ioctl(myFD, ANALOG_SET_PORT, port) != 0)
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogValueRaw: failed to set analog port %d", port);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogValueRaw: failed to set analog port %d", port);
     return false;
   }
 
   if (ioctl(myFD, ANALOG_GET_VALUE, &tmp) != 0)
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogValueRaw: failed to get analog port %d", port);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogValueRaw: failed to get analog port %d", port);
     return false;
   }
 
@@ -368,7 +368,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLightPole() failed to get Light Pole Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLightPole() failed to get Light Pole Register");
     return false;
   }
 
@@ -389,7 +389,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLightPole() failed to set Light Pole Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLightPole() failed to set Light Pole Register");
     return false;
   }
 
@@ -414,14 +414,14 @@ MTX_IOREQ req;
 
   if (ioctl(myFD, MTX_READ_REG, &req) != 0)
 	{
-		ArLog::log(ArLog::Normal, "ArMTXIO::getDigitalIOInputMon1() failed to get Digital IO Input Montioring 1 Register");
+		ArLog::log(MvrLog::Normal, "MvrMTXIO::getDigitalIOInputMon1() failed to get Digital IO Input Montioring 1 Register");
 		return false;
 	}
 
   *val = req.myData.myVal8;
 
-	ArLog::log(ArLog::Verbose, 
-    "ArMTXIO::getDigitalIOInputMon1: Input register 1 = %d", *val);
+	ArLog::log(MvrLog::Verbose, 
+    "MvrMTXIO::getDigitalIOInputMon1: Input register 1 = %d", *val);
 
   return true;
 }
@@ -443,14 +443,14 @@ MTX_IOREQ req;
 
   if (ioctl(myFD, MTX_READ_REG, &req) != 0)
 	{
-		ArLog::log(ArLog::Normal, "ArMTXIO::getDigitalIOInputMon2() failed to get Digital IO Input Montioring 2 Register");
+		ArLog::log(MvrLog::Normal, "MvrMTXIO::getDigitalIOInputMon2() failed to get Digital IO Input Montioring 2 Register");
 		return false;
 	}
 
   *val = req.myData.myVal8;
 
-	ArLog::log(ArLog::Verbose, 
-    "ArMTXIO::getDigitalIOInputMon2: Input register 2 = %d", *val);
+	ArLog::log(MvrLog::Verbose, 
+    "MvrMTXIO::getDigitalIOInputMon2: Input register 2 = %d", *val);
 
   return true;
 }
@@ -468,7 +468,7 @@ MTX_IOREQ req;
 
   if (ioctl(myFD, MTX_READ_REG, &req) != 0)
 	{
-		ArLog::log(ArLog::Normal, "ArMTXIO::getDigitalIOOutputMon1() failed to get Digital IO Output Montioring 1 Register");
+		ArLog::log(MvrLog::Normal, "MvrMTXIO::getDigitalIOOutputMon1() failed to get Digital IO Output Montioring 1 Register");
 		return false;
 	}
 
@@ -489,7 +489,7 @@ MTX_IOREQ req;
 
   if (ioctl(myFD, MTX_READ_REG, &req) != 0)
 	{
-		ArLog::log(ArLog::Normal, "ArMTXIO::getDigitalIOOutputMon2() failed to get Digital IO Output Montioring 2 Register");
+		ArLog::log(MvrLog::Normal, "MvrMTXIO::getDigitalIOOutputMon2() failed to get Digital IO Output Montioring 2 Register");
 		return false;
 	}
 
@@ -509,7 +509,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLPCTimer0() failed to get LPC Time 0 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLPCTimer0() failed to get LPC Time 0 Register");
     return false;
   }
 
@@ -529,7 +529,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLPCTimer1() failed to get LPC Time 1 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLPCTimer1() failed to get LPC Time 1 Register");
     return false;
   }
 
@@ -549,7 +549,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLPCTimer2() failed to get LPC Time 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLPCTimer2() failed to get LPC Time 2 Register");
     return false;
   }
 
@@ -569,7 +569,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLPCTimer3() failed to get LPC Time 3 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLPCTimer3() failed to get LPC Time 3 Register");
     return false;
   }
 
@@ -577,7 +577,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getLPCTimeUSec(ArTypes::UByte4 *timeUSec)
+AREXPORT bool ArMTXIO::getLPCTimeUSec(MvrTypes::UByte4 *timeUSec)
 {
   MTX_IOREQ req;
 
@@ -590,7 +590,7 @@ AREXPORT bool ArMTXIO::getLPCTimeUSec(ArTypes::UByte4 *timeUSec)
   
   if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLPCTimeUSec() failed to set TimingControlRegister");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLPCTimeUSec() failed to set TimingControlRegister");
     return false;
   }
 
@@ -600,7 +600,7 @@ AREXPORT bool ArMTXIO::getLPCTimeUSec(ArTypes::UByte4 *timeUSec)
       !getLPCTimer2(&time2) || 
       !getLPCTimer3(&time3))
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLPCTimeUSec() failed to get LPC Time  Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLPCTimeUSec() failed to get LPC Time  Register");
     return false;
   }
 
@@ -621,7 +621,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore1() failed to get Semaphore 1 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore1() failed to get Semaphore 1 Register");
     return false;
   }
 
@@ -642,7 +642,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore1() failed to set Semaphore 1 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore1() failed to set Semaphore 1 Register");
     return false;
   }
 
@@ -662,7 +662,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore2() failed to get Semaphore 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore2() failed to get Semaphore 2 Register");
     return false;
   }
 
@@ -683,7 +683,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore2() failed to set Semaphore 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore2() failed to set Semaphore 2 Register");
     return false;
   }
 
@@ -703,7 +703,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore3() failed to get Semaphore 3 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore3() failed to get Semaphore 3 Register");
     return false;
   }
 
@@ -724,7 +724,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore3() failed to set Semaphore 3 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore3() failed to set Semaphore 3 Register");
     return false;
   }
 
@@ -744,7 +744,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore4() failed to get Semaphore 4 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore4() failed to get Semaphore 4 Register");
     return false;
   }
 
@@ -765,7 +765,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getSemaphore4() failed to set Semaphore 4 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getSemaphore4() failed to set Semaphore 4 Register");
     return false;
   }
 
@@ -785,7 +785,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getBumperInput() failed to get Bumper Input Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getBumperInput() failed to get Bumper Input Register");
     return false;
   }
 
@@ -805,7 +805,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getPowerStatus1() failed to get Power Status 1 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getPowerStatus1() failed to get Power Status 1 Register");
     return false;
   }
 
@@ -825,7 +825,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getPowerStatus1() failed to get Power Status 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getPowerStatus1() failed to get Power Status 2 Register");
     return false;
   }
 
@@ -845,7 +845,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getLIDARSafety() failed to get LIDAR Safety Status Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getLIDARSafety() failed to get LIDAR Safety Status Register");
     return false;
   }
 
@@ -865,7 +865,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getESTOPStatus1() failed to get ESTOP Status 1 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getESTOPStatus1() failed to get ESTOP Status 1 Register");
     return false;
   }
 
@@ -885,7 +885,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getESTOPStatus2() failed to get ESTOP Status 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getESTOPStatus2() failed to get ESTOP Status 2 Register");
     return false;
   }
 
@@ -905,7 +905,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getESTOPStatus3() failed to get ESTOP Status 3 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getESTOPStatus3() failed to get ESTOP Status 3 Register");
     return false;
   }
 
@@ -925,7 +925,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getESTOPStatus4() failed to get ESTOP Status 4 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getESTOPStatus4() failed to get ESTOP Status 4 Register");
     return false;
   }
 
@@ -959,14 +959,14 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getDigitalOutputControl1() failed to get Digital IO Output Control 1 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getDigitalOutputControl1() failed to get Digital IO Output Control 1 Register");
     return false;
   }
 
   *val = req.myData.myVal8;
 
-	ArLog::log(ArLog::Verbose, 
-    "ArMTXIO::getDigitalOutputControl1: Output register 1 = 0x%02x", *val);
+	ArLog::log(MvrLog::Verbose, 
+    "MvrMTXIO::getDigitalOutputControl1: Output register 1 = 0x%02x", *val);
 
   return true;
 }
@@ -979,8 +979,8 @@ MTX_IOREQ req;
     return false;
 
 
-	ArLog::log(ArLog::Verbose, 
-    "ArMTXIO::setDigitalOutputControl1: Setting Output register 1 = 0x%02x", *val);
+	ArLog::log(MvrLog::Verbose, 
+    "MvrMTXIO::setDigitalOutputControl1: Setting Output register 1 = 0x%02x", *val);
 
 	req.myReg = MTX_DIO_OUTPUT_CTRL1;
 	req.mySize = sizeof(unsigned char);
@@ -988,7 +988,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setDigitalOutputControl1() failed to set Digital IO Output Control 1 Register %d %d %d",
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setDigitalOutputControl1() failed to set Digital IO Output Control 1 Register %d %d %d",
 					req.myReg, req.mySize, *val);
     return false;
   }
@@ -1010,14 +1010,14 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getDigitalOutputControl2() failed to get Digital IO Output Control 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getDigitalOutputControl2() failed to get Digital IO Output Control 2 Register");
     return false;
   }
 
   *val = req.myData.myVal8;
 
-	ArLog::log(ArLog::Verbose, 
-    "ArMTXIO::getDigitalOutputControl2: Output register 2 = 0x%02x", *val);
+	ArLog::log(MvrLog::Verbose, 
+    "MvrMTXIO::getDigitalOutputControl2: Output register 2 = 0x%02x", *val);
 
   return true;
 }
@@ -1029,8 +1029,8 @@ MTX_IOREQ req;
   if (!myEnabled)
     return false;
 
-	ArLog::log(ArLog::Verbose, 
-    "ArMTXIO::setDigitalOutputControl2: Setting Output register 2 = 0x%02x", *val);
+	ArLog::log(MvrLog::Verbose, 
+    "MvrMTXIO::setDigitalOutputControl2: Setting Output register 2 = 0x%02x", *val);
 
 
 	req.myReg = MTX_DIO_OUTPUT_CTRL2;
@@ -1039,7 +1039,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setDigitalOutputControl2() failed to set Digital IO Output Control 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setDigitalOutputControl2() failed to set Digital IO Output Control 2 Register");
     return false;
   }
 
@@ -1060,7 +1060,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getPeripheralPower1() failed to get Peripheral Power Control 1 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getPeripheralPower1() failed to get Peripheral Power Control 1 Register");
     return false;
   }
 
@@ -1081,7 +1081,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setPeripheralPower1() failed to set Peripheral Power Control 1 Register - errno = %d", errno);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setPeripheralPower1() failed to set Peripheral Power Control 1 Register - errno = %d", errno);
     return false;
   }
 
@@ -1102,7 +1102,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getPeripheralPower2() failed to get Peripheral Power Control 2 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getPeripheralPower2() failed to get Peripheral Power Control 2 Register");
     return false;
   }
 
@@ -1123,7 +1123,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setPeripheralPower2() failed to set Peripheral Power Control 2 Register - errno = %d", errno);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setPeripheralPower2() failed to set Peripheral Power Control 2 Register - errno = %d", errno);
     return false;
   }
 
@@ -1143,7 +1143,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getPeripheralPower3() failed to get Peripheral Power Control 3 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getPeripheralPower3() failed to get Peripheral Power Control 3 Register");
     return false;
   }
 
@@ -1164,7 +1164,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setPeripheralPower3() failed to set Peripheral Power 3 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setPeripheralPower3() failed to set Peripheral Power 3 Register");
     return false;
   }
 
@@ -1184,7 +1184,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getMotionPowerStatus() failed to get Peripheral Power Control 3 Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getMotionPowerStatus() failed to get Peripheral Power Control 3 Register");
     return false;
   }
 
@@ -1241,7 +1241,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::LIDARControl() failed to get LIDAR Control Register");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::LIDARControl() failed to get LIDAR Control Register");
     return false;
   }
 
@@ -1262,7 +1262,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setLIDARControl() failed to set LIDAR ControlRegister");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setLIDARControl() failed to set LIDAR ControlRegister");
     return false;
   }
 
@@ -1283,19 +1283,19 @@ MTX_IOREQ req;
 
 	unsigned char semTmp = 1;
 	if (!setSemaphore1(&semTmp)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock1() failed to set (%d) Semaphore 1", semTmp);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock1() failed to set (%d) Semaphore 1", semTmp);
     return false;
   }
 	
 	unsigned char semVal;
 
 	if (!getSemaphore1(&semVal)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock1() failed to get Semaphore 1");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock1() failed to get Semaphore 1");
     return false;
   }
 
 	if (semVal == 0) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock1() Semaphore 1 is busy");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock1() Semaphore 1 is busy");
     return false;
   }
 
@@ -1305,7 +1305,7 @@ MTX_IOREQ req;
 	bool noErr = true;
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock1() failed to get Block 1 (%d)", analog);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock1() failed to get Block 1 (%d)", analog);
     noErr = false;
   }
 
@@ -1313,17 +1313,17 @@ MTX_IOREQ req;
 
 	semTmp = 0;
 	if (!setSemaphore1(&semTmp)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock1() failed to set (%d) Semaphore 1", semTmp);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock1() failed to set (%d) Semaphore 1", semTmp);
     return false;
   }
 
 	if (!getSemaphore1(&semVal)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock1() failed to get Semaphore 1");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock1() failed to get Semaphore 1");
     return false;
   }
 
 	if (semVal != 0) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock1() Semaphore 1 is busy");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock1() Semaphore 1 is busy");
     return false;
   }
 
@@ -1344,19 +1344,19 @@ MTX_IOREQ req;
 
 	unsigned char semTmp = 1;
 	if (!setSemaphore2(&semTmp)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
     return false;
   }
 	
 	unsigned char semVal;
 
 	if (!getSemaphore2(&semVal)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock2() failed to get Semaphore 2");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock2() failed to get Semaphore 2");
     return false;
   }
 
 	if (semVal == 0) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock2() Semaphore 2 is busy");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock2() Semaphore 2 is busy");
     return false;
   }
 
@@ -1366,7 +1366,7 @@ MTX_IOREQ req;
 	bool noErr = true;
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock2() failed to get Block 2 (%d)", analog);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock2() failed to get Block 2 (%d)", analog);
     noErr = false;
   }
 
@@ -1375,17 +1375,17 @@ MTX_IOREQ req;
 	// what happens if this fails?
 	semTmp = 0;
 	if (!setSemaphore2(&semTmp)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
     return false;
   }
 
 	if (!getSemaphore2(&semVal)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock2() failed to get Semaphore 2");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock2() failed to get Semaphore 2");
     return false;
   }
 
 	if (semVal != 0) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogIOBlock2() Semaphore 2 is busy");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogIOBlock2() Semaphore 2 is busy");
     return false;
   }
 
@@ -1406,19 +1406,19 @@ MTX_IOREQ req;
 
 	unsigned char semTmp = 1;
 	if (!setSemaphore2(&semTmp)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
     return false;
   }
 	
 	unsigned char semVal;
 
 	if (!getSemaphore2(&semVal)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() failed to get Semaphore 2");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() failed to get Semaphore 2");
     return false;
   }
 
 	if (semVal == 0) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() Semaphore 2 is busy");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() Semaphore 2 is busy");
     return false;
   }
 
@@ -1429,23 +1429,23 @@ MTX_IOREQ req;
 	bool noErr = true;
 	if (ioctl(myFD, MTX_WRITE_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() failed to get Block 2 (%d)", analog);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() failed to get Block 2 (%d)", analog);
     noErr = false;
   }
 
 	semTmp = 1;
 	if (!setSemaphore2(&semTmp)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() failed to set (%d) Semaphore 2", semTmp);
     return false;
   }
 
 	if (!getSemaphore2(&semVal)) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() failed to get Semaphore 2");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() failed to get Semaphore 2");
     return false;
   }
 
 	if (semVal != 0) {
-    ArLog::log(ArLog::Normal, "ArMTXIO::setAnalogIOBlock2() Semaphore 2 is busy");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::setAnalogIOBlock2() Semaphore 2 is busy");
     return false;
   }
 
@@ -1465,7 +1465,7 @@ MTX_IOREQ req;
 
 	if (ioctl(myFD, MTX_READ_REG, &req) != 0) 
   {
-    ArLog::log(ArLog::Normal, "ArMTXIO::getAnalogValueRaw() failed to get Block 2");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::getAnalogValueRaw() failed to get Block 2");
     return false;
   }
 

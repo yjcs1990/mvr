@@ -24,18 +24,18 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionGotoStraight.h"
-#include "ArRobot.h"
+#include "MvrActionGotoStraight.h"
+#include "MvrRobot.h"
 
-AREXPORT ArActionGotoStraight::ArActionGotoStraight(const char *name,
+AREXPORT MvrActionGotoStraight::ArActionGotoStraight(const char *name,
 						    double speed) :
-  ArAction(name, "Goes to the given goal.")
+  MvrAction(name, "Goes to the given goal.")
 {
   myPrinting = false;
 
-  setNextArgument(ArArg("speed", &mySpeed, 
+  setNextArgument(MvrArg("speed", &mySpeed, 
 			"Speed to travel to goal at. (mm/sec)"));
   mySpeed = speed;
   myState = STATE_NO_GOAL;
@@ -45,12 +45,12 @@ AREXPORT ArActionGotoStraight::ArActionGotoStraight(const char *name,
   setCloseDist();
 }
 
-AREXPORT ArActionGotoStraight::~ArActionGotoStraight()
+AREXPORT MvrActionGotoStraight::~ArActionGotoStraight()
 {
 
 }
 
-AREXPORT bool ArActionGotoStraight::haveAchievedGoal(void)
+AREXPORT bool MvrActionGotoStraight::haveAchievedGoal(void)
 {
   if (myState == STATE_ACHIEVED_GOAL)
     return true;
@@ -58,12 +58,12 @@ AREXPORT bool ArActionGotoStraight::haveAchievedGoal(void)
     return false;
 }
 
-AREXPORT void ArActionGotoStraight::cancelGoal(void)
+AREXPORT void MvrActionGotoStraight::cancelGoal(void)
 {
   myState = STATE_NO_GOAL;
 }
 
-AREXPORT void ArActionGotoStraight::setGoal(ArPose goal, bool backToGoal, 
+AREXPORT void MvrActionGotoStraight::setGoal(MvrPose goal, bool backToGoal, 
 					    bool justDistance)
 {
   myState = STATE_GOING_TO_GOAL;
@@ -76,19 +76,19 @@ AREXPORT void ArActionGotoStraight::setGoal(ArPose goal, bool backToGoal,
   myDistTravelled = 0;
 }
 
-AREXPORT void ArActionGotoStraight::setGoalRel(double dist, 
+AREXPORT void MvrActionGotoStraight::setGoalRel(double dist, 
 					       double deltaHeading,
 					       bool backToGoal, 
 					       bool justDistance)
 {
-  ArPose goal;
-  goal.setX(dist * ArMath::cos(deltaHeading));
-  goal.setY(dist * ArMath::sin(deltaHeading));
+  MvrPose goal;
+  goal.setX(dist * MvrMath::cos(deltaHeading));
+  goal.setY(dist * MvrMath::sin(deltaHeading));
   goal = myRobot->getToGlobalTransform().doTransform(goal);
   setGoal(goal, backToGoal, justDistance);
 }
 
-AREXPORT void ArActionGotoStraight::setEncoderGoal(ArPose encoderGoal, 
+AREXPORT void MvrActionGotoStraight::setEncoderGoal(MvrPose encoderGoal, 
 						   bool backToGoal,
 						   bool justDistance)
 {
@@ -102,20 +102,20 @@ AREXPORT void ArActionGotoStraight::setEncoderGoal(ArPose encoderGoal,
   myLastPose = myRobot->getEncoderPose();
 }
 
-AREXPORT void ArActionGotoStraight::setEncoderGoalRel(double dist, 
+AREXPORT void MvrActionGotoStraight::setEncoderGoalRel(double dist, 
 						      double deltaHeading,
 						      bool backToGoal,
 						      bool justDistance)
 {
-  ArPose goal;
-  goal.setX(dist * ArMath::cos(deltaHeading));
-  goal.setY(dist * ArMath::sin(deltaHeading));
+  MvrPose goal;
+  goal.setX(dist * MvrMath::cos(deltaHeading));
+  goal.setY(dist * MvrMath::sin(deltaHeading));
   goal = myRobot->getToGlobalTransform().doTransform(goal);
   goal = myRobot->getEncoderTransform().doInvTransform(goal);
   setEncoderGoal(goal, backToGoal, justDistance);
 }
 
-AREXPORT ArActionDesired *ArActionGotoStraight::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *ArActionGotoStraight::fire(MvrActionDesired currentDesired)
 {
   double angle;
   double dist;
@@ -127,7 +127,7 @@ AREXPORT ArActionDesired *ArActionGotoStraight::fire(ArActionDesired currentDesi
     return NULL;
 
 
-  ArPose goal;
+  MvrPose goal;
   if (!myUseEncoderGoal)
   {
     goal = myGoal;
@@ -153,10 +153,10 @@ AREXPORT ArActionDesired *ArActionGotoStraight::fire(ArActionDesired currentDesi
 
   if (((myJustDist && distToGo <= 0) || 
        (!myJustDist && dist < myCloseDist))
-      && ArMath::fabs(myRobot->getVel() < 5))
+      && MvrMath::fabs(myRobot->getVel() < 5))
   {
     if (myPrinting)
-      ArLog::log(ArLog::Normal, "Achieved goal");
+      MvrLog::log(MvrLog::Normal, "Achieved goal");
     myState = STATE_ACHIEVED_GOAL;
     myDesired.setVel(0);
     myDesired.setDeltaHeading(0);
@@ -166,7 +166,7 @@ AREXPORT ArActionDesired *ArActionGotoStraight::fire(ArActionDesired currentDesi
   // see where we want to point
   angle = myRobot->getPose().findAngleTo(goal);
   if (myBacking)
-    angle = ArMath::subAngle(angle, 180);
+    angle = MvrMath::subAngle(angle, 180);
   myDesired.setHeading(angle);
   // if we're close, stop
   if ((myJustDist && distToGo <= 0) || 
@@ -185,7 +185,7 @@ AREXPORT ArActionDesired *ArActionGotoStraight::fire(ArActionDesired currentDesi
     myDesired.setVel(vel);
   }
   if (myPrinting)
-    ArLog::log(ArLog::Normal, "dist %.0f angle %.0f vel %.0f", 
+    MvrLog::log(MvrLog::Normal, "dist %.0f angle %.0f vel %.0f", 
 	       dist, angle, vel);
   return &myDesired;
 }

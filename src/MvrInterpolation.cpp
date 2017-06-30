@@ -24,26 +24,26 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArInterpolation.h"
+#include "MvrInterpolation.h"
 
-AREXPORT ArInterpolation::ArInterpolation(size_t numberOfReadings)
+AREXPORT MvrInterpolation::ArInterpolation(size_t numberOfReadings)
 {
   mySize = numberOfReadings;
-  myDataMutex.setLogName("ArInterpolation");
+  myDataMutex.setLogName("MvrInterpolation");
   setAllowedMSForPrediction();
   setAllowedPercentageForPrediction();
   setLogPrediction();
 }
 
-AREXPORT ArInterpolation::~ArInterpolation()
+AREXPORT MvrInterpolation::~ArInterpolation()
 {
 
 }
 
-AREXPORT bool ArInterpolation::addReading(ArTime timeOfReading, 
-					  ArPose position)
+AREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading, 
+					  MvrPose position)
 {
   myDataMutex.lock();
   if (myTimes.size() >= mySize)
@@ -61,23 +61,23 @@ AREXPORT bool ArInterpolation::addReading(ArTime timeOfReading,
    @param timeStamp the time we are interested in
    @param position the pose to set to the given position
 
-   @param mostRecent the most recent data in the interpolation relevant to this call... for a return of 1 this is the near side it interpolated between, for a return of 0 or 1 this is the most recent data in the interpolation.... this is only useful if the return is 1, 0, or -1, and is mostly for use with ArRobot::applyEncoderOffset 
+   @param mostRecent the most recent data in the interpolation relevant to this call... for a return of 1 this is the near side it interpolated between, for a return of 0 or 1 this is the most recent data in the interpolation.... this is only useful if the return is 1, 0, or -1, and is mostly for use with MvrRobot::applyEncoderOffset 
 
    @return 1 its good interpolation, 0 its predicting, -1 its too far to 
    predict, -2 its too old, -3 there's not enough data to predict
    
 **/
 
-AREXPORT int ArInterpolation::getPose(
-	ArTime timeStamp, ArPose *position, ArPoseWithTime *mostRecent)
+AREXPORT int MvrInterpolation::getPose(
+	ArTime timeStamp, MvrPose *position, MvrPoseWithTime *mostRecent)
 {
   std::list<ArTime>::iterator tit;
   std::list<ArPose>::iterator pit;
   
-  ArPose thisPose;
-  ArTime thisTime;
-  ArPose lastPose;
-  ArTime lastTime;
+  MvrPose thisPose;
+  MvrTime thisTime;
+  MvrPose lastPose;
+  MvrTime lastTime;
 
   // MPL don't use nowtime, use the time stamp that was passed in...
   // that was bad
@@ -85,7 +85,7 @@ AREXPORT int ArInterpolation::getPose(
   long total;
   long toStamp;
   double percentage;
-  ArPose retPose;
+  MvrPose retPose;
   
   myDataMutex.lock();
   // find the time we want
@@ -157,7 +157,7 @@ AREXPORT int ArInterpolation::getPose(
 	percentage * 100 > myAllowedPercentageForPrediction)
     {
       if (myLogPrediction)
-	ArLog::log(ArLog::Normal, "%s: returningPercentage Total time %d, to stamp %d, percentage %.2f (allowed %d)", getName(), total, toStamp, percentage * 100, myAllowedPercentageForPrediction);
+	ArLog::log(MvrLog::Normal, "%s: returningPercentage Total time %d, to stamp %d, percentage %.2f (allowed %d)", getName(), total, toStamp, percentage * 100, myAllowedPercentageForPrediction);
       
       myDataMutex.unlock();
       return -1;
@@ -167,7 +167,7 @@ AREXPORT int ArInterpolation::getPose(
 	abs(toStamp) > myAllowedMSForPrediction)
     {
     if (myLogPrediction)
-      ArLog::log(ArLog::Normal, "%s: returningMS Total time %d, to stamp %d, percentage %.2f (allowed %d)", getName(), total, toStamp, percentage * 100,
+      MvrLog::log(MvrLog::Normal, "%s: returningMS Total time %d, to stamp %d, percentage %.2f (allowed %d)", getName(), total, toStamp, percentage * 100,
 	  myAllowedMSForPrediction);
     
       myDataMutex.unlock();
@@ -175,20 +175,20 @@ AREXPORT int ArInterpolation::getPose(
     }
 
     if (myLogPrediction)
-      ArLog::log(ArLog::Normal, "%s: Total time %d, to stamp %d, percentage %.2f (allowed %d)", getName(), total, toStamp, percentage * 100,
+      MvrLog::log(MvrLog::Normal, "%s: Total time %d, to stamp %d, percentage %.2f (allowed %d)", getName(), total, toStamp, percentage * 100,
 		 myAllowedPercentageForPrediction);
 
     retPose.setX(thisPose.getX() + 
 		 (thisPose.getX() - lastPose.getX()) * percentage);
     retPose.setY(thisPose.getY() + 
 		 (thisPose.getY() - lastPose.getY()) * percentage);
-    retPose.setTh(ArMath::addAngle(thisPose.getTh(),
-				   ArMath::subAngle(thisPose.getTh(),
+    retPose.setTh(MvrMath::addAngle(thisPose.getTh(),
+				   MvrMath::subAngle(thisPose.getTh(),
 						    lastPose.getTh())
 				   * percentage));
 
     if (retPose.findDistanceTo(thisPose) > 1000)
-      ArLog::log(ArLog::Normal, "%s: finaldist %.0f thislastdist %.0f Total time %d, to stamp %d, percentage %.2f", getName(), 
+      MvrLog::log(MvrLog::Normal, "%s: finaldist %.0f thislastdist %.0f Total time %d, to stamp %d, percentage %.2f", getName(), 
 		 retPose.findDistanceTo(thisPose), thisPose.findDistanceTo(lastPose), total, toStamp, percentage * 100);
 
 
@@ -215,8 +215,8 @@ AREXPORT int ArInterpolation::getPose(
 	       (lastPose.getX() - thisPose.getX()) * percentage); 
   retPose.setY(thisPose.getY() + 
 	       (lastPose.getY() - thisPose.getY()) * percentage); 
-  retPose.setTh(ArMath::addAngle(thisPose.getTh(),
-				 ArMath::subAngle(lastPose.getTh(), 
+  retPose.setTh(MvrMath::addAngle(thisPose.getTh(),
+				 MvrMath::subAngle(lastPose.getTh(), 
 						  thisPose.getTh())
 				 * percentage));
 /*
@@ -233,12 +233,12 @@ AREXPORT int ArInterpolation::getPose(
   
 }
 
-AREXPORT size_t ArInterpolation::getNumberOfReadings(void) const
+AREXPORT size_t MvrInterpolation::getNumberOfReadings(void) const
 {
   return mySize;
 }
 
-AREXPORT void ArInterpolation::setNumberOfReadings(size_t numberOfReadings)
+AREXPORT void MvrInterpolation::setNumberOfReadings(size_t numberOfReadings)
 {
   myDataMutex.lock();
   while (myTimes.size() > numberOfReadings)
@@ -250,7 +250,7 @@ AREXPORT void ArInterpolation::setNumberOfReadings(size_t numberOfReadings)
   myDataMutex.unlock();
 }
 
-AREXPORT void ArInterpolation::reset(void)
+AREXPORT void MvrInterpolation::reset(void)
 {
   myDataMutex.lock();
   while (myTimes.size() > 0)
@@ -260,7 +260,7 @@ AREXPORT void ArInterpolation::reset(void)
   myDataMutex.unlock();
 }
 
-AREXPORT void ArInterpolation::setName(const char *name)
+AREXPORT void MvrInterpolation::setName(const char *name)
 {
   myDataMutex.lock();
   myName = name;
@@ -271,19 +271,19 @@ AREXPORT void ArInterpolation::setName(const char *name)
   myDataMutex.unlock();
 }
 
-AREXPORT const char * ArInterpolation::getName(void)
+AREXPORT const char * MvrInterpolation::getName(void)
 {
   return myName.c_str();
 }
 
-AREXPORT void ArInterpolation::setAllowedMSForPrediction(int ms)
+AREXPORT void MvrInterpolation::setAllowedMSForPrediction(int ms)
 {
   myDataMutex.lock();
   myAllowedMSForPrediction = ms;
   myDataMutex.unlock();
 }
 
-AREXPORT int ArInterpolation::getAllowedMSForPrediction(void)
+AREXPORT int MvrInterpolation::getAllowedMSForPrediction(void)
 {
   int ret;
   myDataMutex.lock();
@@ -292,14 +292,14 @@ AREXPORT int ArInterpolation::getAllowedMSForPrediction(void)
   return ret;
 }
 
-AREXPORT void ArInterpolation::setAllowedPercentageForPrediction(int percentage)
+AREXPORT void MvrInterpolation::setAllowedPercentageForPrediction(int percentage)
 {
   myDataMutex.lock();
   myAllowedPercentageForPrediction = percentage;
   myDataMutex.unlock();
 }
 
-AREXPORT int ArInterpolation::getAllowedPercentageForPrediction(void)
+AREXPORT int MvrInterpolation::getAllowedPercentageForPrediction(void)
 {
   int ret;
   myDataMutex.lock();
@@ -308,14 +308,14 @@ AREXPORT int ArInterpolation::getAllowedPercentageForPrediction(void)
   return ret;
 }
 
-AREXPORT void ArInterpolation::setLogPrediction(bool logPrediction)
+AREXPORT void MvrInterpolation::setLogPrediction(bool logPrediction)
 {
   myDataMutex.lock();
   myLogPrediction = logPrediction;
   myDataMutex.unlock();
 }
 
-AREXPORT bool ArInterpolation::getLogPrediction(void)
+AREXPORT bool MvrInterpolation::getLogPrediction(void)
 {
   bool ret;
   myDataMutex.lock();

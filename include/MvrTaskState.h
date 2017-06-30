@@ -35,7 +35,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     state.  People's own states should start at USER_START or at
     USER_START plus a constant (so they can have different sets of states).
 */
-class ArTaskState
+class MvrTaskState
 {
 public:
   enum State 

@@ -24,12 +24,12 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArACTS.h"
+#include "MvrACTS.h"
 
 
-AREXPORT ArACTS_1_2::ArACTS_1_2() :
+AREXPORT MvrACTS_1_2::ArACTS_1_2() :
   mySensorTaskCB(this, &ArACTS_1_2::actsHandler)
 {
   myRobot = NULL;
@@ -37,7 +37,7 @@ AREXPORT ArACTS_1_2::ArACTS_1_2() :
   myInverted = false;
 }
 
-AREXPORT ArACTS_1_2::~ArACTS_1_2()
+AREXPORT MvrACTS_1_2::~ArACTS_1_2()
 {
 
 }
@@ -45,8 +45,8 @@ AREXPORT ArACTS_1_2::~ArACTS_1_2()
 /** 
     Opens the port to the ACTS server
     @param robot the robot to attach this to, which puts a sensorInterp on the
-    robot so that ArACTS will always have fresh data from ACTS... giving a 
-    NULL value is perfectly acceptable, in this case ArACTS will not do any
+    robot so that MvrACTS will always have fresh data from ACTS... giving a 
+    NULL value is perfectly acceptable, in this case MvrACTS will not do any
     processing or requesting and you'll have to use receiveBlobInfo and 
     requestPacket (or just call actsHandler)
     @param port the port the ACTS server is running on, default of 5001
@@ -54,14 +54,14 @@ AREXPORT ArACTS_1_2::~ArACTS_1_2()
     (ie this machine)
     @return true if the connection was established, false otherwise
 */
-AREXPORT bool ArACTS_1_2::openPort(ArRobot *robot, const char *host, int port)
+AREXPORT bool MvrACTS_1_2::openPort(MvrRobot *robot, const char *host, int port)
 {
   int ret;
   std::string str;
   if ((ret = myConn.open(host, port)) != 0)
   {
     str = myConn.getOpenMessage(ret);
-    ArLog::log(ArLog::Terse, "ArACTS_1_2: Could not connect to ACTS running on %s:%d (%s)", host, port, str.c_str()); 
+    MvrLog::log(MvrLog::Terse, "MvrACTS_1_2: Could not connect to ACTS running on %s:%d (%s)", host, port, str.c_str()); 
     return false;
 
   }
@@ -74,7 +74,7 @@ AREXPORT bool ArACTS_1_2::openPort(ArRobot *robot, const char *host, int port)
    Closes the port to the ACTS server
    @return true if the connection was closed properly, false otherwise
 */
-AREXPORT bool ArACTS_1_2::closePort(void)
+AREXPORT bool MvrACTS_1_2::closePort(void)
 {
   return myConn.close();
 }
@@ -84,13 +84,13 @@ AREXPORT bool ArACTS_1_2::closePort(void)
    request to the acts server over its connection
    @return true if the command was sent succesfully, false otherwise
 */
-AREXPORT bool ArACTS_1_2::requestPacket(void)
+AREXPORT bool MvrACTS_1_2::requestPacket(void)
 {
   const char c = '0';
-  if (myConn.getStatus() != ArDeviceConnection::STATUS_OPEN)
+  if (myConn.getStatus() != MvrDeviceConnection::STATUS_OPEN)
   {
-    ArLog::log(ArLog::Verbose, 
-	       "ArACTS_1_2::requestPacket: No connection to ACTS.\n");
+    MvrLog::log(MvrLog::Verbose, 
+	       "MvrACTS_1_2::requestPacket: No connection to ACTS.\n");
     return false;
   }
   return myConn.write(&c, 1);
@@ -100,13 +100,13 @@ AREXPORT bool ArACTS_1_2::requestPacket(void)
    Sends a command to the ACTS server requesting that ACTS quit
    @return true if the request was sent succesfully, false otherwise
 */
-AREXPORT bool ArACTS_1_2::requestQuit(void)
+AREXPORT bool MvrACTS_1_2::requestQuit(void)
 {
   const char c = '1';
-  if (myConn.getStatus() != ArDeviceConnection::STATUS_OPEN)
+  if (myConn.getStatus() != MvrDeviceConnection::STATUS_OPEN)
   {
-    ArLog::log(ArLog::Verbose, 
-	       "ArACTS_1_2::requestQuit: No connection to ACTS.\n");
+    MvrLog::log(MvrLog::Verbose, 
+	       "MvrACTS_1_2::requestQuit: No connection to ACTS.\n");
     return false;
   }
   return myConn.write(&c, 1);
@@ -117,24 +117,24 @@ AREXPORT bool ArACTS_1_2::requestQuit(void)
    fills in the blob information, otherwise just returns false
    @return true if there was new data and the data could be read succesfully
 */
-AREXPORT bool ArACTS_1_2::receiveBlobInfo(void)
+AREXPORT bool MvrACTS_1_2::receiveBlobInfo(void)
 {
   int i;
   char *data;
   int numBlobs = 0;
 
   myBlobsBad = true;
-  if (myConn.getStatus() != ArDeviceConnection::STATUS_OPEN)
+  if (myConn.getStatus() != MvrDeviceConnection::STATUS_OPEN)
   {
-    ArLog::log(ArLog::Verbose,
-	       "ArACTS_1_2::receiveBlobInfo: No connection to ACTS.\n");
+    MvrLog::log(MvrLog::Verbose,
+	       "MvrACTS_1_2::receiveBlobInfo: No connection to ACTS.\n");
     return false;
   }
 
   if (!myConn.read(myData, NUM_CHANNELS*4, 20))
   {
-    ArLog::log(ArLog::Verbose, 
-	       "ArACTS_1_2::receiveBlobInfo: Couldn't get the blob stats.\n");
+    MvrLog::log(MvrLog::Verbose, 
+	       "MvrACTS_1_2::receiveBlobInfo: Couldn't get the blob stats.\n");
     return false;
   }
   data = myData;
@@ -153,8 +153,8 @@ AREXPORT bool ArACTS_1_2::receiveBlobInfo(void)
     return true;
   if (!myConn.read(myData, numBlobs * ACTS_BLOB_DATA_SIZE, 10))
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArACTS_1_2::receiveBlobInfo: Couldn't read blob data.\n");
+    MvrLog::log(MvrLog::Normal, 
+	       "MvrACTS_1_2::receiveBlobInfo: Couldn't read blob data.\n");
     return false;
   }
   myBlobsBad = false;
@@ -164,7 +164,7 @@ AREXPORT bool ArACTS_1_2::receiveBlobInfo(void)
 /**
    @return the number of blobs on the channel, or -1 if the channel is invalid
 */
-AREXPORT int ArACTS_1_2::getNumBlobs(int channel)
+AREXPORT int MvrACTS_1_2::getNumBlobs(int channel)
 {
 
   if (channel >= 1 && channel <= NUM_CHANNELS)
@@ -176,7 +176,7 @@ AREXPORT int ArACTS_1_2::getNumBlobs(int channel)
     return -1;
 }
 
-int ArACTS_1_2::getData(char *rawData)
+int MvrACTS_1_2::getData(char *rawData)
 {
   int temp;
   temp = (*(rawData++)) - 1;
@@ -195,7 +195,7 @@ int ArACTS_1_2::getData(char *rawData)
    blob
    @return true if the blob instance could be filled in from the 
 */
-AREXPORT bool ArACTS_1_2::getBlob(int channel, int blobNumber, ArACTSBlob *blob)
+AREXPORT bool MvrACTS_1_2::getBlob(int channel, int blobNumber, MvrACTSBlob *blob)
 {
   char * blobInfo;
   int i;
@@ -203,15 +203,15 @@ AREXPORT bool ArACTS_1_2::getBlob(int channel, int blobNumber, ArACTSBlob *blob)
 
   if (myBlobsBad)
   {
-    ArLog::log(ArLog::Verbose, 
-	       "ArACTS_1_2::getBlob: There is no valid blob data.\n");
+    MvrLog::log(MvrLog::Verbose, 
+	       "MvrACTS_1_2::getBlob: There is no valid blob data.\n");
     return false;
   }
 
   if (channel <= 0 || channel > NUM_CHANNELS) 
   {
-    ArLog::log(ArLog::Normal,
-	       "ArACTS_1_2::getBlob: Channel %d out of range 1 to %d\n", 
+    MvrLog::log(MvrLog::Normal,
+	       "MvrACTS_1_2::getBlob: Channel %d out of range 1 to %d\n", 
 	       channel, NUM_CHANNELS);
     return false;
   }
@@ -219,8 +219,8 @@ AREXPORT bool ArACTS_1_2::getBlob(int channel, int blobNumber, ArACTSBlob *blob)
   
   if (blobNumber <= 0 || blobNumber > myBlobNum[channel])
   {
-    ArLog::log(ArLog::Normal, 
-	       "ArACTS_1_2::getBlob: Blob number %d out of range 1 to %d", 
+    MvrLog::log(MvrLog::Normal, 
+	       "MvrACTS_1_2::getBlob: Blob number %d out of range 1 to %d", 
 	       blobNumber,  myBlobNum[channel]);
     return false;
   }
@@ -257,7 +257,7 @@ AREXPORT bool ArACTS_1_2::getBlob(int channel, int blobNumber, ArACTSBlob *blob)
   return true;
 }
 
-int ArACTS_1_2::invertX(int before)
+int MvrACTS_1_2::invertX(int before)
 {
   if (myInverted)
     return myWidth - before;
@@ -265,7 +265,7 @@ int ArACTS_1_2::invertX(int before)
     return before;
 }
 
-int ArACTS_1_2::invertY(int before)
+int MvrACTS_1_2::invertY(int before)
 {
   if (myInverted)
     return myHeight - before;
@@ -280,26 +280,26 @@ int ArACTS_1_2::invertY(int before)
    @param width the width of the images acts is grabbing (pixels)
    @param height the height of the images acts is grabbing (pixels)
 **/
-AREXPORT void ArACTS_1_2::invert(int width, int height)
+AREXPORT void MvrACTS_1_2::invert(int width, int height)
 {
   myInverted = true;
   myWidth = true;
   myHeight = true;
 }
 
-AREXPORT bool ArACTS_1_2::isConnected(void)
+AREXPORT bool MvrACTS_1_2::isConnected(void)
 {
-  if (myConn.getStatus() != ArDeviceConnection::STATUS_OPEN)
+  if (myConn.getStatus() != MvrDeviceConnection::STATUS_OPEN)
     return false;
   else
     return true;
 }
 
-AREXPORT ArRobot *ArACTS_1_2::getRobot(void)
+AREXPORT MvrRobot *ArACTS_1_2::getRobot(void)
 {
   return myRobot;
 }
-AREXPORT void ArACTS_1_2::setRobot(ArRobot *robot)
+AREXPORT void MvrACTS_1_2::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL) 
@@ -309,7 +309,7 @@ AREXPORT void ArACTS_1_2::setRobot(ArRobot *robot)
   }
 }
 
-AREXPORT void ArACTS_1_2::actsHandler(void)
+AREXPORT void MvrACTS_1_2::actsHandler(void)
 {
   if (!myRequested || receiveBlobInfo())
   {

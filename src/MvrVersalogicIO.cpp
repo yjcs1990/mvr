@@ -24,9 +24,9 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArVersalogicIO.h"
+#include "MvrVersalogicIO.h"
 #include "ariaInternal.h"
 
 #include <sys/ioctl.h>
@@ -66,7 +66,7 @@ ArMutex ArVersalogicIO::myMutex;
 AREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
   myDisconnectCB(this, &ArVersalogicIO::closeIO)
 {
-  myMutex.setLogName("ArVersalogicIO::myMutex");
+  myMutex.setLogName("MvrVersalogicIO::myMutex");
   myNumBanks = 0;
 
   myDigitalBank0 = 0;
@@ -74,18 +74,18 @@ AREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
   myDigitalBank2 = 0;
   myDigitalBank3 = 0;
 
-  ArLog::log(ArLog::Terse, "ArVersalogicIO::ArVersalogicIO: opening device %s", dev);
+  ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: opening device %s", dev);
   myFD = ArUtil::open(dev, O_RDWR);
 
   if (myFD == -1)
   {
-    ArLog::log(ArLog::Terse, "ArVersalogicIO::ArVersalogicIO: open %s failed.  Disabling class", dev);
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: open %s failed.  Disabling class", dev);
     myEnabled = false;
   }
   else
   {
     if(ioctl(myFD, DIGITAL_GET_NUM_BANKS, &myNumBanks))
-      ArLog::log(ArLog::Terse, "ArVersalogicIO::ArVersalogicIO: failed to get the number of digital IO banks");
+      ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: failed to get the number of digital IO banks");
     // set the digital banks to inputs so as to not drive anything
     int i;
     for(i=0;i<myNumBanks;i++)
@@ -94,20 +94,20 @@ AREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
 
     // check to see if the analog works
     double val;
-    ArLog::log(ArLog::Verbose, "ArVersalogicIO::ArVersalogicIO: testing analog functionality");
+    ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::ArVersalogicIO: testing analog functionality");
     if ((ioctl(myFD, ANALOG_SET_PORT, 0) != 0) || (ioctl(myFD,ANALOG_GET_VALUE, &val) != 0))
     {
-      ArLog::log(ArLog::Verbose, "ArVersalogicIO::ArVersalogicIO: analog conversion failed.  Disabling analog functionality");
+      ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::ArVersalogicIO: analog conversion failed.  Disabling analog functionality");
       myAnalogEnabled = false;
     }
     else
     {
-      ArLog::log(ArLog::Verbose, "ArVersalogicIO::ArVersalogicIO: analog conversion succeeded.");
+      ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::ArVersalogicIO: analog conversion succeeded.");
       myAnalogEnabled = true;
     }
 
     Aria::addExitCallback(&myDisconnectCB);
-    ArLog::log(ArLog::Terse, "ArVersalogicIO::ArVersalogicIO: device opened");
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: device opened");
   }
 }
 
@@ -127,12 +127,12 @@ AREXPORT bool ArVersalogicIO::closeIO(void)
 
   if (close(myFD) == -1)
   {
-    ArLog::log(ArLog::Terse, "ArVersalogicIO::~ArVersalogicIO: close failed on file descriptor!");
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~ArVersalogicIO: close failed on file descriptor!");
     return false;
   }
   else
   {
-    ArLog::log(ArLog::Terse, "ArVersalogicIO::~ArVersalogicIO: closed device");
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~ArVersalogicIO: closed device");
     return true;
   }
 }
@@ -152,13 +152,13 @@ AREXPORT bool ArVersalogicIO::getAnalogValueRaw(int port, int *val)
 
   if (ioctl(myFD, ANALOG_SET_PORT, port) != 0)
   {
-    ArLog::log(ArLog::Terse, "ArVersalogicIO::getAnalogValueRaw: failed to set analog port %d", port);
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::getAnalogValueRaw: failed to set analog port %d", port);
     return false;
   }
 
   if (ioctl(myFD, ANALOG_GET_VALUE, &tmp) != 0)
   {
-    ArLog::log(ArLog::Terse, "ArVersalogicIO::getAnalogValueRaw: failed to get analog port %d", port);
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::getAnalogValueRaw: failed to get analog port %d", port);
     return false;
   }
 
@@ -211,7 +211,7 @@ AREXPORT bool ArVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
   }
   else
   {
-    ArLog::log(ArLog::Verbose, "ArVersalogicIO::setDigitalBankDirection: invalid argument for direction");
+    ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::setDigitalBankDirection: invalid argument for direction");
     return false;
   }
 

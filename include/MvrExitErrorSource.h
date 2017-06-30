@@ -29,18 +29,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /// Small interface for obtaining exit-on-error information
 /**
- * ArExitErrorSource may be implemented by classes that wish to 
+ * MvrExitErrorSource may be implemented by classes that wish to 
  * provide information if and when they cause an erroneous 
  * application exit.  The use of this interface is entirely at 
- * the discretion of the application.  Aria does not invoke its
+ * the discretion of the application.  Mvria does not invoke its
  * methods.
 **/
-class ArExitErrorSource 
+class MvrExitErrorSource 
 {
 public:
  
   /// Constructor
-  ArExitErrorSource() {}
+  MvrExitErrorSource() {}
 
   /// Destructor
   virtual ~ArExitErrorSource() {}
@@ -75,6 +75,6 @@ public:
   **/
   virtual int getExitErrorCode() const = 0;
 
-}; // end class ArExitErrorSource
+}; // end class MvrExitErrorSource
 
 #endif // AREXITERRORSOURCE_H

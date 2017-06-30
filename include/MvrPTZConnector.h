@@ -33,36 +33,36 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArFunctor.h"
-#include "ArRobotParams.h"
+#include "MvrFunctor.h"
+#include "MvrRobotParams.h"
 #include "ariaInternal.h"
 
-class ArArgumentParser;
-class ArPTZ;
-class ArRobot;
+class MvrArgumentParser;
+class MvrPTZ;
+class MvrRobot;
 
 /** 
  *  @brief Factory for creating and configuring interfaces for pan/tilt units or camera
  *  pan/tilt/zoom control based on robot parameter file and command-line arguments.
  *
- *  First, create an ArPTZConnector object before 
- *  calling Aria::parseArgs().  After connecting to the robot, call
- *  Aria::parseArgs() to check arguments and parameters from the parameter
+ *  First, create an MvrPTZConnector object before 
+ *  calling Mvria::parseArgs().  After connecting to the robot, call
+ *  Mvria::parseArgs() to check arguments and parameters from the parameter
  *  file(s).  Then, call connect() to connect to all configured and enabled PTZs. To get
  *  access to a PTZ objects, use getPTZ(int i) and getNumPTZs(), or getPTZs().
- *  ArPTZ provides an interface to functions that most PTZ implementations
- *  (ArPTZ subclasses) implement. Some PTZ implementations have additional
+ *  MvrPTZ provides an interface to functions that most PTZ implementations
+ *  (MvrPTZ subclasses) implement. Some PTZ implementations have additional
  *  features. Use those subclasse directly to use these additional features
- *  (use dynamic_cast to cast an ArPTZ pointer to a subclass pointer, if
+ *  (use dynamic_cast to cast an MvrPTZ pointer to a subclass pointer, if
  *  possible.)
  *  
- *  ArPTZConnector has built in support for all the PTZ types with support
+ *  MvrPTZConnector has built in support for all the PTZ types with support
  *  included in the ARIA library, and other libraries or programs may register 
- *  new types as well. (For example, the ArVideo library contains support for
+ *  new types as well. (For example, the MvrVideo library contains support for
  *  additional camera PTZ types.)
  *
  * The following command-line arguments are checked:
- * @verbinclude ArPTZConnector_options
+ * @verbinclude MvrPTZConnector_options
  *
  * PTZs are 0-indexed internally in this class, however, argument names,
  * parameter names and log messages displayed to users are 1-indexed. 
@@ -72,12 +72,12 @@ class ArRobot;
   @since 2.7.6
 */
 
-class ArPTZConnector {
+class MvrPTZConnector {
 public:
   /* @arg robot In some cases the robot connection is used to communicate with
    * devices via auxilliary serial connections, so this robot interface is used.
    * May be NULL. */
-  AREXPORT ArPTZConnector(ArArgumentParser* argParser, ArRobot *robot = NULL);
+  AREXPORT MvrPTZConnector(MvrArgumentParser* argParser, MvrRobot *robot = NULL);
   AREXPORT ~ArPTZConnector();
 
   /** For each PTZ specified in program arguments, and in robot parameters with
@@ -95,14 +95,14 @@ public:
   
   /** @return a specific PTZ object that was connected by connect() or
    * connectPTZs(), or NULL if none exists.  These are 0-indexed. */
-  ArPTZ* getPTZ(size_t i = 0) const
+  MvrPTZ* getPTZ(size_t i = 0) const
   {
     if(i >= myConnectedPTZs.size()) return NULL;
     return myConnectedPTZs[i];
   }
   
   /** @copydoc getPTZ(size_t) */
-  ArPTZ* findPTZ(size_t i) const { return getPTZ(i); }
+  MvrPTZ* findPTZ(size_t i) const { return getPTZ(i); }
 
   /** @return list of connected PTZs. 
       0-indexed.  Pointers in the vector may be NULL if no parameters or command
@@ -115,54 +115,54 @@ public:
 
 
 
-  /** Arguments passed to function are PTZ index, parameters, parser (may be
+  /** Mvrguments passed to function are PTZ index, parameters, parser (may be
      * null) and robot object (may be null) */
-  typedef ArRetFunctor4<ArPTZ*, size_t, ArPTZParams, ArArgumentParser*, ArRobot*> PTZCreateFunc;  
-  typedef ArGlobalRetFunctor4<ArPTZ*, size_t, ArPTZParams, ArArgumentParser*, ArRobot*> GlobalPTZCreateFunc;  
+  typedef MvrRetFunctor4<ArPTZ*, size_t, MvrPTZParams, MvrArgumentParser*, MvrRobot*> PTZCreateFunc;  
+  typedef MvrGlobalRetFunctor4<ArPTZ*, size_t, MvrPTZParams, MvrArgumentParser*, MvrRobot*> GlobalPTZCreateFunc;  
 
-  /** Register a new PTZ type. Aria::init() registers PTZ types built in to
-   * ARIA. ArVideo::init() registers new PTZ types implemented in the ArVideo
+  /** Register a new PTZ type. Mvria::init() registers PTZ types built in to
+   * ARIA. MvrVideo::init() registers new PTZ types implemented in the MvrVideo
    * library. You may also add any new PTZ types you create. 
   */
-  AREXPORT static void registerPTZType(const std::string& typeName, ArPTZConnector::PTZCreateFunc* func);
+  AREXPORT static void registerPTZType(const std::string& typeName, MvrPTZConnector::PTZCreateFunc* func);
 
   /** Change limit on number of PTZ devices. 
  * You must call this
- * before creating an ArPTZConnector, parsing command line arguments, connecting
- * to a robot or loading a parameter file, or using ArPTZconnecor to connect to
+ * before creating an MvrPTZConnector, parsing command line arguments, connecting
+ * to a robot or loading a parameter file, or using MvrPTZconnecor to connect to
  * PTZ devices. 
   */
   void setMaxNumPTZs(size_t n)
   {
-    Aria::setMaxNumPTZs(n);
+    Mvria::setMaxNumPTZs(n);
   }
 
   size_t getMaxNumPTZs()
   {
-    return Aria::getMaxNumPTZs();
+    return Mvria::getMaxNumPTZs();
   }
 
   /** Return robot that PTZs are or will be attached to (may be NULL) */
-  ArRobot *getRobot() { return myRobot; }
+  MvrRobot *getRobot() { return myRobot; }
   
 protected:
   bool parseArgs();
-  bool parseArgs(ArArgumentParser *parser);
-  bool parseArgsFor(ArArgumentParser *parser, int which);
+  bool parseArgs(MvrArgumentParser *parser);
+  bool parseArgsFor(MvrArgumentParser *parser, int which);
   AREXPORT void logOptions() const;
-  void populateRobotParams(ArRobotParams *params);
+  void populateRobotParams(MvrRobotParams *params);
 
-  ArArgumentParser *myArgParser;
-  ArRobot *myRobot;
-  ArRetFunctorC<bool, ArPTZConnector> myParseArgsCallback;
-  ArConstFunctorC<ArPTZConnector> myLogOptionsCallback;
+  MvrArgumentParser *myArgParser;
+  MvrRobot *myRobot;
+  MvrRetFunctorC<bool, MvrPTZConnector> myParseArgsCallback;
+  MvrConstFunctorC<ArPTZConnector> myLogOptionsCallback;
   static std::map< std::string, PTZCreateFunc* > ourPTZCreateFuncs;
-  ArFunctor1C<ArPTZConnector, ArRobotParams*> myPopulateRobotParamsCB;
-  std::vector<ArPTZParams> myParams;  ///< copied from ArRobotParams (via myRobot), then in connect() parameters given from command line arguments (myArguments) are merged in.
-  std::vector<ArPTZParams> myArguments; ///< from program command-line options (via the parseArgs() callback called by Aria::parseArgs())
+  MvrFunctor1C<ArPTZConnector, MvrRobotParams*> myPopulateRobotParamsCB;
+  std::vector<ArPTZParams> myParams;  ///< copied from MvrRobotParams (via myRobot), then in connect() parameters given from command line arguments (myArguments) are merged in.
+  std::vector<ArPTZParams> myArguments; ///< from program command-line options (via the parseArgs() callback called by Mvria::parseArgs())
   //std::vector<ArPTZParams> myConfiguredPTZs;  ///< if connecting to a PTZ, its parameters are copied here from myParams and myArguments
   //static size_t ourMaxNumPTZs;
-  std::vector<ArPTZ*> myConnectedPTZs;  ///< ArPTZ objects created and initialized in connect().
+  std::vector<ArPTZ*> myConnectedPTZs;  ///< MvrPTZ objects created and initialized in connect().
 };
 
 

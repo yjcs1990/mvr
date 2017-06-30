@@ -24,10 +24,10 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionLimiterBackwards.h"
-#include "ArRobot.h"
+#include "MvrActionLimiterBackwards.h"
+#include "MvrRobot.h"
 
 /**
    @param name name of the action
@@ -38,47 +38,47 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param widthRatio The ratio of robot width to the width of the region this action checks for sensor readings. 
    @param avoidLocationDependentObstacles If true, stop as the robot nears location-dependent sensed obstacles, if false, ignore them.
 */
-AREXPORT ArActionLimiterBackwards::ArActionLimiterBackwards(
+AREXPORT MvrActionLimiterBackwards::ArActionLimiterBackwards(
 	const char *name, double stopDistance, double slowDistance, 
 	double maxBackwardsSpeed, double widthRatio, 
 	bool avoidLocationDependentObstacles) :
-  ArAction(name,
+  MvrAction(name,
 	   "Slows the robot down so as not to hit anything behind it.")
 {
-  setNextArgument(ArArg("stop distance", &myStopDist, 
+  setNextArgument(MvrArg("stop distance", &myStopDist, 
 			"Distance at which to stop. (mm)"));
   myStopDist = stopDistance;
 
-  setNextArgument(ArArg("slow distance", &mySlowDist, 
+  setNextArgument(MvrArg("slow distance", &mySlowDist, 
 			"Distance at which to slow down. (mm)"));
   mySlowDist = slowDistance;
 
-  setNextArgument(ArArg("maximum backwards speed", &myMaxBackwardsSpeed, 
+  setNextArgument(MvrArg("maximum backwards speed", &myMaxBackwardsSpeed, 
 			 "Maximum backwards speed, scales from this to 0 at stopDistance (-mm/sec)"));
   myMaxBackwardsSpeed = maxBackwardsSpeed;
 
-  setNextArgument(ArArg("width ratio", &myWidthRatio, 
+  setNextArgument(MvrArg("width ratio", &myWidthRatio, 
 			 "The ratio of robot width to how wide an area to check (ratio)"));
   myWidthRatio = widthRatio;
 
-  setNextArgument(ArArg("avoid location dependent obstacles", 
+  setNextArgument(MvrArg("avoid location dependent obstacles", 
 			&myAvoidLocationDependentObstacles, 
 			 "Whether to avoid location dependent obstacles or not"));
   myAvoidLocationDependentObstacles = avoidLocationDependentObstacles;
 }
 
-AREXPORT ArActionLimiterBackwards::~ArActionLimiterBackwards()
+AREXPORT MvrActionLimiterBackwards::~ArActionLimiterBackwards()
 {
 
 }
 
-AREXPORT ArActionDesired *
-ArActionLimiterBackwards::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *
+ArActionLimiterBackwards::fire(MvrActionDesired currentDesired)
 {
   double dist;
   double maxVel;
   
-  double slowStopDist = ArUtil::findMax(myStopDist, mySlowDist);
+  double slowStopDist = MvrUtil::findMax(myStopDist, mySlowDist);
   
 
   myDesired.reset();

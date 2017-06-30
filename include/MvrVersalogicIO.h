@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 //#ifndef SWIG
 
 #include "ariaTypedefs.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 /** @brief Interface to integrated digital and analog I/O interfaces on Versalogic VSBC8 and EBX-12 Cobra computers (digital IO on 2nd * gen.  PatrolBot)
  
@@ -60,7 +60,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   AND the special_control_register output with 0x20 to find the temperature
   bit.
 
-  The destructor closes the device, so just delete the ArVersalogicIO instance
+  The destructor closes the device, so just delete the MvrVersalogicIO instance
   to close the device.
 
   @ingroup OptionalClasses
@@ -69,7 +69,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   @notwindows
 */
  
-class ArVersalogicIO
+class MvrVersalogicIO
 {
 public:
 
@@ -80,7 +80,7 @@ public:
   };
 
   /// Constructor
-  AREXPORT ArVersalogicIO(const char * dev = "/dev/amrio");
+  AREXPORT MvrVersalogicIO(const char * dev = "/dev/amrio");
   /// Destructor
   AREXPORT virtual ~ArVersalogicIO(void);
 
@@ -130,7 +130,7 @@ public:
 
 protected:
 
-  static ArMutex myMutex;
+  static MvrMutex myMutex;
   int myFD;
 
   bool myEnabled;
@@ -143,7 +143,7 @@ protected:
   unsigned char myDigitalBank2;
   unsigned char myDigitalBank3;
 
-  ArRetFunctorC<bool, ArVersalogicIO> myDisconnectCB;
+  MvrRetFunctorC<bool, MvrVersalogicIO> myDisconnectCB;
 };
 
 //#endif // SWIG

@@ -24,13 +24,13 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArBatteryMTX.h"
-#include "ArSensorReading.h"
-//#include "ArRobot.h"
+#include "MvrBatteryMTX.h"
+#include "MvrSensorReading.h"
+//#include "MvrRobot.h"
 #include "ariaOSDef.h"
-#include "ArSerialConnection.h"
+#include "MvrSerialConnection.h"
 #include "ariaInternal.h"
 #include <time.h>
 
@@ -43,7 +43,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif
 
 
-AREXPORT ArBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name, 
+AREXPORT MvrBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name, 
 																			ArDeviceConnection *conn,
 																			ArRobot *robot) :
 	mySensorInterpTask (this, &ArBatteryMTX::sensorInterp),
@@ -53,7 +53,7 @@ AREXPORT ArBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name,
 	myAriaExitCB (this, &ArBatteryMTX::disconnect)
 {
 
-	myInfoLogLevel = ArLog::Normal;
+	myInfoLogLevel = MvrLog::Normal;
 	clear();
 	setRobot (robot);
 
@@ -65,13 +65,13 @@ AREXPORT ArBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name,
 	// searching for the units configured for this
 	// board, then create the unit map
 	if (robot && robot->getRobotParams()) {
-		ArLog::log (ArLog::Verbose, "%s::ArBatteryMTX Battery board %d params",
+		ArLog::log (MvrLog::Verbose, "%s::ArBatteryMTX Battery board %d params",
 		            getName(), myBoardNum);
 	}
 	Aria::addExitCallback (&myAriaExitCB, -10);
-	//myLogLevel = ArLog::Verbose;
-	//myLogLevel = ArLog::Terse;
-	myLogLevel = ArLog::Normal;
+	//myLogLevel = MvrLog::Verbose;
+	//myLogLevel = MvrLog::Terse;
+	myLogLevel = MvrLog::Normal;
   myRobotRunningAndConnected = false;
 
   myStatusFlags = 0;
@@ -83,36 +83,36 @@ AREXPORT ArBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name,
 }
 
 
-AREXPORT ArBatteryMTX::~ArBatteryMTX()
+AREXPORT MvrBatteryMTX::~ArBatteryMTX()
 {
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask (&myProcessCB);
 	}
-  Aria::remExitCallback(&myAriaExitCB);
+  Mvria::remExitCallback(&myAriaExitCB);
 }
 
-AREXPORT int ArBatteryMTX::getAsyncConnectState()
+AREXPORT int MvrBatteryMTX::getAsyncConnectState()
 {
 	return myAsyncConnectState;
 }
 
 
-AREXPORT void ArBatteryMTX::setDeviceConnection (
-  ArDeviceConnection *conn)
+AREXPORT void MvrBatteryMTX::setDeviceConnection (
+  MvrDeviceConnection *conn)
 {
 	myConn = conn;
   myConn->setDeviceName(getName());
 }
 
-AREXPORT ArDeviceConnection *ArBatteryMTX::getDeviceConnection (void)
+AREXPORT MvrDeviceConnection *ArBatteryMTX::getDeviceConnection (void)
 {
 	return myConn;
 }
 
-AREXPORT void ArBatteryMTX::requestContinuousSysInfoPackets (void)
+AREXPORT void MvrBatteryMTX::requestContinuousSysInfoPackets (void)
 {
 	if (myIsConnected) {
-		ArLog::log (ArLog::Verbose,
+		ArLog::log (MvrLog::Verbose,
 		            "%s:requestContinuousSysInfoPackets - Sending....",
 		            getName());
 		sendSystemInfo (SEND_CONTINUOUS);
@@ -121,10 +121,10 @@ AREXPORT void ArBatteryMTX::requestContinuousSysInfoPackets (void)
 }
 
 
-AREXPORT void ArBatteryMTX::stopSysInfoPackets (void)
+AREXPORT void MvrBatteryMTX::stopSysInfoPackets (void)
 {
 	if (myIsConnected) {
-		ArLog::log (ArLog::Verbose,
+		ArLog::log (MvrLog::Verbose,
 		            "%s:stopSysInfoPackets - Stopping....",
 		            getName());
 		sendSystemInfo (STOP_SENDING);
@@ -132,15 +132,15 @@ AREXPORT void ArBatteryMTX::stopSysInfoPackets (void)
 	}
 }
 
-AREXPORT bool ArBatteryMTX::haveRequestedSysInfoPackets (void)
+AREXPORT bool MvrBatteryMTX::haveRequestedSysInfoPackets (void)
 {
 	return myRequestedSysInfoBatteryPackets;
 }
 
-AREXPORT void ArBatteryMTX::requestContinuousCellInfoPackets (void)
+AREXPORT void MvrBatteryMTX::requestContinuousCellInfoPackets (void)
 {
 	if (myIsConnected) {
-		ArLog::log (ArLog::Verbose,
+		ArLog::log (MvrLog::Verbose,
 		            "%s:requestContinuousCellInfoPackets - Sending....",
 		            getName());
 		sendCellInfo (SEND_CONTINUOUS);
@@ -148,10 +148,10 @@ AREXPORT void ArBatteryMTX::requestContinuousCellInfoPackets (void)
 	}
 }
 
-AREXPORT void ArBatteryMTX::stopCellInfoPackets (void)
+AREXPORT void MvrBatteryMTX::stopCellInfoPackets (void)
 {
 	if (myIsConnected) {
-		ArLog::log (ArLog::Verbose,
+		ArLog::log (MvrLog::Verbose,
 		            "%s:stopCellInfoPackets - Stopping....",
 		            getName());
 		sendCellInfo (STOP_SENDING);
@@ -159,12 +159,12 @@ AREXPORT void ArBatteryMTX::stopCellInfoPackets (void)
 	}
 }
 
-AREXPORT bool ArBatteryMTX::haveRequestedCellInfoPackets (void)
+AREXPORT bool MvrBatteryMTX::haveRequestedCellInfoPackets (void)
 {
 	return myRequestedCellInfoBatteryPackets;
 }
 
-AREXPORT void ArBatteryMTX::setRobot (ArRobot *robot)
+AREXPORT void MvrBatteryMTX::setRobot (MvrRobot *robot)
 {
 	myRobot = robot;
 	// this is the code from the laser, i changed the priority to 20 from 90
@@ -175,14 +175,14 @@ AREXPORT void ArBatteryMTX::setRobot (ArRobot *robot)
 	}
 }
 
-void ArBatteryMTX::clear (void)
+void MvrBatteryMTX::clear (void)
 {
 	myIsConnected = false;
 	myTryingToConnect = false;
 	myStartConnect = false;
 }
 
-AREXPORT void ArBatteryMTX::batterySetName (const char *name)
+AREXPORT void MvrBatteryMTX::batterySetName (const char *name)
 {
 	myName = name;
 	myDeviceMutex.setLogNameVar ("%s::myDeviceMutex", getName());
@@ -194,17 +194,17 @@ AREXPORT void ArBatteryMTX::batterySetName (const char *name)
 
 }
 
-AREXPORT bool ArBatteryMTX::disconnect (void)
+AREXPORT bool MvrBatteryMTX::disconnect (void)
 {
 	if (!isConnected())
 		return true;
-	ArLog::log (ArLog::Normal, "%s: Disconnecting", getName());
+	ArLog::log (MvrLog::Normal, "%s: Disconnecting", getName());
   if(myConn)
     myConn->close();
 	return true;
 }
 
-AREXPORT int ArBatteryMTX::getReadingCount()
+AREXPORT int MvrBatteryMTX::getReadingCount()
 {
   if (myTimeLastReading == time(NULL))
     return myReadingCount;
@@ -213,7 +213,7 @@ AREXPORT int ArBatteryMTX::getReadingCount()
   return 0;
 }
 
-AREXPORT void ArBatteryMTX::internalGotReading(void)
+AREXPORT void MvrBatteryMTX::internalGotReading(void)
 {
   if (myTimeLastReading != time(NULL)) 
   {
@@ -227,9 +227,9 @@ AREXPORT void ArBatteryMTX::internalGotReading(void)
   
 }
 
-void ArBatteryMTX::failedToConnect (void)
+void MvrBatteryMTX::failedToConnect (void)
 {
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	            "%s:failedToConnect Cound not connect to battery",
 	            getName());
 	myDeviceMutex.lock();
@@ -237,7 +237,7 @@ void ArBatteryMTX::failedToConnect (void)
 	myDeviceMutex.unlock();
 }
 
-void ArBatteryMTX::sensorInterp (void)
+void MvrBatteryMTX::sensorInterp (void)
 {
 	//ArBatteryMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -258,13 +258,13 @@ void ArBatteryMTX::sensorInterp (void)
 		case
 				SYSTEM_INFO: {
 				if (packet->getLength() != SYSTEM_INFO_SIZE) {
-					ArLog::log (ArLog::Normal,
+					ArLog::log (MvrLog::Normal,
 					            "%s:sensorInterp Could not process packet, command (%d) or packet length (%d) is invalid",
 					            getName(), buf[3], packet->getLength());
 					delete packet;
 					continue;
 				}
-				//ArLog::log (ArLog::Normal,
+				//ArLog::log (MvrLog::Normal,
 				//							"%s:sensorInterp Received System Info packet",
 				//							getName());
 
@@ -279,7 +279,7 @@ void ArBatteryMTX::sensorInterp (void)
 		case
 				CELL_INFO: {
 				if (packet->getLength() != CELL_INFO_SIZE) {
-					ArLog::log (ArLog::Normal,
+					ArLog::log (MvrLog::Normal,
 					            "%s:sensorInterp Could not process packet, command (%d) or packet length (%d) is invalid",
 					            getName(), buf[3], packet->getLength());
 					delete packet;
@@ -290,7 +290,7 @@ void ArBatteryMTX::sensorInterp (void)
 				myLastReading.setToNow();
 				internalGotReading();
 
-				//ArLog::log (ArLog::Normal,
+				//ArLog::log (MvrLog::Normal,
 				//            "%s:sensorInterp Received Cell Info packet",
 				//            getName());
 				updateCellInfo (&buf[3]);
@@ -300,7 +300,7 @@ void ArBatteryMTX::sensorInterp (void)
 		case
 				BASIC_INFO: {
 				if (packet->getLength() != BASIC_INFO_SIZE) {
-					ArLog::log (ArLog::Normal,
+					ArLog::log (MvrLog::Normal,
 					            "%s:sensorInterp Could not process packet, command (%d) or packet length (%d) is invalid",
 					            getName(), buf[3], packet->getLength());
 					delete packet;
@@ -321,20 +321,20 @@ void ArBatteryMTX::sensorInterp (void)
 					sprintf (&obuf[j], "_%02x", buf[i]);
 					j= j+3;
 				}
-				ArLog::log (ArLog::Normal,
+				ArLog::log (MvrLog::Normal,
 				            "%s::sensorInterp() packet = %s",getName(), obuf);
 #endif
 				updateBasicInfo (&buf[3]);
 				/*
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s:sensorInterp charge estimate is %.2f%%",getName(), myChargeEstimate);
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s:sensorInterp current draw is %d",getName(), myCurrentDraw);
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s:sensorInterp pack voltage is %d",getName(), myPackVoltage);
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s:sensorInterp status flag %x",getName(), myStatusFlags);
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s:sensorInterp error flag %x",getName(), myErrorFlags);
 				*/
 				myDeviceMutex.lock();
@@ -348,7 +348,7 @@ void ArBatteryMTX::sensorInterp (void)
 }
 
 
-void ArBatteryMTX::interpBasicInfo(void)
+void MvrBatteryMTX::interpBasicInfo(void)
 {
   // If we don't think we're on a charger, or if the charger isn't on
   // put us to the not charging state
@@ -357,7 +357,7 @@ void ArBatteryMTX::interpBasicInfo(void)
       (!(myStatusFlags & STATUS_CHARGER_ON) && 
        !(myStatusFlags & STATUS_CHARGING)))
   {
-    myChargeState = ArRobot::CHARGING_NOT;
+    myChargeState = MvrRobot::CHARGING_NOT;
   } 
   else
   {
@@ -365,23 +365,23 @@ void ArBatteryMTX::interpBasicInfo(void)
     /* Taking this out so that we won't think we're docked when we're
     // not really charging...  if we're in the not charging state but
     // we see the charger is on toss it in bulk
-    if (myChargeState == ArRobot::CHARGING_NOT && 
+    if (myChargeState == MvrRobot::CHARGING_NOT && 
 	(myStatusFlags & STATUS_CHARGING))
-      myChargeState = ArRobot::CHARGING_BULK;
+      myChargeState = MvrRobot::CHARGING_BULK;
     */
     // if we're in the not charging state or if the charger is on but
     // we start charging toss it in overcharge
-    if ((myChargeState == ArRobot::CHARGING_NOT ||
-	 myChargeState == ArRobot::CHARGING_BULK)
+    if ((myChargeState == MvrRobot::CHARGING_NOT ||
+	 myChargeState == MvrRobot::CHARGING_BULK)
 	 && (myStatusFlags & STATUS_CHARGING))
-      myChargeState = ArRobot::CHARGING_OVERCHARGE;
+      myChargeState = MvrRobot::CHARGING_OVERCHARGE;
 
     // if we're in overcharge but we aren't charging anymore then bump
     // us up to float (don't worry about if we're not on the charger,
     // since that's handled above)
-    if (myChargeState == ArRobot::CHARGING_OVERCHARGE &&
+    if (myChargeState == MvrRobot::CHARGING_OVERCHARGE &&
 	! (myStatusFlags & STATUS_CHARGING))
-      myChargeState = ArRobot::CHARGING_FLOAT;
+      myChargeState = MvrRobot::CHARGING_FLOAT;
 
   }
 
@@ -398,7 +398,7 @@ void ArBatteryMTX::interpBasicInfo(void)
 
   if (myStatusFlags & STATUS_ON_BUTTON_PRESSED)
   {
-    ArLog::log(ArLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "BatteryMTX(%d) enabling motors because on button pressed",
 	       myBoardNum);
     myRobot->enableMotors();
@@ -425,7 +425,7 @@ void ArBatteryMTX::interpBasicInfo(void)
 
 }
 
-void ArBatteryMTX::interpErrors(void)
+void MvrBatteryMTX::interpErrors(void)
 {
   // reset the current error conditions 
   myErrorString = "";
@@ -435,7 +435,7 @@ void ArBatteryMTX::interpErrors(void)
   // just note we have no errors and clear that it's our first check
   if (myFirstErrorFlagsCheck && myErrorFlags == 0)
   {
-    ArLog::log(ArLog::Normal, "%s: Connected with no errors", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Connected with no errors", getName());
   } 
   // if our errors have changed or it's our first one then log the errors
   else if (myErrorFlags != myLastErrorFlags || myFirstErrorFlagsCheck)
@@ -452,11 +452,11 @@ void ArBatteryMTX::interpErrors(void)
     checkAndSetCurrentErrors(ERROR_CHARGER_CIRCUIT_FAULT, "Charger_Circuit_Fault");
 
     if (myFirstErrorFlagsCheck)
-      ArLog::log(ArLog::Normal, "%s: Connected with error flag of 0x%04x, count of %d, and string of '%s'.", 
+      MvrLog::log(MvrLog::Normal, "%s: Connected with error flag of 0x%04x, count of %d, and string of '%s'.", 
 		 getName(),
 		 myErrorFlags, myErrorCount, myErrorString.c_str());
     else
-      ArLog::log(ArLog::Normal, "%s: Error flags changed to 0x%04x, count of %d, and string of '%s'.  Last error flags 0x%04x, count of %d, and string of '%s'.", 
+      MvrLog::log(MvrLog::Normal, "%s: Error flags changed to 0x%04x, count of %d, and string of '%s'.  Last error flags 0x%04x, count of %d, and string of '%s'.", 
 		 getName(), 
 		 myErrorFlags, myErrorCount, myErrorString.c_str(),
 		 myLastErrorFlags, myLastErrorCount, myLastErrorString.c_str());
@@ -465,13 +465,13 @@ void ArBatteryMTX::interpErrors(void)
     {
       if (!myHaveSetRTC) 
       {
-	ArLog::log(ArLog::Normal, "%s: Setting RTC since it hasn't been set this run and there's an error with it", getName());
+	ArLog::log(MvrLog::Normal, "%s: Setting RTC since it hasn't been set this run and there's an error with it", getName());
 	sendSetRealTimeClock(time(NULL));
 	myHaveSetRTC = true;
       }
       else
       {
-	ArLog::log(ArLog::Normal, "%s: Not setting RTC since it's already been set once this run", getName());
+	ArLog::log(MvrLog::Normal, "%s: Not setting RTC since it's already been set once this run", getName());
       }	
     }
   }
@@ -482,7 +482,7 @@ void ArBatteryMTX::interpErrors(void)
   myLastErrorString = myErrorString;
 }
 
-void ArBatteryMTX::checkAndSetCurrentErrors(ErrorFlags errorFlag, 
+void MvrBatteryMTX::checkAndSetCurrentErrors(ErrorFlags errorFlag, 
 					    const char *errorString)
 {
   // if there was no error return
@@ -500,7 +500,7 @@ void ArBatteryMTX::checkAndSetCurrentErrors(ErrorFlags errorFlag,
   myErrorCount++;
 }
 
-AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTracking)
+AREXPORT bool MvrBatteryMTX::blockingConnect (bool sendTracking, bool recvTracking)
 {
 	mySendTracking = sendTracking;
 	myRecvTracking = recvTracking;
@@ -509,7 +509,7 @@ AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTrackin
 
 	myDeviceMutex.lock();
 	if (myConn == NULL) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s: Could not connect because there is no connection defined",
 		            getName());
 		myDeviceMutex.unlock();
@@ -520,10 +520,10 @@ AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTrackin
 	serConn = dynamic_cast<ArSerialConnection *> (myConn);
 	if (serConn != NULL)
 		serConn->setBaud (115200);
-	if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 	    && !myConn->openSimple()) {
 		ArLog::log (
-		  ArLog::Terse,
+		  MvrLog::Terse,
 		  "%s: Could not connect because the connection was not open and could not open it",
 		  getName());
 		myDeviceMutex.unlock();
@@ -534,13 +534,13 @@ AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTrackin
 	//myReceiver->setSync1(HEADER1);
 	//m/yReceiver.setSync2(HEADER2);
 
-	myReceiver = new ArRobotPacketReceiver(myConn, true, HEADER1, HEADER2, 
+	myReceiver = new MvrRobotPacketReceiver(myConn, true, HEADER1, HEADER2, 
 																					myRecvTracking,
-																					"ArBatteryMTX");
+																					"MvrBatteryMTX");
 
-	mySender = new ArRobotPacketSender(myConn, HEADER1, HEADER2, 
+	mySender = new MvrRobotPacketSender(myConn, HEADER1, HEADER2, 
 																					mySendTracking,
-																					"ArBatteryMTX");
+																					"MvrBatteryMTX");
 
 	//myReceiver->setInfoLogLevel (myInfoLogLevel);
 	//myReceiver->setMyName (getName());
@@ -552,25 +552,25 @@ AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTrackin
 	myDeviceMutex.unlock();
 	ArTime timeDone;
 	if (!timeDone.addMSec (30 * 1000)) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() error adding msecs (30 * 1000)",
 		            getName());
 	}
 	// first stop all sending by sending a stop basic, stop info and stop cell
 	if (!sendBasicInfo (STOP_SENDING)) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not send Basic Info Request to Battery", getName());
 		failedToConnect();
 		return false;
 	}
 	if (!sendSystemInfo (STOP_SENDING)) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not send System Info Request to Battery", getName());
 		failedToConnect();
 		return false;
 	}
 	if (!sendCellInfo (STOP_SENDING)) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not send Cell Info Request to Battery", getName());
 		failedToConnect();
 		return false;
@@ -579,29 +579,29 @@ AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTrackin
 	// second step is to send system and cell info requests and get responses
 
 	if (!getSystemInfo()) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not get System Info from Battery", getName());
 		failedToConnect();
 		return false;
 	}
 
-  logBatteryInfo(ArLog::Verbose);
+  logBatteryInfo(MvrLog::Verbose);
 
 	// second step is send cell info requests and get response
 	if (!getCellInfo()) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not get Cell Info from Battery", getName());
 		failedToConnect();
 		return false;
 	}
 
-  logCellInfo(ArLog::Verbose);
+  logCellInfo(MvrLog::Verbose);
 
 
 //#endif
 	// third step is get one basic info packet so we can log the results
 	if (!getBasicInfo()) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not get Basic Info from Battery", getName());
 		failedToConnect();
 		return false;
@@ -618,26 +618,26 @@ AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTrackin
 		  true,
 		  myChargeEstimate);
 	}
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	            "%s Basic Info - Charge Estimate is %g",getName(), myChargeEstimate);
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	            "%s Basic Info - Current Draw is %g",getName(), myCurrentDraw);
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	            "%s Basic Info - Pack Voltage is %g",getName(), myPackVoltage);
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	            "%s Basic Info - Status Flags 0x%02x",getName(), myStatusFlags);
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	            "%s Basic Info - Error Flags 0x%02x",getName(), myErrorFlags);
 	// and finally send the basic request and start the continuous sending
 	if (!sendBasicInfo (SEND_CONTINUOUS)) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not send Basic Info Request to Battery", getName());
 		failedToConnect();
 		return false;
 	}
 	myIsConnected = true;
 	myTryingToConnect = false;
-	ArLog::log (ArLog::Normal, "%s: Connection successful",
+	ArLog::log (MvrLog::Normal, "%s: Connection successful",
 	            getName());
 
   myLastReading.setToNow();
@@ -646,12 +646,12 @@ AREXPORT bool ArBatteryMTX::blockingConnect (bool sendTracking, bool recvTrackin
 	return true;
 } // end blockingConnect
 
-AREXPORT const char * ArBatteryMTX::getName (void) const
+AREXPORT const char * MvrBatteryMTX::getName (void) const
 {
 	return myName.c_str();
 }
 
-AREXPORT void * ArBatteryMTX::runThread (void *arg)
+AREXPORT void * MvrBatteryMTX::runThread (void *arg)
 {
 	//ArBatteryMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -671,7 +671,7 @@ while (getRunning() )
 	// if we have a robot but it isn't running yet then don't have a
 	// connection failure
 	if (getRunning() && myIsConnected && checkLostConnection() ) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::runThread()  Lost connection to the MTX battery because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 		            myLastReading.mSecSince() / 1000.0,
 		            getConnectionTimeoutSeconds() );
@@ -688,11 +688,11 @@ while (getRunning() )
 		   loosing connection anytime we lose one packet
 		   (which'll always happen sometimes on serial).
 		if (getRunning() && myIsConnected) {
-			//ArLog::log (ArLog::Normal,
+			//ArLog::log (MvrLog::Normal,
 			//            "%s::runThread()  Lost connection to the battery because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 			//            myLastReading.mSecSince() / 1000.0,
 			//            getConnectionTimeoutSeconds() );
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::runThread()  Lost connection to the battery because of error %d %d", getName(), getRunning(), myIsConnected);
 			myIsConnected = false;
 			//laserDisconnectOnError();
@@ -712,7 +712,7 @@ while (getRunning() )
    getConnectionTimeoutSeconds.  If there is a robot then it will not
    start the check until the battery is running and connected.
 **/
-AREXPORT bool ArBatteryMTX::checkLostConnection(void)
+AREXPORT bool MvrBatteryMTX::checkLostConnection(void)
 {
 	
   if ((myRobot == NULL || myRobotRunningAndConnected) && 
@@ -730,13 +730,13 @@ AREXPORT bool ArBatteryMTX::checkLostConnection(void)
   return false;
 }
 
-AREXPORT void ArBatteryMTX::disconnectOnError(void)
+AREXPORT void MvrBatteryMTX::disconnectOnError(void)
 {
-  ArLog::log(ArLog::Normal, "%s: Disconnected because of error", getName());
+  MvrLog::log(MvrLog::Normal, "%s: Disconnected because of error", getName());
   myDisconnectOnErrorCBList.invoke();
 }
 
-AREXPORT bool ArBatteryMTX::sendSystemInfo (unsigned char dataValue)
+AREXPORT bool MvrBatteryMTX::sendSystemInfo (unsigned char dataValue)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -745,14 +745,14 @@ AREXPORT bool ArBatteryMTX::sendSystemInfo (unsigned char dataValue)
 	sendPacket.uByteToBuf (dataValue);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendSystemInfo() Could not send system info request to Battery (%d)", 
 								getName(), dataValue);
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sentSystemInfo() System Info request sent to Battery (%d)", 
 								getName(), dataValue);
 	); // end IFDEBUG
@@ -760,7 +760,7 @@ AREXPORT bool ArBatteryMTX::sendSystemInfo (unsigned char dataValue)
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendCellInfo (unsigned char dataValue)
+AREXPORT bool MvrBatteryMTX::sendCellInfo (unsigned char dataValue)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -768,14 +768,14 @@ AREXPORT bool ArBatteryMTX::sendCellInfo (unsigned char dataValue)
 	sendPacket.uByteToBuf (dataValue);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendCellInfo() Could not send cell info request to Battery (%d)", 
 								getName(), dataValue);
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendCellInfo() Cell Info request sent to Battery (%d)", 
 								getName(), dataValue);
 	); // end IFDEBUG
@@ -783,7 +783,7 @@ AREXPORT bool ArBatteryMTX::sendCellInfo (unsigned char dataValue)
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendBasicInfo (unsigned char dataValue)
+AREXPORT bool MvrBatteryMTX::sendBasicInfo (unsigned char dataValue)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -791,14 +791,14 @@ AREXPORT bool ArBatteryMTX::sendBasicInfo (unsigned char dataValue)
 	sendPacket.uByteToBuf (dataValue);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendBasicInfo() Could not send basic info request to Battery (%d)",
 								getName(), dataValue);
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendBasicInfo() Basic Info request sent to Battery (%d)", 
 								getName(), dataValue);
 	); // end IFDEBUG
@@ -806,86 +806,86 @@ AREXPORT bool ArBatteryMTX::sendBasicInfo (unsigned char dataValue)
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendPowerOff()
+AREXPORT bool MvrBatteryMTX::sendPowerOff()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (POWER_OFF_REQUEST);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendPowerOff() Could not send poweroff request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendPowerOff() Power Off request sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendPowerOffCancel()
+AREXPORT bool MvrBatteryMTX::sendPowerOffCancel()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (POWER_OFF_CANCEL);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendPowerOffCancel() Could not send power off cancel request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendPowerOffCancel() Power Off Cancel request sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendStopCharging()
+AREXPORT bool MvrBatteryMTX::sendStopCharging()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (STOP_CHARGING);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendStopCharging() Could not send stop charging request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendStopCharging() Stop Charging request sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendStartCharging()
+AREXPORT bool MvrBatteryMTX::sendStartCharging()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (START_CHARGING);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendStartCharging() Could not send start charging request to Battery", getName());
 		return false;
 	}
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendStartCharging() Start Charging request sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendSetPowerOffDelay (unsigned int msDelay)
+AREXPORT bool MvrBatteryMTX::sendSetPowerOffDelay (unsigned int msDelay)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -893,20 +893,20 @@ AREXPORT bool ArBatteryMTX::sendSetPowerOffDelay (unsigned int msDelay)
 	sendPacket.uByte4ToBuf (msDelay);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendSetPowerOffDelay() Could not send power off delay request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetPowerOffDelay() Set Power Off Delay sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendSetRealTimeClock (unsigned int secSinceEpoch)
+AREXPORT bool MvrBatteryMTX::sendSetRealTimeClock (unsigned int secSinceEpoch)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -914,40 +914,40 @@ AREXPORT bool ArBatteryMTX::sendSetRealTimeClock (unsigned int secSinceEpoch)
 	sendPacket.uByte4ToBuf (secSinceEpoch);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendSetRealTimeClock() Could not send set real time clock request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetRealTimeClock() Set Real Time Clock sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendResetCellData()
+AREXPORT bool MvrBatteryMTX::sendResetCellData()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (RESET_CELL_DATA);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendResetCellData() Could not send reset cell data request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendResetCellData() Reset Cell Data sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendSetReserveValue (unsigned short hundredthOfPercent)
+AREXPORT bool MvrBatteryMTX::sendSetReserveValue (unsigned short hundredthOfPercent)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -955,20 +955,20 @@ AREXPORT bool ArBatteryMTX::sendSetReserveValue (unsigned short hundredthOfPerce
 	sendPacket.uByte4ToBuf (hundredthOfPercent);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendSetReserveValue() Could not send set reserve value request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetReserveValue() Set Reserve Value sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendSetBalanceValue (unsigned short hundredthOfPercent)
+AREXPORT bool MvrBatteryMTX::sendSetBalanceValue (unsigned short hundredthOfPercent)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -976,20 +976,20 @@ AREXPORT bool ArBatteryMTX::sendSetBalanceValue (unsigned short hundredthOfPerce
 	sendPacket.uByte4ToBuf (hundredthOfPercent);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendSetBalanceValue() Could not send set balance value request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetBalanceValue() Set Balance Value sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::sendEmergencyPowerOff()
+AREXPORT bool MvrBatteryMTX::sendEmergencyPowerOff()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -997,20 +997,20 @@ AREXPORT bool ArBatteryMTX::sendEmergencyPowerOff()
 	sendPacket.setID (EMERGENCY_OFF);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (ArLog::Terse,
+		ArLog::log (MvrLog::Terse,
 		            "%s::sendEmergencyPowerOff() Could not send emergency off request to Battery", getName());
 		return false;
 	}
 
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendEmergencyPowerOff() Emergency Off sent to Battery", getName());
 	); // end IFDEBUG
 
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::getSystemInfo()
+AREXPORT bool MvrBatteryMTX::getSystemInfo()
 {
 	//ArBatteryMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -1019,7 +1019,7 @@ AREXPORT bool ArBatteryMTX::getSystemInfo()
 	unsigned char *buf;
 	for (int i = 0; i < 5; i++) {
 		if (!sendSystemInfo (SEND_ONCE)) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getSystemInfo() Could not send system info to battery",
 			            getName());
 			return false;
@@ -1028,7 +1028,7 @@ AREXPORT bool ArBatteryMTX::getSystemInfo()
 		
 		packet = myReceiver->receivePacket (1000);
 		if (packet == NULL) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getSystemInfo() No response to get system info - resending", getName());
 			continue;
 		}
@@ -1036,7 +1036,7 @@ AREXPORT bool ArBatteryMTX::getSystemInfo()
 		// verify
 		//if ( (buf[0] != SYSTEM_INFO) || (packet->getLength() != SYSTEM_INFO_SIZE)) {
 		if ( (packet->getID() != SYSTEM_INFO) || (packet->getLength() != SYSTEM_INFO_SIZE)) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getSystemInfo() Invalid response from battery to get system info (0x%x 0x%x)",
 			            getName(), packet->getID(), packet->getLength());
 			delete packet;
@@ -1049,18 +1049,18 @@ AREXPORT bool ArBatteryMTX::getSystemInfo()
 		}
 	} // endfor
 	if (!gotPacket) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::getSystemInfo() Cannot get system info from battery",
 		            getName());
 		return false;
 	}
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::getSystemInfo() - successful", getName()));
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::getBasicInfo()
+AREXPORT bool MvrBatteryMTX::getBasicInfo()
 {
 	//ArBatteryMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -1069,7 +1069,7 @@ AREXPORT bool ArBatteryMTX::getBasicInfo()
 	unsigned char *buf;
 	for (int i = 0; i < 5; i++) {
 		if (!sendBasicInfo (SEND_ONCE)) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getBasicInfo() Could not send basic info to battery",
 			            getName());
 			return false;
@@ -1079,14 +1079,14 @@ AREXPORT bool ArBatteryMTX::getBasicInfo()
 
 		packet = myReceiver->receivePacket (1000);
 		if (packet == NULL) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getBasicInfo() No response to get basic info - resending", getName());
 			continue;
 		}
 		buf = (unsigned char *) packet->getBuf();
 		// verify
 		if ( (packet->getID() != BASIC_INFO) || (packet->getLength() != BASIC_INFO_SIZE)) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getBasicInfo() Invalid response from battery to get basic info (0x%x 0x%x)",
 			            getName(), packet->getID(), packet->getLength());
 			delete packet;
@@ -1100,7 +1100,7 @@ AREXPORT bool ArBatteryMTX::getBasicInfo()
 				j= j+3;
 			}
 IFDEBUG(
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getBasicInfo() packet = %s",getName(), obuf);
 )
 			updateBasicInfo (&buf[3]);
@@ -1110,18 +1110,18 @@ IFDEBUG(
 		}
 	} // endfor
 	if (!gotPacket) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::getBasicInfo() Cannot get basic info from battery",
 		            getName());
 		return false;
 	}
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::getBasicInfo() - successful", getName()));
 	return true;
 }
 
-AREXPORT bool ArBatteryMTX::getCellInfo()
+AREXPORT bool MvrBatteryMTX::getCellInfo()
 {
 	unsigned char *buf;
 	//ArBatteryMTXPacket *packet;
@@ -1129,7 +1129,7 @@ AREXPORT bool ArBatteryMTX::getCellInfo()
 	bool gotPacket = false;
 	for (int i = 0; i < 5; i++) {
 		if (!sendCellInfo (SEND_ONCE)) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getCellInfo() Could not send cell info to battery",
 			            getName());
 			return false;
@@ -1138,7 +1138,7 @@ AREXPORT bool ArBatteryMTX::getCellInfo()
 
 		packet = myReceiver->receivePacket (1000);
 		if (packet == NULL) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getCellInfo() No response to get cell info - resending", getName());
 			continue;
 		}
@@ -1148,7 +1148,7 @@ AREXPORT bool ArBatteryMTX::getCellInfo()
 		buf = (unsigned char *) packet->getBuf();
 		// verify
 		if ( (packet->getID() != CELL_INFO) || (packet->getLength() != CELL_INFO_SIZE)) {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			            "%s::getCellInfo() Invalid response from battery to get cell info (0x%x 0x%x)",
 			            getName(), packet->getID(), packet->getLength());
 			delete packet;
@@ -1161,18 +1161,18 @@ AREXPORT bool ArBatteryMTX::getCellInfo()
 		}
 	} // endfor
 	if (!gotPacket) {
-		ArLog::log (ArLog::Normal,
+		ArLog::log (MvrLog::Normal,
 		            "%s::getCellInfo() Cannot get cell info from battery",
 		            getName());
 		return false;
 	}
 	IFDEBUG (
-	  ArLog::log (ArLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::getCellInfo() - successful", getName()));
 	return true;
 }
 
-AREXPORT void ArBatteryMTX::updateSystemInfo (unsigned char *buf)
+AREXPORT void MvrBatteryMTX::updateSystemInfo (unsigned char *buf)
 {
 	myId = buf[1];
 	myFirmwareVersion = buf[2];
@@ -1204,7 +1204,7 @@ AREXPORT void ArBatteryMTX::updateSystemInfo (unsigned char *buf)
 	myReserveChargeValue = myRawReserveChargeValue / 100.0;
 }
 
-AREXPORT void ArBatteryMTX::updateCellInfo (unsigned char *buf)
+AREXPORT void MvrBatteryMTX::updateCellInfo (unsigned char *buf)
 {
 	myNumCells = buf[1];
 	int idx;
@@ -1222,7 +1222,7 @@ AREXPORT void ArBatteryMTX::updateCellInfo (unsigned char *buf)
 	}
 }
 
-AREXPORT void ArBatteryMTX::updateBasicInfo (unsigned char *buf)
+AREXPORT void MvrBatteryMTX::updateBasicInfo (unsigned char *buf)
 {
 	myRawChargeEstimate = buf[2] << 8 | buf[1];
 	myChargeEstimate = myRawChargeEstimate / 100.0;
@@ -1235,7 +1235,7 @@ AREXPORT void ArBatteryMTX::updateBasicInfo (unsigned char *buf)
 }
 
 
-AREXPORT void ArBatteryMTX::logBatteryInfo(ArLog::LogLevel level)
+AREXPORT void MvrBatteryMTX::logBatteryInfo(MvrLog::LogLevel level)
 {
 	ArLog::log (level,
 	            "%s ID = %d", getName(), myId);
@@ -1277,7 +1277,7 @@ AREXPORT void ArBatteryMTX::logBatteryInfo(ArLog::LogLevel level)
 	            "%s Reserve Charge Value = %g", getName(), myReserveChargeValue);
 }
 
-AREXPORT void ArBatteryMTX::logCellInfo(ArLog::LogLevel level)
+AREXPORT void MvrBatteryMTX::logCellInfo(MvrLog::LogLevel level)
 {
 	ArLog::log (level,
 	            "%s Number of Cells = %d", getName(), myNumCells);

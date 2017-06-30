@@ -28,56 +28,56 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARSONARCONNECTOR_H
 
 #include "ariaTypedefs.h"
-#include "ArSerialConnection.h"
-#include "ArTcpConnection.h"
-#include "ArArgumentBuilder.h"
-#include "ArArgumentParser.h"
+#include "MvrSerialConnection.h"
+#include "MvrTcpConnection.h"
+#include "MvrArgumentBuilder.h"
+#include "MvrArgumentParser.h"
 #include "ariaUtil.h"
-#include "ArRobotConnector.h"
+#include "MvrRobotConnector.h"
 
-class ArSonarMTX;
-class ArRobot;
+class MvrSonarMTX;
+class MvrRobot;
 
 
 
 /// Connect to sonar based on robot parameters and command-line arguments
 /**
 
-   ArSonarConnector makes a sonar connection either through a serial port 
+   MvrSonarConnector makes a sonar connection either through a serial port 
    connection.
-   When you create your ArSonarConnector, pass it command line parameters via
+   When you create your MvrSonarConnector, pass it command line parameters via
    either the argc and argv variables from main(), or pass it an
-   ArArgumentBuilder or ArArgumentParser object. (ArArgumentBuilder
+   MvrArgumentBuilder or MvrArgumentParser object. (MvrArgumentBuilder
    is able to obtain command line parameters from a Windows program
    that uses WinMain() instead of main()).
-   ArSonarConnector registers a callback with the global Aria class. Use
-   Aria::parseArgs() to parse all command line parameters to the program, and
-   Aria::logOptions() to print out information about all registered command-line parameters.
+   MvrSonarConnector registers a callback with the global Mvria class. Use
+   Mvria::parseArgs() to parse all command line parameters to the program, and
+   Mvria::logOptions() to print out information about all registered command-line parameters.
 
    The following command-line arguments are checked:
-   @verbinclude ArSonarConnector_options
+   @verbinclude MvrSonarConnector_options
 
    To connect to any sonars that were set up in the robot parameter file or
    via command line arguments, call connectSonars().  If successful, 
    connectSonars() will return true and add an entry for each sonar connected
-   in the ArRobot object's list of sonars.  These ArSonarMTX objects can be
-   accessed from your ArRobot object via ArRobot::findSonar() or ArRobot::getSonarMap(). 
+   in the MvrRobot object's list of sonars.  These MvrSonarMTX objects can be
+   accessed from your MvrRobot object via MvrRobot::findSonar() or MvrRobot::getSonarMap(). 
    
 
    @since 2.8.0
 
  **/
-class ArSonarConnector
+class MvrSonarConnector
 {
 public:
   /// Constructor that takes argument parser
-  AREXPORT ArSonarConnector(
-	  ArArgumentParser *parser, 
-	  ArRobot *robot, ArRobotConnector *robotConnector,
+  AREXPORT MvrSonarConnector(
+	  MvrArgumentParser *parser, 
+	  MvrRobot *robot, MvrRobotConnector *robotConnector,
 	  bool autoParseArgs = true,
-	  ArLog::LogLevel infoLogLevel = ArLog::Verbose,
-      	  ArRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
-	  ArRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
+	  MvrLog::LogLevel infoLogLevel = MvrLog::Verbose,
+      	  MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
+	  MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
   /// Destructor
   AREXPORT ~ArSonarConnector(void);
   /// Connects all the sonars the robot has that should be auto connected
@@ -95,26 +95,26 @@ public:
 			      bool turnOnSonars = true,
 			      bool powerCycleSonarOnFailedConnect = true);
   /// Sets up a sonar to be connected
-  AREXPORT bool setupSonar(ArSonarMTX *sonar, 
+  AREXPORT bool setupSonar(MvrSonarMTX *sonar, 
 			   int sonarNumber = 1);
   /// Connects the sonar synchronously (will take up to a minute)
-  AREXPORT bool connectSonar(ArSonarMTX *sonar,
+  AREXPORT bool connectSonar(MvrSonarMTX *sonar,
 			     int sonarNumber = 1,
 			     bool forceConnection = true);
   /// Adds a sonar so parsing will get it
-  AREXPORT bool addSonar(ArSonarMTX *sonar,
+  AREXPORT bool addSonar(MvrSonarMTX *sonar,
 			 int sonarNumber = 1);
   /// Function to parse the arguments given in the constructor
   AREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(ArArgumentParser *parser);
+  AREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
   AREXPORT void logOptions(void) const;
   /// Internal function to get the sonar (only useful between parseArgs and connectSonars)
-  AREXPORT ArSonarMTX *getSonar(int sonarNumber);
+  AREXPORT MvrSonarMTX *getSonar(int sonarNumber);
 
   /// Internal function to replace the sonar (only useful between parseArgs and connectSonars) but not the sonar data
-  AREXPORT bool replaceSonar(ArSonarMTX *sonar, int sonarNumber);
+  AREXPORT bool replaceSonar(MvrSonarMTX *sonar, int sonarNumber);
   
   AREXPORT bool disconnectSonars();
 protected:
@@ -122,7 +122,7 @@ protected:
 class SonarData
 {
 	public:
-		SonarData (int number, ArSonarMTX *sonar) {
+		SonarData (int number, MvrSonarMTX *sonar) {
 			myNumber = number;
 			mySonar = sonar;
 			myConn = NULL;
@@ -184,7 +184,7 @@ private:
   std::map<int, SonarData *> mySonars;
   
   /// Parses the sonar arguments
-  AREXPORT bool parseSonarArgs(ArArgumentParser *parser, 
+  AREXPORT bool parseSonarArgs(MvrArgumentParser *parser, 
 			       SonarData *sonarData);
   /// Logs the sonar command line option help text. 
   AREXPORT void logSonarOptions(SonarData *sonardata, bool header = true, bool metaOpts = true) const;
@@ -194,26 +194,26 @@ private:
   std::string mySonarTypes;
 
   // our parser
-  ArArgumentParser *myParser;
+  MvrArgumentParser *myParser;
   bool myOwnParser;
   // if we should autoparse args or toss errors 
   bool myAutoParseArgs;
   bool myParsedArgs;
 
-  ArRobot *myRobot;
-  ArRobotConnector *myRobotConnector;
+  MvrRobot *myRobot;
+  MvrRobotConnector *myRobotConnector;
 
   // variables to hold if we're logging or not
   bool mySonarLogPacketsReceived;
   bool mySonarLogPacketsSent;
 
-  ArLog::LogLevel myInfoLogLevel;
+  MvrLog::LogLevel myInfoLogLevel;
 
-  ArRetFunctor1<bool, const char *> *myTurnOnPowerOutputCB;
-  ArRetFunctor1<bool, const char *> *myTurnOffPowerOutputCB;
+  MvrRetFunctor1<bool, const char *> *myTurnOnPowerOutputCB;
+  MvrRetFunctor1<bool, const char *> *myTurnOffPowerOutputCB;
 
-  ArRetFunctorC<bool, ArSonarConnector> myParseArgsCB;
-  ArConstFunctorC<ArSonarConnector> myLogOptionsCB;
+  MvrRetFunctorC<bool, MvrSonarConnector> myParseArgsCB;
+  MvrConstFunctorC<ArSonarConnector> myLogOptionsCB;
 };
 
 #endif // ARLASERCONNECTOR_H

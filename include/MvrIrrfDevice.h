@@ -29,46 +29,46 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARIRRFDEVICE_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
-#include "ArFunctor.h"
+#include "MvrRangeDevice.h"
+#include "MvrFunctor.h"
 
-#include "ArRobot.h"
+#include "MvrRobot.h"
 
 /// A class for connecting to a PB-9 and managing the resulting data
 /**
    This class is for use with a PB9 IR rangefinder.  It has the packethandler
-   necessary to process the packets, and will put the data into ArRangeBuffers
+   necessary to process the packets, and will put the data into MvrRangeBuffers
    for use with obstacle avoidance, etc.
 
    The PB9 is still under development, and only works on an H8 controller
    running AROS.
 */
 
-class ArIrrfDevice : public ArRangeDevice
+class MvrIrrfDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT ArIrrfDevice(size_t currentBufferSize = 91,
+  AREXPORT MvrIrrfDevice(size_t currentBufferSize = 91,
                         size_t cumulativeBufferSize = 273,
                         const char * name = "irrf");
   /// Destructor
   AREXPORT virtual ~ArIrrfDevice();
 
   /// The packet handler for use when connecting to an H8 micro-controller
-  AREXPORT bool packetHandler(ArRobotPacket *packet);
+  AREXPORT bool packetHandler(MvrRobotPacket *packet);
 
   /// Maximum range for a reading to be added to the cumulative buffer (mm)
   AREXPORT void setCumulativeMaxRange(double r) { myCumulativeMaxRange = r; }
-  AREXPORT virtual void setRobot(ArRobot *);
+  AREXPORT virtual void setRobot(MvrRobot *);
 
 protected:
-  ArRetFunctor1C<bool, ArIrrfDevice, ArRobotPacket *> myPacketHandler;
-  ArTime myLastReading;
+  MvrRetFunctor1C<bool, MvrIrrfDevice, MvrRobotPacket *> myPacketHandler;
+  MvrTime myLastReading;
   AREXPORT void processReadings(void);
   double myCumulativeMaxRange;
   double myFilterNearDist;
   double myFilterFarDist;
-  std::map<int, ArSensorReading *> myIrrfReadings;
+  std::map<int, MvrSensorReading *> myIrrfReadings;
 };
 
 

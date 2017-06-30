@@ -28,18 +28,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONINPUT_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action for taking input from outside to control the robot
 /**
    This action sets up how we want to drive
    @ingroup ActionClasses
 */
-class ArActionInput : public ArAction
+class MvrActionInput : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionInput(const char *name = "Input");
+  AREXPORT MvrActionInput(const char *name = "Input");
   /// Destructor
   AREXPORT virtual ~ArActionInput();
   /// Set velocity (cancels deltaVel)
@@ -52,10 +52,10 @@ public:
   AREXPORT void setHeading(double heading);
   /// Clears it so its not using vel or heading
   AREXPORT void clear(void);
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
@@ -64,7 +64,7 @@ protected:
   double myRotVal;
   bool myUsingVel;
   double myVelSet;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 };
 
 #endif // ARACTIONSTOP_H

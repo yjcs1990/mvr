@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionLimiterForwards.h"
-#include "ArRobot.h"
-#include "ArRangeDevice.h"
+#include "MvrActionLimiterForwards.h"
+#include "MvrRobot.h"
+#include "MvrRangeDevice.h"
 
 /**
    @param name name of the action
@@ -38,34 +38,34 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    distance (mm/sec)
    @param widthRatio Ratio of the width of the box to look at to the robot radius (multiplier)
 */
-AREXPORT ArActionLimiterForwards::ArActionLimiterForwards(const char *name, 
+AREXPORT MvrActionLimiterForwards::ArActionLimiterForwards(const char *name, 
 							  double stopDistance,
 							  double slowDistance,
 							  double slowSpeed,
 							  double widthRatio) :
-  ArAction(name,
+  MvrAction(name,
 	   "Slows the robot down so as not to hit anything in front of it.")
 {
-  setNextArgument(ArArg("stop distance", &myStopDist, 
+  setNextArgument(MvrArg("stop distance", &myStopDist, 
 			"Distance at which to stop. (mm)"));
   myStopDist = stopDistance;
 
-  setNextArgument(ArArg("slow distance", &mySlowDist, 
+  setNextArgument(MvrArg("slow distance", &mySlowDist, 
 			"Distance at which to slow down. (mm)"));
   mySlowDist = slowDistance;
 
-  setNextArgument(ArArg("slow speed", &mySlowSpeed, 
+  setNextArgument(MvrArg("slow speed", &mySlowSpeed, 
 			 "Speed at which to slow to at the slow distance, (mm/sec)"));
   mySlowSpeed = slowSpeed;
   
-  setNextArgument(ArArg("width ratio", &myWidthRatio,
+  setNextArgument(MvrArg("width ratio", &myWidthRatio,
 			"Ratio of the width of the box to look at to the robot radius (multiplier)"));
   myWidthRatio = widthRatio;
   myLastStopped = false;
   myLastSensorReadingDev = NULL;
 }
 
-AREXPORT ArActionLimiterForwards::~ArActionLimiterForwards()
+AREXPORT MvrActionLimiterForwards::~ArActionLimiterForwards()
 {
 
 }
@@ -77,7 +77,7 @@ AREXPORT ArActionLimiterForwards::~ArActionLimiterForwards()
    distance (mm/sec)
    @param widthRatio Ratio of the width of the box to look at to the robot radius (multiplier)
 */
-AREXPORT void ArActionLimiterForwards::setParameters(double stopDistance,
+AREXPORT void MvrActionLimiterForwards::setParameters(double stopDistance,
 						     double slowDistance,
 						     double slowSpeed,
 						     double widthRatio)
@@ -88,8 +88,8 @@ AREXPORT void ArActionLimiterForwards::setParameters(double stopDistance,
   myWidthRatio = widthRatio;
 }
 
-AREXPORT ArActionDesired *
-ArActionLimiterForwards::fire(ArActionDesired currentDesired)
+AREXPORT MvrActionDesired *
+ArActionLimiterForwards::fire(MvrActionDesired currentDesired)
 {
   double dist;
   double maxVel;
@@ -118,7 +118,7 @@ ArActionLimiterForwards::fire(ArActionDesired currentDesired)
     if(!myLastStopped)
     {
       if (printing) printf("Stopping\n");
-      ArLog::log(ArLog::Verbose, "%s: Stopping due to sensor reaoding", getName());
+      MvrLog::log(MvrLog::Verbose, "%s: Stopping due to sensor reaoding", getName());
     }
     myLastStopped = true;
     myDesired.setMaxVel(0);
@@ -128,7 +128,7 @@ ArActionLimiterForwards::fire(ArActionDesired currentDesired)
   if(myLastStopped)
   {
     if (printing) printf("Going\n");
-    ArLog::log(ArLog::Verbose, "%s: Allowing motion", getName());
+    MvrLog::log(MvrLog::Verbose, "%s: Allowing motion", getName());
   } 
 
   myLastStopped = false;

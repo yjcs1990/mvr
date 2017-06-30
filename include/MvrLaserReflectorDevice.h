@@ -28,37 +28,37 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARLASERREFLECTORDEVICE_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
-#include "ArFunctor.h"
+#include "MvrRangeDevice.h"
+#include "MvrFunctor.h"
 
-class ArSick;
-class ArRobot;
+class MvrSick;
+class MvrRobot;
 
 /// A class for keeping track of laser reflectors that we see right now
 /** 
     This class is for showing the laser reflectors in MobileEyes.
     This requires that the range device you pass in uses the
-    'extraInt' in the rawReadings ArSensorReading to note reflector
+    'extraInt' in the rawReadings MvrSensorReading to note reflector
     value and that anything greater than 0 is a reflector.
 */
-class ArLaserReflectorDevice : public ArRangeDevice
+class MvrLaserReflectorDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT ArLaserReflectorDevice(ArRangeDevice *laser, ArRobot *robot,
+  AREXPORT MvrLaserReflectorDevice(MvrRangeDevice *laser, MvrRobot *robot,
 				  const char * name = "reflector");
   /// Destructor
   AREXPORT virtual ~ArLaserReflectorDevice();
   /// Grabs the new readings from the robot and adds them to the buffers
   AREXPORT void processReadings(void);
   /// Specifically does nothing since it was done in the constructor
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   /// Adds a reflector threshold to the task
-  AREXPORT void addToConfig(ArConfig *config, const char *section);
+  AREXPORT void addToConfig(MvrConfig *config, const char *section);
 protected:
-  ArRangeDevice *myLaser;
+  MvrRangeDevice *myLaser;
   int myReflectanceThreshold;
-  ArFunctorC<ArLaserReflectorDevice> myProcessCB;
+  MvrFunctorC<ArLaserReflectorDevice> myProcessCB;
 };
 
 

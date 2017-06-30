@@ -52,7 +52,7 @@ public:
   /// Prints the stats of the blob
   void log(void)
   {
-    MvrLog::log(MvrLog::Terse, "Area: %3d X: %3d Y: %3d l: %3d r: %3d t: %3d: b: %3d", 
+    MvrLog::log(MvrLog::Terse, "Mvrea: %3d X: %3d Y: %3d l: %3d r: %3d t: %3d: b: %3d", 
 		 myArea, myXCG, myYCG, myLeft, myRight, myTop, myBottom);
   }
 protected:

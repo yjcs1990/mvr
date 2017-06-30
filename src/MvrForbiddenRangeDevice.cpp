@@ -25,11 +25,11 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArRobot.h"
+#include "MvrRobot.h"
 #include "ariaUtil.h"
-#include "ArForbiddenRangeDevice.h"
+#include "MvrForbiddenRangeDevice.h"
 
 /**
    This will take a map and then convert the forbidden lines into
@@ -43,10 +43,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param maxRange how far out to look total
    @param name the name of the device
  **/
-AREXPORT ArForbiddenRangeDevice::ArForbiddenRangeDevice(
+AREXPORT MvrForbiddenRangeDevice::ArForbiddenRangeDevice(
 	ArMapInterface *armap, double distanceIncrement, unsigned int maxRange,
 	const char *name) :
-  ArRangeDevice(INT_MAX, 0, name, maxRange, 0, 0, 0, true),
+  MvrRangeDevice(INT_MAX, 0, name, maxRange, 0, 0, 0, true),
   myDataMutex(),
   myMap(armap),
   myDistanceIncrement(distanceIncrement),
@@ -57,23 +57,23 @@ AREXPORT ArForbiddenRangeDevice::ArForbiddenRangeDevice(
   myEnableCB(this, &ArForbiddenRangeDevice::enable),
   myDisableCB(this, &ArForbiddenRangeDevice::disable)
 {
-  myDataMutex.setLogName("ArForbiddenRangeDevice::myDataMutex");
+  myDataMutex.setLogName("MvrForbiddenRangeDevice::myDataMutex");
   
-  myMapChangedCB.setName("ArForbiddenRangeDevice");
+  myMapChangedCB.setName("MvrForbiddenRangeDevice");
 }
 
-AREXPORT ArForbiddenRangeDevice::~ArForbiddenRangeDevice()
+AREXPORT MvrForbiddenRangeDevice::~ArForbiddenRangeDevice()
 {
 
 }
 
-AREXPORT void ArForbiddenRangeDevice::processMap(void)
+AREXPORT void MvrForbiddenRangeDevice::processMap(void)
 {
   std::list<ArMapObject *>::const_iterator it;
-  ArMapObject *obj;
+  MvrMapObject *obj;
 
   myDataMutex.lock();
-  ArUtil::deleteSet(mySegments.begin(), mySegments.end());
+  MvrUtil::deleteSet(mySegments.begin(), mySegments.end());
   mySegments.clear();
 
   for (it = myMap->getMapObjects()->begin();
@@ -84,35 +84,35 @@ AREXPORT void ArForbiddenRangeDevice::processMap(void)
     if (strcmp(obj->getType(), "ForbiddenLine") == 0 &&
 	obj->hasFromTo())
     {
-      mySegments.push_back(new ArLineSegment(obj->getFromPose(), 
+      mySegments.push_back(new MvrLineSegment(obj->getFromPose(), 
 					     obj->getToPose()));
     }
     if (strcmp(obj->getType(), "ForbiddenArea") == 0 &&
 	obj->hasFromTo())
     {
       double angle = obj->getPose().getTh();
-      double sa = ArMath::sin(angle);
-      double ca = ArMath::cos(angle);
+      double sa = MvrMath::sin(angle);
+      double ca = MvrMath::cos(angle);
       double fx = obj->getFromPose().getX();
       double fy = obj->getFromPose().getY();
       double tx = obj->getToPose().getX();
       double ty = obj->getToPose().getY();
-      ArPose P0((fx*ca - fy*sa), (fx*sa + fy*ca));
-      ArPose P1((tx*ca - fy*sa), (tx*sa + fy*ca));
-      ArPose P2((tx*ca - ty*sa), (tx*sa + ty*ca));
-      ArPose P3((fx*ca - ty*sa), (fx*sa + ty*ca));
-      mySegments.push_back(new ArLineSegment(P0, P1));
-      mySegments.push_back(new ArLineSegment(P1, P2));
-      mySegments.push_back(new ArLineSegment(P2, P3));
-      mySegments.push_back(new ArLineSegment(P3, P0));
+      MvrPose P0((fx*ca - fy*sa), (fx*sa + fy*ca));
+      MvrPose P1((tx*ca - fy*sa), (tx*sa + fy*ca));
+      MvrPose P2((tx*ca - ty*sa), (tx*sa + ty*ca));
+      MvrPose P3((fx*ca - ty*sa), (fx*sa + ty*ca));
+      mySegments.push_back(new MvrLineSegment(P0, P1));
+      mySegments.push_back(new MvrLineSegment(P1, P2));
+      mySegments.push_back(new MvrLineSegment(P2, P3));
+      mySegments.push_back(new MvrLineSegment(P3, P0));
     }
   }
   myDataMutex.unlock();
 }
 
-AREXPORT void ArForbiddenRangeDevice::processReadings(void)
+AREXPORT void MvrForbiddenRangeDevice::processReadings(void)
 {
-  ArPose intersection;
+  MvrPose intersection;
   std::list<ArLineSegment *>::iterator it;
   
   lockDevice();
@@ -128,11 +128,11 @@ AREXPORT void ArForbiddenRangeDevice::processReadings(void)
     return;
   }
 
-  ArLineSegment *segment;
-  ArPose start;
+  MvrLineSegment *segment;
+  MvrPose start;
   double startX;
   double startY;
-  ArPose end;
+  MvrPose end;
   double angle;
   double length;
   double gone;
@@ -144,7 +144,7 @@ AREXPORT void ArForbiddenRangeDevice::processReadings(void)
   double robotY = myRobot->getY();
   double max = (double) myMaxRange;
   double maxSquared = (double) myMaxRange * (double) myMaxRange;
-  ArTime startingTime;
+  MvrTime startingTime;
   //startingTime.setToNow();
   // now see if the end points of the segments are too close to us
   for (it = mySegments.begin(); it != mySegments.end(); it++)
@@ -152,7 +152,7 @@ AREXPORT void ArForbiddenRangeDevice::processReadings(void)
     segment = (*it);
     // if either end point or some perpindicular point is close to us
     // add the line's data
-    if (ArMath::squaredDistanceBetween(
+    if (MvrMath::squaredDistanceBetween(
 	    segment->getX1(), segment->getY1(), 
 	    myRobot->getX(), myRobot->getY()) < maxSquared ||
 	ArMath::squaredDistanceBetween(
@@ -163,13 +163,13 @@ AREXPORT void ArForbiddenRangeDevice::processReadings(void)
       start.setPose(segment->getX1(), segment->getY1());
       end.setPose(segment->getX2(), segment->getY2());
       angle = start.findAngleTo(end);
-      cos = ArMath::cos(angle);
-      sin = ArMath::sin(angle);
+      cos = MvrMath::cos(angle);
+      sin = MvrMath::sin(angle);
       startX = start.getX();
       startY = start.getY();
       length = start.findDistanceTo(end);
       // first put in the start point if we should
-      if (ArMath::squaredDistanceBetween(
+      if (MvrMath::squaredDistanceBetween(
 	      startX, startY, robotX, robotY) < maxSquared)
 	myCurrentBuffer.redoReading(start.getX(), start.getY());
       // now walk the length of the line and see if we should put the points in
@@ -177,7 +177,7 @@ AREXPORT void ArForbiddenRangeDevice::processReadings(void)
       {
 	atX = startX + gone * cos;
 	atY = startY + gone * sin;
-	if (ArMath::squaredDistanceBetween(
+	if (MvrMath::squaredDistanceBetween(
 		atX, atY, robotX, robotY) < maxSquared)
 	  myCurrentBuffer.redoReading(atX, atY);
       }
@@ -193,26 +193,26 @@ AREXPORT void ArForbiddenRangeDevice::processReadings(void)
   //printf("%d\n", startingTime.mSecSince());
 }
 
-AREXPORT void ArForbiddenRangeDevice::setRobot(ArRobot *robot)
+AREXPORT void MvrForbiddenRangeDevice::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
     myRobot->addSensorInterpTask(myName.c_str(), 20, &myProcessCB);
-  ArRangeDevice::setRobot(robot);
+  MvrRangeDevice::setRobot(robot);
   myMap->lock();
   myMap->addMapChangedCB(&myMapChangedCB);
   processMap();
   myMap->unlock();
 }
 
-AREXPORT void ArForbiddenRangeDevice::enable(void)
+AREXPORT void MvrForbiddenRangeDevice::enable(void)
 {
   myDataMutex.lock();
   myIsEnabled = true;
   myDataMutex.unlock();
 }
 
-AREXPORT void ArForbiddenRangeDevice::disable(void)
+AREXPORT void MvrForbiddenRangeDevice::disable(void)
 {
   myDataMutex.lock();
   myIsEnabled = false;

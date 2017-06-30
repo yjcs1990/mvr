@@ -29,20 +29,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #include "ariaTypedefs.h"
-#include "ArASyncTask.h"
+#include "MvrASyncTask.h"
 
 
-class ArRobot;
+class MvrRobot;
 
 
-class ArRobotPacketReaderThread : public ArASyncTask
+class MvrRobotPacketReaderThread : public MvrASyncTask
 {
 public:
 
-  AREXPORT ArRobotPacketReaderThread();
+  AREXPORT MvrRobotPacketReaderThread();
   AREXPORT virtual ~ArRobotPacketReaderThread();
 
-  AREXPORT void setRobot(ArRobot *robot);
+  AREXPORT void setRobot(MvrRobot *robot);
 
   AREXPORT void stopRunIfNotConnected(bool stopRun);
   AREXPORT virtual void * runThread(void *arg);
@@ -52,7 +52,7 @@ public:
 
 protected:
   bool myStopRunIfNotConnected;
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
   bool myInRun;
 };
 

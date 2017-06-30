@@ -27,36 +27,36 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #ifndef ARLASERFILTER_H
 #define ARLASERFILTER_H
 
-#include "ArLaser.h"
-#include "ArFunctor.h"
+#include "MvrLaser.h"
+#include "MvrFunctor.h"
 
-class ArRobot;
-class ArConfig;
+class MvrRobot;
+class MvrConfig;
 
 /// Range device with data obtained from another range device and filtered 
 /**
    This is a class for generically filtering laser readings, either to
    separate out ones that are too far or too close compared to their
    neighbors.  The filtering parameters can be adjusted on line
-   through ArConfig options.
+   through MvrConfig options.
 
-   This implements ArLaser and so can be used like any other laser,
+   This implements MvrLaser and so can be used like any other laser,
    though you have to set all its options before you create this and
    probably should connect it too.  Then you should replace the
-   original laser on ArRobot with this one, and replace the original
+   original laser on MvrRobot with this one, and replace the original
    laser as a range device too.
 **/
-class ArLaserFilter : public ArLaser
+class MvrLaserFilter : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT ArLaserFilter(ArLaser *laser, const char *name = NULL);
+  AREXPORT MvrLaserFilter(MvrLaser *laser, const char *name = NULL);
   /// Destructor
   AREXPORT ~ArLaserFilter();
   /// Set robot
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   /// Add to the config
-  AREXPORT void addToConfig(ArConfig *config, const char *sectionName,
+  AREXPORT void addToConfig(MvrConfig *config, const char *sectionName,
 			    const char *prefix = "");
 
   AREXPORT virtual bool blockingConnect(void) 
@@ -81,13 +81,13 @@ public:
     }
   
   /// Gets the base laser this is filtering
-  ArLaser *getBaseLaser(void) { return myLaser; }
+  MvrLaser *getBaseLaser(void) { return myLaser; }
 protected:
   AREXPORT int selfLockDevice(void);
   AREXPORT int selfTryLockDevice(void);
   AREXPORT int selfUnlockDevice(void);
 
-  ArLaser *myLaser;
+  MvrLaser *myLaser;
 
   // Parameters
   double myAngleToCheck;
@@ -103,7 +103,7 @@ protected:
   // Callback to do the actual filtering
   void processReadings(void);
 
-  ArFunctorC<ArLaserFilter> myProcessCB;
+  MvrFunctorC<ArLaserFilter> myProcessCB;
 };
 
 #endif // ARLASERFILTER

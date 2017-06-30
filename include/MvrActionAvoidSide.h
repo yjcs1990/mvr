@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONAVOIDSIDE_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
+#include "MvrAction.h"
 
 /// Action to avoid impacts by firening into walls at a shallow angle
 /**
@@ -37,26 +37,26 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
   @ingroup ActionClasses
 */
-class ArActionAvoidSide : public ArAction
+class MvrActionAvoidSide : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT ArActionAvoidSide(const char *name = "Avoid side", 
+  AREXPORT MvrActionAvoidSide(const char *name = "Avoid side", 
 		    double obstacleDistance = 300,
 		    double turnAmount = 5);
   /// Destructor
   AREXPORT virtual ~ArActionAvoidSide();
-  AREXPORT virtual ArActionDesired * fire(ArActionDesired currentDesired);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired * fire(MvrActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
   double myObsDist;
   double myTurnAmount;
   bool myTurning;
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
 
 };
 

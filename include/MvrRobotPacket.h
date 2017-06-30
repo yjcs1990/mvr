@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARROBOTPACKET_H
 
 #include "ariaTypedefs.h"
-#include "ArBasePacket.h"
+#include "MvrBasePacket.h"
 #include "ariaUtil.h"
 
 /// Represents the packets sent to the robot as well as those received from it
@@ -36,47 +36,47 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    This class reimplements some of the buf operations since the robot is 
    opposeite endian from intel.  Also has the getID for convenience.  
    
-   You can just look at the documentation for the ArBasePacket except for
+   You can just look at the documentation for the MvrBasePacket except for
    the 4 new functions here, verifyCheckSum, getID, print, and calcCheckSum.
  */
-class ArRobotPacket: public ArBasePacket
+class MvrRobotPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT ArRobotPacket(unsigned char sync1 = 0xfa, 
+  AREXPORT MvrRobotPacket(unsigned char sync1 = 0xfa, 
 			 unsigned char sync2 = 0xfb);
   /// Destructor
   AREXPORT virtual ~ArRobotPacket();
 
   /// Assignment operator
-  AREXPORT ArRobotPacket &operator=(const ArRobotPacket &other);
+  AREXPORT MvrRobotPacket &operator=(const MvrRobotPacket &other);
 
   /// returns true if the checksum matches what it should be
   AREXPORT bool verifyCheckSum(void);
 
   /// returns the ID of the packet 
-  AREXPORT ArTypes::UByte getID(void);
+  AREXPORT MvrTypes::UByte getID(void);
 
   /// Sets the ID of the packet 
-  AREXPORT void setID(ArTypes::UByte id);
+  AREXPORT void setID(MvrTypes::UByte id);
 
   /// returns the checksum, probably used only internally
-  AREXPORT ArTypes::Byte2 calcCheckSum(void);
+  AREXPORT MvrTypes::Byte2 calcCheckSum(void);
   
   // only call finalizePacket before a send
   AREXPORT virtual void finalizePacket(void);
   
   /// Gets the time the packet was received at
-  AREXPORT ArTime getTimeReceived(void);
+  AREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(ArTime timeReceived);
+  AREXPORT void setTimeReceived(MvrTime timeReceived);
 
   AREXPORT virtual void log();
 
 protected:
   unsigned char mySync1;
   unsigned char mySync2;
-  ArTime myTimeReceived;
+  MvrTime myTimeReceived;
 };
 
 #endif // ARROBOTPACKET_H

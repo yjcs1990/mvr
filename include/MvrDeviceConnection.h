@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <string>
 #include "ariaTypedefs.h"
 #include "ariaUtil.h"
-#include "ArBasePacket.h"
+#include "MvrBasePacket.h"
 
 /// Base class for device connections
 /**
@@ -45,11 +45,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    returns more detailed information about the open attempt, and which takes 
    the parameters for where to connect
 */
-class ArDeviceConnection
+class MvrDeviceConnection
 {
  public:
   /// constructor
-  AREXPORT ArDeviceConnection();
+  AREXPORT MvrDeviceConnection();
   /// destructor also forces a close on the connection
   AREXPORT virtual ~ArDeviceConnection();
   /// Reads data from connection
@@ -70,7 +70,7 @@ class ArDeviceConnection
      @return number of bytes written, or -1 for failure
      @see read, write
   */
-  AREXPORT virtual int writePacket(ArBasePacket *packet)
+  AREXPORT virtual int writePacket(MvrBasePacket *packet)
     { if (packet == NULL || packet->getLength() == 0) return 0;
     return write(packet->getBuf(), packet->getLength()); }
   /// Writes data to connection
@@ -130,7 +130,7 @@ class ArDeviceConnection
       last read in
       @return the time the last read data was read in 
   */
-  AREXPORT virtual ArTime getTimeRead(int index) = 0;
+  AREXPORT virtual MvrTime getTimeRead(int index) = 0;
   /// sees if timestamping is really going on or not
   /** @return true if real timestamping is happening, false otherwise */
   AREXPORT virtual bool isTimeStamping(void) = 0;
@@ -164,18 +164,18 @@ class ArDeviceConnection
 
   void buildStrMap(void);
   static bool ourStrMapInited;
-  static ArStrMap ourStrMap;
+  static MvrStrMap ourStrMap;
 
   std::string myDCPortName;
   std::string myDCPortType;
   std::string myDCDeviceName;
 
   static bool ourDCDebugShouldLog;
-  static ArTime ourDCDebugFirstTime;
+  static MvrTime ourDCDebugFirstTime;
   bool myDCDebugPacketStarted;
-  ArTime myDCDebugStartTime;
-  ArTime myDCDebugFirstByteTime;
-  ArTime myDCDebugLastByteTime;
+  MvrTime myDCDebugStartTime;
+  MvrTime myDCDebugFirstByteTime;
+  MvrTime myDCDebugLastByteTime;
   int myDCDebugBytesRead;
   int myDCDebugTimesRead;
   long long myDCDebugNumGoodPackets;

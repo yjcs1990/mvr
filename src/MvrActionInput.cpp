@@ -24,54 +24,54 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArActionInput.h"
-#include "ArRobot.h"
+#include "MvrActionInput.h"
+#include "MvrRobot.h"
 /**
    @param name name of the action
 */
-AREXPORT ArActionInput::ArActionInput(const char *name) :
-    ArAction(name, "Inputs vel and heading")
+AREXPORT MvrActionInput::ArActionInput(const char *name) :
+    MvrAction(name, "Inputs vel and heading")
 {
   clear();
 }
 
-AREXPORT ArActionInput::~ArActionInput()
+AREXPORT MvrActionInput::~ArActionInput()
 {
 }
 
-AREXPORT void ArActionInput::setVel(double vel)
+AREXPORT void MvrActionInput::setVel(double vel)
 {
   myUsingVel = true;
   myVelSet = vel;
 }
 
-AREXPORT void ArActionInput::setRotVel(double rotVel)
+AREXPORT void MvrActionInput::setRotVel(double rotVel)
 {
   myRotRegime = ROTVEL;
   myRotVal = rotVel;
 }
 
-AREXPORT void ArActionInput::deltaHeadingFromCurrent(double delta)
+AREXPORT void MvrActionInput::deltaHeadingFromCurrent(double delta)
 {
   myRotRegime = DELTAHEADING;
   myRotVal = delta;
 }
 
-AREXPORT void ArActionInput::setHeading(double heading)
+AREXPORT void MvrActionInput::setHeading(double heading)
 {
   myRotRegime = SETHEADING;
   myRotVal = heading;
 }
 
-AREXPORT void ArActionInput::clear(void)
+AREXPORT void MvrActionInput::clear(void)
 {
   myUsingVel = false;
   myRotRegime = NONE;
 }
 
-AREXPORT ArActionDesired *ArActionInput::fire(
+AREXPORT MvrActionDesired *ArActionInput::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();
@@ -89,7 +89,7 @@ AREXPORT ArActionDesired *ArActionInput::fire(
   else if (myRotRegime == SETHEADING)
     myDesired.setHeading(myRotVal);
   else if (myRotRegime != NONE)
-    ArLog::log(ArLog::Normal, "ArActionInput::fire: Bad rot regime %d", 
+    MvrLog::log(MvrLog::Normal, "MvrActionInput::fire: Bad rot regime %d", 
 	       myRotRegime);
 
   return &myDesired;

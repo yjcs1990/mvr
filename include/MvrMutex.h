@@ -33,21 +33,21 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <string>
 #include "ariaTypedefs.h"
 
-class ArTime;
-class ArFunctor;
+class MvrTime;
+class MvrFunctor;
 
 /// Cross-platform mutex wrapper class 
 /**
    This class wraps the operating system's mutex functions. It allows mutualy
    exclusive access to a critical section. This is extremely useful for
-   multiple threads which want to use the same variable. On Linux, ArMutex simply
+   multiple threads which want to use the same variable. On Linux, MvrMutex simply
    uses the POSIX pthread interface in an object oriented manner. It also
    applies the same concept to Windows using Windows' own abilities to restrict
-   access to critical sections. ArMutex also adds additional
+   access to critical sections. MvrMutex also adds additional
   diagnostic/debugging tools such as logging and timing.
  
 
-   @note ArMutex is by default a recursive mutex. This means that a 
+   @note MvrMutex is by default a recursive mutex. This means that a 
       thread is allowed to acquire an additional lock (whether via lock() or tryLock())
       on a locked mutex if that same thread already has the lock. This allows a thread
       to lock a mutex, but not become deadlocked if any functions called while it 
@@ -56,7 +56,7 @@ class ArFunctor;
       If you want a non-recursive mutex, so that multiple attempts by the same thread 
       to lock a mutex to block, supply an argument of 'false' to the constructor.
 
-  In addition to provding cross-platform API to OS mutex objects, ArMutex adds
+  In addition to provding cross-platform API to OS mutex objects, MvrMutex adds
 some diagnostic features:
   <ul>
     <li>Use setLockWarningTime() to warn if a call to lock() takes more than the
@@ -66,13 +66,13 @@ other undesired effects of lock contention.
       and unlock() is more than a given amount of time.  This can help find potential
       performance impacts and other undesired effects of code holding a lock for a
       long time.
-    <li>Use setLogName() to name an ArMutex object for logging.
+    <li>Use setLogName() to name an MvrMutex object for logging.
     <li>Use setLog() to enable logging of various events such as lock, unlock, errors.
   </ul>
 
   @ingroup UtilityClasses
 */
-class ArMutex
+class MvrMutex
 {
 public:
 
@@ -89,11 +89,11 @@ public:
   } Status;
 
   /// Constructor
-  AREXPORT ArMutex(bool recursive = true);
+  AREXPORT MvrMutex(bool recursive = true);
   /// Destructor
   AREXPORT virtual ~ArMutex();
   /// Copy constructor
-  AREXPORT ArMutex(const ArMutex &mutex);
+  AREXPORT MvrMutex(const MvrMutex &mutex);
 
   /** Lock the mutex
    *
@@ -110,11 +110,11 @@ public:
    *  @return 0 if the mutex was successfully locked (after blocking if it was
    *    already locked by another thread, or by any thread if this is <i>not</i> a
    *    recursive mutex).
-   *  @return ArMutex::STATUS_ALREADY_LOCKED immediately if this is a recursive mutex
+   *  @return MvrMutex::STATUS_ALREADY_LOCKED immediately if this is a recursive mutex
    *    (default) and the current thread has already locked this mutex.
-   *  @return ArMutex::STATUS_FAILED on an error from the platform mutex
+   *  @return MvrMutex::STATUS_FAILED on an error from the platform mutex
    *    implementation.
-   *  @return ArMutex::STATUS_FAILED_INIT if the platform threading is not 
+   *  @return MvrMutex::STATUS_FAILED_INIT if the platform threading is not 
    *    enabled, initialized, etc.
    */
   AREXPORT virtual int lock();
@@ -122,25 +122,25 @@ public:
   /** Try to lock the mutex, but do not block
    *
    *  If this is a recursive mutex (the default type), and a <i>different</i>
-   *  thread has locked this mutex, then return ArMutex::STATUS_ALREADY_LOCKED; if
+   *  thread has locked this mutex, then return MvrMutex::STATUS_ALREADY_LOCKED; if
    *  <i>this</i> thread has locked this mutex, then return 0.
    *
    *  If this is <i>not</i> a recursive mutex, then return 0 if any thread
    *  (including this thread) has locked this mutex.
    *
-   *  Returns ArMutex::STATUS_FAILED or ArMutex::STATUS_FAILED_INIT on an error (such as threading
+   *  Returns MvrMutex::STATUS_FAILED or MvrMutex::STATUS_FAILED_INIT on an error (such as threading
    *  not initialized or supported).
    *
    *  Call setLog(true) to enable extra logging.
    *
    *  @return 0 If tryLock() acquires the lock, or mutex is a recursive mutex
    *    (default) and is already locked by this thread
-   *  @return ArMutex::STATUS_ALREADY_LOCKED if this mutex is currently locked
+   *  @return MvrMutex::STATUS_ALREADY_LOCKED if this mutex is currently locked
    *    by another thread, or if mutex is <i>not</i> recursive, by any thread
    *    including the current thread.
-   *  @return ArMutex::STATUS_FAILED on an error from the platform mutex
+   *  @return MvrMutex::STATUS_FAILED on an error from the platform mutex
    *    implementation.
-   *  @return ArMutex::STATUS_FAILED_INIT if the platform threading is not 
+   *  @return MvrMutex::STATUS_FAILED_INIT if the platform threading is not 
    *    enabled, initialized, etc.
    */
   AREXPORT virtual int tryLock();
@@ -151,7 +151,7 @@ public:
   /// Get a human readable error message from an error code
   AREXPORT virtual const char * getError(int messageNumber) const;
   /** Sets a flag that will log out when we lock and unlock. Use setLogName() to
-    set a descriptive name for this mutex, and ArThread::setThreadName() to set a
+    set a descriptive name for this mutex, and MvrThread::setThreadName() to set a
     descriptive name for a thread.
   */
   void setLog(bool log) { myLog = log; } 
@@ -190,7 +190,7 @@ protected:
   MutexType myMutex;
 // Eliminating this from Windows in an attempt to debug a memory issue
 #if !defined(WIN32) || defined(MINGW)
-  ArStrMap myStrMap;
+  MvrStrMap myStrMap;
 #endif 
 
   bool myLog;
@@ -200,11 +200,11 @@ protected:
   bool myWasAlreadyLocked;
 
   bool myFirstLock;
-  ArTime *myLockTime;
+  MvrTime *myLockTime;
   AREXPORT static unsigned int ourLockWarningMS;
   AREXPORT static unsigned int ourUnlockWarningMS;
-  ArTime *myLockStarted;
-  // Intialize lock timing state. Call in ArMutex constructor.
+  MvrTime *myLockStarted;
+  // Intialize lock timing state. Call in MvrMutex constructor.
   void initLockTiming();
   // Destroy lock timing state. Call in destructor.
   void uninitLockTiming();
@@ -218,7 +218,7 @@ protected:
   void checkUnlockTime();
 
 
-  static ArFunctor *ourNonRecursiveDeadlockFunctor;
+  static MvrFunctor *ourNonRecursiveDeadlockFunctor;
 };
 
 
@@ -227,10 +227,10 @@ protected:
 when destroyed. If created on the stack then it will hold the lock until the
 scope in which it was created (e.g. a function body) ends.  For example:
   @code
-  ArMutex myMutex;
+  MvrMutex myMutex;
   void example()
   {
-    ArScopedLock(myMutex);
+    MvrScopedLock(myMutex);
     int r = randomInRange(0, 100);
     if(r > 50)
     {
@@ -250,11 +250,11 @@ scope in which it was created (e.g. a function body) ends.  For example:
     
   @ingroup UtilityClasses 
 */
-class ArScopedLock {
+class MvrScopedLock {
 private:
 	ArMutex& mtx;
 public:
-	ArScopedLock(ArMutex& m) : mtx(m) {
+	ArScopedLock(MvrMutex& m) : mtx(m) {
 		mtx.lock();
 	}
 	~ArScopedLock() {

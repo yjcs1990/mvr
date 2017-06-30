@@ -28,21 +28,21 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARRANGEDEVICETHREADED_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeDevice.h"
-#include "ArFunctorASyncTask.h"
+#include "MvrRangeDevice.h"
+#include "MvrFunctorASyncTask.h"
 
 /// A range device which can run in its own thread
 /** 
     This is a range device thats threaded, it doesn't do
-    multipleInheritance from both ArASyncTask and ArRangeDevice any
+    multipleInheritance from both MvrASyncTask and MvrRangeDevice any
     more since JAVA doesn't support this and the wrapper software
     can't deal with it.  Its still functionally the same however.
  **/
-class ArRangeDeviceThreaded : public ArRangeDevice
+class MvrRangeDeviceThreaded : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT ArRangeDeviceThreaded(size_t currentBufferSize, 
+  AREXPORT MvrRangeDeviceThreaded(size_t currentBufferSize, 
 				 size_t cumulativeBufferSize,
 				 const char *name, unsigned int maxRange,
 				 int maxSecondsTokeepCurrent = 0,
@@ -69,8 +69,8 @@ public:
   AREXPORT virtual int tryLockDevice(void) { return myTask.tryLock(); }
   AREXPORT virtual int unlockDevice(void) { return myTask.unlock(); }
 protected:
-  ArRetFunctor1C<void *, ArRangeDeviceThreaded, void *> myRunThreadCB;
-  ArFunctorASyncTask myTask;
+  MvrRetFunctor1C<void *, MvrRangeDeviceThreaded, void *> myRunThreadCB;
+  MvrFunctorASyncTask myTask;
 
 };
 

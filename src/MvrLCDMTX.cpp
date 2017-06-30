@@ -24,14 +24,14 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArLCDMTX.h"
-#include "ArSensorReading.h"
+#include "MvrLCDMTX.h"
+#include "MvrSensorReading.h"
 #include "ariaOSDef.h"
-#include "ArSerialConnection.h"
+#include "MvrSerialConnection.h"
 #include "ariaInternal.h"
-#include "ArSystemStatus.h"
+#include "MvrSystemStatus.h"
 
 #include <time.h>
 //#include "../ArNetworking/include/ArServerMode.h"
@@ -51,9 +51,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif
 
 
-std::string ArLCDMTX::ourFirmwareBaseDir("/usr/local/apps/marcDownload/");
+std::string MvrLCDMTX::ourFirmwareBaseDir("/usr/local/apps/marcDownload/");
 
-AREXPORT ArLCDMTX::ArLCDMTX(int lcdBoardNum, const char *name,
+AREXPORT MvrLCDMTX::ArLCDMTX(int lcdBoardNum, const char *name,
 	ArDeviceConnection *conn,
 	ArRobot *robot) :
 	mySensorInterpTask(this, &ArLCDMTX::sensorInterp),
@@ -65,7 +65,7 @@ AREXPORT ArLCDMTX::ArLCDMTX(int lcdBoardNum, const char *name,
 	myAriaExitCB(this, &ArLCDMTX::disconnect)
 {
 
-	myInfoLogLevel = ArLog::Normal;
+	myInfoLogLevel = MvrLog::Normal;
 	clear();
 	setRobot(robot);
 	myRobotIdentifierChanged = false;
@@ -80,19 +80,19 @@ AREXPORT ArLCDMTX::ArLCDMTX(int lcdBoardNum, const char *name,
 	// searching for the units configured for this
 	// board, then create the unit map
 	if (robot && robot->getRobotParams()) {
-		ArLog::log(ArLog::Normal, "%s::ArLCDMTX LCD board %d params",
+		ArLog::log(MvrLog::Normal, "%s::ArLCDMTX LCD board %d params",
 			getName(), myBoardNum);
 	}
 	Aria::addExitCallback(&myAriaExitCB, -10);
-	//myLogLevel = ArLog::Verbose;
-	//myLogLevel = ArLog::Terse;
-	myLogLevel = ArLog::Normal;
+	//myLogLevel = MvrLog::Verbose;
+	//myLogLevel = MvrLog::Terse;
+	myLogLevel = MvrLog::Normal;
 	myRobotRunningAndConnected = false;
 
 }
 
 
-AREXPORT ArLCDMTX::~ArLCDMTX()
+AREXPORT MvrLCDMTX::~ArLCDMTX()
 {
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask(&myProcessCB);
@@ -100,20 +100,20 @@ AREXPORT ArLCDMTX::~ArLCDMTX()
 }
 
 
-AREXPORT void ArLCDMTX::setDeviceConnection(
+AREXPORT void MvrLCDMTX::setDeviceConnection(
 	ArDeviceConnection *conn)
 {
 	myConn = conn;
 	myConn->setDeviceName(getName());
 }
 
-AREXPORT ArDeviceConnection *ArLCDMTX::getDeviceConnection(void)
+AREXPORT MvrDeviceConnection *ArLCDMTX::getDeviceConnection(void)
 {
 	return myConn;
 }
 
 
-AREXPORT void ArLCDMTX::setRobot(ArRobot *robot)
+AREXPORT void MvrLCDMTX::setRobot(MvrRobot *robot)
 {
 	myRobot = robot;
 
@@ -130,14 +130,14 @@ AREXPORT void ArLCDMTX::setRobot(ArRobot *robot)
 	}
 }
 
-void ArLCDMTX::clear(void)
+void MvrLCDMTX::clear(void)
 {
 	myIsConnected = false;
 	myTryingToConnect = false;
 	myStartConnect = false;
 }
 
-AREXPORT void ArLCDMTX::lcdSetName(const char *name)
+AREXPORT void MvrLCDMTX::lcdSetName(const char *name)
 {
 	myName = name;
 	myDeviceMutex.setLogNameVar("%s::myDeviceMutex", getName());
@@ -149,15 +149,15 @@ AREXPORT void ArLCDMTX::lcdSetName(const char *name)
 
 }
 
-AREXPORT bool ArLCDMTX::disconnect(void)
+AREXPORT bool MvrLCDMTX::disconnect(void)
 {
 	if (!isConnected())
 		return true;
-	ArLog::log(ArLog::Normal, "%s: Disconnecting", getName());
+	ArLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
 	return true;
 }
 
-AREXPORT int ArLCDMTX::getReadingCount()
+AREXPORT int MvrLCDMTX::getReadingCount()
 {
 	if (myTimeLastReading == time(NULL))
 		return myReadingCount;
@@ -166,7 +166,7 @@ AREXPORT int ArLCDMTX::getReadingCount()
 	return 0;
 }
 
-AREXPORT void ArLCDMTX::internalGotReading(void)
+AREXPORT void MvrLCDMTX::internalGotReading(void)
 {
 	if (myTimeLastReading != time(NULL))
 	{
@@ -180,9 +180,9 @@ AREXPORT void ArLCDMTX::internalGotReading(void)
 
 }
 
-void ArLCDMTX::failedToConnect(void)
+void MvrLCDMTX::failedToConnect(void)
 {
-	ArLog::log(ArLog::Normal,
+	ArLog::log(MvrLog::Normal,
 		"%s:failedToConnect Cound not connect to lcd",
 		getName());
 	myDeviceMutex.lock();
@@ -190,7 +190,7 @@ void ArLCDMTX::failedToConnect(void)
 	myDeviceMutex.unlock();
 }
 
-void ArLCDMTX::sensorInterp(void)
+void MvrLCDMTX::sensorInterp(void)
 {
 	//ArLCDMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -208,7 +208,7 @@ void ArLCDMTX::sensorInterp(void)
 		unsigned char *buf = (unsigned char *)packet->getBuf();
 
 		if (packet->getID() != KEEP_ALIVE) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s:sensorInterp Could not process packet, command invalid 0x%02x of %d length",
 				getName(), packet->getID(), packet->getLength());
 
@@ -230,7 +230,7 @@ void ArLCDMTX::sensorInterp(void)
 			sprintf(&obuf[j], "_%02x", buf[i]);
 			j = j + 3;
 		}
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::sensorInterp() packet = %s", getName(), obuf);
 #endif
 
@@ -243,8 +243,8 @@ void ArLCDMTX::sensorInterp(void)
 }
 
 
-AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
-	int lcdNumber, ArFunctor1<int> *onCallback,
+AREXPORT bool MvrLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
+	int lcdNumber, MvrFunctor1<int> *onCallback,
 	ArFunctor1<int> *offCallback)
 {
 
@@ -254,7 +254,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 
 	myDeviceMutex.lock();
 	if (myConn == NULL) {
-		ArLog::log(ArLog::Terse,
+		ArLog::log(MvrLog::Terse,
 			"%s: Could not connect because there is no connection defined",
 			getName());
 		myDeviceMutex.unlock();
@@ -265,7 +265,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 	serConn = dynamic_cast<ArSerialConnection *> (myConn);
 	if (serConn != NULL)
 		serConn->setBaud(115200);
-	if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 		&& !myConn->openSimple()) {
 		ArLog::log(
 			ArLog::Terse,
@@ -278,19 +278,19 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 
 	//myRecvTracking = true;
 	//mySendTracking = true;
-	myReceiver = new ArRobotPacketReceiver(myConn, true, HEADER1, HEADER2,
+	myReceiver = new MvrRobotPacketReceiver(myConn, true, HEADER1, HEADER2,
 		myRecvTracking,
-		"ArLCDMTX");
+		"MvrLCDMTX");
 
-	mySender = new ArRobotPacketSender(myConn, HEADER1, HEADER2,
+	mySender = new MvrRobotPacketSender(myConn, HEADER1, HEADER2,
 		mySendTracking,
-		"ArLCDMTX");
+		"MvrLCDMTX");
 
 	myTryingToConnect = true;
 	myDeviceMutex.unlock();
 	ArTime timeDone;
 	if (!timeDone.addMSec(30 * 1000)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::blockingConnect() error adding msecs (30 * 1000)",
 			getName());
 	}
@@ -305,7 +305,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 		// first have the lcd stop sending
 		// ???? not sure if there's a response to this
 		if ((!stopSent) && (!sendSystemInfo(SYS_INFO_STOP))) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::blockingConnect() Could not send system info request to LCD", getName());
 			failedToConnect();
 			return false;
@@ -317,7 +317,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 
 		if (!versionVerified) {
 			if (!sendVersion()) {
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::blockingConnect() Could not send version request to LCD", getName());
 				failedToConnect();
 				return false;
@@ -326,7 +326,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 			packet = myReceiver->receivePacket(1000);
 
 			if (packet == NULL) {
-				ArLog::log(ArLog::Normal, "%s::blockingConnect() Did not get response to version request (%d) - resending",
+				ArLog::log(MvrLog::Normal, "%s::blockingConnect() Did not get response to version request (%d) - resending",
 					getName(), timeDone.mSecTo());
 				continue;
 			}
@@ -336,7 +336,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 			// verify get num trans received
 			if (versionBuf[3] != VERSION)  {
 
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::blockingConnect() Invalid response from lcd to send version (0x%x)",
 					getName(), versionBuf[3]);
 				delete packet;
@@ -349,7 +349,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 				snprintf(tempBuf, sizeof(tempBuf), "%s", &versionBuf[4]);
 				myFirmwareVersion = tempBuf;
 
-				ArLog::log(ArLog::Normal, "%s::blockingConnect() LCD firmware version = %s",
+				ArLog::log(MvrLog::Normal, "%s::blockingConnect() LCD firmware version = %s",
 					getName(), myFirmwareVersion.c_str());
 				delete packet;
 
@@ -379,7 +379,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 
 		if (!sysInfoVerified) {
 			if (!sendSystemInfo(SYS_INFO_ONCE)) {
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::blockingConnect() Could not send sys info request to LCD", getName());
 				failedToConnect();
 				return false;
@@ -388,7 +388,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 			packet = myReceiver->receivePacket(1000);
 
 			if (packet == NULL) {
-				ArLog::log(ArLog::Normal, "%s::blockingConnect() Did not get response to sys info request (%d) - resending",
+				ArLog::log(MvrLog::Normal, "%s::blockingConnect() Did not get response to sys info request (%d) - resending",
 					getName(), timeDone.mSecTo());
 				continue;
 			}
@@ -398,7 +398,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 			// verify get num trans received
 			if (sysInfoBuf[3] != SYSTEM_INFO)  {
 
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::blockingConnect() Invalid response from lcd to send system info (0x%x)",
 					getName(), sysInfoBuf[3]);
 				delete packet;
@@ -409,7 +409,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 				myStatusFlags = sysInfoBuf[4];
 				myCurrentScreen = sysInfoBuf[5];
 
-				ArLog::log(ArLog::Normal, "%s::blockingConnect() LCD status flag = %d current screen = %d",
+				ArLog::log(MvrLog::Normal, "%s::blockingConnect() LCD status flag = %d current screen = %d",
 					getName(), myStatusFlags, myCurrentScreen);
 				delete packet;
 
@@ -419,7 +419,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 		sysInfoVerified = true;
 
 		if (!sendKeepAlive()) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::blockingConnect() Could not send keep alive request to LCD", getName());
 			failedToConnect();
 			return false;
@@ -428,7 +428,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 		packet = myReceiver->receivePacket(1000);
 
 		if (packet == NULL) {
-			ArLog::log(ArLog::Normal, "%s::blockingConnect() Did not get response to keep alive request (%d) - resending",
+			ArLog::log(MvrLog::Normal, "%s::blockingConnect() Did not get response to keep alive request (%d) - resending",
 				getName(), timeDone.mSecTo());
 			continue;
 		}
@@ -437,7 +437,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 
 		// verify 
 		if (keepAliveCmd != KEEP_ALIVE) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::blockingConnect() Invalid response from lcd to send keep alive (0x%x)",
 				getName(), keepAliveCmd);
 			delete packet;
@@ -447,7 +447,7 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 			delete packet;
 			myIsConnected = true;
 			myTryingToConnect = false;
-			ArLog::log(ArLog::Normal, "%s::blockingConnect() Connection successful",
+			ArLog::log(MvrLog::Normal, "%s::blockingConnect() Connection successful",
 				getName());
 
 			myLastReading.setToNow();
@@ -457,19 +457,19 @@ AREXPORT bool ArLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 		}
 	} while (timeDone.mSecTo() >= 0);
 
-	ArLog::log(ArLog::Normal,
+	ArLog::log(MvrLog::Normal,
 		"%s::blockingConnect() Could not send keep alive Request to LCD", getName());
 	failedToConnect();
 	return false;
 
 } // end blockingConnect
 
-AREXPORT const char * ArLCDMTX::getName(void) const
+AREXPORT const char * MvrLCDMTX::getName(void) const
 {
 	return myName.c_str();
 }
 
-AREXPORT void * ArLCDMTX::runThread(void *arg)
+AREXPORT void * MvrLCDMTX::runThread(void *arg)
 {
 
 
@@ -494,7 +494,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 	/* test code
 	std::string buf = "going to goal x";
 	std::string buf1 = "goal seeking";
-	std::string buf2 = "Aram is startup up...";
+	std::string buf2 = "Mvram is startup up...";
 
 	setMTXLCDMainScreenStatus(buf.c_str());
 
@@ -556,7 +556,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 
 
 		if (!setSystemMeters(getBatteryPercentage(), getWifiPercentage())) {
-			IFDEBUG(ArLog::log(ArLog::Normal,
+			IFDEBUG(MvrLog::log(MvrLog::Normal,
 				"%s::runThread() call to setSystemMeters failed", getName()));
 		}
 
@@ -564,7 +564,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 
 
 		if (!sendKeepAlive()) {
-			IFDEBUG(ArLog::log(ArLog::Normal,
+			IFDEBUG(MvrLog::log(MvrLog::Normal,
 				"%s::runThread() call to sendKeepAlive failed", getName()));
 		}
 
@@ -580,7 +580,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 		// if we have a robot but it isn't running yet then don't have a
 		// connection failure
 		if (getRunning() && myIsConnected && checkLostConnection()) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::runThread()  Lost connection to the MTX lcd because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 				myLastReading.mSecSince() / 1000.0,
 				getConnectionTimeoutSeconds());
@@ -598,11 +598,11 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 	loosing connection anytime we lose one packet
 	(which'll always happen sometimes on serial).
 	if (getRunning() && myIsConnected) {
-	//ArLog::log (ArLog::Normal,
+	//ArLog::log (MvrLog::Normal,
 	//            "%s::runThread()  Lost connection to the lcd because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 	//            myLastReading.mSecSince() / 1000.0,
 	//            getConnectionTimeoutSeconds() );
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	"%s::runThread()  Lost connection to the lcd because of error %d %d", getName(), getRunning(), myIsConnected);
 	myIsConnected = false;
 	//laserDisconnectOnError();
@@ -618,7 +618,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 
 
 #if 0 // debug runthread code
-AREXPORT void * ArLCDMTX::runThread(void *arg)
+AREXPORT void * MvrLCDMTX::runThread(void *arg)
 {
 	//ArLCDMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -629,7 +629,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 	char text1[10000];
 	std::string buf = "going to goal x";
 	std::string buf1 = "goal seaking";
-	std::string buf2 = "Aram is startup up...";
+	std::string buf2 = "Mvram is startup up...";
 	std::string buf3 = "Nopey";
 	std::string buf4 = "10.0.152.155";
 
@@ -644,17 +644,17 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 
 
 	if (!setScreenNumber(STATUS_SCREEN)) {
-		IFDEBUG(ArLog::log(ArLog::Normal,
+		IFDEBUG(MvrLog::log(MvrLog::Normal,
 			"%s::runThread() call to setScreenNumber failed", getName()));
 	}
 
 	ArUtil::sleep(300);
 
 	if (!getScreenNumber(&screenNum))
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 		"%s::runThread() call to getScreenNum failed", getName());
 	else
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 		"%s::runThread() current screen num = %d", getName(), screenNum);
 
 
@@ -665,14 +665,14 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 	ArUtil::sleep(300);
 
 	if (!setTextStatus(buf1.c_str())) {
-		IFDEBUG(ArLog::log(ArLog::Normal,
+		IFDEBUG(MvrLog::log(MvrLog::Normal,
 			"%s::runThread() call to setTextStatus failed", getName()));
 	}
 
 	ArUtil::sleep(300);
 
 	if (!setMainStatus(buf.c_str())) {
-		IFDEBUG(ArLog::log(ArLog::Normal,
+		IFDEBUG(MvrLog::log(MvrLog::Normal,
 			"%s::runThread() call to setMainStatus failed", getName()));
 	}
 
@@ -680,20 +680,20 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 	ArUtil::sleep(300);
 
 	if (!setBootStatus(buf2.c_str())) {
-		IFDEBUG(ArLog::log(ArLog::Normal,
+		IFDEBUG(MvrLog::log(MvrLog::Normal,
 			"%s::runThread() call to setBootStatus failed", getName()));
 	}
 
 	ArUtil::sleep(300);
 
 	if (!setRobotIdStatus(buf3.c_str())) {
-		IFDEBUG(ArLog::log(ArLog::Normal,
+		IFDEBUG(MvrLog::log(MvrLog::Normal,
 			"%s::runThread() call to setRobotIdStatus failed", getName()));
 	}
 	ArUtil::sleep(300);
 
 	if (!setRobotIPStatus(buf4.c_str())) {
-		IFDEBUG(ArLog::log(ArLog::Normal,
+		IFDEBUG(MvrLog::log(MvrLog::Normal,
 			"%s::runThread() call to setRobotIPStatus failed", getName()));
 	}
 
@@ -708,11 +708,11 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			// #if 0
 			text1[0] = '\0';
 			if (!getBootStatus(&text1[0])) {
-				IFDEBUG(ArLog::log(ArLog::Normal,
+				IFDEBUG(MvrLog::log(MvrLog::Normal,
 					"%s::runThread() call to getBootStatus failed", getName()));
 			}
 			else {
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::runThread() Boot Status \"%s\" ", getName(), text1);
 				text1[0] = '\0';
 			}
@@ -720,11 +720,11 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			ArUtil::sleep(300);
 
 			if (!getMainStatus(&text1[0])) {
-				IFDEBUG(ArLog::log(ArLog::Normal,
+				IFDEBUG(MvrLog::log(MvrLog::Normal,
 					"%s::runThread() call to getMainStatus failed", getName()));
 			}
 			else {
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::runThread() Main Status  \"%s\" ", getName(), text1);
 				text1[0] = '\0';
 			}
@@ -732,11 +732,11 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			ArUtil::sleep(300);
 
 			if (!getTextStatus(&text1[0])) {
-				IFDEBUG(ArLog::log(ArLog::Normal,
+				IFDEBUG(MvrLog::log(MvrLog::Normal,
 					"%s::runThread() call to getTextStatus failed", getName()));
 			}
 			else {
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::runThread() Text Status  \"%s\" ", getName(), text1);
 				text1[0] = '\0';
 			}
@@ -748,16 +748,16 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			/*
 			if (cnt == 0) {
 			if (!setTextStatus(buf.c_str())) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to setTextStatus failed", getName()));
 			}
 
 			if (!getTextStatus(&text1[0])) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to getTextStatus failed", getName()));
 			}
 			else {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			"%s::runThread() Text Status  \"%s\" ", getName(), text1);
 			text1[0] = '\0';
 			}
@@ -767,16 +767,16 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			else if (cnt == 1) {
 
 			if (!setMainStatus(buf1.c_str())) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to setMainStatus failed", getName()));
 			}
 
 			if (!getMainStatus(&text1[0])) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to getMainStatus failed", getName()));
 			}
 			else {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			"%s::runThread() Main Status  \"%s\" ", getName(), text1);
 			text1[0] = '\0';
 			}
@@ -786,16 +786,16 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			else {
 
 			if (!setBootStatus(buf2.c_str())) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to setBootStatus failed", getName()));
 			}
 
 			if (!getBootStatus(&text1[0])) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to getBootStatus failed", getName()));
 			}
 			else {
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			"%s::runThread() Boot Status \"%s\" ", getName(), text1);
 
 			text1[0] = '\0';
@@ -806,10 +806,10 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			*/
 
 			if (!getScreenNumber(&screenNum))
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s::runThread() call to getScreenNum failed", getName());
 			else
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s::runThread() current screen num = %d", getName(), screenNum);
 
 
@@ -819,13 +819,13 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			ArUtil::sleep(300);
 
 			if (!setBacklight(lightstat)) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to setBacklight failed", getName()));
 			}
 
 			// just using lightstat here as it's 0 or 1 for the 2 screens
 			if (!setScreenNumber(lightstat)) {
-			IFDEBUG(ArLog::log (ArLog::Normal,
+			IFDEBUG(MvrLog::log (MvrLog::Normal,
 			"%s::runThread() call to setScreenNumber failed", getName()));
 			}
 
@@ -840,19 +840,19 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 
 			unsigned char backlight;
 			if (!getBacklight(&backlight))
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			"%s::runThread() call to getBacklight failed", getName());
 			else
-			ArLog::log (ArLog::Normal,
+			ArLog::log (MvrLog::Normal,
 			"%s::runThread() current backlight = %d", getName(), backlight);
 
 			ArUtil::sleep(300);
 			*/
 			if (!getSystemMeters(&batt, &wi))
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s::runThread() call to getSystemMeters failed", getName());
 			else
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 				"%s::runThread() current battery = %d wifi = %d", getName(), batt, wi);
 
 			wifi = getWifiPercentage();
@@ -861,7 +861,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 			ArUtil::sleep(300);
 
 			if (!setSystemMeters(battery, wifi)) {
-				IFDEBUG(ArLog::log(ArLog::Normal,
+				IFDEBUG(MvrLog::log(MvrLog::Normal,
 					"%s::runThread() call to setSystemMeters failed", getName()));
 			}
 		}
@@ -871,7 +871,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 
 
 		if (!sendKeepAlive()) {
-			IFDEBUG(ArLog::log(ArLog::Normal,
+			IFDEBUG(MvrLog::log(MvrLog::Normal,
 				"%s::runThread() call to sendKeepAlive failed", getName()));
 		}
 
@@ -887,7 +887,7 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 		// if we have a robot but it isn't running yet then don't have a
 		// connection failure
 		if (getRunning() && myIsConnected && checkLostConnection()) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::runThread()  Lost connection to the MTX lcd because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 				myLastReading.mSecSince() / 1000.0,
 				getConnectionTimeoutSeconds());
@@ -905,11 +905,11 @@ AREXPORT void * ArLCDMTX::runThread(void *arg)
 	loosing connection anytime we lose one packet
 	(which'll always happen sometimes on serial).
 	if (getRunning() && myIsConnected) {
-	//ArLog::log (ArLog::Normal,
+	//ArLog::log (MvrLog::Normal,
 	//            "%s::runThread()  Lost connection to the lcd because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 	//            myLastReading.mSecSince() / 1000.0,
 	//            getConnectionTimeoutSeconds() );
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	"%s::runThread()  Lost connection to the lcd because of error %d %d", getName(), getRunning(), myIsConnected);
 	myIsConnected = false;
 	//laserDisconnectOnError();
@@ -930,7 +930,7 @@ robot it is a straightforward check of last reading time against
 getConnectionTimeoutSeconds.  If there is a robot then it will not
 start the check until the lcd is running and connected.
 **/
-AREXPORT bool ArLCDMTX::checkLostConnection(void)
+AREXPORT bool MvrLCDMTX::checkLostConnection(void)
 {
 
 	if ((myRobot == NULL || myRobotRunningAndConnected) &&
@@ -948,27 +948,27 @@ AREXPORT bool ArLCDMTX::checkLostConnection(void)
 	return false;
 }
 
-AREXPORT void ArLCDMTX::disconnectOnError(void)
+AREXPORT void MvrLCDMTX::disconnectOnError(void)
 {
-	ArLog::log(ArLog::Normal, "%s: Disconnected because of error", getName());
+	ArLog::log(MvrLog::Normal, "%s: Disconnected because of error", getName());
 	myDisconnectOnErrorCBList.invoke();
 }
 
-AREXPORT bool ArLCDMTX::sendKeepAlive()
+AREXPORT bool MvrLCDMTX::sendKeepAlive()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID(KEEP_ALIVE);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log(ArLog::Terse,
+		ArLog::log(MvrLog::Terse,
 			"%s::sendKeepAlive() Could not send keep alive request to LCD", getName());
 		return false;
 	}
 
 	//IFDEBUG (
 	//
-	//	ArLog::log (ArLog::Normal,
+	//	ArLog::log (MvrLog::Normal,
 	//             "%s::sendKeepAlive() keep alive sent to LCD",
 	//              getName());
 
@@ -978,21 +978,21 @@ AREXPORT bool ArLCDMTX::sendKeepAlive()
 
 }
 
-AREXPORT bool ArLCDMTX::sendVersion()
+AREXPORT bool MvrLCDMTX::sendVersion()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID(VERSION);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log(ArLog::Terse,
+		ArLog::log(MvrLog::Terse,
 			"%s::sendVersion() Could not send version request to LCD", getName());
 		return false;
 	}
 
 	IFDEBUG(
 
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 		"%s::sendVersion() version sent to LCD",
 		getName());
 
@@ -1002,7 +1002,7 @@ AREXPORT bool ArLCDMTX::sendVersion()
 
 }
 
-AREXPORT bool ArLCDMTX::sendSystemInfo(unsigned char command)
+AREXPORT bool MvrLCDMTX::sendSystemInfo(unsigned char command)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1010,14 +1010,14 @@ AREXPORT bool ArLCDMTX::sendSystemInfo(unsigned char command)
 	sendPacket.byteToBuf(command);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log(ArLog::Terse,
+		ArLog::log(MvrLog::Terse,
 			"%s::sendSystemInfo() Could not send sys info request to LCD", getName());
 		return false;
 	}
 
 	IFDEBUG(
 
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 		"%s::sendSystemInfo() sys info sent to LCD",
 		getName());
 
@@ -1027,21 +1027,21 @@ AREXPORT bool ArLCDMTX::sendSystemInfo(unsigned char command)
 
 }
 
-AREXPORT bool ArLCDMTX::sendReboot()
+AREXPORT bool MvrLCDMTX::sendReboot()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID(REBOOT);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log(ArLog::Terse,
+		ArLog::log(MvrLog::Terse,
 			"%s::sendReboot() Could not send reboot request to LCD", getName());
 		return false;
 	}
 
 	IFDEBUG(
 
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 		"%s::sendReboot() reboot sent to LCD",
 		getName());
 
@@ -1052,7 +1052,7 @@ AREXPORT bool ArLCDMTX::sendReboot()
 }
 
 
-AREXPORT bool ArLCDMTX::getTextField(unsigned char textNumber, char *text)
+AREXPORT bool MvrLCDMTX::getTextField(unsigned char textNumber, char *text)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1062,14 +1062,14 @@ AREXPORT bool ArLCDMTX::getTextField(unsigned char textNumber, char *text)
 	for (int i = 0; i < 5; i++) {
 
 		if (!mySender->sendPacket(&sendPacket)) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::getTextField() Could not send get text field request to LCD", getName());
 			return false;
 		}
 
 		IFDEBUG(
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 			"%s::getTextField() get text field sent to LCD",
 			getName());
 
@@ -1078,7 +1078,7 @@ AREXPORT bool ArLCDMTX::getTextField(unsigned char textNumber, char *text)
 		ArRobotPacket *packet = myReceiver->receivePacket(1000);
 
 		if (packet == NULL) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getTextField() No response to get text field - resending (%d)",
 				getName(), i);
 			delete packet;
@@ -1089,7 +1089,7 @@ AREXPORT bool ArLCDMTX::getTextField(unsigned char textNumber, char *text)
 
 		// verify get num trans received
 		if ((textFieldBuf[3] != GET_TEXT_FIELD) || (textFieldBuf[4] != textNumber)) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getTextField() Invalid response from lcd to get text field status (0x%x) text # %d in text # %d",
 				getName(), textFieldBuf[3], textFieldBuf[4], textNumber);
 			continue;
@@ -1114,7 +1114,7 @@ AREXPORT bool ArLCDMTX::getTextField(unsigned char textNumber, char *text)
 
 
 
-AREXPORT bool ArLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
+AREXPORT bool MvrLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
 
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1123,14 +1123,14 @@ AREXPORT bool ArLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
 	for (int i = 0; i < 5; i++) {
 
 		if (!mySender->sendPacket(&sendPacket)) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::getScreenNumber() Could not send get screen number to LCD", getName());
 			return false;
 		}
 
 		IFDEBUG(
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 			"%s::getScreenNumber() get screen number sent to LCD",
 			getName());
 
@@ -1140,7 +1140,7 @@ AREXPORT bool ArLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
 		ArRobotPacket *packet = myReceiver->receivePacket(1000);
 
 		if (packet == NULL) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getScreenNumber() No response to get screen number - resending (%d)",
 				getName(), i);
 			delete packet;
@@ -1151,7 +1151,7 @@ AREXPORT bool ArLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
 
 		// verify get num 
 		if (screenStatusBuf[3] != GET_CURRENT_SCREEN_NUM) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getScreenNumber() Invalid response from lcd to get screen number (0x%x)",
 				getName(), screenStatusBuf[3]);
 			continue;
@@ -1168,7 +1168,7 @@ AREXPORT bool ArLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
 
 }
 
-AREXPORT bool ArLCDMTX::getBacklight(unsigned char *backlight)
+AREXPORT bool MvrLCDMTX::getBacklight(unsigned char *backlight)
 
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1177,14 +1177,14 @@ AREXPORT bool ArLCDMTX::getBacklight(unsigned char *backlight)
 	for (int i = 0; i < 5; i++) {
 
 		if (!mySender->sendPacket(&sendPacket)) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::getBacklight() Could not send get backlight to LCD", getName());
 			return false;
 		}
 
 		IFDEBUG(
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 			"%s::getBacklight() get backlight sent to LCD",
 			getName());
 
@@ -1194,7 +1194,7 @@ AREXPORT bool ArLCDMTX::getBacklight(unsigned char *backlight)
 		ArRobotPacket *packet = myReceiver->receivePacket(1000);
 
 		if (packet == NULL) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getBacklight() No response to get backlight - resending (%d)",
 				getName(), i);
 			delete packet;
@@ -1205,7 +1205,7 @@ AREXPORT bool ArLCDMTX::getBacklight(unsigned char *backlight)
 
 		// verify 
 		if (backlightBuf[3] != GET_BACKLIGHT) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getBacklight() Invalid response from lcd to get backlight (0x%x)",
 				getName(), backlightBuf[3]);
 			continue;
@@ -1222,7 +1222,7 @@ AREXPORT bool ArLCDMTX::getBacklight(unsigned char *backlight)
 
 }
 
-AREXPORT bool ArLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *wifi)
+AREXPORT bool MvrLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *wifi)
 
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1231,14 +1231,14 @@ AREXPORT bool ArLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *w
 	for (int i = 0; i < 5; i++) {
 
 		if (!mySender->sendPacket(&sendPacket)) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::getSystemMeters() Could not send get system meters to LCD", getName());
 			return false;
 		}
 
 		IFDEBUG(
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 			"%s::getSystemMeters() get system meters sent to LCD",
 			getName());
 
@@ -1248,7 +1248,7 @@ AREXPORT bool ArLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *w
 		ArRobotPacket *packet = myReceiver->receivePacket(1000);
 
 		if (packet == NULL) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getSystemMeters() No response to get system meters - resending (%d)",
 				getName(), i);
 			delete packet;
@@ -1259,7 +1259,7 @@ AREXPORT bool ArLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *w
 
 		// verify 
 		if (systemMetersBuf[3] != GET_SYSTEM_METERS) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getSystemMeters() Invalid response from lcd to get system meters (0x%x)",
 				getName(), systemMetersBuf[3]);
 			continue;
@@ -1277,7 +1277,7 @@ AREXPORT bool ArLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *w
 
 }
 
-AREXPORT bool ArLCDMTX::setScreenNumber(unsigned char screenNumber)
+AREXPORT bool MvrLCDMTX::setScreenNumber(unsigned char screenNumber)
 {
 	if ((screenNumber == BOOT_SCREEN) || (screenNumber == STATUS_SCREEN)) {
 
@@ -1286,14 +1286,14 @@ AREXPORT bool ArLCDMTX::setScreenNumber(unsigned char screenNumber)
 		sendPacket.byteToBuf(screenNumber);
 
 		if (!mySender->sendPacket(&sendPacket)) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::setScreenNumber() Could not send set screen number to LCD", getName());
 			return false;
 		}
 
 		IFDEBUG(
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 			"%s::setScreenNumber() set screen number %d sent to LCD",
 			getName(), screenNumber);
 
@@ -1302,13 +1302,13 @@ AREXPORT bool ArLCDMTX::setScreenNumber(unsigned char screenNumber)
 		return true;
 	}
 	else { // bad screen number
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setScreenNumber() Invalid screen number %d", getName(), screenNumber);
 		return false;
 	}
 }
 
-AREXPORT bool ArLCDMTX::setTextField(unsigned char textNumber, const char *text)
+AREXPORT bool MvrLCDMTX::setTextField(unsigned char textNumber, const char *text)
 {
 
 
@@ -1324,7 +1324,7 @@ AREXPORT bool ArLCDMTX::setTextField(unsigned char textNumber, const char *text)
 		sendPacket.strToBuf(text);
 
 		if (!mySender->sendPacket(&sendPacket)) {
-			ArLog::log(ArLog::Terse,
+			ArLog::log(MvrLog::Terse,
 				"%s::setTextField() Could not send mode %d set text field \"%s\" to LCD",
 				getName(), textNumber, text);
 			return false;
@@ -1332,7 +1332,7 @@ AREXPORT bool ArLCDMTX::setTextField(unsigned char textNumber, const char *text)
 
 		IFDEBUG(
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 			"%s::setTextField() mode %d text \"%s\" field sent to LCD",
 			getName(), textNumber, text);
 
@@ -1341,13 +1341,13 @@ AREXPORT bool ArLCDMTX::setTextField(unsigned char textNumber, const char *text)
 		return true;
 	}
 	else { // bad text number
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setTextField() Invalid mode %d", getName(), textNumber);
 		return false;
 	}
 }
 
-AREXPORT bool ArLCDMTX::setBacklight(bool backlight)
+AREXPORT bool MvrLCDMTX::setBacklight(bool backlight)
 {
 
 
@@ -1359,7 +1359,7 @@ AREXPORT bool ArLCDMTX::setBacklight(bool backlight)
 		sendPacket.byteToBuf(0);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log(ArLog::Terse,
+		ArLog::log(MvrLog::Terse,
 			"%s::setBacklight() Could not send set backlight %d to LCD",
 			getName(), backlight);
 		return false;
@@ -1367,7 +1367,7 @@ AREXPORT bool ArLCDMTX::setBacklight(bool backlight)
 
 	IFDEBUG(
 
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 		"%s::setBacklight() set backlight %d sent to LCD",
 		getName(), backlight);
 
@@ -1378,7 +1378,7 @@ AREXPORT bool ArLCDMTX::setBacklight(bool backlight)
 }
 
 
-AREXPORT bool ArLCDMTX::setSystemMeters(unsigned char battery, unsigned char wifi)
+AREXPORT bool MvrLCDMTX::setSystemMeters(unsigned char battery, unsigned char wifi)
 {
 
 
@@ -1388,7 +1388,7 @@ AREXPORT bool ArLCDMTX::setSystemMeters(unsigned char battery, unsigned char wif
 	sendPacket.byteToBuf(wifi);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log(ArLog::Terse,
+		ArLog::log(MvrLog::Terse,
 			"%s::setSystemMeters() Could not send set system meters %d %d to LCD",
 			getName(), battery, wifi);
 		return false;
@@ -1397,7 +1397,7 @@ AREXPORT bool ArLCDMTX::setSystemMeters(unsigned char battery, unsigned char wif
 	/*
 	IFDEBUG (
 
-	ArLog::log (ArLog::Normal,
+	ArLog::log (MvrLog::Normal,
 	"%s::setSystemMeters() set system meters %d %d sent to LCD",
 	getName(), battery, wifi);
 
@@ -1409,34 +1409,34 @@ AREXPORT bool ArLCDMTX::setSystemMeters(unsigned char battery, unsigned char wif
 }
 
 
-AREXPORT void ArLCDMTX::writeToLCD()
+AREXPORT void MvrLCDMTX::writeToLCD()
 {
 
 
 #if 0
 	// grab the status
 	ArServerMode *netMode;
-	if ((netMode = ArServerMode::getActiveMode()) != NULL)
+	if ((netMode = MvrServerMode::getActiveMode()) != NULL)
 	{
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::writeToLCD status = %s", getName(), netMode->getStatus());
 	}
 	else
 	{
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::writeToLCD could not get status");
 
 	}
 #endif
 }
 
-AREXPORT unsigned char ArLCDMTX::getBatteryPercentage()
+AREXPORT unsigned char MvrLCDMTX::getBatteryPercentage()
 {
 	if (myRobot->haveStateOfCharge())
 		return myRobot->getStateOfCharge();
 	else {
 		if (!myLoggedBatteryError) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::getBatteryPercentage() State of charge not available setting it to 0",
 				getName());
 			myLoggedBatteryError = true;
@@ -1445,18 +1445,18 @@ AREXPORT unsigned char ArLCDMTX::getBatteryPercentage()
 	}
 }
 
-AREXPORT unsigned char ArLCDMTX::getWifiPercentage()
+AREXPORT unsigned char MvrLCDMTX::getWifiPercentage()
 {
 
 	// if the link signal exists - then grab the wifi%
-	if (ArSystemStatus::getMTXWirelessLink() == 1) {
-		return ArSystemStatus::getMTXWirelessQuality();
+	if (MvrSystemStatus::getMTXWirelessLink() == 1) {
+		return MvrSystemStatus::getMTXWirelessQuality();
 	}
 	else
 		return 0;
 }
 
-AREXPORT void ArLCDMTX::getIpAddress()
+AREXPORT void MvrLCDMTX::getIpAddress()
 {
 
 	char ip[1000];
@@ -1470,7 +1470,7 @@ AREXPORT void ArLCDMTX::getIpAddress()
 
 }
 
-AREXPORT bool ArLCDMTX::hasIpAddressChanged()
+AREXPORT bool MvrLCDMTX::hasIpAddressChanged()
 {
 
 	char ip[1000];
@@ -1491,11 +1491,11 @@ AREXPORT bool ArLCDMTX::hasIpAddressChanged()
 
 }
 
-AREXPORT bool ArLCDMTX::setMainStatus(const char *status)
+AREXPORT bool MvrLCDMTX::setMainStatus(const char *status)
 {
 #if 0
 	if (!setScreenNumber(STATUS_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setMainStatus() can not set screen number",
 			getName());
 		return false;
@@ -1503,13 +1503,13 @@ AREXPORT bool ArLCDMTX::setMainStatus(const char *status)
 #endif
 
 	if (!setTextField(MAIN_STATUS_TEXT, status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setMainStatus() can not set status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::setMainStatus() set status successful = %s",
 		getName(), status));
 
@@ -1518,25 +1518,25 @@ AREXPORT bool ArLCDMTX::setMainStatus(const char *status)
 
 }
 
-AREXPORT bool ArLCDMTX::setTextStatus(const char *status)
+AREXPORT bool MvrLCDMTX::setTextStatus(const char *status)
 {
 
 #if 0
 	if (!setScreenNumber(STATUS_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setTextStatus() can not set screen number",
 			getName());
 		return false;
 	}
 #endif
 	if (!setTextField(MODE_TEXT, status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setTextStatus() can not set status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::setTextStatus() set status successful = %s",
 		getName(), status));
 
@@ -1545,25 +1545,25 @@ AREXPORT bool ArLCDMTX::setTextStatus(const char *status)
 }
 
 
-AREXPORT bool ArLCDMTX::setRobotIdStatus(const char *status)
+AREXPORT bool MvrLCDMTX::setRobotIdStatus(const char *status)
 {
 
 #if 0
 	if (!setScreenNumber(STATUS_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setRobotIdStatus() can not set screen number",
 			getName());
 		return false;
 	}
 #endif
 	if (!setTextField(ROBOT_ID_TEXT, status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setRobotIdStatus() can not set status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::setRobotIdStatus() set status successful = %s",
 		getName(), status));
 
@@ -1571,25 +1571,25 @@ AREXPORT bool ArLCDMTX::setRobotIdStatus(const char *status)
 
 }
 
-AREXPORT bool ArLCDMTX::setRobotIPStatus(const char *status)
+AREXPORT bool MvrLCDMTX::setRobotIPStatus(const char *status)
 {
 
 #if 0
 	if (!setScreenNumber(STATUS_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setRobotIPStatus() can not set screen number",
 			getName());
 		return false;
 	}
 #endif
 	if (!setTextField(ROBOT_IP_TEXT, status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setRobotIdStatus() can not set status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::setRobotIPStatus() set status successful = %s",
 		getName(), status));
 
@@ -1598,30 +1598,30 @@ AREXPORT bool ArLCDMTX::setRobotIPStatus(const char *status)
 }
 
 
-AREXPORT bool ArLCDMTX::setBootStatus(const char *status)
+AREXPORT bool MvrLCDMTX::setBootStatus(const char *status)
 {
 
 #if 0
 	if (!setScreenNumber(BOOT_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setBootStatus() can not set screen number",
 			getName());
 		return false;
 	}
 #endif
 
-	ArLog::log(ArLog::Normal, "%s:setBootStatus: (BOOT_STATUS_TEXT) text '%s'",
+	ArLog::log(MvrLog::Normal, "%s:setBootStatus: (BOOT_STATUS_TEXT) text '%s'",
 		getName(), status);
 
 
 	if (!setTextField(BOOT_STATUS_TEXT, status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::setBootStatus() can not set status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::setBootStatus() set status successful = %s",
 		getName(), status));
 
@@ -1629,12 +1629,12 @@ AREXPORT bool ArLCDMTX::setBootStatus(const char *status)
 }
 
 
-AREXPORT bool ArLCDMTX::getMainStatus(const char *status)
+AREXPORT bool MvrLCDMTX::getMainStatus(const char *status)
 {
 
 #if 0
 	if (!setScreenNumber(STATUS_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::getMainStatus() can not set screen number",
 			getName());
 		return false;
@@ -1642,13 +1642,13 @@ AREXPORT bool ArLCDMTX::getMainStatus(const char *status)
 #endif
 
 	if (!getTextField(MAIN_STATUS_TEXT, (char *)status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::getMainStatus() can not get status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::getMainStatus() get status successful = %s",
 		getName(), status));
 
@@ -1656,12 +1656,12 @@ AREXPORT bool ArLCDMTX::getMainStatus(const char *status)
 
 
 }
-AREXPORT bool ArLCDMTX::getTextStatus(const char *status)
+AREXPORT bool MvrLCDMTX::getTextStatus(const char *status)
 {
 
 #if 0
 	if (!setScreenNumber(STATUS_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::getTextStatus() can not set screen number",
 			getName());
 		return false;
@@ -1670,13 +1670,13 @@ AREXPORT bool ArLCDMTX::getTextStatus(const char *status)
 
 
 	if (!getTextField(MODE_TEXT, (char *)status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::getTextStatus() can not get status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::getTextStatus() get status successful = %s",
 		getName(), status));
 
@@ -1684,12 +1684,12 @@ AREXPORT bool ArLCDMTX::getTextStatus(const char *status)
 
 }
 
-AREXPORT bool ArLCDMTX::getBootStatus(const char *status)
+AREXPORT bool MvrLCDMTX::getBootStatus(const char *status)
 {
 
 #if 0
 	if (!setScreenNumber(BOOT_SCREEN)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::getBootStatus() can not set screen number",
 			getName());
 		return false;
@@ -1697,13 +1697,13 @@ AREXPORT bool ArLCDMTX::getBootStatus(const char *status)
 #endif
 
 	if (!getTextField(BOOT_STATUS_TEXT, (char *)status)) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::getBootStatus() can not get status",
 			getName());
 		return false;
 	}
 
-	IFDEBUG(ArLog::log(ArLog::Normal,
+	IFDEBUG(MvrLog::log(MvrLog::Normal,
 		"%s::getBootStatus() get status successful = %s",
 		getName(), status));
 
@@ -1711,7 +1711,7 @@ AREXPORT bool ArLCDMTX::getBootStatus(const char *status)
 }
 
 
-AREXPORT bool ArLCDMTX::verifyFwVersion()
+AREXPORT bool MvrLCDMTX::verifyFwVersion()
 {
 
 	// now make sure we have a file
@@ -1731,7 +1731,7 @@ AREXPORT bool ArLCDMTX::verifyFwVersion()
 	hmiFileOut[0] = '\0';
 
 	if (hmiFile.empty()) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::verifyFwVersion() can't find hmi file with prefix = %s",
 			getName(), hmiFilePrefix);
 		return false;
@@ -1744,13 +1744,13 @@ AREXPORT bool ArLCDMTX::verifyFwVersion()
 
 		if (strcmp(hmiFile.c_str(), hmiFileOut) != 0) {
 			myNewFwFile = ourFirmwareBaseDir + hmiFile;
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::verifyFwVersion() versions mismatch %s %s",
 				getName(), hmiFileOut, hmiFile.c_str());
 			return true;
 		}
 		else {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::verifyFwVersion() hmi file found but version matches (%s)",
 				getName(), hmiFileOut);
 			return false;
@@ -1761,7 +1761,7 @@ AREXPORT bool ArLCDMTX::verifyFwVersion()
 }
 
 
-AREXPORT bool ArLCDMTX::downloadFirmware()
+AREXPORT bool MvrLCDMTX::downloadFirmware()
 {
 
 
@@ -1772,7 +1772,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 	serConn = dynamic_cast<ArSerialConnection *> (myConn);
 	if (serConn != NULL)
 		serConn->setBaud(115200);
-	if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 		&& !myConn->openSimple()) {
 		ArLog::log(
 			ArLog::Normal,
@@ -1788,14 +1788,14 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 
 	unsigned char hello = 0xc1;
 
-	//// ArBasePacket *packet;
+	//// MvrBasePacket *packet;
 	// while ((packet = readPacket()) != NULL)
 
 	ArTime timeDone;
 
 	if (!timeDone.addMSec(30 * 1000))
 	{
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::downloadFirmware() error adding msecs (30 * 1000)",
 			getName());
 	}
@@ -1809,19 +1809,19 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 
 		if ((myConn->write((char *)&hello, 1)) == -1) {
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::downloadFirmware() Could not send hello to LCD", getName());
 			return false;
 		}
 
 		if ((myConn->read((char *)&helloResp[0], 4, 500)) > 0) {
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::downloadFirmware() received hello response 0x%02x 0x%02x 0x%02x 0x%02x",
 				getName(), helloResp[0], helloResp[1], helloResp[2], helloResp[3]);
 
 			if ((helloResp[0] == 0xc0) && (helloResp[3] == 0x4b)) {
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::downloadFirmware() received hello response",
 					getName());
 
@@ -1835,7 +1835,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 
 		}
 		else {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::downloadFirmware() read failed",
 				getName());
 
@@ -1843,7 +1843,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 	}
 
 	if (!gotResponse) {
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::downloadFirmware() Received no hello response", getName());
 		return false;
 	}
@@ -1854,8 +1854,8 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 	char line[10000];
 	unsigned char c;
 
-	if ((file = ArUtil::fopen(myNewFwFile.c_str(), "r")) == NULL) {
-		ArLog::log(ArLog::Normal,
+	if ((file = MvrUtil::fopen(myNewFwFile.c_str(), "r")) == NULL) {
+		ArLog::log(MvrLog::Normal,
 			"%s::downloadFirmware() Could not open file %s for reading errno (%d)",
 			getName(), myNewFwFile.c_str(), errno);
 		return false;
@@ -1863,7 +1863,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 
 	line[0] = '\0';
 
-	ArLog::log(ArLog::Normal,
+	ArLog::log(MvrLog::Normal,
 		"%s::downloadFirmware() Updating LCD firmware....",
 		getName());
 
@@ -1881,7 +1881,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 
 			if (!builder.isArgInt(i, true)) {
 
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::downloadFirmware() Could not convert file", getName());
 				return false;
 
@@ -1895,13 +1895,13 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 		} // end for
 
 
-		//ArLog::log(ArLog::Normal,
+		//ArLog::log(MvrLog::Normal,
 		//			"%s::downloadFirmware() data = %s size = %d", getName(), data.c_str(), data.size());
 
-		//ArLog::log(ArLog::Normal,
+		//ArLog::log(MvrLog::Normal,
 		//		"%s::downloadFirmware() %d %c 0x%02x", getName(), data, data, data);
 		if ((myConn->write((char *)data.c_str(), data.size())) == -1) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::downloadFirmware() Could not send data size(%d) to LCD errno (%d)", getName(), data.length(), errno);
 			return false;
 		}
@@ -1913,7 +1913,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 			if (c == 0x4b)
 				continue;
 			else {
-				ArLog::log(ArLog::Normal,
+				ArLog::log(MvrLog::Normal,
 					"%s::downloadFirmware() Invalid response %x02%x from LCD to load data",
 					getName(), c);
 				return false;
@@ -1921,7 +1921,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 
 		}
 		else {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::downloadFirmware() Did not get response from LCD to load data", getName());
 			return false;
 
@@ -1930,7 +1930,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 	} // end while
 	if (feof(file)) {
 		// end of file reached
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::downloadFirmware() LCD firmware updated",
 			getName());
 		fclose(file);
@@ -1943,7 +1943,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 		serConn = dynamic_cast<ArSerialConnection *> (myConn);
 		if (serConn != NULL)
 			serConn->setBaud(115200);
-		if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+		if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 			&& !myConn->openSimple()) {
 			ArLog::log(
 				ArLog::Normal,
@@ -1962,7 +1962,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 
 
 		if (!sendVersion()) {
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::downloadFirmware() Could not send version request to LCD", getName());
 			return false;
 		}
@@ -1970,7 +1970,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 		ArRobotPacket *packet = myReceiver->receivePacket(1000);
 
 		if (packet == NULL) {
-			ArLog::log(ArLog::Normal, "%s::downloadFirmware() Did not get response to version request (%d) - resending",
+			ArLog::log(MvrLog::Normal, "%s::downloadFirmware() Did not get response to version request (%d) - resending",
 				getName(), timeDone.mSecTo());
 			return false;
 		}
@@ -1980,7 +1980,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 		// verify get num trans received
 		if (versionBuf[3] != VERSION)  {
 
-			ArLog::log(ArLog::Normal,
+			ArLog::log(MvrLog::Normal,
 				"%s::downloadFirmware() Invalid response from lcd to send version (0x%x)",
 				getName(), versionBuf[3]);
 			delete packet;
@@ -1993,7 +1993,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 			snprintf(tempBuf, sizeof(tempBuf), "%s", &versionBuf[4]);
 			myFirmwareVersion = tempBuf;
 
-			ArLog::log(ArLog::Normal, "%s::downloadFirmware() LCD firmware version = %s",
+			ArLog::log(MvrLog::Normal, "%s::downloadFirmware() LCD firmware version = %s",
 				getName(), myFirmwareVersion.c_str());
 			delete packet;
 
@@ -2004,7 +2004,7 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 	}
 	else {
 
-		ArLog::log(ArLog::Normal,
+		ArLog::log(MvrLog::Normal,
 			"%s::downloadFirmware() failed updating LCD firmware",
 			getName());
 		fclose(file);
@@ -2015,13 +2015,13 @@ AREXPORT bool ArLCDMTX::downloadFirmware()
 }
 
 
-AREXPORT std::string ArLCDMTX::searchForFile(
+AREXPORT std::string MvrLCDMTX::searchForFile(
 	const char *dirToLookIn, const char *prefix, const char *suffix)
 {
 
 	/***
-	ArLog::log(ArLog::Normal,
-	"ArUtil::matchCase() dirToLookIn = \"%s\" fileName = \"%s\"",
+	ArLog::log(MvrLog::Normal,
+	"MvrUtil::matchCase() dirToLookIn = \"%s\" fileName = \"%s\"",
 	dirToLookIn,
 	fileName);
 	***/
@@ -2045,8 +2045,8 @@ AREXPORT std::string ArLCDMTX::searchForFile(
 	// found what we want
 	if ((dir = opendir(dirToLookIn)) == NULL)
 	{
-		ArLog::log(ArLog::Normal,
-			"AramUtil::findFile: No such directory '%s' for base",
+		ArLog::log(MvrLog::Normal,
+			"MvramUtil::findFile: No such directory '%s' for base",
 			dirToLookIn);
 		return "";
 	}
@@ -2085,7 +2085,7 @@ AREXPORT std::string ArLCDMTX::searchForFile(
 	return "";
 }
 
-AREXPORT bool ArLCDMTX::setMTXLCDMainScreenText(const char *status)
+AREXPORT bool MvrLCDMTX::setMTXLCDMainScreenText(const char *status)
 {
 
 	if (strlen(status) < 248) {
@@ -2094,7 +2094,7 @@ AREXPORT bool ArLCDMTX::setMTXLCDMainScreenText(const char *status)
 		return true;
 	}
 
-	ArLog::log(ArLog::Normal,
+	ArLog::log(MvrLog::Normal,
 		"%s::setMTXLCDMainScreenMode invalid string length (%d) needs to be < 248",
 		getName(), strlen(status));
 	return false;
@@ -2103,7 +2103,7 @@ AREXPORT bool ArLCDMTX::setMTXLCDMainScreenText(const char *status)
 }
 
 /*
-AREXPORT bool ArLCDMTX::setMTXLCDMainScreenMode(const char *status)
+AREXPORT bool MvrLCDMTX::setMTXLCDMainScreenMode(const char *status)
 {
 
 if (strlen(status) < 248) {
@@ -2112,7 +2112,7 @@ strcpy(myChangedModeText, status);
 return true;
 }
 
-ArLog::log (ArLog::Normal,
+ArLog::log (MvrLog::Normal,
 "%s::setMTXLCDMainScreenMode invalid string length (%d) needs to be < 248",
 getName(), strlen(status));
 return false;
@@ -2120,7 +2120,7 @@ return false;
 }
 */
 
-AREXPORT bool ArLCDMTX::setMTXLCDBootScreenText(const char *status)
+AREXPORT bool MvrLCDMTX::setMTXLCDBootScreenText(const char *status)
 
 {
 
@@ -2131,14 +2131,14 @@ AREXPORT bool ArLCDMTX::setMTXLCDBootScreenText(const char *status)
 		return true;
 	}
 
-	ArLog::log(ArLog::Normal,
+	ArLog::log(MvrLog::Normal,
 		"%s::setMTXLCDBootScreenText() invalid string length (%d) needs to be < 248",
 		getName(), strlen(status));
 	return false;
 
 }
 
-AREXPORT bool ArLCDMTX::setMTXLCDScreenNumber(unsigned char screenNumber)
+AREXPORT bool MvrLCDMTX::setMTXLCDScreenNumber(unsigned char screenNumber)
 {
 
 	if ((screenNumber == BOOT_SCREEN) || (screenNumber == STATUS_SCREEN)) {
@@ -2148,14 +2148,14 @@ AREXPORT bool ArLCDMTX::setMTXLCDScreenNumber(unsigned char screenNumber)
 		return true;
 	}
 
-	ArLog::log(ArLog::Normal,
+	ArLog::log(MvrLog::Normal,
 		"%s::setMTXLCDScreenNumber() invalid screen number %d",
 		getName(), screenNumber);
 	return false;
 
 }
 
-AREXPORT bool ArLCDMTX::setMTXLCDBackLight(bool backLight)
+AREXPORT bool MvrLCDMTX::setMTXLCDBackLight(bool backLight)
 {
 
 	myBackLightChanged = true;
@@ -2164,26 +2164,26 @@ AREXPORT bool ArLCDMTX::setMTXLCDBackLight(bool backLight)
 
 }
 
-AREXPORT void ArLCDMTX::setIdentifier(const char *identifier)
+AREXPORT void MvrLCDMTX::setIdentifier(const char *identifier)
 {
 	myRobotIdentifierChanged = true;
 	myRobotIdentifier = identifier;
 
 }
 
-AREXPORT bool ArLCDMTX::internalMTXLCDOverrideMainScreenText(const char *status)
+AREXPORT bool MvrLCDMTX::internalMTXLCDOverrideMainScreenText(const char *status)
 {
 	myMainScreenStatusChanged = false;
 	return setMainStatus(status);
 }
 
-AREXPORT bool ArLCDMTX::internalMTXLCDOverrideBootScreenText(const char *status)
+AREXPORT bool MvrLCDMTX::internalMTXLCDOverrideBootScreenText(const char *status)
 {
 	myBootTextChanged = false;
 	return setBootStatus(status);
 }
 
-AREXPORT bool ArLCDMTX::internalMTXLCDOverrideBackLight(bool backlight)
+AREXPORT bool MvrLCDMTX::internalMTXLCDOverrideBackLight(bool backlight)
 {
 	myChangedBackLight = false;
 	return setBacklight(backlight);

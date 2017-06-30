@@ -24,8 +24,8 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-/*! \file ArMD5Calculator.h
- *  \brief Contains the ArMD5Calculator class.
+/*! \file MvrMD5Calculator.h
+ *  \brief Contains the MvrMD5Calculator class.
  *  \date 06/27/08
  *  \author K. Cunningham
 **/
@@ -37,9 +37,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "md5.h"
 
-/// Calculates the MD5 checksum when reading or writing a text file using ArFunctors.
+/// Calculates the MD5 checksum when reading or writing a text file using MvrFunctors.
 /**
- * ArMD5Calculator is a small helper class used to calculate MD5 checksums
+ * MvrMD5Calculator is a small helper class used to calculate MD5 checksums
  * on text files.  It contains a static method that will calculate the 
  * checksum of a given file, independently performing all I/O.  
  * 
@@ -51,7 +51,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *
  * @ingroup UtilityClasses
 **/
-class ArMD5Calculator {
+class MvrMD5Calculator {
 
 public:
 
@@ -101,7 +101,7 @@ public:
    * @param secondFunctor the optional functor to be invoked on the current
    * text string after its checksum has been calculated
   **/
-	AREXPORT ArMD5Calculator(ArFunctor1<const char*> *secondFunctor = NULL); 
+	AREXPORT MvrMD5Calculator(MvrFunctor1<const char*> *secondFunctor = NULL); 
 
   /// Destructor
 	AREXPORT ~ArMD5Calculator();
@@ -123,20 +123,20 @@ public:
    * this is the functor to use.  It calls append on each text line which
    * accumulates the checksum and calls the second functor if necessary.
   **/
-	AREXPORT ArFunctor1<const char *> *getFunctor();
+	AREXPORT MvrFunctor1<const char *> *getFunctor();
 
   /// Returns the optional secondary functor to be called on each text line.
-	AREXPORT ArFunctor1<const char *> *getSecondFunctor();
+	AREXPORT MvrFunctor1<const char *> *getSecondFunctor();
 
   /// Sets the optional secondary functor to be called on each text line.
-	AREXPORT void setSecondFunctor(ArFunctor1<const char *> *secondFunctor);
+	AREXPORT void setSecondFunctor(MvrFunctor1<const char *> *secondFunctor);
 
 private:
 
   /// Functor that accumulates the checksum
-  ArFunctor1C<ArMD5Calculator, const char*> myFunctor;
+  MvrFunctor1C<ArMD5Calculator, const char*> myFunctor;
   /// Optional secondary functor to be invoked on each text line
-  ArFunctor1<const char*> *mySecondFunctor;
+  MvrFunctor1<const char*> *mySecondFunctor;
   /// State of the md5 library
   md5_state_t myState;
   /// Buffer in which to store the md5 results
@@ -145,7 +145,7 @@ private:
   /// Whether the calculator is finished, i.e. the md5_finish method has been called.
 	bool myIsFinished;
 
-}; // end class ArMD5Calculator
+}; // end class MvrMD5Calculator
 
 #endif // ARMD5CALCULATOR_H
 

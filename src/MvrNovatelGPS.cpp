@@ -25,10 +25,10 @@ robots@mobilerobots.com or
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArNovatelGPS.h"
-#include "ArDeviceConnection.h"
+#include "MvrNovatelGPS.h"
+#include "MvrDeviceConnection.h"
 
 
 AREXPORT ArNovatelGPS::ArNovatelGPS() :
@@ -56,12 +56,12 @@ AREXPORT bool ArNovatelGPS::initDevice()
   // Send a command to start sending data for each message type in the ArGPS
   // handlers map:
   const ArNMEAParser::HandlerMap& handlers = myNMEAParser.getHandlersRef();
-  for(ArNMEAParser::HandlerMap::const_iterator i = handlers.begin(); i != handlers.end(); ++i)
+  for(MvrNMEAParser::HandlerMap::const_iterator i = handlers.begin(); i != handlers.end(); ++i)
   {
     float interval = 1;
     if( (*i).first == "GPRMC") interval = 0.25;  //special case, make this come faster
     snprintf(cmd, 32, "log thisport %s ontime %g\r\n", (*i).first.c_str(), interval);
-    //ArLog::log(ArLog::Verbose, "ArNovatelGPS: sending command: %s", cmd);
+    //ArLog::log(MvrLog::Verbose, "MvrNovatelGPS: sending command: %s", cmd);
     if (myDevice->write(cmd, strlen(cmd)) != (int) strlen(cmd)) return false;
   }
 
@@ -75,7 +75,7 @@ AREXPORT ArNovatelGPS::~ArNovatelGPS() {
 }
 
 
-void ArNovatelGPS::handleNovatelGPGGA(ArNMEAParser::Message msg)
+void ArNovatelGPS::handleNovatelGPGGA(MvrNMEAParser::Message msg)
 {
   // call base handler
   ArGPS::handleGPGGA(msg);
@@ -119,12 +119,12 @@ AREXPORT ArNovatelSPAN::~ArNovatelSPAN()
 {
 }
 
-void ArNovatelSPAN::handleGPRMC(ArNMEAParser::Message msg)
+void ArNovatelSPAN::handleGPRMC(MvrNMEAParser::Message msg)
 {
   parseGPRMC(msg, GPSLatitude, GPSLongitude, GPSValidFlag, haveGPSPosition, timeGotGPSPosition, GPSTimestamp, myData.haveSpeed, myData.speed);
 }
 
-void ArNovatelSPAN::handleINGLL(ArNMEAParser::Message msg)
+void ArNovatelSPAN::handleINGLL(MvrNMEAParser::Message msg)
 {
   const ArNMEAParser::MessageVector *mv = msg.message;
 
@@ -150,7 +150,7 @@ void ArNovatelSPAN::handleINGLL(ArNMEAParser::Message msg)
 AREXPORT bool ArNovatelSPAN::initDevice()
 {
   if(!ArNovatelGPS::initDevice()) return false;
-  ArLog::log(ArLog::Normal, "ArNovatelSPAN: will request INS-corrected latitude and longitude to use as GPS position.");
+  ArLog::log(MvrLog::Normal, "MvrNovatelSPAN: will request INS-corrected latitude and longitude to use as GPS position.");
 
   // Actually request a faster rate for INGLL than ArNovatelGPS::initDevice() did:
   const char *cmd = "log thisport INGLL ontime 0.25\r\n";

@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#include "ArExport.h"
+#include "MvrExport.h"
 #include "ariaOSDef.h"
-#include "ArP2Arm.h"
+#include "MvrP2Arm.h"
 #include "ariaUtil.h"
-#include "ArLog.h"
+#include "MvrLog.h"
 #include "ariaInternal.h"
 
 int ArP2Arm::NumJoints=6;
@@ -65,7 +65,7 @@ AREXPORT ArP2Arm::ArP2Arm() :
   myLastStatusTime(),
   myLastInfoTime(),
   myVersion(),
-  myStatusRequest(ArP2Arm::StatusOff),
+  myStatusRequest(MvrP2Arm::StatusOff),
   myLastStatus(0),
   myStatus(0),
   myCon(),
@@ -74,7 +74,7 @@ AREXPORT ArP2Arm::ArP2Arm() :
   myPacketCB(0),
   myStoppedCB(0)
 {
-  myArmPacketHandler.setName("ArP2Arm");
+  myArmPacketHandler.setName("MvrP2Arm");
 }
 
 AREXPORT ArP2Arm::~ArP2Arm()
@@ -93,7 +93,7 @@ AREXPORT ArP2Arm::~ArP2Arm()
 */
 AREXPORT ArP2Arm::State ArP2Arm::init()
 {
-  ArLog::log(ArLog::Normal, "Initializing the arm.");
+  ArLog::log(MvrLog::Normal, "Initializing the arm.");
 
   ArTime now;
 
@@ -104,7 +104,7 @@ AREXPORT ArP2Arm::State ArP2Arm::init()
     return(ROBOT_NOT_SETUP);
 
   Aria::addUninitCallBack(&myAriaUninitCB, ArListPos::FIRST);
-  ArLog::log(ArLog::Verbose, "Adding the P2 Arm packet handler.");
+  ArLog::log(MvrLog::Verbose, "Adding the P2 Arm packet handler.");
   myRobot->addPacketHandler(&myArmPacketHandler, ArListPos::FIRST);
   now.setToNow();
   if (!comArmStats(StatusSingle))
@@ -161,7 +161,7 @@ AREXPORT ArP2Arm::State ArP2Arm::powerOn(bool doSleep)
 {
   if (isGood())
   {
-    ArLog::log(ArLog::Normal, "ArP2Arm::powerOn: Powering arm.");
+    ArLog::log(MvrLog::Normal, "MvrP2Arm::powerOn: Powering arm.");
     if (!comArmPower(true))
       return(COMM_FAILED);
     // Sleep for 2 seconds to wait for the arm to stop shaking from the
@@ -185,7 +185,7 @@ AREXPORT ArP2Arm::State ArP2Arm::powerOff()
 {
   if (isGood())
   {
-    ArLog::log(ArLog::Normal, "ArP2Arm::powerOff: Powering off arm.");
+    ArLog::log(MvrLog::Normal, "MvrP2Arm::powerOff: Powering off arm.");
     if (comArmPower(false))
       return(SUCCESS);
     else
@@ -529,7 +529,7 @@ AREXPORT P2ArmJoint * ArP2Arm::getJoint(int joint)
     return(0);
 }
 
-bool ArP2Arm::armPacketHandler(ArRobotPacket *packet)
+bool ArP2Arm::armPacketHandler(MvrRobotPacket *packet)
 {
   bool doWake;
   int i;

@@ -28,35 +28,35 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARACTIONKEYDRIVE_H
 
 #include "ariaTypedefs.h"
-#include "ArAction.h"
-#include "ArFunctor.h"
+#include "MvrAction.h"
+#include "MvrFunctor.h"
 
-class ArRobot;
+class MvrRobot;
 
 /// This action will use the keyboard arrow keys for input to drive the robot
 /// @ingroup ActionClasses
-class ArActionKeydrive : public ArAction
+class MvrActionKeydrive : public MvrAction
 {
 public:
   /// Constructor
- AREXPORT ArActionKeydrive(const char *name = "keydrive",
+ AREXPORT MvrActionKeydrive(const char *name = "keydrive",
 			   double transVelMax = 400,
 			   double turnAmountMax = 24,
 			   double velIncrement = 25,
 			   double turnIncrement = 8);
   /// Destructor
   AREXPORT virtual ~ArActionKeydrive();
-  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
   /// For setting the maximum speeds
   AREXPORT void setSpeeds(double transVelMax, double turnAmountMax);
   /// For setting the increment amounts
   AREXPORT void setIncrements(double velIncrement, double turnIncrement);
-  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   AREXPORT virtual void activate(void);
   AREXPORT virtual void deactivate(void);
   /// Takes the keys this action wants to use to drive
@@ -75,13 +75,13 @@ public:
   AREXPORT void space(void);
 
 protected:
-  ArFunctorC<ArActionKeydrive> myUpCB;
-  ArFunctorC<ArActionKeydrive> myDownCB;
-  ArFunctorC<ArActionKeydrive> myLeftCB;
-  ArFunctorC<ArActionKeydrive> myRightCB;
-  ArFunctorC<ArActionKeydrive> mySpaceCB;
+  MvrFunctorC<ArActionKeydrive> myUpCB;
+  MvrFunctorC<ArActionKeydrive> myDownCB;
+  MvrFunctorC<ArActionKeydrive> myLeftCB;
+  MvrFunctorC<ArActionKeydrive> myRightCB;
+  MvrFunctorC<ArActionKeydrive> mySpaceCB;
   // action desired
-  ArActionDesired myDesired;
+  MvrActionDesired myDesired;
   // full speed
   double myTransVelMax;
   // full amount to turn

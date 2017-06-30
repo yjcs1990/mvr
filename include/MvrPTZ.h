@@ -28,14 +28,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARPTZ_H
 
 #include "ariaTypedefs.h"
-#include "ArFunctor.h"
-#include "ArCommands.h"
-#include "ArPTZConnector.h"
+#include "MvrFunctor.h"
+#include "MvrCommands.h"
+#include "MvrPTZConnector.h"
 
-class ArRobot;
-class ArBasePacket;
-class ArRobotPacket;
-class ArDeviceConnection;
+class MvrRobot;
+class MvrBasePacket;
+class MvrRobotPacket;
+class MvrDeviceConnection;
 
 
 /// Base class which handles the PTZ cameras
@@ -46,10 +46,10 @@ class ArDeviceConnection;
     following paragraphs.  There are two ways this can be used.  The
     first is the simplest and default behavior and should be used by
     those whose cameras are attached to their robot's microcontroller,
-    a ArRobot pointer is passed in to the contructor, this is where
+    a MvrRobot pointer is passed in to the contructor, this is where
     the commands will be sent to the robot via the robot's connection
     which will then send it along over the second serial port.  The
-    second way is to pass an ArDeviceConnection to
+    second way is to pass an MvrDeviceConnection to
     setDeviceConnection, if this is done commands will be sent along
     the given serial port, this should ONLY be done if the camera is
     attached straight to a serial port on the computer this program is
@@ -64,19 +64,19 @@ class ArDeviceConnection;
 
     If the camera is attached to the robot (and you are thus using the
     first method described in the first paragraph) then the only way
-    to get data back is to send an ArCommands::GETAUX, then set up a
+    to get data back is to send an MvrCommands::GETAUX, then set up a
     robotPacketHandler for the AUX id and have it call the
     packetHandler you set up in in the class.
 
     If the camera is attached to the serial port on the computer (and
     thus the second method described in the first paragraph was used)
     then its more complicated... the default way is to just pass in an
-    ArDeviceConnection to setDeviceConnection and implement the
+    MvrDeviceConnection to setDeviceConnection and implement the
     readPacket method (which MUST not block), and every time through
     the robot loop readPacket (with the sensorInterpHandler) will be
     called and any packets will be given to the packetHandler (which
     you need to implement in your class) to be processed.  The other
-    way to do this method is to pass both an ArDefaultConnection and
+    way to do this method is to pass both an MvrDefaultConnection and
     false to setDeviceConnection, this means the camera will not be
     read at all by default, and you're on your own for reading the
     data in (ie like your own thread).
@@ -86,10 +86,10 @@ class ArDeviceConnection;
 
   @todo add functions (optional to implement): power on/off, isReady/isInitialized, slew
 **/
-class ArPTZ
+class MvrPTZ
 {
 public:
-  AREXPORT ArPTZ(ArRobot *robot);
+  AREXPORT MvrPTZ(MvrRobot *robot);
   /// Destructor
   AREXPORT virtual ~ArPTZ();
 
@@ -217,7 +217,7 @@ public:
 
 protected:
   /// Versions of the pan and tilt limit accessors where inversion is not applied, for use by subclasses to check when given pan/tilt commands.
-  /// @todo limits checking should be done in ArPTZ pan(), tilt() and panTilt() public interface methods instead of in each implementation
+  /// @todo limits checking should be done in MvrPTZ pan(), tilt() and panTilt() public interface methods instead of in each implementation
   //@{
   virtual double getMaxPosPan_i(void) const { return myMaxPosPan; }
   double getMaxPan_i() const { return getMaxPosPan_i(); }
@@ -270,10 +270,10 @@ public:
   /// Sets the device connection to be used by this PTZ camera, if set
   /// this camera will send commands via this connection, otherwise
   /// its via robot aux. serial port (see setAuxPortt())
-  AREXPORT virtual bool setDeviceConnection(ArDeviceConnection *connection,
+  AREXPORT virtual bool setDeviceConnection(MvrDeviceConnection *connection,
 					    bool driveFromRobotLoop = true);
   /// Gets the device connection used by this PTZ camera
-  AREXPORT virtual ArDeviceConnection *getDeviceConnection(void);
+  AREXPORT virtual MvrDeviceConnection *getDeviceConnection(void);
   /// Sets the aux port on the robot to be used to communicate with this device
   AREXPORT virtual bool setAuxPort(int auxPort);
   /// Gets the port the device is set to communicate on
@@ -287,10 +287,10 @@ public:
       since that is on the robot loop.      
       @return packet read in, or NULL if there was no packet read
    **/
-  AREXPORT virtual ArBasePacket *readPacket(void) { return NULL; }
+  AREXPORT virtual MvrBasePacket *readPacket(void) { return NULL; }
   
   /// Sends a given packet to the camera (via robot or serial port, depending)
-  AREXPORT virtual bool sendPacket(ArBasePacket *packet);
+  AREXPORT virtual bool sendPacket(MvrBasePacket *packet);
   /// Handles a packet that was read from the device
   /**
      This should work for the robot packet handler or for packets read
@@ -302,7 +302,7 @@ public:
      @return true if this packet was handled (ie this knows what it
      is), false otherwise
   **/
-  AREXPORT virtual bool packetHandler(ArBasePacket *packet) { return false; }
+  AREXPORT virtual bool packetHandler(MvrBasePacket *packet) { return false; }
 
   /// Handles a packet that was read by the robot
   /**
@@ -313,28 +313,28 @@ public:
      @return true if the packet was handled (ie this konws what it is),
      false otherwise
   **/
-  AREXPORT virtual bool robotPacketHandler(ArRobotPacket *packet);
+  AREXPORT virtual bool robotPacketHandler(MvrRobotPacket *packet);
 
   /// Internal, attached to robot, inits the camera when robot connects
   AREXPORT virtual void connectHandler(void);
   /// Internal, for attaching to the robots sensor interp to read serial port
   AREXPORT virtual void sensorInterpHandler(void);
 
-  /// Return ArRobot object this PTZ is associated with. May be NULL
-  ArRobot *getRobot() { return myRobot; }
+  /// Return MvrRobot object this PTZ is associated with. May be NULL
+  MvrRobot *getRobot() { return myRobot; }
 
-  /// Set ArRobot object this PTZ is associated with. May be NULL
-  void setRobot(ArRobot* r) { myRobot = r; }
+  /// Set MvrRobot object this PTZ is associated with. May be NULL
+  void setRobot(MvrRobot* r) { myRobot = r; }
 
 protected:
-  ArRobot *myRobot;
-  ArDeviceConnection *myConn;
-  ArFunctorC<ArPTZ> myConnectCB;
-  ArFunctorC<ArPTZ> mySensorInterpCB;
+  MvrRobot *myRobot;
+  MvrDeviceConnection *myConn;
+  MvrFunctorC<ArPTZ> myConnectCB;
+  MvrFunctorC<ArPTZ> mySensorInterpCB;
   int myAuxPort;
-  ArCommands::Commands myAuxTxCmd;
-  ArCommands::Commands myAuxRxCmd;
-  ArRetFunctor1C<bool, ArPTZ, ArRobotPacket *> myRobotPacketHandlerCB;
+  MvrCommands::Commands myAuxTxCmd;
+  MvrCommands::Commands myAuxRxCmd;
+  MvrRetFunctor1C<bool, MvrPTZ, MvrRobotPacket *> myRobotPacketHandlerCB;
   bool myInverted;
   double myMaxPosPan;
   double myMaxNegPan;

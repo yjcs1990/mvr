@@ -28,46 +28,46 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define ARRANGEDEVICE_H
 
 #include "ariaTypedefs.h"
-#include "ArRangeBuffer.h"
-#include "ArSensorReading.h"
-#include "ArDrawingData.h"
-#include "ArMutex.h"
+#include "MvrRangeBuffer.h"
+#include "MvrSensorReading.h"
+#include "MvrDrawingData.h"
+#include "MvrMutex.h"
 #include <set>
 
-class ArRobot;
+class MvrRobot;
 
 /** 
     @brief The base class for all sensing devices which return range
     information from the device (mounted on a robot) to an object in
     the environment.
 
-    This class maintains two ArRangeBuffer objects: a current buffer
+    This class maintains two MvrRangeBuffer objects: a current buffer
     (getCurrentBuffer())
     for storing very recent readings, and a cumulative buffer 
     (getCumulativeBuffer()) for a
     longer history of readings.  The maximum sizes of each buffer can
     be set in the constructor or resized later. Range device readings
     are most often represented as a point in space (X,Y) where the
-    sensor detected an object.  (Therefore an ArPose object may only
+    sensor detected an object.  (Therefore an MvrPose object may only
     have X and Y components set).  
 
-    Some devices provide an original set of "raw" ArSensorReading 
+    Some devices provide an original set of "raw" MvrSensorReading 
     objects (getRawReadings()) (that it used to add data to the current buffer) 
     which may also include extra device specific information as well.
     Not all devices provide raw readings.
 
     Subclasses are used for specific sensor implementations like
-    ArLaser and subclasses for laser rangefinders and ArSonarDevice for the Pioneer sonar
+    MvrLaser and subclasses for laser rangefinders and MvrSonarDevice for the Pioneer sonar
     array. It can also be useful to treat "virtual" objects like
     forbidden areas specified by the user in a map like range devices.
     Some of these subsclasses may use a separate thread to update the
     range reading buffers, and so this base class provides "lock" and
     "unlock" methods which you should use when accessing device data.
 
-    A range device may have an ArRobot object associated with it. A
-    range device may also be associated with an ArRobot by calling
-    ArRobot::addRangeDevice().  ArRobot provides functions which
-    operate on all such associated ArRangeDevice objects.  This is a
+    A range device may have an MvrRobot object associated with it. A
+    range device may also be associated with an MvrRobot by calling
+    MvrRobot::addRangeDevice().  MvrRobot provides functions which
+    operate on all such associated MvrRangeDevice objects.  This is a
     convenient (and thread-safe) way to access all range device data
     without depending on a specific set of individual range
     devices. For example, you can find the closest reading in a box or
@@ -77,11 +77,11 @@ class ArRobot;
     @ingroup ImportantClasses
 **/
 
-class ArRangeDevice
+class MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT ArRangeDevice(size_t currentBufferSize, 
+  AREXPORT MvrRangeDevice(size_t currentBufferSize, 
 			 size_t cumulativeBufferSize,
 			 const char *name, unsigned int maxRange,
 			 int maxSecondsToKeepCurrent = 0,
@@ -93,9 +93,9 @@ public:
   /// Gets the name of the device
   AREXPORT virtual const char *getName(void) const;
   /// Sets the robot this device is attached to
-  AREXPORT virtual void setRobot(ArRobot *robot);
+  AREXPORT virtual void setRobot(MvrRobot *robot);
   /// Gets the robot this device is attached to
-  AREXPORT virtual ArRobot *getRobot(void);
+  AREXPORT virtual MvrRobot *getRobot(void);
   /// Sets the maximum size of the buffer for current readings
   AREXPORT virtual void setCurrentBufferSize(size_t size);
   /// Gets the maximum size of the buffer for current readings
@@ -119,21 +119,21 @@ public:
   /// Gets the closest current reading from the given box region
   AREXPORT virtual double currentReadingBox(double x1, double y1, double x2,
 					    double y2, 
-					    ArPose *readingPos = NULL) const;
+					    MvrPose *readingPos = NULL) const;
   /// Gets the closest current reading from the given box region
   AREXPORT virtual double cumulativeReadingBox(double x1, double y1, double x2,
 					       double y2, 
-					       ArPose *readingPos = NULL) const;
+					       MvrPose *readingPos = NULL) const;
 #ifndef SWIG
   /** @brief Gets the current range buffer
    *  @swigomit See getCurrentBufferAsVector()
    */
-  virtual const ArRangeBuffer *getCurrentRangeBuffer(void) const
+  virtual const MvrRangeBuffer *getCurrentRangeBuffer(void) const
     { return &myCurrentBuffer; }
   /** @brief Gets the cumulative range buffer
    *  @swigomit See getCumulativeBufferAsVector()
    */
-  virtual const ArRangeBuffer *getCumulativeRangeBuffer(void) const
+  virtual const MvrRangeBuffer *getCumulativeRangeBuffer(void) const
     { return &myCumulativeBuffer; }
   /** @brief Gets the current buffer of readings
    *  @swigomit See getCurrentBufferAsVector()
@@ -148,17 +148,17 @@ public:
 #endif // SWIG
 
   /// Gets the current range buffer
-  virtual ArRangeBuffer *getCurrentRangeBuffer(void)
+  virtual MvrRangeBuffer *getCurrentRangeBuffer(void)
     { return &myCurrentBuffer; }
   /// Gets the cumulative range buffer
-  virtual ArRangeBuffer *getCumulativeRangeBuffer(void) 
+  virtual MvrRangeBuffer *getCumulativeRangeBuffer(void) 
     { return &myCumulativeBuffer; }
   /// Gets the current buffer of readings
   virtual std::list<ArPoseWithTime *> *getCurrentBuffer(void) 
     { return myCurrentBuffer.getBuffer(); }
   /** @brief Gets the current buffer of readings as a vector
    *  @swignote The return type will be named 
-   *   ArPoseWithTimeVector instead of the std::vector template.
+   *   MvrPoseWithTimeVector instead of the std::vector template.
    */
   virtual std::vector<ArPoseWithTime> *getCurrentBufferAsVector(void) 
     { return myCurrentBuffer.getBufferAsVector(); }
@@ -166,7 +166,7 @@ public:
   virtual std::list<ArPoseWithTime *> *getCumulativeBuffer(void) 
     { return myCumulativeBuffer.getBuffer(); }
   /** @brief Gets the cumulative buffer of readings as a vector
-   *  @swignote The return type will be named ArPoseWithTimeVector
+   *  @swignote The return type will be named MvrPoseWithTimeVector
    *    instead of the std::vector template.
    */
   virtual std::vector<ArPoseWithTime> *getCumulativeBufferAsVector(void) 
@@ -181,7 +181,7 @@ public:
       @note Only laser subclasses provide this data currently.  Sonar, bumpers,
       etc. do not provide raw readings.
       This method was added to this base class for use by multiple laser or
-laser-like subclassses of ArRangeDevice and ArRangeDeviceThreaded
+laser-like subclassses of MvrRangeDevice and MvrRangeDeviceThreaded
       similar devices.
       Other kinds of range devices are sufficiently different from lasers that
       any "raw" information provided would usually require very different interpretation.
@@ -364,20 +364,20 @@ laser-like subclassses of ArRangeDevice and ArRangeDeviceThreaded
 
 
   /// Applies a transform to the buffers
-  AREXPORT virtual void applyTransform(ArTransform trans, 
+  AREXPORT virtual void applyTransform(MvrTransform trans, 
 				       bool doCumulative = true);
 
-  /// Gets data used for visualizing the current buffer (see ArNetworking)
-  virtual ArDrawingData *getCurrentDrawingData(void) 
+  /// Gets data used for visualizing the current buffer (see MvrNetworking)
+  virtual MvrDrawingData *getCurrentDrawingData(void) 
     { return myCurrentDrawingData; }
-  /// Gets data used for visualizing the cumulative buffer (see ArNetworking)
-  virtual ArDrawingData *getCumulativeDrawingData(void) 
+  /// Gets data used for visualizing the cumulative buffer (see MvrNetworking)
+  virtual MvrDrawingData *getCumulativeDrawingData(void) 
     { return myCumulativeDrawingData; }
   /// Sets data for visualizing the current buffer (and if we own it)
-  AREXPORT virtual void setCurrentDrawingData(ArDrawingData *data, 
+  AREXPORT virtual void setCurrentDrawingData(MvrDrawingData *data, 
 					      bool takeOwnershipOfData);
   /// Sets data for visualizing the cumulative buffer (and if we own it)
-  AREXPORT virtual void setCumulativeDrawingData(ArDrawingData *data, 
+  AREXPORT virtual void setCumulativeDrawingData(MvrDrawingData *data, 
 						 bool takeOwnershipOfData);
 
   
@@ -408,10 +408,10 @@ protected:
   std::vector<ArSensorReading> myRawReadingsVector;
   std::vector<ArSensorReading> myAdjustedRawReadingsVector;
   std::string myName;
-  ArRobot *myRobot;
+  MvrRobot *myRobot;
   unsigned int myMaxRange; 
-  ArRangeBuffer myCurrentBuffer;
-  ArRangeBuffer myCumulativeBuffer;
+  MvrRangeBuffer myCurrentBuffer;
+  MvrRangeBuffer myCumulativeBuffer;
 
   int myMaxSecondsToKeepCurrent;
   double myMinDistBetweenCurrent;
@@ -424,16 +424,16 @@ protected:
   double myMinDistBetweenCumulativeSquared;
   double myMaxInsertDistCumulative; 
   double myMaxInsertDistCumulativeSquared;
-  ArPose myMaxInsertDistCumulativePose;
+  MvrPose myMaxInsertDistCumulativePose;
 
-  ArFunctorC<ArRangeDevice> myFilterCB;
+  MvrFunctorC<ArRangeDevice> myFilterCB;
   std::list<ArSensorReading *> *myRawReadings;
   std::list<ArSensorReading *> *myAdjustedRawReadings;
-  ArDrawingData *myCurrentDrawingData;
+  MvrDrawingData *myCurrentDrawingData;
   bool myOwnCurrentDrawingData;
-  ArDrawingData *myCumulativeDrawingData;
+  MvrDrawingData *myCumulativeDrawingData;
   bool myOwnCumulativeDrawingData;
-  ArMutex myDeviceMutex;
+  MvrMutex myDeviceMutex;
   bool myIsLocationDependent;
 };
 
