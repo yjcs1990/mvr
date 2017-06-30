@@ -49,7 +49,7 @@ public:
   }
 
   /// Destructor
-  virtual ~ArColor() {}
+  virtual ~MvrColor() {}
   /// Gets the red value (uses full range of 0-255)
   unsigned char getRed(void) { return myRed; }
   /// Gets the green value (uses full range of 0-255)
@@ -174,7 +174,7 @@ public:
       myVisibility = visibility;
     }
   /// Destructor
-  virtual ~ArDrawingData() {}
+  virtual ~MvrDrawingData() {}
   /// Returns the shape of data to draw
   const char * getShape(void) { return myShape.c_str(); }
   /// Gets the primary color (meaning depending on shape)

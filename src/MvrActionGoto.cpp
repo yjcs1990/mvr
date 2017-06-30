@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrActionGoto.h"
 #include "MvrRobot.h"
 
-AREXPORT MvrActionGoto::ArActionGoto(const char *name, MvrPose goal, 
+MVREXPORT MvrActionGoto::ArActionGoto(const char *name, MvrPose goal, 
 				    double closeDist, double speed,
 				    double speedToTurnAt, double turnAmount) :
   MvrAction(name, "Goes to the given goal.")
@@ -59,12 +59,12 @@ AREXPORT MvrActionGoto::ArActionGoto(const char *name, MvrPose goal,
   
 }
 
-AREXPORT MvrActionGoto::~ArActionGoto()
+MVREXPORT MvrActionGoto::~MvrActionGoto()
 {
 
 }
 
-AREXPORT bool MvrActionGoto::haveAchievedGoal(void)
+MVREXPORT bool MvrActionGoto::haveAchievedGoal(void)
 {
   if (myState == STATE_ACHIEVED_GOAL)
     return true;
@@ -72,12 +72,12 @@ AREXPORT bool MvrActionGoto::haveAchievedGoal(void)
     return false;
 }
 
-AREXPORT void MvrActionGoto::cancelGoal(void)
+MVREXPORT void MvrActionGoto::cancelGoal(void)
 {
   myState = STATE_NO_GOAL;
 }
 
-AREXPORT void MvrActionGoto::setGoal(MvrPose goal)
+MVREXPORT void MvrActionGoto::setGoal(MvrPose goal)
 {
   myState = STATE_GOING_TO_GOAL;
   myGoal = goal;
@@ -86,7 +86,7 @@ AREXPORT void MvrActionGoto::setGoal(MvrPose goal)
   myOldGoal = myGoal;
 }
 
-AREXPORT MvrActionDesired *ArActionGoto::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *ArActionGoto::fire(MvrActionDesired currentDesired)
 {
   double angle;
   double dist;

@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrSonarAutoDisabler.h"
 #include "MvrRobot.h"
 
-AREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(MvrRobot *robot) :
+MVREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(MvrRobot *robot) :
   myUserTaskCB(this, &ArSonarAutoDisabler::userTask),
   mySupressCB(this, &ArSonarAutoDisabler::supress),
   myUnsupressCB(this, &ArSonarAutoDisabler::unsupress),
@@ -53,12 +53,12 @@ AREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(MvrRobot *robot) :
   }
 }
 
-AREXPORT ArSonarAutoDisabler::~ArSonarAutoDisabler()
+MVREXPORT ArSonarAutoDisabler::~MvrSonarAutoDisabler()
 {
   myRobot->remUserTask("SonarAutoDisabler");
 }
 
-AREXPORT void ArSonarAutoDisabler::userTask(void)
+MVREXPORT void ArSonarAutoDisabler::userTask(void)
 {
   if (mySupressed && (myRobot->areSonarsEnabled() || 
 		      myRobot->areAutonomousDrivingSonarsEnabled()))

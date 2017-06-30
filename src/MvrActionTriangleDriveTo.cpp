@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLaser.h"
 #include "ariaInternal.h"
 
-AREXPORT MvrActionTriangleDriveTo::ArActionTriangleDriveTo(
+MVREXPORT MvrActionTriangleDriveTo::ArActionTriangleDriveTo(
 	const char *name, double finalDistFromVertex,  
 	double approachDistFromVertex, double speed,
 	double closeDist, double acquireTurnSpeed) :
@@ -82,7 +82,7 @@ AREXPORT MvrActionTriangleDriveTo::ArActionTriangleDriveTo(
   myUseLegacyVertexOffset = false;
 }
 
-AREXPORT void MvrActionTriangleDriveTo::setParameters(
+MVREXPORT void MvrActionTriangleDriveTo::setParameters(
 	double finalDistFromVertex,  
 	double approachDistFromVertex, double speed,
 	double closeDist, double acquireTurnSpeed)
@@ -94,13 +94,13 @@ AREXPORT void MvrActionTriangleDriveTo::setParameters(
   myAcquireTurnSpeed = acquireTurnSpeed;
 }
 
-AREXPORT MvrActionTriangleDriveTo::~ArActionTriangleDriveTo()
+MVREXPORT MvrActionTriangleDriveTo::~MvrActionTriangleDriveTo()
 {
   if (myOwnLineFinder)
     delete myLineFinder;
 }
 
-AREXPORT void MvrActionTriangleDriveTo::activate(void)
+MVREXPORT void MvrActionTriangleDriveTo::activate(void)
 {
   if (myPrinting)
     MvrLog::log(MvrLog::Normal, "MvrActionTriangleDriveTo: Activating");
@@ -124,13 +124,13 @@ AREXPORT void MvrActionTriangleDriveTo::activate(void)
 
 }
 
-AREXPORT void MvrActionTriangleDriveTo::deactivate(void)
+MVREXPORT void MvrActionTriangleDriveTo::deactivate(void)
 {
   MvrAction::deactivate();
   myState = STATE_INACTIVE;
 }
 
-AREXPORT void MvrActionTriangleDriveTo::setRobot(MvrRobot *robot)
+MVREXPORT void MvrActionTriangleDriveTo::setRobot(MvrRobot *robot)
 {
   MvrAction::setRobot(robot);
   if (myLineFinder == NULL && myRobot != NULL)
@@ -150,7 +150,7 @@ AREXPORT void MvrActionTriangleDriveTo::setRobot(MvrRobot *robot)
   }
 }
 
-AREXPORT void MvrActionTriangleDriveTo::setLineFinder(MvrLineFinder *lineFinder)
+MVREXPORT void MvrActionTriangleDriveTo::setLineFinder(MvrLineFinder *lineFinder)
 {
   if (myLineFinder != NULL && myOwnLineFinder)
     delete myLineFinder;
@@ -159,7 +159,7 @@ AREXPORT void MvrActionTriangleDriveTo::setLineFinder(MvrLineFinder *lineFinder)
   myOwnLineFinder = false;
 }
 
-AREXPORT MvrPose MvrActionTriangleDriveTo::findPoseFromVertex(
+MVREXPORT MvrPose MvrActionTriangleDriveTo::findPoseFromVertex(
 	double distFromVertex)
 {
   MvrPose ret;
@@ -184,7 +184,7 @@ AREXPORT MvrPose MvrActionTriangleDriveTo::findPoseFromVertex(
    @param goStraight we're just driving straight in to the vertex in the second
    stage.
 **/
-AREXPORT void MvrActionTriangleDriveTo::findTriangle(bool initial, 
+MVREXPORT void MvrActionTriangleDriveTo::findTriangle(bool initial, 
 						    bool goStraight)
 {
   if (myGotLinesCounter != myRobot->getCounter())
@@ -590,7 +590,7 @@ AREXPORT void MvrActionTriangleDriveTo::findTriangle(bool initial,
   myDataMutex.unlock();
 }
 
-AREXPORT MvrActionDesired *ArActionTriangleDriveTo::fire(
+MVREXPORT MvrActionDesired *ArActionTriangleDriveTo::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

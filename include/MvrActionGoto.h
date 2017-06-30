@@ -53,49 +53,49 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 class MvrActionGoto : public MvrAction
 {
 public:
-  AREXPORT MvrActionGoto(const char *name = "goto", 
+  MVREXPORT MvrActionGoto(const char *name = "goto", 
 			ArPose goal = MvrPose(0.0, 0.0, 0.0), 
 			double closeDist = 100, double speed = 400,
 			double speedToTurnAt = 150, double turnAmount = 7);
-  AREXPORT virtual ~ArActionGoto();
+  MVREXPORT virtual ~MvrActionGoto();
 
   /** Sees if the goal has been achieved. The goal is achieved when
    *  the robot's repordet position is within a certain distance
    *  (given in the constructor or in setCloseDist) from the goal pose. */
-  AREXPORT bool haveAchievedGoal(void);
+  MVREXPORT bool haveAchievedGoal(void);
 
   /** Cancels the goal; this action will stop requesting movement. However,
    *  any currently requested motion (either previously requested by this
    *  action or by another action) will continue to be used. Use an MvrActionStop
    *  action (activate it, or set it at a lower priority) to stop the robot.
    */
-  AREXPORT void cancelGoal(void);
+  MVREXPORT void cancelGoal(void);
 
   /// Sets a new goal and sets the action to go there
-  AREXPORT void setGoal(MvrPose goal);
+  MVREXPORT void setGoal(MvrPose goal);
 
   /// Gets the goal the action has
-  AREXPORT MvrPose getGoal(void) { return myGoal; }
+  MVREXPORT MvrPose getGoal(void) { return myGoal; }
 
   /// Set the distance which is close enough to the goal (mm);
-  AREXPORT void setCloseDist(double closeDist) { myCloseDist = closeDist; }
+  MVREXPORT void setCloseDist(double closeDist) { myCloseDist = closeDist; }
   /// Gets the distance which is close enough to the goal (mm)
-  AREXPORT double getCloseDist(void) { return myCloseDist; }
+  MVREXPORT double getCloseDist(void) { return myCloseDist; }
   /// Sets the speed the action will travel to the goal at (mm/sec)
-  AREXPORT void setSpeed(double speed) { mySpeed = speed; }
+  MVREXPORT void setSpeed(double speed) { mySpeed = speed; }
   /// Gets the speed the action will travel to the goal at (mm/sec)
-  AREXPORT double getSpeed(void) { return mySpeed; }
+  MVREXPORT double getSpeed(void) { return mySpeed; }
 
   /** Called by the action resover; request movement towards goal if we
    *  have one. 
    *  @param currentDesired Current desired action from the resolver
    */
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
 
   /** Used by the action resolvel; return current desired action. */
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

@@ -45,39 +45,39 @@ class MvrLMS2xxPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrLMS2xxPacket(unsigned char sendingAddress = 0);
+  MVREXPORT MvrLMS2xxPacket(unsigned char sendingAddress = 0);
   /// Destructor
-  AREXPORT virtual ~ArLMS2xxPacket();
+  MVREXPORT virtual ~MvrLMS2xxPacket();
 
   /// Sets the address to send this packet to (only use for sending)
-  AREXPORT void setSendingAddress(unsigned char address);
+  MVREXPORT void setSendingAddress(unsigned char address);
 
   /// Sets the address to send this packet to (only use for sending)
-  AREXPORT unsigned char getSendingAddress(void);
+  MVREXPORT unsigned char getSendingAddress(void);
 
   /// Gets the address this packet was sent from (only use for receiving)
-  AREXPORT unsigned char getReceivedAddress(void);
+  MVREXPORT unsigned char getReceivedAddress(void);
   
   /// returns true if the crc matches what it should be
-  AREXPORT bool verifyCRC(void);
+  MVREXPORT bool verifyCRC(void);
   
   /// returns the ID of the packet (first byte of data)
-  AREXPORT MvrTypes::UByte getID(void);
+  MVREXPORT MvrTypes::UByte getID(void);
 
   /// returns the crc, probably used only internally
-  AREXPORT MvrTypes::Byte2 calcCRC(void);
+  MVREXPORT MvrTypes::Byte2 calcCRC(void);
   
   // only call finalizePacket before a send
-  AREXPORT virtual void finalizePacket(void);
-  AREXPORT virtual void resetRead(void);
+  MVREXPORT virtual void finalizePacket(void);
+  MVREXPORT virtual void resetRead(void);
   
   /// Gets the time the packet was received at
-  AREXPORT MvrTime getTimeReceived(void);
+  MVREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(MvrTime timeReceived);
+  MVREXPORT void setTimeReceived(MvrTime timeReceived);
 
   /// Duplicates the packet
-  AREXPORT virtual void duplicatePacket(MvrLMS2xxPacket *packet);
+  MVREXPORT virtual void duplicatePacket(MvrLMS2xxPacket *packet);
 protected:
   MvrTime myTimeReceived;
   unsigned char mySendingAddress;

@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
    @param name name of the action
 */
-AREXPORT MvrActionRatioInput::ArActionRatioInput(const char *name) :
+MVREXPORT MvrActionRatioInput::ArActionRatioInput(const char *name) :
     MvrAction(name, "RatioInputs vel and heading")
 {
   myTransRatio = 0;
@@ -56,11 +56,11 @@ AREXPORT MvrActionRatioInput::ArActionRatioInput(const char *name) :
   myLatDeadZone = 10;
 }
 
-AREXPORT MvrActionRatioInput::~ArActionRatioInput()
+MVREXPORT MvrActionRatioInput::~MvrActionRatioInput()
 {
 }
 
-AREXPORT void MvrActionRatioInput::addToConfig(MvrConfig *config, 
+MVREXPORT void MvrActionRatioInput::addToConfig(MvrConfig *config, 
 					      const char *section)
 {
   config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
@@ -134,7 +134,7 @@ AREXPORT void MvrActionRatioInput::addToConfig(MvrConfig *config,
 /**
    This checks the inputs and pulls them into the valid range.
 **/
-AREXPORT void MvrActionRatioInput::setRatios(double transRatio, 
+MVREXPORT void MvrActionRatioInput::setRatios(double transRatio, 
 					    double rotRatio, 
 					    double throttleRatio,
 					    double latRatio)
@@ -149,7 +149,7 @@ AREXPORT void MvrActionRatioInput::setRatios(double transRatio,
    This checks the input for greather than 100 and less than -100 and
    pulls it to within that range.
 **/
-AREXPORT void MvrActionRatioInput::setTransRatio(double transRatio)
+MVREXPORT void MvrActionRatioInput::setTransRatio(double transRatio)
 {
   if (transRatio > 100)
     myTransRatio = 100;
@@ -163,7 +163,7 @@ AREXPORT void MvrActionRatioInput::setTransRatio(double transRatio)
    This checks the input for greather than 100 and less than -100 and
    pulls it to within that range.
 **/
-AREXPORT void MvrActionRatioInput::setRotRatio(double rotRatio)
+MVREXPORT void MvrActionRatioInput::setRotRatio(double rotRatio)
 {
   if (rotRatio > 100)
     myRotRatio = 100;
@@ -177,7 +177,7 @@ AREXPORT void MvrActionRatioInput::setRotRatio(double rotRatio)
    This checks the input for greather than 100 and less than -100 and
    pulls it to within that range.
 **/
-AREXPORT void MvrActionRatioInput::setLatRatio(double latRatio)
+MVREXPORT void MvrActionRatioInput::setLatRatio(double latRatio)
 {
   if (latRatio > 100)
     myLatRatio = 100;
@@ -191,7 +191,7 @@ AREXPORT void MvrActionRatioInput::setLatRatio(double latRatio)
    This checks the input for greather than 100 and less than 0 and
    pulls it to within that range.
 **/
-AREXPORT void MvrActionRatioInput::setThrottleRatio(double throttleRatio)
+MVREXPORT void MvrActionRatioInput::setThrottleRatio(double throttleRatio)
 {
   if (throttleRatio > 100)
     myThrottleRatio = 100;
@@ -227,7 +227,7 @@ AREXPORT void MvrActionRatioInput::setThrottleRatio(double throttleRatio)
    
 
 **/
-AREXPORT void MvrActionRatioInput::setParameters(double fullThrottleForwards, 
+MVREXPORT void MvrActionRatioInput::setParameters(double fullThrottleForwards, 
 						double fullThrottleBackwards, 
 						double rotAtFullForwards,
 						double rotAtFullBackwards,
@@ -251,13 +251,13 @@ AREXPORT void MvrActionRatioInput::setParameters(double fullThrottleForwards,
    to highest number, but this still means higher numbers are more
    important since throttle set by those will override the lower.
 **/
-AREXPORT void MvrActionRatioInput::addFireCallback(int priority, 
+MVREXPORT void MvrActionRatioInput::addFireCallback(int priority, 
 						  MvrFunctor *functor)
 {
   myFireCallbacks.insert(std::pair<int, MvrFunctor *>(priority, functor));
 }
 
-AREXPORT void MvrActionRatioInput::remFireCallback(MvrFunctor *functor)
+MVREXPORT void MvrActionRatioInput::remFireCallback(MvrFunctor *functor)
 {
   std::multimap<int, MvrFunctor *>::iterator it;
   for (it = myFireCallbacks.begin(); it != myFireCallbacks.end(); it++)
@@ -274,7 +274,7 @@ AREXPORT void MvrActionRatioInput::remFireCallback(MvrFunctor *functor)
     MvrLog::log(MvrLog::Normal, "MvrActionRatioInput::RemFireCallback: could not remove callback");
 }
 
-AREXPORT void MvrActionRatioInput::addActivateCallback(MvrFunctor *functor, 
+MVREXPORT void MvrActionRatioInput::addActivateCallback(MvrFunctor *functor, 
 						ArListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)
@@ -286,12 +286,12 @@ AREXPORT void MvrActionRatioInput::addActivateCallback(MvrFunctor *functor,
 	       "MvrActionRatioInput::addActivateCallback: Invalid position.");
 }
 
-AREXPORT void MvrActionRatioInput::remActivateCallback(MvrFunctor *functor)
+MVREXPORT void MvrActionRatioInput::remActivateCallback(MvrFunctor *functor)
 {
   myActivateCallbacks.remove(functor);
 }
 
-AREXPORT void MvrActionRatioInput::addDeactivateCallback(MvrFunctor *functor, 
+MVREXPORT void MvrActionRatioInput::addDeactivateCallback(MvrFunctor *functor, 
 						ArListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)
@@ -303,12 +303,12 @@ AREXPORT void MvrActionRatioInput::addDeactivateCallback(MvrFunctor *functor,
 	       "MvrActionRatioInput::addDeactivateCallback: Invalid position.");
 }
 
-AREXPORT void MvrActionRatioInput::remDeactivateCallback(MvrFunctor *functor)
+MVREXPORT void MvrActionRatioInput::remDeactivateCallback(MvrFunctor *functor)
 {
   myDeactivateCallbacks.remove(functor);
 }
 
-AREXPORT void MvrActionRatioInput::activate(void)
+MVREXPORT void MvrActionRatioInput::activate(void)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -326,7 +326,7 @@ AREXPORT void MvrActionRatioInput::activate(void)
   MvrAction::activate();
 }
 
-AREXPORT void MvrActionRatioInput::deactivate(void)
+MVREXPORT void MvrActionRatioInput::deactivate(void)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -344,7 +344,7 @@ AREXPORT void MvrActionRatioInput::deactivate(void)
   MvrAction::deactivate();
 }
 
-AREXPORT MvrActionDesired *ArActionRatioInput::fire(
+MVREXPORT MvrActionDesired *ArActionRatioInput::fire(
 	ArActionDesired currentDesired)
 {
   std::multimap<int, MvrFunctor *>::iterator it;

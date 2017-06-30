@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrSocket.h"
 #include "MvrLog.h"sendTo
 
-AREXPORT const char *ArSocket::toString(Type t)
+MVREXPORT const char *ArSocket::toString(Type t)
 {
   switch (t) {
   case TCP:
@@ -70,7 +70,7 @@ void ArSocket::internalInit(void)
 }
 
 /// Normally, write() should be used instead. This is a wrapper around the sendto() system call.
-AREXPORT int ArSocket::sendTo(const void *msg, int len)
+MVREXPORT int ArSocket::sendTo(const void *msg, int len)
 {
   int ret;
   ret = ::sendto(myFD, (char*)msg, len, 0, (struct sockaddr*)&mySin,
@@ -84,7 +84,7 @@ AREXPORT int ArSocket::sendTo(const void *msg, int len)
 }
 
 /// Normally, write() should be used instead. This is a wrapper around the sendto() system call.
-AREXPORT int ArSocket::sendTo(const void *msg, int len, 
+MVREXPORT int ArSocket::sendTo(const void *msg, int len, 
 			      struct sockaddr_in *sin)
 { 
   int ret;
@@ -100,7 +100,7 @@ AREXPORT int ArSocket::sendTo(const void *msg, int len,
 
 
 /// Normally, read() should be used instead. This is a wrapper around the recvfrom() system call.
-AREXPORT int ArSocket::recvFrom(void *msg, int len, sockaddr_in *sin)
+MVREXPORT int ArSocket::recvFrom(void *msg, int len, sockaddr_in *sin)
 {
 
 #ifdef WIN32
@@ -123,7 +123,7 @@ AREXPORT int ArSocket::recvFrom(void *msg, int len, sockaddr_in *sin)
    @param len how many bytes to write
    @return number of bytes written
 **/
-AREXPORT int ArSocket::write(const void *buff, size_t len)
+MVREXPORT int ArSocket::write(const void *buff, size_t len)
 {
   // this is for when we're faking ArNetworking commands over the text server
   if (myFakeWrites)
@@ -188,7 +188,7 @@ AREXPORT int ArSocket::write(const void *buff, size_t len)
    @param msWait if 0, don't block, if > 0 wait this long for data
    @return number of bytes read
 */
-AREXPORT int ArSocket::read(void *buff, size_t len, unsigned int msWait)
+MVREXPORT int ArSocket::read(void *buff, size_t len, unsigned int msWait)
 {
   if (myFD < 0)
   {
@@ -247,7 +247,7 @@ AREXPORT int ArSocket::read(void *buff, size_t len, unsigned int msWait)
    @param str the string to write to the socket
    @return number of bytes written
 **/
-AREXPORT int ArSocket::writeString(const char *str, ...)
+MVREXPORT int ArSocket::writeString(const char *str, ...)
 {
   char buf[10000];
   int len;
@@ -317,7 +317,7 @@ void ArSocket::setRawIPString(void)
        NULL is returned.
   **/
 
-AREXPORT char *ArSocket::readString(unsigned int msWait)
+MVREXPORT char *ArSocket::readString(unsigned int msWait)
 {
   size_t i;
   int n;
@@ -456,7 +456,7 @@ AREXPORT char *ArSocket::readString(unsigned int msWait)
   return NULL;
 }
 
-AREXPORT void ArSocket::clearPartialReadString(void)
+MVREXPORT void ArSocket::clearPartialReadString(void)
 {
   myReadStringMutex.lock();
   myStringBuf[0] = '\0';
@@ -464,7 +464,7 @@ AREXPORT void ArSocket::clearPartialReadString(void)
   myReadStringMutex.unlock();
 }
 
-AREXPORT int ArSocket::comparePartialReadString(const char *partialString)
+MVREXPORT int ArSocket::comparePartialReadString(const char *partialString)
 {
   int ret;
   myReadStringMutex.lock();

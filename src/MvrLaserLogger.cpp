@@ -197,7 +197,7 @@ output log file
   @param extraLasers if given, include data from these lasers in the laser log in addition
 to the primary laser @a laser.
 **/
-AREXPORT MvrLaserLogger::ArLaserLogger(
+MVREXPORT MvrLaserLogger::ArLaserLogger(
 	ArRobot *robot, MvrLaser *laser, 
 	double distDiff, double degDiff, 
 	const char *fileName, bool addGoals, MvrJoyHandler *joyHandler,
@@ -345,7 +345,7 @@ AREXPORT MvrLaserLogger::ArLaserLogger(
 
 }
 
-AREXPORT MvrLaserLogger::~ArLaserLogger()
+MVREXPORT MvrLaserLogger::~MvrLaserLogger()
 {
   myRobot->remUserTask(&myTaskCB);
   myRobot->remPacketHandler(&myLoopPacketHandlerCB);
@@ -415,7 +415,7 @@ void MvrLaserLogger::internalPrintLaserPoseAndConf(MvrLaser *laser, int laserNum
 	  laser->getName());  
 }
   
-AREXPORT bool MvrLaserLogger::loopPacketHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrLaserLogger::loopPacketHandler(MvrRobotPacket *packet)
 {
   unsigned char loops;
   if (packet->getID() != 0x96)
@@ -454,7 +454,7 @@ AREXPORT bool MvrLaserLogger::loopPacketHandler(MvrRobotPacket *packet)
    along with a tag as to where the robot was and when in the mapping
    it was
 **/
-AREXPORT void MvrLaserLogger::addTagToLogPlain(const char *str)
+MVREXPORT void MvrLaserLogger::addTagToLogPlain(const char *str)
 {
   myTags.push_back(str);
 }
@@ -471,7 +471,7 @@ AREXPORT void MvrLaserLogger::addTagToLogPlain(const char *str)
    @swigomit
    @sa addTagToLogPlain()
 **/
-AREXPORT void MvrLaserLogger::addTagToLog(const char *str, ...)
+MVREXPORT void MvrLaserLogger::addTagToLog(const char *str, ...)
 {
   char buf[2048];
   va_list ptr;
@@ -491,7 +491,7 @@ AREXPORT void MvrLaserLogger::addTagToLog(const char *str, ...)
    itself
 **/
 
-AREXPORT void MvrLaserLogger::addInfoToLogPlain(const char *str)
+MVREXPORT void MvrLaserLogger::addInfoToLogPlain(const char *str)
 {
   myInfos.push_back(str);
 }
@@ -503,7 +503,7 @@ AREXPORT void MvrLaserLogger::addInfoToLogPlain(const char *str)
    This function takes the given tag and puts it into the log file by
    itself
 **/
-AREXPORT void MvrLaserLogger::addInfoToLog(const char *str, ...)
+MVREXPORT void MvrLaserLogger::addInfoToLog(const char *str, ...)
 {
   char buf[2048];
   va_list ptr;
@@ -849,7 +849,7 @@ void MvrLaserLogger::internalPrintPos(MvrPose encoderPoseTaken,
   }
 }
 
-AREXPORT void MvrLaserLogger::robotTask(void)
+MVREXPORT void MvrLaserLogger::robotTask(void)
 {
 
   // call our function to check goals

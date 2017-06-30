@@ -58,9 +58,9 @@ class MvrSpeechSynth
 public:
 
   /** Don't forget to call this from derived classes. */
-  AREXPORT MvrSpeechSynth();  
+  MVREXPORT MvrSpeechSynth();  
 
-  AREXPORT virtual ~ArSpeechSynth();
+  MVREXPORT virtual ~MvrSpeechSynth();
 
 
   /** Perform  synthesizer initialization, if necessary. You must call
@@ -69,12 +69,12 @@ public:
    * (Subclass implementations should call this method *after* initializing their 
    * speech engine.)
    */
-  AREXPORT virtual bool init(); 
+  MVREXPORT virtual bool init(); 
 
   /** Use the given MvrConfig object to read parameters such as voice, speaking
    * rate, volume.
    */
-  AREXPORT virtual void addToConfig(MvrConfig *config);
+  MVREXPORT virtual void addToConfig(MvrConfig *config);
 
   /** Speaks the given text. 
    * @param str The text to speak.
@@ -86,33 +86,33 @@ public:
    * @param sampleRate if given, temporarily use this sample rate for this
    *    speech, then restore. If 0, use current sample rate.
    */
-  AREXPORT virtual bool speak(const char *str, const char* voiceParams, MvrRetFunctor2<bool, MvrTypes::Byte2*, int>* audioOutputCB, unsigned short sampleRate = 0) = 0;
+  MVREXPORT virtual bool speak(const char *str, const char* voiceParams, MvrRetFunctor2<bool, MvrTypes::Byte2*, int>* audioOutputCB, unsigned short sampleRate = 0) = 0;
 
   /** Speaks the given text. 
    * @param str The text to speak.
    * @param voiceParams Voice selection criteria expression
    *    (implementation-specific)
    */
-  AREXPORT virtual bool speak(const char *str, const char* voiceParams = NULL);
+  MVREXPORT virtual bool speak(const char *str, const char* voiceParams = NULL);
 
   /** Speaks the given string, using current voice and output settings,
    *  taking varargs and a format string (like printf)
    */
-  AREXPORT virtual  bool speakf(const char* fmt, ...) = 0; 
+  MVREXPORT virtual  bool speakf(const char* fmt, ...) = 0; 
 
   /** If any speech is currently ongoing, interrupt it. 
    */
-  AREXPORT virtual void interrupt() = 0; 
+  MVREXPORT virtual void interrupt() = 0; 
 
   /** @return a functor for init() to use with MvrSoundsQueue */
-  AREXPORT MvrRetFunctorC<bool, MvrSpeechSynth>* getInitCallback();
+  MVREXPORT MvrRetFunctorC<bool, MvrSpeechSynth>* getInitCallback();
 
   /** @return a functor for speak() to use with MvrSoundsQueue */
-  AREXPORT MvrRetFunctor2C<bool, MvrSpeechSynth, const char*, const char*>* getSpeakCallback(void) ;
+  MVREXPORT MvrRetFunctor2C<bool, MvrSpeechSynth, const char*, const char*>* getSpeakCallback(void) ;
 
 
   /** @return a functor for interrupt() */
-  AREXPORT MvrFunctorC<ArSpeechSynth>* getInterruptCallback();
+  MVREXPORT MvrFunctorC<ArSpeechSynth>* getInterruptCallback();
 
 
   /** Instead of playing synthesized audio using the synthesizer's internal
@@ -122,32 +122,32 @@ public:
    *  changed with setAudioSampleRate(). The second parameter is the number
    *  of samples.  The return value from the callback is ignored.
    */
-  AREXPORT void setAudioCallback(MvrRetFunctor2<bool, MvrTypes::Byte2*, int>* cb);
+  MVREXPORT void setAudioCallback(MvrRetFunctor2<bool, MvrTypes::Byte2*, int>* cb);
 
 
   /** Change audio sample rate (Hz). Normal rate is 16000 Hz.
    *  Suggested values are 8000, 16000, or 44400
    */
-  AREXPORT virtual void setAudioSampleRate(int rate) = 0;
+  MVREXPORT virtual void setAudioSampleRate(int rate) = 0;
 
-  AREXPORT virtual int getAudioSampleRate() = 0;
+  MVREXPORT virtual int getAudioSampleRate() = 0;
 
   /** Lock, if neccesary */
-  AREXPORT virtual void lock() { }
+  MVREXPORT virtual void lock() { }
   /** Unlock, if neccesary */
-  AREXPORT virtual void unlock() { }
+  MVREXPORT virtual void unlock() { }
 
   /** Set the current voice by name.
    *  Replaces fully any previous required voice criteria.
    * @sa getVoiceNames
    */
-  AREXPORT virtual bool setVoice(const char* name) = 0;
+  MVREXPORT virtual bool setVoice(const char* name) = 0;
 
   /** Get name of current voice, if set with setVoice (else returns NULL) */
-  AREXPORT virtual const char* getCurrentVoiceName() = 0;
+  MVREXPORT virtual const char* getCurrentVoiceName() = 0;
 
   /** Return a list of available voice names, if possible. */
-  AREXPORT virtual std::list<std::string> getVoiceNames() = 0;
+  MVREXPORT virtual std::list<std::string> getVoiceNames() = 0;
 
 protected:
   MvrRetFunctor2C<bool, MvrSpeechSynth, const char*, const char*> mySpeakCB;

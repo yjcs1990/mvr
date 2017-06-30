@@ -38,45 +38,45 @@ class MvrRobotPacketSender
 {
 public:
   /// Constructor without an already assigned device connection
-  AREXPORT MvrRobotPacketSender(unsigned char sync1 = 0xfa,
+  MVREXPORT MvrRobotPacketSender(unsigned char sync1 = 0xfa,
 			       unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection
-  AREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
+  MVREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
 			       unsigned char sync1 = 0xfa,
 			       unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection and tracking
-  AREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
+  MVREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
 			       unsigned char sync1,
 			       unsigned char sync2,
 						bool tracking,
 						const char *trackingLogName);
   /// Destructor
-  AREXPORT virtual ~ArRobotPacketSender();
+  MVREXPORT virtual ~MvrRobotPacketSender();
 
   /// Sends a command to the robot with no arguments
-  AREXPORT bool com(unsigned char command);
+  MVREXPORT bool com(unsigned char command);
   /// Sends a command to the robot with an int for argument
-  AREXPORT bool comInt(unsigned char command, short int argument);
+  MVREXPORT bool comInt(unsigned char command, short int argument);
   /// Sends a command to the robot with two bytes for argument
-  AREXPORT bool com2Bytes(unsigned char command, char high, char low);
+  MVREXPORT bool com2Bytes(unsigned char command, char high, char low);
   /// Sends a command to the robot with a length-prefixed string for argument
-  AREXPORT bool comStr(unsigned char command, const char *argument);
+  MVREXPORT bool comStr(unsigned char command, const char *argument);
   /// Sends a command to the robot with a length-prefixed string for argument
-  AREXPORT bool comStrN(unsigned char command, const char *str, int size);
+  MVREXPORT bool comStrN(unsigned char command, const char *str, int size);
   /// Sends a command containing exactly the data in the given buffer as argument
-  AREXPORT bool comDataN(unsigned char command, const char *data, int size);
+  MVREXPORT bool comDataN(unsigned char command, const char *data, int size);
   /// Sends a MvrRobotPacket
-  AREXPORT bool sendPacket(MvrRobotPacket *packet);
+  MVREXPORT bool sendPacket(MvrRobotPacket *packet);
   
   /// Sets the device this instance sends commands to
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
   /// Gets the device this instance sends commands to
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
   /// Sets the callback that gets called with the finalized version of
   /// every packet set... this is ONLY for very internal very
   /// specialized use
-  AREXPORT void setPacketSentCallback(MvrFunctor1<ArRobotPacket *> *functor);
+  MVREXPORT void setPacketSentCallback(MvrFunctor1<ArRobotPacket *> *functor);
 
   void setTracking(bool v = true)
   {

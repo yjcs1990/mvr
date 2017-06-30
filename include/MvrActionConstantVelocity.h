@@ -39,14 +39,14 @@ class MvrActionConstantVelocity : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionConstantVelocity(const char *name = "Constant Velocity", 
+  MVREXPORT MvrActionConstantVelocity(const char *name = "Constant Velocity", 
 			   double velocity = 400);
   /// Destructor
-  AREXPORT virtual ~ArActionConstantVelocity();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionConstantVelocity();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

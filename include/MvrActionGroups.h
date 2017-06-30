@@ -58,14 +58,14 @@ class MvrRatioInputRobotJoydrive;
 class MvrActionGroupInput : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupInput(MvrRobot *robot);
-  AREXPORT virtual ~ArActionGroupInput();
-  AREXPORT void setVel(double vel);
-  AREXPORT void setRotVel(double rotVel);
-  AREXPORT void setHeading(double heading);
-  AREXPORT void deltaHeadingFromCurrent(double delta);
-  AREXPORT void clear(void);
-  AREXPORT MvrActionInput *getActionInput(void);
+  MVREXPORT MvrActionGroupInput(MvrRobot *robot);
+  MVREXPORT virtual ~MvrActionGroupInput();
+  MVREXPORT void setVel(double vel);
+  MVREXPORT void setRotVel(double rotVel);
+  MVREXPORT void setHeading(double heading);
+  MVREXPORT void deltaHeadingFromCurrent(double delta);
+  MVREXPORT void clear(void);
+  MVREXPORT MvrActionInput *getActionInput(void);
 protected:
   MvrActionInput *myInput;
 };
@@ -79,9 +79,9 @@ protected:
 class MvrActionGroupStop : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupStop(MvrRobot *robot);
-  AREXPORT virtual ~ArActionGroupStop();
-  AREXPORT MvrActionStop *getActionStop(void);
+  MVREXPORT MvrActionGroupStop(MvrRobot *robot);
+  MVREXPORT virtual ~MvrActionGroupStop();
+  MVREXPORT MvrActionStop *getActionStop(void);
 public:
   MvrActionStop *myActionStop;
 };
@@ -96,9 +96,9 @@ public:
 class MvrActionGroupTeleop : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupTeleop(MvrRobot *robot);
-  AREXPORT virtual ~ArActionGroupTeleop();
-  AREXPORT void setThrottleParams(int lowSpeed, int highSpeed);
+  MVREXPORT MvrActionGroupTeleop(MvrRobot *robot);
+  MVREXPORT virtual ~MvrActionGroupTeleop();
+  MVREXPORT void setThrottleParams(int lowSpeed, int highSpeed);
 protected:
   MvrActionJoydrive *myJoydrive;
 };
@@ -113,9 +113,9 @@ protected:
 class MvrActionGroupUnguardedTeleop : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupUnguardedTeleop(MvrRobot *robot);
-  AREXPORT virtual ~ArActionGroupUnguardedTeleop();
-  AREXPORT void setThrottleParams(int lowSpeed, int highSpeed);
+  MVREXPORT MvrActionGroupUnguardedTeleop(MvrRobot *robot);
+  MVREXPORT virtual ~MvrActionGroupUnguardedTeleop();
+  MVREXPORT void setThrottleParams(int lowSpeed, int highSpeed);
 protected:
   MvrActionJoydrive *myJoydrive;
 };
@@ -129,8 +129,8 @@ protected:
 class MvrActionGroupWander : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupWander(MvrRobot *robot, int forwardVel = 400, int avoidFrontDist = 450, int avoidVel = 200, int avoidTurnAmt = 15);
-  AREXPORT virtual ~ArActionGroupWander();
+  MVREXPORT MvrActionGroupWander(MvrRobot *robot, int forwardVel = 400, int avoidFrontDist = 450, int avoidVel = 200, int avoidTurnAmt = 15);
+  MVREXPORT virtual ~MvrActionGroupWander();
 };
 
 /// Follows a blob of color
@@ -143,17 +143,17 @@ public:
 class MvrActionGroupColorFollow : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupColorFollow(MvrRobot *robot, MvrACTS_1_2 *acts, MvrPTZ *camera);
-  AREXPORT virtual ~ArActionGroupColorFollow();
-  AREXPORT void setCamera(MvrPTZ *camera);
-  AREXPORT void setChannel(int channel);
-  AREXPORT void startMovement();
-  AREXPORT void stopMovement();
-  AREXPORT void setAcquire(bool acquire);
-  AREXPORT int getChannel();
-  AREXPORT bool getAcquire();
-  AREXPORT bool getMovement();
-  AREXPORT bool getBlob();
+  MVREXPORT MvrActionGroupColorFollow(MvrRobot *robot, MvrACTS_1_2 *acts, MvrPTZ *camera);
+  MVREXPORT virtual ~MvrActionGroupColorFollow();
+  MVREXPORT void setCamera(MvrPTZ *camera);
+  MVREXPORT void setChannel(int channel);
+  MVREXPORT void startMovement();
+  MVREXPORT void stopMovement();
+  MVREXPORT void setAcquire(bool acquire);
+  MVREXPORT int getChannel();
+  MVREXPORT bool getAcquire();
+  MVREXPORT bool getMovement();
+  MVREXPORT bool getBlob();
 protected:
   MvrActionColorFollow *myColorFollow;
 };
@@ -168,10 +168,10 @@ protected:
 class MvrActionGroupRatioDrive : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupRatioDrive(MvrRobot *robot);
-  AREXPORT virtual ~ArActionGroupRatioDrive();
-  AREXPORT MvrActionRatioInput *getActionRatioInput(void);
-  AREXPORT void addToConfig(MvrConfig *config, const char *section);
+  MVREXPORT MvrActionGroupRatioDrive(MvrRobot *robot);
+  MVREXPORT virtual ~MvrActionGroupRatioDrive();
+  MVREXPORT MvrActionRatioInput *getActionRatioInput(void);
+  MVREXPORT void addToConfig(MvrConfig *config, const char *section);
 protected:
   MvrActionDeceleratingLimiter *myDeceleratingLimiterForward;
   MvrActionDeceleratingLimiter *myDeceleratingLimiterBackward;
@@ -195,10 +195,10 @@ protected:
 class MvrActionGroupRatioDriveUnsafe : public MvrActionGroup
 {
 public:
-  AREXPORT MvrActionGroupRatioDriveUnsafe(MvrRobot *robot);
-  AREXPORT virtual ~ArActionGroupRatioDriveUnsafe();
-  AREXPORT MvrActionRatioInput *getActionRatioInput(void);
-  AREXPORT void addToConfig(MvrConfig *config, const char *section);
+  MVREXPORT MvrActionGroupRatioDriveUnsafe(MvrRobot *robot);
+  MVREXPORT virtual ~MvrActionGroupRatioDriveUnsafe();
+  MVREXPORT MvrActionRatioInput *getActionRatioInput(void);
+  MVREXPORT void addToConfig(MvrConfig *config, const char *section);
 protected:
   MvrActionRatioInput *myInput;
   MvrRatioInputKeydrive *myKeydrive;

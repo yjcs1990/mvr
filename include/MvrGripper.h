@@ -78,57 +78,57 @@ class MvrGripper
 {
 public:
   /// Constructor
-  AREXPORT MvrGripper(MvrRobot *robot, int gripperType = QUERYTYPE);
+  MVREXPORT MvrGripper(MvrRobot *robot, int gripperType = QUERYTYPE);
   /// Destructor
-  AREXPORT virtual ~ArGripper();
+  MVREXPORT virtual ~MvrGripper();
   /// Opens the gripper paddles
-  AREXPORT bool gripOpen(void);
+  MVREXPORT bool gripOpen(void);
   /// Closes the gripper paddles
-  AREXPORT bool gripClose(void);
+  MVREXPORT bool gripClose(void);
   /// Stops the gripper paddles
-  AREXPORT bool gripStop(void);
+  MVREXPORT bool gripStop(void);
   /// Raises the lift to the top
-  AREXPORT bool liftUp(void);
+  MVREXPORT bool liftUp(void);
   /// Lowers the lift to the bottom
-  AREXPORT bool liftDown(void);
+  MVREXPORT bool liftDown(void);
   /// Stops the lift
-  AREXPORT bool liftStop(void);
+  MVREXPORT bool liftStop(void);
   /// Puts the gripper in a storage position
-  AREXPORT bool gripperStore(void);
+  MVREXPORT bool gripperStore(void);
   /// Puts the gripper in a deployed position, ready for use
-  AREXPORT bool gripperDeploy(void);
+  MVREXPORT bool gripperDeploy(void);
   /// Halts the lift and the gripper paddles
-  AREXPORT bool gripperHalt(void);
+  MVREXPORT bool gripperHalt(void);
   /// Sets the amount of pressure the gripper applies
-  AREXPORT bool gripPressure(int mSecIntervals);
+  MVREXPORT bool gripPressure(int mSecIntervals);
   /// Raises the lift by a given amount of time
-  AREXPORT bool liftCarry(int mSecIntervals);
+  MVREXPORT bool liftCarry(int mSecIntervals);
   /// Returns true if the gripper paddles are moving
-  AREXPORT bool isGripMoving(void) const;
+  MVREXPORT bool isGripMoving(void) const;
   /// Returns true if the lift is moving
-  AREXPORT bool isLiftMoving(void) const;
+  MVREXPORT bool isLiftMoving(void) const;
   /// Returns the state of the gripper paddles
-  AREXPORT int getGripState(void) const;
+  MVREXPORT int getGripState(void) const;
   /// Returns the state of each gripper paddle
-  AREXPORT int getPaddleState(void) const;
+  MVREXPORT int getPaddleState(void) const;
   /// Returns the state of the gripper's breakbeams
-  AREXPORT int getBreakBeamState(void) const;
+  MVREXPORT int getBreakBeamState(void) const;
   /// Returns the state of the lift
-  AREXPORT bool isLiftMaxed(void) const;
+  MVREXPORT bool isLiftMaxed(void) const;
   /// Gets the type of the gripper
-  AREXPORT int getType(void) const;
+  MVREXPORT int getType(void) const;
   /// Sets the type of the gripper
-  AREXPORT void setType(int type);
+  MVREXPORT void setType(int type);
   /// Gets the number of mSec since the last gripper packet
-  AREXPORT long getMSecSinceLastPacket(void) const;
+  MVREXPORT long getMSecSinceLastPacket(void) const;
   /// Gets the grasp time
-  AREXPORT int getGraspTime(void) const;
+  MVREXPORT int getGraspTime(void) const;
   /// logs the gripper state
-  AREXPORT void logState(void) const;
+  MVREXPORT void logState(void) const;
   /// Parses the gripper packet
-  AREXPORT bool packetHandler(MvrRobotPacket *packet);
+  MVREXPORT bool packetHandler(MvrRobotPacket *packet);
   /// The handler for when the robot connects
-  AREXPORT void connectHandler(void);
+  MVREXPORT void connectHandler(void);
   /// These are the types for the gripper
   enum Type {
     QUERYTYPE, ///< Finds out what type from the robot, default

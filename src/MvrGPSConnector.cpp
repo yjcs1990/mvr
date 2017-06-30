@@ -47,7 +47,7 @@ const int ARGPS_DEFAULT_SERIAL_BAUD = 9600;
 const char* const ARGPS_DEFAULT_SERIAL_PORT = MvrUtil::COM2;
 const int ARGPS_DEFAULT_REMOTE_TCP_PORT = 8103;
 
-AREXPORT MvrGPSConnector::ArGPSConnector(MvrArgumentParser *argParser) :
+MVREXPORT MvrGPSConnector::ArGPSConnector(MvrArgumentParser *argParser) :
   myDeviceCon(NULL),
   myArgParser(argParser),
   myParseArgsCallback(this, &ArGPSConnector::parseArgs),
@@ -65,14 +65,14 @@ AREXPORT MvrGPSConnector::ArGPSConnector(MvrArgumentParser *argParser) :
 }
 
 
-AREXPORT MvrGPSConnector::~ArGPSConnector()
+MVREXPORT MvrGPSConnector::~MvrGPSConnector()
 {
   if(myDeviceCon) delete myDeviceCon;
 }
 
 // Called by Mvria::parseArgs() to set parameter values from command line
 // options, if present
-AREXPORT bool MvrGPSConnector::parseArgs() 
+MVREXPORT bool MvrGPSConnector::parseArgs() 
 {
   if (!myArgParser) return false;
   if (!myArgParser->checkParameterArgumentString("-gpsPort", &myPort)) return false;
@@ -129,7 +129,7 @@ void MvrGPSConnector::logOptions()
 // Create an MvrGPS object. If some options were obtained from command-line
 // parameters by parseArgs(), use those, otherwise get values from robot
 // parameters (the .p file) if we have a valid robot with valid parameters.
-AREXPORT MvrGPS* MvrGPSConnector::createGPS(MvrRobot *robot)
+MVREXPORT MvrGPS* MvrGPSConnector::createGPS(MvrRobot *robot)
 {
   // If we have a robot with parameters (i.e. have connected and read the .p
   // file), use those values unless already set by parseArgs() from command-line 

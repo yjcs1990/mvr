@@ -38,7 +38,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param widthRatio The ratio of robot width to the width of the region this action checks for sensor readings. 
    @param avoidLocationDependentObstacles If true, stop as the robot nears location-dependent sensed obstacles, if false, ignore them.
 */
-AREXPORT MvrActionLimiterBackwards::ArActionLimiterBackwards(
+MVREXPORT MvrActionLimiterBackwards::ArActionLimiterBackwards(
 	const char *name, double stopDistance, double slowDistance, 
 	double maxBackwardsSpeed, double widthRatio, 
 	bool avoidLocationDependentObstacles) :
@@ -67,12 +67,12 @@ AREXPORT MvrActionLimiterBackwards::ArActionLimiterBackwards(
   myAvoidLocationDependentObstacles = avoidLocationDependentObstacles;
 }
 
-AREXPORT MvrActionLimiterBackwards::~ArActionLimiterBackwards()
+MVREXPORT MvrActionLimiterBackwards::~MvrActionLimiterBackwards()
 {
 
 }
 
-AREXPORT MvrActionDesired *
+MVREXPORT MvrActionDesired *
 ArActionLimiterBackwards::fire(MvrActionDesired currentDesired)
 {
   double dist;

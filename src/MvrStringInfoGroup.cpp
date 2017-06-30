@@ -32,12 +32,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    TODO the stringInt functions and such'll leak memory on a failed attempt 
 */
 
-AREXPORT ArStringInfoGroup::ArStringInfoGroup()
+MVREXPORT ArStringInfoGroup::ArStringInfoGroup()
 {
   myDataMutex.setLogName("MvrStringInfoGroup::myDataMutex");
 }
 
-AREXPORT ArStringInfoGroup::~ArStringInfoGroup()
+MVREXPORT ArStringInfoGroup::~MvrStringInfoGroup()
 {
 
 }
@@ -47,7 +47,7 @@ AREXPORT ArStringInfoGroup::~ArStringInfoGroup()
   which may have special meaning in contexts like ArConfig files, such as 
   '#', ';', tabs and newlines.
 */
-AREXPORT bool ArStringInfoGroup::addString(
+MVREXPORT bool ArStringInfoGroup::addString(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArFunctor2<char *, ArTypes::UByte2> *functor)
 {
@@ -72,7 +72,7 @@ AREXPORT bool ArStringInfoGroup::addString(
   return true;
 }
 
-AREXPORT bool ArStringInfoGroup::addStringInt(
+MVREXPORT bool ArStringInfoGroup::addStringInt(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArRetFunctor<int> *functor, const char *format)
 {
@@ -84,7 +84,7 @@ AREXPORT bool ArStringInfoGroup::addStringInt(
 			   functor, format)));
 }
 
-AREXPORT bool ArStringInfoGroup::addStringDouble(
+MVREXPORT bool ArStringInfoGroup::addStringDouble(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArRetFunctor<double> *functor, const char *format)
 {
@@ -97,7 +97,7 @@ AREXPORT bool ArStringInfoGroup::addStringDouble(
 }
 
 
-AREXPORT bool ArStringInfoGroup::addStringBool(
+MVREXPORT bool ArStringInfoGroup::addStringBool(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArRetFunctor<bool> *functor, const char *format)
 {
@@ -110,7 +110,7 @@ AREXPORT bool ArStringInfoGroup::addStringBool(
 }
 
 // for a functor returning a C string (const char*)
-AREXPORT bool ArStringInfoGroup::addStringString(
+MVREXPORT bool ArStringInfoGroup::addStringString(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArRetFunctor<const char *> *functor, const char *format)
 {
@@ -123,7 +123,7 @@ AREXPORT bool ArStringInfoGroup::addStringString(
 }
 
 // for a functor returning a C++ string (std::string)
-AREXPORT bool ArStringInfoGroup::addStringString(
+MVREXPORT bool ArStringInfoGroup::addStringString(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArRetFunctor<std::string> *functor)
 {
@@ -136,7 +136,7 @@ AREXPORT bool ArStringInfoGroup::addStringString(
   );
 }
 
-AREXPORT bool ArStringInfoGroup::addStringUnsignedLong(
+MVREXPORT bool ArStringInfoGroup::addStringUnsignedLong(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArRetFunctor<unsigned long> *functor, const char *format)
 {
@@ -148,7 +148,7 @@ AREXPORT bool ArStringInfoGroup::addStringUnsignedLong(
 			   functor, format)));
 }
 
-AREXPORT bool ArStringInfoGroup::addStringLong(
+MVREXPORT bool ArStringInfoGroup::addStringLong(
 	const char *name, ArTypes::UByte2 maxLength,
 	ArRetFunctor<long> *functor, const char *format)
 {
@@ -161,7 +161,7 @@ AREXPORT bool ArStringInfoGroup::addStringLong(
 }
 
 
-AREXPORT void ArStringInfoGroup::addAddStringCallback(
+MVREXPORT void ArStringInfoGroup::addAddStringCallback(
 	ArFunctor3<const char *, ArTypes::UByte2,
 	ArFunctor2<char *, ArTypes::UByte2> *> *functor,
 	ArListPos::Pos position)

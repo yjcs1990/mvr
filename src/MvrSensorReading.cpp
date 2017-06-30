@@ -45,7 +45,7 @@ ArSensorReading::ArSensorReading(double xPos, double yPos, double thPos)
   myAdjusted = false;
 }
 
-AREXPORT ArSensorReading::ArSensorReading(const ArSensorReading & reading)
+MVREXPORT ArSensorReading::ArSensorReading(const ArSensorReading & reading)
 {
   myCounterTaken = reading.myCounterTaken;
   myReading = reading.myReading;
@@ -64,7 +64,7 @@ AREXPORT ArSensorReading::ArSensorReading(const ArSensorReading & reading)
   myAdjusted = reading.myAdjusted;
 }
 
-AREXPORT ArSensorReading &ArSensorReading::operator=(
+MVREXPORT ArSensorReading &ArSensorReading::operator=(
         const ArSensorReading &reading)
 {
   if (this != &reading)
@@ -90,7 +90,7 @@ AREXPORT ArSensorReading &ArSensorReading::operator=(
 
 
 
-ArSensorReading::~ArSensorReading()
+ArSensorReading::~MvrSensorReading()
 {
 }
 
@@ -106,7 +106,7 @@ ArSensorReading::~ArSensorReading()
    @param extraInt extra laser device-specific value associated with this
    reading (e.g. SICK LMS-200 reflectance)
 */
-AREXPORT void ArSensorReading::newData(int range, ArPose robotPose,
+MVREXPORT void ArSensorReading::newData(int range, ArPose robotPose,
 				       ArPose encoderPose, ArTransform trans, 
 				       unsigned int counter,
 				       ArTime timeTaken,
@@ -140,7 +140,7 @@ AREXPORT void ArSensorReading::newData(int range, ArPose robotPose,
    @param extraInt extra laser device-specific value associated with this
    reading (e.g. SICK LMS-200 reflectance)
 */
-AREXPORT void ArSensorReading::newData(int sx, int sy, ArPose robotPose,
+MVREXPORT void ArSensorReading::newData(int sx, int sy, ArPose robotPose,
 				       ArPose encoderPose, ArTransform trans, 
 				       unsigned int counter, ArTime timeTaken,
 				       bool ignoreThisReading, int extraInt)
@@ -168,7 +168,7 @@ AREXPORT void ArSensorReading::newData(int sx, int sy, ArPose robotPose,
    @param thPos the heading of the sensor on the robot (deg)
    @param forceComputation recompute position even if new position is the same as current
 */
-AREXPORT void ArSensorReading::resetSensorPosition(double xPos, double yPos, 
+MVREXPORT void ArSensorReading::resetSensorPosition(double xPos, double yPos, 
 						   double thPos, 
 						   bool forceComputation)
 {
@@ -189,7 +189,7 @@ AREXPORT void ArSensorReading::resetSensorPosition(double xPos, double yPos,
 /**
    @param trans the transform to apply to the reading and where the reading was taken
 */
-AREXPORT void ArSensorReading::applyTransform(MvrTransform trans)
+MVREXPORT void ArSensorReading::applyTransform(MvrTransform trans)
 {
   myReading = trans.doTransform(myReading);
   myReadingTaken = trans.doTransform(myReadingTaken);
@@ -198,7 +198,7 @@ AREXPORT void ArSensorReading::applyTransform(MvrTransform trans)
 /**
    @param trans the transform to apply to the encoder pose taken
 */
-AREXPORT void ArSensorReading::applyEncoderTransform(MvrTransform trans)
+MVREXPORT void ArSensorReading::applyEncoderTransform(MvrTransform trans)
 {
   myEncoderPoseTaken = trans.doTransform(myEncoderPoseTaken);
 }

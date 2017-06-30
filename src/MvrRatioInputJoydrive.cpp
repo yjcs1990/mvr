@@ -44,7 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    calibration, if false we'll do our own.  See also ArJoyHandler::setUseOSCal()
 **/
 
-AREXPORT ArRatioInputJoydrive::ArRatioInputJoydrive(
+MVREXPORT ArRatioInputJoydrive::ArRatioInputJoydrive(
 	ArRobot *robot,
 	ArActionRatioInput *input,
 	int priority,
@@ -70,23 +70,23 @@ AREXPORT ArRatioInputJoydrive::ArRatioInputJoydrive(
   myPrinting = false;
 }
 
-AREXPORT ArRatioInputJoydrive::~ArRatioInputJoydrive()
+MVREXPORT ArRatioInputJoydrive::~MvrRatioInputJoydrive()
 {
   myInput->remFireCallback(&myFireCB);
 }
 
-AREXPORT void ArRatioInputJoydrive::setStopIfNoButtonPressed(
+MVREXPORT void ArRatioInputJoydrive::setStopIfNoButtonPressed(
 	bool stopIfNoButtonPressed)
 {
   myStopIfNoButtonPressed = stopIfNoButtonPressed;
 }
 
-AREXPORT bool ArRatioInputJoydrive::getStopIfNoButtonPressed(void)
+MVREXPORT bool ArRatioInputJoydrive::getStopIfNoButtonPressed(void)
 {
   return myStopIfNoButtonPressed;
 }
 
-AREXPORT bool ArRatioInputJoydrive::joystickInited(void)
+MVREXPORT bool ArRatioInputJoydrive::joystickInited(void)
 {
   return myJoyHandler->haveJoystick();
 }
@@ -94,7 +94,7 @@ AREXPORT bool ArRatioInputJoydrive::joystickInited(void)
 /**
    @see ArJoyHandler::setUseOSCal
 **/
-AREXPORT void ArRatioInputJoydrive::setUseOSCal(bool useOSCal)
+MVREXPORT void ArRatioInputJoydrive::setUseOSCal(bool useOSCal)
 {
   myUseOSCal = useOSCal;
   myPreviousUseOSCal = useOSCal;
@@ -104,7 +104,7 @@ AREXPORT void ArRatioInputJoydrive::setUseOSCal(bool useOSCal)
 /**
    @see ArJoyHandler::getUseOSCal
 **/
-AREXPORT bool ArRatioInputJoydrive::getUseOSCal(void)
+MVREXPORT bool ArRatioInputJoydrive::getUseOSCal(void)
 {
   return myUseOSCal;
 }

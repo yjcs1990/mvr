@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobot.h"
 
 
-AREXPORT ArRobotPacketReaderThread::ArRobotPacketReaderThread() :
+MVREXPORT ArRobotPacketReaderThread::ArRobotPacketReaderThread() :
   ArASyncTask(),
   myStopRunIfNotConnected(false),
   myRobot(0)
@@ -41,21 +41,21 @@ AREXPORT ArRobotPacketReaderThread::ArRobotPacketReaderThread() :
   myInRun = false;
 }
 
-AREXPORT ArRobotPacketReaderThread::~ArRobotPacketReaderThread()
+MVREXPORT ArRobotPacketReaderThread::~MvrRobotPacketReaderThread()
 {
 }
 
-AREXPORT void ArRobotPacketReaderThread::setRobot(MvrRobot *robot)
+MVREXPORT void ArRobotPacketReaderThread::setRobot(MvrRobot *robot)
 {
   myRobot=robot;
 }
 
-AREXPORT void ArRobotPacketReaderThread::stopRunIfNotConnected(bool stopRun)
+MVREXPORT void ArRobotPacketReaderThread::stopRunIfNotConnected(bool stopRun)
 {
   myStopRunIfNotConnected = stopRun;
 }
 
-AREXPORT void * ArRobotPacketReaderThread::runThread(void *arg)
+MVREXPORT void * ArRobotPacketReaderThread::runThread(void *arg)
 {
   threadStarted();
 
@@ -81,7 +81,7 @@ AREXPORT void * ArRobotPacketReaderThread::runThread(void *arg)
   return(0);
 }
 
-AREXPORT const char *ArRobotPacketReaderThread::getThreadActivity(void)
+MVREXPORT const char *ArRobotPacketReaderThread::getThreadActivity(void)
 {
   if (myRunning)
     return "Unknown running";

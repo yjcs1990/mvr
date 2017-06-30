@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaInternal.h"
 #include "MvrKeyHandler.h"
 
-AREXPORT MvrActionKeydrive::ArActionKeydrive(const char *name,
+MVREXPORT MvrActionKeydrive::ArActionKeydrive(const char *name,
 					    double transVelMax,
 					    double turnAmountMax,
 					    double velIncrement,
@@ -62,12 +62,12 @@ AREXPORT MvrActionKeydrive::ArActionKeydrive(const char *name,
   mySpeedReset = true;
 }
 
-AREXPORT MvrActionKeydrive::~ArActionKeydrive()
+MVREXPORT MvrActionKeydrive::~MvrActionKeydrive()
 {
 
 }
 
-AREXPORT void MvrActionKeydrive::setRobot(MvrRobot *robot)
+MVREXPORT void MvrActionKeydrive::setRobot(MvrRobot *robot)
 {
   MvrKeyHandler *keyHandler;
   myRobot = robot;
@@ -84,7 +84,7 @@ AREXPORT void MvrActionKeydrive::setRobot(MvrRobot *robot)
   takeKeys();
 }
 
-AREXPORT void MvrActionKeydrive::takeKeys(void)
+MVREXPORT void MvrActionKeydrive::takeKeys(void)
 {
   MvrKeyHandler *keyHandler;
   if ((keyHandler = Mvria::getKeyHandler()) == NULL)
@@ -109,7 +109,7 @@ AREXPORT void MvrActionKeydrive::takeKeys(void)
 	       "The key handler already has a key for space, keydrive will not work correctly.");
 }
 
-AREXPORT void MvrActionKeydrive::giveUpKeys(void)
+MVREXPORT void MvrActionKeydrive::giveUpKeys(void)
 {
   MvrKeyHandler *keyHandler;
   if ((keyHandler = Mvria::getKeyHandler()) == NULL)
@@ -134,59 +134,59 @@ AREXPORT void MvrActionKeydrive::giveUpKeys(void)
 	       "MvrActionKeydrive: The key handler didn't have a key for space, something is wrong.");
 }
 
-AREXPORT void MvrActionKeydrive::setSpeeds(double transVelMax, 
+MVREXPORT void MvrActionKeydrive::setSpeeds(double transVelMax, 
 					  double turnAmountMax)
 {
   myTransVelMax = transVelMax;
   myTurnAmountMax = turnAmountMax;
 }
 
-AREXPORT void MvrActionKeydrive::setIncrements(double velIncrement, 
+MVREXPORT void MvrActionKeydrive::setIncrements(double velIncrement, 
 					      double turnIncrement)
 {
   myVelIncrement = velIncrement;
   myTurnIncrement = turnIncrement;
 }
 
-AREXPORT void MvrActionKeydrive::up(void)
+MVREXPORT void MvrActionKeydrive::up(void)
 {
   myDeltaVel += myVelIncrement;
 }
 
-AREXPORT void MvrActionKeydrive::down(void)
+MVREXPORT void MvrActionKeydrive::down(void)
 {
   myDeltaVel -= myVelIncrement;
 }
 
-AREXPORT void MvrActionKeydrive::left(void)
+MVREXPORT void MvrActionKeydrive::left(void)
 {
   myTurnAmount += myTurnIncrement;
   if (myTurnAmount > myTurnAmountMax)
     myTurnAmount = myTurnAmountMax;
 }
 
-AREXPORT void MvrActionKeydrive::right(void)
+MVREXPORT void MvrActionKeydrive::right(void)
 {
   myTurnAmount -= myTurnIncrement;
   if (myTurnAmount < -myTurnAmountMax)
     myTurnAmount = -myTurnAmountMax;
 }
 
-AREXPORT void MvrActionKeydrive::space(void)
+MVREXPORT void MvrActionKeydrive::space(void)
 {
   mySpeedReset = false;
   myDesiredSpeed = 0;
   myTurnAmount = 0;
 }
 
-AREXPORT void MvrActionKeydrive::activate(void)
+MVREXPORT void MvrActionKeydrive::activate(void)
 {
   if (!myIsActive)
     takeKeys();
   myIsActive = true;
 }
 
-AREXPORT void MvrActionKeydrive::deactivate(void)
+MVREXPORT void MvrActionKeydrive::deactivate(void)
 {
   if (myIsActive)
     giveUpKeys();
@@ -195,7 +195,7 @@ AREXPORT void MvrActionKeydrive::deactivate(void)
   myTurnAmount = 0;
 }
 
-AREXPORT MvrActionDesired *ArActionKeydrive::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *ArActionKeydrive::fire(MvrActionDesired currentDesired)
 {
   myDesired.reset();
 

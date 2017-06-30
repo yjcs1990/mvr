@@ -57,29 +57,29 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 class MvrActionGotoStraight : public MvrAction
 {
 public:
-  AREXPORT MvrActionGotoStraight(const char *name = "goto", 
+  MVREXPORT MvrActionGotoStraight(const char *name = "goto", 
 				double speed = 400);
-  AREXPORT virtual ~ArActionGotoStraight();
+  MVREXPORT virtual ~MvrActionGotoStraight();
 
   /// Sees if the goal has been achieved
-  AREXPORT bool haveAchievedGoal(void);
+  MVREXPORT bool haveAchievedGoal(void);
   /// Cancels the goal the robot has
-  AREXPORT void cancelGoal(void);
+  MVREXPORT void cancelGoal(void);
   /// Sets a new goal and sets the action to go there
-  AREXPORT void setGoal(MvrPose goal, bool backwards = false, 
+  MVREXPORT void setGoal(MvrPose goal, bool backwards = false, 
 			bool justDistance = true);
   /// Sets the goal in a relative way
-  AREXPORT void setGoalRel(double dist, double deltaHeading, 
+  MVREXPORT void setGoalRel(double dist, double deltaHeading, 
 			   bool backwards = false, bool justDistance = true);
   /// Gets the goal the action has
   MvrPose getGoal(void) { return myGoal; }
   /// Gets whether we're using the encoder goal or the normal goal
   bool usingEncoderGoal(void) { return myUseEncoderGoal; }
   /// Sets a new goal and sets the action to go there
-  AREXPORT void setEncoderGoal(MvrPose encoderGoal, bool backwards = false,
+  MVREXPORT void setEncoderGoal(MvrPose encoderGoal, bool backwards = false,
 			       bool justDistance = true);
   /// Sets the goal in a relative way
-  AREXPORT void setEncoderGoalRel(double dist, double deltaHeading, 
+  MVREXPORT void setEncoderGoalRel(double dist, double deltaHeading, 
 				  bool backwards = false, 
 				  bool justDistance = true);
   /// Gets the goal the action has
@@ -94,10 +94,10 @@ public:
   double getCloseDist(void) { return myCloseDist; }
   /// Sets whether we're backing up there or not (set in the setGoals)
   bool getBacking(void) { return myBacking; }
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

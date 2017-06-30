@@ -45,7 +45,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   @param key keyboard key that activates this mode
   @param key2 another keyboard key that activates this mode
 */
-AREXPORT ArModeTeleop::ArModeTeleop(MvrRobot *robot, const char *name, char key, char key2): 
+MVREXPORT ArModeTeleop::ArModeTeleop(MvrRobot *robot, const char *name, char key, char key2): 
   ArMode(robot, name, key, key2),
   myGroup(robot),
   myEnableMotorsCB(robot, &ArRobot::enableMotors)
@@ -53,12 +53,12 @@ AREXPORT ArModeTeleop::ArModeTeleop(MvrRobot *robot, const char *name, char key,
   myGroup.deactivate();
 }
 
-AREXPORT ArModeTeleop::~ArModeTeleop()
+MVREXPORT ArModeTeleop::~MvrModeTeleop()
 {
   
 }
 
-AREXPORT void ArModeTeleop::activate(void)
+MVREXPORT void ArModeTeleop::activate(void)
 {
   if (!baseActivate())
     return;
@@ -66,7 +66,7 @@ AREXPORT void ArModeTeleop::activate(void)
   myGroup.activateExclusive();
 }
 
-AREXPORT void ArModeTeleop::deactivate(void)
+MVREXPORT void ArModeTeleop::deactivate(void)
 {
   remKeyHandler(&myEnableMotorsCB);
   if (!baseDeactivate())
@@ -74,7 +74,7 @@ AREXPORT void ArModeTeleop::deactivate(void)
   myGroup.deactivate();
 }
 
-AREXPORT void ArModeTeleop::help(void)
+MVREXPORT void ArModeTeleop::help(void)
 {
   ArLog::log(MvrLog::Terse, 
 	   "Teleop mode will drive under your joystick or keyboard control.");
@@ -106,7 +106,7 @@ AREXPORT void ArModeTeleop::help(void)
   fflush(stdout);
 }
 
-AREXPORT void ArModeTeleop::userTask(void)
+MVREXPORT void ArModeTeleop::userTask(void)
 {
   if (!myRobot->hasLatVel())
     printf("\r%10.0f %10.0f %10.0f %10.0f %10.1f %10.1f", myRobot->getVel(), 
@@ -130,7 +130,7 @@ AREXPORT void ArModeTeleop::userTask(void)
   fflush(stdout);
 }
 
-AREXPORT ArModeUnguardedTeleop::ArModeUnguardedTeleop(MvrRobot *robot,
+MVREXPORT ArModeUnguardedTeleop::ArModeUnguardedTeleop(MvrRobot *robot,
 						      const char *name, 
 						      char key, char key2): 
   ArMode(robot, name, key, key2),
@@ -140,12 +140,12 @@ AREXPORT ArModeUnguardedTeleop::ArModeUnguardedTeleop(MvrRobot *robot,
   myGroup.deactivate();
 }
 
-AREXPORT ArModeUnguardedTeleop::~ArModeUnguardedTeleop()
+MVREXPORT ArModeUnguardedTeleop::~MvrModeUnguardedTeleop()
 {
   
 }
 
-AREXPORT void ArModeUnguardedTeleop::activate(void)
+MVREXPORT void ArModeUnguardedTeleop::activate(void)
 {
   if (!baseActivate())
     return;
@@ -153,7 +153,7 @@ AREXPORT void ArModeUnguardedTeleop::activate(void)
   myGroup.activateExclusive();
 }
 
-AREXPORT void ArModeUnguardedTeleop::deactivate(void)
+MVREXPORT void ArModeUnguardedTeleop::deactivate(void)
 {
   remKeyHandler(&myEnableMotorsCB);
   if (!baseDeactivate())
@@ -161,7 +161,7 @@ AREXPORT void ArModeUnguardedTeleop::deactivate(void)
   myGroup.deactivate();
 }
 
-AREXPORT void ArModeUnguardedTeleop::help(void)
+MVREXPORT void ArModeUnguardedTeleop::help(void)
 {
   ArLog::log(MvrLog::Terse, 
 	   "Unguarded teleop mode will drive under your joystick or keyboard control.");
@@ -193,7 +193,7 @@ AREXPORT void ArModeUnguardedTeleop::help(void)
   fflush(stdout);
 }
 
-AREXPORT void ArModeUnguardedTeleop::userTask(void)
+MVREXPORT void ArModeUnguardedTeleop::userTask(void)
 {
   if (!myRobot->hasLatVel())
     printf("\r%9.0f %9.0f %9.0f %9.0f %9.1f %9.1f", myRobot->getVel(), 
@@ -217,33 +217,33 @@ AREXPORT void ArModeUnguardedTeleop::userTask(void)
   fflush(stdout);
 }
 
-AREXPORT ArModeWander::ArModeWander(MvrRobot *robot, const char *name, char key, char key2): 
+MVREXPORT ArModeWander::ArModeWander(MvrRobot *robot, const char *name, char key, char key2): 
   ArMode(robot, name, key, key2),
   myGroup(robot)
 {
   myGroup.deactivate();
 }
 
-AREXPORT ArModeWander::~ArModeWander()
+MVREXPORT ArModeWander::~MvrModeWander()
 {
   
 }
 
-AREXPORT void ArModeWander::activate(void)
+MVREXPORT void ArModeWander::activate(void)
 {
   if (!baseActivate())
     return;
   myGroup.activateExclusive();
 }
 
-AREXPORT void ArModeWander::deactivate(void)
+MVREXPORT void ArModeWander::deactivate(void)
 {
   if (!baseDeactivate())
     return;
   myGroup.deactivate(); 
 }
 
-AREXPORT void ArModeWander::help(void)
+MVREXPORT void ArModeWander::help(void)
 {
   ArLog::log(MvrLog::Terse, "Wander mode will simply drive around forwards until it finds an obstacle,");
   ArLog::log(MvrLog::Terse, "then it will turn until its clear, and continue.");
@@ -251,7 +251,7 @@ AREXPORT void ArModeWander::help(void)
   fflush(stdout);
 }
 
-AREXPORT void ArModeWander::userTask(void)
+MVREXPORT void ArModeWander::userTask(void)
 {
   printf("\r%10.0f %10.0f %10.0f %10.0f %10.1f %10.1f", myRobot->getVel(), 
 	 myRobot->getRotVel(), myRobot->getX(), myRobot->getY(), 
@@ -259,7 +259,7 @@ AREXPORT void ArModeWander::userTask(void)
   fflush(stdout);
 }
 
-AREXPORT ArModeGripper::ArModeGripper(MvrRobot *robot, const char *name, 
+MVREXPORT ArModeGripper::ArModeGripper(MvrRobot *robot, const char *name, 
 				      char key, char key2): 
   ArMode(robot, name, key, key2),
   myGripper(robot),
@@ -273,12 +273,12 @@ AREXPORT ArModeGripper::ArModeGripper(MvrRobot *robot, const char *name,
   myExercising = false;
 }
 
-AREXPORT ArModeGripper::~ArModeGripper()
+MVREXPORT ArModeGripper::~MvrModeGripper()
 {
   
 }
 
-AREXPORT void ArModeGripper::activate(void)
+MVREXPORT void ArModeGripper::activate(void)
 {
   if (!baseActivate())
     return;
@@ -292,7 +292,7 @@ AREXPORT void ArModeGripper::activate(void)
   addKeyHandler('E', &myExerciseCB);
 }
 
-AREXPORT void ArModeGripper::deactivate(void)
+MVREXPORT void ArModeGripper::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -305,7 +305,7 @@ AREXPORT void ArModeGripper::deactivate(void)
   remKeyHandler(&myExerciseCB);
 }
 
-AREXPORT void ArModeGripper::userTask(void)
+MVREXPORT void ArModeGripper::userTask(void)
 {
   int val;
   printf("\r");
@@ -390,7 +390,7 @@ AREXPORT void ArModeGripper::userTask(void)
   }
 }
 
-AREXPORT void ArModeGripper::open(void)
+MVREXPORT void ArModeGripper::open(void)
 {
   if (myExercising == true)
   {
@@ -400,7 +400,7 @@ AREXPORT void ArModeGripper::open(void)
   myGripper.gripOpen();
 }
 
-AREXPORT void ArModeGripper::close(void)
+MVREXPORT void ArModeGripper::close(void)
 {
   if (myExercising == true)
   {
@@ -410,7 +410,7 @@ AREXPORT void ArModeGripper::close(void)
   myGripper.gripClose();
 }
 
-AREXPORT void ArModeGripper::up(void)
+MVREXPORT void ArModeGripper::up(void)
 {
   if (myExercising == true)
   {
@@ -420,7 +420,7 @@ AREXPORT void ArModeGripper::up(void)
   myGripper.liftUp();
 }
 
-AREXPORT void ArModeGripper::down(void)
+MVREXPORT void ArModeGripper::down(void)
 {
   if (myExercising == true)
   {
@@ -430,7 +430,7 @@ AREXPORT void ArModeGripper::down(void)
   myGripper.liftDown();
 }
 
-AREXPORT void ArModeGripper::stop(void)
+MVREXPORT void ArModeGripper::stop(void)
 {
   if (myExercising == true)
   {
@@ -440,7 +440,7 @@ AREXPORT void ArModeGripper::stop(void)
   myGripper.gripperHalt();
 }
 
-AREXPORT void ArModeGripper::exercise(void)
+MVREXPORT void ArModeGripper::exercise(void)
 {
   if (myExercising == false)
   {
@@ -454,7 +454,7 @@ AREXPORT void ArModeGripper::exercise(void)
   }
 }
 
-AREXPORT void ArModeGripper::help(void)
+MVREXPORT void ArModeGripper::help(void)
 {
   ArLog::log(MvrLog::Terse, 
 	     "Gripper mode will let you control or exercise the gripper.");
@@ -477,7 +477,7 @@ AREXPORT void ArModeGripper::help(void)
 
 
 
-AREXPORT ArModeCamera::ArModeCamera(MvrRobot *robot, const char *name, 
+MVREXPORT ArModeCamera::ArModeCamera(MvrRobot *robot, const char *name, 
 				      char key, char key2): 
   ArMode(robot, name, key, key2),
   myUpCB(this, &ArModeCamera::up),
@@ -516,12 +516,12 @@ AREXPORT ArModeCamera::ArModeCamera(MvrRobot *robot, const char *name,
   myExercising = false;
 }
 
-AREXPORT ArModeCamera::~ArModeCamera()
+MVREXPORT ArModeCamera::~MvrModeCamera()
 {
   
 }
 
-AREXPORT void ArModeCamera::activate(void)
+MVREXPORT void ArModeCamera::activate(void)
 {
   ArKeyHandler *keyHandler;
   if (!baseActivate())
@@ -544,7 +544,7 @@ AREXPORT void ArModeCamera::activate(void)
   
 }
 
-AREXPORT void ArModeCamera::deactivate(void)
+MVREXPORT void ArModeCamera::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -558,7 +558,7 @@ AREXPORT void ArModeCamera::deactivate(void)
     ArLog::log(MvrLog::Terse,"MvrModeCamera in bad state.");
 }
 
-AREXPORT void ArModeCamera::userTask(void)
+MVREXPORT void ArModeCamera::userTask(void)
 {
   if (myExercising && myCam != NULL && myLastExer.mSecSince() > 7000)
   {
@@ -601,35 +601,35 @@ AREXPORT void ArModeCamera::userTask(void)
   }
 }
 
-AREXPORT void ArModeCamera::left(void)
+MVREXPORT void ArModeCamera::left(void)
 {
   if (myExercising == true)
     myExercising = false;
   myCam->panRel(-myPanAmount);
 }
 
-AREXPORT void ArModeCamera::right(void)
+MVREXPORT void ArModeCamera::right(void)
 {
   if (myExercising == true)
     myExercising = false;
   myCam->panRel(myPanAmount);
 }
 
-AREXPORT void ArModeCamera::up(void)
+MVREXPORT void ArModeCamera::up(void)
 {
   if (myExercising == true)
     myExercising = false;
   myCam->tiltRel(myTiltAmount);
 }
 
-AREXPORT void ArModeCamera::down(void)
+MVREXPORT void ArModeCamera::down(void)
 {  
   if (myExercising == true)
     myExercising = false;
   myCam->tiltRel(-myTiltAmount);
 }
 
-AREXPORT void ArModeCamera::center(void)
+MVREXPORT void ArModeCamera::center(void)
 {
   if (myExercising == true)
     myExercising = false;
@@ -637,7 +637,7 @@ AREXPORT void ArModeCamera::center(void)
   myCam->zoom(myCam->getMinZoom());
 }
 
-AREXPORT void ArModeCamera::exercise(void)
+MVREXPORT void ArModeCamera::exercise(void)
 {
   if (myExercising == false)
   {
@@ -654,14 +654,14 @@ AREXPORT void ArModeCamera::exercise(void)
   }
 }
 
-AREXPORT void ArModeCamera::toggleAutoFocus()
+MVREXPORT void ArModeCamera::toggleAutoFocus()
 {
   ArLog::log(MvrLog::Terse, "Turning autofocus %s", myAutoFocusOn?"off":"on");
   if(myCam->setAutoFocus(!myAutoFocusOn))
     myAutoFocusOn = !myAutoFocusOn;
 }
 
-AREXPORT void ArModeCamera::help(void)
+MVREXPORT void ArModeCamera::help(void)
 {
   ArLog::log(MvrLog::Terse, 
 	     "Camera mode will let you control or exercise the camera.");
@@ -677,7 +677,7 @@ AREXPORT void ArModeCamera::help(void)
     ArLog::log(MvrLog::Terse, "Something is horribly wrong and mode camera is in no state.");
 }
 
-AREXPORT void ArModeCamera::zoomIn(void)
+MVREXPORT void ArModeCamera::zoomIn(void)
 {
   if (myCam->canZoom())
   {
@@ -686,7 +686,7 @@ AREXPORT void ArModeCamera::zoomIn(void)
   }
 }
 
-AREXPORT void ArModeCamera::zoomOut(void)
+MVREXPORT void ArModeCamera::zoomOut(void)
 {
   if (myCam->canZoom())
   {
@@ -695,28 +695,28 @@ AREXPORT void ArModeCamera::zoomOut(void)
   }
 }
 
-AREXPORT void ArModeCamera::sony(void)
+MVREXPORT void ArModeCamera::sony(void)
 {
   myCam = new ArSonyPTZ(myRobot);
   ArLog::log(MvrLog::Terse, "\nSony selected, now need to select the aux port.");
   cameraToAux();
 }
 
-AREXPORT void ArModeCamera::canon(void)
+MVREXPORT void ArModeCamera::canon(void)
 {
   myCam = new ArVCC4(myRobot);
   ArLog::log(MvrLog::Terse, "\nCanon selected, now need to select the aux port.");
   cameraToAux();
 }
 
-AREXPORT void ArModeCamera::dpptu(void)
+MVREXPORT void ArModeCamera::dpptu(void)
 {
   myCam = new ArDPPTU(myRobot);
   ArLog::log(MvrLog::Terse, "\nDPPTU selected, now need to select the aux port.");
   cameraToAux();
 }
 
-AREXPORT void ArModeCamera::amptu(void)
+MVREXPORT void ArModeCamera::amptu(void)
 {
   myCam = new ArAMPTU(myRobot);
   ArLog::log(MvrLog::Terse, 
@@ -724,21 +724,21 @@ AREXPORT void ArModeCamera::amptu(void)
   cameraToAux();
 }
 
-AREXPORT void ArModeCamera::canonInverted(void)
+MVREXPORT void ArModeCamera::canonInverted(void)
 {
   myCam = new ArVCC4(myRobot, true);
   ArLog::log(MvrLog::Terse, "\nInverted Canon selected, now need to select the aux port.");
   cameraToAux();
 }
 
-AREXPORT void ArModeCamera::sonySerial(void)
+MVREXPORT void ArModeCamera::sonySerial(void)
 {
   myCam = new ArSonyPTZ(myRobot);
   ArLog::log(MvrLog::Terse, "\nSony selected, now need to select serial port.");
   cameraToPort();
 }
 
-AREXPORT void ArModeCamera::canonSerial(void)
+MVREXPORT void ArModeCamera::canonSerial(void)
 {
   myCam = new ArVCC4(myRobot);
   ArLog::log(MvrLog::Terse, 
@@ -746,21 +746,21 @@ AREXPORT void ArModeCamera::canonSerial(void)
   cameraToPort();
 }
 
-AREXPORT void ArModeCamera::dpptuSerial(void)
+MVREXPORT void ArModeCamera::dpptuSerial(void)
 {
   myCam = new ArDPPTU(myRobot);
   ArLog::log(MvrLog::Terse, "\nDPPTU selected, now need to select serial port.");
   cameraToPort();
 }
 
-AREXPORT void ArModeCamera::amptuSerial(void)
+MVREXPORT void ArModeCamera::amptuSerial(void)
 {
   myCam = new ArAMPTU(myRobot);
   ArLog::log(MvrLog::Terse, "\nAMPTU selected, now need to select serial port.");
   cameraToPort();
 }
 
-AREXPORT void ArModeCamera::canonInvertedSerial(void)
+MVREXPORT void ArModeCamera::canonInvertedSerial(void)
 {
   myCam = new ArVCC4(myRobot, true);
   ArLog::log(MvrLog::Terse, 
@@ -768,55 +768,55 @@ AREXPORT void ArModeCamera::canonInvertedSerial(void)
   cameraToPort();
 }
 
-AREXPORT void ArModeCamera::rvisionSerial(void)
+MVREXPORT void ArModeCamera::rvisionSerial(void)
 {
   myCam = new ArRVisionPTZ(myRobot);
   ArLog::log(MvrLog::Terse, "\nRVision selected, now need to select serial port.");
   cameraToPort();
 }
 
-AREXPORT void ArModeCamera::com1(void)
+MVREXPORT void ArModeCamera::com1(void)
 {
   myConn.setPort(MvrUtil::COM1);
   portToMovement();
 }
 
-AREXPORT void ArModeCamera::com2(void)
+MVREXPORT void ArModeCamera::com2(void)
 {
   myConn.setPort(MvrUtil::COM2);
   portToMovement();
 }
 
-AREXPORT void ArModeCamera::com3(void)
+MVREXPORT void ArModeCamera::com3(void)
 {
   myConn.setPort(MvrUtil::COM3);
   portToMovement();
 }
 
-AREXPORT void ArModeCamera::com4(void)
+MVREXPORT void ArModeCamera::com4(void)
 {
   myConn.setPort(MvrUtil::COM4);
   portToMovement();
 }
 
-AREXPORT void ArModeCamera::usb0(void)
+MVREXPORT void ArModeCamera::usb0(void)
 {
   myConn.setPort("/dev/ttyUSB0");
   portToMovement();
 }
 
-AREXPORT void ArModeCamera::usb9(void)
+MVREXPORT void ArModeCamera::usb9(void)
 {
   myConn.setPort("/dev/ttyUSB9");
   portToMovement();
 }
 
-AREXPORT void ArModeCamera::aux1(void)
+MVREXPORT void ArModeCamera::aux1(void)
 {
   myCam->setAuxPort(1);
   auxToMovement();
 }
-AREXPORT void ArModeCamera::aux2(void)
+MVREXPORT void ArModeCamera::aux2(void)
 {
   myCam->setAuxPort(2);
   auxToMovement();
@@ -1052,7 +1052,7 @@ void ArModeCamera::helpMovementKeys(void)
   ArLog::log(MvrLog::Terse, "%13s:  toggle auto/fixed focus", "'f' or 'F'");
 }
 
-AREXPORT ArModeSonar::ArModeSonar(MvrRobot *robot, const char *name, char key,
+MVREXPORT ArModeSonar::ArModeSonar(MvrRobot *robot, const char *name, char key,
 				  char key2) :
   ArMode(robot, name, key, key2),
   myAllSonarCB(this, &ArModeSonar::allSonar),
@@ -1064,12 +1064,12 @@ AREXPORT ArModeSonar::ArModeSonar(MvrRobot *robot, const char *name, char key,
   myState = STATE_FIRST;
 }
 
-AREXPORT ArModeSonar::~ArModeSonar()
+MVREXPORT ArModeSonar::~MvrModeSonar()
 {
 
 }
 
-AREXPORT void ArModeSonar::activate(void)
+MVREXPORT void ArModeSonar::activate(void)
 {
   if (!baseActivate())
     return;
@@ -1080,7 +1080,7 @@ AREXPORT void ArModeSonar::activate(void)
   addKeyHandler('5', &myFourthSonarCB);
 }
 
-AREXPORT void ArModeSonar::deactivate(void)
+MVREXPORT void ArModeSonar::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -1091,7 +1091,7 @@ AREXPORT void ArModeSonar::deactivate(void)
   remKeyHandler(&myFourthSonarCB);
 }
 
-AREXPORT void ArModeSonar::help(void)
+MVREXPORT void ArModeSonar::help(void)
 {
   int i;
   ArLog::log(MvrLog::Terse, "This mode displays different segments of sonar.");
@@ -1136,7 +1136,7 @@ AREXPORT void ArModeSonar::help(void)
   printf("\n");
 }
 
-AREXPORT void ArModeSonar::userTask(void)
+MVREXPORT void ArModeSonar::userTask(void)
 {
   int i;
   printf("\r");
@@ -1168,64 +1168,64 @@ AREXPORT void ArModeSonar::userTask(void)
   fflush(stdout);
 }
 
-AREXPORT void ArModeSonar::allSonar(void)
+MVREXPORT void ArModeSonar::allSonar(void)
 {
   myState = STATE_ALL;
   printf("\n");
   help();
 }
 
-AREXPORT void ArModeSonar::firstSonar(void)
+MVREXPORT void ArModeSonar::firstSonar(void)
 {
   myState = STATE_FIRST;
   printf("\n");
   help();
 }
 
-AREXPORT void ArModeSonar::secondSonar(void)
+MVREXPORT void ArModeSonar::secondSonar(void)
 {
   myState = STATE_SECOND;
   printf("\n");
   help();
 }
 
-AREXPORT void ArModeSonar::thirdSonar(void)
+MVREXPORT void ArModeSonar::thirdSonar(void)
 {
   myState = STATE_THIRD;
   printf("\n");
   help();
 }
 
-AREXPORT void ArModeSonar::fourthSonar(void)
+MVREXPORT void ArModeSonar::fourthSonar(void)
 {
   myState = STATE_FOURTH;
   printf("\n");
   help();
 }
 
-AREXPORT ArModeBumps::ArModeBumps(MvrRobot *robot, const char *name, char key, char key2): 
+MVREXPORT ArModeBumps::ArModeBumps(MvrRobot *robot, const char *name, char key, char key2): 
   ArMode(robot, name, key, key2)
 {
 }
 
-AREXPORT ArModeBumps::~ArModeBumps()
+MVREXPORT ArModeBumps::~MvrModeBumps()
 {
   
 }
 
-AREXPORT void ArModeBumps::activate(void)
+MVREXPORT void ArModeBumps::activate(void)
 {
   if (!baseActivate())
     return;
 }
 
-AREXPORT void ArModeBumps::deactivate(void)
+MVREXPORT void ArModeBumps::deactivate(void)
 {
   if (!baseDeactivate())
     return;
 }
 
-AREXPORT void ArModeBumps::help(void)
+MVREXPORT void ArModeBumps::help(void)
 {
   unsigned int i;
   ArLog::log(MvrLog::Terse, "Bumps mode will display whether bumpers are triggered or not...");
@@ -1244,7 +1244,7 @@ AREXPORT void ArModeBumps::help(void)
   printf("\n");
 }
 
-AREXPORT void ArModeBumps::userTask(void)
+MVREXPORT void ArModeBumps::userTask(void)
 {
   unsigned int i;
   int val;
@@ -1272,7 +1272,7 @@ AREXPORT void ArModeBumps::userTask(void)
 
 }
 
-AREXPORT ArModePosition::ArModePosition(MvrRobot *robot, const char *name, char key, char key2, ArAnalogGyro *gyro): 
+MVREXPORT ArModePosition::ArModePosition(MvrRobot *robot, const char *name, char key, char key2, ArAnalogGyro *gyro): 
   ArMode(robot, name, key, key2),
   myUpCB(this, &ArModePosition::up),
   myDownCB(this, &ArModePosition::down),
@@ -1298,12 +1298,12 @@ AREXPORT ArModePosition::ArModePosition(MvrRobot *robot, const char *name, char 
   myHeading = myRobot->getTh();
 }
 
-AREXPORT ArModePosition::~ArModePosition()
+MVREXPORT ArModePosition::~MvrModePosition()
 {
   
 }
 
-AREXPORT void ArModePosition::activate(void)
+MVREXPORT void ArModePosition::activate(void)
 {
   if (!baseActivate())
     return;
@@ -1323,7 +1323,7 @@ AREXPORT void ArModePosition::activate(void)
   addKeyHandler('Z', &myGyroCB);
 }
 
-AREXPORT void ArModePosition::deactivate(void)
+MVREXPORT void ArModePosition::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -1340,7 +1340,7 @@ AREXPORT void ArModePosition::deactivate(void)
   remKeyHandler(&myDecDistCB);
 }
 
-AREXPORT void ArModePosition::up(void)
+MVREXPORT void ArModePosition::up(void)
 {
   myRobot->move(myDistance);
   if (myInHeadingMode)
@@ -1350,7 +1350,7 @@ AREXPORT void ArModePosition::up(void)
   }
 }
 
-AREXPORT void ArModePosition::down(void)
+MVREXPORT void ArModePosition::down(void)
 {
   myRobot->move(-myDistance);
   if (myInHeadingMode)
@@ -1360,14 +1360,14 @@ AREXPORT void ArModePosition::down(void)
   }
 }
 
-AREXPORT void ArModePosition::incDistance(void)
+MVREXPORT void ArModePosition::incDistance(void)
 {
   myDistance += 500;
   puts("\n");
   help();
 }
 
-AREXPORT void ArModePosition::decDistance(void)
+MVREXPORT void ArModePosition::decDistance(void)
 {
   myDistance -= 500;
   if(myDistance < 500) myDistance = 500;
@@ -1375,25 +1375,25 @@ AREXPORT void ArModePosition::decDistance(void)
   help();
 }
 
-AREXPORT void ArModePosition::left(void)
+MVREXPORT void ArModePosition::left(void)
 {
   myRobot->setDeltaHeading(90);
   myInHeadingMode = true;
 }
 
-AREXPORT void ArModePosition::right(void)
+MVREXPORT void ArModePosition::right(void)
 {
   myRobot->setDeltaHeading(-90);
   myInHeadingMode = true;
 }
 
-AREXPORT void ArModePosition::stop(void)
+MVREXPORT void ArModePosition::stop(void)
 {
   myRobot->stop();
   myInHeadingMode = true;
 }
 
-AREXPORT void ArModePosition::reset(void)
+MVREXPORT void ArModePosition::reset(void)
 {
   myRobot->stop();
   myRobot->moveTo(MvrPose(0, 0, 0));
@@ -1404,7 +1404,7 @@ AREXPORT void ArModePosition::reset(void)
   myHeading = myRobot->getTh();
 }
 
-AREXPORT void ArModePosition::mode(void)
+MVREXPORT void ArModePosition::mode(void)
 {
   if (myMode == MODE_BOTH)
   {
@@ -1420,7 +1420,7 @@ AREXPORT void ArModePosition::mode(void)
   }
 }
 
-AREXPORT void ArModePosition::gyro(void)
+MVREXPORT void ArModePosition::gyro(void)
 {
   if (myGyro == NULL || !myGyro->haveGottenData())
     return;
@@ -1436,7 +1436,7 @@ AREXPORT void ArModePosition::gyro(void)
   help();
 }
 
-AREXPORT void ArModePosition::help(void)
+MVREXPORT void ArModePosition::help(void)
 {
   ArLog::log(MvrLog::Terse, "Mode is one of two values:");
   ArLog::log(MvrLog::Terse, "%13s: heading and move can happen simultaneously", 
@@ -1471,7 +1471,7 @@ AREXPORT void ArModePosition::help(void)
   
 }
 
-AREXPORT void ArModePosition::userTask(void)
+MVREXPORT void ArModePosition::userTask(void)
 {
   if (myRobot == NULL)
     return;
@@ -1532,17 +1532,17 @@ AREXPORT void ArModePosition::userTask(void)
   fflush(stdout);
 }
 
-AREXPORT ArModeIO::ArModeIO(MvrRobot *robot, const char *name, char key, char key2): 
+MVREXPORT ArModeIO::ArModeIO(MvrRobot *robot, const char *name, char key, char key2): 
   ArMode(robot, name, key, key2)
 {
 }
 
-AREXPORT ArModeIO::~ArModeIO()
+MVREXPORT ArModeIO::~MvrModeIO()
 {
   
 }
 
-AREXPORT void ArModeIO::activate(void)
+MVREXPORT void ArModeIO::activate(void)
 {
   if (!baseActivate())
     return;
@@ -1553,7 +1553,7 @@ AREXPORT void ArModeIO::activate(void)
   myLastPacketTime = myRobot->getIOPacketTime();
 }
 
-AREXPORT void ArModeIO::deactivate(void)
+MVREXPORT void ArModeIO::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -1562,7 +1562,7 @@ AREXPORT void ArModeIO::deactivate(void)
   myRobot->comInt(MvrCommands::IOREQUEST, 0);
 }
 
-AREXPORT void ArModeIO::help(void)
+MVREXPORT void ArModeIO::help(void)
 {
   ArLog::log(MvrLog::Terse, 
 	     "IO mode shows the IO (digin, digout, a/d) from the robot.");
@@ -1570,7 +1570,7 @@ AREXPORT void ArModeIO::help(void)
   myExplained = false;
 }
 
-AREXPORT void ArModeIO::userTask(void)
+MVREXPORT void ArModeIO::userTask(void)
 {
   int num;
   int i, j;
@@ -1690,7 +1690,7 @@ AREXPORT void ArModeIO::userTask(void)
   fflush(stdout);
 }
 
-AREXPORT ArModeLaser::ArModeLaser(MvrRobot *robot, const char *name, 
+MVREXPORT ArModeLaser::ArModeLaser(MvrRobot *robot, const char *name, 
 				  char key, char key2, ArSick *obsolete) :
   ArMode(robot, name, key, key2),
   myTogMiddleCB(this, &ArModeLaser::togMiddle)
@@ -1713,11 +1713,11 @@ AREXPORT ArModeLaser::ArModeLaser(MvrRobot *robot, const char *name,
   myState = STATE_UNINITED;
 }
 
-AREXPORT ArModeLaser::~ArModeLaser()
+MVREXPORT ArModeLaser::~MvrModeLaser()
 {
 }
 
-AREXPORT void ArModeLaser::activate(void)
+MVREXPORT void ArModeLaser::activate(void)
 {
   // this is here because there needs to be the laser set up for the
   // help to work right
@@ -1796,7 +1796,7 @@ AREXPORT void ArModeLaser::activate(void)
   } 
 }
 
-AREXPORT void ArModeLaser::deactivate(void)
+MVREXPORT void ArModeLaser::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -1810,7 +1810,7 @@ AREXPORT void ArModeLaser::deactivate(void)
   }   
 }
 
-AREXPORT void ArModeLaser::help(void)
+MVREXPORT void ArModeLaser::help(void)
 {
   if (myLaser == NULL)
   {
@@ -1834,7 +1834,7 @@ AREXPORT void ArModeLaser::help(void)
 }
 
 
-AREXPORT void ArModeLaser::userTask(void)
+MVREXPORT void ArModeLaser::userTask(void)
 {
   double dist = HUGE_VAL, angle = -1;
   int reflec = -1;
@@ -1955,7 +1955,7 @@ void ArModeLaser::togMiddle(void)
   myPrintMiddle = !myPrintMiddle;
 }
 
-AREXPORT void ArModeLaser::switchToLaser(int laserNumber)
+MVREXPORT void ArModeLaser::switchToLaser(int laserNumber)
 {
   if (laserNumber == myLaserNumber && myLaser->isConnected())
   {
@@ -1987,7 +1987,7 @@ AREXPORT void ArModeLaser::switchToLaser(int laserNumber)
   @param acts ArACTS_1_2 instance to use. If not given, then an internally
 maintained instance is created by ArModeActs.
  **/
-AREXPORT ArModeActs::ArModeActs(MvrRobot *robot, const char *name, char key, 
+MVREXPORT ArModeActs::ArModeActs(MvrRobot *robot, const char *name, char key, 
 				char key2, ArACTS_1_2 *acts): 
   ArMode(robot, name, key, key2),
   myChannel1CB(this, &ArModeActs::channel1),
@@ -2013,13 +2013,13 @@ AREXPORT ArModeActs::ArModeActs(MvrRobot *robot, const char *name, char key,
 }
 
 // Destructor
-AREXPORT ArModeActs::~ArModeActs()
+MVREXPORT ArModeActs::~MvrModeActs()
 {
   
 }
 
 // Activate the mode
-AREXPORT void ArModeActs::activate(void)
+MVREXPORT void ArModeActs::activate(void)
 {
   // Activate the group
   if (!baseActivate())
@@ -2066,7 +2066,7 @@ AREXPORT void ArModeActs::activate(void)
 }
 
 // Deactivate the group
-AREXPORT void ArModeActs::deactivate(void)
+MVREXPORT void ArModeActs::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -2088,7 +2088,7 @@ AREXPORT void ArModeActs::deactivate(void)
 }
 
 // Display the available commands
-AREXPORT void ArModeActs::help(void)
+MVREXPORT void ArModeActs::help(void)
 {
   ArLog::log(MvrLog::Terse, 
 	   "ACTS mode will drive the robot in an attempt to follow a color blob.\n");
@@ -2102,7 +2102,7 @@ AREXPORT void ArModeActs::help(void)
 }
 
 // Display data about this mode
-AREXPORT void ArModeActs::userTask(void)
+MVREXPORT void ArModeActs::userTask(void)
 {
   int myChannel;
 
@@ -2125,61 +2125,61 @@ AREXPORT void ArModeActs::userTask(void)
 }
 
 // The channels
-AREXPORT void ArModeActs::channel1(void)
+MVREXPORT void ArModeActs::channel1(void)
 {
   myGroup->setChannel(1);
 }
 
-AREXPORT void ArModeActs::channel2(void)
+MVREXPORT void ArModeActs::channel2(void)
 {
   myGroup->setChannel(2);
 }
 
-AREXPORT void ArModeActs::channel3(void)
+MVREXPORT void ArModeActs::channel3(void)
 {
   myGroup->setChannel(3);
 }
 
-AREXPORT void ArModeActs::channel4(void)
+MVREXPORT void ArModeActs::channel4(void)
 {
   myGroup->setChannel(4);
 }
 
-AREXPORT void ArModeActs::channel5(void)
+MVREXPORT void ArModeActs::channel5(void)
 {
   myGroup->setChannel(5);
 }
 
-AREXPORT void ArModeActs::channel6(void)
+MVREXPORT void ArModeActs::channel6(void)
 {
   myGroup->setChannel(6);
 }
 
-AREXPORT void ArModeActs::channel7(void)
+MVREXPORT void ArModeActs::channel7(void)
 {
   myGroup->setChannel(7);
 }
 
-AREXPORT void ArModeActs::channel8(void)
+MVREXPORT void ArModeActs::channel8(void)
 {
   myGroup->setChannel(8);
 }
 
 // Stop the robot from moving
-AREXPORT void ArModeActs::stop(void)
+MVREXPORT void ArModeActs::stop(void)
 {
   myGroup->stopMovement();
 }
 
 // Allow the robot to move
-AREXPORT void ArModeActs::start(void)
+MVREXPORT void ArModeActs::start(void)
 {
   myGroup->startMovement();
 }
 
 // Toggle whether or not the robot is allowed
 // to aquire anything
-AREXPORT void ArModeActs::toggleAcquire()
+MVREXPORT void ArModeActs::toggleAcquire()
 {
   if(myGroup->getAcquire())
     myGroup->setAcquire(false);
@@ -2187,7 +2187,7 @@ AREXPORT void ArModeActs::toggleAcquire()
 
 }
 
-AREXPORT ArModeCommand::ArModeCommand(MvrRobot *robot, const char *name, char key, char key2): 
+MVREXPORT ArModeCommand::ArModeCommand(MvrRobot *robot, const char *name, char key, char key2): 
   ArMode(robot, name, key, key2),
   my0CB(this, &ArModeCommand::addChar, '0'),
   my1CB(this, &ArModeCommand::addChar, '1'),
@@ -2208,12 +2208,12 @@ AREXPORT ArModeCommand::ArModeCommand(MvrRobot *robot, const char *name, char ke
   reset(false);
 }
 
-AREXPORT ArModeCommand::~ArModeCommand()
+MVREXPORT ArModeCommand::~MvrModeCommand()
 {
   
 }
 
-AREXPORT void ArModeCommand::activate(void)
+MVREXPORT void ArModeCommand::activate(void)
 {
   reset(false);
   if (!baseActivate())
@@ -2223,14 +2223,14 @@ AREXPORT void ArModeCommand::activate(void)
   reset(true);
 }
 
-AREXPORT void ArModeCommand::deactivate(void)
+MVREXPORT void ArModeCommand::deactivate(void)
 {
   if (!baseDeactivate())
     return;
   giveUpKeys();
 }
 
-AREXPORT void ArModeCommand::help(void)
+MVREXPORT void ArModeCommand::help(void)
 {
   
   ArLog::log(MvrLog::Terse, "Command mode has three ways to send commands");
@@ -2458,7 +2458,7 @@ void ArModeCommand::giveUpKeys(void)
    otherwise it'll make its own ArTCMCompassRobot instance.
 **/
 
-AREXPORT ArModeTCM2::ArModeTCM2(MvrRobot *robot, const char *name, char key, char key2, ArTCM2 *tcm2): 
+MVREXPORT ArModeTCM2::ArModeTCM2(MvrRobot *robot, const char *name, char key, char key2, ArTCM2 *tcm2): 
   ArMode(robot, name, key, key2)
 {
   if (tcm2 != NULL)
@@ -2482,12 +2482,12 @@ AREXPORT ArModeTCM2::ArModeTCM2(MvrRobot *robot, const char *name, char key, cha
 
 }
 
-AREXPORT ArModeTCM2::~ArModeTCM2()
+MVREXPORT ArModeTCM2::~MvrModeTCM2()
 {
   
 }
 
-AREXPORT void ArModeTCM2::activate(void)
+MVREXPORT void ArModeTCM2::activate(void)
 {
   if (!baseActivate())
     return;
@@ -2502,7 +2502,7 @@ AREXPORT void ArModeTCM2::activate(void)
   addKeyHandler('7', myResetCB);
 }
 
-AREXPORT void ArModeTCM2::deactivate(void)
+MVREXPORT void ArModeTCM2::deactivate(void)
 {
   if (!baseDeactivate())
     return;
@@ -2517,7 +2517,7 @@ AREXPORT void ArModeTCM2::deactivate(void)
   remKeyHandler(myResetCB);
 }
 
-AREXPORT void ArModeTCM2::help(void)
+MVREXPORT void ArModeTCM2::help(void)
 {
   ArLog::log(MvrLog::Terse, 
 	     "TCM2 mode shows the data from the TCM2 compass and lets you send the TCM2 commands");
@@ -2535,7 +2535,7 @@ AREXPORT void ArModeTCM2::help(void)
 	 "calH", "calV", "calM", "cnt");
 }
 
-AREXPORT void ArModeTCM2::userTask(void)
+MVREXPORT void ArModeTCM2::userTask(void)
 {
   printf("\r%6.1f %5.1f %5.1f %6.2f %6.2f %6.2f %6.1f 0x%08x %4.0f %4.0f %6.2f %3d", 
 	 myTCM2->getCompass(), myTCM2->getPitch(), myTCM2->getRoll(), 
@@ -2548,7 +2548,7 @@ AREXPORT void ArModeTCM2::userTask(void)
 
 }
 
-AREXPORT ArModeConfig::ArModeConfig(MvrRobot *robot, const char *name, char key1, char key2) :
+MVREXPORT ArModeConfig::ArModeConfig(MvrRobot *robot, const char *name, char key1, char key2) :
   ArMode(robot, name, key1, key2),
   myRobot(robot),
   myConfigPacketReader(robot, false, &myGotConfigPacketCB),
@@ -2556,19 +2556,19 @@ AREXPORT ArModeConfig::ArModeConfig(MvrRobot *robot, const char *name, char key1
 {
 }
 
-AREXPORT void ArModeConfig::help()
+MVREXPORT void ArModeConfig::help()
 {
   ArLog::log(MvrLog::Terse, "Robot Config mode requests a CONFIG packet from the robot and displays the result.");
 }
 
-AREXPORT void ArModeConfig::activate()
+MVREXPORT void ArModeConfig::activate()
 {
   baseActivate();  // returns false on double activate, but we want to use this signal to request another config packet, so ignore.
   if(!myConfigPacketReader.requestPacket())
     ArLog::log(MvrLog::Terse, "MvrModeConfig: Warning: config packet reader did not request (another) CONFIG packet.");
 }
 
-AREXPORT void ArModeConfig::deactivate()
+MVREXPORT void ArModeConfig::deactivate()
 {
 }
 
@@ -2600,7 +2600,7 @@ void ArModeConfig::gotConfigPacket()
 }
 
 
-AREXPORT ArModeRobotStatus::ArModeRobotStatus(MvrRobot *robot, const char *name, char key1, char key2) :
+MVREXPORT ArModeRobotStatus::ArModeRobotStatus(MvrRobot *robot, const char *name, char key1, char key2) :
   ArMode(robot, name, key1, key2),
   myRobot(robot),
   myDebugMessageCB(this, &ArModeRobotStatus::handleDebugMessage),
@@ -2609,13 +2609,13 @@ AREXPORT ArModeRobotStatus::ArModeRobotStatus(MvrRobot *robot, const char *name,
 {
 }
 
-AREXPORT void ArModeRobotStatus::help()
+MVREXPORT void ArModeRobotStatus::help()
 {
   ArLog::log(MvrLog::Terse, "Robot diagnostic flags mode prints the current state of the robot's error and diagnostic flags."); 
   ArLog::log(MvrLog::Terse, "Additional debug and status information will also be requested from the robot and logged if received.");
 }
 
-AREXPORT void ArModeRobotStatus::activate()
+MVREXPORT void ArModeRobotStatus::activate()
 {
   if(baseActivate())
   {
@@ -2739,7 +2739,7 @@ AREXPORT void ArModeRobotStatus::activate()
   printFlagsHeader();
 }
 
-AREXPORT void ArModeRobotStatus::deactivate()
+MVREXPORT void ArModeRobotStatus::deactivate()
 {
   if(!baseDeactivate()) return;
   // commented out to keep packet handlers active so we can use other modes and see responses.
@@ -2748,7 +2748,7 @@ AREXPORT void ArModeRobotStatus::deactivate()
   //myRobot->remPacketHandler(&mySafetyWarningCB);
 }
 
-AREXPORT void ArModeRobotStatus::userTask()
+MVREXPORT void ArModeRobotStatus::userTask()
 {
   printFlags();
   printf("\r");

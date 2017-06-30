@@ -48,13 +48,13 @@ class MvrModeTeleop : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeTeleop(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT MvrModeTeleop(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
-  AREXPORT virtual ~ArModeTeleop();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void help(void);
-  AREXPORT virtual void userTask(void);
+  MVREXPORT virtual ~MvrModeTeleop();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT virtual void userTask(void);
 protected:
   //ArActionGroupTeleop myGroup;
   // use our new ratio drive instead
@@ -67,13 +67,13 @@ class MvrModeUnguardedTeleop : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeUnguardedTeleop(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT MvrModeUnguardedTeleop(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
-  AREXPORT virtual ~ArModeUnguardedTeleop();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void help(void);
-  AREXPORT virtual void userTask(void);
+  MVREXPORT virtual ~MvrModeUnguardedTeleop();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT virtual void userTask(void);
 protected:
   //ArActionGroupUnguardedTeleop myGroup;
   // use our new ratio drive instead
@@ -86,13 +86,13 @@ class MvrModeWander : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeWander(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT MvrModeWander(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
-  AREXPORT virtual ~ArModeWander();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void help(void);
-  AREXPORT virtual void userTask(void);
+  MVREXPORT virtual ~MvrModeWander();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT virtual void userTask(void);
 protected:
   MvrActionGroupWander myGroup;
 };
@@ -102,20 +102,20 @@ class MvrModeGripper : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeGripper(MvrRobot *robot, const char *name, char key,
+  MVREXPORT MvrModeGripper(MvrRobot *robot, const char *name, char key,
 			 char key2);
   /// Destructor
-  AREXPORT virtual ~ArModeGripper();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void help(void);
-  AREXPORT void open(void);
-  AREXPORT void close(void);
-  AREXPORT void up(void);
-  AREXPORT void down(void);
-  AREXPORT void stop(void);
-  AREXPORT void exercise(void);
+  MVREXPORT virtual ~MvrModeGripper();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT void open(void);
+  MVREXPORT void close(void);
+  MVREXPORT void up(void);
+  MVREXPORT void down(void);
+  MVREXPORT void stop(void);
+  MVREXPORT void exercise(void);
 protected:
   enum ExerState {
     UP_OPEN,
@@ -141,42 +141,42 @@ class MvrModeCamera : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeCamera(MvrRobot *robot, const char *name, char key,
+  MVREXPORT MvrModeCamera(MvrRobot *robot, const char *name, char key,
 			 char key2);
   /// Destructor
-  AREXPORT virtual ~ArModeCamera();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void help(void);
-  AREXPORT void up(void);
-  AREXPORT void down(void);
-  AREXPORT void left(void);
-  AREXPORT void right(void);
-  AREXPORT void center(void);
-  AREXPORT void zoomIn(void);
-  AREXPORT void zoomOut(void);
-  AREXPORT void exercise(void);
-  AREXPORT void toggleAutoFocus();
-  AREXPORT void sony(void);
-  AREXPORT void canon(void);
-  AREXPORT void dpptu(void);
-  AREXPORT void amptu(void);
-  AREXPORT void canonInverted(void);
-  AREXPORT void sonySerial(void);
-  AREXPORT void canonSerial(void);
-  AREXPORT void dpptuSerial(void);
-  AREXPORT void amptuSerial(void);
-  AREXPORT void canonInvertedSerial(void);
-  AREXPORT void rvisionSerial(void);
-  AREXPORT void com1(void);
-  AREXPORT void com2(void);
-  AREXPORT void com3(void);
-  AREXPORT void com4(void);
-  AREXPORT void usb0(void);
-  AREXPORT void usb9(void);
-  AREXPORT void aux1(void);
-  AREXPORT void aux2(void);
+  MVREXPORT virtual ~MvrModeCamera();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT void up(void);
+  MVREXPORT void down(void);
+  MVREXPORT void left(void);
+  MVREXPORT void right(void);
+  MVREXPORT void center(void);
+  MVREXPORT void zoomIn(void);
+  MVREXPORT void zoomOut(void);
+  MVREXPORT void exercise(void);
+  MVREXPORT void toggleAutoFocus();
+  MVREXPORT void sony(void);
+  MVREXPORT void canon(void);
+  MVREXPORT void dpptu(void);
+  MVREXPORT void amptu(void);
+  MVREXPORT void canonInverted(void);
+  MVREXPORT void sonySerial(void);
+  MVREXPORT void canonSerial(void);
+  MVREXPORT void dpptuSerial(void);
+  MVREXPORT void amptuSerial(void);
+  MVREXPORT void canonInvertedSerial(void);
+  MVREXPORT void rvisionSerial(void);
+  MVREXPORT void com1(void);
+  MVREXPORT void com2(void);
+  MVREXPORT void com3(void);
+  MVREXPORT void com4(void);
+  MVREXPORT void usb0(void);
+  MVREXPORT void usb9(void);
+  MVREXPORT void aux1(void);
+  MVREXPORT void aux2(void);
 protected:
   void takeCameraKeys(void);
   void giveUpCameraKeys(void);
@@ -254,18 +254,18 @@ class MvrModeSonar : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeSonar(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT MvrModeSonar(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
-  AREXPORT virtual ~ArModeSonar();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void help(void);
-  AREXPORT void allSonar(void);
-  AREXPORT void firstSonar(void);
-  AREXPORT void secondSonar(void);
-  AREXPORT void thirdSonar(void);
-  AREXPORT void fourthSonar(void);
+  MVREXPORT virtual ~MvrModeSonar();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT void allSonar(void);
+  MVREXPORT void firstSonar(void);
+  MVREXPORT void secondSonar(void);
+  MVREXPORT void thirdSonar(void);
+  MVREXPORT void fourthSonar(void);
 protected:
   enum State 
   {
@@ -286,34 +286,34 @@ protected:
 class MvrModeBumps : public MvrMode
 {
 public:
-  AREXPORT MvrModeBumps(MvrRobot *robot, const char *name, char key, char key2);
-  AREXPORT ~ArModeBumps();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void help(void);
+  MVREXPORT MvrModeBumps(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT ~MvrModeBumps();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void help(void);
 };
 
 class MvrModePosition : public MvrMode
 {
 public:
-  AREXPORT MvrModePosition(MvrRobot *robot, const char *name, char key,
+  MVREXPORT MvrModePosition(MvrRobot *robot, const char *name, char key,
 			  char key2, MvrAnalogGyro *gyro = NULL);
-  AREXPORT ~ArModePosition();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void help(void);
-  AREXPORT void up(void);
-  AREXPORT void down(void);
-  AREXPORT void left(void);
-  AREXPORT void right(void);
-  AREXPORT void stop(void);
-  AREXPORT void reset(void);
-  AREXPORT void mode(void);
-  AREXPORT void gyro(void);
-  AREXPORT void incDistance(void);
-  AREXPORT void decDistance(void);
+  MVREXPORT ~MvrModePosition();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT void up(void);
+  MVREXPORT void down(void);
+  MVREXPORT void left(void);
+  MVREXPORT void right(void);
+  MVREXPORT void stop(void);
+  MVREXPORT void reset(void);
+  MVREXPORT void mode(void);
+  MVREXPORT void gyro(void);
+  MVREXPORT void incDistance(void);
+  MVREXPORT void decDistance(void);
 protected:
   enum Mode { MODE_BOTH, MODE_EITHER };
   MvrAnalogGyro *myGyro;
@@ -339,13 +339,13 @@ protected:
 class MvrModeIO : public MvrMode
 {
 public:
-  AREXPORT MvrModeIO(MvrRobot *robot, const char *name, char key,
+  MVREXPORT MvrModeIO(MvrRobot *robot, const char *name, char key,
 			  char key2);
-  AREXPORT ~ArModeIO();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void help(void);
+  MVREXPORT ~MvrModeIO();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void help(void);
 protected:
   bool myExplanationReady;
   bool myExplained;
@@ -358,14 +358,14 @@ protected:
 class MvrModeLaser : public MvrMode
 {
 public:
-  AREXPORT MvrModeLaser(MvrRobot *robot, const char *name, char key,
+  MVREXPORT MvrModeLaser(MvrRobot *robot, const char *name, char key,
 		       char key2, MvrSick *obsolete = NULL);
-  AREXPORT ~ArModeLaser();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void help(void);
-  AREXPORT virtual void switchToLaser(int laserNumber);
+  MVREXPORT ~MvrModeLaser();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT virtual void switchToLaser(int laserNumber);
 
 protected:
   void togMiddle(void);
@@ -394,25 +394,25 @@ class MvrModeActs : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeActs(MvrRobot *robot, const char *name, char key, char key2,
+  MVREXPORT MvrModeActs(MvrRobot *robot, const char *name, char key, char key2,
 		      MvrACTS_1_2 *acts = NULL);
   /// Destructor
-  AREXPORT virtual ~ArModeActs();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void help(void);
-  AREXPORT virtual void userTask(void);
-  AREXPORT virtual void channel1(void);
-  AREXPORT virtual void channel2(void);
-  AREXPORT virtual void channel3(void);
-  AREXPORT virtual void channel4(void);
-  AREXPORT virtual void channel5(void);
-  AREXPORT virtual void channel6(void);
-  AREXPORT virtual void channel7(void);
-  AREXPORT virtual void channel8(void);
-  AREXPORT virtual void stop(void);
-  AREXPORT virtual void start(void);
-  AREXPORT virtual void toggleAcquire(void);
+  MVREXPORT virtual ~MvrModeActs();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT virtual void userTask(void);
+  MVREXPORT virtual void channel1(void);
+  MVREXPORT virtual void channel2(void);
+  MVREXPORT virtual void channel3(void);
+  MVREXPORT virtual void channel4(void);
+  MVREXPORT virtual void channel5(void);
+  MVREXPORT virtual void channel6(void);
+  MVREXPORT virtual void channel7(void);
+  MVREXPORT virtual void channel8(void);
+  MVREXPORT virtual void stop(void);
+  MVREXPORT virtual void start(void);
+  MVREXPORT virtual void toggleAcquire(void);
   
 protected:
   MvrActionGroupColorFollow *myGroup;
@@ -436,12 +436,12 @@ protected:
 class MvrModeCommand : public MvrMode
 {
 public:
-  AREXPORT MvrModeCommand(MvrRobot *robot, const char *name, char key,
+  MVREXPORT MvrModeCommand(MvrRobot *robot, const char *name, char key,
 			  char key2);
-  AREXPORT ~ArModeCommand();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void help(void);
+  MVREXPORT ~MvrModeCommand();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void help(void);
 protected:
   void takeKeys(void);
   void giveUpKeys(void);
@@ -471,13 +471,13 @@ class MvrModeTCM2 : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeTCM2(MvrRobot *robot, const char *name, char key, char key2, MvrTCM2 *tcm2 = NULL);
+  MVREXPORT MvrModeTCM2(MvrRobot *robot, const char *name, char key, char key2, MvrTCM2 *tcm2 = NULL);
   /// Destructor
-  AREXPORT virtual ~ArModeTCM2();
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void help(void);
-  AREXPORT virtual void userTask(void);
+  MVREXPORT virtual ~MvrModeTCM2();
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void help(void);
+  MVREXPORT virtual void userTask(void);
   
 protected:
   void init();
@@ -501,10 +501,10 @@ class MvrModeConfig : public MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrModeConfig(MvrRobot *robot, const char *name, char key, char key2);
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void help(void);
+  MVREXPORT MvrModeConfig(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void help(void);
   
 protected:
   MvrRobot *myRobot;
@@ -520,11 +520,11 @@ protected:
 class MvrModeRobotStatus : public MvrMode
 {
 public:
-  AREXPORT MvrModeRobotStatus(MvrRobot *robot, const char *name, char key, char key2);
-  AREXPORT virtual void activate();
-  AREXPORT virtual void deactivate();
-  AREXPORT virtual void help();
-  AREXPORT virtual void userTask();
+  MVREXPORT MvrModeRobotStatus(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT virtual void activate();
+  MVREXPORT virtual void deactivate();
+  MVREXPORT virtual void help();
+  MVREXPORT virtual void userTask();
   
 protected:
   MvrRobot *myRobot;

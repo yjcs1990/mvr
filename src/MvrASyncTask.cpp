@@ -33,16 +33,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLog.h"
 
 
-AREXPORT MvrASyncTask::ArASyncTask() :
+MVREXPORT MvrASyncTask::ArASyncTask() :
   myFunc(this, &ArASyncTask::runThread, NULL)
 {
 }
 
-AREXPORT MvrASyncTask::~ArASyncTask()
+MVREXPORT MvrASyncTask::~MvrASyncTask()
 {
 }
 
-AREXPORT int MvrASyncTask::create(bool joinable, bool lowerPriority)
+MVREXPORT int MvrASyncTask::create(bool joinable, bool lowerPriority)
 {
   return(MvrThread::create(&myFunc, joinable, lowerPriority));
 }
@@ -55,7 +55,7 @@ AREXPORT int MvrASyncTask::create(bool joinable, bool lowerPriority)
    it block, waiting for exit of the program.
    @param arg the argument to pass to the runThread()
 */
-AREXPORT void * MvrASyncTask::runInThisThread(void *arg)
+MVREXPORT void * MvrASyncTask::runInThisThread(void *arg)
 {
   myJoinable=true;
   myRunning=true;

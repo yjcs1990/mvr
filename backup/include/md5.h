@@ -39,7 +39,7 @@ extern "C"
 #endif
 */
 
-// RH (ActivMedia/MobileRobots) Added "AREXPORT" symbol to all public functions. On Windows, this must be defined
+// RH (ActivMedia/MobileRobots) Added "MVREXPORT" symbol to all public functions. On Windows, this must be defined
 // to either import or export the symbols to/from DLLs. On other platforms, it should be defined to be nothing.
 
 /* Initialize the algorithm. */

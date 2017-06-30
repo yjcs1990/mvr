@@ -44,16 +44,16 @@ class MvrActionTurn : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionTurn(const char *name = "turn",
+  MVREXPORT MvrActionTurn(const char *name = "turn",
 			double speedStartTurn = 200,
 			double speedFullTurn = 100,
 			double turnAmount = 15);
   /// Destructor
-  AREXPORT virtual ~ArActionTurn();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionTurn();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

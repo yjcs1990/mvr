@@ -24,29 +24,29 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#ifndef AREXPORT_H
-#define AREXPORT_H
+#ifndef MVREXPORT_H
+#define MVREXPORT_H
 
-// Including this header file forces AREXPORT to be defined as the dllexport declaration in Windows DLL builds.
+// Including this header file forces MVREXPORT to be defined as the dllexport declaration in Windows DLL builds.
 // It should only be included in source files in ARIA and other libraries. Header files should include ariaTypedefs instead.
 
 #if (defined(_WIN32) || defined(WIN32)) && !defined(MINGW)
 
 #ifndef SWIG
 #ifndef ARIA_STATIC
-#undef AREXPORT
-#define AREXPORT _declspec(dllexport)
+#undef MVREXPORT
+#define MVREXPORT _declspec(dllexport)
 #else // ARIA_STATIC
-#define AREXPORT
+#define MVREXPORT
 #endif // ARIA_STATIC
 #endif // SWIG
 
 #else // WIN32
 
-#define AREXPORT
+#define MVREXPORT
 
 #endif // WIN32
 
-#endif // AREXPORT_H
+#endif // MVREXPORT_H
 
 

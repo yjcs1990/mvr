@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaOSDef.h"
 #include "MvrInterpolation.h"
 
-AREXPORT MvrInterpolation::ArInterpolation(size_t numberOfReadings)
+MVREXPORT MvrInterpolation::ArInterpolation(size_t numberOfReadings)
 {
   mySize = numberOfReadings;
   myDataMutex.setLogName("MvrInterpolation");
@@ -37,12 +37,12 @@ AREXPORT MvrInterpolation::ArInterpolation(size_t numberOfReadings)
   setLogPrediction();
 }
 
-AREXPORT MvrInterpolation::~ArInterpolation()
+MVREXPORT MvrInterpolation::~MvrInterpolation()
 {
 
 }
 
-AREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading, 
+MVREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading, 
 					  MvrPose position)
 {
   myDataMutex.lock();
@@ -68,7 +68,7 @@ AREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading,
    
 **/
 
-AREXPORT int MvrInterpolation::getPose(
+MVREXPORT int MvrInterpolation::getPose(
 	ArTime timeStamp, MvrPose *position, MvrPoseWithTime *mostRecent)
 {
   std::list<ArTime>::iterator tit;
@@ -233,12 +233,12 @@ AREXPORT int MvrInterpolation::getPose(
   
 }
 
-AREXPORT size_t MvrInterpolation::getNumberOfReadings(void) const
+MVREXPORT size_t MvrInterpolation::getNumberOfReadings(void) const
 {
   return mySize;
 }
 
-AREXPORT void MvrInterpolation::setNumberOfReadings(size_t numberOfReadings)
+MVREXPORT void MvrInterpolation::setNumberOfReadings(size_t numberOfReadings)
 {
   myDataMutex.lock();
   while (myTimes.size() > numberOfReadings)
@@ -250,7 +250,7 @@ AREXPORT void MvrInterpolation::setNumberOfReadings(size_t numberOfReadings)
   myDataMutex.unlock();
 }
 
-AREXPORT void MvrInterpolation::reset(void)
+MVREXPORT void MvrInterpolation::reset(void)
 {
   myDataMutex.lock();
   while (myTimes.size() > 0)
@@ -260,7 +260,7 @@ AREXPORT void MvrInterpolation::reset(void)
   myDataMutex.unlock();
 }
 
-AREXPORT void MvrInterpolation::setName(const char *name)
+MVREXPORT void MvrInterpolation::setName(const char *name)
 {
   myDataMutex.lock();
   myName = name;
@@ -271,19 +271,19 @@ AREXPORT void MvrInterpolation::setName(const char *name)
   myDataMutex.unlock();
 }
 
-AREXPORT const char * MvrInterpolation::getName(void)
+MVREXPORT const char * MvrInterpolation::getName(void)
 {
   return myName.c_str();
 }
 
-AREXPORT void MvrInterpolation::setAllowedMSForPrediction(int ms)
+MVREXPORT void MvrInterpolation::setAllowedMSForPrediction(int ms)
 {
   myDataMutex.lock();
   myAllowedMSForPrediction = ms;
   myDataMutex.unlock();
 }
 
-AREXPORT int MvrInterpolation::getAllowedMSForPrediction(void)
+MVREXPORT int MvrInterpolation::getAllowedMSForPrediction(void)
 {
   int ret;
   myDataMutex.lock();
@@ -292,14 +292,14 @@ AREXPORT int MvrInterpolation::getAllowedMSForPrediction(void)
   return ret;
 }
 
-AREXPORT void MvrInterpolation::setAllowedPercentageForPrediction(int percentage)
+MVREXPORT void MvrInterpolation::setAllowedPercentageForPrediction(int percentage)
 {
   myDataMutex.lock();
   myAllowedPercentageForPrediction = percentage;
   myDataMutex.unlock();
 }
 
-AREXPORT int MvrInterpolation::getAllowedPercentageForPrediction(void)
+MVREXPORT int MvrInterpolation::getAllowedPercentageForPrediction(void)
 {
   int ret;
   myDataMutex.lock();
@@ -308,14 +308,14 @@ AREXPORT int MvrInterpolation::getAllowedPercentageForPrediction(void)
   return ret;
 }
 
-AREXPORT void MvrInterpolation::setLogPrediction(bool logPrediction)
+MVREXPORT void MvrInterpolation::setLogPrediction(bool logPrediction)
 {
   myDataMutex.lock();
   myLogPrediction = logPrediction;
   myDataMutex.unlock();
 }
 
-AREXPORT bool MvrInterpolation::getLogPrediction(void)
+MVREXPORT bool MvrInterpolation::getLogPrediction(void)
 {
   bool ret;
   myDataMutex.lock();

@@ -40,15 +40,15 @@ class MvrSyncLoop : public MvrASyncTask
 {
 public:
 
-  AREXPORT MvrSyncLoop();
-  AREXPORT virtual ~ArSyncLoop();
+  MVREXPORT MvrSyncLoop();
+  MVREXPORT virtual ~MvrSyncLoop();
 
-  AREXPORT void setRobot(MvrRobot *robot);
+  MVREXPORT void setRobot(MvrRobot *robot);
 
-  AREXPORT void stopRunIfNotConnected(bool stopRun);
-  AREXPORT virtual void * runThread(void *arg);
+  MVREXPORT void stopRunIfNotConnected(bool stopRun);
+  MVREXPORT virtual void * runThread(void *arg);
 
-  AREXPORT virtual const char *getThreadActivity(void);
+  MVREXPORT virtual const char *getThreadActivity(void);
 
 
 protected:

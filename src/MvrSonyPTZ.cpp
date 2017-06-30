@@ -30,18 +30,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobot.h"
 #include "MvrCommands.h"
 
-AREXPORT ArSonyPacket::ArSonyPacket(MvrTypes::UByte2 bufferSize) :
+MVREXPORT ArSonyPacket::ArSonyPacket(MvrTypes::UByte2 bufferSize) :
   ArBasePacket(bufferSize)
 {
   
 }
 
-AREXPORT ArSonyPacket::~ArSonyPacket()
+MVREXPORT ArSonyPacket::~MvrSonyPacket()
 {
 
 }
 
-AREXPORT void ArSonyPacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void ArSonyPacket::uByteToBuf(MvrTypes::UByte val)
 {
   if (myLength + 1 > myMaxLength)
   {
@@ -52,7 +52,7 @@ AREXPORT void ArSonyPacket::uByteToBuf(MvrTypes::UByte val)
   ++myLength;
 }
 
-AREXPORT void ArSonyPacket::byte2ToBuf(MvrTypes::Byte2 val)
+MVREXPORT void ArSonyPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 4) > myMaxLength)
   {
@@ -79,7 +79,7 @@ AREXPORT void ArSonyPacket::byte2ToBuf(MvrTypes::Byte2 val)
    @param val the Byte2 to put into the packet
    @param pose the position in the packets array to put the value
 */
-AREXPORT void ArSonyPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
+MVREXPORT void ArSonyPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 					    ArTypes::UByte2 pose)
 {
   ArTypes::Byte2 prevLength = myLength;
@@ -95,7 +95,7 @@ AREXPORT void ArSonyPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 }
 
 
-AREXPORT ArSonyPTZ::ArSonyPTZ(MvrRobot *robot) :
+MVREXPORT ArSonyPTZ::ArSonyPTZ(MvrRobot *robot) :
   ArPTZ(robot),
   myPacket(255), 
   myZoomPacket(9)
@@ -105,19 +105,19 @@ AREXPORT ArSonyPTZ::ArSonyPTZ(MvrRobot *robot) :
 
   setLimits(90, -90, 30, -30, 1024, 0);
     /*
-  AREXPORT virtual double getMaxPosPan(void) const { return 90; }
-  AREXPORT virtual double getMaxNegPan(void) const { return -90; }
-  AREXPORT virtual double getMaxPosTilt(void) const { return 30; }
-  AREXPORT virtual double getMaxNegTilt(void) const { return -30; }
-  AREXPORT virtual int getMaxZoom(void) const { return 1024; }
-  AREXPORT virtual int getMinZoom(void) const { return 0; }
+  MVREXPORT virtual double getMaxPosPan(void) const { return 90; }
+  MVREXPORT virtual double getMaxNegPan(void) const { return -90; }
+  MVREXPORT virtual double getMaxPosTilt(void) const { return 30; }
+  MVREXPORT virtual double getMaxNegTilt(void) const { return -30; }
+  MVREXPORT virtual int getMaxZoom(void) const { return 1024; }
+  MVREXPORT virtual int getMinZoom(void) const { return 0; }
   */
   
   myDegToTilt = 0x12c / ((double) getMaxTilt() /*MAX_TILT*/ );
   myDegToPan = 0x370 / ((double) getMaxPan() /*MAX_PAN*/ );
 }
 
-AREXPORT ArSonyPTZ::~ArSonyPTZ()
+MVREXPORT ArSonyPTZ::~MvrSonyPTZ()
 {
 }
 
@@ -153,7 +153,7 @@ void ArSonyPTZ::initializePackets(void)
 }
 
 
-AREXPORT bool ArSonyPTZ::init(void)
+MVREXPORT bool ArSonyPTZ::init(void)
 {
   myPacket.empty();
   myPacket.uByteToBuf(0x88);
@@ -175,7 +175,7 @@ AREXPORT bool ArSonyPTZ::init(void)
   return true;
 }
 
-AREXPORT bool ArSonyPTZ::backLightingOn(void)
+MVREXPORT bool ArSonyPTZ::backLightingOn(void)
 {
   myPacket.empty();
   myPacket.uByteToBuf(0x81);
@@ -188,7 +188,7 @@ AREXPORT bool ArSonyPTZ::backLightingOn(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArSonyPTZ::backLightingOff(void)
+MVREXPORT bool ArSonyPTZ::backLightingOff(void)
 {
   myPacket.empty();
   myPacket.uByteToBuf(0x81);
@@ -201,7 +201,7 @@ AREXPORT bool ArSonyPTZ::backLightingOff(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool ArSonyPTZ::panTilt_i(double degreesPan, double degreesTilt)
+MVREXPORT bool ArSonyPTZ::panTilt_i(double degreesPan, double degreesTilt)
 {
   if (degreesPan > getMaxPan())
     degreesPan = getMaxPan();
@@ -220,32 +220,32 @@ AREXPORT bool ArSonyPTZ::panTilt_i(double degreesPan, double degreesTilt)
   return sendPacket(&myPanTiltPacket);
 }
 
-AREXPORT bool ArSonyPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
+MVREXPORT bool ArSonyPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
 {
   return panTilt(myPan + degreesPan, myTilt + degreesTilt);
 }
 
-AREXPORT bool ArSonyPTZ::pan_i(double degrees)
+MVREXPORT bool ArSonyPTZ::pan_i(double degrees)
 {
   return panTilt(degrees, myTilt);
 }
 
-AREXPORT bool ArSonyPTZ::panRel_i(double degrees)
+MVREXPORT bool ArSonyPTZ::panRel_i(double degrees)
 {
   return panTiltRel(degrees, 0);
 }
 
-AREXPORT bool ArSonyPTZ::tilt_i(double degrees)
+MVREXPORT bool ArSonyPTZ::tilt_i(double degrees)
 {
   return panTilt(myPan, degrees);
 }
 
-AREXPORT bool ArSonyPTZ::tiltRel_i(double degrees)
+MVREXPORT bool ArSonyPTZ::tiltRel_i(double degrees)
 {
   return panTiltRel(0, degrees);
 }
 
-AREXPORT bool ArSonyPTZ::zoom(int zoomValue)
+MVREXPORT bool ArSonyPTZ::zoom(int zoomValue)
 {
   if (zoomValue > getMaxZoom())
     zoomValue = getMaxZoom();
@@ -257,14 +257,14 @@ AREXPORT bool ArSonyPTZ::zoom(int zoomValue)
   return sendPacket(&myZoomPacket);
 }
 
-AREXPORT bool ArSonyPTZ::zoomRel(int zoomValue)
+MVREXPORT bool ArSonyPTZ::zoomRel(int zoomValue)
 {
   return zoom(myZoom + zoomValue);
 }
 
 
 /*
-AREXPORT bool ArSonyPTZ::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool ArSonyPTZ::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xE0)
     return false;

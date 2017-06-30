@@ -41,14 +41,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 class MvrIRs : public MvrRangeDevice
 {
 public:
-  AREXPORT MvrIRs(size_t currentBufferSize = 10, 
+  MVREXPORT MvrIRs(size_t currentBufferSize = 10, 
 		     size_t cumulativeBufferSize = 10,
 		     const char *name = "irs",
 		     int maxSecondsToKeepCurrent = 15);
-  AREXPORT virtual ~ArIRs(void);
+  MVREXPORT virtual ~MvrIRs(void);
 
-  AREXPORT virtual void setRobot(MvrRobot *robot);
-  AREXPORT void processReadings(void);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT void processReadings(void);
 
 protected:
   MvrFunctorC<ArIRs> myProcessCB;

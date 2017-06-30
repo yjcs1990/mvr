@@ -39,26 +39,26 @@ class MvrActionMovementParametersDebugging : public MvrAction
 {
 public: 
   /// Constructor
-  AREXPORT MvrActionMovementParametersDebugging(const char *name = "MovementParametersDebugging");
+  MVREXPORT MvrActionMovementParametersDebugging(const char *name = "MovementParametersDebugging");
   /// Destructor
-  AREXPORT virtual ~ArActionMovementParametersDebugging();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionMovementParametersDebugging();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   /// Sees if this action is enabled (separate from activating it)
-  AREXPORT bool isEnabled(void) { return myEnabled; }
+  MVREXPORT bool isEnabled(void) { return myEnabled; }
   /// Enables this action (separate from activating it)
-  AREXPORT void enable(void) { myEnabled = true; }
+  MVREXPORT void enable(void) { myEnabled = true; }
   /// Enables this action in a way that'll work from the sector callbacks
-  AREXPORT void enableOnceFromSector(MvrMapObject *mapObject) 
+  MVREXPORT void enableOnceFromSector(MvrMapObject *mapObject) 
     { myEnableOnce = true; }
   /// Disables this action (separate from deactivating it)
-  AREXPORT void disable(void) { myEnabled = false; }
+  MVREXPORT void disable(void) { myEnabled = false; }
   /// Adds to the MvrConfig given, in section, with prefix
-  AREXPORT void addToConfig(MvrConfig *config, const char *section,
+  MVREXPORT void addToConfig(MvrConfig *config, const char *section,
 			    const char *prefix = NULL);
 protected:
   bool myEnabled;

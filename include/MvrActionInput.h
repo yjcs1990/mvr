@@ -39,23 +39,23 @@ class MvrActionInput : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionInput(const char *name = "Input");
+  MVREXPORT MvrActionInput(const char *name = "Input");
   /// Destructor
-  AREXPORT virtual ~ArActionInput();
+  MVREXPORT virtual ~MvrActionInput();
   /// Set velocity (cancels deltaVel)
-  AREXPORT void setVel(double vel);
+  MVREXPORT void setVel(double vel);
   /// Increment/decrement the heading from current
-  AREXPORT void deltaHeadingFromCurrent(double delta);
+  MVREXPORT void deltaHeadingFromCurrent(double delta);
   /// Sets a rotational velocity
-  AREXPORT void setRotVel(double rotVel);
+  MVREXPORT void setRotVel(double rotVel);
   /// Sets a heading
-  AREXPORT void setHeading(double heading);
+  MVREXPORT void setHeading(double heading);
   /// Clears it so its not using vel or heading
-  AREXPORT void clear(void);
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT void clear(void);
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

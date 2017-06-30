@@ -43,7 +43,7 @@ class MvrHasFileName
 public:
 
   /// Constructor
-	AREXPORT MvrHasFileName() 
+	MVREXPORT MvrHasFileName() 
   {}
 	
   /// Copy constructor
@@ -57,11 +57,11 @@ public:
   }
 
   /// Destructor
-	AREXPORT virtual ~ArHasFileName()
+	MVREXPORT virtual ~MvrHasFileName()
   {}
 
   /// Returns the complete file path name of the associated file
-  AREXPORT virtual const char *getFileName() const  = 0;
+  MVREXPORT virtual const char *getFileName() const  = 0;
 
 }; // end class
 

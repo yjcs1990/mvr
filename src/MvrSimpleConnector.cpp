@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrSick.h"
 #include "ariaInternal.h"
 
-AREXPORT ArSimpleConnector::ArSimpleConnector(int *argc, char **argv) 
+MVREXPORT ArSimpleConnector::ArSimpleConnector(int *argc, char **argv) 
 {
   myParser = new ArArgumentParser(argc, argv);
   myOwnParser = true;
@@ -42,7 +42,7 @@ AREXPORT ArSimpleConnector::ArSimpleConnector(int *argc, char **argv)
 /** @warning do not delete @a builder during the lifetime of this
  * ArSimpleConnector, which may need to access its contents later.
  */
-AREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentBuilder *builder)
+MVREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentBuilder *builder)
 {
   myParser = new ArArgumentParser(builder);
   myOwnParser = true;
@@ -52,14 +52,14 @@ AREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentBuilder *builder)
 /** @warning do not delete @a parser during the lifetime of this
  * ArSimpleConnector, which may need to access its contents later.
  */
-AREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentParser *parser) 
+MVREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentParser *parser) 
 {
   myParser = parser;
   myOwnParser = false;
   finishConstructor();
 }
 
-AREXPORT ArSimpleConnector::~ArSimpleConnector(void)
+MVREXPORT ArSimpleConnector::~MvrSimpleConnector(void)
 {
 
 }
@@ -73,7 +73,7 @@ void ArSimpleConnector::finishConstructor(void)
   //myLaserConnector->addLaser
 }
 
-AREXPORT void ArSimpleConnector::setMaxNumLasers(int maxNumLasers)
+MVREXPORT void ArSimpleConnector::setMaxNumLasers(int maxNumLasers)
 {
   int i;
   for (i = 1; i <= maxNumLasers; i++)
@@ -81,7 +81,7 @@ AREXPORT void ArSimpleConnector::setMaxNumLasers(int maxNumLasers)
 
 }
 
-AREXPORT bool ArSimpleConnector::parseArgs(void)
+MVREXPORT bool ArSimpleConnector::parseArgs(void)
 {
   return parseArgs(myParser);
 }
@@ -168,12 +168,12 @@ AREXPORT bool ArSimpleConnector::parseArgs(void)
 
  **/
 
-AREXPORT bool ArSimpleConnector::parseArgs(MvrArgumentParser *parser)
+MVREXPORT bool ArSimpleConnector::parseArgs(MvrArgumentParser *parser)
 {
   return myRobotConnector->parseArgs() && myLaserConnector->parseArgs();
 }
 
-AREXPORT void ArSimpleConnector::logOptions(void) const
+MVREXPORT void ArSimpleConnector::logOptions(void) const
 {
   myRobotConnector->logOptions();
   myLaserConnector->logOptions();
@@ -197,7 +197,7 @@ AREXPORT void ArSimpleConnector::logOptions(void) const
  * @return false if -remoteHost was given and there was an error connecting to
  * the remote host, true otherwise.
  **/
-AREXPORT bool ArSimpleConnector::setupRobot(MvrRobot *robot)
+MVREXPORT bool ArSimpleConnector::setupRobot(MvrRobot *robot)
 {
   return myRobotConnector->setupRobot(robot);
 }
@@ -207,7 +207,7 @@ AREXPORT bool ArSimpleConnector::setupRobot(MvrRobot *robot)
  * If you wish to simply prepare the ArRobot object, but not begin
  * the connection, then use setupRobot().
  */
-AREXPORT bool ArSimpleConnector::connectRobot(MvrRobot *robot)
+MVREXPORT bool ArSimpleConnector::connectRobot(MvrRobot *robot)
 {
   return myRobotConnector->connectRobot(robot);
 }
@@ -224,7 +224,7 @@ AREXPORT bool ArSimpleConnector::connectRobot(MvrRobot *robot)
    that argument is given.
 **/
 
-AREXPORT bool ArSimpleConnector::setupLaser(MvrSick *laser)
+MVREXPORT bool ArSimpleConnector::setupLaser(MvrSick *laser)
 {
   return myLaserConnector->setupLaser(laser, 1);
 }
@@ -236,12 +236,12 @@ AREXPORT bool ArSimpleConnector::setupLaser(MvrSick *laser)
    the main or from ArArgumentBuilder.  Similarly, a tcp connection must
    be explicitly defined with the --remoteLaserTcpPort2 argument.
 **/
-AREXPORT bool ArSimpleConnector::setupSecondLaser(MvrSick *laser)
+MVREXPORT bool ArSimpleConnector::setupSecondLaser(MvrSick *laser)
 {
   return myLaserConnector->setupLaser(laser, 2);
 }
 
-AREXPORT bool ArSimpleConnector::setupLaserArbitrary(MvrSick *laser,
+MVREXPORT bool ArSimpleConnector::setupLaserArbitrary(MvrSick *laser,
 						    int laserNumber)
 {
   return myLaserConnector->setupLaser(laser, laserNumber);
@@ -253,7 +253,7 @@ AREXPORT bool ArSimpleConnector::setupLaserArbitrary(MvrSick *laser,
    wanted.
 **/
 
-AREXPORT bool ArSimpleConnector::connectLaser(MvrSick *laser)
+MVREXPORT bool ArSimpleConnector::connectLaser(MvrSick *laser)
 {
   return myLaserConnector->connectLaser(laser, 1, false);
 }
@@ -263,12 +263,12 @@ AREXPORT bool ArSimpleConnector::connectLaser(MvrSick *laser)
    was given to do so or simply return true if no connection was
    requested.
 **/
-AREXPORT bool ArSimpleConnector::connectSecondLaser(MvrSick *laser)
+MVREXPORT bool ArSimpleConnector::connectSecondLaser(MvrSick *laser)
 {
   return myLaserConnector->connectLaser(laser, 1, false);
 }
 
-AREXPORT bool ArSimpleConnector::connectLaserArbitrary(
+MVREXPORT bool ArSimpleConnector::connectLaserArbitrary(
 	ArSick *laser, int laserNumber)
 {
   return myLaserConnector->connectLaser(laser, laserNumber, false);

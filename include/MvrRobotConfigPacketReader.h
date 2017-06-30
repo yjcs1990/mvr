@@ -40,13 +40,13 @@ class MvrRobotConfigPacketReader
 {
 public:
   /// Constructor
-  AREXPORT MvrRobotConfigPacketReader(MvrRobot *robot, 
+  MVREXPORT MvrRobotConfigPacketReader(MvrRobot *robot, 
 				     bool onlyOneRequest = false,
 				     MvrFunctor *packetedArrivedCB = NULL);
   /// Destructor
-  AREXPORT ~ArRobotConfigPacketReader();
+  MVREXPORT ~MvrRobotConfigPacketReader();
   /// Request a packet.. true if we could, false if onlyOneRequest already done
-  AREXPORT bool requestPacket(void);
+  MVREXPORT bool requestPacket(void);
   /// See if we've requested a packet yet
   bool hasPacketBeenRequested(void) const { return myPacketRequested; }
   /// See if we've gotten the data
@@ -54,13 +54,13 @@ public:
   /// Gets a pointer to the packet that we built the config packet from
   const MvrRobotPacket *getRobotPacket(void) const { return &myPacket; } 
   /// Log the config
-  AREXPORT void log(void) const;
+  MVREXPORT void log(void) const;
   /// Log the movement part of the config config
-  AREXPORT void logMovement(void) const;
+  MVREXPORT void logMovement(void) const;
   /// Builds a string of the info
-  AREXPORT std::string buildString(void) const;
+  MVREXPORT std::string buildString(void) const;
   /// Builds a string of the movement info
-  AREXPORT std::string buildStringMovement(void) const;
+  MVREXPORT std::string buildStringMovement(void) const;
   /// Gets the type of robot
   const char *getType(void) const { return myType.c_str(); }
   /// Gets the subtype of robot
@@ -205,9 +205,9 @@ public:
   int getGyroFWVersion(void) const 
     { return myGyroFWVersion; }
   /// internal, packet handler
-  AREXPORT bool packetHandler(MvrRobotPacket *packet);
+  MVREXPORT bool packetHandler(MvrRobotPacket *packet);
   /// internal, connection callback
-  AREXPORT void connected(void);
+  MVREXPORT void connected(void);
 protected:
   // the different parameters from the robot
   std::string myType;

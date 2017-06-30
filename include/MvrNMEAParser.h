@@ -47,7 +47,7 @@ class MvrNMEAParser {
 
 public:
     /** @param name Used in log messages */
-    AREXPORT MvrNMEAParser(const char *name = "NMEA Parser");
+    MVREXPORT MvrNMEAParser(const char *name = "NMEA Parser");
 
     /** @brief Flags to indicates what the parse() method did. 
      *  i.e. If nothing was done, then the
@@ -64,7 +64,7 @@ public:
 
     /** @brief Set whether checksum is ignored (default behavior is not to ignore it, and
      * skip messages with incorrect checksums, and log a warning mesage) */
-    AREXPORT void setIgnoreChecksum(bool ignore) { ignoreChecksum = ignore; }
+    MVREXPORT void setIgnoreChecksum(bool ignore) { ignoreChecksum = ignore; }
 
     /** NMEA message, divided into parts.  */
     typedef std::vector<std::string> MessageVector;
@@ -94,8 +94,8 @@ public:
      * class. 
      * @param messageID ID of NMEA sentence/message, without two-letter "talker" prefix.
      */
-    AREXPORT void addHandler(const char *messageID, MvrNMEAParser::Handler *handler);
-    AREXPORT void removeHandler(const char *messageID);
+    MVREXPORT void addHandler(const char *messageID, MvrNMEAParser::Handler *handler);
+    MVREXPORT void removeHandler(const char *messageID);
 
     /* Read a chunk of input text from the given device connection and 
      * parse with parse(char*, int).  The maximum amount of text read from the device
@@ -106,13 +106,13 @@ public:
      * continuous fashion, since it will store partially recieved messages for
      * the next call to one of the parse() methods.
      */
-    AREXPORT int parse(MvrDeviceConnection *dev);
+    MVREXPORT int parse(MvrDeviceConnection *dev);
 
     /* Parse a chunk of input text. Call message handlers as complete NMEA
      * messages are parsed.  Parsing state is stored in this MvrNMEAParser object.
      * @return a result code from ParseFlags
      */
-    AREXPORT int parse(const char *buf, int n);
+    MVREXPORT int parse(const char *buf, int n);
 
     
 

@@ -108,17 +108,17 @@ extern "C"
 #endif
 */
 
-// RH (ActivMedia/MobileRobots) Added "AREXPORT" symbol to all public functions. On Windows, this must be defined
+// RH (ActivMedia/MobileRobots) Added "MVREXPORT" symbol to all public functions. On Windows, this must be defined
 // to either import or export the symbols to/from DLLs. On other platforms, it should be defined to be nothing.
 
 /* Initialize the algorithm. */
-AREXPORT void md5_init(md5_state_t *pms);
+MVREXPORT void md5_init(md5_state_t *pms);
 
 /* Append a string to the message. */
-AREXPORT void md5_append(md5_state_t *pms, const md5_byte_t *data, int nbytes);
+MVREXPORT void md5_append(md5_state_t *pms, const md5_byte_t *data, int nbytes);
 
 /* Finish the message and return the digest. */
-AREXPORT void md5_finish(md5_state_t *pms, md5_byte_t digest[16]);
+MVREXPORT void md5_finish(md5_state_t *pms, md5_byte_t digest[16]);
 
 /// MPL (ActivMedia) taking out the extern since its only being used in c++
 /*

@@ -40,10 +40,10 @@ ArThread::MapType ArThread::ourThreads;
 #if defined(WIN32) && !defined(MINGW)
 std::map<HANDLE, ArThread *> ArThread::ourThreadHandles;
 #endif
-AREXPORT ArLog::LogLevel ArThread::ourLogLevel = ArLog::Verbose; // todo, instead of AREXPORT move accessors into .cpp?
+MVREXPORT ArLog::LogLevel ArThread::ourLogLevel = ArLog::Verbose; // todo, instead of MVREXPORT move accessors into .cpp?
 std::string ArThread::ourUnknownThreadName = "unknown";
 
-AREXPORT void ArThread::stopAll()
+MVREXPORT void ArThread::stopAll()
 {
   MapType::iterator iter;
 
@@ -53,7 +53,7 @@ AREXPORT void ArThread::stopAll()
   ourThreadsMutex.unlock();
 }
 
-AREXPORT void ArThread::joinAll()
+MVREXPORT void ArThread::joinAll()
 {
   MapType::iterator iter;
   ArThread *thread = self();
@@ -82,7 +82,7 @@ AREXPORT void ArThread::joinAll()
   ourThreadsMutex.unlock();
 }
 
-AREXPORT ArThread::ArThread(bool blockAllSignals) :
+MVREXPORT ArThread::ArThread(bool blockAllSignals) :
   myName("(unnamed)"),
   myRunning(false),
   myJoinable(false),
@@ -101,7 +101,7 @@ AREXPORT ArThread::ArThread(bool blockAllSignals) :
 {
 }
 
-AREXPORT ArThread::ArThread(ThreadType thread, bool joinable,
+MVREXPORT ArThread::ArThread(ThreadType thread, bool joinable,
 			    bool blockAllSignals) :
   myRunning(false),
   myJoinable(joinable),
@@ -119,7 +119,7 @@ AREXPORT ArThread::ArThread(ThreadType thread, bool joinable,
 {
 }
 
-AREXPORT ArThread::ArThread(MvrFunctor *func, bool joinable,
+MVREXPORT ArThread::ArThread(MvrFunctor *func, bool joinable,
 			    bool blockAllSignals) :
   myRunning(false),
   myJoinable(false),
@@ -139,7 +139,7 @@ AREXPORT ArThread::ArThread(MvrFunctor *func, bool joinable,
 }
 
 #if !defined(WIN32) || defined(MINGW)
-AREXPORT ArThread::~ArThread()
+MVREXPORT ArThread::~MvrThread()
 {
   // Just make sure the thread is no longer in the map.
   removeThreadFromMap(myThread);
@@ -154,7 +154,7 @@ AREXPORT ArThread::~ArThread()
 }
 #endif 
 
-AREXPORT int ArThread::join(void **iret)
+MVREXPORT int ArThread::join(void **iret)
 {
   int ret;
   ret=doJoin(iret);
@@ -171,7 +171,7 @@ AREXPORT int ArThread::join(void **iret)
   return(0);
 }
 
-AREXPORT void ArThread::setThreadName(const char *name)
+MVREXPORT void ArThread::setThreadName(const char *name)
 { 
   myName = name; 
   std::string mutexLogName;
@@ -180,17 +180,17 @@ AREXPORT void ArThread::setThreadName(const char *name)
   myMutex.setLogName(mutexLogName.c_str());
 }
 
-AREXPORT bool ArThread::isThreadStarted() const
+MVREXPORT bool ArThread::isThreadStarted() const
 {
   return myStarted;
 }
 
-AREXPORT bool ArThread::isThreadFinished() const
+MVREXPORT bool ArThread::isThreadFinished() const
 {
   return myFinished;
 }
 
-AREXPORT const char *ArThread::getThisThreadName(void) 
+MVREXPORT const char *ArThread::getThisThreadName(void) 
 {
   ArThread *self;
   if ((self = ArThread::self()) != NULL)
@@ -199,7 +199,7 @@ AREXPORT const char *ArThread::getThisThreadName(void)
     return ourUnknownThreadName.c_str();
 }
 
-AREXPORT const ArThread::ThreadType * ArThread::getThisThread(void)
+MVREXPORT const ArThread::ThreadType * ArThread::getThisThread(void)
 {
   ArThread *self;
   if ((self = ArThread::self()) != NULL)
@@ -208,7 +208,7 @@ AREXPORT const ArThread::ThreadType * ArThread::getThisThread(void)
     return NULL;
 }
 
-AREXPORT ArThread::ThreadType ArThread::getThisOSThread(void)
+MVREXPORT ArThread::ThreadType ArThread::getThisOSThread(void)
 {
   ArThread *self;
   if ((self = ArThread::self()) != NULL)

@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLog.h"
 #include "ariaUtil.h"
 
-AREXPORT MvrLogFileConnection::ArLogFileConnection()
+MVREXPORT MvrLogFileConnection::ArLogFileConnection()
 {
   myStatus = STATUS_NEVER_OPENED;
   myLogFile = NULL;
@@ -43,14 +43,14 @@ AREXPORT MvrLogFileConnection::ArLogFileConnection()
   strcpy(mySubtype, "amigo");
 }
 
-AREXPORT MvrLogFileConnection::~ArLogFileConnection()
+MVREXPORT MvrLogFileConnection::~MvrLogFileConnection()
 {
   if (myFD != NULL)
     fclose(myFD);
 }
 
 
-AREXPORT void MvrLogFileConnection::setLogFile(const char *fname)
+MVREXPORT void MvrLogFileConnection::setLogFile(const char *fname)
 {
   if (fname == NULL)
     myLogFile = "robot.log";
@@ -58,7 +58,7 @@ AREXPORT void MvrLogFileConnection::setLogFile(const char *fname)
     myLogFile = fname;
 }
 
-AREXPORT bool MvrLogFileConnection::openSimple(void)
+MVREXPORT bool MvrLogFileConnection::openSimple(void)
 {
   if (internalOpen() == 0)
     return true;
@@ -71,13 +71,13 @@ AREXPORT bool MvrLogFileConnection::openSimple(void)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-AREXPORT int MvrLogFileConnection::open(const char *fname)
+MVREXPORT int MvrLogFileConnection::open(const char *fname)
 {
   setLogFile(fname);
   return internalOpen();
 }
 
-AREXPORT int MvrLogFileConnection::internalOpen(void)
+MVREXPORT int MvrLogFileConnection::internalOpen(void)
 {
   havePose = false;
   myFD = MvrUtil::fopen(myLogFile, "r");
@@ -136,12 +136,12 @@ void MvrLogFileConnection::buildStrMap(void)
   myStrMap[OPEN_NOT_A_LOG_FILE] = "File is not a log file.";
 }
 
-AREXPORT const char * MvrLogFileConnection::getOpenMessage(int messageNumber)
+MVREXPORT const char * MvrLogFileConnection::getOpenMessage(int messageNumber)
 {
   return myStrMap[messageNumber].c_str();
 }
 
-AREXPORT bool MvrLogFileConnection::close(void)
+MVREXPORT bool MvrLogFileConnection::close(void)
 {
   myStatus = STATUS_CLOSED_NORMALLY;
   if (myFD != NULL)
@@ -150,7 +150,7 @@ AREXPORT bool MvrLogFileConnection::close(void)
   return true;
 }
 
-AREXPORT int MvrLogFileConnection::read(const char *data, unsigned int size, 
+MVREXPORT int MvrLogFileConnection::read(const char *data, unsigned int size, 
 				   unsigned int msWait)
 {
   MvrTime timeDone;
@@ -241,7 +241,7 @@ AREXPORT int MvrLogFileConnection::read(const char *data, unsigned int size,
 
 
 
-AREXPORT int MvrLogFileConnection::write(const char *data, unsigned int size)
+MVREXPORT int MvrLogFileConnection::write(const char *data, unsigned int size)
 {
   return size;                  // always write
 }
@@ -250,22 +250,22 @@ AREXPORT int MvrLogFileConnection::write(const char *data, unsigned int size)
 /** 
     @return the name of the log file
 */
-AREXPORT const char *ArLogFileConnection::getLogFile(void)
+MVREXPORT const char *ArLogFileConnection::getLogFile(void)
 {
   return myLogFile;
 }
 
-AREXPORT int MvrLogFileConnection::getStatus(void)
+MVREXPORT int MvrLogFileConnection::getStatus(void)
 {
   return myStatus;
 }
 
-AREXPORT bool MvrLogFileConnection::isTimeStamping(void)
+MVREXPORT bool MvrLogFileConnection::isTimeStamping(void)
 {
   return false;
 }
 
-AREXPORT MvrTime MvrLogFileConnection::getTimeRead(int index)
+MVREXPORT MvrTime MvrLogFileConnection::getTimeRead(int index)
 {
   MvrTime now;
   now.setToNow();

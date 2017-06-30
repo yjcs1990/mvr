@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLog.h"
 #include "MvrArgumentBuilder.h"
 
-AREXPORT MvrArg::ArArg()
+MVREXPORT MvrArg::ArArg()
 {
   myType = INVALID;
   myName = "";
@@ -38,7 +38,7 @@ AREXPORT MvrArg::ArArg()
   clear();
 }
 
-AREXPORT MvrArg::ArArg(const char * name, int *pointer, 
+MVREXPORT MvrArg::ArArg(const char * name, int *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   myType = INT;
@@ -50,7 +50,7 @@ AREXPORT MvrArg::ArArg(const char * name, int *pointer,
   myIntPointer = pointer;
 }
 
-AREXPORT MvrArg::ArArg(const char * name, double *pointer,
+MVREXPORT MvrArg::ArArg(const char * name, double *pointer,
 		      const char * description, double minDouble, 
 		      double maxDouble) 
 { 
@@ -63,7 +63,7 @@ AREXPORT MvrArg::ArArg(const char * name, double *pointer,
   myDoublePointer = pointer;
 }
 
-AREXPORT MvrArg::ArArg(const char * name, bool *pointer, 
+MVREXPORT MvrArg::ArArg(const char * name, bool *pointer, 
 		      const char * description) 
 { 
   myType = BOOL;
@@ -73,7 +73,7 @@ AREXPORT MvrArg::ArArg(const char * name, bool *pointer,
   myBoolPointer = pointer;
 }
 
-AREXPORT MvrArg::ArArg(const char * name, MvrPose *pointer, 
+MVREXPORT MvrArg::ArArg(const char * name, MvrPose *pointer, 
 		      const char * description) 
 { 
   myType = POSE;
@@ -83,7 +83,7 @@ AREXPORT MvrArg::ArArg(const char * name, MvrPose *pointer,
   myPosePointer = pointer;
 }
 
-AREXPORT MvrArg::ArArg(const char * name, char *pointer, 
+MVREXPORT MvrArg::ArArg(const char * name, char *pointer, 
 		      const char * description, size_t maxStrLen) 
 { 
   myType = STRING;
@@ -110,7 +110,7 @@ AREXPORT MvrArg::ArArg(const char * name, char *pointer,
    @param getFunctor since parameter files need to be written too,
    this get functor will get a list of strings to be written to the file
 **/
-AREXPORT MvrArg::ArArg(const char *name, 
+MVREXPORT MvrArg::ArArg(const char *name, 
 		      MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
 	      MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
 		      const char *description)
@@ -123,14 +123,14 @@ AREXPORT MvrArg::ArArg(const char *name,
   myGetFunctor = getFunctor;
 }
 
-AREXPORT MvrArg::ArArg(const char * description)
+MVREXPORT MvrArg::ArArg(const char * description)
 { 
   myType = DESCRIPTION_HOLDER;
   myDescription = description;
   clear();
 }
 
-AREXPORT MvrArg::ArArg(const MvrArg & arg) 
+MVREXPORT MvrArg::ArArg(const MvrArg & arg) 
 {
   myType = arg.myType;
   myName = arg.myName;
@@ -151,7 +151,7 @@ AREXPORT MvrArg::ArArg(const MvrArg & arg)
   myConfigPriority = arg.myConfigPriority;
 }
 
-AREXPORT MvrArg &ArArg::operator=(const MvrArg & arg) 
+MVREXPORT MvrArg &ArArg::operator=(const MvrArg & arg) 
 {
 	if (this != &arg) {
 		myType = arg.myType;
@@ -176,11 +176,11 @@ AREXPORT MvrArg &ArArg::operator=(const MvrArg & arg)
 }
 
 
-AREXPORT MvrArg::~ArArg()
+MVREXPORT MvrArg::~MvrArg()
 {
 }
 
-AREXPORT void MvrArg::clear(void)
+MVREXPORT void MvrArg::clear(void)
 {
   myIntPointer = NULL;
   myDoublePointer = NULL;
@@ -204,42 +204,42 @@ AREXPORT void MvrArg::clear(void)
    @see DOUBLE
    @see BOOL
    @see POSE */
-AREXPORT MvrArg::Type MvrArg::getType(void) const
+MVREXPORT MvrArg::Type MvrArg::getType(void) const
 {
   return myType;
 }
 
-AREXPORT int MvrArg::getMinInt(void) const
+MVREXPORT int MvrArg::getMinInt(void) const
 {
   return myMinInt;
 }
 
-AREXPORT int MvrArg::getMaxInt(void) const
+MVREXPORT int MvrArg::getMaxInt(void) const
 {
   return myMaxInt;
 }
 
-AREXPORT double MvrArg::getMinDouble(void) const
+MVREXPORT double MvrArg::getMinDouble(void) const
 {
   return myMinDouble;
 }
 
-AREXPORT double MvrArg::getMaxDouble(void) const
+MVREXPORT double MvrArg::getMaxDouble(void) const
 {
   return myMaxDouble;
 }
 
-AREXPORT const char *ArArg::getName(void) const
+MVREXPORT const char *ArArg::getName(void) const
 {
   return myName.c_str();
 }
 
-AREXPORT const char *ArArg::getDescription(void) const
+MVREXPORT const char *ArArg::getDescription(void) const
 {
   return myDescription.c_str();
 }
 
-AREXPORT int MvrArg::getInt(void) const
+MVREXPORT int MvrArg::getInt(void) const
 { 
   if (myIntPointer != NULL)
     return *myIntPointer;
@@ -247,7 +247,7 @@ AREXPORT int MvrArg::getInt(void) const
     return 0;
 }
 
-AREXPORT double MvrArg::getDouble(void) const 
+MVREXPORT double MvrArg::getDouble(void) const 
 {
   if (myDoublePointer != NULL)
     return *myDoublePointer; 
@@ -255,7 +255,7 @@ AREXPORT double MvrArg::getDouble(void) const
     return 0;
 }
 
-AREXPORT bool MvrArg::getBool(void) const
+MVREXPORT bool MvrArg::getBool(void) const
 {
   if (myBoolPointer != NULL)
     return *myBoolPointer;
@@ -263,7 +263,7 @@ AREXPORT bool MvrArg::getBool(void) const
     return false;
 }
 
-AREXPORT const char *ArArg::getString(void) const
+MVREXPORT const char *ArArg::getString(void) const
 {
   if (myStringPointer != NULL)
     return myStringPointer;
@@ -271,7 +271,7 @@ AREXPORT const char *ArArg::getString(void) const
     return NULL;
 }
 
-AREXPORT MvrPose MvrArg::getPose(void) const
+MVREXPORT MvrPose MvrArg::getPose(void) const
 {
   MvrPose pose;
   if (myPosePointer != NULL)
@@ -280,7 +280,7 @@ AREXPORT MvrPose MvrArg::getPose(void) const
     return pose;
 }
 
-AREXPORT const std::list<ArArgumentBuilder *> *ArArg::getArgsWithFunctor(void) const
+MVREXPORT const std::list<ArArgumentBuilder *> *ArArg::getArgsWithFunctor(void) const
 {
   if (myGetFunctor == NULL)
     return NULL;
@@ -288,7 +288,7 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArArg::getArgsWithFunctor(void) c
     return myGetFunctor->invokeR();
 }
 
-AREXPORT bool MvrArg::setInt(int val)
+MVREXPORT bool MvrArg::setInt(int val)
 {
   if (val < myMinInt)
   {
@@ -309,7 +309,7 @@ AREXPORT bool MvrArg::setInt(int val)
   return true;
 }
 
-AREXPORT bool MvrArg::setDouble(double val)
+MVREXPORT bool MvrArg::setDouble(double val)
 { 
   if (val < myMinDouble)
   {
@@ -332,7 +332,7 @@ AREXPORT bool MvrArg::setDouble(double val)
 }
 
 
-AREXPORT bool MvrArg::setBool(bool val)
+MVREXPORT bool MvrArg::setBool(bool val)
 {
   if (myBoolPointer == NULL)
   {
@@ -343,7 +343,7 @@ AREXPORT bool MvrArg::setBool(bool val)
   return true;
 }
 
-AREXPORT bool MvrArg::setString(const char *str)
+MVREXPORT bool MvrArg::setString(const char *str)
 {
   size_t len;
   if (myStringPointer == NULL)
@@ -362,7 +362,7 @@ AREXPORT bool MvrArg::setString(const char *str)
   return true;
 }
 
-AREXPORT bool MvrArg::setPose(MvrPose pose)
+MVREXPORT bool MvrArg::setPose(MvrPose pose)
 {
   if (myPosePointer == NULL)
   {
@@ -374,7 +374,7 @@ AREXPORT bool MvrArg::setPose(MvrPose pose)
 
 }
 
-AREXPORT bool MvrArg::setArgWithFunctor(MvrArgumentBuilder *argument)
+MVREXPORT bool MvrArg::setArgWithFunctor(MvrArgumentBuilder *argument)
 {
   if (mySetFunctor == NULL)
   {
@@ -385,7 +385,7 @@ AREXPORT bool MvrArg::setArgWithFunctor(MvrArgumentBuilder *argument)
 }
 
 
-AREXPORT void MvrArg::log(void) const
+MVREXPORT void MvrArg::log(void) const
 {
   std::list<ArArgumentBuilder *>::const_iterator it;
   const std::list<ArArgumentBuilder *> *argList;
@@ -464,7 +464,7 @@ AREXPORT void MvrArg::log(void) const
    If this is true then the config priority is set and you can use
    getConfigPriority.
 **/
-AREXPORT bool MvrArg::getConfigPrioritySet(void) const
+MVREXPORT bool MvrArg::getConfigPrioritySet(void) const
 {
   return myConfigPrioritySet;
 }
@@ -472,7 +472,7 @@ AREXPORT bool MvrArg::getConfigPrioritySet(void) const
 /**
    The priority of this argument when used in MvrConfig.
  **/
-AREXPORT MvrPriority::Priority MvrArg::getConfigPriority(void) const
+MVREXPORT MvrPriority::Priority MvrArg::getConfigPriority(void) const
 {
   return myConfigPriority;
 }
@@ -481,7 +481,7 @@ AREXPORT MvrPriority::Priority MvrArg::getConfigPriority(void) const
    The priority of this argument when used in MvrConfig.
  **/
 
-AREXPORT void MvrArg::setConfigPriority(MvrPriority::Priority priority)
+MVREXPORT void MvrArg::setConfigPriority(MvrPriority::Priority priority)
 {
   myConfigPriority = priority;
   myConfigPrioritySet = true;

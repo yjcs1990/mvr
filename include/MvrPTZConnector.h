@@ -77,15 +77,15 @@ public:
   /* @arg robot In some cases the robot connection is used to communicate with
    * devices via auxilliary serial connections, so this robot interface is used.
    * May be NULL. */
-  AREXPORT MvrPTZConnector(MvrArgumentParser* argParser, MvrRobot *robot = NULL);
-  AREXPORT ~ArPTZConnector();
+  MVREXPORT MvrPTZConnector(MvrArgumentParser* argParser, MvrRobot *robot = NULL);
+  MVREXPORT ~MvrPTZConnector();
 
   /** For each PTZ specified in program arguments, and in robot parameters with
    *  PTZAutoConnect set to true, create the
    * appropriate PTZ object (based on type name) and connect to it. 
     @return false on first error, true if all PTZ connections were successful.
   */
-  AREXPORT bool connect();
+  MVREXPORT bool connect();
 
   /** @copydoc connect() */
   bool connectPTZs() { return connect(); }
@@ -124,7 +124,7 @@ public:
    * ARIA. MvrVideo::init() registers new PTZ types implemented in the MvrVideo
    * library. You may also add any new PTZ types you create. 
   */
-  AREXPORT static void registerPTZType(const std::string& typeName, MvrPTZConnector::PTZCreateFunc* func);
+  MVREXPORT static void registerPTZType(const std::string& typeName, MvrPTZConnector::PTZCreateFunc* func);
 
   /** Change limit on number of PTZ devices. 
  * You must call this
@@ -149,7 +149,7 @@ protected:
   bool parseArgs();
   bool parseArgs(MvrArgumentParser *parser);
   bool parseArgsFor(MvrArgumentParser *parser, int which);
-  AREXPORT void logOptions() const;
+  MVREXPORT void logOptions() const;
   void populateRobotParams(MvrRobotParams *params);
 
   MvrArgumentParser *myArgParser;

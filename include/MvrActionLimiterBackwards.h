@@ -42,18 +42,18 @@ class MvrActionLimiterBackwards : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionLimiterBackwards(const char *name = "speed limiter", 
+  MVREXPORT MvrActionLimiterBackwards(const char *name = "speed limiter", 
 				    double stopDistance = -250,
 				    double slowDistance = -600,
 				    double maxBackwardsSpeed = -250,
 				    double widthRatio = 1.5,
 				    bool avoidLocationDependentObstacles = true);
   /// Destructor
-  AREXPORT virtual ~ArActionLimiterBackwards();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionLimiterBackwards();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

@@ -36,7 +36,7 @@ ArStrMap ArSignalHandler::ourSigMap;
 std::list<ArFunctor1<int>*> ArSignalHandler::ourHandlerList;
 
 
-AREXPORT void ArSignalHandler::signalCB(int sig)
+MVREXPORT void ArSignalHandler::signalCB(int sig)
 {
   std::list<ArFunctor1<int>*>::iterator iter;
 
@@ -46,40 +46,40 @@ AREXPORT void ArSignalHandler::signalCB(int sig)
     ArLog::log(MvrLog::Terse, "MvrSignalHandler::runThread: No handler function. Unhandled signal '%s'", ourSigMap[sig].c_str());
 }  
 
-AREXPORT void ArSignalHandler::createHandlerNonThreaded()
+MVREXPORT void ArSignalHandler::createHandlerNonThreaded()
 {
 }
 
-AREXPORT void ArSignalHandler::createHandlerThreaded()
+MVREXPORT void ArSignalHandler::createHandlerThreaded()
 {
   getHandler()->create(false);
 }
 
-AREXPORT void ArSignalHandler::blockCommon()
+MVREXPORT void ArSignalHandler::blockCommon()
 {
 }
 
-AREXPORT void ArSignalHandler::unblockAll()
+MVREXPORT void ArSignalHandler::unblockAll()
 {
 }
 
-AREXPORT void ArSignalHandler::block(Signal sig)
+MVREXPORT void ArSignalHandler::block(Signal sig)
 {
 }
 
-AREXPORT void ArSignalHandler::unblock(Signal sig)
+MVREXPORT void ArSignalHandler::unblock(Signal sig)
 {
 }
 
-AREXPORT void ArSignalHandler::handle(Signal sig)
+MVREXPORT void ArSignalHandler::handle(Signal sig)
 {
 }
 
-AREXPORT void ArSignalHandler::unhandle(Signal sig)
+MVREXPORT void ArSignalHandler::unhandle(Signal sig)
 {
 }
 
-AREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
+MVREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
 					    ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -91,7 +91,7 @@ AREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
 	       "MvrSignalHandler::addHandler: Invalid position.");
 }
 
-AREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
+MVREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 {
   ourHandlerList.remove(func);
 }
@@ -99,13 +99,13 @@ AREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 /**
    Removes all of the signal handler callback from the list of callbacks. 
 **/
-AREXPORT void ArSignalHandler::delAllHandlerCBs(void)
+MVREXPORT void ArSignalHandler::delAllHandlerCBs(void)
 {
   ourHandlerList.clear();
 }
 
 
-AREXPORT ArSignalHandler * ArSignalHandler::getHandler()
+MVREXPORT ArSignalHandler * ArSignalHandler::getHandler()
 {
   if (!ourSignalHandler)
     ourSignalHandler=new ArSignalHandler;
@@ -113,11 +113,11 @@ AREXPORT ArSignalHandler * ArSignalHandler::getHandler()
   return(ourSignalHandler);
 }
 
-AREXPORT void ArSignalHandler::blockCommonThisThread()
+MVREXPORT void ArSignalHandler::blockCommonThisThread()
 {
 }
 
-AREXPORT void ArSignalHandler::blockAllThisThread()
+MVREXPORT void ArSignalHandler::blockAllThisThread()
 {
 }
 
@@ -127,11 +127,11 @@ ArSignalHandler::ArSignalHandler()
   initSigMap();
 }
 
-ArSignalHandler::~ArSignalHandler()
+ArSignalHandler::~MvrSignalHandler()
 {
 }
 
-AREXPORT void * ArSignalHandler::runThread(void *arg)
+MVREXPORT void * ArSignalHandler::runThread(void *arg)
 {
   threadStarted();
   threadFinished(); // ??
@@ -173,12 +173,12 @@ void ArSignalHandler::initSigMap()
   ourSigMap[SigPWR]="SIGPWR";
 }
 
-AREXPORT const char * ArSignalHandler::nameSignal(int sig)
+MVREXPORT const char * ArSignalHandler::nameSignal(int sig)
 {
   return(ourSigMap[sig].c_str());
 }
 
-AREXPORT void ArSignalHandler::logThread(void)
+MVREXPORT void ArSignalHandler::logThread(void)
 {
   if (ourSignalHandler != NULL)
     ourSignalHandler->logThreadInfo();

@@ -38,41 +38,41 @@ class MvrRobotPacketReceiver
 {
 public:
   /// Constructor without an already assigned device connection
-  AREXPORT MvrRobotPacketReceiver(bool allocatePackets = false,
+  MVREXPORT MvrRobotPacketReceiver(bool allocatePackets = false,
 				 unsigned char sync1 = 0xfa, 
 				 unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection
-  AREXPORT MvrRobotPacketReceiver(MvrDeviceConnection *deviceConnection, 
+  MVREXPORT MvrRobotPacketReceiver(MvrDeviceConnection *deviceConnection, 
 				 bool allocatePackets = false,
 				 unsigned char sync1 = 0xfa, 
 				 unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection and tracking
-  AREXPORT MvrRobotPacketReceiver(MvrDeviceConnection *deviceConnection, 
+  MVREXPORT MvrRobotPacketReceiver(MvrDeviceConnection *deviceConnection, 
 				 bool allocatePackets,
 				 unsigned char sync1, 
 				 unsigned char sync2,
 					bool tracking,
 					const char *trackingLogName);
   /// Destructor
-  AREXPORT virtual ~ArRobotPacketReceiver();
+  MVREXPORT virtual ~MvrRobotPacketReceiver();
   
   /// Receives a packet from the robot if there is one available
-  AREXPORT MvrRobotPacket *receivePacket(unsigned int msWait = 0);
+  MVREXPORT MvrRobotPacket *receivePacket(unsigned int msWait = 0);
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
   /// Gets the device this instance receives packets from
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
   
   /// Gets whether or not the receiver is allocating packets
-  AREXPORT bool isAllocatingPackets(void) { return myAllocatePackets; }
+  MVREXPORT bool isAllocatingPackets(void) { return myAllocatePackets; }
   /// Sets whether or not the receiver is allocating packets
-  AREXPORT void setAllocatingPackets(bool allocatePackets) 
+  MVREXPORT void setAllocatingPackets(bool allocatePackets) 
     { myAllocatePackets = allocatePackets; }
 
 #ifdef DEBUG_SPARCS_TESTING
-  AREXPORT void setSync1(unsigned char s1) { mySync1 = s1; }
-  AREXPORT void setSync2(unsigned char s2) { mySync2 = s2; }
+  MVREXPORT void setSync1(unsigned char s1) { mySync1 = s1; }
+  MVREXPORT void setSync2(unsigned char s2) { mySync2 = s2; }
 #endif
 
 	void setTracking(bool tracking)
@@ -88,7 +88,7 @@ public:
   /// Sets the callback that gets called with the finalized version of
   /// every packet set... this is ONLY for very internal very
   /// specialized use
-  AREXPORT void setPacketReceivedCallback(MvrFunctor1<ArRobotPacket *> *functor);
+  MVREXPORT void setPacketReceivedCallback(MvrFunctor1<ArRobotPacket *> *functor);
 protected:
   MvrDeviceConnection *myDeviceConn;
 	bool myTracking;

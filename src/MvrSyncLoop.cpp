@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobot.h"
 
 
-AREXPORT ArSyncLoop::ArSyncLoop() :
+MVREXPORT ArSyncLoop::ArSyncLoop() :
   ArASyncTask(),
   myStopRunIfNotConnected(false),
   myRobot(0)
@@ -41,21 +41,21 @@ AREXPORT ArSyncLoop::ArSyncLoop() :
   myInRun = false;
 }
 
-AREXPORT ArSyncLoop::~ArSyncLoop()
+MVREXPORT ArSyncLoop::~MvrSyncLoop()
 {
 }
 
-AREXPORT void ArSyncLoop::setRobot(MvrRobot *robot)
+MVREXPORT void ArSyncLoop::setRobot(MvrRobot *robot)
 {
   myRobot=robot;
 }
 
-AREXPORT void ArSyncLoop::stopRunIfNotConnected(bool stopRun)
+MVREXPORT void ArSyncLoop::stopRunIfNotConnected(bool stopRun)
 {
   myStopRunIfNotConnected = stopRun;
 }
 
-AREXPORT void * ArSyncLoop::runThread(void *arg)
+MVREXPORT void * ArSyncLoop::runThread(void *arg)
 {
   threadStarted();
 
@@ -158,7 +158,7 @@ AREXPORT void * ArSyncLoop::runThread(void *arg)
   return(0);
 }
 
-AREXPORT const char *ArSyncLoop::getThreadActivity(void)
+MVREXPORT const char *ArSyncLoop::getThreadActivity(void)
 {
   if (myRunning)
   {

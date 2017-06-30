@@ -35,7 +35,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define IFDEBUG(code)
 #endif 
 
-AREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
+MVREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() < 7) {
     ArLog::log(MvrLog::Terse, 
@@ -195,7 +195,7 @@ bool ArMapObject::setObjectDescription(MvrMapObject *object,
 } // end method setObjectDescription
 
 
-AREXPORT ArMapObject::ArMapObject(const char *type, 
+MVREXPORT ArMapObject::ArMapObject(const char *type, 
 					                        ArPose pose, 
                                   const char *description,
  		                              const char *iconName, 
@@ -237,7 +237,7 @@ AREXPORT ArMapObject::ArMapObject(const char *type,
 
 } // end ctor
 
-AREXPORT void ArMapObject::setFromTo(MvrPose fromPose, ArPose toPose)
+MVREXPORT void ArMapObject::setFromTo(MvrPose fromPose, ArPose toPose)
 {
     double angle = myPose.getTh();
     double sa = ArMath::sin(angle);
@@ -262,7 +262,7 @@ AREXPORT void ArMapObject::setFromTo(MvrPose fromPose, ArPose toPose)
 }
 
 /// Copy constructor
-AREXPORT ArMapObject::ArMapObject(const ArMapObject &mapObject) :
+MVREXPORT ArMapObject::ArMapObject(const ArMapObject &mapObject) :
   myType(mapObject.myType),
   myBaseType(mapObject.myBaseType),
   myName(mapObject.myName),
@@ -279,7 +279,7 @@ AREXPORT ArMapObject::ArMapObject(const ArMapObject &mapObject) :
 }
 
 
-AREXPORT ArMapObject &ArMapObject::operator=(const ArMapObject &mapObject)
+MVREXPORT ArMapObject &ArMapObject::operator=(const ArMapObject &mapObject)
 {
   if (&mapObject != this) {
 
@@ -301,15 +301,15 @@ AREXPORT ArMapObject &ArMapObject::operator=(const ArMapObject &mapObject)
 } // end operator=
 
 /// Destructor
-AREXPORT ArMapObject::~ArMapObject() 
+MVREXPORT ArMapObject::~MvrMapObject() 
 {
 }
 
 /// Gets the type of the object
-AREXPORT const char *ArMapObject::getType(void) const { return myType.c_str(); }
+MVREXPORT const char *ArMapObject::getType(void) const { return myType.c_str(); }
 
 
-AREXPORT const char *ArMapObject::getBaseType(void) const 
+MVREXPORT const char *ArMapObject::getBaseType(void) const 
 { 
   if (!myBaseType.empty()) {
     return myBaseType.c_str();
@@ -320,7 +320,7 @@ AREXPORT const char *ArMapObject::getBaseType(void) const
 }
 
 /// Gets the pose of the object 
-AREXPORT ArPose ArMapObject::getPose(void) const { return myPose; }
+MVREXPORT ArPose ArMapObject::getPose(void) const { return myPose; }
 
 /// Gets the fileName of the object (probably never used for maps)
 /**
@@ -330,13 +330,13 @@ AREXPORT ArPose ArMapObject::getPose(void) const { return myPose; }
 * description attribute).
 * @deprecated 
 **/
-AREXPORT const char *ArMapObject::getFileName(void) const { return myDescription.c_str(); }
+MVREXPORT const char *ArMapObject::getFileName(void) const { return myDescription.c_str(); }
 
 /// Gets the icon string of the object 
-AREXPORT const char *ArMapObject::getIconName(void) const { return myIconName.c_str(); }
+MVREXPORT const char *ArMapObject::getIconName(void) const { return myIconName.c_str(); }
 
 /// Returns the numerical identifier of the object, when auto-numbering is on.
-AREXPORT int ArMapObject::getId() const
+MVREXPORT int ArMapObject::getId() const
 {
   // TODO: If this method is going to be called frequently, then the ID should be cached.
 
@@ -358,15 +358,15 @@ AREXPORT int ArMapObject::getId() const
 
 
 /// Gets the name of the object (if any)
-AREXPORT const char *ArMapObject::getName(void) const { return myName.c_str(); }
+MVREXPORT const char *ArMapObject::getName(void) const { return myName.c_str(); }
 /// Gets the addition args of the object
-AREXPORT bool ArMapObject::hasFromTo(void) const { return myHasFromTo; }
+MVREXPORT bool ArMapObject::hasFromTo(void) const { return myHasFromTo; }
 /// Gets the from pose (could be for line or box, depending)
-AREXPORT ArPose ArMapObject::getFromPose(void) const { return myFromPose; }
+MVREXPORT ArPose ArMapObject::getFromPose(void) const { return myFromPose; }
 /// Gets the to pose (could be for line or box, depending)
-AREXPORT ArPose ArMapObject::getToPose(void) const { return myToPose; }
+MVREXPORT ArPose ArMapObject::getToPose(void) const { return myToPose; }
 
-AREXPORT double ArMapObject::getFromToRotation(void) const
+MVREXPORT double ArMapObject::getFromToRotation(void) const
 {
   if (myHasFromTo) {
     return myPose.getTh();
@@ -377,13 +377,13 @@ AREXPORT double ArMapObject::getFromToRotation(void) const
 } // end method getFromToRotation
 
 
-AREXPORT const char *ArMapObject::getDescription() const 
+MVREXPORT const char *ArMapObject::getDescription() const 
 {
   return myDescription.c_str();
 }
 
 
-AREXPORT void ArMapObject::setDescription(const char *description) 
+MVREXPORT void ArMapObject::setDescription(const char *description) 
 {
   if (description != NULL) {
     myDescription = description;
@@ -394,7 +394,7 @@ AREXPORT void ArMapObject::setDescription(const char *description)
 } 
 
 
-AREXPORT void ArMapObject::log(const char *intro) const { 
+MVREXPORT void ArMapObject::log(const char *intro) const { 
 
   std::string introString;
   if (!ArUtil::isStrEmpty(intro)) {
@@ -410,17 +410,17 @@ AREXPORT void ArMapObject::log(const char *intro) const {
 }
 
 
-AREXPORT std::list<ArLineSegment> ArMapObject::getFromToSegments(void)
+MVREXPORT std::list<ArLineSegment> ArMapObject::getFromToSegments(void)
 {
   return myFromToSegments;
 }
 
-AREXPORT ArLineSegment ArMapObject::getFromToSegment(void)
+MVREXPORT ArLineSegment ArMapObject::getFromToSegment(void)
 {
   return myFromToSegment;
 }
 
-AREXPORT ArPose ArMapObject::findCenter(void) const
+MVREXPORT ArPose ArMapObject::findCenter(void) const
 {
   if (!myHasFromTo) {
     return myPose;
@@ -447,7 +447,7 @@ AREXPORT ArPose ArMapObject::findCenter(void) const
 
 
 
-AREXPORT const char *ArMapObject::toString(void) const
+MVREXPORT const char *ArMapObject::toString(void) const
 {
   // Since the ArMapObject is effectively immutable, this is okay to do...
   if (myStringRepresentation.empty()) {
@@ -491,7 +491,7 @@ AREXPORT const char *ArMapObject::toString(void) const
 } // end method toString
 
 
-AREXPORT bool ArMapObject::operator<(const ArMapObject& other) const
+MVREXPORT bool ArMapObject::operator<(const ArMapObject& other) const
 {
   if (!myHasFromTo) {
     
@@ -595,7 +595,7 @@ AREXPORT bool ArMapObject::operator<(const ArMapObject& other) const
 
 } // end operator<
 
-AREXPORT  std::vector<ArPose> ArMapObject::getRegionVertices() const 
+MVREXPORT  std::vector<ArPose> ArMapObject::getRegionVertices() const 
 {
   std::vector<ArPose> v;
   if(!hasFromTo())

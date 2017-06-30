@@ -38,21 +38,21 @@ class MvrSZSeriesPacket : public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrSZSeriesPacket();
+  MVREXPORT MvrSZSeriesPacket();
   /// Destructor
-  AREXPORT virtual ~ArSZSeriesPacket();
+  MVREXPORT virtual ~MvrSZSeriesPacket();
   
   /// Gets the time the packet was received at
-  AREXPORT MvrTime getTimeReceived(void);
+  MVREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(MvrTime timeReceived);
+  MVREXPORT void setTimeReceived(MvrTime timeReceived);
 
-  AREXPORT virtual void duplicatePacket(MvrSZSeriesPacket *packet);
-  AREXPORT virtual void empty(void);
+  MVREXPORT virtual void duplicatePacket(MvrSZSeriesPacket *packet);
+  MVREXPORT virtual void empty(void);
 
-  AREXPORT virtual void byteToBuf(MvrTypes::Byte val);
+  MVREXPORT virtual void byteToBuf(MvrTypes::Byte val);
 
-  AREXPORT virtual MvrTypes::Byte bufToByte(void);
+  MVREXPORT virtual MvrTypes::Byte bufToByte(void);
   
   void setDataLength(int x)
   { myDataLength = x; }
@@ -106,26 +106,26 @@ class MvrSZSeriesPacketReceiver
 {
 public:
   /// Constructor with assignment of a device connection
-  AREXPORT MvrSZSeriesPacketReceiver();
+  MVREXPORT MvrSZSeriesPacketReceiver();
   /// Destructor
-  AREXPORT virtual ~ArSZSeriesPacketReceiver();
+  MVREXPORT virtual ~MvrSZSeriesPacketReceiver();
   
   /// Receives a packet from the robot if there is one available
-  AREXPORT MvrSZSeriesPacket *receivePacket(unsigned int msWait = 0,
+  MVREXPORT MvrSZSeriesPacket *receivePacket(unsigned int msWait = 0,
 					 bool shortcut = false);
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
   unsigned short CRC16(unsigned char *, int);
 
   // PS - added to pass info to this class
-  AREXPORT void	setmyInfoLogLevel(MvrLog::LogLevel infoLogLevel)
+  MVREXPORT void	setmyInfoLogLevel(MvrLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
-  AREXPORT void setmyIsSZ00(bool isSZ00)
+  MVREXPORT void setmyIsSZ00(bool isSZ00)
   { myIsSZ00 = isSZ00; }
-  AREXPORT void setmyName(const char *name )
+  MVREXPORT void setmyName(const char *name )
   { strcpy(myName, name); }
 
 protected:
@@ -153,13 +153,13 @@ class MvrSZSeries : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT MvrSZSeries(int laserNumber,
+  MVREXPORT MvrSZSeries(int laserNumber,
 		 const char *name = "SZSeries");
   /// Destructor
-  AREXPORT ~ArSZSeries();
-  AREXPORT virtual bool blockingConnect(void);
-  AREXPORT virtual bool asyncConnect(void);
-  AREXPORT virtual bool disconnect(void);
+  MVREXPORT ~MvrSZSeries();
+  MVREXPORT virtual bool blockingConnect(void);
+  MVREXPORT virtual bool asyncConnect(void);
+  MVREXPORT virtual bool disconnect(void);
   virtual bool isConnected(void) { return myIsConnected; }
   virtual bool isTryingToConnect(void) 
     { 
@@ -172,11 +172,11 @@ public:
     }  
 
   /// Logs the information about the sensor
-  AREXPORT void log(void);
+  MVREXPORT void log(void);
 protected:
-  AREXPORT virtual void laserSetName(const char *name);
-  AREXPORT virtual void * runThread(void *arg);
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void laserSetName(const char *name);
+  MVREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
   void sensorInterp(void);
   void failedToConnect(void);
   void clear(void);

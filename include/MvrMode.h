@@ -54,40 +54,40 @@ class MvrMode
 {
 public:
   /// Constructor
-  AREXPORT MvrMode(MvrRobot *robot, const char *name, char key, char key2);
+  MVREXPORT MvrMode(MvrRobot *robot, const char *name, char key, char key2);
   /// Destructor
-  AREXPORT virtual ~ArMode();
+  MVREXPORT virtual ~MvrMode();
   /// Gets the name of the mode
-  AREXPORT const char *getName(void);
+  MVREXPORT const char *getName(void);
   /// The function called when the mode is activated, subclass must provide
-  AREXPORT virtual void activate(void) = 0;
+  MVREXPORT virtual void activate(void) = 0;
   /// The function called when the mode is deactivated, subclass must provide
-  AREXPORT virtual void deactivate(void) = 0;
+  MVREXPORT virtual void deactivate(void) = 0;
   /// The MvrMode's user task, don't need one, subclass must provide if needed
-  AREXPORT virtual void userTask(void) {}
+  MVREXPORT virtual void userTask(void) {}
   /// The mode's help print out... subclass must provide if needed
   /** 
       This is called as soon as a mode is activated, and should give
       directions on to what keys do what and what this mode will do
   **/
-  AREXPORT virtual void help(void) {}
+  MVREXPORT virtual void help(void) {}
   /// The base activation, it MUST be called by inheriting classes,
   /// and inheriting classes MUST return if this returns false
-  AREXPORT bool baseActivate(void); 
+  MVREXPORT bool baseActivate(void); 
   /// The base deactivation, it MUST be called by inheriting classes,
   /// and inheriting classes MUST return if this returns false
-  AREXPORT bool baseDeactivate(void);
+  MVREXPORT bool baseDeactivate(void);
   /// This is the base help function, its internal, bound to ? and h and H
-  AREXPORT static void baseHelp(void);
+  MVREXPORT static void baseHelp(void);
   /// An internal function to get the first key this is bound to
-  AREXPORT char getKey(void);
+  MVREXPORT char getKey(void);
   /// An internal function to get the second key this is bound to
-  AREXPORT char getKey2(void);
+  MVREXPORT char getKey2(void);
 protected:
-  AREXPORT void addKeyHandler(int keyToHandle, MvrFunctor *functor);
-  AREXPORT void remKeyHandler(MvrFunctor *functor);
+  MVREXPORT void addKeyHandler(int keyToHandle, MvrFunctor *functor);
+  MVREXPORT void remKeyHandler(MvrFunctor *functor);
   // Our activeArMode
-  AREXPORT static MvrMode *ourActiveMode;
+  MVREXPORT static MvrMode *ourActiveMode;
   std::string myName;
   MvrRobot *myRobot;
   MvrFunctorC<ArMode> myActivateCB;

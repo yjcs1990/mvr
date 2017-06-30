@@ -114,45 +114,45 @@ class MvrLaser : public MvrRangeDeviceThreaded
 {
 public:
   /// Constructor
-  AREXPORT MvrLaser(int laserNumber, 
+  MVREXPORT MvrLaser(int laserNumber, 
 		   const char *name, 
 		   unsigned int absoluteMaxRange,
 		   bool locationDependent = false,
 		   bool appendLaserNumberToName = true);
   /// Destructor
-  AREXPORT virtual ~ArLaser();
+  MVREXPORT virtual ~MvrLaser();
 
   /// Connect to the laser and block for the result
-  AREXPORT virtual bool blockingConnect(void) = 0;
+  MVREXPORT virtual bool blockingConnect(void) = 0;
   /// Connect to the laser without blocking
-  AREXPORT virtual bool asyncConnect(void) = 0;
+  MVREXPORT virtual bool asyncConnect(void) = 0;
   /// Disconnect from the laser
-  AREXPORT virtual bool disconnect(void) = 0;
+  MVREXPORT virtual bool disconnect(void) = 0;
   /// See if the laser is connected
-  AREXPORT virtual bool isConnected(void) = 0;  
+  MVREXPORT virtual bool isConnected(void) = 0;  
   /// See if the laser is trying to connect
-  AREXPORT virtual bool isTryingToConnect(void) = 0;  
+  MVREXPORT virtual bool isTryingToConnect(void) = 0;  
   
   /// Sets the numter of seconds without a response until connection assumed lost
-  AREXPORT virtual void setConnectionTimeoutSeconds(double seconds);
+  MVREXPORT virtual void setConnectionTimeoutSeconds(double seconds);
   /// Gets the number of seconds without a response until connection assumed lost
-  AREXPORT virtual double getConnectionTimeoutSeconds(void);
+  MVREXPORT virtual double getConnectionTimeoutSeconds(void);
 
   /// Gets the time data was last receieved
   MvrTime getLastReadingTime(void) { return myLastReading; }
   
   /// Gets the number of laser readings received in the last second
-  AREXPORT int getReadingCount(void);
+  MVREXPORT int getReadingCount(void);
 
   /// Sets the device connection
-  AREXPORT virtual void setDeviceConnection(MvrDeviceConnection *conn);
+  MVREXPORT virtual void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device connection
-  AREXPORT virtual MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT virtual MvrDeviceConnection *getDeviceConnection(void);
 
   /// Sets the position of the sensor on the robot
-  AREXPORT void setSensorPosition(double x, double y, double th, double z = 0);
+  MVREXPORT void setSensorPosition(double x, double y, double th, double z = 0);
   /// Sets the position of the sensor on the robot
-  AREXPORT void setSensorPosition(MvrPose pose, double z = 0);  
+  MVREXPORT void setSensorPosition(MvrPose pose, double z = 0);  
   /// Gets if the sensor pose has been set 
   bool hasSensorPosition(void) { return myHaveSensorPose; }
   /// Gets the position of the sensor on the robot
@@ -225,7 +225,7 @@ public:
   /// @sa clearIgnoreReadings()
   /// @sa setStartDegrees()
   /// @sa setEndDegrees()
-  AREXPORT bool addIgnoreReadings(const char *ignoreReadings); 
+  MVREXPORT bool addIgnoreReadings(const char *ignoreReadings); 
   /// Adds a degree at which to ignore readings (within 1 degree of nearest integer)
   /// @sa clearIgnoreReadings()
   /// @sa setStartDegrees()
@@ -274,7 +274,7 @@ public:
   double getStartDegrees(void) { return myStartDegrees; }
   /// Sets the start angle, it must be between getStartDegreesMin and getStartDegreesMax
   /** @see canSetDegrees **/
-  AREXPORT bool setStartDegrees(double startDegrees);
+  MVREXPORT bool setStartDegrees(double startDegrees);
   /// Gets the minimum value for the end angle
   /** @see canSetDegrees **/
   double getEndDegreesMin(void) { return myEndDegreesMin; }
@@ -286,7 +286,7 @@ public:
   double getEndDegrees(void) { return myEndDegrees; }
   /// Sets the end angle, it must be between getEndDegreesMin and getEndDegreesMax
   /** @see canSetDegrees **/
-  AREXPORT bool setEndDegrees(double endDegrees);
+  MVREXPORT bool setEndDegrees(double endDegrees);
 
 
   /**
@@ -308,7 +308,7 @@ public:
     { return myDegreesChoicesString.c_str(); }
   /// Sets the range to one of the choices from getDegreesChoices
   /** @see canChooseDegrees **/
-  AREXPORT bool chooseDegrees(const char *range);
+  MVREXPORT bool chooseDegrees(const char *range);
   /// Gets the range that was chosen
   /** @see canChooseDegrees **/
   const char *getDegreesChoice(void) 
@@ -342,7 +342,7 @@ public:
   double getIncrement(void) { return myIncrement; }
   /// Sets the increment
   /** @see canSetIncrement **/
-  AREXPORT bool setIncrement(double increment);
+  MVREXPORT bool setIncrement(double increment);
 
   /**
      Gets if you can choose an increment.
@@ -363,7 +363,7 @@ public:
     { return myIncrementChoicesString.c_str(); }
   /// Sets the increment to one of the choices from getIncrementChoices
   /** @see canChooseIncrement **/
-  AREXPORT bool chooseIncrement(const char *increment);
+  MVREXPORT bool chooseIncrement(const char *increment);
   /// Gets the increment that was chosen
   /** @see canChooseIncrement **/
   const char *getIncrementChoice(void) { return myIncrementChoice.c_str(); }
@@ -397,7 +397,7 @@ public:
     { return myUnitsChoicesString.c_str(); }
   /// Sets the units to one of the choices from getUnitsChoices
   /** @see canChooseUnits **/
-  AREXPORT bool chooseUnits(const char *units);
+  MVREXPORT bool chooseUnits(const char *units);
   /// Gets the units that was chosen
   /** @see canChooseUnits **/
   const char *getUnitsChoice(void) { return myUnitsChoice.c_str(); }
@@ -420,7 +420,7 @@ public:
     { return myReflectorBitsChoicesString.c_str(); }
   /// Sets the reflectorBits to one of the choices from getReflectorBitsChoices
   /** @see canChooseReflectorBits **/
-  AREXPORT bool chooseReflectorBits(const char *reflectorBits);
+  MVREXPORT bool chooseReflectorBits(const char *reflectorBits);
   /// Gets the reflectorBits that was chosen
   /** @see canChooseReflectorBits **/
   const char *getReflectorBitsChoice(void) { return myReflectorBitsChoice.c_str(); }
@@ -434,7 +434,7 @@ public:
   bool canSetPowerControlled(void) { return myCanSetPowerControlled; }
   /// Sets if the power is controlled 
   /** @see canChoosePowerControlled **/
-  AREXPORT bool setPowerControlled(bool powerControlled);
+  MVREXPORT bool setPowerControlled(bool powerControlled);
   /// Gets if the power is controlled
   /** @see canChoosePowerControlled **/
   bool getPowerControlled(void) { return myPowerControlled; }
@@ -457,7 +457,7 @@ public:
     { return myStartingBaudChoicesString.c_str(); }
   /// Sets the reflectorBits to one of the choices from getStartingBaudChoices
   /** @see canChooseStartingBaud **/
-  AREXPORT bool chooseStartingBaud(const char *reflectorBits);
+  MVREXPORT bool chooseStartingBaud(const char *reflectorBits);
   /// Gets the reflectorBits that was chosen
   /** @see canChooseStartingBaud **/
   const char *getStartingBaudChoice(void) { return myStartingBaudChoice.c_str(); }
@@ -481,7 +481,7 @@ public:
     { return myAutoBaudChoicesString.c_str(); }
   /// Sets the reflectorBits to one of the choices from getAutoBaudChoices
   /** @see canChooseAutoBaud **/
-  AREXPORT bool chooseAutoBaud(const char *reflectorBits);
+  MVREXPORT bool chooseAutoBaud(const char *reflectorBits);
   /// Gets the reflectorBits that was chosen
   /** @see canChooseAutoBaud **/
   const char *getAutoBaudChoice(void) { return myAutoBaudChoice.c_str(); }
@@ -534,13 +534,13 @@ public:
   unsigned int getAbsoluteMaxRange(void) { return myAbsoluteMaxRange; }
 
   /// Copies the reading count stuff from another laser (for the laser filter)
-  AREXPORT void copyReadingCount(const MvrLaser* laser);
+  MVREXPORT void copyReadingCount(const MvrLaser* laser);
 
   /// override the default to bound the maxrange by the absolute max range
-  AREXPORT virtual void setMaxRange(unsigned int maxRange);
+  MVREXPORT virtual void setMaxRange(unsigned int maxRange);
 
   /// override the default to keep track of its been set or not
-  AREXPORT virtual void setCumulativeBufferSize(size_t size);
+  MVREXPORT virtual void setCumulativeBufferSize(size_t size);
 
   /// Call the laser can implement to make sure the parameters
   /// are all okay or set the maximum range (based on the params)
@@ -562,95 +562,95 @@ public:
 
      @internal
   **/
-  AREXPORT virtual bool laserCheckParams(void) { return true; }
+  MVREXPORT virtual bool laserCheckParams(void) { return true; }
 
   /// Applies a transform to the buffers
-  AREXPORT virtual void applyTransform(MvrTransform trans,
+  MVREXPORT virtual void applyTransform(MvrTransform trans,
                                         bool doCumulative = true);
 
   /// Makes it so we'll apply simple naming to all the lasers
-  AREXPORT static void useSimpleNamingForAllLasers(void);
+  MVREXPORT static void useSimpleNamingForAllLasers(void);
 protected:
   
   /// Converts the raw readings into the buffers (needs to be called
   /// by subclasses)
-  AREXPORT void laserProcessReadings(void);
+  MVREXPORT void laserProcessReadings(void);
 
   /// Returns if the laser has lost connection so that the subclass
   /// can do something appropriate
-  AREXPORT bool laserCheckLostConnection(void);
+  MVREXPORT bool laserCheckLostConnection(void);
 
   /// Pulls the unset params from the robot parameter file
-  AREXPORT bool laserPullUnsetParamsFromRobot(void);
+  MVREXPORT bool laserPullUnsetParamsFromRobot(void);
 
   /// Allows setting the degrees the laser uses to anything in a range
-  AREXPORT void laserAllowSetDegrees(double defaultStartDegrees, double startDegreesMin, double startDegreesMax, double defaultEndDegrees, double endDegreesMin, double endDegreesMax);
+  MVREXPORT void laserAllowSetDegrees(double defaultStartDegrees, double startDegreesMin, double startDegreesMax, double defaultEndDegrees, double endDegreesMin, double endDegreesMax);
 
   /// Allows setting the degrees the laser uses to one of a number of choices
-  AREXPORT void laserAllowDegreesChoices(const char *defaultDegreesChoice,
+  MVREXPORT void laserAllowDegreesChoices(const char *defaultDegreesChoice,
 			   std::map<std::string, double> degreesChoices);
 
   /// Allows setting the increment the laser uses to anything in a range
-  AREXPORT void laserAllowSetIncrement(
+  MVREXPORT void laserAllowSetIncrement(
 	  double defaultIncrement, double incrementMin,  double incrementMax);
 
   /// Allows setting the increment to one of a number of choices
-  AREXPORT void laserAllowIncrementChoices(const char *defaultIncrementChoice, 
+  MVREXPORT void laserAllowIncrementChoices(const char *defaultIncrementChoice, 
 			     std::map<std::string, double> incrementChoices);
 
   /// Allows setting the units the laser will use to one of a number of choices
-  AREXPORT void laserAllowUnitsChoices(const char *defaultUnitsChoice, 
+  MVREXPORT void laserAllowUnitsChoices(const char *defaultUnitsChoice, 
 			 std::list<std::string> unitsChoices);
 
   /// Allows setting the reflector bits the laser will use to one of a
   /// number of choices
-  AREXPORT void laserAllowReflectorBitsChoices(
+  MVREXPORT void laserAllowReflectorBitsChoices(
 	  const char *defaultReflectorBitsChoice,
 	  std::list<std::string> reflectorBitsChoices);
 
   /// Allows setting if the power is controlled or not
-  AREXPORT void laserAllowSetPowerControlled(bool defaultPowerControlled);
+  MVREXPORT void laserAllowSetPowerControlled(bool defaultPowerControlled);
 
   /// Allows setting the starting baud to one of a number of choices
-  AREXPORT void laserAllowStartingBaudChoices(
+  MVREXPORT void laserAllowStartingBaudChoices(
 	  const char *defaultStartingBaudChoice, 
 	  std::list<std::string> startingBaudChoices);
 
   /// Allows setting the auto baud speed to one of a number of choices
-  AREXPORT void laserAllowAutoBaudChoices(
+  MVREXPORT void laserAllowAutoBaudChoices(
 	  const char *defaultAutoBaudChoice, 
 	  std::list<std::string> autoBaudChoices);
 
   /// Called when the lasers name is set
-  AREXPORT virtual void laserSetName(const char *name);
+  MVREXPORT virtual void laserSetName(const char *name);
   
   /// Sets the laser's default TCP port
-  AREXPORT void laserSetDefaultTcpPort(int defaultLaserTcpPort);
+  MVREXPORT void laserSetDefaultTcpPort(int defaultLaserTcpPort);
 
   /// Sets the laser's default connection port type
-  AREXPORT void laserSetDefaultPortType(const char *defaultPortType);
+  MVREXPORT void laserSetDefaultPortType(const char *defaultPortType);
 
   /// Sets the absolute maximum range on the sensor
-  AREXPORT void laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange);
+  MVREXPORT void laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange);
 
   /// Function for a laser to call when it connects
-  AREXPORT virtual void laserConnect(void);
+  MVREXPORT virtual void laserConnect(void);
   /// Function for a laser to call when it fails to connects
-  AREXPORT virtual void laserFailedConnect(void);
+  MVREXPORT virtual void laserFailedConnect(void);
   /// Function for a laser to call when it disconnects normally
-  AREXPORT virtual void laserDisconnectNormally(void);
+  MVREXPORT virtual void laserDisconnectNormally(void);
   /// Function for a laser to call when it loses connection
-  AREXPORT virtual void laserDisconnectOnError(void);
+  MVREXPORT virtual void laserDisconnectOnError(void);
 
   // processes the individual reading, helper for base class
-  AREXPORT void internalProcessReading(double x, double y, unsigned int range,
+  MVREXPORT void internalProcessReading(double x, double y, unsigned int range,
 				    bool clean, bool onlyClean);
 
   // internal helper function for seeing if the choice matches
-  AREXPORT bool internalCheckChoice(const char *check, const char *choice,
+  MVREXPORT bool internalCheckChoice(const char *check, const char *choice,
 		   std::list<std::string> *choices, const char *choicesStr);
   // internal helper function for seeing if the choice matches
-  AREXPORT bool internalCheckChoice(const char *check, const char *choice,
+  MVREXPORT bool internalCheckChoice(const char *check, const char *choice,
 		   std::map<std::string, double> *choices,
 		   const char *choicesStr, double *choiceDouble);
   // internal helper function for building a string for a list of chocies
@@ -661,7 +661,7 @@ protected:
 
   // Function called in laserProcessReadings to indicate that a
   // reading was received
-  AREXPORT virtual void internalGotReading(void);
+  MVREXPORT virtual void internalGotReading(void);
 
   int myLaserNumber;
 

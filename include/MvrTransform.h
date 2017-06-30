@@ -59,7 +59,7 @@ public:
       setTransform(pose1, pose2);
     }
   /// Destructor
-  virtual ~ArTransform() {}
+  virtual ~MvrTransform() {}
 
   /// Take the source pose and run the transform on it to put it into abs 
   /// coordinates
@@ -130,13 +130,13 @@ public:
 
 
   /// Take a std::list of sensor readings and do the transform on it
-  AREXPORT void doTransform(std::list<ArPose *> *poseList);
+  MVREXPORT void doTransform(std::list<ArPose *> *poseList);
   /// Take a std::list of sensor readings and do the transform on it
-  AREXPORT void doTransform(std::list<ArPoseWithTime *> *poseList);
+  MVREXPORT void doTransform(std::list<ArPoseWithTime *> *poseList);
   /// Sets the transform so points in this coord system transform to abs world coords
-  AREXPORT void setTransform(MvrPose pose);
+  MVREXPORT void setTransform(MvrPose pose);
   /// Sets the transform so that pose1 will be transformed to pose2
-  AREXPORT void setTransform(MvrPose pose1, MvrPose pose2);
+  MVREXPORT void setTransform(MvrPose pose1, MvrPose pose2);
   /// Gets the transform x value (mm)
   double getX() { return myX; }
   /// Gets the transform y value (mm)
@@ -144,7 +144,7 @@ public:
   /// Gets the transform angle value (degrees)
   double getTh() { return myTh; }
   /// Internal function for setting the transform from low level data not poses
-  AREXPORT void setTransformLowLevel(double x, double y, double th);
+  MVREXPORT void setTransformLowLevel(double x, double y, double th);
 protected:
   double myX;
   double myY;

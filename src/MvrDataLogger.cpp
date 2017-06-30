@@ -42,7 +42,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    separate this by runs you need to do it on your own by removing or
    moving the file)
  **/
-AREXPORT MvrDataLogger::ArDataLogger(MvrRobot *robot, const char *fileName) :
+MVREXPORT MvrDataLogger::ArDataLogger(MvrRobot *robot, const char *fileName) :
   myAddStringFunctor(this, &ArDataLogger::addString),
   myConnectCB(this, &ArDataLogger::connectCallback),
   myProcessFileCB(this, &ArDataLogger::processFile),
@@ -96,12 +96,12 @@ AREXPORT MvrDataLogger::ArDataLogger(MvrRobot *robot, const char *fileName) :
   myFile = NULL;
 }
 
-AREXPORT MvrDataLogger::~ArDataLogger(void)
+MVREXPORT MvrDataLogger::~MvrDataLogger(void)
 {
 
 }
 
-AREXPORT void MvrDataLogger::addToConfig(MvrConfig *config)
+MVREXPORT void MvrDataLogger::addToConfig(MvrConfig *config)
 {
   if (config == NULL || myAddedToConfig)
     return;
@@ -248,7 +248,7 @@ AREXPORT void MvrDataLogger::addToConfig(MvrConfig *config)
   myConfig->addProcessFileWithErrorCB(&myProcessFileCB, 100);
 }
 
-AREXPORT void MvrDataLogger::connectCallback(void)
+MVREXPORT void MvrDataLogger::connectCallback(void)
 {
   int i;
   MvrLog::log(MvrLog::Verbose, "MvrDataLogger::connectCallback");
@@ -327,7 +327,7 @@ AREXPORT void MvrDataLogger::connectCallback(void)
   }
 }
 
-AREXPORT bool MvrDataLogger::processFile(char *errorBuffer, 
+MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer, 
 					size_t errorBufferLen)
 {
   myMutex.lock();
@@ -480,7 +480,7 @@ AREXPORT bool MvrDataLogger::processFile(char *errorBuffer,
   return true;
 }
 
-AREXPORT void MvrDataLogger::userTask(void)
+MVREXPORT void MvrDataLogger::userTask(void)
 {
   myMutex.lock();
   // if we don't need to do anything just return
@@ -658,7 +658,7 @@ AREXPORT void MvrDataLogger::userTask(void)
 }
 
 
-AREXPORT void MvrDataLogger::addString(
+MVREXPORT void MvrDataLogger::addString(
 	const char *name, MvrTypes::UByte2 maxLength,
 	ArFunctor2<char *, MvrTypes::UByte2> *functor)
 {

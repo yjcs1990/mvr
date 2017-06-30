@@ -47,7 +47,7 @@ class Mvr3DPoint
   Mvr3DPoint(void) : myX(0), myY(0), myZ(0) {}
   Mvr3DPoint(double x, double y, double z) : myX(x), myY(y), myZ(z) {}
   /// Destructor.
-  ~Ar3DPoint() {}
+  ~Mvr3DPoint() {}
   /// Add
   Mvr3DPoint operator+(Mvr3DPoint c)
   {
@@ -87,7 +87,7 @@ class Mvr3DPoint
   }
   /// Print.
   /** @swignote Use 'printPoint' instead */
-  AREXPORT void print(const char* head=NULL);
+  MVREXPORT void print(const char* head=NULL);
 
   double getX() const {return myX;}
   double getY() const {return myY;}
@@ -131,16 +131,16 @@ class MvrWGS84
   
 
 private:
-  AREXPORT static ARGPSCOORDS_CONSTANT double mya;     // meters
-  AREXPORT static ARGPSCOORDS_CONSTANT double myb;     // meters
-  AREXPORT static ARGPSCOORDS_CONSTANT double myep; 
-  AREXPORT static ARGPSCOORDS_CONSTANT double myc;     // m/sec
-  AREXPORT static ARGPSCOORDS_CONSTANT double mye;
-  AREXPORT static ARGPSCOORDS_CONSTANT double my1byf;
-  AREXPORT static ARGPSCOORDS_CONSTANT double myOmega; // rad/sec
-  AREXPORT static ARGPSCOORDS_CONSTANT double myGM;    // m^3/sec^2
-  AREXPORT static ARGPSCOORDS_CONSTANT double myg;     // m/sec^2. Ave g.
-  AREXPORT static ARGPSCOORDS_CONSTANT double myM;     // kg. Mass of earth.
+  MVREXPORT static ARGPSCOORDS_CONSTANT double mya;     // meters
+  MVREXPORT static ARGPSCOORDS_CONSTANT double myb;     // meters
+  MVREXPORT static ARGPSCOORDS_CONSTANT double myep; 
+  MVREXPORT static ARGPSCOORDS_CONSTANT double myc;     // m/sec
+  MVREXPORT static ARGPSCOORDS_CONSTANT double mye;
+  MVREXPORT static ARGPSCOORDS_CONSTANT double my1byf;
+  MVREXPORT static ARGPSCOORDS_CONSTANT double myOmega; // rad/sec
+  MVREXPORT static ARGPSCOORDS_CONSTANT double myGM;    // m^3/sec^2
+  MVREXPORT static ARGPSCOORDS_CONSTANT double myg;     // m/sec^2. Ave g.
+  MVREXPORT static ARGPSCOORDS_CONSTANT double myM;     // kg. Mass of earth.
 };
 
 
@@ -152,8 +152,8 @@ class MvrECEFCoords : public Mvr3DPoint
 {
   public:
   MvrECEFCoords(double x, double y, double z) : Mvr3DPoint(x, y, z) {}
-  AREXPORT MvrLLACoords ECEF2LLA(void);
-  AREXPORT MvrENUCoords ECEF2ENU(MvrECEFCoords ref);
+  MVREXPORT MvrLLACoords ECEF2LLA(void);
+  MVREXPORT MvrENUCoords ECEF2ENU(MvrECEFCoords ref);
 };
 
 /**
@@ -166,7 +166,7 @@ class MvrLLACoords : public Mvr3DPoint
   MvrLLACoords(void) : Mvr3DPoint(0, 0, 0) {}
   MvrLLACoords(double x, double y, double z) : Mvr3DPoint(x, y, z) {}
   MvrLLACoords(MvrPose pos, double alt) : Mvr3DPoint(pos.getX(), pos.getY(), alt) {}
-  AREXPORT MvrECEFCoords LLA2ECEF(void);
+  MVREXPORT MvrECEFCoords LLA2ECEF(void);
   double getLatitude(void) const {return getX();}
   double getLongitude(void) const {return getY();}
   double getAltitude(void) const {return getZ();}
@@ -183,7 +183,7 @@ class MvrENUCoords : public Mvr3DPoint
 {
   public:
   MvrENUCoords(double x, double y, double z) : Mvr3DPoint(x, y, z) {}
-  AREXPORT MvrECEFCoords ENU2ECEF(MvrLLACoords ref);
+  MVREXPORT MvrECEFCoords ENU2ECEF(MvrLLACoords ref);
   double getEast(void) const {return getX();}
   double getNorth(void) const {return getY();}
   double getUp(void) const {return getZ();}
@@ -207,9 +207,9 @@ class MvrMapGPSCoords : public MvrENUCoords
   MvrMapGPSCoords() : MvrENUCoords(0, 0, 0), myOriginECEF(0), myOriginLLA(0), myOriginSet(false)
   {
   }
-  AREXPORT bool convertMap2LLACoords(const double ea, const double no, const double up,
+  MVREXPORT bool convertMap2LLACoords(const double ea, const double no, const double up,
 			    double& lat, double& lon, double& alt) const;
-  AREXPORT bool convertLLA2MapCoords(const double lat, const double lon, const double alt,
+  MVREXPORT bool convertLLA2MapCoords(const double lat, const double lon, const double alt,
 			    double& ea, double& no, double& up) const;
   bool convertLLA2MapCoords(const MvrLLACoords& lla, double& ea, double& no, double& up)
 {

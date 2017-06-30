@@ -52,23 +52,23 @@ class MvrBatteryMTX : public MvrASyncTask
 {
 public:
   /// Constructor
-  AREXPORT MvrBatteryMTX( 
+  MVREXPORT MvrBatteryMTX( 
 			 int batteryBoardNum = 0,
 				const char * name = "MTXBattery", 
 				ArDeviceConnection *conn = NULL,
 				ArRobot *robot = NULL);
   /// Destructor
-  AREXPORT virtual ~ArBatteryMTX();
+  MVREXPORT virtual ~MvrBatteryMTX();
   // Grabs the new readings from the robot and adds them to the buffers
   // (Primarily for internal use.)
-  //AREXPORT void processReadings(void);
+  //MVREXPORT void processReadings(void);
 
 	int getBoardNum(void)
 		{ return myBoardNum; }
 
   /// Sets the robot pointer, also attaches its process function to the
   /// robot as a Sensor Interpretation task.
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
 
   /// Very Internal call that gets the packet sender, shouldn't be used
   MvrRobotPacketSender *getPacketSender(void)
@@ -78,17 +78,17 @@ public:
     { return myReceiver; }
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
-	AREXPORT int getAsyncConnectState(void);
+	MVREXPORT int getAsyncConnectState(void);
 
 	ArRobotPacket getCellPacket()
 	{ return myCellPacket; }
 
-  AREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
-  AREXPORT virtual bool disconnect(void);
+  MVREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
+  MVREXPORT virtual bool disconnect(void);
   virtual bool isConnected(void) { return myIsConnected; }
   virtual bool isTryingToConnect(void) 
     { 
@@ -107,35 +107,35 @@ public:
   /// Unlock this device
   virtual int unlockDevice() {return(myDeviceMutex.unlock());}
 
-  AREXPORT void logBatteryInfo(MvrLog::LogLevel level = MvrLog::Normal);
-  AREXPORT void logCellInfo(MvrLog::LogLevel level = MvrLog::Normal);
+  MVREXPORT void logBatteryInfo(MvrLog::LogLevel level = MvrLog::Normal);
+  MVREXPORT void logCellInfo(MvrLog::LogLevel level = MvrLog::Normal);
   void log(MvrLog::LogLevel level = MvrLog::Normal)
   {
     logBatteryInfo(level);
     logCellInfo(level);
   }
 
-  AREXPORT bool sendPowerOff();
-  AREXPORT bool sendPowerOffCancel();
-  AREXPORT bool sendStopCharging();
-  AREXPORT bool sendStartCharging();
-  AREXPORT bool sendSetPowerOffDelay(unsigned int msDelay);
-  AREXPORT bool sendSetRealTimeClock(unsigned int secSinceEpoch);
-  AREXPORT bool sendResetCellData();
-  AREXPORT bool sendSetReserveValue(unsigned short hundredthOfPercent);
-  AREXPORT bool sendSetBalanceValue(unsigned short hundredthOfPercent);
-  AREXPORT bool sendEmergencyPowerOff();
-  AREXPORT bool sendSystemInfo(unsigned char dataValue);
-  AREXPORT bool sendCellInfo(unsigned char dataValue);
-  AREXPORT bool sendBasicInfo(unsigned char dataValue);
+  MVREXPORT bool sendPowerOff();
+  MVREXPORT bool sendPowerOffCancel();
+  MVREXPORT bool sendStopCharging();
+  MVREXPORT bool sendStartCharging();
+  MVREXPORT bool sendSetPowerOffDelay(unsigned int msDelay);
+  MVREXPORT bool sendSetRealTimeClock(unsigned int secSinceEpoch);
+  MVREXPORT bool sendResetCellData();
+  MVREXPORT bool sendSetReserveValue(unsigned short hundredthOfPercent);
+  MVREXPORT bool sendSetBalanceValue(unsigned short hundredthOfPercent);
+  MVREXPORT bool sendEmergencyPowerOff();
+  MVREXPORT bool sendSystemInfo(unsigned char dataValue);
+  MVREXPORT bool sendCellInfo(unsigned char dataValue);
+  MVREXPORT bool sendBasicInfo(unsigned char dataValue);
 
-  AREXPORT void updateSystemInfo(unsigned char *buf);
-  AREXPORT void updateCellInfo(unsigned char *buf);
-  AREXPORT void updateBasicInfo(unsigned char *buf);
+  MVREXPORT void updateSystemInfo(unsigned char *buf);
+  MVREXPORT void updateCellInfo(unsigned char *buf);
+  MVREXPORT void updateBasicInfo(unsigned char *buf);
 
 	// need to figure out how to pass back the system and cell info 
-	//AREXPORT bool fetchSystemInfo();
-	//AREXPORT bool fetchCellInfo();
+	//MVREXPORT bool fetchSystemInfo();
+	//MVREXPORT bool fetchCellInfo();
 
 	// basic info
   /// Charge estimate (in percentage, 0-100)
@@ -249,20 +249,20 @@ public:
 		} }
 
   /// Request a continous stream of packets
-  AREXPORT void requestContinuousSysInfoPackets(void);
+  MVREXPORT void requestContinuousSysInfoPackets(void);
   /// Stop the stream of packets
-  AREXPORT void stopSysInfoPackets(void);
+  MVREXPORT void stopSysInfoPackets(void);
   /// See if we've requested packets
-  AREXPORT bool haveRequestedSysInfoPackets(void);
+  MVREXPORT bool haveRequestedSysInfoPackets(void);
 
   /// Request a continous stream of packets
-  AREXPORT void requestContinuousCellInfoPackets(void);
+  MVREXPORT void requestContinuousCellInfoPackets(void);
   /// Stop the stream of packets
-  AREXPORT void stopCellInfoPackets(void);
+  MVREXPORT void stopCellInfoPackets(void);
   /// See if we've requested packets
-  AREXPORT bool haveRequestedCellInfoPackets(void);
+  MVREXPORT bool haveRequestedCellInfoPackets(void);
 
-  AREXPORT virtual const char *getName(void) const;
+  MVREXPORT virtual const char *getName(void) const;
 
   void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
@@ -283,16 +283,16 @@ public:
   virtual double getConnectionTimeoutSeconds(void)
 	{return myTimeoutSeconds; }
 	/// check for lost connections
-	AREXPORT bool checkLostConnection(void);
+	MVREXPORT bool checkLostConnection(void);
 	/// disconnect 
-	AREXPORT void disconnectOnError(void);
+	MVREXPORT void disconnectOnError(void);
   /// Gets the time data was last receieved
   MvrTime getLastReadingTime(void) { return myLastReading; }
   /// Gets the number of battery readings received in the last second
-  AREXPORT int getReadingCount(void);
+  MVREXPORT int getReadingCount(void);
   // Function called in sensorInterp to indicate that a
   // reading was received
-  AREXPORT virtual void internalGotReading(void);
+  MVREXPORT virtual void internalGotReading(void);
 
   /// Adds a callback for when disconnection happens because of an error
   void addDisconnectOnErrorCB(MvrFunctor *functor, 
@@ -382,13 +382,13 @@ protected:
 	ArRobot *myRobot;
   MvrFunctorC<ArBatteryMTX> myProcessCB;
 
-  AREXPORT virtual void batterySetName(const char *name);
-  AREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual void batterySetName(const char *name);
+  MVREXPORT virtual void * runThread(void *arg);
 		
 
-	AREXPORT bool getSystemInfo();
-	AREXPORT bool getCellInfo();
-	AREXPORT bool getBasicInfo();
+	MVREXPORT bool getSystemInfo();
+	MVREXPORT bool getCellInfo();
+	MVREXPORT bool getBasicInfo();
 
   void interpBasicInfo(void);
   void interpErrors(void);

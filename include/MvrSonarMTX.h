@@ -126,24 +126,24 @@ class MvrSonarMTX : public MvrASyncTask
 {
 public:
   /// Constructor
-  AREXPORT MvrSonarMTX( 
+  MVREXPORT MvrSonarMTX( 
 			  int sonarBoardNum = 0,
 				const char * name = "MTXSonar", MvrDeviceConnection *conn = NULL,
 			 MvrRobot *robot = NULL);
   /// Destructor
-  AREXPORT virtual ~ArSonarMTX();
+  MVREXPORT virtual ~MvrSonarMTX();
 
   /// Sets the robot pointer, also attaches its process function to the
   /// robot as a Sensor Interpretation task.
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
 
 	int getBoardNum(void)
 		{ return myBoardNum; }
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
   /// Very Internal call that gets the packet sender, shouldn't be used
   MvrRobotPacketSender *getPacketSender(void)
@@ -152,10 +152,10 @@ public:
   MvrRobotPacketReceiver *getPacketReceiver(void)
     { return myReceiver; }
 
-  AREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
+  MVREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
 	/// Connect used for debug replay
-  AREXPORT virtual bool fakeConnect();
-  AREXPORT virtual bool disconnect(void);
+  MVREXPORT virtual bool fakeConnect();
+  MVREXPORT virtual bool disconnect(void);
   virtual bool isConnected(void) { return myIsConnected; }
 	virtual bool isTryingToConnect (void)
 	{
@@ -167,7 +167,7 @@ public:
 			return false;
 	}
   /// Logs the information about the sensor
-  AREXPORT void log(void);
+  MVREXPORT void log(void);
 
   /// Lock this device
   virtual int lockDevice() { return(myDeviceMutex.lock());}
@@ -176,9 +176,9 @@ public:
   /// Unlock this device
   virtual int unlockDevice() {return(myDeviceMutex.unlock());}
 
-  AREXPORT virtual const char *getName(void) const;
+  MVREXPORT virtual const char *getName(void) const;
 
-  AREXPORT virtual const char *getNameWithBoard(void) const;
+  MVREXPORT virtual const char *getNameWithBoard(void) const;
 
   void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
@@ -196,52 +196,52 @@ public:
 		 getName(), seconds);
       myLastReading.setToNow(); myTimeoutSeconds = seconds; }
   /// Gets the number of seconds without a response until connection assumed lost
-  AREXPORT virtual double getConnectionTimeoutSeconds(void)
+  MVREXPORT virtual double getConnectionTimeoutSeconds(void)
 	{return myTimeoutSeconds; }
 	/// check for lost connections
-	AREXPORT bool checkLostConnection(void);
+	MVREXPORT bool checkLostConnection(void);
 	/// disconnect 
-	AREXPORT void disconnectOnError(void);
+	MVREXPORT void disconnectOnError(void);
   /// Gets the time data was last receieved
   MvrTime getLastReadingTime(void) { return myLastReading; }
   /// Gets the number of sonar readings received in the last second
-  AREXPORT int getReadingCount(void);
+  MVREXPORT int getReadingCount(void);
   // Function called in sensorInterp to indicate that a
   // reading was received
-  AREXPORT virtual void internalGotReading(void);
+  MVREXPORT virtual void internalGotReading(void);
 
 protected:
-  AREXPORT bool sendAlive();
-  AREXPORT bool sendReset();
-  AREXPORT bool sendStart();
-  AREXPORT bool sendStop();
-  AREXPORT bool sendGetTransducerCount();
-  AREXPORT bool sendGetGain(unsigned char transducerNumber);
-  AREXPORT bool sendSetGain(unsigned char transducerNumber, unsigned char gain);
-  AREXPORT bool sendGetMaxRange(unsigned char transducerNumber);
-  AREXPORT bool sendSetMaxRange(unsigned char transducerNumber, int echoSampleSize);
-  AREXPORT bool sendGetThresholds(unsigned char transducerNumber);
-  AREXPORT bool sendSetThresholds(unsigned char transducerNumber, int thres);
-	AREXPORT bool sendGetNumThresholdRanges();
+  MVREXPORT bool sendAlive();
+  MVREXPORT bool sendReset();
+  MVREXPORT bool sendStart();
+  MVREXPORT bool sendStop();
+  MVREXPORT bool sendGetTransducerCount();
+  MVREXPORT bool sendGetGain(unsigned char transducerNumber);
+  MVREXPORT bool sendSetGain(unsigned char transducerNumber, unsigned char gain);
+  MVREXPORT bool sendGetMaxRange(unsigned char transducerNumber);
+  MVREXPORT bool sendSetMaxRange(unsigned char transducerNumber, int echoSampleSize);
+  MVREXPORT bool sendGetThresholds(unsigned char transducerNumber);
+  MVREXPORT bool sendSetThresholds(unsigned char transducerNumber, int thres);
+	MVREXPORT bool sendGetNumThresholdRanges();
   /*
-	AREXPORT bool sendGetNoiseDelta(unsigned char transducerNumber);
-  AREXPORT bool sendSetNoiseDelta(unsigned char transducerNumber, int noiseDelta);
+	MVREXPORT bool sendGetNoiseDelta(unsigned char transducerNumber);
+  MVREXPORT bool sendSetNoiseDelta(unsigned char transducerNumber, int noiseDelta);
 	*/
-  AREXPORT bool sendGetDelay();
-  AREXPORT bool sendSetDelay(unsigned char delay);
-  AREXPORT bool sendSetMask(unsigned char maskLsb, unsigned char maskMsb);
-  AREXPORT bool sendGetMask();
-	AREXPORT bool validateTransducers();
-	AREXPORT bool validateGain();
-	AREXPORT bool validateDelay();
-	AREXPORT bool validateThresholds();
-	AREXPORT bool validateMaxRange();
+  MVREXPORT bool sendGetDelay();
+  MVREXPORT bool sendSetDelay(unsigned char delay);
+  MVREXPORT bool sendSetMask(unsigned char maskLsb, unsigned char maskMsb);
+  MVREXPORT bool sendGetMask();
+	MVREXPORT bool validateTransducers();
+	MVREXPORT bool validateGain();
+	MVREXPORT bool validateDelay();
+	MVREXPORT bool validateThresholds();
+	MVREXPORT bool validateMaxRange();
 	/*
-	AREXPORT bool validateNoiseDelta();
+	MVREXPORT bool validateNoiseDelta();
 	*/
-	AREXPORT bool validateNumThresholdRanges();
-  AREXPORT bool requestFirmwareVersion();
-  AREXPORT bool queryFirmwareVersion();
+	MVREXPORT bool validateNumThresholdRanges();
+  MVREXPORT bool requestFirmwareVersion();
+  MVREXPORT bool queryFirmwareVersion();
 
 public:
   /// Adds a callback for when disconnection happens because of an error
@@ -437,11 +437,11 @@ public:
     return myFirmwareVersion; 
   }
 
-	AREXPORT bool turnOnTransducers();
+	MVREXPORT bool turnOnTransducers();
 
-	AREXPORT bool turnOffTransducers();
+	MVREXPORT bool turnOffTransducers();
 
-	AREXPORT bool disableForAutonomousDriving();
+	MVREXPORT bool disableForAutonomousDriving();
 
   void setPacketsSentTracking(bool v = true) {
     mySendTracking = v;
@@ -489,8 +489,8 @@ protected:
 	ArRobot *myRobot;
   MvrFunctorC<ArSonarMTX> myProcessCB;
 
-  AREXPORT virtual void sonarSetName(const char *name);
-  AREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual void sonarSetName(const char *name);
+  MVREXPORT virtual void * runThread(void *arg);
 	
   void sensorInterp(void);
   void failedToConnect(void);

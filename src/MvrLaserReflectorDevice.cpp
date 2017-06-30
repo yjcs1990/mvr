@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLaserReflectorDevice.h"
 #include "MvrRobot.h"
 
-AREXPORT MvrLaserReflectorDevice::ArLaserReflectorDevice(MvrRangeDevice *laser,
+MVREXPORT MvrLaserReflectorDevice::ArLaserReflectorDevice(MvrRangeDevice *laser,
 							ArRobot *robot,
 							const char *name) :
   /*
@@ -58,18 +58,18 @@ AREXPORT MvrLaserReflectorDevice::ArLaserReflectorDevice(MvrRangeDevice *laser,
   myReflectanceThreshold = 31;
 }
 
-AREXPORT MvrLaserReflectorDevice::~ArLaserReflectorDevice()
+MVREXPORT MvrLaserReflectorDevice::~MvrLaserReflectorDevice()
 {
   if (myRobot != NULL)
     myRobot->remSensorInterpTask(&myProcessCB);
 }
 
-AREXPORT void MvrLaserReflectorDevice::setRobot(MvrRobot *robot)
+MVREXPORT void MvrLaserReflectorDevice::setRobot(MvrRobot *robot)
 {
   // specifically do nothing since this is just here for debugging
 }
 
-AREXPORT void MvrLaserReflectorDevice::addToConfig(MvrConfig *config, 
+MVREXPORT void MvrLaserReflectorDevice::addToConfig(MvrConfig *config, 
 						  const char *section)
 {
 
@@ -85,7 +85,7 @@ AREXPORT void MvrLaserReflectorDevice::addToConfig(MvrConfig *config,
 		      
 }
 
-AREXPORT void MvrLaserReflectorDevice::processReadings(void)
+MVREXPORT void MvrLaserReflectorDevice::processReadings(void)
 {
   //int i;
   MvrSensorReading *reading;

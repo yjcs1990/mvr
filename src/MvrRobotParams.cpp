@@ -52,7 +52,7 @@ bool ArRobotParams::internalGetUseDefaultBehavior(void)
   return ourUseDefaultBehavior;
 }
 
-AREXPORT ArRobotParams::ArRobotParams() :
+MVREXPORT ArRobotParams::ArRobotParams() :
   ArConfig(NULL, true),
   mySonarUnitGetFunctor(this, &ArRobotParams::getSonarUnits),
   mySonarUnitSetFunctor(this, &ArRobotParams::parseSonarUnit),
@@ -141,7 +141,7 @@ AREXPORT ArRobotParams::ArRobotParams() :
     internalAddToConfigDefault();
 }
 
-AREXPORT ArRobotParams::~ArRobotParams()
+MVREXPORT ArRobotParams::~MvrRobotParams()
 {
 
 }
@@ -340,7 +340,7 @@ void ArRobotParams::internalAddToConfigDefault(void)
 
 
 
-AREXPORT void ArRobotParams::addLaserToConfig(
+MVREXPORT void ArRobotParams::addLaserToConfig(
 	int laserNumber, ArConfig* config, bool useDefaultBehavior, 
 	const char *section)
 {
@@ -547,7 +547,7 @@ AREXPORT void ArRobotParams::addLaserToConfig(
 
 }
 
-AREXPORT void ArRobotParams::addBatteryToConfig(
+MVREXPORT void ArRobotParams::addBatteryToConfig(
 	int batteryNumber, ArConfig* config, bool useDefaultBehavior)
 {
   ArConfigArg::RestartLevel restartLevel;
@@ -632,7 +632,7 @@ AREXPORT void ArRobotParams::addBatteryToConfig(
 
 }
 
-AREXPORT void ArRobotParams::addLCDToConfig(
+MVREXPORT void ArRobotParams::addLCDToConfig(
 	int lcdNumber, ArConfig* config, bool useDefaultBehavior)
 {
   ArConfigArg::RestartLevel restartLevel;
@@ -739,7 +739,7 @@ AREXPORT void ArRobotParams::addLCDToConfig(
 	  displayHintPlain.c_str(), restartLevel);
 }
 
-AREXPORT void ArRobotParams::addSonarBoardToConfig(
+MVREXPORT void ArRobotParams::addSonarBoardToConfig(
 	int sonarBoardNumber, ArConfig* config, bool useDefaultBehavior)
 {
   ArConfigArg::RestartLevel restartLevel;
@@ -944,7 +944,7 @@ void ArRobotParams::addVideoToConfig(int i, ArConfig *config)
     @param mtxthresh For MTX sonar, detection threshold to set, or 0 to use default.
     @param mtxmax for MTX sonar, max range set on sonar to limit sensing
 */
-AREXPORT void ArRobotParams::internalSetSonar(int num, int x, int y, int th,
+MVREXPORT void ArRobotParams::internalSetSonar(int num, int x, int y, int th,
     int mtxboard, int mtxunit, int mtxgain, int mtxthresh, int mtxmax )
 {
   if(num < 0) 
@@ -965,7 +965,7 @@ AREXPORT void ArRobotParams::internalSetSonar(int num, int x, int y, int th,
 }
 
 #if 0
-AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void)
+MVREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void)
 {
   std::map<int, std::map<int, int> >::iterator it;
   int num, x, y, th;
@@ -985,7 +985,7 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void
 }
 #endif
 
-AREXPORT bool ArRobotParams::parseSonarUnit (MvrArgumentBuilder *builder)
+MVREXPORT bool ArRobotParams::parseSonarUnit (MvrArgumentBuilder *builder)
 {
 	// If only three values given, then its pre-MTX style. If more, then its for MTX.
 	if (builder->getArgc() == 4) {
@@ -1021,7 +1021,7 @@ AREXPORT bool ArRobotParams::parseSonarUnit (MvrArgumentBuilder *builder)
 	}
 }
 
-AREXPORT bool ArRobotParams::parseMTXSonarUnit(MvrArgumentBuilder *builder)
+MVREXPORT bool ArRobotParams::parseMTXSonarUnit(MvrArgumentBuilder *builder)
 {
   // there has to be at least 5 arguments, 1st 5 are ints
   // fix for bug 1959
@@ -1141,8 +1141,8 @@ if (builder->getArgc() > 10) {
   return true;
 }
 
-AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void)
-//AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getMTXSonarUnits(void)
+MVREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void)
+//MVREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getMTXSonarUnits(void)
 {
 //  ArLog::log(MvrLog::Normal, "Saving sonar units?");
 
@@ -1184,7 +1184,7 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getSonarUnits(void
 }
 
 
-AREXPORT bool ArRobotParams::parseIRUnit(MvrArgumentBuilder *builder)
+MVREXPORT bool ArRobotParams::parseIRUnit(MvrArgumentBuilder *builder)
 {
   if (builder->getArgc() != 5 || !builder->isArgInt(0) || 
       !builder->isArgInt(1) || !builder->isArgInt(2) || 
@@ -1200,7 +1200,7 @@ AREXPORT bool ArRobotParams::parseIRUnit(MvrArgumentBuilder *builder)
   return true;
 }
 
-AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getIRUnits(void)
+MVREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getIRUnits(void)
 {
   std::map<int, std::map<int, int> >::iterator it;
   int num, type, cycles,  x, y;
@@ -1220,7 +1220,7 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArRobotParams::getIRUnits(void)
   return &myGetIRUnitList;
 }
 
-AREXPORT void ArRobotParams::internalSetIR(int num, int type, int cycles, int x, int y)
+MVREXPORT void ArRobotParams::internalSetIR(int num, int type, int cycles, int x, int y)
 {
   myIRMap[num][IR_TYPE] = type;
   myIRMap[num][IR_CYCLES] = cycles;
@@ -1228,7 +1228,7 @@ AREXPORT void ArRobotParams::internalSetIR(int num, int type, int cycles, int x,
   myIRMap[num][IR_Y] = y;
 }
 
-AREXPORT bool ArRobotParams::save(void)
+MVREXPORT bool ArRobotParams::save(void)
 {
   char buf[10000];
   sprintf(buf, "%sparams/", Aria::getDirectory());
@@ -1385,7 +1385,7 @@ void ArRobotParams::internalAddToConfigCommercial(
 
 }
 
-AREXPORT bool ArRobotParams::commercialProcessFile(void)
+MVREXPORT bool ArRobotParams::commercialProcessFile(void)
 {
   myRobotLength = myRobotLengthFront + myRobotLengthRear;
 
@@ -1620,7 +1620,7 @@ void ArRobotParams::processSonarCommercial(MvrConfig *config)
 }
 
 
-AREXPORT void ArVideoParams::merge(const ArVideoParams& other)
+MVREXPORT void ArVideoParams::merge(const ArVideoParams& other)
 {
 //  printf("MvrVideoParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
   if(other.type != "unknown" && other.type != "none" && other.type != "")

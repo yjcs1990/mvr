@@ -39,34 +39,34 @@ class MvrSerialConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT MvrSerialConnection(bool is422 = false);
+  MVREXPORT MvrSerialConnection(bool is422 = false);
   /// Destructor also closes the connection
-  AREXPORT virtual ~ArSerialConnection();
+  MVREXPORT virtual ~MvrSerialConnection();
 
   /** Opens the serial port
    *  @return 0 on success. Return one of the error codes in the 
    *          MvrSerialConnection::Open enumeration on error.
    *  @sa MvrUtil::COM1, MvrUtil::COM2, MvrUtil::COM3, MvrUtil::COM4
    */
-  AREXPORT int open(const char * port = NULL);
+  MVREXPORT int open(const char * port = NULL);
 
   /** Sets the port this connection will use
    *  @sa MvrUtil::COM1, MvrUtil::COM2, MvrUtil::COM3, MvrUtil::COM4
    */
-  AREXPORT void setPort(const char *port = NULL);
+  MVREXPORT void setPort(const char *port = NULL);
 
   /** Gets the port this is using
    *  @sa MvrUtil::COM1, MvrUtil::COM2, MvrUtil::COM3, MvrUtil::COM4
    */
-  AREXPORT const char * getPort(void);
+  MVREXPORT const char * getPort(void);
   
-  AREXPORT virtual bool openSimple(void);  
-  AREXPORT virtual int getStatus(void);
-  AREXPORT virtual bool close(void);
-  AREXPORT virtual int read(const char *data, unsigned int size, 
+  MVREXPORT virtual bool openSimple(void);  
+  MVREXPORT virtual int getStatus(void);
+  MVREXPORT virtual bool close(void);
+  MVREXPORT virtual int read(const char *data, unsigned int size, 
 			    unsigned int msWait = 0);
-  AREXPORT virtual int write(const char *data, unsigned int size);
-  AREXPORT virtual const char * getOpenMessage(int messageNumber);
+  MVREXPORT virtual int write(const char *data, unsigned int size);
+  MVREXPORT virtual const char * getOpenMessage(int messageNumber);
 
    /**
       Sets the BAUD rate to use when connection is opened, or change the baud rate if already opened
@@ -74,29 +74,29 @@ class MvrSerialConnection: public MvrDeviceConnection
       @return true if rate was sucessfully set, false otherwise (unsupported rate, system error changing rate on port, etc.)
       @sa getBaud()
    */
-  AREXPORT bool setBaud(int baud);
+  MVREXPORT bool setBaud(int baud);
   /// Gets what the current baud rate is set to
-  AREXPORT int getBaud(void);
+  MVREXPORT int getBaud(void);
 
   /// Sets whether to enable or disable the hardware control lines
-  AREXPORT bool setHardwareControl(bool hardwareControl);
+  MVREXPORT bool setHardwareControl(bool hardwareControl);
   /// Gets whether the hardware control lines are enabled or disabled
-  AREXPORT bool getHardwareControl(void);
+  MVREXPORT bool getHardwareControl(void);
 
   /// Sees how the CTS line is set (true = high)
-  AREXPORT bool getCTS(void);
+  MVREXPORT bool getCTS(void);
 
   /// Sees how the DSR line is set (true = high)
-  AREXPORT bool getDSR(void);
+  MVREXPORT bool getDSR(void);
 
   /// Sees how the DCD line is set (true = high)
-  AREXPORT bool getDCD(void);
+  MVREXPORT bool getDCD(void);
 
   /// Sees how the Ring line is set (true = high)
-  AREXPORT bool getRing(void);
+  MVREXPORT bool getRing(void);
 
   // Internal open, for use by open and openSimple
-  AREXPORT int internalOpen(void);
+  MVREXPORT int internalOpen(void);
 
   enum Open { 
       OPEN_COULD_NOT_OPEN_PORT = 1, ///< Could not open the port
@@ -105,8 +105,8 @@ class MvrSerialConnection: public MvrDeviceConnection
       OPEN_COULD_NOT_SET_BAUD, ///< Baud rate valid, but could not set it
       OPEN_ALREADY_OPEN ///< Connection was already open
   };
-  AREXPORT virtual MvrTime getTimeRead(int index);
-  AREXPORT virtual bool isTimeStamping(void);
+  MVREXPORT virtual MvrTime getTimeRead(int index);
+  MVREXPORT virtual bool isTimeStamping(void);
 
  protected:
   void buildStrMap(void);

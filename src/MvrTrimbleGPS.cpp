@@ -36,18 +36,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 void ArTrimbleGPS_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
 #endif
 
-AREXPORT ArTrimbleGPS::ArTrimbleGPS() :
+MVREXPORT ArTrimbleGPS::ArTrimbleGPS() :
   myAuxDataHandler(this, &ArTrimbleGPS::handlePTNLAG001)
 {
   myMutex.setLogName("MvrTrimbleGPS::myMutex");
   addNMEAHandler("NLAG001", &myAuxDataHandler);
 }
 
-AREXPORT ArTrimbleGPS::~ArTrimbleGPS() {
+MVREXPORT ArTrimbleGPS::~MvrTrimbleGPS() {
 }
 
 
-AREXPORT bool ArTrimbleGPS::initDevice()
+MVREXPORT bool ArTrimbleGPS::initDevice()
 {
   if (!ArGPS::initDevice()) return false;
 
@@ -155,7 +155,7 @@ void ArTrimbleGPS::handlePTNLAG001(MvrNMEAParser::Message m)
 }
 
 
-AREXPORT bool ArTrimbleGPS::sendTSIPCommand(char cmd, const char *data, size_t size)
+MVREXPORT bool ArTrimbleGPS::sendTSIPCommand(char cmd, const char *data, size_t size)
 {
 #ifdef DEBUG_ARTRIMBLEGPS
   ArLog::log(MvrLog::Normal, "MvrTrimbleGPS sending command 0x%X to GPS, with data:", cmd & 0xFF);

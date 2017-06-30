@@ -36,7 +36,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
    @param name name of the action
 */
-AREXPORT MvrActionLimiterRot::ArActionLimiterRot(
+MVREXPORT MvrActionLimiterRot::ArActionLimiterRot(
 	const char *name) :
   MvrAction(name,
       "Applies a limit to rotation if there are sensor readings in the radius")
@@ -46,7 +46,7 @@ AREXPORT MvrActionLimiterRot::ArActionLimiterRot(
   myUseLocationDependentDevices = true;
 }
 
-AREXPORT MvrActionLimiterRot::~ArActionLimiterRot()
+MVREXPORT MvrActionLimiterRot::~MvrActionLimiterRot()
 {
 
 }
@@ -56,14 +56,14 @@ AREXPORT MvrActionLimiterRot::~ArActionLimiterRot()
    @param inRadiusSpeed the speed to go at if something is in the radius
    
 */
-AREXPORT void MvrActionLimiterRot::setParameters(
+MVREXPORT void MvrActionLimiterRot::setParameters(
 	bool checkRadius, double inRadiusSpeed)
 {
   myCheckRadius = checkRadius;
   myInRadiusSpeed = inRadiusSpeed;
 }
 
-AREXPORT void MvrActionLimiterRot::addToConfig(MvrConfig *config, 
+MVREXPORT void MvrActionLimiterRot::addToConfig(MvrConfig *config, 
 						       const char *section, 
 						       const char *prefix)
 {
@@ -93,7 +93,7 @@ AREXPORT void MvrActionLimiterRot::addToConfig(MvrConfig *config,
   config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
 }
 
-AREXPORT MvrActionDesired *
+MVREXPORT MvrActionDesired *
 ArActionLimiterRot::fire(MvrActionDesired currentDesired)
 {
   bool printing = false;

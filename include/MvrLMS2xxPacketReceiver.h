@@ -36,27 +36,27 @@ class MvrLMS2xxPacketReceiver
 {
 public:
   /// Constructor without an already assigned device connection
-  AREXPORT MvrLMS2xxPacketReceiver(unsigned char receivingAddress = 0, 
+  MVREXPORT MvrLMS2xxPacketReceiver(unsigned char receivingAddress = 0, 
 				bool allocatePackets = false,
 				bool useBase0Address = false);
   /// Constructor with assignment of a device connection
-  AREXPORT MvrLMS2xxPacketReceiver(MvrDeviceConnection *deviceConnection, 
+  MVREXPORT MvrLMS2xxPacketReceiver(MvrDeviceConnection *deviceConnection, 
 				unsigned char receivingAddress = 0,
 				bool allocatePackets = false,
 				bool useBase0Address = false);
   /// Destructor
-  AREXPORT virtual ~ArLMS2xxPacketReceiver();
+  MVREXPORT virtual ~MvrLMS2xxPacketReceiver();
   
   /// Receives a packet from the robot if there is one available
-  AREXPORT MvrLMS2xxPacket *receivePacket(unsigned int msWait = 0);
+  MVREXPORT MvrLMS2xxPacket *receivePacket(unsigned int msWait = 0);
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
   /// Gets the device this instance receives packets from
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
   
   /// Gets whether or not the receiver is allocating packets
-  AREXPORT bool isAllocatingPackets(void) { return myAllocatePackets; }
+  MVREXPORT bool isAllocatingPackets(void) { return myAllocatePackets; }
 
 protected:
   MvrDeviceConnection *myDeviceConn;

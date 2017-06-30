@@ -37,15 +37,15 @@ class MvrRobotConfig
 {
 public:
   /// Constructor
-  AREXPORT MvrRobotConfig(MvrRobot *robot);
+  MVREXPORT MvrRobotConfig(MvrRobot *robot);
   /// Destructor
-  AREXPORT virtual ~ArRobotConfig();
+  MVREXPORT virtual ~MvrRobotConfig();
   /// Adds a gyro to turn on and off
-  AREXPORT void addAnalogGyro(MvrAnalogGyro *gyro);
+  MVREXPORT void addAnalogGyro(MvrAnalogGyro *gyro);
   /// Called when we process the config
-  AREXPORT bool processFile(void);
+  MVREXPORT bool processFile(void);
   /// Called when we connect to the robot
-  AREXPORT void connectCallback(void);
+  MVREXPORT void connectCallback(void);
 protected:
   MvrRobot *myRobot;
   MvrAnalogGyro *myAnalogGyro;

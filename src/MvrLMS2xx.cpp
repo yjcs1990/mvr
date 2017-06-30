@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaInternal.h"
 #include <time.h>
 
-AREXPORT MvrLMS2xx::ArLMS2xx(
+MVREXPORT MvrLMS2xx::ArLMS2xx(
 	int laserNumber, const char *name, bool appendLaserNumberToName) :
   MvrLaser(laserNumber, name, 32000, false, appendLaserNumberToName),
   mySimPacketHandler(this, &ArLMS2xx::simPacketHandler),
@@ -119,7 +119,7 @@ AREXPORT MvrLMS2xx::ArLMS2xx(
 	  true);
 }
 
-AREXPORT MvrLMS2xx::~ArLMS2xx()
+MVREXPORT MvrLMS2xx::~MvrLMS2xx()
 {
   Mvria::remExitCallback(&myAriaExitCB);
   if (myRobot != NULL)
@@ -138,7 +138,7 @@ AREXPORT MvrLMS2xx::~ArLMS2xx()
 }
 
 
-AREXPORT void MvrLMS2xx::laserSetName(const char *name)
+MVREXPORT void MvrLMS2xx::laserSetName(const char *name)
 {
   myName = name;
 
@@ -149,17 +149,17 @@ AREXPORT void MvrLMS2xx::laserSetName(const char *name)
   MvrLaser::laserSetName(getName());
 }
 
-AREXPORT bool MvrLMS2xx::sickGetIsUsingSim(void)
+MVREXPORT bool MvrLMS2xx::sickGetIsUsingSim(void)
 {
   return myUseSim;
 }
 
-AREXPORT void MvrLMS2xx::sickSetIsUsingSim(bool usingSim)
+MVREXPORT void MvrLMS2xx::sickSetIsUsingSim(bool usingSim)
 {
   myUseSim = usingSim;
 }
 
-AREXPORT void MvrLMS2xx::setDeviceConnection(MvrDeviceConnection *conn)
+MVREXPORT void MvrLMS2xx::setDeviceConnection(MvrDeviceConnection *conn)
 {
   myConnMutex.lock();
   myLMS2xxPacketReceiver.setDeviceConnection(conn); 
@@ -169,7 +169,7 @@ AREXPORT void MvrLMS2xx::setDeviceConnection(MvrDeviceConnection *conn)
 
 
 
-AREXPORT void MvrLMS2xx::setRobot(MvrRobot *robot)
+MVREXPORT void MvrLMS2xx::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -182,7 +182,7 @@ AREXPORT void MvrLMS2xx::setRobot(MvrRobot *robot)
 
 
 /** @internal */
-AREXPORT bool MvrLMS2xx::simPacketHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrLMS2xx::simPacketHandler(MvrRobotPacket *packet)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -356,7 +356,7 @@ AREXPORT bool MvrLMS2xx::simPacketHandler(MvrRobotPacket *packet)
 
 
 /** @internal */
-AREXPORT void MvrLMS2xx::switchState(State state)
+MVREXPORT void MvrLMS2xx::switchState(State state)
 {
   myStateMutex.lock();
   myState = state;
@@ -368,7 +368,7 @@ AREXPORT void MvrLMS2xx::switchState(State state)
    @internal
    @return 0 if its still trying to connect, 1 if it connected, 2 if it failed
 **/
-AREXPORT int MvrLMS2xx::internalConnectHandler(void)
+MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
 {
   MvrLMS2xxPacket *packet;
   MvrSerialConnection *conn;
@@ -938,7 +938,7 @@ AREXPORT int MvrLMS2xx::internalConnectHandler(void)
 
    @return true if the commands were sent, false otherwise
 **/
-AREXPORT bool MvrLMS2xx::internalConnectSim(void)
+MVREXPORT bool MvrLMS2xx::internalConnectSim(void)
 {
   lockDevice();
   double offset = myOffsetAmount;
@@ -972,7 +972,7 @@ AREXPORT bool MvrLMS2xx::internalConnectSim(void)
 }
 
 /** @internal */
-AREXPORT void MvrLMS2xx::dropConnection(void)
+MVREXPORT void MvrLMS2xx::dropConnection(void)
 {
   std::list<ArFunctor *>::iterator it;  
 
@@ -994,7 +994,7 @@ AREXPORT void MvrLMS2xx::dropConnection(void)
 }
 
 /** @internal */
-AREXPORT void MvrLMS2xx::failedConnect(void)
+MVREXPORT void MvrLMS2xx::failedConnect(void)
 {
   std::list<ArFunctor *>::iterator it;  
   
@@ -1007,7 +1007,7 @@ AREXPORT void MvrLMS2xx::failedConnect(void)
 }
 
 /** @internal */
-AREXPORT void MvrLMS2xx::madeConnection(void)
+MVREXPORT void MvrLMS2xx::madeConnection(void)
 {
   myLastReading.setToNow();
 
@@ -1022,7 +1022,7 @@ AREXPORT void MvrLMS2xx::madeConnection(void)
    
    @return true if it could disconnect from the laser cleanly
 **/
-AREXPORT bool MvrLMS2xx::disconnect(void)
+MVREXPORT bool MvrLMS2xx::disconnect(void)
 {
   std::list<ArFunctor *>::iterator it;  
   bool ret;
@@ -1117,7 +1117,7 @@ bool MvrLMS2xx::finishParams(void)
   return laserCheckParams();
 }
 
-AREXPORT bool MvrLMS2xx::laserCheckParams(void)
+MVREXPORT bool MvrLMS2xx::laserCheckParams(void)
 {
   myOffsetAmount = getDegreesChoiceDouble() / 2.0;
   if (getFlipped())
@@ -1204,7 +1204,7 @@ AREXPORT bool MvrLMS2xx::laserCheckParams(void)
    @return true if a connection was successfully made, false otherwise
 **/
  
-AREXPORT bool MvrLMS2xx::blockingConnect(void)
+MVREXPORT bool MvrLMS2xx::blockingConnect(void)
 {
   int ret;
 
@@ -1257,7 +1257,7 @@ AREXPORT bool MvrLMS2xx::blockingConnect(void)
   @see configure(), MvrRangeDeviceThreaded::run(),
   MvrRangeDeviceThreaded::runAsync(), runOnRobot()
 **/
-AREXPORT bool MvrLMS2xx::asyncConnect(void)
+MVREXPORT bool MvrLMS2xx::asyncConnect(void)
 {
   if (myState == STATE_CONNECTED)
   {
@@ -1289,7 +1289,7 @@ AREXPORT bool MvrLMS2xx::asyncConnect(void)
    You should lock the robot and lockDevice() this laser before calling this if 
    other things are running already.
 **/
-AREXPORT bool MvrLMS2xx::internalRunOnRobot(void)
+MVREXPORT bool MvrLMS2xx::internalRunOnRobot(void)
 {
   if (myRobot == NULL)
     return false;
@@ -1303,7 +1303,7 @@ AREXPORT bool MvrLMS2xx::internalRunOnRobot(void)
 }
 
 /** @internal */
-AREXPORT void MvrLMS2xx::processPacket(MvrLMS2xxPacket *packet, MvrPose pose,
+MVREXPORT void MvrLMS2xx::processPacket(MvrLMS2xxPacket *packet, MvrPose pose,
 				    MvrPose encoderPose,
 				    unsigned int counter,
 				    bool deinterlace,
@@ -1480,7 +1480,7 @@ AREXPORT void MvrLMS2xx::processPacket(MvrLMS2xxPacket *packet, MvrPose pose,
 }
 
 /** @internal */
-AREXPORT void MvrLMS2xx::runOnce(bool lockRobot)
+MVREXPORT void MvrLMS2xx::runOnce(bool lockRobot)
 {
   MvrLMS2xxPacket *packet;
   unsigned int counter;
@@ -1556,7 +1556,7 @@ AREXPORT void MvrLMS2xx::runOnce(bool lockRobot)
 }
 
 /** @internal */
-AREXPORT void MvrLMS2xx::sensorInterpCallback(void)
+MVREXPORT void MvrLMS2xx::sensorInterpCallback(void)
 {
   std::list<ArLMS2xxPacket *>::iterator it;
   std::list<ArLMS2xxPacket *> processed;
@@ -1647,7 +1647,7 @@ AREXPORT void MvrLMS2xx::sensorInterpCallback(void)
 }
 
 /** @internal */
-AREXPORT void *ArLMS2xx::runThread(void *arg)
+MVREXPORT void *ArLMS2xx::runThread(void *arg)
 {
   while (getRunningWithLock())
   {

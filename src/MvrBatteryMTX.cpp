@@ -43,7 +43,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif
 
 
-AREXPORT MvrBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name, 
+MVREXPORT MvrBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name, 
 																			ArDeviceConnection *conn,
 																			ArRobot *robot) :
 	mySensorInterpTask (this, &ArBatteryMTX::sensorInterp),
@@ -83,7 +83,7 @@ AREXPORT MvrBatteryMTX::ArBatteryMTX (int batteryBoardNum, const char *name,
 }
 
 
-AREXPORT MvrBatteryMTX::~ArBatteryMTX()
+MVREXPORT MvrBatteryMTX::~MvrBatteryMTX()
 {
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask (&myProcessCB);
@@ -91,25 +91,25 @@ AREXPORT MvrBatteryMTX::~ArBatteryMTX()
   Mvria::remExitCallback(&myAriaExitCB);
 }
 
-AREXPORT int MvrBatteryMTX::getAsyncConnectState()
+MVREXPORT int MvrBatteryMTX::getAsyncConnectState()
 {
 	return myAsyncConnectState;
 }
 
 
-AREXPORT void MvrBatteryMTX::setDeviceConnection (
+MVREXPORT void MvrBatteryMTX::setDeviceConnection (
   MvrDeviceConnection *conn)
 {
 	myConn = conn;
   myConn->setDeviceName(getName());
 }
 
-AREXPORT MvrDeviceConnection *ArBatteryMTX::getDeviceConnection (void)
+MVREXPORT MvrDeviceConnection *ArBatteryMTX::getDeviceConnection (void)
 {
 	return myConn;
 }
 
-AREXPORT void MvrBatteryMTX::requestContinuousSysInfoPackets (void)
+MVREXPORT void MvrBatteryMTX::requestContinuousSysInfoPackets (void)
 {
 	if (myIsConnected) {
 		ArLog::log (MvrLog::Verbose,
@@ -121,7 +121,7 @@ AREXPORT void MvrBatteryMTX::requestContinuousSysInfoPackets (void)
 }
 
 
-AREXPORT void MvrBatteryMTX::stopSysInfoPackets (void)
+MVREXPORT void MvrBatteryMTX::stopSysInfoPackets (void)
 {
 	if (myIsConnected) {
 		ArLog::log (MvrLog::Verbose,
@@ -132,12 +132,12 @@ AREXPORT void MvrBatteryMTX::stopSysInfoPackets (void)
 	}
 }
 
-AREXPORT bool MvrBatteryMTX::haveRequestedSysInfoPackets (void)
+MVREXPORT bool MvrBatteryMTX::haveRequestedSysInfoPackets (void)
 {
 	return myRequestedSysInfoBatteryPackets;
 }
 
-AREXPORT void MvrBatteryMTX::requestContinuousCellInfoPackets (void)
+MVREXPORT void MvrBatteryMTX::requestContinuousCellInfoPackets (void)
 {
 	if (myIsConnected) {
 		ArLog::log (MvrLog::Verbose,
@@ -148,7 +148,7 @@ AREXPORT void MvrBatteryMTX::requestContinuousCellInfoPackets (void)
 	}
 }
 
-AREXPORT void MvrBatteryMTX::stopCellInfoPackets (void)
+MVREXPORT void MvrBatteryMTX::stopCellInfoPackets (void)
 {
 	if (myIsConnected) {
 		ArLog::log (MvrLog::Verbose,
@@ -159,12 +159,12 @@ AREXPORT void MvrBatteryMTX::stopCellInfoPackets (void)
 	}
 }
 
-AREXPORT bool MvrBatteryMTX::haveRequestedCellInfoPackets (void)
+MVREXPORT bool MvrBatteryMTX::haveRequestedCellInfoPackets (void)
 {
 	return myRequestedCellInfoBatteryPackets;
 }
 
-AREXPORT void MvrBatteryMTX::setRobot (MvrRobot *robot)
+MVREXPORT void MvrBatteryMTX::setRobot (MvrRobot *robot)
 {
 	myRobot = robot;
 	// this is the code from the laser, i changed the priority to 20 from 90
@@ -182,7 +182,7 @@ void MvrBatteryMTX::clear (void)
 	myStartConnect = false;
 }
 
-AREXPORT void MvrBatteryMTX::batterySetName (const char *name)
+MVREXPORT void MvrBatteryMTX::batterySetName (const char *name)
 {
 	myName = name;
 	myDeviceMutex.setLogNameVar ("%s::myDeviceMutex", getName());
@@ -194,7 +194,7 @@ AREXPORT void MvrBatteryMTX::batterySetName (const char *name)
 
 }
 
-AREXPORT bool MvrBatteryMTX::disconnect (void)
+MVREXPORT bool MvrBatteryMTX::disconnect (void)
 {
 	if (!isConnected())
 		return true;
@@ -204,7 +204,7 @@ AREXPORT bool MvrBatteryMTX::disconnect (void)
 	return true;
 }
 
-AREXPORT int MvrBatteryMTX::getReadingCount()
+MVREXPORT int MvrBatteryMTX::getReadingCount()
 {
   if (myTimeLastReading == time(NULL))
     return myReadingCount;
@@ -213,7 +213,7 @@ AREXPORT int MvrBatteryMTX::getReadingCount()
   return 0;
 }
 
-AREXPORT void MvrBatteryMTX::internalGotReading(void)
+MVREXPORT void MvrBatteryMTX::internalGotReading(void)
 {
   if (myTimeLastReading != time(NULL)) 
   {
@@ -500,7 +500,7 @@ void MvrBatteryMTX::checkAndSetCurrentErrors(ErrorFlags errorFlag,
   myErrorCount++;
 }
 
-AREXPORT bool MvrBatteryMTX::blockingConnect (bool sendTracking, bool recvTracking)
+MVREXPORT bool MvrBatteryMTX::blockingConnect (bool sendTracking, bool recvTracking)
 {
 	mySendTracking = sendTracking;
 	myRecvTracking = recvTracking;
@@ -646,12 +646,12 @@ AREXPORT bool MvrBatteryMTX::blockingConnect (bool sendTracking, bool recvTracki
 	return true;
 } // end blockingConnect
 
-AREXPORT const char * MvrBatteryMTX::getName (void) const
+MVREXPORT const char * MvrBatteryMTX::getName (void) const
 {
 	return myName.c_str();
 }
 
-AREXPORT void * MvrBatteryMTX::runThread (void *arg)
+MVREXPORT void * MvrBatteryMTX::runThread (void *arg)
 {
 	//ArBatteryMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -712,7 +712,7 @@ while (getRunning() )
    getConnectionTimeoutSeconds.  If there is a robot then it will not
    start the check until the battery is running and connected.
 **/
-AREXPORT bool MvrBatteryMTX::checkLostConnection(void)
+MVREXPORT bool MvrBatteryMTX::checkLostConnection(void)
 {
 	
   if ((myRobot == NULL || myRobotRunningAndConnected) && 
@@ -730,13 +730,13 @@ AREXPORT bool MvrBatteryMTX::checkLostConnection(void)
   return false;
 }
 
-AREXPORT void MvrBatteryMTX::disconnectOnError(void)
+MVREXPORT void MvrBatteryMTX::disconnectOnError(void)
 {
   MvrLog::log(MvrLog::Normal, "%s: Disconnected because of error", getName());
   myDisconnectOnErrorCBList.invoke();
 }
 
-AREXPORT bool MvrBatteryMTX::sendSystemInfo (unsigned char dataValue)
+MVREXPORT bool MvrBatteryMTX::sendSystemInfo (unsigned char dataValue)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -760,7 +760,7 @@ AREXPORT bool MvrBatteryMTX::sendSystemInfo (unsigned char dataValue)
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendCellInfo (unsigned char dataValue)
+MVREXPORT bool MvrBatteryMTX::sendCellInfo (unsigned char dataValue)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -783,7 +783,7 @@ AREXPORT bool MvrBatteryMTX::sendCellInfo (unsigned char dataValue)
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendBasicInfo (unsigned char dataValue)
+MVREXPORT bool MvrBatteryMTX::sendBasicInfo (unsigned char dataValue)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -806,7 +806,7 @@ AREXPORT bool MvrBatteryMTX::sendBasicInfo (unsigned char dataValue)
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendPowerOff()
+MVREXPORT bool MvrBatteryMTX::sendPowerOff()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -826,7 +826,7 @@ AREXPORT bool MvrBatteryMTX::sendPowerOff()
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendPowerOffCancel()
+MVREXPORT bool MvrBatteryMTX::sendPowerOffCancel()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -846,7 +846,7 @@ AREXPORT bool MvrBatteryMTX::sendPowerOffCancel()
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendStopCharging()
+MVREXPORT bool MvrBatteryMTX::sendStopCharging()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -866,7 +866,7 @@ AREXPORT bool MvrBatteryMTX::sendStopCharging()
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendStartCharging()
+MVREXPORT bool MvrBatteryMTX::sendStartCharging()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -885,7 +885,7 @@ AREXPORT bool MvrBatteryMTX::sendStartCharging()
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendSetPowerOffDelay (unsigned int msDelay)
+MVREXPORT bool MvrBatteryMTX::sendSetPowerOffDelay (unsigned int msDelay)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -906,7 +906,7 @@ AREXPORT bool MvrBatteryMTX::sendSetPowerOffDelay (unsigned int msDelay)
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendSetRealTimeClock (unsigned int secSinceEpoch)
+MVREXPORT bool MvrBatteryMTX::sendSetRealTimeClock (unsigned int secSinceEpoch)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -927,7 +927,7 @@ AREXPORT bool MvrBatteryMTX::sendSetRealTimeClock (unsigned int secSinceEpoch)
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendResetCellData()
+MVREXPORT bool MvrBatteryMTX::sendResetCellData()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -947,7 +947,7 @@ AREXPORT bool MvrBatteryMTX::sendResetCellData()
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendSetReserveValue (unsigned short hundredthOfPercent)
+MVREXPORT bool MvrBatteryMTX::sendSetReserveValue (unsigned short hundredthOfPercent)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -968,7 +968,7 @@ AREXPORT bool MvrBatteryMTX::sendSetReserveValue (unsigned short hundredthOfPerc
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendSetBalanceValue (unsigned short hundredthOfPercent)
+MVREXPORT bool MvrBatteryMTX::sendSetBalanceValue (unsigned short hundredthOfPercent)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -989,7 +989,7 @@ AREXPORT bool MvrBatteryMTX::sendSetBalanceValue (unsigned short hundredthOfPerc
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::sendEmergencyPowerOff()
+MVREXPORT bool MvrBatteryMTX::sendEmergencyPowerOff()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -1010,7 +1010,7 @@ AREXPORT bool MvrBatteryMTX::sendEmergencyPowerOff()
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::getSystemInfo()
+MVREXPORT bool MvrBatteryMTX::getSystemInfo()
 {
 	//ArBatteryMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -1060,7 +1060,7 @@ AREXPORT bool MvrBatteryMTX::getSystemInfo()
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::getBasicInfo()
+MVREXPORT bool MvrBatteryMTX::getBasicInfo()
 {
 	//ArBatteryMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -1121,7 +1121,7 @@ IFDEBUG(
 	return true;
 }
 
-AREXPORT bool MvrBatteryMTX::getCellInfo()
+MVREXPORT bool MvrBatteryMTX::getCellInfo()
 {
 	unsigned char *buf;
 	//ArBatteryMTXPacket *packet;
@@ -1172,7 +1172,7 @@ AREXPORT bool MvrBatteryMTX::getCellInfo()
 	return true;
 }
 
-AREXPORT void MvrBatteryMTX::updateSystemInfo (unsigned char *buf)
+MVREXPORT void MvrBatteryMTX::updateSystemInfo (unsigned char *buf)
 {
 	myId = buf[1];
 	myFirmwareVersion = buf[2];
@@ -1204,7 +1204,7 @@ AREXPORT void MvrBatteryMTX::updateSystemInfo (unsigned char *buf)
 	myReserveChargeValue = myRawReserveChargeValue / 100.0;
 }
 
-AREXPORT void MvrBatteryMTX::updateCellInfo (unsigned char *buf)
+MVREXPORT void MvrBatteryMTX::updateCellInfo (unsigned char *buf)
 {
 	myNumCells = buf[1];
 	int idx;
@@ -1222,7 +1222,7 @@ AREXPORT void MvrBatteryMTX::updateCellInfo (unsigned char *buf)
 	}
 }
 
-AREXPORT void MvrBatteryMTX::updateBasicInfo (unsigned char *buf)
+MVREXPORT void MvrBatteryMTX::updateBasicInfo (unsigned char *buf)
 {
 	myRawChargeEstimate = buf[2] << 8 | buf[1];
 	myChargeEstimate = myRawChargeEstimate / 100.0;
@@ -1235,7 +1235,7 @@ AREXPORT void MvrBatteryMTX::updateBasicInfo (unsigned char *buf)
 }
 
 
-AREXPORT void MvrBatteryMTX::logBatteryInfo(MvrLog::LogLevel level)
+MVREXPORT void MvrBatteryMTX::logBatteryInfo(MvrLog::LogLevel level)
 {
 	ArLog::log (level,
 	            "%s ID = %d", getName(), myId);
@@ -1277,7 +1277,7 @@ AREXPORT void MvrBatteryMTX::logBatteryInfo(MvrLog::LogLevel level)
 	            "%s Reserve Charge Value = %g", getName(), myReserveChargeValue);
 }
 
-AREXPORT void MvrBatteryMTX::logCellInfo(MvrLog::LogLevel level)
+MVREXPORT void MvrBatteryMTX::logCellInfo(MvrLog::LogLevel level)
 {
 	ArLog::log (level,
 	            "%s Number of Cells = %d", getName(), myNumCells);

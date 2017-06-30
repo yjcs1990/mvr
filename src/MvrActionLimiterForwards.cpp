@@ -38,7 +38,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    distance (mm/sec)
    @param widthRatio Ratio of the width of the box to look at to the robot radius (multiplier)
 */
-AREXPORT MvrActionLimiterForwards::ArActionLimiterForwards(const char *name, 
+MVREXPORT MvrActionLimiterForwards::ArActionLimiterForwards(const char *name, 
 							  double stopDistance,
 							  double slowDistance,
 							  double slowSpeed,
@@ -65,7 +65,7 @@ AREXPORT MvrActionLimiterForwards::ArActionLimiterForwards(const char *name,
   myLastSensorReadingDev = NULL;
 }
 
-AREXPORT MvrActionLimiterForwards::~ArActionLimiterForwards()
+MVREXPORT MvrActionLimiterForwards::~MvrActionLimiterForwards()
 {
 
 }
@@ -77,7 +77,7 @@ AREXPORT MvrActionLimiterForwards::~ArActionLimiterForwards()
    distance (mm/sec)
    @param widthRatio Ratio of the width of the box to look at to the robot radius (multiplier)
 */
-AREXPORT void MvrActionLimiterForwards::setParameters(double stopDistance,
+MVREXPORT void MvrActionLimiterForwards::setParameters(double stopDistance,
 						     double slowDistance,
 						     double slowSpeed,
 						     double widthRatio)
@@ -88,7 +88,7 @@ AREXPORT void MvrActionLimiterForwards::setParameters(double stopDistance,
   myWidthRatio = widthRatio;
 }
 
-AREXPORT MvrActionDesired *
+MVREXPORT MvrActionDesired *
 ArActionLimiterForwards::fire(MvrActionDesired currentDesired)
 {
   double dist;

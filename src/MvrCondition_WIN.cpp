@@ -33,7 +33,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 ArStrMap MvrCondition::ourStrMap;
 
 
-AREXPORT MvrCondition::ArCondition() :
+MVREXPORT MvrCondition::ArCondition() :
   myFailedInit(false),
   myCond(),
   myCount(0)
@@ -55,13 +55,13 @@ AREXPORT MvrCondition::ArCondition() :
   ourStrMap[STATUS_MUTEX_FAILED]="The underlying mutex failed in some fashion";
 }
 
-AREXPORT MvrCondition::~ArCondition()
+MVREXPORT MvrCondition::~MvrCondition()
 {
   if (!myFailedInit && !CloseHandle(myCond))
-    MvrLog::log(MvrLog::Terse, "MvrCondition(%s)::~ArCondition: Unknown error while trying to destroy the condition.", getLogName());
+    MvrLog::log(MvrLog::Terse, "MvrCondition(%s)::~MvrCondition: Unknown error while trying to destroy the condition.", getLogName());
 }
 
-AREXPORT int MvrCondition::signal()
+MVREXPORT int MvrCondition::signal()
 {
   if (myFailedInit)
   {
@@ -78,7 +78,7 @@ AREXPORT int MvrCondition::signal()
   return(0);
 }
 
-AREXPORT int MvrCondition::broadcast()
+MVREXPORT int MvrCondition::broadcast()
 {
   int ret=0;
 
@@ -102,7 +102,7 @@ AREXPORT int MvrCondition::broadcast()
   return(ret);
 }
 
-AREXPORT int MvrCondition::wait()
+MVREXPORT int MvrCondition::wait()
 {
   DWORD ret;
 
@@ -123,7 +123,7 @@ AREXPORT int MvrCondition::wait()
   }
 }
 
-AREXPORT int MvrCondition::timedWait(unsigned int msecs)
+MVREXPORT int MvrCondition::timedWait(unsigned int msecs)
 {
   int ret;
 
@@ -146,7 +146,7 @@ AREXPORT int MvrCondition::timedWait(unsigned int msecs)
   }
 }
 
-AREXPORT const char *ArCondition::getError(int messageNumber) const
+MVREXPORT const char *ArCondition::getError(int messageNumber) const
 {
   MvrStrMap::const_iterator it;
   if ((it = ourStrMap.find(messageNumber)) != ourStrMap.end())

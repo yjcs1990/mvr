@@ -66,111 +66,111 @@ class MvrArgumentParser
 {
 public:
   /// Constructor, takes the argc argv
-  AREXPORT MvrArgumentParser(int *argc, char **argv);
+  MVREXPORT MvrArgumentParser(int *argc, char **argv);
   /// Constructor, takes an argument builder
-  AREXPORT MvrArgumentParser(MvrArgumentBuilder *builder);
+  MVREXPORT MvrArgumentParser(MvrArgumentBuilder *builder);
   /// Destructor
-  AREXPORT ~ArArgumentParser();
+  MVREXPORT ~MvrArgumentParser();
   /// If we should only set wasReallySet to true
-  AREXPORT void setWasReallySetOnlyTrue(bool wasReallySetOnlyTrue);
+  MVREXPORT void setWasReallySetOnlyTrue(bool wasReallySetOnlyTrue);
   /// If we only set wasReallySet to true
-  AREXPORT bool getWasReallySetOnlyTrue(void);
+  MVREXPORT bool getWasReallySetOnlyTrue(void);
   /// Returns true if the argument was found
-  AREXPORT bool checkArgument(const char *argument);
+  MVREXPORT bool checkArgument(const char *argument);
   /// Returns the word/argument after given argument 
-  AREXPORT char *checkParameterArgument(const char *argument, 
+  MVREXPORT char *checkParameterArgument(const char *argument, 
 					bool returnFirst = false);
   /// Returns the word/argument after given argument 
-  AREXPORT bool checkParameterArgumentString(const char *argument, 
+  MVREXPORT bool checkParameterArgumentString(const char *argument, 
 					     const char **dest, 
 					     bool *wasReallySet = NULL,
 					     bool returnFirst = false);
   /// Returns the integer after given argument 
-  AREXPORT bool checkParameterArgumentInteger(const char *argument, int *dest,
+  MVREXPORT bool checkParameterArgumentInteger(const char *argument, int *dest,
 					      bool *wasReallySet = NULL, 
 					      bool returnFirst = false);
   /// Returns the word/argument after given argument 
-  AREXPORT bool checkParameterArgumentBool(const char *argument, bool *dest,
+  MVREXPORT bool checkParameterArgumentBool(const char *argument, bool *dest,
 					   bool *wasReallySet = NULL,
 					   bool returnFirst = false);
   /// Returns the floating point number after given argument 
-  AREXPORT bool checkParameterArgumentFloat(const char *argument, float *dest, 
+  MVREXPORT bool checkParameterArgumentFloat(const char *argument, float *dest, 
                 bool *wasReallySet = NULL, bool returnFirst = false);
   /// Returns the floating point number after given argument 
-  AREXPORT bool checkParameterArgumentDouble(const char *argument, double *dest, 
+  MVREXPORT bool checkParameterArgumentDouble(const char *argument, double *dest, 
                 bool *wasReallySet = NULL, bool returnFirst = false);
   /// Adds a string as a default argument
-  AREXPORT void addDefaultArgument(const char *argument, int position = -1);
+  MVREXPORT void addDefaultArgument(const char *argument, int position = -1);
   /// Adds a string as a default argument as is (without touching
   /// spaces or what not)
-  AREXPORT void addDefaultArgumentAsIs(const char *argument, 
+  MVREXPORT void addDefaultArgumentAsIs(const char *argument, 
 				       int position = -1);
   /// Adds args from default files and environmental variables
-  AREXPORT void loadDefaultArguments(int positon = 1);
+  MVREXPORT void loadDefaultArguments(int positon = 1);
   /// Checks for the help strings and warns about unparsed arguments
-  AREXPORT bool checkHelpAndWarnUnparsed(unsigned int numArgsOkay = 0);
+  MVREXPORT bool checkHelpAndWarnUnparsed(unsigned int numArgsOkay = 0);
   /// Checks for the help argument  
-  AREXPORT bool checkHelp();
+  MVREXPORT bool checkHelp();
   /// Gets how many arguments are left in this parser
-  AREXPORT size_t getArgc(void) const;
+  MVREXPORT size_t getArgc(void) const;
   /// Gets the argv
-  AREXPORT char** getArgv(void) const;
+  MVREXPORT char** getArgv(void) const;
   /// Gets the argument builder, if one is being used (may be NULL)
-  AREXPORT const MvrArgumentBuilder *getArgumentBuilder(void) const 
+  MVREXPORT const MvrArgumentBuilder *getArgumentBuilder(void) const 
     { return myBuilder; }
   /// Gets a specific argument
-  AREXPORT const char* getArg(size_t whichArg) const;
+  MVREXPORT const char* getArg(size_t whichArg) const;
 
 
 
 
   /// Prints out the arguments left in this parser
-  AREXPORT void log(void) const;
+  MVREXPORT void log(void) const;
   /// Gets the arguments this parser started with (if possible, NULL otherwise)
-  AREXPORT const char *getStartingArguments(void) const;
+  MVREXPORT const char *getStartingArguments(void) const;
   /// Internal function to remove an argument that was parsed
-  AREXPORT void removeArg(size_t which);
+  MVREXPORT void removeArg(size_t which);
   /// Adds another file or environmental variable to the list of defaults
-  AREXPORT static void addDefaultArgumentFile(const char *file);
+  MVREXPORT static void addDefaultArgumentFile(const char *file);
   /// Adds another file or environmental variable to the list of defaults
-  AREXPORT static void addDefaultArgumentEnv(const char *env);
+  MVREXPORT static void addDefaultArgumentEnv(const char *env);
   /// Logs the default argument locations
-  AREXPORT static void logDefaultArgumentLocations(void);
+  MVREXPORT static void logDefaultArgumentLocations(void);
 #ifndef SWIG
   /** @brief Returns true if the argument was found
    *  @swigomit
    */
-  AREXPORT bool checkArgumentVar(const char *argument, ...);
+  MVREXPORT bool checkArgumentVar(const char *argument, ...);
   /** @brief Returns the word/argument after given argument 
    *  @swigomit
    */
-  AREXPORT char *checkParameterArgumentVar(const char *argument, ...);
+  MVREXPORT char *checkParameterArgumentVar(const char *argument, ...);
   /** @brief Returns the word/argument after given argument 
    *  @swigomit
    */
-  AREXPORT bool checkParameterArgumentStringVar(bool *wasReallySet, 
+  MVREXPORT bool checkParameterArgumentStringVar(bool *wasReallySet, 
 						const char **dest, 
 						const char *argument, ...);
   /** @brief Returns the word/argument after given argument 
    *  @swigomit
    */
-  AREXPORT bool checkParameterArgumentBoolVar(bool *wasReallySet, bool *dest,
+  MVREXPORT bool checkParameterArgumentBoolVar(bool *wasReallySet, bool *dest,
 					      const char *argument, ...);
   /** @brief Returns the integer after given argument 
    *  @swigomit
    */
-  AREXPORT bool checkParameterArgumentIntegerVar(bool *wasReallySet, int *dest,
+  MVREXPORT bool checkParameterArgumentIntegerVar(bool *wasReallySet, int *dest,
 						 const char *argument, ...);
   /** @brief Returns the float after given argument 
    *  @swigomit
    */
-  AREXPORT bool checkParameterArgumentFloatVar(bool *wasReallySet, 
+  MVREXPORT bool checkParameterArgumentFloatVar(bool *wasReallySet, 
 						float *dest,
 						 const char *argument, ...);
   /** @brief Returns the double after given argument 
    *  @swigomit
    */
-  AREXPORT bool checkParameterArgumentDoubleVar(bool *wasReallySet, 
+  MVREXPORT bool checkParameterArgumentDoubleVar(bool *wasReallySet, 
 						double *dest,
 						const char *argument, ...);
 #endif

@@ -73,7 +73,7 @@ public:
    * @param displayLength the length of the displayBuf; should be at least 
    * DISPLAY_LENGTH
   **/
-	AREXPORT static void toDisplay(const unsigned char *digestBuf,
+	MVREXPORT static void toDisplay(const unsigned char *digestBuf,
 													       size_t digestLength,
 													       char *displayBuf,
 													       size_t displayLength);
@@ -88,7 +88,7 @@ public:
    * @return bool true if the file was successfully opened and the checksum
    * calculated; false, otherwise
   **/
-  AREXPORT static bool calculateChecksum(const char *fileName,
+  MVREXPORT static bool calculateChecksum(const char *fileName,
                                          unsigned char *md5DigestBuffer,
                                          size_t md5DigestBufferLen);
 
@@ -101,20 +101,20 @@ public:
    * @param secondFunctor the optional functor to be invoked on the current
    * text string after its checksum has been calculated
   **/
-	AREXPORT MvrMD5Calculator(MvrFunctor1<const char*> *secondFunctor = NULL); 
+	MVREXPORT MvrMD5Calculator(MvrFunctor1<const char*> *secondFunctor = NULL); 
 
   /// Destructor
-	AREXPORT ~ArMD5Calculator();
+	MVREXPORT ~MvrMD5Calculator();
 
 
   /// Resets the calculator so that a new checksum can be calculated
-	AREXPORT void reset();
+	MVREXPORT void reset();
 
   /// Calculates the checksum for the given text line, and accumulates the results.
-	AREXPORT void append(const char *str);
+	MVREXPORT void append(const char *str);
 
   /// Returns a pointer to the internal buffer that accumulates the checksum results.
-	AREXPORT unsigned char *getDigest();
+	MVREXPORT unsigned char *getDigest();
 
 
   /// Returns the internal functor used to calculate the checksum
@@ -123,13 +123,13 @@ public:
    * this is the functor to use.  It calls append on each text line which
    * accumulates the checksum and calls the second functor if necessary.
   **/
-	AREXPORT MvrFunctor1<const char *> *getFunctor();
+	MVREXPORT MvrFunctor1<const char *> *getFunctor();
 
   /// Returns the optional secondary functor to be called on each text line.
-	AREXPORT MvrFunctor1<const char *> *getSecondFunctor();
+	MVREXPORT MvrFunctor1<const char *> *getSecondFunctor();
 
   /// Sets the optional secondary functor to be called on each text line.
-	AREXPORT void setSecondFunctor(MvrFunctor1<const char *> *secondFunctor);
+	MVREXPORT void setSecondFunctor(MvrFunctor1<const char *> *secondFunctor);
 
 private:
 

@@ -49,20 +49,20 @@ class MvrActionLimiterRot : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionLimiterRot(const char *name = "limitRot");
+  MVREXPORT MvrActionLimiterRot(const char *name = "limitRot");
   /// Destructor
-  AREXPORT virtual ~ArActionLimiterRot();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionLimiterRot();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   /// Sets the parameters (don't use this if you're using the addToConfig)
-  AREXPORT void setParameters(bool checkRadius = false,
+  MVREXPORT void setParameters(bool checkRadius = false,
 			      double inRadiusSpeed = 0);
   /// Adds to the MvrConfig given, in section, with prefix
-  AREXPORT void addToConfig(MvrConfig *config, const char *section,
+  MVREXPORT void addToConfig(MvrConfig *config, const char *section,
 			    const char *prefix = NULL);
   /// Sets if we're using locationDependent range devices or not
   bool getUseLocationDependentDevices(void) 

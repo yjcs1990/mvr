@@ -48,7 +48,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param takeKeysInConstructor whether to take the keys when created or not
    (default is true)
 **/
-AREXPORT MvrKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB, 
+MVREXPORT MvrKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB, 
 				    FILE *stream, 
 				    bool takeKeysInConstructor) :
   myAriaExitCB(this, &ArKeyHandler::restore)
@@ -64,13 +64,13 @@ AREXPORT MvrKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB,
     takeKeys(blocking);
 }
 
-AREXPORT MvrKeyHandler::~ArKeyHandler()
+MVREXPORT MvrKeyHandler::~MvrKeyHandler()
 {
   Mvria::remExitCallback(&myAriaExitCB);
   restore();
 }
 
-AREXPORT void MvrKeyHandler::takeKeys(bool blocking)
+MVREXPORT void MvrKeyHandler::takeKeys(bool blocking)
 {
   myBlocking = blocking;
 #ifndef WIN32
@@ -116,7 +116,7 @@ AREXPORT void MvrKeyHandler::takeKeys(bool blocking)
   myTookKeys = true;
 }
 
-AREXPORT void MvrKeyHandler::restore(void)
+MVREXPORT void MvrKeyHandler::restore(void)
 {
   if (!myTookKeys)
     return;
@@ -143,7 +143,7 @@ AREXPORT void MvrKeyHandler::restore(void)
    exists.
    that key
 */
-AREXPORT bool MvrKeyHandler::addKeyHandler(int keyToHandle, MvrFunctor *functor)
+MVREXPORT bool MvrKeyHandler::addKeyHandler(int keyToHandle, MvrFunctor *functor)
 {
   if (myMap.find(keyToHandle) != myMap.end())
   {
@@ -167,7 +167,7 @@ AREXPORT bool MvrKeyHandler::addKeyHandler(int keyToHandle, MvrFunctor *functor)
      key handler for @a keyToHandle was found and rmeoved, or false if no
      handler for that value was found.
  **/
-AREXPORT bool MvrKeyHandler::remKeyHandler(int keyToHandle)
+MVREXPORT bool MvrKeyHandler::remKeyHandler(int keyToHandle)
 {
   if (myMap.find(keyToHandle) == myMap.end())
   {
@@ -191,7 +191,7 @@ AREXPORT bool MvrKeyHandler::remKeyHandler(int keyToHandle)
     functor was found and removed from the handlers, or false if no
     handler with the given functor was found.
  **/
-AREXPORT bool MvrKeyHandler::remKeyHandler(MvrFunctor *functor)
+MVREXPORT bool MvrKeyHandler::remKeyHandler(MvrFunctor *functor)
 {
   std::map<int, MvrFunctor *>::iterator it;
   std::list<std::map<int, MvrFunctor *>::iterator> iters;
@@ -218,7 +218,7 @@ AREXPORT bool MvrKeyHandler::remKeyHandler(MvrFunctor *functor)
   return false;
 }
 
-AREXPORT void MvrKeyHandler::checkKeys(void)
+MVREXPORT void MvrKeyHandler::checkKeys(void)
 {
   int key;
   std::map<int, MvrFunctor *>::iterator it;
@@ -240,7 +240,7 @@ AREXPORT void MvrKeyHandler::checkKeys(void)
 
 #ifndef WIN32
 
-AREXPORT int MvrKeyHandler::getChar(void)
+MVREXPORT int MvrKeyHandler::getChar(void)
 {
   if (myStream == NULL)
     return getchar();
@@ -248,7 +248,7 @@ AREXPORT int MvrKeyHandler::getChar(void)
     return getc(myStream);
 }
 
-AREXPORT int MvrKeyHandler::getKey(void)
+MVREXPORT int MvrKeyHandler::getKey(void)
 {
  /*
   * What follows is a somewhat poor implementation of getch(), basically, since
@@ -347,7 +347,7 @@ AREXPORT int MvrKeyHandler::getKey(void)
 #if 0
 /* This is a previous implementation of getKey(), just for reference or
  * quick reversion: */
-AREXPORT int MvrKeyHandler::getKey(void)
+MVREXPORT int MvrKeyHandler::getKey(void)
 {
   char key;
 
@@ -404,7 +404,7 @@ AREXPORT int MvrKeyHandler::getKey(void)
 
 #else // if it is win32
 
-AREXPORT int MvrKeyHandler::getKey(void)
+MVREXPORT int MvrKeyHandler::getKey(void)
 {
   int key;
 

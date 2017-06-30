@@ -55,7 +55,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  lcds and such, this is also passed to all the lcds created as
  their infoLogLevel too
  */
-AREXPORT MvrLCDConnector::ArLCDConnector (
+MVREXPORT MvrLCDConnector::ArLCDConnector (
   MvrArgumentParser *parser, MvrRobot *robot,
   MvrRobotConnector *robotConnector, bool autoParseArgs,
   MvrLog::LogLevel infoLogLevel,
@@ -85,7 +85,7 @@ AREXPORT MvrLCDConnector::ArLCDConnector (
 	myLogOptionsCB.setName ("MvrLCDConnector");
 	Aria::addLogOptionsCB (&myLogOptionsCB, 80);
 }
-AREXPORT MvrLCDConnector::~ArLCDConnector (void)
+MVREXPORT MvrLCDConnector::~MvrLCDConnector (void)
 {
 //  Mvria::remParseArgsCB(&myParseArgsCB);
 //  Mvria::remLogOptionsCB(&myLogOptionsCB);
@@ -97,7 +97,7 @@ AREXPORT MvrLCDConnector::~ArLCDConnector (void)
  *
   @return true if the arguments were parsed successfully false if not
  **/
-AREXPORT bool MvrLCDConnector::parseArgs (void)
+MVREXPORT bool MvrLCDConnector::parseArgs (void)
 {
 	return parseArgs (myParser);
 }
@@ -121,7 +121,7 @@ AREXPORT bool MvrLCDConnector::parseArgs (void)
     <dd>Explicitly request that the client program connect to a lcd, if it does not always do so</dd>
   </dl>
  **/
-AREXPORT bool MvrLCDConnector::parseArgs (MvrArgumentParser *parser)
+MVREXPORT bool MvrLCDConnector::parseArgs (MvrArgumentParser *parser)
 {
 
 	if (myParsedArgs)
@@ -250,7 +250,7 @@ AREXPORT bool MvrLCDConnector::parseArgs (MvrArgumentParser *parser)
 
 } // end parseArgs
 
-AREXPORT bool MvrLCDConnector::parseLCDArgs (MvrArgumentParser *parser,
+MVREXPORT bool MvrLCDConnector::parseLCDArgs (MvrArgumentParser *parser,
     LCDData *lcdData)
 {
 	char buf[512];
@@ -452,7 +452,7 @@ bool MvrLCDConnector::internalConfigureLCD (
 	lcd->setDeviceConnection (lcdData->myConn);
 	return true;
 }
-AREXPORT void MvrLCDConnector::logOptions (void) const
+MVREXPORT void MvrLCDConnector::logOptions (void) const
 {
 	ArLog::log (MvrLog::Terse, "Options for MvrLCDConnector:");
   MvrLog::log(MvrLog::Terse, "-lcdLogPacketsReceived");
@@ -470,7 +470,7 @@ AREXPORT void MvrLCDConnector::logOptions (void) const
 		logLCDOptions (lcdData);
 	}
 }
-AREXPORT void MvrLCDConnector::logLCDOptions (
+MVREXPORT void MvrLCDConnector::logLCDOptions (
   LCDData *lcdData, bool header, bool metaOpts) const
 {
 	char buf[512];
@@ -516,7 +516,7 @@ AREXPORT void MvrLCDConnector::logLCDOptions (
    use the new functionality which is just MvrLCDConnector::connectLCDs.()
    @internal
 **/
-AREXPORT bool MvrLCDConnector::addLCD (
+MVREXPORT bool MvrLCDConnector::addLCD (
   MvrLCDMTX *lcd, int lcdNumber)
 {
 	std::map<int, LCDData *>::iterator it;
@@ -538,7 +538,7 @@ AREXPORT bool MvrLCDConnector::addLCD (
 	myLCDs[lcdNumber] = new LCDData (lcdNumber, lcd);
 	return true;
 }
-AREXPORT MvrLCDMTX *ArLCDConnector::getLCD (int lcdNumber)
+MVREXPORT MvrLCDMTX *ArLCDConnector::getLCD (int lcdNumber)
 {
 	std::map<int, LCDData *>::iterator it;
 	LCDData *lcdData = NULL;
@@ -550,7 +550,7 @@ AREXPORT MvrLCDMTX *ArLCDConnector::getLCD (int lcdNumber)
 	// otherwise, return the lcd
 	return lcdData->myLCD;
 }
-AREXPORT bool MvrLCDConnector::replaceLCD (
+MVREXPORT bool MvrLCDConnector::replaceLCD (
   MvrLCDMTX *lcd, int lcdNumber)
 {
 	std::map<int, LCDData *>::iterator it;
@@ -577,7 +577,7 @@ AREXPORT bool MvrLCDConnector::replaceLCD (
    use the new functionality which is just MvrLCDConnector::connectLCDs().
    @internal
 **/
-AREXPORT bool MvrLCDConnector::setupLCD (MvrLCDMTX *lcd,
+MVREXPORT bool MvrLCDConnector::setupLCD (MvrLCDMTX *lcd,
     int lcdNumber)
 {
 	if (myRobot == NULL && myRobotConnector != NULL)
@@ -637,7 +637,7 @@ AREXPORT bool MvrLCDConnector::setupLCD (MvrLCDMTX *lcd,
    use the new functionality which is just MvrLCDConnector::connectLCDs().
    @internal
 **/
-AREXPORT bool MvrLCDConnector::connectLCD (MvrLCDMTX *lcd,
+MVREXPORT bool MvrLCDConnector::connectLCD (MvrLCDMTX *lcd,
     int lcdNumber,
     bool forceConnection)
 {
@@ -664,7 +664,7 @@ AREXPORT bool MvrLCDConnector::connectLCD (MvrLCDMTX *lcd,
 												&myTurnOnPowerCB, &myTurnOffPowerCB);
 
 }
-AREXPORT bool MvrLCDConnector::connectLCDs (
+MVREXPORT bool MvrLCDConnector::connectLCDs (
   bool continueOnFailedConnect, bool addConnectedLCDsToRobot,
   bool addAllLCDsToRobot, bool turnOnLCDs,
   bool powerCycleLCDOnFailedConnect)
@@ -761,7 +761,7 @@ AREXPORT bool MvrLCDConnector::connectLCDs (
 	return true;
 }
 
-AREXPORT bool MvrLCDConnector::turnOnPower (LCDData *LCDData)
+MVREXPORT bool MvrLCDConnector::turnOnPower (LCDData *LCDData)
 {
 	/// MPL the new way
 	if (myTurnOnPowerOutputCB != NULL) {
@@ -796,7 +796,7 @@ AREXPORT bool MvrLCDConnector::turnOnPower (LCDData *LCDData)
 	return false;
 }
 
-AREXPORT bool MvrLCDConnector::turnOffPower (LCDData *LCDData)
+MVREXPORT bool MvrLCDConnector::turnOffPower (LCDData *LCDData)
 {
 	/// MPL the new way
 	if (myTurnOffPowerOutputCB != NULL) {
@@ -831,7 +831,7 @@ AREXPORT bool MvrLCDConnector::turnOffPower (LCDData *LCDData)
 	return false;
 }
 
-AREXPORT bool MvrLCDConnector::verifyFirmware (LCDData *LCDData)
+MVREXPORT bool MvrLCDConnector::verifyFirmware (LCDData *LCDData)
 
 {
 
@@ -1084,7 +1084,7 @@ AREXPORT bool MvrLCDConnector::verifyFirmware (LCDData *LCDData)
 // TODO move searchForFile to ariaUtil
 #ifdef WIN32
 
-AREXPORT std::string MvrLCDConnector::searchForFile(const char *dirname, const char *prefix, const char *suffix)
+MVREXPORT std::string MvrLCDConnector::searchForFile(const char *dirname, const char *prefix, const char *suffix)
 {
   // todo recurse into directories? (bool flag?)
   std::string filepattern = std::string(dirname) + "\\" + prefix + "*" + suffix;
@@ -1103,7 +1103,7 @@ AREXPORT std::string MvrLCDConnector::searchForFile(const char *dirname, const c
 
 #else
 
-AREXPORT std::string MvrLCDConnector::searchForFile(
+MVREXPORT std::string MvrLCDConnector::searchForFile(
 	const char *dirToLookIn, const char *prefix, const char *suffix)
 {
 
@@ -1175,7 +1175,7 @@ AREXPORT std::string MvrLCDConnector::searchForFile(
 } 
 #endif
 
-AREXPORT void MvrLCDConnector::turnOnPowerCB (int lcdNumber)
+MVREXPORT void MvrLCDConnector::turnOnPowerCB (int lcdNumber)
 {
 std::map<int, LCDData *>::iterator it;
 LCDData *lcdData;
@@ -1190,7 +1190,7 @@ LCDData *lcdData;
 
 }
 
-AREXPORT void MvrLCDConnector::turnOffPowerCB (int lcdNumber)
+MVREXPORT void MvrLCDConnector::turnOffPowerCB (int lcdNumber)
 {
 
 std::map<int, LCDData *>::iterator it;
@@ -1206,7 +1206,7 @@ LCDData *lcdData;
 
 }
 
-AREXPORT void MvrLCDConnector::setIdentifier(const char *identifier)
+MVREXPORT void MvrLCDConnector::setIdentifier(const char *identifier)
 {
 
 	// go thru list of lcd's and set the identifiers

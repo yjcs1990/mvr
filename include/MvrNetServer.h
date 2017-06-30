@@ -74,28 +74,28 @@ class MvrNetServer
 {
 public:
   /// Constructor
-  AREXPORT MvrNetServer(bool addAriaExitCB = true,
+  MVREXPORT MvrNetServer(bool addAriaExitCB = true,
 		       bool doNotAddShutdownServer = false, 
 		       const char *name = "MvrNetServer", 
 		       MvrNetServer *childServer = NULL);
   /// Destructor
-  AREXPORT ~ArNetServer();
+  MVREXPORT ~MvrNetServer();
   
   /// Initializes the server
-  AREXPORT bool open(MvrRobot *robot, unsigned int port, 
+  MVREXPORT bool open(MvrRobot *robot, unsigned int port, 
 		     const char *password, bool multipleClients = true,
 		     const char *openOnIP = NULL);
 
   /// Closes the server
-  AREXPORT void close(void);
+  MVREXPORT void close(void);
 
   /// Adds a new command
-  AREXPORT bool addCommand(const char *command, 
+  MVREXPORT bool addCommand(const char *command, 
 			   MvrFunctor3<char **, int, MvrSocket *> *functor, 
 			   const char *help);
 
   /// Removes a command
-  AREXPORT bool remCommand(const char *command);
+  MVREXPORT bool remCommand(const char *command);
 
   /// Gets the name of this instance
   const char *getName(void) { return myName.c_str(); }
@@ -105,96 +105,96 @@ public:
    *  @swigomit @sa
    *  sendToAllClientsPlain()
    */
-  AREXPORT void sendToAllClients(const char *str, ...);
+  MVREXPORT void sendToAllClients(const char *str, ...);
 #endif
 
   /// Sends the given string to all the clients, no varargs, wrapper for java
-  AREXPORT void sendToAllClientsPlain(const char *str);
+  MVREXPORT void sendToAllClientsPlain(const char *str);
 
 #ifndef SWIG
   /** @brief Sends the given string to all the clients next cycle
    *  @swigomit
    *  @sa sendToAllClientsNextCyclePlain()
    */
-  AREXPORT void sendToAllClientsNextCycle(const char *str, ...);
+  MVREXPORT void sendToAllClientsNextCycle(const char *str, ...);
 #endif
 
   /// Sends the given string to all the clients next cycle, no varargs
-  AREXPORT void sendToAllClientsNextCyclePlain(const char *str);
+  MVREXPORT void sendToAllClientsNextCyclePlain(const char *str);
 
   /// Sends the given string to all the clients next cycle, no varargs... helper for config changes
-  AREXPORT bool sendToAllClientsNextCyclePlainBool(const char *str);
+  MVREXPORT bool sendToAllClientsNextCyclePlainBool(const char *str);
 
 #ifndef SWIG
   /** @brief Sends the given string to the (hopefully) the client given (this method may go away)
    *  @swigomit
    *  @sa sendToClientPlain()
    */
-  AREXPORT void sendToClient(MvrSocket *socket, const char *ipString,
+  MVREXPORT void sendToClient(MvrSocket *socket, const char *ipString,
 			     const char *str, ...);
 #endif
 
   /// Sends the given plain string to the (hopefully) the client given (this method may go away)
-  AREXPORT void sendToClientPlain(MvrSocket *socket, const char *ipString,
+  MVREXPORT void sendToClientPlain(MvrSocket *socket, const char *ipString,
 				  const char *str);
 
   /// Sees if the server is running and open
-  AREXPORT bool isOpen(void);
+  MVREXPORT bool isOpen(void);
 
   /// Sets whether we are logging all data sent or not
-  AREXPORT void setLoggingDataSent(bool loggingData);
+  MVREXPORT void setLoggingDataSent(bool loggingData);
   
   /// Gets whether we are logging all data sent or not
-  AREXPORT bool getLoggingDataSent(void);
+  MVREXPORT bool getLoggingDataSent(void);
 
   /// Sets whether we are logging all data received or not
-  AREXPORT void setLoggingDataReceived(bool loggingData);
+  MVREXPORT void setLoggingDataReceived(bool loggingData);
   
   /// Gets whether we are logging all data received or not
-  AREXPORT bool getLoggingDataReceived(void);
+  MVREXPORT bool getLoggingDataReceived(void);
 
   /// Sets whether we're using the wrong (legacy) end chars or not
-  AREXPORT void setUseWrongEndChars(bool useWrongEndChars);
+  MVREXPORT void setUseWrongEndChars(bool useWrongEndChars);
 
   /// Gets whether we're using the wrong (legacy) end chars or not
-  AREXPORT bool getUseWrongEndChars(void);
+  MVREXPORT bool getUseWrongEndChars(void);
 
   /// the internal sync task we use for our loop
-  AREXPORT void runOnce(void);
+  MVREXPORT void runOnce(void);
 
   /// the internal function that gives the greeting message
-  AREXPORT void internalGreeting(MvrSocket *socket);
+  MVREXPORT void internalGreeting(MvrSocket *socket);
   
   /// The internal function that does the help
-  AREXPORT void internalHelp(MvrSocket *socket);
+  MVREXPORT void internalHelp(MvrSocket *socket);
   /// The internal function for the help cb
-  AREXPORT void internalHelp(char **argv, int argc, MvrSocket *socket);
+  MVREXPORT void internalHelp(char **argv, int argc, MvrSocket *socket);
   /// The internal function for echo
-  AREXPORT void internalEcho(char **argv, int argc, MvrSocket *socket);
+  MVREXPORT void internalEcho(char **argv, int argc, MvrSocket *socket);
   /// The internal function for closing this connection
-  AREXPORT void internalQuit(char **argv, int argc, MvrSocket *socket);
+  MVREXPORT void internalQuit(char **argv, int argc, MvrSocket *socket);
   /// The internal function for shutting down
-  AREXPORT void internalShutdownServer(char **argv, int argc, 
+  MVREXPORT void internalShutdownServer(char **argv, int argc, 
 				       MvrSocket *socket);
   /// The internal function for parsing a command on a socket
-  AREXPORT void parseCommandOnSocket(MvrArgumentBuilder *args, 
+  MVREXPORT void parseCommandOnSocket(MvrArgumentBuilder *args, 
 				     MvrSocket *socket, bool allowLog = true);
   /// The internal function that adds a client to our list
-  AREXPORT void internalAddSocketToList(MvrSocket *socket);
+  MVREXPORT void internalAddSocketToList(MvrSocket *socket);
   /// The internal function that adds a client to our delete list
-  AREXPORT void internalAddSocketToDeleteList(MvrSocket *socket);
+  MVREXPORT void internalAddSocketToDeleteList(MvrSocket *socket);
   /// This squelchs all the normal commands and help
-  AREXPORT void squelchNormal(void);
+  MVREXPORT void squelchNormal(void);
   /// Sets an extra string that the server holds for passing around
-  AREXPORT void setExtraString(const char *str) { myExtraString = str; }
+  MVREXPORT void setExtraString(const char *str) { myExtraString = str; }
   /// Gets an extra string that the server holds for passing around
-  AREXPORT const char *getExtraString(void) { return myExtraString.c_str(); }
+  MVREXPORT const char *getExtraString(void) { return myExtraString.c_str(); }
   /// Lock the server
-  AREXPORT int lock() {return(myMutex.lock());}
+  MVREXPORT int lock() {return(myMutex.lock());}
   /// Try to lock the server without blocking
-  AREXPORT int tryLock() {return(myMutex.tryLock());}
+  MVREXPORT int tryLock() {return(myMutex.tryLock());}
   /// Unlock the server
-  AREXPORT int unlock() {return(myMutex.unlock());}
+  MVREXPORT int unlock() {return(myMutex.unlock());}
 protected:
   std::string myName;
   MvrNetServer *myChildServer;

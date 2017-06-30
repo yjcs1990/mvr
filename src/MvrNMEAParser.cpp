@@ -52,7 +52,7 @@ void ArNMEAParser_printBuf(FILE *fp, const char *data, int size) {
 }
 #endif
 
-AREXPORT ArNMEAParser::ArNMEAParser(const char *name) :
+MVREXPORT ArNMEAParser::ArNMEAParser(const char *name) :
   myName(name),
   MaxNumFields(50),
   MaxFieldSize(128),
@@ -66,12 +66,12 @@ AREXPORT ArNMEAParser::ArNMEAParser(const char *name) :
   memset(checksumBuf, 0, 3);
 }
 
-AREXPORT void ArNMEAParser::addHandler(const char *message, ArNMEAParser::Handler *handler)
+MVREXPORT void ArNMEAParser::addHandler(const char *message, ArNMEAParser::Handler *handler)
 {
   myHandlers[message] = handler;
 }
 
-AREXPORT void ArNMEAParser::removeHandler(const char *message)
+MVREXPORT void ArNMEAParser::removeHandler(const char *message)
 {
   HandlerMap::iterator i = myHandlers.find(message);
   if(i != myHandlers.end()) myHandlers.erase(i);
@@ -114,7 +114,7 @@ void ArNMEAParser::beginMessage()
 }
 
 
-AREXPORT int ArNMEAParser::parse(MvrDeviceConnection *dev) 
+MVREXPORT int ArNMEAParser::parse(MvrDeviceConnection *dev) 
 {
   int n = dev->read(myReadBuffer, sizeof(myReadBuffer));
 #ifdef DEBUG_ARNMEAPARSER
@@ -126,7 +126,7 @@ AREXPORT int ArNMEAParser::parse(MvrDeviceConnection *dev)
   return parse(myReadBuffer, n);
 }
 
-AREXPORT int ArNMEAParser::parse(const char *buf, int n)
+MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
 {
   int result = 0;
   if (n < 0) 

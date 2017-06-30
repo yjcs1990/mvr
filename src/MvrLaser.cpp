@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 bool MvrLaser::ourUseSimpleNaming = false;
 
-AREXPORT MvrLaser::ArLaser(
+MVREXPORT MvrLaser::ArLaser(
 	int laserNumber, const char *name, 
 	unsigned int absoluteMaxRange, bool locationDependent, 
 	bool appendLaserNumberToName) :
@@ -111,7 +111,7 @@ AREXPORT MvrLaser::ArLaser(
   myRobotRunningAndConnected = false;
 }
 
-AREXPORT MvrLaser::~ArLaser()
+MVREXPORT MvrLaser::~MvrLaser()
 {
 }
 
@@ -119,7 +119,7 @@ AREXPORT MvrLaser::~ArLaser()
    This can be used to set the name on mutexes and such to match the
    laser's new name.
 **/
-AREXPORT void MvrLaser::laserSetName(const char *name)
+MVREXPORT void MvrLaser::laserSetName(const char *name)
 {
   if (ourUseSimpleNaming)
   {
@@ -146,7 +146,7 @@ AREXPORT void MvrLaser::laserSetName(const char *name)
   myDataCBList.setLogging(false); // supress debug logging since it drowns out all other logging 
 }
 
-AREXPORT void MvrLaser::setMaxRange(unsigned int maxRange)
+MVREXPORT void MvrLaser::setMaxRange(unsigned int maxRange)
 {
   if (maxRange > myAbsoluteMaxRange)
   {
@@ -160,14 +160,14 @@ AREXPORT void MvrLaser::setMaxRange(unsigned int maxRange)
   myMaxRangeSet = true;
 }
 
-AREXPORT void MvrLaser::setCumulativeBufferSize(size_t size)
+MVREXPORT void MvrLaser::setCumulativeBufferSize(size_t size)
 {
   MvrRangeDevice::setCumulativeBufferSize(size);
   myCumulativeBufferSizeSet = true;
 }
 
 
-AREXPORT void MvrLaser::laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange)
+MVREXPORT void MvrLaser::laserSetAbsoluteMaxRange(unsigned int absoluteMaxRange)
 { 
   MvrLog::log(myInfoLogLevel, "%s: Setting absolute max range to %u", 
 	     getName(), absoluteMaxRange);
@@ -398,7 +398,7 @@ void MvrLaser::internalProcessReading(double x, double y,
 
 }
 
-AREXPORT bool MvrLaser::laserPullUnsetParamsFromRobot(void)
+MVREXPORT bool MvrLaser::laserPullUnsetParamsFromRobot(void)
 {
   if (myRobot == NULL)
   {
@@ -616,7 +616,7 @@ AREXPORT bool MvrLaser::laserPullUnsetParamsFromRobot(void)
   return true;
 }
 
-AREXPORT void MvrLaser::setDeviceConnection(MvrDeviceConnection *conn)
+MVREXPORT void MvrLaser::setDeviceConnection(MvrDeviceConnection *conn)
 {
   myConnMutex.lock();
   myConn = conn; 
@@ -624,7 +624,7 @@ AREXPORT void MvrLaser::setDeviceConnection(MvrDeviceConnection *conn)
   myConnMutex.unlock();
 }
 
-AREXPORT MvrDeviceConnection *ArLaser::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *ArLaser::getDeviceConnection(void)
 {
   return myConn;
 }
@@ -642,7 +642,7 @@ AREXPORT MvrDeviceConnection *ArLaser::getDeviceConnection(void)
    will be disabled, otherwise disconnect on error will be triggered
    after this number of miliseconds...  
 **/
-AREXPORT void MvrLaser::setConnectionTimeoutSeconds(double seconds)
+MVREXPORT void MvrLaser::setConnectionTimeoutSeconds(double seconds)
 {
   MvrLog::log(MvrLog::Normal, 
 	     "%s::setConnectionTimeoutSeconds: Setting timeout to %g secs", 
@@ -670,7 +670,7 @@ double MvrLaser::getConnectionTimeoutSeconds(void)
   return myTimeoutSeconds;
 }
 
-AREXPORT void MvrLaser::laserConnect(void)
+MVREXPORT void MvrLaser::laserConnect(void)
 {
   // figure out how many readings we can have and set the current
   // buffer size to that
@@ -731,25 +731,25 @@ AREXPORT void MvrLaser::laserConnect(void)
   myConnectCBList.invoke();
 }
 
-AREXPORT void MvrLaser::laserFailedConnect(void)
+MVREXPORT void MvrLaser::laserFailedConnect(void)
 {
   MvrLog::log(myInfoLogLevel, "%s: Failed to connect", getName());
   myFailedConnectCBList.invoke();
 }
 
-AREXPORT void MvrLaser::laserDisconnectNormally(void)
+MVREXPORT void MvrLaser::laserDisconnectNormally(void)
 {
   MvrLog::log(myInfoLogLevel, "%s: Disconnected normally", getName());
   myDisconnectNormallyCBList.invoke();
 }
 
-AREXPORT void MvrLaser::laserDisconnectOnError(void)
+MVREXPORT void MvrLaser::laserDisconnectOnError(void)
 {
   MvrLog::log(MvrLog::Normal, "%s: Disconnected because of error", getName());
   myDisconnectOnErrorCBList.invoke();
 }
 
-AREXPORT void MvrLaser::internalGotReading(void)
+MVREXPORT void MvrLaser::internalGotReading(void)
 {
   if (myTimeLastReading != time(NULL)) 
   {
@@ -764,7 +764,7 @@ AREXPORT void MvrLaser::internalGotReading(void)
   myDataCBList.invoke();
 }
 
-AREXPORT int MvrLaser::getReadingCount()
+MVREXPORT int MvrLaser::getReadingCount()
 {
   if (myTimeLastReading == time(NULL))
     return myReadingCount;
@@ -777,13 +777,13 @@ AREXPORT int MvrLaser::getReadingCount()
 
 
 
-AREXPORT void MvrLaser::setSensorPosition(
+MVREXPORT void MvrLaser::setSensorPosition(
 	double x, double y, double th, double z)
 {
   setSensorPosition(MvrPose(x, y, th), z);
 }
 
-AREXPORT void MvrLaser::setSensorPosition(MvrPose pose, double z)
+MVREXPORT void MvrLaser::setSensorPosition(MvrPose pose, double z)
 {
   myHaveSensorPose = true;
   mySensorPose.setPose(pose);
@@ -897,7 +897,7 @@ void MvrLaser::internalBuildChoices(
 
    @param endDegreesMax The maximum value for end degrees
 **/
-AREXPORT void MvrLaser::laserAllowSetDegrees(double defaultStartDegrees, double startDegreesMin, double startDegreesMax, double defaultEndDegrees, double endDegreesMin, double endDegreesMax)
+MVREXPORT void MvrLaser::laserAllowSetDegrees(double defaultStartDegrees, double startDegreesMin, double startDegreesMax, double defaultEndDegrees, double endDegreesMin, double endDegreesMax)
 {
   myCanSetDegrees = true;
   myStartDegreesMin = startDegreesMin;
@@ -912,7 +912,7 @@ AREXPORT void MvrLaser::laserAllowSetDegrees(double defaultStartDegrees, double 
 
 }
 
-AREXPORT bool MvrLaser::setStartDegrees(double startDegrees)
+MVREXPORT bool MvrLaser::setStartDegrees(double startDegrees)
 {
   if (!myCanSetDegrees)
   {
@@ -939,7 +939,7 @@ AREXPORT bool MvrLaser::setStartDegrees(double startDegrees)
   return true;
 }
     
-AREXPORT bool MvrLaser::setEndDegrees(double endDegrees)
+MVREXPORT bool MvrLaser::setEndDegrees(double endDegrees)
 {
   if (!myCanSetDegrees)
   {
@@ -980,7 +980,7 @@ AREXPORT bool MvrLaser::setEndDegrees(double endDegrees)
    lasers... and because the original sick driver used words typed out
    (to make problems more obvious).
 **/
-AREXPORT void MvrLaser::laserAllowDegreesChoices(
+MVREXPORT void MvrLaser::laserAllowDegreesChoices(
 	const char *defaultDegreesChoice, 
 	std::map<std::string, double> degreesChoices)
 {
@@ -991,7 +991,7 @@ AREXPORT void MvrLaser::laserAllowDegreesChoices(
   myDegreesChoiceSet = false;
 }
 
-AREXPORT bool MvrLaser::chooseDegrees(
+MVREXPORT bool MvrLaser::chooseDegrees(
 	const char *degreesChoice)
 {
   if (!myCanChooseDegrees)
@@ -1021,7 +1021,7 @@ AREXPORT bool MvrLaser::chooseDegrees(
 
    @param incrementMax The maximum value for the increment
 **/
-AREXPORT void MvrLaser::laserAllowSetIncrement(
+MVREXPORT void MvrLaser::laserAllowSetIncrement(
 	double defaultIncrement, double incrementMin, double incrementMax)
 {
   myCanSetIncrement = true;
@@ -1032,7 +1032,7 @@ AREXPORT void MvrLaser::laserAllowSetIncrement(
 
 }
 
-AREXPORT bool MvrLaser::setIncrement(double increment)
+MVREXPORT bool MvrLaser::setIncrement(double increment)
 {
   if (!myCanSetIncrement)
   {
@@ -1069,7 +1069,7 @@ AREXPORT bool MvrLaser::setIncrement(double increment)
    lasers... and because the original sick driver used words typed out
    (to make problems more obvious).
 **/
-AREXPORT void MvrLaser::laserAllowIncrementChoices(
+MVREXPORT void MvrLaser::laserAllowIncrementChoices(
 	const char *defaultIncrementChoice, 
 	std::map<std::string, double> incrementChoices)
 {
@@ -1080,7 +1080,7 @@ AREXPORT void MvrLaser::laserAllowIncrementChoices(
   myIncrementChoiceSet = false;
 }
 
-AREXPORT bool MvrLaser::chooseIncrement(const char *incrementChoice)
+MVREXPORT bool MvrLaser::chooseIncrement(const char *incrementChoice)
 {
   if (!myCanChooseIncrement)
   {
@@ -1104,7 +1104,7 @@ AREXPORT bool MvrLaser::chooseIncrement(const char *incrementChoice)
 
    @param unitsChoices The possible choices for units.
 **/
-AREXPORT void MvrLaser::laserAllowUnitsChoices(
+MVREXPORT void MvrLaser::laserAllowUnitsChoices(
 	const char *defaultUnitsChoice, 
 	std::list<std::string> unitsChoices)
 {
@@ -1116,7 +1116,7 @@ AREXPORT void MvrLaser::laserAllowUnitsChoices(
 
 }
 
-AREXPORT bool MvrLaser::chooseUnits(const char *unitsChoice)
+MVREXPORT bool MvrLaser::chooseUnits(const char *unitsChoice)
 {
   if (!myCanChooseUnits)
   {
@@ -1138,7 +1138,7 @@ AREXPORT bool MvrLaser::chooseUnits(const char *unitsChoice)
    
    @param reflectorBitsChoices The possible choices for reflector bits
 **/
-AREXPORT void MvrLaser::laserAllowReflectorBitsChoices(
+MVREXPORT void MvrLaser::laserAllowReflectorBitsChoices(
 	const char *defaultReflectorBitsChoice, 
 	std::list<std::string> reflectorBitsChoices)
 {
@@ -1149,7 +1149,7 @@ AREXPORT void MvrLaser::laserAllowReflectorBitsChoices(
   myReflectorBitsChoiceSet = false;
 }
 
-AREXPORT bool MvrLaser::chooseReflectorBits(const char *reflectorBitsChoice)
+MVREXPORT bool MvrLaser::chooseReflectorBits(const char *reflectorBitsChoice)
 {
   if (!myCanChooseReflectorBits)
   {
@@ -1176,14 +1176,14 @@ AREXPORT bool MvrLaser::chooseReflectorBits(const char *reflectorBitsChoice)
    @param defaultPowerControlled The default value for power
    controlled.
 **/
-AREXPORT void MvrLaser::laserAllowSetPowerControlled(bool defaultPowerControlled)
+MVREXPORT void MvrLaser::laserAllowSetPowerControlled(bool defaultPowerControlled)
 {
   myCanSetPowerControlled = true;
   setPowerControlled(defaultPowerControlled);
   myPowerControlledSet = false;
 }
 
-AREXPORT bool MvrLaser::setPowerControlled(
+MVREXPORT bool MvrLaser::setPowerControlled(
 	bool powerControlled)
 {
   if (!myCanSetPowerControlled)
@@ -1203,7 +1203,7 @@ AREXPORT bool MvrLaser::setPowerControlled(
 
    @param startingBaudChoices The available choices for starting baud
 **/
-AREXPORT void MvrLaser::laserAllowStartingBaudChoices(
+MVREXPORT void MvrLaser::laserAllowStartingBaudChoices(
 	const char *defaultStartingBaudChoice, 
 	std::list<std::string> startingBaudChoices)
 {
@@ -1214,7 +1214,7 @@ AREXPORT void MvrLaser::laserAllowStartingBaudChoices(
   myStartingBaudChoiceSet = false;
 }
 
-AREXPORT bool MvrLaser::chooseStartingBaud(const char *startingBaudChoice)
+MVREXPORT bool MvrLaser::chooseStartingBaud(const char *startingBaudChoice)
 {
   if (!myCanChooseStartingBaud)
   {
@@ -1239,7 +1239,7 @@ AREXPORT bool MvrLaser::chooseStartingBaud(const char *startingBaudChoice)
 
    @param autoBaudChoices The available choices for auto baud
 **/
-AREXPORT void MvrLaser::laserAllowAutoBaudChoices(
+MVREXPORT void MvrLaser::laserAllowAutoBaudChoices(
 	const char *defaultAutoBaudChoice, 
 	std::list<std::string> autoBaudChoices)
 {
@@ -1250,7 +1250,7 @@ AREXPORT void MvrLaser::laserAllowAutoBaudChoices(
   myAutoBaudChoiceSet = false;
 }
 
-AREXPORT bool MvrLaser::chooseAutoBaud(const char *autoBaudChoice)
+MVREXPORT bool MvrLaser::chooseAutoBaud(const char *autoBaudChoice)
 {
   if (!myCanChooseAutoBaud)
   {
@@ -1266,17 +1266,17 @@ AREXPORT bool MvrLaser::chooseAutoBaud(const char *autoBaudChoice)
   return true;      
 }
 
-AREXPORT void MvrLaser::laserSetDefaultTcpPort(int defaultTcpPort)
+MVREXPORT void MvrLaser::laserSetDefaultTcpPort(int defaultTcpPort)
 {
   myDefaultTcpPort = defaultTcpPort;
 }
 
-AREXPORT void MvrLaser::laserSetDefaultPortType(const char *defaultPortType)
+MVREXPORT void MvrLaser::laserSetDefaultPortType(const char *defaultPortType)
 {
   myDefaultPortType = defaultPortType;
 }
 
-AREXPORT bool MvrLaser::addIgnoreReadings(const char *ignoreReadings)
+MVREXPORT bool MvrLaser::addIgnoreReadings(const char *ignoreReadings)
 {
   // if we have , then use it as the separator, otherwise use space
   // like normal
@@ -1351,7 +1351,7 @@ AREXPORT bool MvrLaser::addIgnoreReadings(const char *ignoreReadings)
     @param trans the transform to apply to the data
     @param doCumulative whether to transform the cumulative buffer or not
 */
-AREXPORT void MvrLaser::applyTransform(MvrTransform trans,
+MVREXPORT void MvrLaser::applyTransform(MvrTransform trans,
 				       bool doCumulative)
 {
   myCurrentBuffer.applyTransform(trans);
@@ -1370,7 +1370,7 @@ AREXPORT void MvrLaser::applyTransform(MvrTransform trans,
    getConnectionTimeoutSeconds.  If there is a robot then it will not
    start the check until the laser is running and connected.
 **/
-AREXPORT bool MvrLaser::laserCheckLostConnection(void)
+MVREXPORT bool MvrLaser::laserCheckLostConnection(void)
 {
 	
   if ((myRobot == NULL || myRobotRunningAndConnected) && 
@@ -1388,14 +1388,14 @@ AREXPORT bool MvrLaser::laserCheckLostConnection(void)
   return false;
 }
 
-AREXPORT void MvrLaser::copyReadingCount(const MvrLaser* laser)
+MVREXPORT void MvrLaser::copyReadingCount(const MvrLaser* laser)
 {
   myTimeLastReading = laser->myTimeLastReading;
   myReadingCurrentCount = laser->myReadingCurrentCount;
   myReadingCount = laser->myReadingCount;
 }
 
-AREXPORT void MvrLaser::useSimpleNamingForAllLasers(void)
+MVREXPORT void MvrLaser::useSimpleNamingForAllLasers(void)
 {
   MvrLog::log(MvrLog::Normal, "MvrLaser: Will use simple naming for all lasers");
   ourUseSimpleNaming = true;

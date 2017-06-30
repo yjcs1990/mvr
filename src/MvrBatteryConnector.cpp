@@ -44,7 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  batteries and such, this is also passed to all the batteries created as
  their infoLogLevel too
  */
-AREXPORT MvrBatteryConnector::ArBatteryConnector (
+MVREXPORT MvrBatteryConnector::ArBatteryConnector (
   MvrArgumentParser *parser, MvrRobot *robot,
   MvrRobotConnector *robotConnector, bool autoParseArgs,
   MvrLog::LogLevel infoLogLevel) :
@@ -65,7 +65,7 @@ AREXPORT MvrBatteryConnector::ArBatteryConnector (
 	myLogOptionsCB.setName ("MvrBatteryConnector");
 	Aria::addLogOptionsCB (&myLogOptionsCB, 80);
 }
-AREXPORT MvrBatteryConnector::~ArBatteryConnector (void)
+MVREXPORT MvrBatteryConnector::~MvrBatteryConnector (void)
 {
 //  Mvria::remLogOptionsCB(&myLogOptionsCB);
 //  Mvria::remParseArgsCB(&myParseArgsCB);
@@ -77,7 +77,7 @@ AREXPORT MvrBatteryConnector::~ArBatteryConnector (void)
  *
   @return true if the arguments were parsed successfully false if not
  **/
-AREXPORT bool MvrBatteryConnector::parseArgs (void)
+MVREXPORT bool MvrBatteryConnector::parseArgs (void)
 {
 	return parseArgs (myParser);
 }
@@ -99,7 +99,7 @@ AREXPORT bool MvrBatteryConnector::parseArgs (void)
     <dt>-dncb</dt>
   </dl>
  **/
-AREXPORT bool MvrBatteryConnector::parseArgs (MvrArgumentParser *parser)
+MVREXPORT bool MvrBatteryConnector::parseArgs (MvrArgumentParser *parser)
 {
 
 	if (myParsedArgs)
@@ -228,7 +228,7 @@ AREXPORT bool MvrBatteryConnector::parseArgs (MvrArgumentParser *parser)
 
 } // end parseArgs
 
-AREXPORT bool MvrBatteryConnector::parseBatteryArgs (MvrArgumentParser *parser,
+MVREXPORT bool MvrBatteryConnector::parseBatteryArgs (MvrArgumentParser *parser,
     BatteryData *batteryData)
 {
 	char buf[512];
@@ -430,7 +430,7 @@ bool MvrBatteryConnector::internalConfigureBattery (
 	battery->setDeviceConnection (batteryData->myConn);
 	return true;
 }
-AREXPORT void MvrBatteryConnector::logOptions (void) const
+MVREXPORT void MvrBatteryConnector::logOptions (void) const
 {
 	ArLog::log (MvrLog::Terse, "Options for MvrBatteryConnector:");
   MvrLog::log(MvrLog::Terse, "-batteryLogPacketsReceived");
@@ -448,7 +448,7 @@ AREXPORT void MvrBatteryConnector::logOptions (void) const
 		logBatteryOptions (batteryData);
 	}
 }
-AREXPORT void MvrBatteryConnector::logBatteryOptions (
+MVREXPORT void MvrBatteryConnector::logBatteryOptions (
   BatteryData *batteryData, bool header, bool metaOpts) const
 {
 	char buf[512];
@@ -494,7 +494,7 @@ AREXPORT void MvrBatteryConnector::logBatteryOptions (
    use the new functionality which is just MvrBatteryConnector::connectBatteries.()
    @internal
 **/
-AREXPORT bool MvrBatteryConnector::addBattery (
+MVREXPORT bool MvrBatteryConnector::addBattery (
   MvrBatteryMTX *battery, int batteryNumber)
 {
 	std::map<int, BatteryData *>::iterator it;
@@ -516,7 +516,7 @@ AREXPORT bool MvrBatteryConnector::addBattery (
 	myBatteries[batteryNumber] = new BatteryData (batteryNumber, battery);
 	return true;
 }
-AREXPORT MvrBatteryMTX *ArBatteryConnector::getBattery (int batteryNumber)
+MVREXPORT MvrBatteryMTX *ArBatteryConnector::getBattery (int batteryNumber)
 {
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;
@@ -528,7 +528,7 @@ AREXPORT MvrBatteryMTX *ArBatteryConnector::getBattery (int batteryNumber)
 	// otherwise, return the battery
 	return batteryData->myBattery;
 }
-AREXPORT bool MvrBatteryConnector::replaceBattery (
+MVREXPORT bool MvrBatteryConnector::replaceBattery (
   MvrBatteryMTX *battery, int batteryNumber)
 {
 	std::map<int, BatteryData *>::iterator it;
@@ -555,7 +555,7 @@ AREXPORT bool MvrBatteryConnector::replaceBattery (
    use the new functionality which is just MvrBatteryConnector::connectBatteries().
    @internal
 **/
-AREXPORT bool MvrBatteryConnector::setupBattery (MvrBatteryMTX *battery,
+MVREXPORT bool MvrBatteryConnector::setupBattery (MvrBatteryMTX *battery,
     int batteryNumber)
 {
 	if (myRobot == NULL && myRobotConnector != NULL)
@@ -615,7 +615,7 @@ AREXPORT bool MvrBatteryConnector::setupBattery (MvrBatteryMTX *battery,
    use the new functionality which is just MvrBatteryConnector::connectBatteries().
    @internal
 **/
-AREXPORT bool MvrBatteryConnector::connectBattery (MvrBatteryMTX *battery,
+MVREXPORT bool MvrBatteryConnector::connectBattery (MvrBatteryMTX *battery,
     int batteryNumber,
     bool forceConnection)
 {
@@ -641,7 +641,7 @@ AREXPORT bool MvrBatteryConnector::connectBattery (MvrBatteryMTX *battery,
 		return battery->blockingConnect(myBatteryLogPacketsSent, myBatteryLogPacketsReceived);
 }
 
-AREXPORT bool MvrBatteryConnector::connectBatteries (
+MVREXPORT bool MvrBatteryConnector::connectBatteries (
   bool continueOnFailedConnect, bool addConnectedBatteriesToRobot,
   bool addAllBatteriesToRobot, bool turnOnBatteries,
   bool powerCycleBatteryOnFailedConnect)
@@ -730,7 +730,7 @@ AREXPORT bool MvrBatteryConnector::connectBatteries (
 	return true;
 }
 
-AREXPORT bool MvrBatteryConnector::disconnectBatteries()
+MVREXPORT bool MvrBatteryConnector::disconnectBatteries()
 {
 	std::map<int, BatteryData *>::iterator it;
 	BatteryData *batteryData = NULL;

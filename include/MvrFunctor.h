@@ -111,7 +111,7 @@ class MvrFunctor
 public:
 
   /// Destructor
-  virtual ~ArFunctor() {}
+  virtual ~MvrFunctor() {}
 
   /// Invokes the functor
   virtual void invoke(void) = 0;
@@ -156,7 +156,7 @@ class MvrFunctor1 : public MvrFunctor
 public:
 
   /// Destructor
-  virtual ~ArFunctor1() {}
+  virtual ~MvrFunctor1() {}
 
   /// Invokes the functor
   virtual void invoke(void) = 0;
@@ -183,7 +183,7 @@ class MvrFunctor2 : public MvrFunctor1<P1>
 public:
 
   /// Destructor
-  virtual ~ArFunctor2() {}
+  virtual ~MvrFunctor2() {}
 
   /// Invokes the functor
   virtual void invoke(void) = 0;
@@ -217,7 +217,7 @@ class MvrFunctor3 : public MvrFunctor2<P1, P2>
 public:
 
   /// Destructor
-  virtual ~ArFunctor3() {}
+  virtual ~MvrFunctor3() {}
 
   /// Invokes the functor
   virtual void invoke(void) = 0;
@@ -261,7 +261,7 @@ class MvrFunctor4 : public MvrFunctor3<P1, P2, P3>
 public:
 
   /// Destructor
-  virtual ~ArFunctor4() {}
+  virtual ~MvrFunctor4() {}
 
   /// Invokes the functor
   virtual void invoke(void) = 0;
@@ -314,7 +314,7 @@ class MvrFunctor5 : public MvrFunctor4<P1, P2, P3, P4>
 public:
 
   /// Destructor
-  virtual ~ArFunctor5() {}
+  virtual ~MvrFunctor5() {}
 
   /// Invokes the functor
   virtual void invoke(void) = 0;
@@ -383,7 +383,7 @@ class MvrRetFunctor : public MvrFunctor
 public:
 
   /// Destructor
-  virtual ~ArRetFunctor() {}
+  virtual ~MvrRetFunctor() {}
 
   /// Invokes the functor
   virtual void invoke(void) {invokeR();}
@@ -408,7 +408,7 @@ class MvrRetFunctor1 : public MvrRetFunctor<Ret>
 public:
 
   /// Destructor
-  virtual ~ArRetFunctor1() {}
+  virtual ~MvrRetFunctor1() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) = 0;
@@ -436,7 +436,7 @@ class MvrRetFunctor2 : public MvrRetFunctor1<Ret, P1>
 public:
 
   /// Destructor
-  virtual ~ArRetFunctor2() {}
+  virtual ~MvrRetFunctor2() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) = 0;
@@ -471,7 +471,7 @@ class MvrRetFunctor3 : public MvrRetFunctor2<Ret, P1, P2>
 public:
 
   /// Destructor
-  virtual ~ArRetFunctor3() {}
+  virtual ~MvrRetFunctor3() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) = 0;
@@ -515,7 +515,7 @@ class MvrRetFunctor4 : public MvrRetFunctor3<Ret, P1, P2, P3>
 public:
 
   /// Destructor
-  virtual ~ArRetFunctor4() {}
+  virtual ~MvrRetFunctor4() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) = 0;
@@ -567,7 +567,7 @@ class MvrRetFunctor5 : public MvrRetFunctor4<Ret, P1, P2, P3, P4>
 public:
 
   /// Destructor
-  virtual ~ArRetFunctor5() {}
+  virtual ~MvrRetFunctor5() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) = 0;
@@ -656,7 +656,7 @@ public:
   */
   MvrGlobalFunctor(void (*func)(void)) : myFunc(func) {}
   /// Destructor
-  virtual ~ArGlobalFunctor() {}
+  virtual ~MvrGlobalFunctor() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(*myFunc)();}
@@ -696,7 +696,7 @@ public:
     myFunc(func), myP1(p1) {}
 
   /// Destructor
-  virtual ~ArGlobalFunctor1() {}
+  virtual ~MvrGlobalFunctor1() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(*myFunc)(myP1);}
@@ -762,7 +762,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
-  virtual ~ArGlobalFunctor2() {}
+  virtual ~MvrGlobalFunctor2() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(*myFunc)(myP1, myP2);}
@@ -851,7 +851,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
-  virtual ~ArGlobalFunctor3() {}
+  virtual ~MvrGlobalFunctor3() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(*myFunc)(myP1, myP2, myP3);}
@@ -968,7 +968,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
-  virtual ~ArGlobalFunctor4() {}
+  virtual ~MvrGlobalFunctor4() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(*myFunc)(myP1, myP2, myP3, myP4);}
@@ -1112,7 +1112,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor
-  virtual ~ArGlobalFunctor5() {}
+  virtual ~MvrGlobalFunctor5() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(*myFunc)(myP1, myP2, myP3, myP4, myP5);}
@@ -1243,7 +1243,7 @@ public:
   MvrGlobalRetFunctor(Ret (*func)(void)) : myFunc(func) {}
 
   /// Destructor
-  virtual ~ArGlobalRetFunctor() {}
+  virtual ~MvrGlobalRetFunctor() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (*myFunc)();}
@@ -1287,7 +1287,7 @@ public:
     myFunc(func), myP1(p1) {}
 
   /// Destructor
-  virtual ~ArGlobalRetFunctor1() {}
+  virtual ~MvrGlobalRetFunctor1() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (*myFunc)(myP1);}
@@ -1352,7 +1352,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
-  virtual ~ArGlobalRetFunctor2() {}
+  virtual ~MvrGlobalRetFunctor2() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2);}
@@ -1441,7 +1441,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
-  virtual ~ArGlobalRetFunctor3() {}
+  virtual ~MvrGlobalRetFunctor3() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2, myP3);}
@@ -1560,7 +1560,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
-  virtual ~ArGlobalRetFunctor4() {}
+  virtual ~MvrGlobalRetFunctor4() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2, myP3, myP4);}
@@ -1704,7 +1704,7 @@ public:
     myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor
-  virtual ~ArGlobalRetFunctor5() {}
+  virtual ~MvrGlobalRetFunctor5() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (*myFunc)(myP1, myP2, myP3, myP4, myP5);}
@@ -1841,7 +1841,7 @@ public:
   MvrFunctorC(T *obj, void (T::*func)(void)) : myObj(obj), myFunc(func) {}
 
   /// Destructor
-  virtual ~ArFunctorC() {}
+  virtual ~MvrFunctorC() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)();}
@@ -1917,7 +1917,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
-  virtual ~ArFunctor1C() {}
+  virtual ~MvrFunctor1C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1);}
@@ -2026,7 +2026,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
-  virtual ~ArFunctor2C() {}
+  virtual ~MvrFunctor2C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2);}
@@ -2170,7 +2170,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
-  virtual ~ArFunctor3C() {}
+  virtual ~MvrFunctor3C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3);}
@@ -2356,7 +2356,7 @@ public:
 
 	
   /// Destructor
-  virtual ~ArFunctor4C() {}
+  virtual ~MvrFunctor4C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3, myP4);}
@@ -2584,7 +2584,7 @@ ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4
 
 	
   /// Destructor
-  virtual ~ArFunctor5C() {}
+  virtual ~MvrFunctor5C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3, myP4, myP5);}
@@ -2736,7 +2736,7 @@ public:
   MvrRetFunctorC(T *obj, Ret (T::*func)(void)) : myObj(obj), myFunc(func) {}
 
   /// Destructor - supply function pointer
-  virtual ~ArRetFunctorC() {}
+  virtual ~MvrRetFunctorC() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)();}
@@ -2812,7 +2812,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
-  virtual ~ArRetFunctor1C() {}
+  virtual ~MvrRetFunctor1C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1);}
@@ -2921,7 +2921,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
-  virtual ~ArRetFunctor2C() {}
+  virtual ~MvrRetFunctor2C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2);}
@@ -3066,7 +3066,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
-  virtual ~ArRetFunctor3C() {}
+  virtual ~MvrRetFunctor3C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3);}
@@ -3261,7 +3261,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
-  virtual ~ArRetFunctor4C() {}
+  virtual ~MvrRetFunctor4C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3, myP4);}
@@ -3496,7 +3496,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor
-  virtual ~ArRetFunctor5C() {}
+  virtual ~MvrRetFunctor5C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3, myP4, myP5);}
@@ -3651,7 +3651,7 @@ public:
   MvrConstFunctorC(T *obj, void (T::*func)(void) const) : myObj(obj), myFunc(func) {}
 
   /// Destructor
-  virtual ~ArConstFunctorC() {}
+  virtual ~MvrConstFunctorC() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)();}
@@ -3727,7 +3727,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
-  virtual ~ArConstFunctor1C() {}
+  virtual ~MvrConstFunctor1C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1);}
@@ -3836,7 +3836,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
-  virtual ~ArConstFunctor2C() {}
+  virtual ~MvrConstFunctor2C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2);}
@@ -3980,7 +3980,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
-  virtual ~ArConstFunctor3C() {}
+  virtual ~MvrConstFunctor3C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3);}
@@ -4164,7 +4164,7 @@ public:
 
 	
   /// Destructor
-  virtual ~ArConstFunctor4C() {}
+  virtual ~MvrConstFunctor4C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3, myP4);}
@@ -4393,7 +4393,7 @@ public:
 
 	
   /// Destructor
-  virtual ~ArConstFunctor5C() {}
+  virtual ~MvrConstFunctor5C() {}
 
   /// Invokes the functor
   virtual void invoke(void) {(myObj->*myFunc)(myP1, myP2, myP3, myP4, myP5);}
@@ -4542,7 +4542,7 @@ public:
   MvrConstRetFunctorC(T *obj, Ret (T::*func)(void) const) : myObj(obj), myFunc(func) {}
 
   /// Destructor - supply function pointer
-  virtual ~ArConstRetFunctorC() {}
+  virtual ~MvrConstRetFunctorC() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)();}
@@ -4617,7 +4617,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1) {}
 
   /// Destructor
-  virtual ~ArConstRetFunctor1C() {}
+  virtual ~MvrConstRetFunctor1C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1);}
@@ -4725,7 +4725,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2) {}
 
   /// Destructor
-  virtual ~ArConstRetFunctor2C() {}
+  virtual ~MvrConstRetFunctor2C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2);}
@@ -4869,7 +4869,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3) {}
 
   /// Destructor
-  virtual ~ArConstRetFunctor3C() {}
+  virtual ~MvrConstRetFunctor3C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3);}
@@ -5061,7 +5061,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4) {}
 
   /// Destructor
-  virtual ~ArConstRetFunctor4C() {}
+  virtual ~MvrConstRetFunctor4C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3, myP4);}
@@ -5295,7 +5295,7 @@ public:
     myObj(obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Destructor
-  virtual ~ArConstRetFunctor5C() {}
+  virtual ~MvrConstRetFunctor5C() {}
 
   /// Invokes the functor with return value
   virtual Ret invokeR(void) {return (myObj->*myFunc)(myP1, myP2, myP3, myP4, myP5);}

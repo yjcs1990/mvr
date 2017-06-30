@@ -6,9 +6,9 @@
 #include "MvrRobot.h"
 #include <string.h>
 
-AREXPORT bool MvrAction::ourDefaultActivationState = true;
+MVREXPORT bool MvrAction::ourDefaultActivationState = true;
 
-AREXPORT MvrAction::MvrAction(const char *name, const char *description)
+MVREXPORT MvrAction::MvrAction(const char *name, const char *description)
 {
   myRobot = NULL;
   myNumArgs = 0;
@@ -17,34 +17,34 @@ AREXPORT MvrAction::MvrAction(const char *name, const char *description)
   myIsActive = ourDefaultActivationState;
 }
 
-AREXPORT MvrAction::~MvrAction()
+MVREXPORT MvrAction::~MvrAction()
 {
   if (myRobot != NULL)
     myRobot->remAction(this);
 }
 
-AREXPORT const char *MvrAction::getName(void) const
+MVREXPORT const char *MvrAction::getName(void) const
 {
   return myName.c_str();
 }
 
-AREXPORT const char *MvrAction::getDescription(void) const
+MVREXPORT const char *MvrAction::getDescription(void) const
 {
   return myDescription.c_str();
 }
 
-AREXPORT int MvrAction::getNumArgs(void) const
+MVREXPORT int MvrAction::getNumArgs(void) const
 {
   return myNumArgs;
 }
 
-AREXPORT void MvrAction::setNextArgument(MvrArg const &arg)
+MVREXPORT void MvrAction::setNextArgument(MvrArg const &arg)
 {
   myArgumentMap[myNumArgs] = arg;
   myNumArgs++;
 }
 
-AREXPORT MvrArg *MvrAction::getArg(int number) 
+MVREXPORT MvrArg *MvrAction::getArg(int number) 
 {
   std::map<int, MvrArg>::iterator it;
   
@@ -55,7 +55,7 @@ AREXPORT MvrArg *MvrAction::getArg(int number)
     return NULL;
 }
 
-AREXPORT const MvrArg *MvrAction::getArg(int number) const
+MVREXPORT const MvrArg *MvrAction::getArg(int number) const
 {
   std::map<int, MvrArg>::const_iterator it;
   
@@ -72,27 +72,27 @@ AREXPORT const MvrArg *MvrAction::getArg(int number) const
  *  MvrAction.setRobot(). (SWIG's subclassing "directors" feature cannot properly
  *  direct the call to the parent class, an infinite recursion results instead.)
  */
-AREXPORT void MvrAction::setRobot(MvrRobot *robot)
+MVREXPORT void MvrAction::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
 }
 
-AREXPORT bool MvrAction::isActive(void) const
+MVREXPORT bool MvrAction::isActive(void) const
 {
   return myIsActive;
 }
 
-AREXPORT void MvrAction::activate(void)
+MVREXPORT void MvrAction::activate(void)
 {
   myIsActive = true;
 }
 
-AREXPORT void MvrAction::deactivate(void)
+MVREXPORT void MvrAction::deactivate(void)
 {
   myIsActive = false;
 }
 
-AREXPORT void MvrAction::log(bool verbose) const
+MVREXPORT void MvrAction::log(bool verbose) const
 {
   int i;
   std::string str;

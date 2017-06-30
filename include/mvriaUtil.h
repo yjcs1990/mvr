@@ -103,10 +103,10 @@ public:
 
   /// Sleep for the given number of milliseconds
   /// @ingroup easy
-  AREXPORT static void sleep(unsigned int ms);
+  MVREXPORT static void sleep(unsigned int ms);
   
   /// Get the time in milliseconds
-  AREXPORT static unsigned int getTime(void);
+  MVREXPORT static unsigned int getTime(void);
 
   /// Delete all members of a set. Does NOT empty the set.
   /** 
@@ -164,45 +164,45 @@ public:
     { if (first > second) return first; else return second; }
 
   /// OS-independent way of finding the size of a file.
-  AREXPORT static long sizeFile(const char *fileName);
+  MVREXPORT static long sizeFile(const char *fileName);
 
   /// OS-independent way of finding the size of a file.
-  AREXPORT static long sizeFile(std::string fileName);
+  MVREXPORT static long sizeFile(std::string fileName);
 
   /// OS-independent way of checking to see if a file exists and is readable.
-  AREXPORT static bool findFile(const char *fileName);
+  MVREXPORT static bool findFile(const char *fileName);
 
   // OS-independent way of stripping the directory from the fileName.
   // commented out with std::string changes since this didn't seem worth fixing right now
-  //AREXPORT static bool stripDir(std::string fileIn, std::string &fileOut);
+  //MVREXPORT static bool stripDir(std::string fileIn, std::string &fileOut);
 
   // OS-independent way of stripping the fileName from the directory.
   // commented out with std::string changes since this didn't seem worth fixing right now
-  //AREXPORT static bool stripFile(std::string fileIn, std::string &fileOut);
+  //MVREXPORT static bool stripFile(std::string fileIn, std::string &fileOut);
 
   /// Appends a slash to a path if there is not one there already
-  AREXPORT static void appendSlash(char *path, size_t pathLength);
+  MVREXPORT static void appendSlash(char *path, size_t pathLength);
   
   /// Appends a slash to the given string path if necessary.
-  AREXPORT static void appendSlash(std::string &path);
+  MVREXPORT static void appendSlash(std::string &path);
 
   /// Fix the slash orientation in file path string for windows or linux
-  AREXPORT static void fixSlashes(char *path, size_t pathLength);
+  MVREXPORT static void fixSlashes(char *path, size_t pathLength);
   
   /// Fixes the slash orientation in the given file path string for the current platform
-  AREXPORT static void fixSlashes(std::string &path); 
+  MVREXPORT static void fixSlashes(std::string &path); 
 
   /// Fix the slash orientation in file path string to be all forward
-  AREXPORT static void fixSlashesForward(char *path, size_t pathLength);
+  MVREXPORT static void fixSlashesForward(char *path, size_t pathLength);
 
   /// Fix the slash orientation in file path string to be all backward
-  AREXPORT static void fixSlashesBackward(char *path, size_t pathLength);
+  MVREXPORT static void fixSlashesBackward(char *path, size_t pathLength);
 
   /// Returns the slash (i.e. separator) character for the current platform
-  AREXPORT static char getSlash();
+  MVREXPORT static char getSlash();
 
   /// Adds two directories, taking care of all slash issues
-  AREXPORT static void addDirectories(char *dest, size_t destLength,
+  MVREXPORT static void addDirectories(char *dest, size_t destLength,
 				      const char *baseDir, 
 				      const char *insideDir);
 
@@ -210,34 +210,34 @@ public:
 
 
   /// Finds out if two strings are equal
-  AREXPORT static int strcmp(const std::string &str, const std::string &str2);
+  MVREXPORT static int strcmp(const std::string &str, const std::string &str2);
 
   /// Finds out if two strings are equal
-  AREXPORT static int strcmp(const std::string &str, const char *str2);
+  MVREXPORT static int strcmp(const std::string &str, const char *str2);
 
   /// Finds out if two strings are equal
-  AREXPORT static int strcmp(const char *str, const std::string &str2);
+  MVREXPORT static int strcmp(const char *str, const std::string &str2);
 
   /// Finds out if two strings are equal
-  AREXPORT static int strcmp(const char *str, const char *str2);
+  MVREXPORT static int strcmp(const char *str, const char *str2);
 
   /// Finds out if two strings are equal (ignoring case)
-  AREXPORT static int strcasecmp(const std::string &str, const std::string &str2);
+  MVREXPORT static int strcasecmp(const std::string &str, const std::string &str2);
 
   /// Finds out if two strings are equal (ignoring case)
-  AREXPORT static int strcasecmp(const std::string &str, const char *str2);
+  MVREXPORT static int strcasecmp(const std::string &str, const char *str2);
 
   /// Finds out if two strings are equal (ignoring case)
-  AREXPORT static int strcasecmp(const char *str, const std::string &str2);
+  MVREXPORT static int strcasecmp(const char *str, const std::string &str2);
 
   /// Finds out if two strings are equal (ignoring case)
-  AREXPORT static int strcasecmp(const char *str, const char *str2);
+  MVREXPORT static int strcasecmp(const char *str, const char *str2);
 
   /// Finds out if a string has a suffix 
-  AREXPORT static bool strSuffixCmp(const char *str, const char *suffix);
+  MVREXPORT static bool strSuffixCmp(const char *str, const char *suffix);
 
   /// Finds out if a string has a suffix 
-  AREXPORT static bool strSuffixCaseCmp(const char *str, const char *suffix);
+  MVREXPORT static bool strSuffixCaseCmp(const char *str, const char *suffix);
   
 
   /// Compares two strings (ignoring case and surrounding quotes)
@@ -248,47 +248,47 @@ public:
    * number if str1 is "less than" str2, and a postive number if it is
    * "greater than".
   **/
-  AREXPORT static int strcasequotecmp(const std::string &str1, 
+  MVREXPORT static int strcasequotecmp(const std::string &str1, 
                                       const std::string &str2);
 
 
   /// Puts a \ before spaces in src, puts it into dest
-  AREXPORT static void escapeSpaces(char *dest, const char *src, 
+  MVREXPORT static void escapeSpaces(char *dest, const char *src, 
 				    size_t maxLen);
 
   /// Strips out the quotes in the src buffer into the dest buffer
-  AREXPORT static bool stripQuotes(char *dest, const char *src,size_t destLen);
+  MVREXPORT static bool stripQuotes(char *dest, const char *src,size_t destLen);
   
   /// Strips the quotes from the given string.
-  AREXPORT static bool stripQuotes(std::string *strToStrip);
+  MVREXPORT static bool stripQuotes(std::string *strToStrip);
 
   /// Fixes the bad characters in the given string.
-  AREXPORT static bool fixBadCharacters(std::string *strToFix, 
+  MVREXPORT static bool fixBadCharacters(std::string *strToFix, 
 					bool removeSpaces, bool fixOtherWhiteSpace = true);
 
   /// Lowers a string from src into dest, make sure there's enough space
-  AREXPORT static void lower(char *dest, const char *src, 
+  MVREXPORT static void lower(char *dest, const char *src, 
 			     size_t maxLen);
   /// Returns true if this string is only alphanumeric (i.e. it contains only leters and numbers), false if it contains any non alphanumeric characters (punctuation, whitespace, control characters, etc.)
-  AREXPORT static bool isOnlyAlphaNumeric(const char *str);
+  MVREXPORT static bool isOnlyAlphaNumeric(const char *str);
 
   /// Returns true if this string is only numeric (i.e. it contains only numeric
   //digits), or it's null, or false if it contains any non nonnumeric characters (alphabetic, punctuation, whitespace, control characters, etc.)
-  AREXPORT static bool isOnlyNumeric(const char *str);
+  MVREXPORT static bool isOnlyNumeric(const char *str);
 
   /// Returns true if the given string is null or of zero length, false otherwise
-  AREXPORT static bool isStrEmpty(const char *str);
+  MVREXPORT static bool isStrEmpty(const char *str);
 
   /// Determines whether the given text is contained in the given list of strings.
-  AREXPORT static bool isStrInList(const char *str,
+  MVREXPORT static bool isStrInList(const char *str,
                                    const std::list<std::string> &list,
                                    bool isIgnoreCase = false);
 
   /// Returns the floating point number from the string representation of that number in @a nptr, or HUGE_VAL for "inf" or -HUGE_VAL for "-inf".
-  AREXPORT static double atof(const char *nptr);
+  MVREXPORT static double atof(const char *nptr);
 
   /// Converts an integer value into a string for true or false
-  AREXPORT static const char *convertBool(int val);
+  MVREXPORT static const char *convertBool(int val);
 
 #ifndef SWIG
   /** Invoke a functor with a string generated via sprintf format conversion
@@ -297,18 +297,18 @@ public:
       @param ... Additional arguments are values to interpolate into @a formatstr to generate the final string passed as the argument in the functor invocation.
       @swigomit
   */
-  AREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
+  MVREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
 				     const char *formatstr, ...);
   /// @deprecated format string should be a const char*
-  AREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
+  MVREXPORT static void functorPrintf(MvrFunctor1<const char *> *functor,
 				     char *formatstr, ...);
 #endif
 
   /// Function for doing a fprintf to a file (here to make a functor for)
-  AREXPORT static void writeToFile(const char *str, FILE *file);
+  MVREXPORT static void writeToFile(const char *str, FILE *file);
 
   /// Gets a string contained in an arbitrary file
-  AREXPORT static bool getStringFromFile(const char *fileName, 
+  MVREXPORT static bool getStringFromFile(const char *fileName, 
 					 char *str, size_t strLen);
   /** 
   These are for passing into getStringFromRegistry
@@ -322,7 +322,7 @@ public:
   };
 
   /// Returns a string from the Windows registry
-  AREXPORT static bool getStringFromRegistry(REGKEY root,
+  MVREXPORT static bool getStringFromRegistry(REGKEY root,
 					     const char *key,
 					     const char *value,
 					     char *str,
@@ -335,56 +335,56 @@ public:
 	return true;
   }
 
-  AREXPORT static const char *COM1; ///< First serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM2; ///< Second serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM3; ///< Third serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM4; ///< Fourth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM5; ///< Fifth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM6; ///< Sixth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM7; ///< Seventh serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM8; ///< Eighth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM9; ///< Ninth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM10; ///< Tenth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM11; ///< Eleventh serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM12; ///< Twelth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM13; ///< Thirteenth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM14; ///< Fourteenth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM15; ///< Fifteenth serial port device name (value depends on compilation platform)
-  AREXPORT static const char *COM16; ///< Sixteenth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM1; ///< First serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM2; ///< Second serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM3; ///< Third serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM4; ///< Fourth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM5; ///< Fifth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM6; ///< Sixth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM7; ///< Seventh serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM8; ///< Eighth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM9; ///< Ninth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM10; ///< Tenth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM11; ///< Eleventh serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM12; ///< Twelth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM13; ///< Thirteenth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM14; ///< Fourteenth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM15; ///< Fifteenth serial port device name (value depends on compilation platform)
+  MVREXPORT static const char *COM16; ///< Sixteenth serial port device name (value depends on compilation platform)
 
-  AREXPORT static const char *TRUESTRING; ///< "true"
-  AREXPORT static const char *FALSESTRING; ///< "false"
+  MVREXPORT static const char *TRUESTRING; ///< "true"
+  MVREXPORT static const char *FALSESTRING; ///< "false"
 
   /** Put the current year (GMT) in s (e.g. "2005"). 
    *  @param s String buffer (allocated) to write year into
    *  @param len Size of @a s
    */
-  AREXPORT static void putCurrentYearInString(char* s, size_t len);
+  MVREXPORT static void putCurrentYearInString(char* s, size_t len);
   /** Put the current month (GMT) in s (e.g. "09" if September). 
    *  @param s String buffer (allocated) to write month into
    *  @param len Size of @a s
    */
-  AREXPORT static void putCurrentMonthInString(char* s, size_t len);
+  MVREXPORT static void putCurrentMonthInString(char* s, size_t len);
   /** Put the current day (GMT) of the month in s (e.g. "20"). 
    *  @param s String buffer (allocated) to write day into
    *  @param len Size of @a s
    */
-  AREXPORT static void putCurrentDayInString(char* s, size_t len);
+  MVREXPORT static void putCurrentDayInString(char* s, size_t len);
   /** Put the current hour (GMT) in s (e.g. "13" for 1 o'clock PM). 
    *  @param s String buffer (allocated) to write hour into
    *  @param len Size of @a s
    */
-  AREXPORT static void putCurrentHourInString(char* s, size_t len);
+  MVREXPORT static void putCurrentHourInString(char* s, size_t len);
   /** Put the current minute (GMT) in s (e.g. "05"). 
    *  @param s String buffer (allocated) to write minutes into
    *  @param len Size of @a s
    */
-  AREXPORT static void putCurrentMinuteInString(char* s, size_t len);
+  MVREXPORT static void putCurrentMinuteInString(char* s, size_t len);
   /** Put the current second (GMT) in s (e.g. "59"). 
    *  @param s String buffer (allocated) to write seconds into
    *  @param len Size of @a s
    */
-  AREXPORT static void putCurrentSecondInString(char* s, size_t len);
+  MVREXPORT static void putCurrentSecondInString(char* s, size_t len);
   
   
   /// Parses the given time string (h:mm) and returns the corresponding time.
@@ -396,7 +396,7 @@ public:
    * @return time_t if toToday is true then its the parsed time on the current day, if toToday is false then its the parsed time on 1/1/70
    * 1/1/70
   **/
-  AREXPORT static time_t parseTime(const char *str, bool *ok = NULL, bool toToday = true);
+  MVREXPORT static time_t parseTime(const char *str, bool *ok = NULL, bool toToday = true);
 
 
   /** Interface to native platform localtime() function.
@@ -414,57 +414,57 @@ public:
    *  MvrLog::log("Current month is %d.\n", t.tm_mon);
    *  @endcode
    */
-  AREXPORT static bool localtime(const time_t *timep, struct tm *result);
+  MVREXPORT static bool localtime(const time_t *timep, struct tm *result);
 
    
   /** Call MvrUtil::localtime(const time_t*, struct tm *) with the current time obtained by calling
    * time(NULL).
    *  @return false on error (e.g. invalid input), otherwise true.
    */
-  AREXPORT static bool localtime(struct tm *result);
+  MVREXPORT static bool localtime(struct tm *result);
 
   // these aren't needed in windows since it ignores case anyhow
 #ifndef WIN32
   /// this matches the case out of what file we want
-  AREXPORT static bool matchCase(const char *baseDir, const char *fileName, 
+  MVREXPORT static bool matchCase(const char *baseDir, const char *fileName, 
 			   char * result, size_t resultLen);
 #endif 
   /// Pulls the directory out of a file name
-  AREXPORT static bool getDirectory(const char *fileName, 
+  MVREXPORT static bool getDirectory(const char *fileName, 
 				     char * result, size_t resultLen);
   /// Pulls the filename out of the file name
-  AREXPORT static bool getFileName(const char *fileName, 
+  MVREXPORT static bool getFileName(const char *fileName, 
 				     char * result, size_t resultLen);
   
   /// Sets the timestamp on the specified file
-  AREXPORT static bool changeFileTimestamp(const char *fileName, 
+  MVREXPORT static bool changeFileTimestamp(const char *fileName, 
                                            time_t timestamp);
 
   /// Opens a file, defaulting it so that the file will close on exec
-  AREXPORT static FILE *fopen(const char *path, const char *mode, 
+  MVREXPORT static FILE *fopen(const char *path, const char *mode, 
 			      bool closeOnExec = true);
   /// Opens a file, defaulting it so that the file will close on exec
-  AREXPORT static int open(const char *pathname, int flags, 
+  MVREXPORT static int open(const char *pathname, int flags, 
 			   bool closeOnExec = true);
   /// Opens a file, defaulting it so that the file will close on exec
-  AREXPORT static int open(const char *pathname, int flags, mode_t mode, 
+  MVREXPORT static int open(const char *pathname, int flags, mode_t mode, 
 			   bool closeOnExec = true);
-  AREXPORT static int close(int fd);
+  MVREXPORT static int close(int fd);
   /// Opens a file, defaulting it so that the file will close on exec
-  AREXPORT static int creat(const char *pathname, mode_t mode,
+  MVREXPORT static int creat(const char *pathname, mode_t mode,
 			    bool closeOnExec = true);
   /// Opens a pipe, defaulting it so that the file will close on exec
-  AREXPORT static FILE *popen(const char *command, const char *type, 
+  MVREXPORT static FILE *popen(const char *command, const char *type, 
 			      bool closeOnExec = true);
 
 
   /// Sets if the file descriptor will be closed on exec or not
-  AREXPORT static void setFileCloseOnExec(int fd, bool closeOnExec = true);
+  MVREXPORT static void setFileCloseOnExec(int fd, bool closeOnExec = true);
   /// Sets if the file descriptor will be closed on exec or not
-  AREXPORT static void setFileCloseOnExec(FILE *file, bool closeOnExec = true);
+  MVREXPORT static void setFileCloseOnExec(FILE *file, bool closeOnExec = true);
 
   /** Return true if the value of @a f is not NaN and is not infinite (+/- INF) */
-  AREXPORT static bool floatIsNormal(double f);
+  MVREXPORT static bool floatIsNormal(double f);
 
   /** Convert seconds to milliseconds */
   static double secToMSec(const double sec) { return sec * 1000.0; }
@@ -478,7 +478,7 @@ public:
   /** Convert US feet  to meters */
   static double feetToMeters(const double f) { return f / 3.2808399; }
 
-  AREXPORT static int atoi(const char *str, bool *ok = NULL, 
+  MVREXPORT static int atoi(const char *str, bool *ok = NULL, 
 			   bool forceHex = false);
 
 protected:
@@ -520,7 +520,7 @@ public:
   /** @return a very small number which can be used for comparisons of floating 
    * point values, etc. 
    */
-  AREXPORT static double epsilon();
+  MVREXPORT static double epsilon();
 
 
   /// This adds two angles together and fixes the result to [-180, 180] 
@@ -708,13 +708,13 @@ public:
     }
   
   /// Maximum of value returned by random()
-  AREXPORT static long getRandMax();
+  MVREXPORT static long getRandMax();
 
   /** Returns a random number between @a m and @a n. On Windows, rand() is used,
    * on Linux lrand48(). 
    * @ingroup easy
   */
-  AREXPORT static long randomInRange(long m, long n);
+  MVREXPORT static long randomInRange(long m, long n);
 
   /// Finds the distance between two coordinates
   /**
@@ -829,7 +829,7 @@ public:
     myX(pose.myX), myY(pose.myY), myTh(pose.myTh) {}
 
   /// Destructor
-  virtual ~ArPose() {}
+  virtual ~MvrPose() {}
   /// Sets the position to the given values
   /** 
       Sets the position with the given three values, but the theta does not
@@ -1096,7 +1096,7 @@ public:
 
   //
   /// Destructor
-  ~ArTime() {}
+  ~MvrTime() {}
   
   /// Gets the number of milliseconds since the given timestamp to this one
   /// @ingroup easy
@@ -1214,7 +1214,7 @@ public:
     }
   /// Resets the time
   /// @ingroup easy
-  AREXPORT void setToNow(void);
+  MVREXPORT void setToNow(void);
   /// Add some milliseconds (can be negative) to this time
   bool addMSec(long ms)
     {
@@ -1347,7 +1347,7 @@ public:
     { myTime = thisTime; }
   /// Copy Constructor
   MvrPoseWithTime(const MvrPose &pose) : MvrPose(pose) {}
-  virtual ~ArPoseWithTime() {}
+  virtual ~MvrPoseWithTime() {}
   void setTime(MvrTime newTime) { myTime = newTime; }
   void setTimeToNow(void) { myTime.setToNow(); }
   MvrTime getTime(void) const { return myTime; }
@@ -1376,7 +1376,7 @@ public:
       clear();
     }
   /// Destructor
-  virtual ~ArSectors() { delete mySectors; }
+  virtual ~MvrSectors() { delete mySectors; }
   /// Clears all quadrants
   void clear(void) 
     {
@@ -1427,7 +1427,7 @@ public:
   MvrLine(double x1, double y1, double x2, double y2) 
   { newParametersFromEndpoints(x1, y1, x2, y2); }
   /// Destructor
-  virtual ~ArLine() {}
+  virtual ~MvrLine() {}
   /// Sets the line parameters (make it not a segment)
   void newParameters(double a, double b, double c) 
     { myA = a; myB = b; myC = c; }
@@ -1557,7 +1557,7 @@ public:
   /// Constructor with endpoints as MvrPose objects. Only X and Y components of the poses will be used.
   MvrLineSegment(MvrPose pose1, MvrPose pose2)
     { 	newEndPoints(pose1.getX(), pose1.getY(), pose2.getX(), pose2.getY()); }
-  virtual ~ArLineSegment() {}
+  virtual ~MvrLineSegment() {}
   /// Set new end points for this line segment
   void newEndPoints(double x1, double y1, double x2, double y2)
     {
@@ -1798,25 +1798,25 @@ class MvrRunningAverage
 {
 public:
   /// Constructor, give it the number of elements to store to compute the average
-  AREXPORT MvrRunningAverage(size_t numToAverage);
+  MVREXPORT MvrRunningAverage(size_t numToAverage);
   /// Destructor
-  AREXPORT ~ArRunningAverage();
+  MVREXPORT ~MvrRunningAverage();
   /// Gets the average
-  AREXPORT double getAverage(void) const;
+  MVREXPORT double getAverage(void) const;
   /// Adds a value to the average. An old value is discarded if the number of elements to average has been reached.
-  AREXPORT void add(double val);
+  MVREXPORT void add(double val);
   /// Clears the average
-  AREXPORT void clear(void);
+  MVREXPORT void clear(void);
   /// Gets the number of elements
-  AREXPORT size_t getNumToAverage(void) const;
+  MVREXPORT size_t getNumToAverage(void) const;
   /// Sets the number of elements
-  AREXPORT void setNumToAverage(size_t numToAverage);
+  MVREXPORT void setNumToAverage(size_t numToAverage);
   /// Sets if this is using a the root mean square average or just the normal average
-  AREXPORT void setUseRootMeanSquare(bool useRootMeanSquare);
+  MVREXPORT void setUseRootMeanSquare(bool useRootMeanSquare);
   /// Gets if this is using a the root mean square average or just the normal average
-  AREXPORT bool getUseRootMeanSquare(void);
+  MVREXPORT bool getUseRootMeanSquare(void);
   /// Gets the number of values currently averaged so far
-  AREXPORT size_t getCurrentNumAveraged(void);
+  MVREXPORT size_t getCurrentNumAveraged(void);
 protected:
   size_t myNumToAverage;
   double myTotal;
@@ -1831,21 +1831,21 @@ class MvrRootMeanSquareCalculator
 {
 public:
   /// Constructor
-  AREXPORT MvrRootMeanSquareCalculator();
+  MVREXPORT MvrRootMeanSquareCalculator();
   /// Destructor
-  AREXPORT ~ArRootMeanSquareCalculator();
+  MVREXPORT ~MvrRootMeanSquareCalculator();
   /// Gets the average
-  AREXPORT double getRootMeanSquare (void) const;
+  MVREXPORT double getRootMeanSquare (void) const;
   /// Adds a number
-  AREXPORT void add(int val);
+  MVREXPORT void add(int val);
   /// Clears the average
-  AREXPORT void clear(void);
+  MVREXPORT void clear(void);
   /// Sets the name
-  AREXPORT void setName(const char *name);
+  MVREXPORT void setName(const char *name);
   /// Gets the name
-  AREXPORT const char *getName(void);  
+  MVREXPORT const char *getName(void);  
   /// Gets the num averaged
-  AREXPORT size_t getCurrentNumAveraged(void);
+  MVREXPORT size_t getCurrentNumAveraged(void);
 protected:
   long long myTotal;
   size_t myNum;
@@ -1906,15 +1906,15 @@ class MvrDaemonizer
 {
 public:
   /// Constructor that sets up for daemonizing if arg checking
-  AREXPORT MvrDaemonizer(int *argc, char **argv, bool closeStdErrAndStdOut);
+  MVREXPORT MvrDaemonizer(int *argc, char **argv, bool closeStdErrAndStdOut);
   /// Destructor
-  AREXPORT ~ArDaemonizer();
+  MVREXPORT ~MvrDaemonizer();
   /// Daemonizes if asked too by arguments
-  AREXPORT bool daemonize(void);
+  MVREXPORT bool daemonize(void);
   /// Daemonizes always
-  AREXPORT bool forceDaemonize(void);
+  MVREXPORT bool forceDaemonize(void);
   /// Logs the options
-  AREXPORT void logOptions(void) const;
+  MVREXPORT void logOptions(void) const;
   /// Returns if we're daemonized or not
   bool isDaemonized(void) { return myIsDaemonized; }
 protected:
@@ -1957,7 +1957,7 @@ public:
   };
 
   /// Returns the displayable text string for the given priority
-  AREXPORT static const char * getPriorityName(Priority priority);
+  MVREXPORT static const char * getPriorityName(Priority priority);
    
   /// Returns the priority value that corresponds to the given displayable text string
   /**
@@ -1965,7 +1965,7 @@ public:
    * @param ok an optional bool * set to true if the text was successfully 
    * converted; false if the text was not recognized as a priority
   **/
-  AREXPORT static Priority getPriorityFromName(const char *text,
+  MVREXPORT static Priority getPriorityFromName(const char *text,
                                                bool *ok = NULL);
 
 protected:
@@ -1993,7 +1993,7 @@ public:
 		     MvrFunctor2<char *, MvrTypes::UByte2> *functor)
     { myName = name; myMaxLength = maxLength; myFunctor = functor; }
   /// Destructor
-  virtual ~ArStringInfoHolder() {}
+  virtual ~MvrStringInfoHolder() {}
   /// Gets the name of this piece of info
   const char *getName(void) { return myName.c_str(); }
   /// Gets the maximum length of this piece of info
@@ -2067,7 +2067,7 @@ public:
       myLogging = true;
     }
   /// Destructor
-  virtual ~ArGenericCallbackList()
+  virtual ~MvrGenericCallbackList()
     {
     }
   /// Adds a callback
@@ -2192,7 +2192,7 @@ public:
     {
     }
   /// Destructor
-  virtual ~ArCallbackList()
+  virtual ~MvrCallbackList()
     {
     }
   /// Calls the callback list
@@ -2253,7 +2253,7 @@ public:
     {
     }
   /// Destructor
-  virtual ~ArCallbackList1()
+  virtual ~MvrCallbackList1()
     {
     }
   /// Calls the callback list
@@ -2430,7 +2430,7 @@ public:
     MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>(name, logLevel, singleShot)
     {
     }
-  virtual ~ArCallbackList4()
+  virtual ~MvrCallbackList4()
     {
     }
   void invoke(P1 p1, P2 p2, P3 p3, P4 p4)
@@ -2627,10 +2627,10 @@ protected:
 class MvrPoseUtil
 {
 public:
-  AREXPORT static std::list<ArPose> findCornersFromRobotBounds(
+  MVREXPORT static std::list<ArPose> findCornersFromRobotBounds(
 	  double radius, double widthLeft, double widthRight, 
 	  double lengthFront, double lengthRear, bool fastButUnsafe);
-  AREXPORT static std::list<ArPose> breakUpDistanceEvenly(MvrPose start, MvrPose end, 
+  MVREXPORT static std::list<ArPose> breakUpDistanceEvenly(MvrPose start, MvrPose end, 
 						 int resolution);
 };
 
@@ -2639,19 +2639,19 @@ class MvrTimeChecker
 {
 public:
   /// Constructor
-  AREXPORT MvrTimeChecker(const char *name = "Unknown", int defaultMSecs = 100);
+  MVREXPORT MvrTimeChecker(const char *name = "Unknown", int defaultMSecs = 100);
   /// Destructor
-  AREXPORT virtual ~ArTimeChecker();
+  MVREXPORT virtual ~MvrTimeChecker();
   /// Sets the name
   void setName(const char *name) { myName = name; }
   /// Sets the default mSecs
   void setDefaultMSecs(int defaultMSecs) { myMSecs = defaultMSecs; }
   /// starts the check
-  AREXPORT void start(void);
+  MVREXPORT void start(void);
   /// checks, optionally with a subname (only one subname logged per cycle)
-  AREXPORT void check(const char *subName);
+  MVREXPORT void check(const char *subName);
   /// Finishes the check
-  AREXPORT void finish(void);
+  MVREXPORT void finish(void);
   /// Gets the last time a check happened (a start counts as a check too)
   MvrTime getLastCheckTime() { return myLastCheck; }
 protected:

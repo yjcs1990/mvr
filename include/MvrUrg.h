@@ -44,15 +44,15 @@ class MvrUrg : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT MvrUrg(int laserNumber,
+  MVREXPORT MvrUrg(int laserNumber,
 		 const char *name = "urg");
   /// Destructor
-  AREXPORT ~ArUrg();
-  AREXPORT virtual bool blockingConnect(void);
-  AREXPORT virtual bool asyncConnect(void);
-  AREXPORT virtual bool disconnect(void);
-  AREXPORT virtual bool isConnected(void) { return myIsConnected; }
-  AREXPORT virtual bool isTryingToConnect(void) 
+  MVREXPORT ~MvrUrg();
+  MVREXPORT virtual bool blockingConnect(void);
+  MVREXPORT virtual bool asyncConnect(void);
+  MVREXPORT virtual bool disconnect(void);
+  MVREXPORT virtual bool isConnected(void) { return myIsConnected; }
+  MVREXPORT virtual bool isTryingToConnect(void) 
     { 
       if (myStartConnect)
 	return true;
@@ -63,17 +63,17 @@ public:
     }  
 
   /// Logs the information about the sensor
-  AREXPORT void log(void);
+  MVREXPORT void log(void);
 protected:
   /// Sets the parameters that control what data you get from the urg
-  AREXPORT bool setParams(
+  MVREXPORT bool setParams(
 	  double startingDegrees = -135, double endingDegrees = 135,
 	  double incrementDegrees = 1, bool flipped = false);
   /// Sets the parameters that control what data you get from the urg
-  AREXPORT bool setParamsBySteps(
+  MVREXPORT bool setParamsBySteps(
 	  int startingStep = 0, int endingStep = 768, int clusterCount = 3,
 	  bool flipped = false);
-  AREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual void * runThread(void *arg);
   /// internal call to write a string to the urg
   bool writeLine(const char *str);
   /// internal call to read a string from the urg
@@ -85,9 +85,9 @@ protected:
 	  char *status, unsigned int size, unsigned int msWait);
   
   void sensorInterp(void);
-  AREXPORT virtual void setRobot(MvrRobot *robot);
-  AREXPORT virtual bool laserCheckParams(void);
-  AREXPORT virtual void laserSetName(const char *name);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual bool laserCheckParams(void);
+  MVREXPORT virtual void laserSetName(const char *name);
   
   void failedToConnect(void);
   MvrMutex myReadingMutex;

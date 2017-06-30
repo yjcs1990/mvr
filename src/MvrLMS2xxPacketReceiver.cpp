@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    packet (false)... most everything should use false as this will help prevent
    many memory leaks or corruptions
 */
-AREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
+MVREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
 	unsigned char receivingAddress, bool allocatePackets,
 	bool useBase0Address) 
 {
@@ -53,7 +53,7 @@ AREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
    packet (false)... most everything should use false as this will help prevent
    many memory leaks or corruptions
 */
-AREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
+MVREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
 	ArDeviceConnection *deviceConnection, 
 	unsigned char receivingAddress, bool allocatePackets,
 	bool useBase0Address)
@@ -64,18 +64,18 @@ AREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
   myUseBase0Address = useBase0Address;
 }
 
-AREXPORT MvrLMS2xxPacketReceiver::~ArLMS2xxPacketReceiver() 
+MVREXPORT MvrLMS2xxPacketReceiver::~MvrLMS2xxPacketReceiver() 
 {
   
 }
 
-AREXPORT void MvrLMS2xxPacketReceiver::setDeviceConnection(
+MVREXPORT void MvrLMS2xxPacketReceiver::setDeviceConnection(
 	ArDeviceConnection *deviceConnection)
 {
   myDeviceConn = deviceConnection;
 }
 
-AREXPORT MvrDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
 {
   return myDeviceConn;
 }
@@ -89,7 +89,7 @@ AREXPORT MvrDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
     this packet, the packet must be used and done with by the time this 
     method is called again
 */
-AREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
+MVREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
 	unsigned int msWait)
 {
   MvrLMS2xxPacket *packet;

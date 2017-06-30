@@ -89,59 +89,59 @@ public:
   } Signal;
 
   /// Setup the signal handling for a non-threaded program
-  AREXPORT static void createHandlerNonThreaded();
+  MVREXPORT static void createHandlerNonThreaded();
 
   /// Setup the signal handling for a multi-threaded program
-  AREXPORT static void createHandlerThreaded();
+  MVREXPORT static void createHandlerThreaded();
 
   /// Block all the common signals the kill a program
-  AREXPORT static void blockCommon();
+  MVREXPORT static void blockCommon();
 
   /// Unblock all the signals
-  AREXPORT static void unblockAll();
+  MVREXPORT static void unblockAll();
 
   /// Block the given signal
-  AREXPORT static void block(Signal sig);
+  MVREXPORT static void block(Signal sig);
 
   /// Unblock the given signal
-  AREXPORT static void unblock(Signal sig);
+  MVREXPORT static void unblock(Signal sig);
 
   /// Handle the given signal
-  AREXPORT static void handle(Signal sig);
+  MVREXPORT static void handle(Signal sig);
 
   /// Dont handle the given signal
-  AREXPORT static void unhandle(Signal sig);
+  MVREXPORT static void unhandle(Signal sig);
 
   /// Add a handler callback
-  AREXPORT static void addHandlerCB(MvrFunctor1<int> *func,
+  MVREXPORT static void addHandlerCB(MvrFunctor1<int> *func,
 				    MvrListPos::Pos position);
 
   /// Remove a handler callback
-  AREXPORT static void delHandlerCB(MvrFunctor1<int> *func);
+  MVREXPORT static void delHandlerCB(MvrFunctor1<int> *func);
 
   /// Removes all the handlers
-  AREXPORT static void delAllHandlerCBs(void);
+  MVREXPORT static void delAllHandlerCBs(void);
 
   /// Get a pointer to the single MvrSignalHandler instance
-  AREXPORT static MvrSignalHandler * getHandler();
+  MVREXPORT static MvrSignalHandler * getHandler();
 
   /// Get the name of the given signal
-  AREXPORT static const char * nameSignal(int sig);
+  MVREXPORT static const char * nameSignal(int sig);
 
   /// Block all the common signals for the calling thread only
-  AREXPORT static void blockCommonThisThread();
+  MVREXPORT static void blockCommonThisThread();
 
   /// Block all the signals for the calling thread only
-  AREXPORT static void blockAllThisThread();
+  MVREXPORT static void blockAllThisThread();
 
   /// Destructor
-  virtual ~ArSignalHandler();
+  virtual ~MvrSignalHandler();
 
-  AREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual void * runThread(void *arg);
 
-  AREXPORT static void signalCB(int sig);
+  MVREXPORT static void signalCB(int sig);
 
-  AREXPORT static void logThread(void);
+  MVREXPORT static void logThread(void);
 protected:
 
   MvrSignalHandler();

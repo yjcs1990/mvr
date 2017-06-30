@@ -97,7 +97,7 @@ const char *dlerror(void)
    @param quiet whether to print out a message if this fails or not,
    defaults to false
 **/
-AREXPORT ArModuleLoader::Status ArModuleLoader::load(const char *modName,
+MVREXPORT ArModuleLoader::Status ArModuleLoader::load(const char *modName,
 						     ArRobot *robot,
 						     void *modArgument,
 						     bool quiet)
@@ -169,7 +169,7 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::load(const char *modName,
    @param modArgument application-specific data to provide to the module
    @param quiet If true, do not log errors.
 */
-AREXPORT ArModuleLoader::Status ArModuleLoader::reload(const char *modName,
+MVREXPORT ArModuleLoader::Status ArModuleLoader::reload(const char *modName,
 						       ArRobot *robot,
 						       void *modArgument,
 						       bool quiet)
@@ -184,7 +184,7 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::reload(const char *modName,
    @param quiet whether to print out a message if this fails or not,
    defaults to false
 */
-AREXPORT ArModuleLoader::Status ArModuleLoader::close(const char *modName,
+MVREXPORT ArModuleLoader::Status ArModuleLoader::close(const char *modName,
 						      bool quiet)
 {
   std::string name;
@@ -242,7 +242,7 @@ AREXPORT ArModuleLoader::Status ArModuleLoader::close(const char *modName,
   return(ret);
 }
 
-AREXPORT void ArModuleLoader::closeAll()
+MVREXPORT void ArModuleLoader::closeAll()
 {
   std::map<std::string, DllRef>::iterator iter;
 

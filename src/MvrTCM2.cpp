@@ -33,7 +33,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrTCMCompassDirect.h"
 #include "MvrTCMCompassRobot.h"
 
-AREXPORT ArTCM2::ArTCM2() :
+MVREXPORT ArTCM2::ArTCM2() :
   myHeading(0.0),
   myPitch(0.0),
   myRoll(0.0),
@@ -61,10 +61,10 @@ AREXPORT ArTCM2::ArTCM2() :
 {
 }
 
-AREXPORT bool ArTCM2::connect() { return true; }
-AREXPORT bool ArTCM2::blockingConnect(unsigned long) { return true; }
+MVREXPORT bool ArTCM2::connect() { return true; }
+MVREXPORT bool ArTCM2::blockingConnect(unsigned long) { return true; }
 
-AREXPORT ArCompassConnector::ArCompassConnector(MvrArgumentParser *argParser) :
+MVREXPORT ArCompassConnector::ArCompassConnector(MvrArgumentParser *argParser) :
   myArgParser(argParser),
   myParseArgsCallback(this, &ArCompassConnector::parseArgs),
   myLogArgsCallback(this, &ArCompassConnector::logOptions),
@@ -79,7 +79,7 @@ AREXPORT ArCompassConnector::ArCompassConnector(MvrArgumentParser *argParser) :
   Aria::addLogOptionsCB(&myLogArgsCallback);
 }
 
-AREXPORT ArCompassConnector::~ArCompassConnector() {
+MVREXPORT ArCompassConnector::~MvrCompassConnector() {
   if(mySerialTCMReadFunctor && myRobot) 
   {
     myRobot->lock();
@@ -118,7 +118,7 @@ void ArCompassConnector::logOptions()
   ArLog::log(MvrLog::Terse, "-compassPort <port>\tSerial port for \"serialTCM\" type compass. (default: %s)", ARTCM2_DEFAULT_SERIAL_PORT);
 }
 
-AREXPORT ArTCM2 *ArCompassConnector::create(MvrRobot *robot)
+MVREXPORT ArTCM2 *ArCompassConnector::create(MvrRobot *robot)
 {
   if(myDeviceType == None)
   {
@@ -175,7 +175,7 @@ AREXPORT ArTCM2 *ArCompassConnector::create(MvrRobot *robot)
   return NULL;
 }
 
-AREXPORT bool ArCompassConnector::connect(MvrTCM2 *compass) const
+MVREXPORT bool ArCompassConnector::connect(MvrTCM2 *compass) const
 {
   return compass->blockingConnect();
 }

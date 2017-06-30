@@ -55,7 +55,7 @@ ArTime MvrDeviceConnection::ourDCDebugFirstTime;
    unless the global member MvrDeviceConnection::debugShouldLog is
    called to turn it on.
 **/
-AREXPORT MvrDeviceConnection::ArDeviceConnection()
+MVREXPORT MvrDeviceConnection::ArDeviceConnection()
 {
   if (!ourStrMapInited)
   {
@@ -74,7 +74,7 @@ AREXPORT MvrDeviceConnection::ArDeviceConnection()
   myDCDebugNumBadPackets = 0;
 }
 
-AREXPORT MvrDeviceConnection::~ArDeviceConnection()
+MVREXPORT MvrDeviceConnection::~MvrDeviceConnection()
 {
   close();
 }
@@ -89,7 +89,7 @@ void MvrDeviceConnection::buildStrMap(void)
   ourStrMap[STATUS_CLOSED_ERROR] = "closed on error";
 }
 
-AREXPORT const char * MvrDeviceConnection::getStatusMessage(int messageNumber) const
+MVREXPORT const char * MvrDeviceConnection::getStatusMessage(int messageNumber) const
 {
   MvrStrMap::const_iterator it;
   if ((it = ourStrMap.find(messageNumber)) != ourStrMap.end())
@@ -98,7 +98,7 @@ AREXPORT const char * MvrDeviceConnection::getStatusMessage(int messageNumber) c
     return NULL;
 }
 
-AREXPORT void MvrDeviceConnection::setPortName(const char *portName)
+MVREXPORT void MvrDeviceConnection::setPortName(const char *portName)
 {
   if (portName != NULL)
     myDCPortName = portName;
@@ -106,12 +106,12 @@ AREXPORT void MvrDeviceConnection::setPortName(const char *portName)
     myDCPortName = "Unknown port name";
 }
 
-AREXPORT const char *ArDeviceConnection::getPortName(void) const
+MVREXPORT const char *ArDeviceConnection::getPortName(void) const
 {
   return myDCPortName.c_str();
 }
 
-AREXPORT void MvrDeviceConnection::setPortType(const char *portType)
+MVREXPORT void MvrDeviceConnection::setPortType(const char *portType)
 {
   if (portType != NULL)
     myDCPortType = portType;
@@ -119,12 +119,12 @@ AREXPORT void MvrDeviceConnection::setPortType(const char *portType)
     myDCPortType = "Unknown port type";
 }
 
-AREXPORT const char *ArDeviceConnection::getPortType(void) const
+MVREXPORT const char *ArDeviceConnection::getPortType(void) const
 {
   return myDCPortType.c_str();
 }
 
-AREXPORT void MvrDeviceConnection::setDeviceName(const char *deviceName)
+MVREXPORT void MvrDeviceConnection::setDeviceName(const char *deviceName)
 {
   if (deviceName != NULL)
     myDCDeviceName = deviceName;
@@ -132,12 +132,12 @@ AREXPORT void MvrDeviceConnection::setDeviceName(const char *deviceName)
     myDCDeviceName = "Unknown device name";
 }
 
-AREXPORT const char *ArDeviceConnection::getDeviceName(void) const
+MVREXPORT const char *ArDeviceConnection::getDeviceName(void) const
 {
   return myDCDeviceName.c_str();
 }
 
-AREXPORT void MvrDeviceConnection::debugStartPacket(void)
+MVREXPORT void MvrDeviceConnection::debugStartPacket(void)
 {
   if (!ourDCDebugShouldLog)
     return;
@@ -148,7 +148,7 @@ AREXPORT void MvrDeviceConnection::debugStartPacket(void)
   myDCDebugTimesRead = 0;
 }
 
-AREXPORT void MvrDeviceConnection::debugBytesRead(int bytesRead)
+MVREXPORT void MvrDeviceConnection::debugBytesRead(int bytesRead)
 {
   if (!ourDCDebugShouldLog || !myDCDebugPacketStarted)
     return;
@@ -164,7 +164,7 @@ AREXPORT void MvrDeviceConnection::debugBytesRead(int bytesRead)
   myDCDebugTimesRead++;
 }
 
-AREXPORT void MvrDeviceConnection::debugEndPacket(bool goodPacket, int type)
+MVREXPORT void MvrDeviceConnection::debugEndPacket(bool goodPacket, int type)
 {
   if (!ourDCDebugShouldLog || !myDCDebugPacketStarted)
     return;
@@ -195,7 +195,7 @@ AREXPORT void MvrDeviceConnection::debugEndPacket(bool goodPacket, int type)
   myDCDebugPacketStarted = false;
 }
 
-AREXPORT bool MvrDeviceConnection::debugShouldLog(bool shouldLog)
+MVREXPORT bool MvrDeviceConnection::debugShouldLog(bool shouldLog)
 {
   ourDCDebugShouldLog = shouldLog;
   return true;

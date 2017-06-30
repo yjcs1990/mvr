@@ -79,17 +79,17 @@ class MvrJoyHandler
 {
  public:
   /// Constructor
-  AREXPORT MvrJoyHandler(bool useOSCal = true, bool useOldJoystick = false);
+  MVREXPORT MvrJoyHandler(bool useOSCal = true, bool useOldJoystick = false);
   /// Destructor
-  AREXPORT ~ArJoyHandler();
+  MVREXPORT ~MvrJoyHandler();
   /// Intializes the joystick, returns true if successful
-  AREXPORT bool init(void);
+  MVREXPORT bool init(void);
   /// Returns if the joystick was successfully initialized or not
   bool haveJoystick(void) { return myInitialized; }
   /// Gets the adjusted reading, as floats, between -1.0 and 1.0
-  AREXPORT void getDoubles(double *x, double *y, double *z = NULL);
+  MVREXPORT void getDoubles(double *x, double *y, double *z = NULL);
   /// Gets the button 
-  AREXPORT bool getButton(unsigned int button);
+  MVREXPORT bool getButton(unsigned int button);
   /// Returns true if we definitely have a Z axis (we don't know in windows unless it moves)
   bool haveZAxis(void) { return myHaveZ; }
 
@@ -97,34 +97,34 @@ class MvrJoyHandler
   void setSpeeds(int x, int y, int z = 0) 
     { myTopX = x; myTopY = y; myTopZ = z; }
   /// Gets the adjusted reading, as integers, based on the setSpeed
-  AREXPORT void getAdjusted(int *x, int *y, int *z = NULL);
+  MVREXPORT void getAdjusted(int *x, int *y, int *z = NULL);
 
   /// Gets the number of axes the joystick has
-  AREXPORT unsigned int getNumAxes(void);
+  MVREXPORT unsigned int getNumAxes(void);
   /// Gets the floating (-1 to 1) location of the given joystick axis
-  AREXPORT double getAxis(unsigned int axis);
+  MVREXPORT double getAxis(unsigned int axis);
   /// Gets the number of buttons the joystick has
-  AREXPORT unsigned int getNumButtons(void);
+  MVREXPORT unsigned int getNumButtons(void);
 
   /// Sets whether to just use OS calibration or not
-  AREXPORT void setUseOSCal(bool useOSCal);
+  MVREXPORT void setUseOSCal(bool useOSCal);
   /// Gets whether to just use OS calibration or not
-  AREXPORT bool getUseOSCal(void);
+  MVREXPORT bool getUseOSCal(void);
   /// Starts the calibration process
-  AREXPORT void startCal(void);
+  MVREXPORT void startCal(void);
   /// Ends the calibration process
-  AREXPORT void endCal(void);
+  MVREXPORT void endCal(void);
   /// Gets the unfilitered reading, mostly for internal use, maybe
   /// useful for Calibration
-  AREXPORT void getUnfiltered(int *x, int *y, int *z = NULL);
+  MVREXPORT void getUnfiltered(int *x, int *y, int *z = NULL);
   /// Gets the stats for the joystick, useful after calibrating to save values
-  AREXPORT void getStats(int *maxX, int *minX, int *maxY, int *minY, 
+  MVREXPORT void getStats(int *maxX, int *minX, int *maxY, int *minY, 
 		 int *cenX, int *cenY);
   /// Sets the stats for the joystick, useful for restoring calibrated settings
-  AREXPORT void setStats(int maxX, int minX, int maxY, int minY, 
+  MVREXPORT void setStats(int maxX, int minX, int maxY, int minY, 
 		int cenX, int cenY);
   /// Gets the maximums for each axis.
-  AREXPORT void getSpeeds(int *x, int *y, int *z);
+  MVREXPORT void getSpeeds(int *x, int *y, int *z);
 
  protected:
   // function to get the data for OS dependent part

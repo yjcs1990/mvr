@@ -71,7 +71,7 @@ void ArThread::init()
   ourThreadsMutex.unlock();
 }
 
-AREXPORT void ArThread::shutdown()
+MVREXPORT void ArThread::shutdown()
 {
   ourThreadsMutex.lock();
 
@@ -105,7 +105,7 @@ AREXPORT void ArThread::shutdown()
 } // end method shutdown
 
 
-AREXPORT ArThread::~ArThread()
+MVREXPORT ArThread::~MvrThread()
 {
   CloseHandle(myThreadHandle);
 
@@ -116,7 +116,7 @@ AREXPORT ArThread::~ArThread()
 }
 
 
-AREXPORT ArThread * ArThread::self()
+MVREXPORT ArThread * ArThread::self()
 {
   ThreadType pt;
   MapType::iterator iter;
@@ -132,12 +132,12 @@ AREXPORT ArThread * ArThread::self()
     return(NULL);
 }
 
-AREXPORT ArThread::ThreadType ArThread::osSelf()
+MVREXPORT ArThread::ThreadType ArThread::osSelf()
 { 
   return GetCurrentThreadId();
 }
 
-AREXPORT void ArThread::cancelAll()
+MVREXPORT void ArThread::cancelAll()
 {
   DWORD ret=0;
   std::map<HANDLE, ArThread *>::iterator iter;
@@ -151,7 +151,7 @@ AREXPORT void ArThread::cancelAll()
 }
 
 
-AREXPORT int ArThread::create(MvrFunctor *func, bool joinable,
+MVREXPORT int ArThread::create(MvrFunctor *func, bool joinable,
                               bool lowerPriority)
 {
   // Log a warning (until desired behavior is determined)
@@ -198,7 +198,7 @@ AREXPORT int ArThread::create(MvrFunctor *func, bool joinable,
   }
 }
 
-AREXPORT int ArThread::doJoin(void **iret)
+MVREXPORT int ArThread::doJoin(void **iret)
 {
   DWORD ret;
 
@@ -212,12 +212,12 @@ AREXPORT int ArThread::doJoin(void **iret)
   return(0);
 }
 
-AREXPORT int ArThread::detach()
+MVREXPORT int ArThread::detach()
 {
   return(0);
 }
 
-AREXPORT void ArThread::cancel()
+MVREXPORT void ArThread::cancel()
 {
   DWORD ret=0;
 
@@ -228,13 +228,13 @@ AREXPORT void ArThread::cancel()
   TerminateThread(myThreadHandle, ret);
 }
 
-AREXPORT void ArThread::yieldProcessor()
+MVREXPORT void ArThread::yieldProcessor()
 {
   Sleep(0);
 }
 
 
-AREXPORT void ArThread::threadStarted(void)
+MVREXPORT void ArThread::threadStarted(void)
 {
   myStarted = true;
   if (myName.size() == 0)
@@ -245,7 +245,7 @@ AREXPORT void ArThread::threadStarted(void)
 	             myName.c_str(), myThread);
 }
 
-AREXPORT void ArThread::threadFinished(void)
+MVREXPORT void ArThread::threadFinished(void)
 {
   myFinished = true;
   if (myName.size() == 0)
@@ -256,7 +256,7 @@ AREXPORT void ArThread::threadFinished(void)
 	             myName.c_str(), myThread);
 }
 
-AREXPORT void ArThread::logThreadInfo(void)
+MVREXPORT void ArThread::logThreadInfo(void)
 {
   if (myName.size() == 0)
     ArLog::log(ourLogLevel, "Anonymous thread (%d) is running",

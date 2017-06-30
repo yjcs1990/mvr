@@ -53,38 +53,38 @@ class MvrSimpleConnector
 {
 public:
   /// Constructor that takes args from the main
-  AREXPORT MvrSimpleConnector(int *argc, char **argv);
+  MVREXPORT MvrSimpleConnector(int *argc, char **argv);
   /// Constructor that takes argument builder
-  AREXPORT MvrSimpleConnector(MvrArgumentBuilder *arguments);
+  MVREXPORT MvrSimpleConnector(MvrArgumentBuilder *arguments);
   /// Constructor that takes argument parser
-  AREXPORT MvrSimpleConnector(MvrArgumentParser *parser);
+  MVREXPORT MvrSimpleConnector(MvrArgumentParser *parser);
   /// Destructor
-  AREXPORT ~ArSimpleConnector(void);
+  MVREXPORT ~MvrSimpleConnector(void);
   /// Sets up the robot to be connected
-  AREXPORT bool setupRobot(MvrRobot *robot);
+  MVREXPORT bool setupRobot(MvrRobot *robot);
   /// Sets up the robot then connects it
-  AREXPORT bool connectRobot(MvrRobot *robot);
+  MVREXPORT bool connectRobot(MvrRobot *robot);
   /// Sets up the laser to be connected
-  AREXPORT bool setupLaser(MvrSick *laser);
+  MVREXPORT bool setupLaser(MvrSick *laser);
   /// Sets up a second laser to be connected
-  AREXPORT bool setupSecondLaser(MvrSick *laser);
+  MVREXPORT bool setupSecondLaser(MvrSick *laser);
   /// Sets up a laser t obe connected (make sure you setMaxNumLasers)
-  AREXPORT bool setupLaserArbitrary(MvrSick *laser, 
+  MVREXPORT bool setupLaserArbitrary(MvrSick *laser, 
 				    int laserNumber);
   /// Connects the laser synchronously (will take up to a minute)
-  AREXPORT bool connectLaser(MvrSick *laser);
+  MVREXPORT bool connectLaser(MvrSick *laser);
   /// Connects the laser synchronously (will take up to a minute)
-  AREXPORT bool connectSecondLaser(MvrSick *laser);
+  MVREXPORT bool connectSecondLaser(MvrSick *laser);
   /// Connects the laser synchronously  (make sure you setMaxNumLasers)
-  AREXPORT bool connectLaserArbitrary(MvrSick *laser, int laserNumber);
+  MVREXPORT bool connectLaserArbitrary(MvrSick *laser, int laserNumber);
   /// Function to parse the arguments given in the constructor
-  AREXPORT bool parseArgs(void);
+  MVREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(MvrArgumentParser *parser);
+  MVREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
-  AREXPORT void logOptions(void) const;
+  MVREXPORT void logOptions(void) const;
   /// Sets the number of possible lasers 
-  AREXPORT void setMaxNumLasers(int maxNumLasers = 1);
+  MVREXPORT void setMaxNumLasers(int maxNumLasers = 1);
 protected:
   /// Finishes the stuff the constructor needs to do
   void finishConstructor(void);

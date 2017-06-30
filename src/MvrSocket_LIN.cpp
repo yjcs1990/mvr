@@ -112,7 +112,7 @@ ArSocket::ArSocket(int port, bool doClose, Type type) :
   open(port, type);
 }
 
-ArSocket::~ArSocket()
+ArSocket::~MvrSocket()
 {
   close();
 }

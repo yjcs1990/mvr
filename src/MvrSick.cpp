@@ -33,7 +33,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <time.h>
 
 
-AREXPORT ArSick::ArSick(
+MVREXPORT ArSick::ArSick(
 	size_t currentBufferSize, size_t cumulativeBufferSize,
 	const char *name, bool addAriaExitCB, bool isSecondLaser) : 
   ArLMS2xx(!isSecondLaser ? 1 : 2, name, !isSecondLaser ? false : true)
@@ -42,7 +42,7 @@ AREXPORT ArSick::ArSick(
   setCumulativeBufferSize(cumulativeBufferSize);
 }
 
-AREXPORT ArSick::~ArSick()
+MVREXPORT ArSick::~MvrSick()
 {
 
 }
@@ -60,7 +60,7 @@ AREXPORT ArSick::~ArSick()
  * (Don't forget, you must lock ArLMS2xx with lockDevice() if multiple threads
  * are accessing the ArLMS2xx, e.g. if you used runAsync().)
 **/
-AREXPORT void ArSick::configure(bool useSim, bool powerControl,
+MVREXPORT void ArSick::configure(bool useSim, bool powerControl,
 				bool laserFlipped, BaudRate baud,
 				Degrees deg, Increment incr)
 {
@@ -73,7 +73,7 @@ AREXPORT void ArSick::configure(bool useSim, bool powerControl,
 /**
  * @copydoc configure()
 **/
-AREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
+MVREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
 				     Degrees deg, Increment incr)
 {
   myUseSim = useSim;
@@ -112,7 +112,7 @@ AREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
    (in effect) the same as the new default.  If you look at the enums
    for these units you can see the effect this has on range.  
 **/
-AREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
+MVREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
 {
   if (bits == BITS_1REFLECTOR)
     chooseReflectorBits("1ref");
@@ -135,17 +135,17 @@ AREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
 
 
 
-AREXPORT bool ArSick::isControllingPower(void)
+MVREXPORT bool ArSick::isControllingPower(void)
 {
   return getPowerControlled(); 
 }
 
-AREXPORT bool ArSick::isLaserFlipped(void)
+MVREXPORT bool ArSick::isLaserFlipped(void)
 {
   return getFlipped();
 }
 
-AREXPORT ArSick::Degrees ArSick::getDegrees(void)
+MVREXPORT ArSick::Degrees ArSick::getDegrees(void)
 {
   if (strcasecmp(getDegreesChoice(), "180") == 0)
     return DEGREES180;
@@ -159,7 +159,7 @@ AREXPORT ArSick::Degrees ArSick::getDegrees(void)
   }
 }
 
-AREXPORT ArSick::Increment ArSick::getIncrement(void)
+MVREXPORT ArSick::Increment ArSick::getIncrement(void)
 {
   if (strcasecmp(getIncrementChoice(), "one") == 0)
     return INCREMENT_ONE;
@@ -173,7 +173,7 @@ AREXPORT ArSick::Increment ArSick::getIncrement(void)
   }
 }
 
-AREXPORT ArSick::Bits ArSick::getBits(void)
+MVREXPORT ArSick::Bits ArSick::getBits(void)
 {
   if (strcasecmp(getReflectorBitsChoice(), "1ref") == 0)
     return BITS_1REFLECTOR;
@@ -189,7 +189,7 @@ AREXPORT ArSick::Bits ArSick::getBits(void)
   }
 }
 
-AREXPORT ArSick::Units ArSick::getUnits(void)
+MVREXPORT ArSick::Units ArSick::getUnits(void)
 {
   if (strcasecmp(getUnitsChoice(), "1mm") == 0)
     return UNITS_1MM;
@@ -205,23 +205,23 @@ AREXPORT ArSick::Units ArSick::getUnits(void)
   }
 }
 
-AREXPORT void ArSick::setIsControllingPower(bool controlPower)
+MVREXPORT void ArSick::setIsControllingPower(bool controlPower)
 {
   setPowerControlled(controlPower);
 }
 
-AREXPORT void ArSick::setIsLaserFlipped(bool laserFlipped)
+MVREXPORT void ArSick::setIsLaserFlipped(bool laserFlipped)
 {
   setFlipped(laserFlipped);
 }
 
 
-AREXPORT bool ArSick::isUsingSim(void)
+MVREXPORT bool ArSick::isUsingSim(void)
 {
   return sickGetIsUsingSim();
 }
 
-AREXPORT void ArSick::setIsUsingSim(bool usingSim)
+MVREXPORT void ArSick::setIsUsingSim(bool usingSim)
 {
   return sickSetIsUsingSim(usingSim);
 }

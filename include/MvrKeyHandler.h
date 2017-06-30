@@ -68,13 +68,13 @@ class MvrKeyHandler
 public:
   /// This object will take over key capture when constructed, and release
   /// key capture when destroyed.
-  AREXPORT MvrKeyHandler(bool blocking = false, bool addAriaExitCB = true, 
+  MVREXPORT MvrKeyHandler(bool blocking = false, bool addAriaExitCB = true, 
 			FILE *stream = NULL, 
 			bool takeKeysInConstructor = true);
 
   /// Destructor. Reseases control of the keyboard and restores state before
   /// this key handler was created.
-  AREXPORT ~ArKeyHandler();
+  MVREXPORT ~MvrKeyHandler();
 
   /// These are symbols for the non-ascii keys
   enum KEY {
@@ -110,32 +110,32 @@ public:
   };
 
   /// This adds a keyhandler, when the keyToHandle is hit, functor will fire
-  AREXPORT bool addKeyHandler(int keyToHandle, MvrFunctor *functor);
+  MVREXPORT bool addKeyHandler(int keyToHandle, MvrFunctor *functor);
 
   /// This removes a key handler, by key
-  AREXPORT bool remKeyHandler(int keyToHandler);
+  MVREXPORT bool remKeyHandler(int keyToHandler);
   /// This removes a key handler, by key
-  AREXPORT bool remKeyHandler(MvrFunctor *functor);
+  MVREXPORT bool remKeyHandler(MvrFunctor *functor);
 
   /// Takes the key control over. For internal or special use, since it's
   /// called in the constructor.
-  AREXPORT void takeKeys(bool blocking = false);
+  MVREXPORT void takeKeys(bool blocking = false);
 
   /// Sets stdin back to its original settings, if its been restored
   /// it won't read anymore. For internal or special use, since it's 
   /// called in the destructor.
-  AREXPORT void restore(void);
+  MVREXPORT void restore(void);
 
   ///  Checks for keys and handles them. This is automatically done in an
   /// MvrRobot task if a keyhandler attached to MvrRobot with
   /// MvrRobot::attachKeyHandler() or Mvria::setKeyHandler(), in which case 
   /// you do not need to call it.  If not using or running an MvrRobot 
   /// task cycle, call this instead.
-  AREXPORT void checkKeys(void);
+  MVREXPORT void checkKeys(void);
   
   /// internal, use addKeyHandler instead... Gets a key from the stdin if ones
   /// available, -1 if there aren't any available
-  AREXPORT int getKey(void);
+  MVREXPORT int getKey(void);
 
 protected:
 #ifndef WIN32

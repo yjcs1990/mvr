@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLog.h"
 #include "ariaUtil.h"
 
-AREXPORT ArTcpConnection::ArTcpConnection()
+MVREXPORT ArTcpConnection::ArTcpConnection()
 {
   myStatus = STATUS_NEVER_OPENED;
   buildStrMap();
@@ -39,7 +39,7 @@ AREXPORT ArTcpConnection::ArTcpConnection()
   setPortType("tcp");
 }
 
-AREXPORT ArTcpConnection::~ArTcpConnection()
+MVREXPORT ArTcpConnection::~MvrTcpConnection()
 {
   if (myOwnSocket)
     delete mySocket;
@@ -51,7 +51,7 @@ AREXPORT ArTcpConnection::~ArTcpConnection()
    connection.
    @param socket the socket to use
 **/
-AREXPORT void ArTcpConnection::setSocket(MvrSocket *socket)
+MVREXPORT void ArTcpConnection::setSocket(MvrSocket *socket)
 {
   if (myOwnSocket)
   {
@@ -61,17 +61,17 @@ AREXPORT void ArTcpConnection::setSocket(MvrSocket *socket)
   mySocket = socket;
 }
 
-AREXPORT ArSocket *ArTcpConnection::getSocket(void)
+MVREXPORT ArSocket *ArTcpConnection::getSocket(void)
 {
   return mySocket;
 }
 
-AREXPORT void ArTcpConnection::setStatus(int status)
+MVREXPORT void ArTcpConnection::setStatus(int status)
 {
   myStatus = status;
 }
 
-AREXPORT void ArTcpConnection::setPort(const char *host, int port)
+MVREXPORT void ArTcpConnection::setPort(const char *host, int port)
 {
   myPortNum = port;
 
@@ -90,7 +90,7 @@ AREXPORT void ArTcpConnection::setPort(const char *host, int port)
   setPortName(portName.c_str());
 }
 
-AREXPORT bool ArTcpConnection::openSimple(void)
+MVREXPORT bool ArTcpConnection::openSimple(void)
 {
   if (internalOpen() == 0)
     return true;
@@ -106,13 +106,13 @@ connection)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-AREXPORT int ArTcpConnection::open(const char *host, int port)
+MVREXPORT int ArTcpConnection::open(const char *host, int port)
 {
   setPort(host, port);
   return internalOpen();
 }
 
-AREXPORT int ArTcpConnection::internalOpen(void)
+MVREXPORT int ArTcpConnection::internalOpen(void)
 {
   mySocket->init();
 
@@ -154,18 +154,18 @@ void ArTcpConnection::buildStrMap(void)
   myStrMap[OPEN_CON_REFUSED] = "Connection refused.";
 }
 
-AREXPORT const char *ArTcpConnection::getOpenMessage(int messageNumber)
+MVREXPORT const char *ArTcpConnection::getOpenMessage(int messageNumber)
 {
   return myStrMap[messageNumber].c_str();
 }
 
-AREXPORT bool ArTcpConnection::close(void)
+MVREXPORT bool ArTcpConnection::close(void)
 {
   myStatus = STATUS_CLOSED_NORMALLY;
   return mySocket->close();
 }
 
-AREXPORT int ArTcpConnection::read(const char *data, unsigned int size, 
+MVREXPORT int ArTcpConnection::read(const char *data, unsigned int size, 
 				   unsigned int msWait)
 {
   ArTime timeDone;
@@ -220,7 +220,7 @@ AREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
   return bytesRead;
 }
 
-AREXPORT int ArTcpConnection::write(const char *data, unsigned int size)
+MVREXPORT int ArTcpConnection::write(const char *data, unsigned int size)
 {
   int ret;
 
@@ -243,7 +243,7 @@ AREXPORT int ArTcpConnection::write(const char *data, unsigned int size)
     @return the name of the host connected to
     @see getPort
 */
-AREXPORT std::string ArTcpConnection::getHost(void)
+MVREXPORT std::string ArTcpConnection::getHost(void)
 {
   return myHostName;
 }
@@ -252,22 +252,22 @@ AREXPORT std::string ArTcpConnection::getHost(void)
    @return the number of the port connected to
    @see getHost
 */
-AREXPORT int ArTcpConnection::getPort(void)
+MVREXPORT int ArTcpConnection::getPort(void)
 {
   return myPortNum;
 }
 
-AREXPORT int ArTcpConnection::getStatus(void)
+MVREXPORT int ArTcpConnection::getStatus(void)
 {
   return myStatus;
 }
 
-AREXPORT bool ArTcpConnection::isTimeStamping(void)
+MVREXPORT bool ArTcpConnection::isTimeStamping(void)
 {
   return false;
 }
 
-AREXPORT ArTime ArTcpConnection::getTimeRead(int index)
+MVREXPORT ArTime ArTcpConnection::getTimeRead(int index)
 {
   ArTime now;
   now.setToNow();

@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrSerialConnection.h"
 #include "ariaInternal.h"
 
-AREXPORT ArUrg::ArUrg(int laserNumber, const char *name) :
+MVREXPORT ArUrg::ArUrg(int laserNumber, const char *name) :
   ArLaser(laserNumber, name, 4095),
   mySensorInterpTask(this, &ArUrg::sensorInterp),
   myAriaExitCB(this, &ArUrg::disconnect)
@@ -90,7 +90,7 @@ AREXPORT ArUrg::ArUrg(int laserNumber, const char *name) :
   myLogMore = true;
 }
 
-AREXPORT ArUrg::~ArUrg()
+MVREXPORT ArUrg::~MvrUrg()
 {
   Aria::remExitCallback(&myAriaExitCB);
   if (myRobot != NULL)
@@ -112,7 +112,7 @@ AREXPORT ArUrg::~ArUrg()
   unlockDevice();
 }
 
-AREXPORT void ArUrg::laserSetName(const char *name)
+MVREXPORT void ArUrg::laserSetName(const char *name)
 {
   myName = name;
   
@@ -124,7 +124,7 @@ AREXPORT void ArUrg::laserSetName(const char *name)
   ArLaser::laserSetName(getName());
 }
 
-AREXPORT bool ArUrg::setParams(
+MVREXPORT bool ArUrg::setParams(
 	double startingDegrees, double endingDegrees,
 	double incrementDegrees, bool flipped)
 {
@@ -155,7 +155,7 @@ AREXPORT bool ArUrg::setParams(
   return setParamsBySteps(startingStep, endingStep, clusterCount, flipped);
 }
 
-AREXPORT bool ArUrg::setParamsBySteps(int startingStep, int endingStep, 
+MVREXPORT bool ArUrg::setParamsBySteps(int startingStep, int endingStep, 
 				      int clusterCount, bool flipped)
 {
   if (startingStep < 0 || startingStep > 768 || 
@@ -235,7 +235,7 @@ void ArUrg::clear(void)
   myStat = "";
 }
 
-AREXPORT void ArUrg::log(void)
+MVREXPORT void ArUrg::log(void)
 {
   ArLog::log(MvrLog::Normal, "URG %s:", getName());
   ArLog::log(MvrLog::Normal, "Vendor information: %s", myVendor.c_str());
@@ -246,7 +246,7 @@ AREXPORT void ArUrg::log(void)
   ArLog::log(MvrLog::Normal, "Stat: %s", myStat.c_str());
 }
 
-AREXPORT void ArUrg::setRobot(MvrRobot *robot)
+MVREXPORT void ArUrg::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -365,7 +365,7 @@ bool ArUrg::sendCommandAndRecvStatus(
   return true;
 }
 
-AREXPORT bool ArUrg::blockingConnect(void)
+MVREXPORT bool ArUrg::blockingConnect(void)
 {
   if (!getRunning())
     runAsync();
@@ -589,7 +589,7 @@ bool ArUrg::internalConnect(void)
 }
 
 
-AREXPORT bool ArUrg::asyncConnect(void)
+MVREXPORT bool ArUrg::asyncConnect(void)
 {
   myStartConnect = true;
   if (!getRunning())
@@ -597,7 +597,7 @@ AREXPORT bool ArUrg::asyncConnect(void)
   return true;
 }
 
-AREXPORT bool ArUrg::disconnect(void)
+MVREXPORT bool ArUrg::disconnect(void)
 {
   if (!isConnected())
     return true;
@@ -703,7 +703,7 @@ void ArUrg::sensorInterp(void)
   unlockDevice();
 }
 
-AREXPORT void * ArUrg::runThread(void *arg)
+MVREXPORT void * ArUrg::runThread(void *arg)
 {
   while (getRunning())
   {

@@ -71,7 +71,7 @@ class MvrSonarConnector
 {
 public:
   /// Constructor that takes argument parser
-  AREXPORT MvrSonarConnector(
+  MVREXPORT MvrSonarConnector(
 	  MvrArgumentParser *parser, 
 	  MvrRobot *robot, MvrRobotConnector *robotConnector,
 	  bool autoParseArgs = true,
@@ -79,44 +79,44 @@ public:
       	  MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
 	  MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
   /// Destructor
-  AREXPORT ~ArSonarConnector(void);
+  MVREXPORT ~MvrSonarConnector(void);
   /// Connects all the sonars the robot has that should be auto connected
-  AREXPORT bool connectSonars(
+  MVREXPORT bool connectSonars(
 						bool continueOnFailedConnect = false,
 			      bool addConnectedSonarsToRobot = true,
 			      bool addAllSonarsToRobot = false,
 			      bool turnOnSonars = true,
 			      bool powerCycleSonarOnFailedConnect = true);
 	// Connects all the sonars in replay mode
-	AREXPORT bool connectReplaySonars(
+	MVREXPORT bool connectReplaySonars(
 						bool continueOnFailedConnect = false,
 			      bool addConnectedSonarsToRobot = true,
 			      bool addAllSonarsToRobot = false,
 			      bool turnOnSonars = true,
 			      bool powerCycleSonarOnFailedConnect = true);
   /// Sets up a sonar to be connected
-  AREXPORT bool setupSonar(MvrSonarMTX *sonar, 
+  MVREXPORT bool setupSonar(MvrSonarMTX *sonar, 
 			   int sonarNumber = 1);
   /// Connects the sonar synchronously (will take up to a minute)
-  AREXPORT bool connectSonar(MvrSonarMTX *sonar,
+  MVREXPORT bool connectSonar(MvrSonarMTX *sonar,
 			     int sonarNumber = 1,
 			     bool forceConnection = true);
   /// Adds a sonar so parsing will get it
-  AREXPORT bool addSonar(MvrSonarMTX *sonar,
+  MVREXPORT bool addSonar(MvrSonarMTX *sonar,
 			 int sonarNumber = 1);
   /// Function to parse the arguments given in the constructor
-  AREXPORT bool parseArgs(void);
+  MVREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(MvrArgumentParser *parser);
+  MVREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
-  AREXPORT void logOptions(void) const;
+  MVREXPORT void logOptions(void) const;
   /// Internal function to get the sonar (only useful between parseArgs and connectSonars)
-  AREXPORT MvrSonarMTX *getSonar(int sonarNumber);
+  MVREXPORT MvrSonarMTX *getSonar(int sonarNumber);
 
   /// Internal function to replace the sonar (only useful between parseArgs and connectSonars) but not the sonar data
-  AREXPORT bool replaceSonar(MvrSonarMTX *sonar, int sonarNumber);
+  MVREXPORT bool replaceSonar(MvrSonarMTX *sonar, int sonarNumber);
   
-  AREXPORT bool disconnectSonars();
+  MVREXPORT bool disconnectSonars();
 protected:
 /// Class that holds information about the sonar data
 class SonarData
@@ -179,15 +179,15 @@ private:
 };
 
 	/// Turns on the power for the specific board in the firmware
-	AREXPORT bool turnOnPower(SonarData *sonarData);
+	MVREXPORT bool turnOnPower(SonarData *sonarData);
 
   std::map<int, SonarData *> mySonars;
   
   /// Parses the sonar arguments
-  AREXPORT bool parseSonarArgs(MvrArgumentParser *parser, 
+  MVREXPORT bool parseSonarArgs(MvrArgumentParser *parser, 
 			       SonarData *sonarData);
   /// Logs the sonar command line option help text. 
-  AREXPORT void logSonarOptions(SonarData *sonardata, bool header = true, bool metaOpts = true) const;
+  MVREXPORT void logSonarOptions(SonarData *sonardata, bool header = true, bool metaOpts = true) const;
   // Sets the sonar parameters
   bool internalConfigureSonar(SonarData *sonarData);
 

@@ -89,15 +89,15 @@ class MvrDeviceConnection;
 class MvrPTZ
 {
 public:
-  AREXPORT MvrPTZ(MvrRobot *robot);
+  MVREXPORT MvrPTZ(MvrRobot *robot);
   /// Destructor
-  AREXPORT virtual ~ArPTZ();
+  MVREXPORT virtual ~MvrPTZ();
 
   /// Initializes the camera
-  AREXPORT virtual bool init(void) = 0;
+  MVREXPORT virtual bool init(void) = 0;
 
   /// Return name of this PTZ type 
-  AREXPORT virtual const char *getTypeName() = 0;
+  MVREXPORT virtual const char *getTypeName() = 0;
 
   /// Resets the camera
   /**
@@ -105,7 +105,7 @@ public:
      on some cameras that can get out of sync it may need to do more,
      such as call init on it again.
    **/
-  AREXPORT virtual void reset(void) 
+  MVREXPORT virtual void reset(void) 
     { panTilt(0, 0); if (canZoom()) zoom(getMinZoom()); }
 
   /// Pans to the given degrees. 0 is straight ahead, - is to the left, + to the right
@@ -131,12 +131,12 @@ public:
   virtual bool panTiltRel(double degreesPan, double degreesTilt) { if(myInverted) return panTiltRel_i(-degreesPan, -degreesTilt); else return panTiltRel_i(degreesPan,  degreesTilt); }
 
   /// Returns true if camera can zoom and this class can control the zoom amount
-  AREXPORT virtual bool canZoom(void) const = 0;
+  MVREXPORT virtual bool canZoom(void) const = 0;
 
   /// Zooms to the given value
-  AREXPORT virtual bool zoom(int zoomValue) { return false; }
+  MVREXPORT virtual bool zoom(int zoomValue) { return false; }
   /// Zooms relative to the current value, by the given value
-  AREXPORT virtual bool zoomRel(int zoomValue) { return false; }
+  MVREXPORT virtual bool zoomRel(int zoomValue) { return false; }
 
   /** The angle the camera is panned to (or last commanded value sent, if unable to obtain real pan position)
       @sa canGetRealPanTilt()
@@ -153,13 +153,13 @@ public:
     @sa canZoom();
     @sa canGetZoom()
   */
-  AREXPORT virtual int getZoom(void) const { return 0; }
+  MVREXPORT virtual int getZoom(void) const { return 0; }
 
   /// Whether getPan() hand getTilt() return the device's real position, or last commanded position.
-  AREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
+  MVREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
 
   /// Whether getZoom() returns the device's real zoom amount, or last commanded zoom position.
-  AREXPORT virtual bool canGetRealZoom(void) const { return false; }
+  MVREXPORT virtual bool canGetRealZoom(void) const { return false; }
 
 
   /// Gets the highest positive degree the camera can pan to (inverted if camera is inverted)
@@ -238,28 +238,28 @@ public:
   /// Whether we can get the FOV (field of view) or not
   virtual bool canGetFOV(void) { return false; }
   /// Gets the field of view at maximum zoom
-  AREXPORT virtual double getFOVAtMaxZoom(void) { return 0; }
+  MVREXPORT virtual double getFOVAtMaxZoom(void) { return 0; }
   /// Gets the field of view at minimum zoom
-  AREXPORT virtual double getFOVAtMinZoom(void) { return 0; }
+  MVREXPORT virtual double getFOVAtMinZoom(void) { return 0; }
 
   /// Set gain on camera, range of 1-100.  Returns false if out of range
   /// or if you can't set the gain on the camera
-  AREXPORT virtual bool setGain(double gain) const { return false; }
+  MVREXPORT virtual bool setGain(double gain) const { return false; }
   /// Get the gain the camera is set to.  0 if not supported
-  AREXPORT virtual double getGain(double gain) const { return 0; }
+  MVREXPORT virtual double getGain(double gain) const { return 0; }
   /// If the driver can set gain on the camera, or not
-  AREXPORT virtual bool canSetGain(void) const { return false; }
+  MVREXPORT virtual bool canSetGain(void) const { return false; }
 
   /// Set focus on camera, range of 1-100.  Returns false if out of range
   /// or if you can't set the focus on the camera
-  AREXPORT virtual bool setFocus(double focus) const { return false; }
+  MVREXPORT virtual bool setFocus(double focus) const { return false; }
   /// Get the focus the camera is set to.  0 if not supported
-  AREXPORT virtual double getFocus(double focus) const { return 0; }
+  MVREXPORT virtual double getFocus(double focus) const { return 0; }
   /// If the driver can set the focus on the camera, or not
-  AREXPORT virtual bool canSetFocus(void) const { return false; }
+  MVREXPORT virtual bool canSetFocus(void) const { return false; }
 
   /// Disable/enable autofocus mode if possible. Return false if can't change autofocus mode.
-  AREXPORT virtual bool setAutoFocus(bool af = true) { return false; }
+  MVREXPORT virtual bool setAutoFocus(bool af = true) { return false; }
 
   /// Set whether the camera is inverted (upside down). If true, pan and tilt axes will be reversed.
   void setInverted(bool inv) { myInverted = inv; }
@@ -270,14 +270,14 @@ public:
   /// Sets the device connection to be used by this PTZ camera, if set
   /// this camera will send commands via this connection, otherwise
   /// its via robot aux. serial port (see setAuxPortt())
-  AREXPORT virtual bool setDeviceConnection(MvrDeviceConnection *connection,
+  MVREXPORT virtual bool setDeviceConnection(MvrDeviceConnection *connection,
 					    bool driveFromRobotLoop = true);
   /// Gets the device connection used by this PTZ camera
-  AREXPORT virtual MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT virtual MvrDeviceConnection *getDeviceConnection(void);
   /// Sets the aux port on the robot to be used to communicate with this device
-  AREXPORT virtual bool setAuxPort(int auxPort);
+  MVREXPORT virtual bool setAuxPort(int auxPort);
   /// Gets the port the device is set to communicate on
-  AREXPORT virtual int getAuxPort(void) { return myAuxPort; }
+  MVREXPORT virtual int getAuxPort(void) { return myAuxPort; }
   /// Reads a packet from the device connection, MUST NOT BLOCK
   /** 
       This should read in a packet from the myConn connection and
@@ -287,10 +287,10 @@ public:
       since that is on the robot loop.      
       @return packet read in, or NULL if there was no packet read
    **/
-  AREXPORT virtual MvrBasePacket *readPacket(void) { return NULL; }
+  MVREXPORT virtual MvrBasePacket *readPacket(void) { return NULL; }
   
   /// Sends a given packet to the camera (via robot or serial port, depending)
-  AREXPORT virtual bool sendPacket(MvrBasePacket *packet);
+  MVREXPORT virtual bool sendPacket(MvrBasePacket *packet);
   /// Handles a packet that was read from the device
   /**
      This should work for the robot packet handler or for packets read
@@ -302,7 +302,7 @@ public:
      @return true if this packet was handled (ie this knows what it
      is), false otherwise
   **/
-  AREXPORT virtual bool packetHandler(MvrBasePacket *packet) { return false; }
+  MVREXPORT virtual bool packetHandler(MvrBasePacket *packet) { return false; }
 
   /// Handles a packet that was read by the robot
   /**
@@ -313,12 +313,12 @@ public:
      @return true if the packet was handled (ie this konws what it is),
      false otherwise
   **/
-  AREXPORT virtual bool robotPacketHandler(MvrRobotPacket *packet);
+  MVREXPORT virtual bool robotPacketHandler(MvrRobotPacket *packet);
 
   /// Internal, attached to robot, inits the camera when robot connects
-  AREXPORT virtual void connectHandler(void);
+  MVREXPORT virtual void connectHandler(void);
   /// Internal, for attaching to the robots sensor interp to read serial port
-  AREXPORT virtual void sensorInterpHandler(void);
+  MVREXPORT virtual void sensorInterpHandler(void);
 
   /// Return MvrRobot object this PTZ is associated with. May be NULL
   MvrRobot *getRobot() { return myRobot; }
@@ -362,14 +362,14 @@ protected:
   /// reversing it.
   /// @since 2.7.6
   //@{
-  AREXPORT virtual bool pan_i (double degrees) = 0;
-  AREXPORT virtual bool panRel_i(double degrees) = 0;
-  AREXPORT virtual bool tilt_i(double degrees) = 0;
-  AREXPORT virtual bool tiltRel_i (double degrees) = 0; 
-  AREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt) = 0;
-  AREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt) = 0;
-  AREXPORT virtual double getPan_i(void) const = 0;
-  AREXPORT virtual double getTilt_i(void) const = 0;
+  MVREXPORT virtual bool pan_i (double degrees) = 0;
+  MVREXPORT virtual bool panRel_i(double degrees) = 0;
+  MVREXPORT virtual bool tilt_i(double degrees) = 0;
+  MVREXPORT virtual bool tiltRel_i (double degrees) = 0; 
+  MVREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt) = 0;
+  MVREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt) = 0;
+  MVREXPORT virtual double getPan_i(void) const = 0;
+  MVREXPORT virtual double getTilt_i(void) const = 0;
   //@}
 
 };

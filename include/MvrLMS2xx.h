@@ -92,23 +92,23 @@ class MvrLMS2xx : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT MvrLMS2xx(int laserNumber,
+  MVREXPORT MvrLMS2xx(int laserNumber,
 		    const char *name = "lms2xx",
 		    bool appendLaserNumberToName = true);
 
   /// Destructor
-  AREXPORT virtual ~ArLMS2xx();
+  MVREXPORT virtual ~MvrLMS2xx();
 
   /// Connect to the laser while blocking
-  AREXPORT virtual bool blockingConnect(void);
+  MVREXPORT virtual bool blockingConnect(void);
   /// Connect to the laser asyncronously
-  AREXPORT bool asyncConnect(void);
+  MVREXPORT bool asyncConnect(void);
   /// Disconnect from the laser
-  AREXPORT virtual bool disconnect(void);
+  MVREXPORT virtual bool disconnect(void);
   /// Sees if this is connected to the laser
-  AREXPORT virtual bool isConnected(void) 
+  MVREXPORT virtual bool isConnected(void) 
     { if (myState == STATE_CONNECTED) return true; else return false; }
-  AREXPORT virtual bool isTryingToConnect(void) 
+  MVREXPORT virtual bool isTryingToConnect(void) 
     { 
       if (myState != STATE_CONNECTED && myState != STATE_NONE) 
 	return true; 
@@ -119,51 +119,51 @@ public:
     }
 
   /// Sets the device connection
-  AREXPORT virtual void setDeviceConnection(MvrDeviceConnection *conn);
+  MVREXPORT virtual void setDeviceConnection(MvrDeviceConnection *conn);
 
   /** The internal function used by the MvrRangeDeviceThreaded
    *  @internal
    */
-  AREXPORT virtual void * runThread(void *arg);
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
 protected:
   // The packet handler for when connected to the simulator
-  AREXPORT bool simPacketHandler(MvrRobotPacket * packet);
+  MVREXPORT bool simPacketHandler(MvrRobotPacket * packet);
   // The function called if the laser isn't running in its own thread and isn't simulated
-  AREXPORT void sensorInterpCallback(void);
+  MVREXPORT void sensorInterpCallback(void);
   // An internal function for connecting to the sim
-  AREXPORT bool internalConnectSim(void);
+  MVREXPORT bool internalConnectSim(void);
   /// An internal function, single loop event to connect to laser
-  AREXPORT int internalConnectHandler(void);
+  MVREXPORT int internalConnectHandler(void);
   // The internal function which processes the sickPackets
-  AREXPORT void processPacket(MvrLMS2xxPacket *packet, MvrPose pose, 
+  MVREXPORT void processPacket(MvrLMS2xxPacket *packet, MvrPose pose, 
 			      MvrPose encoderPose, unsigned int counter,
 			      bool deinterlace, MvrPose deinterlaceDelta);
   // The internal function that gets does the work
-  AREXPORT void runOnce(bool lockRobot);
+  MVREXPORT void runOnce(bool lockRobot);
   // Internal function, shouldn't be used, drops the conn because of error
-  AREXPORT void dropConnection(void);
+  MVREXPORT void dropConnection(void);
   // Internal function, shouldn't be used, denotes the conn failed
-  AREXPORT void failedConnect(void);
+  MVREXPORT void failedConnect(void);
   // Internal function, shouldn't be used, does the after conn stuff
-  AREXPORT void madeConnection(void);
+  MVREXPORT void madeConnection(void);
 
   /// Internal function that gets whether the laser is simulated or not (just for the old MvrSick)
-  AREXPORT bool sickGetIsUsingSim(void);
+  MVREXPORT bool sickGetIsUsingSim(void);
 
   /// Internal function that sets whether the laser is simulated or not (just for the old MvrSick)
-  AREXPORT void sickSetIsUsingSim(bool usingSim);
+  MVREXPORT void sickSetIsUsingSim(bool usingSim);
 
   /// internal function to runOnRobot so that MvrSick can do that while this class won't
-  AREXPORT bool internalRunOnRobot(void);
+  MVREXPORT bool internalRunOnRobot(void);
 
   /// Finishes getting the unset parameters from the robot then
   /// setting some internal variables that need it
   bool finishParams(void);
 
-  AREXPORT virtual bool laserCheckParams(void);
+  MVREXPORT virtual bool laserCheckParams(void);
 
-  AREXPORT virtual void laserSetName(const char *name);
+  MVREXPORT virtual void laserSetName(const char *name);
 
   enum State {
     STATE_NONE, ///< Nothing, haven't tried to connect or anything
@@ -181,7 +181,7 @@ protected:
     STATE_CONNECTED ///< We're connected and getting readings
   };
   /// Internal function for switching states
-  AREXPORT void switchState(State state);
+  MVREXPORT void switchState(State state);
   State myState;
   MvrTime myStateStart;
   MvrFunctorC<ArLMS2xx> myRobotConnectCB;

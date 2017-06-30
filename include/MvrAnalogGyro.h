@@ -97,30 +97,30 @@ class MvrAnalogGyro
 {
 public:
   /// Constructor
-  AREXPORT MvrAnalogGyro(MvrRobot *robot);
+  MVREXPORT MvrAnalogGyro(MvrRobot *robot);
   /// Destructor
-  AREXPORT virtual ~ArAnalogGyro();
+  MVREXPORT virtual ~MvrAnalogGyro();
   /// Gets if we really have a gyro or not
-  AREXPORT bool isActive(void) { return myIsActive; }
+  MVREXPORT bool isActive(void) { return myIsActive; }
   /// Lets the gyro correct readings
-  AREXPORT void activate(void);
+  MVREXPORT void activate(void);
   /// Stops the gyro from correcting readings (still accumulates)
-  AREXPORT void deactivate(void);
+  MVREXPORT void deactivate(void);
   /// If we have a gyro only mode
   bool hasGyroOnlyMode(void) { return myHasGyroOnlyMode; }
   /// If we're using gyro only mode
   bool isGyroOnlyActive(void) { return myIsGyroOnlyActive; }
   /// Activates it and puts it in gyro only mode
-  AREXPORT void activateGyroOnly(void);
+  MVREXPORT void activateGyroOnly(void);
   /// If this class actually has data or not (if it has no data, the
   /// robot is all there is)
   bool hasNoInternalData(void) { return myHasNoData; }
   /// Returns true if any amount of gyro data has yet been received, false if no readings have yet been received from the robot.
-  AREXPORT bool haveGottenData(void) { return myHaveGottenData; }
+  MVREXPORT bool haveGottenData(void) { return myHaveGottenData; }
   /// Gets a heading calculated from past gyro readings
-  AREXPORT double getHeading(void) const { return myHeading; }
+  MVREXPORT double getHeading(void) const { return myHeading; }
   /// Gets the temperature the gyro has
-  AREXPORT int getTemperature(void) const { return myTemperature; }
+  MVREXPORT int getTemperature(void) const { return myTemperature; }
   /// Set the parameters of the Kalman filter model
   /**
      @param gyroSigma the amount its off statically
@@ -132,32 +132,32 @@ public:
      @param transVar the amount the translation throws off the heading
      proportionally
   **/
-  AREXPORT void setFilterModel(double gyroSigma, double inertialVar, 
+  MVREXPORT void setFilterModel(double gyroSigma, double inertialVar, 
 				       double rotVar, double transVar)
     { myGyroSigma = gyroSigma; myInertialVarianceModel = inertialVar;
       myRotVarianceModel = rotVar; myTransVarianceModel = transVar; };
 
   /// Returns the number of readings taken in the last second
-  AREXPORT int getPacCount(void) { return myPacCount; }
+  MVREXPORT int getPacCount(void) { return myPacCount; }
 
   /// Gets the most recently calculated average rotational velocity (over one
   //second)
-  AREXPORT double getAverage(void) const { return myLastAverage; }
+  MVREXPORT double getAverage(void) const { return myLastAverage; }
   /// Gets the time the last average was taken 
-  AREXPORT MvrTime getAverageTaken(void) const { return myLastAverageTaken; }
+  MVREXPORT MvrTime getAverageTaken(void) const { return myLastAverageTaken; }
   /// Gets the scaling factor used for multiplying the reading values received (default 1.626)
-  AREXPORT double getScalingFactor(void) const { return myScalingFactor; }
+  MVREXPORT double getScalingFactor(void) const { return myScalingFactor; }
   /// Sets the scaling factor used for multiplying the readings
-  AREXPORT void setScalingFactor(double factor) { myScalingFactor = factor; }
+  MVREXPORT void setScalingFactor(double factor) { myScalingFactor = factor; }
 
   /// Internal packet handler for the gyro packets
-  AREXPORT bool handleGyroPacket(MvrRobotPacket *packet);
+  MVREXPORT bool handleGyroPacket(MvrRobotPacket *packet);
   /// internal function for correcting the encoder readings with the gyro data
-  AREXPORT double encoderCorrect(MvrPoseWithTime deltaPose);
+  MVREXPORT double encoderCorrect(MvrPoseWithTime deltaPose);
   /// Internal connection callback; delays for a short amount of time to give the gyro enough time to stabilize before we try to use it
-  AREXPORT void stabilizingCallback(void);
+  MVREXPORT void stabilizingCallback(void);
   /// Internal user task callback
-  AREXPORT void userTaskCallback(void);
+  MVREXPORT void userTaskCallback(void);
   /// Sets whether we log anomalies or not (temporary function for debugging)
   void setLogAnomalies(bool logAnomalies) { myLogAnomalies = logAnomalies; }
 protected:

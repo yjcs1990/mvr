@@ -43,7 +43,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * is false and preserves the original behavior where each argument is a 
  * space-separated alphanumeric string.
 **/
-AREXPORT MvrFileParser::ArFileParser(const char *baseDirectory,
+MVREXPORT MvrFileParser::ArFileParser(const char *baseDirectory,
                                     bool isPreCompressQuotes) :
   myCommentDelimiterList(),
   myPreParseFunctor(NULL),
@@ -66,7 +66,7 @@ AREXPORT MvrFileParser::ArFileParser(const char *baseDirectory,
   setMaxNumArguments();
 }
 
-AREXPORT MvrFileParser::~ArFileParser(void)
+MVREXPORT MvrFileParser::~MvrFileParser(void)
 {
   MvrUtil::deleteSetPairs(myMap.begin(), myMap.end());
   myMap.clear();
@@ -75,7 +75,7 @@ AREXPORT MvrFileParser::~ArFileParser(void)
 
 }
 
-AREXPORT bool MvrFileParser::addHandler(
+MVREXPORT bool MvrFileParser::addHandler(
 	const char *keyword, MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor)
 {
   std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
@@ -114,7 +114,7 @@ AREXPORT bool MvrFileParser::addHandler(
    you'll get an error.  The rem's are the same though since that
    shouldn't matter.
 **/
-AREXPORT bool MvrFileParser::addHandlerWithError(
+MVREXPORT bool MvrFileParser::addHandlerWithError(
 	const char *keyword, 
 	ArRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
 {
@@ -148,7 +148,7 @@ AREXPORT bool MvrFileParser::addHandlerWithError(
   return true;
 }
 
-AREXPORT bool MvrFileParser::remHandler(const char *keyword, 
+MVREXPORT bool MvrFileParser::remHandler(const char *keyword, 
 				       bool logIfCannotFind)
 {
   std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
@@ -192,7 +192,7 @@ AREXPORT bool MvrFileParser::remHandler(const char *keyword,
 
 }
 
-AREXPORT bool MvrFileParser::remHandler(
+MVREXPORT bool MvrFileParser::remHandler(
 	ArRetFunctor1<bool, MvrArgumentBuilder *> *functor)
 {
   std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
@@ -225,7 +225,7 @@ AREXPORT bool MvrFileParser::remHandler(
 
 }
 
-AREXPORT bool MvrFileParser::remHandler(
+MVREXPORT bool MvrFileParser::remHandler(
 	ArRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
 {
   std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
@@ -259,7 +259,7 @@ AREXPORT bool MvrFileParser::remHandler(
 }
 
 /*
-AREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *ArFileParser::getHandler(const char *keyword)
+MVREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *ArFileParser::getHandler(const char *keyword)
 {
   std::map<std::string, MvrRetFunctor1<bool, MvrArgumentBuilder *> *, MvrStrCaseCmpOp>::iterator it;
 
@@ -272,7 +272,7 @@ AREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *ArFileParser::getHandler(co
   return (*it).second;
 }
 */
-AREXPORT void MvrFileParser::setBaseDirectory(const char *baseDirectory)
+MVREXPORT void MvrFileParser::setBaseDirectory(const char *baseDirectory)
 {
   if (baseDirectory != NULL && strlen(baseDirectory) > 0)
     myBaseDir = baseDirectory;
@@ -280,7 +280,7 @@ AREXPORT void MvrFileParser::setBaseDirectory(const char *baseDirectory)
     myBaseDir = "";
 }
 
-AREXPORT const char *ArFileParser::getBaseDirectory(void) const
+MVREXPORT const char *ArFileParser::getBaseDirectory(void) const
 {
   return myBaseDir.c_str();
 }
@@ -293,7 +293,7 @@ AREXPORT const char *ArFileParser::getBaseDirectory(void) const
  * a comment delimiter.  The comment delimiter and any following characters in 
  * the current line will be stripped during parsing of the file
 **/
-AREXPORT void MvrFileParser::setCommentDelimiters(const std::list<std::string> &delimiters)
+MVREXPORT void MvrFileParser::setCommentDelimiters(const std::list<std::string> &delimiters)
 {
   myCommentDelimiterList.clear();
 
@@ -318,19 +318,19 @@ AREXPORT void MvrFileParser::setCommentDelimiters(const std::list<std::string> &
  * Call this method to indicate that the file type to be parsed does not contain 
  * comments.
 **/
-AREXPORT void MvrFileParser::clearCommentDelimiters()
+MVREXPORT void MvrFileParser::clearCommentDelimiters()
 {
   myCommentDelimiterList.clear();
 
 } // end method clearCommentDelimiters
 
 
-AREXPORT void MvrFileParser::resetCounters(void)
+MVREXPORT void MvrFileParser::resetCounters(void)
 {
   myLineNumber = 0;
 }
 
-AREXPORT bool MvrFileParser::parseLine(char *line, 
+MVREXPORT bool MvrFileParser::parseLine(char *line, 
 				                              char *errorBuffer, size_t errorBufferLen)
 {
   char keyword[512];
@@ -538,7 +538,7 @@ AREXPORT bool MvrFileParser::parseLine(char *line,
   return true;
 }
 
-AREXPORT void MvrFileParser::setPreParseFunctor(MvrFunctor1<const char *> *functor)
+MVREXPORT void MvrFileParser::setPreParseFunctor(MvrFunctor1<const char *> *functor)
 {
   myPreParseFunctor = functor;
 
@@ -561,7 +561,7 @@ AREXPORT void MvrFileParser::setPreParseFunctor(MvrFunctor1<const char *> *funct
    
    @param errorBufferLen the length of @a errorBuffer
 */
-AREXPORT bool MvrFileParser::parseFile(const char *fileName, 
+MVREXPORT bool MvrFileParser::parseFile(const char *fileName, 
                                       bool continueOnErrors, 
                                       bool noFileNotFoundMessage,
                                       char *errorBuffer,
@@ -641,7 +641,7 @@ bool MvrFileParser::isInterrupted() {
 } // end method isInterrupted
 
 
-AREXPORT void MvrFileParser::cancelParsing()
+MVREXPORT void MvrFileParser::cancelParsing()
 {
   myInterruptMutex.lock();
   myIsInterrupted = true;
@@ -662,7 +662,7 @@ AREXPORT void MvrFileParser::cancelParsing()
  *  immediately empties the errorBuffer
  * @param errorBufferLen the length of @a errorBuffer
 */
-AREXPORT bool MvrFileParser::parseFile(FILE *file, 
+MVREXPORT bool MvrFileParser::parseFile(FILE *file, 
                                       char *buffer, 
                                       int bufferLength, 
                                       bool continueOnErrors,

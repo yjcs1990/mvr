@@ -30,17 +30,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrAction.h"
 #include "MvrRobot.h"
 
-AREXPORT ArPriorityResolver::ArPriorityResolver() :
+MVREXPORT ArPriorityResolver::ArPriorityResolver() :
   ArResolver("MvrPriorityResolver", "Resolves strictly by using priority, the highest priority action to act is the one that gets to go.  Does no mixing of any variety.")
 {
 }
 
 
-AREXPORT ArPriorityResolver::~ArPriorityResolver()
+MVREXPORT ArPriorityResolver::~MvrPriorityResolver()
 {
 }
 
-AREXPORT ArActionDesired *ArPriorityResolver::resolve(
+MVREXPORT ArActionDesired *ArPriorityResolver::resolve(
 	ArResolver::ActionMap *actions, ArRobot *robot, bool logActions)
 {
   ArResolver::ActionMap::reverse_iterator it;

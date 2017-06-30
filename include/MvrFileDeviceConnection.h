@@ -40,21 +40,21 @@ class MvrFileDeviceConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT MvrFileDeviceConnection();
+  MVREXPORT MvrFileDeviceConnection();
   /// Destructor also closes connection
-  AREXPORT virtual ~ArFileDeviceConnection();
+  MVREXPORT virtual ~MvrFileDeviceConnection();
 
   /// Opens a connection to the given host and port
-  AREXPORT int open(const char *infilename = NULL, const char *outfilename = NULL, int outflags = 0);
+  MVREXPORT int open(const char *infilename = NULL, const char *outfilename = NULL, int outflags = 0);
   bool openSimple() { return this->open() == 0; }
-  AREXPORT virtual bool close(void);
-  AREXPORT virtual int read(const char *data, unsigned int size, 
+  MVREXPORT virtual bool close(void);
+  MVREXPORT virtual int read(const char *data, unsigned int size, 
 			    unsigned int msWait = 0);
-  AREXPORT virtual int write(const char *data, unsigned int size);
+  MVREXPORT virtual int write(const char *data, unsigned int size);
   virtual int getStatus() { return myStatus; }
-  AREXPORT virtual const char *getOpenMessage(int err);
-  AREXPORT virtual MvrTime getTimeRead(int index);
-  AREXPORT virtual bool isTimeStamping(void);
+  MVREXPORT virtual const char *getOpenMessage(int err);
+  MVREXPORT virtual MvrTime getTimeRead(int index);
+  MVREXPORT virtual bool isTimeStamping(void);
 
   /// If >0 then only read at most this many bytes during read(), regardless of supplied size argument
   void setForceReadBufferSize(unsigned int s) { myForceReadBufferSize = s; }

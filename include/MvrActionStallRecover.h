@@ -42,21 +42,21 @@ class MvrActionStallRecover : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionStallRecover(const char * name = "stall recover", 
+  MVREXPORT MvrActionStallRecover(const char * name = "stall recover", 
 				double obstacleDistance = 225, int cyclesToMove = 50, 
 				double speed = 150, double degreesToTurn = 45,
 				bool enabled = true);
   /// Destructor
-  AREXPORT virtual ~ArActionStallRecover();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) 
+  MVREXPORT virtual ~MvrActionStallRecover();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) 
     { return &myActionDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                    { return &myActionDesired; }
 #endif
-  AREXPORT void addToConfig(MvrConfig* config, const char* sectionName, MvrPriority::Priority priority = MvrPriority::NORMAL);
-  AREXPORT virtual void activate(void);
+  MVREXPORT void addToConfig(MvrConfig* config, const char* sectionName, MvrPriority::Priority priority = MvrPriority::NORMAL);
+  MVREXPORT virtual void activate(void);
 protected:
   // these are internal things, don't touch unless you know what you are doing
   void doit(void); // does whatever should be done

@@ -35,7 +35,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
      The default, QUERYTYPE, will work with most robot configurations with 
      a recent firmware version.
 */
-AREXPORT MvrGripper::ArGripper(MvrRobot *robot, int gripperType) :
+MVREXPORT MvrGripper::ArGripper(MvrRobot *robot, int gripperType) :
   myConnectCB(this, &ArGripper::connectHandler),
   myPacketHandlerCB(this, &ArGripper::packetHandler)
 {
@@ -51,11 +51,11 @@ AREXPORT MvrGripper::ArGripper(MvrRobot *robot, int gripperType) :
   myLastDataTime.setToNow();
 }
 
-AREXPORT MvrGripper::~ArGripper()
+MVREXPORT MvrGripper::~MvrGripper()
 {
 }
 
-AREXPORT void MvrGripper::connectHandler(void)
+MVREXPORT void MvrGripper::connectHandler(void)
 {
   if (myRobot != NULL && (myType == GRIPPAC || myType == QUERYTYPE))
     myRobot->comInt(MvrCommands::GRIPPERPACREQUEST, 2);
@@ -64,7 +64,7 @@ AREXPORT void MvrGripper::connectHandler(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::gripOpen(void)
+MVREXPORT bool MvrGripper::gripOpen(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -76,7 +76,7 @@ AREXPORT bool MvrGripper::gripOpen(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::gripClose(void)
+MVREXPORT bool MvrGripper::gripClose(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -88,7 +88,7 @@ AREXPORT bool MvrGripper::gripClose(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::gripStop(void)
+MVREXPORT bool MvrGripper::gripStop(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -100,7 +100,7 @@ AREXPORT bool MvrGripper::gripStop(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::liftUp(void)
+MVREXPORT bool MvrGripper::liftUp(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -112,7 +112,7 @@ AREXPORT bool MvrGripper::liftUp(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::liftDown(void)
+MVREXPORT bool MvrGripper::liftDown(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -124,7 +124,7 @@ AREXPORT bool MvrGripper::liftDown(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::liftStop(void)
+MVREXPORT bool MvrGripper::liftStop(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -136,7 +136,7 @@ AREXPORT bool MvrGripper::liftStop(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::gripperStore(void)
+MVREXPORT bool MvrGripper::gripperStore(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -148,7 +148,7 @@ AREXPORT bool MvrGripper::gripperStore(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::gripperDeploy(void)
+MVREXPORT bool MvrGripper::gripperDeploy(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -160,7 +160,7 @@ AREXPORT bool MvrGripper::gripperDeploy(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::gripperHalt(void)
+MVREXPORT bool MvrGripper::gripperHalt(void)
 {
   if (myRobot != NULL)
     return myRobot->comInt(MvrCommands::GRIPPER, 
@@ -172,7 +172,7 @@ AREXPORT bool MvrGripper::gripperHalt(void)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::gripPressure(int mSecIntervals)
+MVREXPORT bool MvrGripper::gripPressure(int mSecIntervals)
 {
   if (myRobot == NULL)
     return false;
@@ -187,7 +187,7 @@ AREXPORT bool MvrGripper::gripPressure(int mSecIntervals)
 /**
    @return whether the command was sent to the robot or not 
 */
-AREXPORT bool MvrGripper::liftCarry(int mSecIntervals)
+MVREXPORT bool MvrGripper::liftCarry(int mSecIntervals)
 {
   if (myRobot == NULL)
     return false;
@@ -202,7 +202,7 @@ AREXPORT bool MvrGripper::liftCarry(int mSecIntervals)
 /**
    @return true if the gripper paddles are moving
 */
-AREXPORT bool MvrGripper::isGripMoving(void) const
+MVREXPORT bool MvrGripper::isGripMoving(void) const
 {
   int d;
 
@@ -234,7 +234,7 @@ AREXPORT bool MvrGripper::isGripMoving(void) const
 /**
    @return true if the lift is moving
 */
-AREXPORT bool MvrGripper::isLiftMoving(void) const
+MVREXPORT bool MvrGripper::isLiftMoving(void) const
 {
   int d;
 
@@ -267,7 +267,7 @@ AREXPORT bool MvrGripper::isLiftMoving(void) const
    is triggered, 2 if the right paddle is triggered, 3 if both are
    triggered
 **/
-AREXPORT int MvrGripper::getPaddleState(void) const
+MVREXPORT int MvrGripper::getPaddleState(void) const
 {
   int d;
   int ret = 0;
@@ -301,7 +301,7 @@ AREXPORT int MvrGripper::getPaddleState(void) const
    @return 0 if gripper paddles between open and closed, 1 if gripper paddles 
    are open, 2 if gripper paddles are closed
 */
-AREXPORT int MvrGripper::getGripState(void) const
+MVREXPORT int MvrGripper::getGripState(void) const
 {
   int d;
 
@@ -337,7 +337,7 @@ AREXPORT int MvrGripper::getGripState(void) const
    @return 0 if no breakbeams broken, 1 if inner breakbeam broken, 2 if 
    outter breakbeam broken, 3 if both breakbeams broken
 */
-AREXPORT int MvrGripper::getBreakBeamState(void) const
+MVREXPORT int MvrGripper::getBreakBeamState(void) const
 {
   int d;
 
@@ -375,7 +375,7 @@ AREXPORT int MvrGripper::getBreakBeamState(void) const
    @return false if lift is between up and down, true is either all the 
    way up or down
 */
-AREXPORT bool MvrGripper::isLiftMaxed(void) const
+MVREXPORT bool MvrGripper::isLiftMaxed(void) const
 {
   int d = 0;
 
@@ -404,7 +404,7 @@ AREXPORT bool MvrGripper::isLiftMaxed(void) const
 }
   
 
-AREXPORT void MvrGripper::logState(void) const
+MVREXPORT void MvrGripper::logState(void) const
 {
   char paddleBuf[128];
   char liftBuf[128];
@@ -460,7 +460,7 @@ AREXPORT void MvrGripper::logState(void) const
   
 }
 
-AREXPORT bool MvrGripper::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrGripper::packetHandler(MvrRobotPacket *packet)
 {
   int type;
   
@@ -509,7 +509,7 @@ AREXPORT bool MvrGripper::packetHandler(MvrRobotPacket *packet)
    @return the gripper type
    @see Type
 */
-AREXPORT int MvrGripper::getType(void) const
+MVREXPORT int MvrGripper::getType(void) const
 {
   return myType;
 }
@@ -517,7 +517,7 @@ AREXPORT int MvrGripper::getType(void) const
 /**
    @param type the type of gripper to set it to
 */
-AREXPORT void MvrGripper::setType(int type)
+MVREXPORT void MvrGripper::setType(int type)
 {
   myType = type;
   if (myRobot != NULL && (myType == GRIPPAC || myType == QUERYTYPE))
@@ -527,7 +527,7 @@ AREXPORT void MvrGripper::setType(int type)
 /**
    @return the number of milliseconds since the last packet
 */
-AREXPORT long MvrGripper::getMSecSinceLastPacket(void) const
+MVREXPORT long MvrGripper::getMSecSinceLastPacket(void) const
 {
   return myLastDataTime.mSecSince();
 }
@@ -539,7 +539,7 @@ AREXPORT long MvrGripper::getMSecSinceLastPacket(void) const
    @return the number of 20 MSec intervals the gripper will continue grasping 
    for after both paddles are triggered
 */
-AREXPORT int MvrGripper::getGraspTime(void) const
+MVREXPORT int MvrGripper::getGraspTime(void) const
 {
   return myGraspTime;
 }

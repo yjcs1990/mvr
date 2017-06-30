@@ -62,7 +62,7 @@ public:
     }
   }
 
-  virtual ~ArPyFunctor() {
+  virtual ~MvrPyFunctor() {
     Py_DECREF(pyFunction);
   }
 

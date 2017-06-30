@@ -51,25 +51,25 @@ class MvrActionGroup
 {
 public:
   /// Constructor
-  AREXPORT MvrActionGroup(MvrRobot * robot);
+  MVREXPORT MvrActionGroup(MvrRobot * robot);
   /// Destructor, it also deletes the actions in its group
-  AREXPORT virtual ~ArActionGroup();
+  MVREXPORT virtual ~MvrActionGroup();
   /// Adds an action to this group's robot, and associates the action with this group.
-  AREXPORT virtual void addAction(MvrAction *action, int priority);
+  MVREXPORT virtual void addAction(MvrAction *action, int priority);
   /// Removes the action from this group's robot and dissasociates it from this group.
-  AREXPORT virtual void remAction(MvrAction *action);
+  MVREXPORT virtual void remAction(MvrAction *action);
   /// Activates all the actions in this group
-  AREXPORT virtual void activate(void);
+  MVREXPORT virtual void activate(void);
   /// Activates all the actions in this group and deactivates all others
-  AREXPORT virtual void activateExclusive(void);
+  MVREXPORT virtual void activateExclusive(void);
   /// Deactivates all the actions in this group
-  AREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void deactivate(void);
   /// Removes all the actions in this group from the robot
-  AREXPORT virtual void removeActions(void);
+  MVREXPORT virtual void removeActions(void);
   /// Delets all the actions in this group (doesn't delete them right now)
-  AREXPORT virtual void deleteActions(void);
+  MVREXPORT virtual void deleteActions(void);
   /// Gets the action list (use this to delete actions after doing removeActions)
-  AREXPORT virtual std::list<ArAction *> *getActionList(void);
+  MVREXPORT virtual std::list<ArAction *> *getActionList(void);
 protected:
   std::list<ArAction *> myActions;
   MvrRobot *myRobot;

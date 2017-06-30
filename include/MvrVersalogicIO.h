@@ -80,53 +80,53 @@ public:
   };
 
   /// Constructor
-  AREXPORT MvrVersalogicIO(const char * dev = "/dev/amrio");
+  MVREXPORT MvrVersalogicIO(const char * dev = "/dev/amrio");
   /// Destructor
-  AREXPORT virtual ~ArVersalogicIO(void);
+  MVREXPORT virtual ~MvrVersalogicIO(void);
 
   /// tries to close the device.  Returns false if operation failed
-  AREXPORT bool closeIO(void);
+  MVREXPORT bool closeIO(void);
 
   /// returns true if the device is opened and operational
-  AREXPORT bool isEnabled(void) { return myEnabled; }
+  MVREXPORT bool isEnabled(void) { return myEnabled; }
 
   /// returns true if analog values are supported
-  AREXPORT bool isAnalogSupported(void) { return myAnalogEnabled; }
+  MVREXPORT bool isAnalogSupported(void) { return myAnalogEnabled; }
 
   /// Take an analog reading from a port number from 0-7.
   /// This returns a conversion of the bits to a decimal value,
   /// currently assumed to be in the 0-5V range
-  AREXPORT bool getAnalogValue(int port, double *val);
+  MVREXPORT bool getAnalogValue(int port, double *val);
 
   /// Take an analog reading from a port number from 0-7.
   /// This returns the actual reading from the chip, which is 12-bits
-  AREXPORT bool getAnalogValueRaw(int port, int *val);
+  MVREXPORT bool getAnalogValueRaw(int port, int *val);
 
   /// returns the direction (input or output) for the given bank
-  AREXPORT Direction getDigitalBankDirection(int bank);
+  MVREXPORT Direction getDigitalBankDirection(int bank);
 
   /// set direction for a particular digital I/O bank
-  AREXPORT bool setDigitalBankDirection(int bank, Direction dir);
+  MVREXPORT bool setDigitalBankDirection(int bank, Direction dir);
 
   /// get the current value of the digital inputs on a certain bank
-  AREXPORT bool getDigitalBankInputs(int bank, unsigned char *val);
+  MVREXPORT bool getDigitalBankInputs(int bank, unsigned char *val);
 
   /// get the current value of the digital outputs bits on a certain bank
-  AREXPORT bool getDigitalBankOutputs(int bank, unsigned char *val);
+  MVREXPORT bool getDigitalBankOutputs(int bank, unsigned char *val);
 
   /// set the value of the digital outputs bits
-  AREXPORT bool setDigitalBankOutputs(int bank, unsigned char val);
+  MVREXPORT bool setDigitalBankOutputs(int bank, unsigned char val);
 
   /// gets the special register of the motherboard.
-  AREXPORT bool getSpecialControlRegister(unsigned char *val);
+  MVREXPORT bool getSpecialControlRegister(unsigned char *val);
 
   /// lock the amrio device instance
-  AREXPORT int lock(void){ return(myMutex.lock()); }
+  MVREXPORT int lock(void){ return(myMutex.lock()); }
   /// unlock the amrio device instance
-  AREXPORT int unlock(void){ return(myMutex.unlock()); }
+  MVREXPORT int unlock(void){ return(myMutex.unlock()); }
 
   /// Try to lock the device instance without blocking
-  AREXPORT int tryLock() {return(myMutex.tryLock());}
+  MVREXPORT int tryLock() {return(myMutex.tryLock());}
 
 protected:
 

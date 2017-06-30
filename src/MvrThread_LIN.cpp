@@ -91,7 +91,7 @@ void ArThread::init()
 }
 
 
-AREXPORT void ArThread::shutdown()
+MVREXPORT void ArThread::shutdown()
 {
   /*** This is the _WIN code.  Something similar (or identical?) should
    *** probably be implemented here.
@@ -306,7 +306,7 @@ void ArThread::yieldProcessor()
   sched_yield();
 }
 
-AREXPORT void ArThread::threadStarted(void)
+MVREXPORT void ArThread::threadStarted(void)
 {
   myStarted = true;
   myPID = getpid();
@@ -325,7 +325,7 @@ AREXPORT void ArThread::threadStarted(void)
 	       myName.c_str(), myThread, myPID, myTID);
 }
 
-AREXPORT void ArThread::threadFinished(void)
+MVREXPORT void ArThread::threadFinished(void)
 {
   myFinished = true;
   /// 12/3/2012 MPL Taking this out since it should be set already
@@ -338,7 +338,7 @@ AREXPORT void ArThread::threadFinished(void)
 	       myName.c_str(), myThread, myPID, myTID);
 }
 
-AREXPORT void ArThread::logThreadInfo(void)
+MVREXPORT void ArThread::logThreadInfo(void)
 {
   if (myName.size() == 0)
     ArLog::log(ourLogLevel, "Anonymous thread (%d) is running with pid %d tid %d",

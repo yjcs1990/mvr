@@ -59,26 +59,26 @@ class MvrRecurrentTask : public MvrASyncTask
 {
 public:
   /// Constructor
-  AREXPORT MvrRecurrentTask();
+  MVREXPORT MvrRecurrentTask();
   /// Descructor
-  AREXPORT ~ArRecurrentTask();	
+  MVREXPORT ~MvrRecurrentTask();	
   /// The main run loop
   /**
      Override this function and put your task here. 
   */
   virtual void task() = 0;
   /// Starts up on cycle of the recurrent task
-  AREXPORT void go();		
+  MVREXPORT void go();		
   /// Check if the task is running or not
   /**
      0 = running, 1 = finished normally, 2 = canceled
   */
-  AREXPORT int  done();	
+  MVREXPORT int  done();	
   /// Cancel the task and reset for the next cycle
-  AREXPORT void reset();	// stops the current thread and restarts it
-  AREXPORT void kill();	        // kills the current thread
+  MVREXPORT void reset();	// stops the current thread and restarts it
+  MVREXPORT void kill();	        // kills the current thread
 
-  AREXPORT void *runThread(void *ptr); // main task loop
+  MVREXPORT void *runThread(void *ptr); // main task loop
 
 private:
   bool running;			// true if currently running

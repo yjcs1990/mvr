@@ -76,9 +76,9 @@ class MvrModule
 public:
 
   /// Constructor
-  AREXPORT MvrModule();
+  MVREXPORT MvrModule();
   /// Destructor
-  AREXPORT virtual ~ArModule();
+  MVREXPORT virtual ~MvrModule();
 
   /// Initialize the module. The module should use the supplied MvrRobot pointer
   /**
@@ -88,17 +88,17 @@ public:
      is NULL.  The module can interpret this in any way, it is recommended
      that you make sure this is documented if used. 
   */
-  AREXPORT virtual bool init(MvrRobot *robot, 
+  MVREXPORT virtual bool init(MvrRobot *robot, 
 			     void *argument = NULL) = 0;
 
   /// Close down the module and have it exit
-  AREXPORT virtual bool exit() = 0;
+  MVREXPORT virtual bool exit() = 0;
 
   /// Get the MvrRobot pointer the module should be using
-  AREXPORT MvrRobot * getRobot() {return(myRobot);}
+  MVREXPORT MvrRobot * getRobot() {return(myRobot);}
 
   /// Set the MvrRobot pointer
-  AREXPORT void setRobot(MvrRobot *robot) {myRobot=robot;}
+  MVREXPORT void setRobot(MvrRobot *robot) {myRobot=robot;}
 
 protected:
 

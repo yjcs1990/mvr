@@ -60,7 +60,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @see MvrJoyHandler::setUseOSCal()
 **/
 
-AREXPORT MvrActionJoydrive::ArActionJoydrive(const char *name, 
+MVREXPORT MvrActionJoydrive::ArActionJoydrive(const char *name, 
 					    double transVelMax, 
 					    double turnAmountMax,
 					    bool stopIfNoButtonPressed,
@@ -90,23 +90,23 @@ AREXPORT MvrActionJoydrive::ArActionJoydrive(const char *name,
   myUseThrottle = false;
 }
 
-AREXPORT MvrActionJoydrive::~ArActionJoydrive()
+MVREXPORT MvrActionJoydrive::~MvrActionJoydrive()
 {
 
 }
 
-AREXPORT void MvrActionJoydrive::setStopIfNoButtonPressed(
+MVREXPORT void MvrActionJoydrive::setStopIfNoButtonPressed(
 	bool stopIfNoButtonPressed)
 {
   myStopIfNoButtonPressed = stopIfNoButtonPressed;
 }
 
-AREXPORT bool MvrActionJoydrive::getStopIfNoButtonPressed(void)
+MVREXPORT bool MvrActionJoydrive::getStopIfNoButtonPressed(void)
 {
   return myStopIfNoButtonPressed;
 }
 
-AREXPORT bool MvrActionJoydrive::joystickInited(void)
+MVREXPORT bool MvrActionJoydrive::joystickInited(void)
 {
   return myJoyHandler->haveJoystick();
 }
@@ -114,7 +114,7 @@ AREXPORT bool MvrActionJoydrive::joystickInited(void)
 /**
    @see MvrJoyHandler::setUseOSCal
 **/
-AREXPORT void MvrActionJoydrive::setUseOSCal(bool useOSCal)
+MVREXPORT void MvrActionJoydrive::setUseOSCal(bool useOSCal)
 {
   myUseOSCal = useOSCal;
   myPreviousUseOSCal = useOSCal;
@@ -124,26 +124,26 @@ AREXPORT void MvrActionJoydrive::setUseOSCal(bool useOSCal)
 /**
    @see MvrJoyHandler::getUseOSCal
 **/
-AREXPORT bool MvrActionJoydrive::getUseOSCal(void)
+MVREXPORT bool MvrActionJoydrive::getUseOSCal(void)
 {
   return myUseOSCal;
 }
 
-AREXPORT void MvrActionJoydrive::setSpeeds(double transVelMax, 
+MVREXPORT void MvrActionJoydrive::setSpeeds(double transVelMax, 
 					  double turnAmountMax)
 {
   myTransVelMax = transVelMax;
   myTurnAmountMax = turnAmountMax;
 }
 
-AREXPORT void MvrActionJoydrive::setThrottleParams(double lowSpeed, double highSpeed)
+MVREXPORT void MvrActionJoydrive::setThrottleParams(double lowSpeed, double highSpeed)
 {
   myUseThrottle = true;
   myLowThrottle = lowSpeed;
   myHighThrottle = highSpeed;
 }
 
-AREXPORT MvrActionDesired *ArActionJoydrive::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *ArActionJoydrive::fire(MvrActionDesired currentDesired)
 {
   double rot, trans, throttle;
 

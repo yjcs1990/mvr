@@ -44,51 +44,51 @@ class MvrStringInfoGroup
 {
 public:
   /// Constructor
-  AREXPORT MvrStringInfoGroup();
+  MVREXPORT MvrStringInfoGroup();
   /// Destructor
-  AREXPORT virtual ~ArStringInfoGroup();
+  MVREXPORT virtual ~MvrStringInfoGroup();
   /// Adds a string to the list in the raw format
-  AREXPORT bool addString(const char *name, MvrTypes::UByte2 maxLen, 
+  MVREXPORT bool addString(const char *name, MvrTypes::UByte2 maxLen, 
 			  MvrFunctor2<char *, MvrTypes::UByte2> *functor);
 
   /// Adds an int to the list in the helped way
-  AREXPORT bool addStringInt(const char *name, MvrTypes::UByte2 maxLen, 
+  MVREXPORT bool addStringInt(const char *name, MvrTypes::UByte2 maxLen, 
 			     MvrRetFunctor<int> *functor, 
 			     const char *format = "%d");
 
   /// Adds a double to the list in the helped way
-  AREXPORT bool addStringDouble(const char *name, MvrTypes::UByte2 maxLen, 
+  MVREXPORT bool addStringDouble(const char *name, MvrTypes::UByte2 maxLen, 
 				ArRetFunctor<double> *functor, 
 				const char *format = "%g");
 
   /// Adds a bool to the list in the helped way
-  AREXPORT bool addStringBool(const char *name, MvrTypes::UByte2 maxLen, 
+  MVREXPORT bool addStringBool(const char *name, MvrTypes::UByte2 maxLen, 
 			      MvrRetFunctor<bool> *functor,
 			      const char *format = "%s");
 
   /// Adds a string to the list in the helped way
-  AREXPORT bool addStringString(const char *name, MvrTypes::UByte2 maxLen, 
+  MVREXPORT bool addStringString(const char *name, MvrTypes::UByte2 maxLen, 
 			      MvrRetFunctor<const char *> *functor,
 			      const char *format = "%s");
 
   /// Adds a std::string to the list. std::string::c_str() will be used to  
-  AREXPORT bool addStringString(const char *name, MvrTypes::UByte2 maxLen,
+  MVREXPORT bool addStringString(const char *name, MvrTypes::UByte2 maxLen,
             MvrRetFunctor<std::string> *functor);
 
   /// Adds an int to the list in the helped way
-  AREXPORT bool addStringUnsignedLong(const char *name, 
+  MVREXPORT bool addStringUnsignedLong(const char *name, 
 				      MvrTypes::UByte2 maxLen, 
 				      MvrRetFunctor<unsigned long> *functor, 
 				      const char *format = "%lu");
 
   /// Adds an int to the list in the helped way
-  AREXPORT bool addStringLong(const char *name, 
+  MVREXPORT bool addStringLong(const char *name, 
 			      MvrTypes::UByte2 maxLen, 
 			      MvrRetFunctor<long> *functor, 
 			      const char *format = "%ld");
 
   /// This is the function to add a callback to be called by addString
-  AREXPORT void addAddStringCallback(
+  MVREXPORT void addAddStringCallback(
 	  MvrFunctor3<const char *, MvrTypes::UByte2,
 	  MvrFunctor2<char *, MvrTypes::UByte2> *> *functor,
 	  MvrListPos::Pos position = MvrListPos::LAST);

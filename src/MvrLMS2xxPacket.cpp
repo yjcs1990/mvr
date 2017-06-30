@@ -29,13 +29,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLMS2xxPacket.h"
 #include "stdio.h"
 
-AREXPORT MvrLMS2xxPacket::ArLMS2xxPacket(unsigned char sendingAddress) :
+MVREXPORT MvrLMS2xxPacket::ArLMS2xxPacket(unsigned char sendingAddress) :
   MvrBasePacket(2048, 4)
 {
   mySendingAddress = sendingAddress;
 }
 
-AREXPORT MvrLMS2xxPacket::~ArLMS2xxPacket()
+MVREXPORT MvrLMS2xxPacket::~MvrLMS2xxPacket()
 {
 }
 
@@ -45,7 +45,7 @@ AREXPORT MvrLMS2xxPacket::~ArLMS2xxPacket()
    is put into the appropriate spot in the packet.
    @param address the address of the laser to be addressed
 */
-AREXPORT void MvrLMS2xxPacket::setSendingAddress(unsigned char address)
+MVREXPORT void MvrLMS2xxPacket::setSendingAddress(unsigned char address)
 {
   mySendingAddress = address;
 }
@@ -56,7 +56,7 @@ AREXPORT void MvrLMS2xxPacket::setSendingAddress(unsigned char address)
    the address is put into the appropriate spot in the packet. 
    @return the address of the laser to be addressed 
 */
-AREXPORT unsigned char MvrLMS2xxPacket::getSendingAddress(void)
+MVREXPORT unsigned char MvrLMS2xxPacket::getSendingAddress(void)
 {
   return mySendingAddress;
 }
@@ -67,7 +67,7 @@ AREXPORT unsigned char MvrLMS2xxPacket::getSendingAddress(void)
    to know where a packet was addressed to use getSendingAdress instead.
    @return the address a packet was received from
 */
-AREXPORT unsigned char MvrLMS2xxPacket::getReceivedAddress(void)
+MVREXPORT unsigned char MvrLMS2xxPacket::getReceivedAddress(void)
 {
   int len = myReadLength;
   unsigned char address;
@@ -79,7 +79,7 @@ AREXPORT unsigned char MvrLMS2xxPacket::getReceivedAddress(void)
   return address;
 }
 
-AREXPORT MvrTypes::UByte MvrLMS2xxPacket::getID(void)
+MVREXPORT MvrTypes::UByte MvrLMS2xxPacket::getID(void)
 {
  if (myLength >= 5)
     return myBuf[4];
@@ -87,12 +87,12 @@ AREXPORT MvrTypes::UByte MvrLMS2xxPacket::getID(void)
     return 0;
 }
 
-AREXPORT void MvrLMS2xxPacket::resetRead(void)
+MVREXPORT void MvrLMS2xxPacket::resetRead(void)
 {
   myReadLength = myHeaderLength + 1;
 }
 
-AREXPORT void MvrLMS2xxPacket::finalizePacket(void)
+MVREXPORT void MvrLMS2xxPacket::finalizePacket(void)
 {
   int len = myLength;
   int chkSum;
@@ -121,7 +121,7 @@ AREXPORT void MvrLMS2xxPacket::finalizePacket(void)
    sets this length and readlength to what the given packet has
    @param packet the packet to duplicate
 */
-AREXPORT void MvrLMS2xxPacket::duplicatePacket(MvrLMS2xxPacket *packet)
+MVREXPORT void MvrLMS2xxPacket::duplicatePacket(MvrLMS2xxPacket *packet)
 {
   myLength = packet->getLength();
   myReadLength = packet->getReadLength();
@@ -131,7 +131,7 @@ AREXPORT void MvrLMS2xxPacket::duplicatePacket(MvrLMS2xxPacket *packet)
   
 }
 
-AREXPORT MvrTypes::Byte2 MvrLMS2xxPacket::calcCRC(void)
+MVREXPORT MvrTypes::Byte2 MvrLMS2xxPacket::calcCRC(void)
 {
   unsigned short uCrc16;
   unsigned char abData[2];
@@ -159,7 +159,7 @@ AREXPORT MvrTypes::Byte2 MvrLMS2xxPacket::calcCRC(void)
   return uCrc16;
 }
 
-AREXPORT bool MvrLMS2xxPacket::verifyCRC(void) 
+MVREXPORT bool MvrLMS2xxPacket::verifyCRC(void) 
 {
   int readLen = myReadLength;
   int len = myLength;
@@ -187,12 +187,12 @@ AREXPORT bool MvrLMS2xxPacket::verifyCRC(void)
   
 }
 
-AREXPORT MvrTime MvrLMS2xxPacket::getTimeReceived(void)
+MVREXPORT MvrTime MvrLMS2xxPacket::getTimeReceived(void)
 {
   return myTimeReceived;
 }
 
-AREXPORT void MvrLMS2xxPacket::setTimeReceived(MvrTime timeReceived)
+MVREXPORT void MvrLMS2xxPacket::setTimeReceived(MvrTime timeReceived)
 {
   myTimeReceived = timeReceived;
 }

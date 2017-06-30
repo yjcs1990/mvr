@@ -39,7 +39,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 void ArTCMCompassDirect_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
 #endif
 
-AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(MvrDeviceConnection *devCon) :
+MVREXPORT ArTCMCompassDirect::ArTCMCompassDirect(MvrDeviceConnection *devCon) :
   myDeviceConnection(devCon), myCreatedOwnDeviceConnection(false),
   myNMEAParser("MvrTCMCompassDirect"),
   myHCHDMHandler(this, &ArTCMCompassDirect::handleHCHDM)
@@ -47,7 +47,7 @@ AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(MvrDeviceConnection *devCon) :
   myNMEAParser.addHandler("HCHDM", &myHCHDMHandler);
 }
 
-AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(const char *serialPortName) :
+MVREXPORT ArTCMCompassDirect::ArTCMCompassDirect(const char *serialPortName) :
   myCreatedOwnDeviceConnection(true),
   myNMEAParser("MvrTCMCompassDirect"),
   myHCHDMHandler(this, &ArTCMCompassDirect::handleHCHDM)
@@ -60,7 +60,7 @@ AREXPORT ArTCMCompassDirect::ArTCMCompassDirect(const char *serialPortName) :
 }
   
 
-AREXPORT ArTCMCompassDirect::~ArTCMCompassDirect() {
+MVREXPORT ArTCMCompassDirect::~MvrTCMCompassDirect() {
   if(myCreatedOwnDeviceConnection && myDeviceConnection)
     delete myDeviceConnection;
 }
@@ -77,7 +77,7 @@ bool ArTCMCompassDirect::sendTCMCommand(const char *fmt, ...)
   return myDeviceConnection->write(buf, strlen(buf));
 }
 
-AREXPORT bool ArTCMCompassDirect::blockingConnect(unsigned long connectTimeout)
+MVREXPORT bool ArTCMCompassDirect::blockingConnect(unsigned long connectTimeout)
 {
   ArTime start;
   start.setToNow();
@@ -94,7 +94,7 @@ AREXPORT bool ArTCMCompassDirect::blockingConnect(unsigned long connectTimeout)
 }
 
 
-AREXPORT bool ArTCMCompassDirect::connect()
+MVREXPORT bool ArTCMCompassDirect::connect()
 {
   if(!myDeviceConnection) return false;
   if(myDeviceConnection->getStatus() != ArDeviceConnection::STATUS_OPEN)
@@ -123,37 +123,37 @@ AREXPORT bool ArTCMCompassDirect::connect()
 
 
 
-AREXPORT void ArTCMCompassDirect::commandUserCalibration()
+MVREXPORT void ArTCMCompassDirect::commandUserCalibration()
 {
   sendTCMCommand("cc\rmpcal=e\rgo\r");
 }
 
-AREXPORT void ArTCMCompassDirect::commandStopCalibration()
+MVREXPORT void ArTCMCompassDirect::commandStopCalibration()
 {
   sendTCMCommand("h\rmpcal=d\rautocal=d\r");
 }
 
-AREXPORT void ArTCMCompassDirect::commandContinuousPackets()
+MVREXPORT void ArTCMCompassDirect::commandContinuousPackets()
 {
   sendTCMCommand("go\r");
 }
 
-AREXPORT void ArTCMCompassDirect::commandOff()
+MVREXPORT void ArTCMCompassDirect::commandOff()
 {
   sendTCMCommand("h\r");
 }
 
-AREXPORT void ArTCMCompassDirect::commandOnePacket()
+MVREXPORT void ArTCMCompassDirect::commandOnePacket()
 {
   sendTCMCommand("c?\r");
 }
 
-AREXPORT void ArTCMCompassDirect::commandAutoCalibration()
+MVREXPORT void ArTCMCompassDirect::commandAutoCalibration()
 {
   sendTCMCommand("h\rcc\rautocal=e\r");
 }
 
-AREXPORT int ArTCMCompassDirect::read(unsigned int msWait)
+MVREXPORT int ArTCMCompassDirect::read(unsigned int msWait)
 {
   return myNMEAParser.parse(myDeviceConnection);
 }

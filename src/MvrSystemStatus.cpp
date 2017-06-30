@@ -157,7 +157,7 @@ private:
 /** @endcond INTERNAL_CLASSES */
 
 
-AREXPORT void ArSystemStatus::startPeriodicUpdate(int refreshFrequency, ArLog::LogLevel logLevel)
+MVREXPORT void ArSystemStatus::startPeriodicUpdate(int refreshFrequency, ArLog::LogLevel logLevel)
 {
 	ourCPUMutex.setLogName("MvrSystemStatusRefreshThread::ourCPUMutex");
 	ourWirelessMutex.setLogName("MvrSystemStatusRefreshThread::ourWirelessMutex");
@@ -174,7 +174,7 @@ AREXPORT void ArSystemStatus::startPeriodicUpdate(int refreshFrequency, ArLog::L
 	ourPeriodicUpdateThread->runAsync();
 }
 
-AREXPORT void ArSystemStatus::stopPeriodicUpdate()
+MVREXPORT void ArSystemStatus::stopPeriodicUpdate()
 {
 	if (!ourPeriodicUpdateThread) return;
 	ourPeriodicUpdateThread->stopRunning();
@@ -184,13 +184,13 @@ AREXPORT void ArSystemStatus::stopPeriodicUpdate()
 
 
 
-AREXPORT double ArSystemStatus::getCPU() {
+MVREXPORT double ArSystemStatus::getCPU() {
 	ArScopedLock lock(ourCPUMutex);
 	refreshCPU();
 	return ourCPU;
 }
 
-AREXPORT double ArSystemStatus::getCPUPercent() {
+MVREXPORT double ArSystemStatus::getCPUPercent() {
 	ArScopedLock lock(ourCPUMutex);
 	refreshCPU();
 	if (ourCPU < 0)
@@ -201,7 +201,7 @@ AREXPORT double ArSystemStatus::getCPUPercent() {
 }
 
 // Get CPU percentage in a string
-AREXPORT std::string ArSystemStatus::getCPUPercentAsString() {
+MVREXPORT std::string ArSystemStatus::getCPUPercentAsString() {
 	ArScopedLock lock(ourCPUMutex);
 	refreshCPU();
 	if (ourCPU < 0)
@@ -214,28 +214,28 @@ AREXPORT std::string ArSystemStatus::getCPUPercentAsString() {
 }
 
 // Get total system uptime (seconds)
-AREXPORT unsigned long ArSystemStatus::getUptime() {
+MVREXPORT unsigned long ArSystemStatus::getUptime() {
 	ArScopedLock lock(ourCPUMutex);
 	refreshCPU();
 	return ourUptime;
 }
 
 // Get total system uptime (hours)
-AREXPORT double ArSystemStatus::getUptimeHours() {
+MVREXPORT double ArSystemStatus::getUptimeHours() {
 	ArScopedLock lock(ourCPUMutex);
 	refreshCPU();
 	return ourUptime / 3600.0;
 }
 
 // Get total system uptime (seconds)
-AREXPORT unsigned long ArSystemStatus::getProgramUptime() {
+MVREXPORT unsigned long ArSystemStatus::getProgramUptime() {
 	ArScopedLock lock(ourCPUMutex);
 	refreshCPU();
 	return ourUptime - ourFirstUptime;
 }
 
 // Get total system uptime in a string (hours)
-AREXPORT std::string ArSystemStatus::getUptimeHoursAsString() {
+MVREXPORT std::string ArSystemStatus::getUptimeHoursAsString() {
 	ArScopedLock lock(ourCPUMutex);
 	refreshCPU();
 	char tmp[32];
@@ -244,39 +244,39 @@ AREXPORT std::string ArSystemStatus::getUptimeHoursAsString() {
 }
 
 // return Pointer to a functor which can be used to retrieve the current CPU percentage
-AREXPORT ArRetFunctor<double>* ArSystemStatus::getCPUPercentFunctor() {
+MVREXPORT ArRetFunctor<double>* ArSystemStatus::getCPUPercentFunctor() {
 	return &ourGetCPUPercentCallback;
 }
 
 // return Pointer to a functor which can be used to retrieve the current uptime (hours)
-AREXPORT ArRetFunctor<double>* ArSystemStatus::getUptimeHoursFunctor() {
+MVREXPORT ArRetFunctor<double>* ArSystemStatus::getUptimeHoursFunctor() {
 	return &ourGetUptimeHoursCallback;
 }
 
 // return Pointer to a functor which can be used to retrieve the current uptime (seconds)
-AREXPORT ArRetFunctor<unsigned long>* ArSystemStatus::getUptimeFunctor() {
+MVREXPORT ArRetFunctor<unsigned long>* ArSystemStatus::getUptimeFunctor() {
 	return &ourGetUptimeCallback;
 }
 
 // return Pointer to a functor which can be used to retrieve the current program uptime (seconds)
-AREXPORT ArRetFunctor<unsigned long>* ArSystemStatus::getProgramUptimeFunctor() {
+MVREXPORT ArRetFunctor<unsigned long>* ArSystemStatus::getProgramUptimeFunctor() {
 	return &ourGetProgramUptimeCallback;
 }
 
-AREXPORT ArRetFunctor<int>* ArSystemStatus::getWirelessLinkQualityFunctor() {
+MVREXPORT ArRetFunctor<int>* ArSystemStatus::getWirelessLinkQualityFunctor() {
 	return &ourGetWirelessLinkQualityCallback;
 }
-AREXPORT ArRetFunctor<int>* ArSystemStatus::getWirelessLinkNoiseFunctor() {
+MVREXPORT ArRetFunctor<int>* ArSystemStatus::getWirelessLinkNoiseFunctor() {
 	return &ourGetWirelessLinkNoiseCallback;
 }
-AREXPORT ArRetFunctor<int>* ArSystemStatus::getWirelessLinkSignalFunctor() {
+MVREXPORT ArRetFunctor<int>* ArSystemStatus::getWirelessLinkSignalFunctor() {
 	return &ourGetWirelessLinkSignalCallback;
 }
 
-AREXPORT ArRetFunctor<int>* ArSystemStatus::getMTXWirelessLinkFunctor() {
+MVREXPORT ArRetFunctor<int>* ArSystemStatus::getMTXWirelessLinkFunctor() {
 	return &ourGetMTXWirelessLinkCallback;
 }
-AREXPORT ArRetFunctor<int>* ArSystemStatus::getMTXWirelessQualityFunctor() {
+MVREXPORT ArRetFunctor<int>* ArSystemStatus::getMTXWirelessQualityFunctor() {
 	return &ourGetMTXWirelessQualityCallback;
 }
 
@@ -411,78 +411,78 @@ void ArSystemStatus::refreshMTXWireless()
 #endif // WIN32
 }
 
-AREXPORT int ArSystemStatus::getWirelessLinkQuality() {
+MVREXPORT int ArSystemStatus::getWirelessLinkQuality() {
 	ArScopedLock lock(ourWirelessMutex);
 	refreshWireless();
 	return ourLinkQuality;
 }
 
-AREXPORT int ArSystemStatus::getWirelessLinkSignal() {
+MVREXPORT int ArSystemStatus::getWirelessLinkSignal() {
 	ArScopedLock lock(ourWirelessMutex);
 	refreshWireless();
 	return ourLinkSignal;
 }
 
-AREXPORT int ArSystemStatus::getWirelessLinkNoise() {
+MVREXPORT int ArSystemStatus::getWirelessLinkNoise() {
 	ArScopedLock lock(ourWirelessMutex);
 	refreshWireless();
 	return ourLinkNoise;
 }
 
-AREXPORT int ArSystemStatus::getWirelessDiscardedPackets() {
+MVREXPORT int ArSystemStatus::getWirelessDiscardedPackets() {
 	ArScopedLock lock(ourWirelessMutex);
 	refreshWireless();
 	return ourDiscardedTotal;
 }
 
-AREXPORT int ArSystemStatus::getWirelessDiscardedPacketsBecauseNetConflict() {
+MVREXPORT int ArSystemStatus::getWirelessDiscardedPacketsBecauseNetConflict() {
 	ArScopedLock lock(ourWirelessMutex);
 	refreshWireless();
 	return ourDiscardedConflict;
 }
 
-AREXPORT int ArSystemStatus::getMTXWirelessLink() {
+MVREXPORT int ArSystemStatus::getMTXWirelessLink() {
 	ArScopedLock lock(ourMTXWirelessMutex);
 	refreshMTXWireless();
 	return ourMTXWirelessLink;
 }
 
-AREXPORT int ArSystemStatus::getMTXWirelessQuality() {
+MVREXPORT int ArSystemStatus::getMTXWirelessQuality() {
 	ArScopedLock lock(ourMTXWirelessMutex);
 	refreshMTXWireless();
 	return ourMTXWirelessQuality;
 }
 
-AREXPORT int ArSystemStatus::getMTXWirelessIpAddress1() {
+MVREXPORT int ArSystemStatus::getMTXWirelessIpAddress1() {
 	ArScopedLock lock(ourMTXWirelessMutex);
 	refreshMTXWireless();
 	return ourMTXIp1;
 }
 
-AREXPORT int ArSystemStatus::getMTXWirelessIpAddress2() {
+MVREXPORT int ArSystemStatus::getMTXWirelessIpAddress2() {
 	ArScopedLock lock(ourMTXWirelessMutex);
 	refreshMTXWireless();
 	return ourMTXIp2;
 }
-AREXPORT int ArSystemStatus::getMTXWirelessIpAddress3() {
+MVREXPORT int ArSystemStatus::getMTXWirelessIpAddress3() {
 	ArScopedLock lock(ourMTXWirelessMutex);
 	refreshMTXWireless();
 	return ourMTXIp3;
 }
 
-AREXPORT int ArSystemStatus::getMTXWirelessIpAddress4() {
+MVREXPORT int ArSystemStatus::getMTXWirelessIpAddress4() {
 	ArScopedLock lock(ourMTXWirelessMutex);
 	refreshMTXWireless();
 	return ourMTXIp4;
 }
 
-AREXPORT const char * ArSystemStatus::getMTXWirelessIpAddressString() {
+MVREXPORT const char * ArSystemStatus::getMTXWirelessIpAddressString() {
 	ArScopedLock lock(ourMTXWirelessMutex);
 	refreshMTXWireless();
 	return ourMTXIpString.c_str();
 }
 
-AREXPORT void ArSystemStatus::invalidate()
+MVREXPORT void ArSystemStatus::invalidate()
 {
 	ArScopedLock lockc(ourCPUMutex);
 	ArScopedLock lockw(ourWirelessMutex);

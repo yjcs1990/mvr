@@ -54,20 +54,20 @@ class MvrActionRobotJoydrive : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionRobotJoydrive(const char * name = "robotJoyDrive", 
+  MVREXPORT MvrActionRobotJoydrive(const char * name = "robotJoyDrive", 
 				 bool requireDeadmanPushed = true);
   /// Destructor
-  AREXPORT virtual ~ArActionRobotJoydrive();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionRobotJoydrive();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
 protected:
-  AREXPORT bool handleJoystickPacket(MvrRobotPacket *packet);
-  AREXPORT void connectCallback(void);
+  MVREXPORT bool handleJoystickPacket(MvrRobotPacket *packet);
+  MVREXPORT void connectCallback(void);
   // whether we require the deadman to be pushed to drive
   bool myRequireDeadmanPushed;
 

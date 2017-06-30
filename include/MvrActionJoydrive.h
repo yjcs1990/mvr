@@ -53,33 +53,33 @@ class MvrActionJoydrive : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionJoydrive(const char * name = "joydrive", 
+  MVREXPORT MvrActionJoydrive(const char * name = "joydrive", 
 			    double transVelMax = 400, 
 			    double turnAmountMax = 15, 
 			    bool stopIfNoButtonPressed = true,
 			    bool useOSCalForJoystick = true);
   /// Destructor
-  AREXPORT virtual ~ArActionJoydrive();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual ~MvrActionJoydrive();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
   /// Whether the joystick is initalized or not
-  AREXPORT bool joystickInited(void);
+  MVREXPORT bool joystickInited(void);
   /// Set Speeds
-  AREXPORT void setSpeeds(double transVelMax, double turnAmountMax);
+  MVREXPORT void setSpeeds(double transVelMax, double turnAmountMax);
   /// Set if we'll stop if no button is pressed, otherwise just do nothing
-  AREXPORT void setStopIfNoButtonPressed(bool stopIfNoButtonPressed);
+  MVREXPORT void setStopIfNoButtonPressed(bool stopIfNoButtonPressed);
   /// Get if we'll stop if no button is pressed, otherwise just do nothing
-  AREXPORT bool getStopIfNoButtonPressed(void);
+  MVREXPORT bool getStopIfNoButtonPressed(void);
   /// Sets the params on the throttle (throttle unused unless you call this)
-  AREXPORT void setThrottleParams(double lowSpeed, double highSpeed);
+  MVREXPORT void setThrottleParams(double lowSpeed, double highSpeed);
   /// Sets whether to use OSCalibration the joystick or not
-  AREXPORT void setUseOSCal(bool useOSCal);
+  MVREXPORT void setUseOSCal(bool useOSCal);
   /// Gets whether OSCalibration is being used for the joystick or not
-  AREXPORT bool getUseOSCal(void);
+  MVREXPORT bool getUseOSCal(void);
   /// Gets the joyHandler
-  AREXPORT MvrJoyHandler *getJoyHandler(void) { return myJoyHandler; }
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT MvrJoyHandler *getJoyHandler(void) { return myJoyHandler; }
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const { return &myDesired; }
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const { return &myDesired; }
 #endif
 protected:
   bool myUseThrottle;

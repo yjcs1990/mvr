@@ -39,17 +39,17 @@ class MvrRobotBatteryPacketReader
 {
 public:
   /// Constructor
-  AREXPORT MvrRobotBatteryPacketReader(MvrRobot *robot);
+  MVREXPORT MvrRobotBatteryPacketReader(MvrRobot *robot);
   /// Destructor
-  AREXPORT ~ArRobotBatteryPacketReader();
+  MVREXPORT ~MvrRobotBatteryPacketReader();
   /// Request a single packet.. 
-  AREXPORT void requestSinglePacket(void);
+  MVREXPORT void requestSinglePacket(void);
   /// Request a continous stream of packets
-  AREXPORT void requestContinuousPackets(void);
+  MVREXPORT void requestContinuousPackets(void);
   /// Stop the stream of packets
-  AREXPORT void stopPackets(void);
+  MVREXPORT void stopPackets(void);
   /// See if we've requested packets
-  AREXPORT bool haveRequestedPackets(void);
+  MVREXPORT bool haveRequestedPackets(void);
   /// See if we've gotten the data
   bool hasPacketArrived(void) const { return myPacketArrived; }
   /// Gets the number of batteries
@@ -70,9 +70,9 @@ public:
 
 protected:
   /// internal, packet handler
-  AREXPORT bool packetHandler(MvrRobotPacket *packet);
+  MVREXPORT bool packetHandler(MvrRobotPacket *packet);
   /// internal, packet handler
-  AREXPORT void connectCallback(void);
+  MVREXPORT void connectCallback(void);
 
   // the robot
   MvrRobot *myRobot;

@@ -72,19 +72,19 @@ class MvrAMPTUPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrAMPTUPacket(MvrTypes::UByte2 bufferSize = 30);
+  MVREXPORT MvrAMPTUPacket(MvrTypes::UByte2 bufferSize = 30);
   /// Destructor
-  AREXPORT virtual ~ArAMPTUPacket();
+  MVREXPORT virtual ~MvrAMPTUPacket();
 
   /// Gets the unit number this packet is for
-  AREXPORT unsigned char getUnitNumber(void);
+  MVREXPORT unsigned char getUnitNumber(void);
   /// Sets the unit number htis packet is for
-  AREXPORT bool setUnitNumber(unsigned char unitNumber);
+  MVREXPORT bool setUnitNumber(unsigned char unitNumber);
   
-  AREXPORT virtual void byteToBuf(MvrTypes::Byte val);
-  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
+  MVREXPORT virtual void byteToBuf(MvrTypes::Byte val);
+  MVREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
   
-  AREXPORT virtual void finalizePacket(void);
+  MVREXPORT virtual void finalizePacket(void);
 
 protected:
   unsigned char myUnitNumber;
@@ -96,40 +96,40 @@ class MvrAMPTU : public MvrPTZ
 {
 public:
   /// Constructor
-  AREXPORT MvrAMPTU(MvrRobot *robot, int unitNumber = 0);
+  MVREXPORT MvrAMPTU(MvrRobot *robot, int unitNumber = 0);
   /// Destructor
-  AREXPORT virtual ~ArAMPTU();
-  AREXPORT virtual bool init(void);
-  AREXPORT virtual const char *getTypeName() { return "amptu"; }
+  MVREXPORT virtual ~MvrAMPTU();
+  MVREXPORT virtual bool init(void);
+  MVREXPORT virtual const char *getTypeName() { return "amptu"; }
 protected:
-  AREXPORT virtual bool pan_i(double deg);
-  AREXPORT virtual bool panRel_i(double deg);
-  AREXPORT virtual bool tilt_i(double deg);
-  AREXPORT virtual bool tiltRel_i(double deg);
-  AREXPORT virtual bool panTilt_i(double panDeg, double tiltDeg);
-  AREXPORT virtual bool panTiltRel_i(double panDeg, double tiltDeg);
+  MVREXPORT virtual bool pan_i(double deg);
+  MVREXPORT virtual bool panRel_i(double deg);
+  MVREXPORT virtual bool tilt_i(double deg);
+  MVREXPORT virtual bool tiltRel_i(double deg);
+  MVREXPORT virtual bool panTilt_i(double panDeg, double tiltDeg);
+  MVREXPORT virtual bool panTiltRel_i(double panDeg, double tiltDeg);
 public:
   /// Sets the rate that the camera pans at
-  AREXPORT bool panSlew(double deg);
+  MVREXPORT bool panSlew(double deg);
   /// Sets the rate the camera tilts at 
-  AREXPORT bool tiltSlew(double deg);
+  MVREXPORT bool tiltSlew(double deg);
   virtual bool canZoom(void) const { return false; }
   virtual bool canPanTiltSlew() { return true; }
   
 
 
   /// Stops current pan/tilt, can be resumed later
-  AREXPORT bool pause(void);
+  MVREXPORT bool pause(void);
   /// Resumes a previously paused pan/tilt
-  AREXPORT bool resume(void);
+  MVREXPORT bool resume(void);
   /// Stops motion and purges last command
-  AREXPORT bool purge(void);
+  MVREXPORT bool purge(void);
   /// Retrieves the camera status
-  AREXPORT bool requestStatus(void);
+  MVREXPORT bool requestStatus(void);
   /// Gets the angle the camera is panned to
-  AREXPORT virtual double getPan_i(void) const { return myPan; }
+  MVREXPORT virtual double getPan_i(void) const { return myPan; }
   /// Gets the angle the camera is tilted to
-  AREXPORT virtual double getTilt_i(void) const { return myTilt; }
+  MVREXPORT virtual double getTilt_i(void) const { return myTilt; }
   enum {
     MIN_SLEW = 15,
     MAX_TILT_SLEW = 200,

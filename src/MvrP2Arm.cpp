@@ -58,7 +58,7 @@ const int ArP2Arm::ArmPower=0x400;
 const int ArP2Arm::ArmHoming=0x800;
 
 
-AREXPORT ArP2Arm::ArP2Arm() :
+MVREXPORT ArP2Arm::ArP2Arm() :
   myInited(false),
   myRobot(0),
   //  myModel(),
@@ -77,7 +77,7 @@ AREXPORT ArP2Arm::ArP2Arm() :
   myArmPacketHandler.setName("MvrP2Arm");
 }
 
-AREXPORT ArP2Arm::~ArP2Arm()
+MVREXPORT ArP2Arm::~MvrP2Arm()
 {
   //uninit();
   if (myRobot != NULL)
@@ -91,7 +91,7 @@ AREXPORT ArP2Arm::~ArP2Arm()
    and it is in a good condition. The AROS/P2OS arm servers take care of AUX
    port serial communications with the P2 Arm controller.
 */
-AREXPORT ArP2Arm::State ArP2Arm::init()
+MVREXPORT ArP2Arm::State ArP2Arm::init()
 {
   ArLog::log(MvrLog::Normal, "Initializing the arm.");
 
@@ -130,7 +130,7 @@ AREXPORT ArP2Arm::State ArP2Arm::init()
    and cleans up its internal state. To completely uninitialize the P2 Arm
    itself have the ArRobot disconnect from P2OS.
 */
-AREXPORT ArP2Arm::State ArP2Arm::uninit()
+MVREXPORT ArP2Arm::State ArP2Arm::uninit()
 {
   bool ret;
 
@@ -157,7 +157,7 @@ AREXPORT ArP2Arm::State ArP2Arm::uninit()
    arm to settle down.
    @param doSleep if true, sleeps 2 seconds to wait for the arm to stop shaking
 */
-AREXPORT ArP2Arm::State ArP2Arm::powerOn(bool doSleep)
+MVREXPORT ArP2Arm::State ArP2Arm::powerOn(bool doSleep)
 {
   if (isGood())
   {
@@ -181,7 +181,7 @@ AREXPORT ArP2Arm::State ArP2Arm::powerOn(bool doSleep)
    ArP2Arm::park() function. Which will home the arm, then power if off.
    @see park
 */
-AREXPORT ArP2Arm::State ArP2Arm::powerOff()
+MVREXPORT ArP2Arm::State ArP2Arm::powerOff()
 {
   if (isGood())
   {
@@ -202,7 +202,7 @@ AREXPORT ArP2Arm::State ArP2Arm::powerOff()
    a callback so the user knows when the packet has been received.
    @see setPacketCB
 */
-AREXPORT ArP2Arm::State ArP2Arm::requestInfo()
+MVREXPORT ArP2Arm::State ArP2Arm::requestInfo()
 {
   if (isGood())
   {
@@ -222,7 +222,7 @@ AREXPORT ArP2Arm::State ArP2Arm::requestInfo()
    set a callback so the user knows when the packet has been received.
    @see setPacketCB
 */
-AREXPORT ArP2Arm::State ArP2Arm::requestStatus(StatusType status)
+MVREXPORT ArP2Arm::State ArP2Arm::requestStatus(StatusType status)
 {
   if (isGood())
   {
@@ -252,7 +252,7 @@ AREXPORT ArP2Arm::State ArP2Arm::requestStatus(StatusType status)
    @see checkArm
    @see setPacketCB
 */
-AREXPORT ArP2Arm::State ArP2Arm::requestInit()
+MVREXPORT ArP2Arm::State ArP2Arm::requestInit()
 {
   if (isGood())
   {
@@ -286,7 +286,7 @@ AREXPORT ArP2Arm::State ArP2Arm::requestInit()
    @see requestInit
    @see setPacketCB
 */
-AREXPORT ArP2Arm::State ArP2Arm::checkArm(bool waitForResponse)
+MVREXPORT ArP2Arm::State ArP2Arm::checkArm(bool waitForResponse)
 {
   ArTime now;
 
@@ -321,7 +321,7 @@ AREXPORT ArP2Arm::State ArP2Arm::checkArm(bool waitForResponse)
 
    @param joint home only that joint
 */
-AREXPORT ArP2Arm::State ArP2Arm::home(int joint)
+MVREXPORT ArP2Arm::State ArP2Arm::home(int joint)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -351,7 +351,7 @@ AREXPORT ArP2Arm::State ArP2Arm::home(int joint)
    @see moveVel
 */
 
-AREXPORT ArP2Arm::State ArP2Arm::moveTo(int joint, float pos,  unsigned char vel)
+MVREXPORT ArP2Arm::State ArP2Arm::moveTo(int joint, float pos,  unsigned char vel)
 {
   unsigned char ticks;
 
@@ -386,7 +386,7 @@ AREXPORT ArP2Arm::State ArP2Arm::moveTo(int joint, float pos,  unsigned char vel
    @param pos the position, in ticks, to move to
    @see moveTo
 */
-AREXPORT ArP2Arm::State ArP2Arm::moveToTicks(int joint, unsigned char pos)
+MVREXPORT ArP2Arm::State ArP2Arm::moveToTicks(int joint, unsigned char pos)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -412,7 +412,7 @@ AREXPORT ArP2Arm::State ArP2Arm::moveToTicks(int joint, unsigned char pos)
    @see moveTo
    @see moveVel
 */
-AREXPORT ArP2Arm::State ArP2Arm::moveStep(int joint, float pos, unsigned char vel)
+MVREXPORT ArP2Arm::State ArP2Arm::moveStep(int joint, float pos, unsigned char vel)
 {
   unsigned char ticks;
 
@@ -447,7 +447,7 @@ AREXPORT ArP2Arm::State ArP2Arm::moveStep(int joint, float pos, unsigned char ve
    @param pos the position, in ticks, to move to
    @see moveStep
 */
-AREXPORT ArP2Arm::State ArP2Arm::moveStepTicks(int joint, signed char pos)
+MVREXPORT ArP2Arm::State ArP2Arm::moveStepTicks(int joint, signed char pos)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -472,7 +472,7 @@ AREXPORT ArP2Arm::State ArP2Arm::moveStepTicks(int joint, signed char pos)
    @param joint the joint to move
    @param vel the velocity to move at
 */
-AREXPORT ArP2Arm::State ArP2Arm::moveVel(int joint, int vel)
+MVREXPORT ArP2Arm::State ArP2Arm::moveVel(int joint, int vel)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -491,7 +491,7 @@ AREXPORT ArP2Arm::State ArP2Arm::moveVel(int joint, int vel)
    Stop the arm from moving. This overrides all other actions except for the
    arms initilization sequence.
 */
-AREXPORT ArP2Arm::State ArP2Arm::stop()
+MVREXPORT ArP2Arm::State ArP2Arm::stop()
 {
   if (!isGood())
     return(NOT_INITED);
@@ -502,7 +502,7 @@ AREXPORT ArP2Arm::State ArP2Arm::stop()
   return(SUCCESS);
 }
 
-AREXPORT float ArP2Arm::getJointPos(int joint)
+MVREXPORT float ArP2Arm::getJointPos(int joint)
 {
   float val;
 
@@ -513,7 +513,7 @@ AREXPORT float ArP2Arm::getJointPos(int joint)
     return(0.0);
 }
 
-AREXPORT unsigned char ArP2Arm::getJointPosTicks(int joint)
+MVREXPORT unsigned char ArP2Arm::getJointPosTicks(int joint)
 {
   if (isGood() && (joint > 0) && (joint <= NumJoints))
     return(getJoint(joint)->myPos);
@@ -521,7 +521,7 @@ AREXPORT unsigned char ArP2Arm::getJointPosTicks(int joint)
     return(0);
 }
 
-AREXPORT P2ArmJoint * ArP2Arm::getJoint(int joint)
+MVREXPORT P2ArmJoint * ArP2Arm::getJoint(int joint)
 {
   if ((joint > 0) && (joint <= NumJoints))
     return(&myJoints[joint-1]);
@@ -642,7 +642,7 @@ bool ArP2Arm::comArmGripperPark(int waitSecs)
   return(myRobot->comInt(ComArmGripperPark, waitSecs));
 }
 
-AREXPORT bool ArP2Arm::getMoving(int joint)
+MVREXPORT bool ArP2Arm::getMoving(int joint)
 {
   if ((joint < 0) && (myStatus & 0xf))
     return(true);
@@ -652,7 +652,7 @@ AREXPORT bool ArP2Arm::getMoving(int joint)
     return(false);
 }
 
-AREXPORT bool ArP2Arm::isPowered()
+MVREXPORT bool ArP2Arm::isPowered()
 {
   if (myStatus & ArmPower)
     return(true);
@@ -660,7 +660,7 @@ AREXPORT bool ArP2Arm::isPowered()
     return(false);
 }
 
-AREXPORT bool ArP2Arm::isGood()
+MVREXPORT bool ArP2Arm::isGood()
 {
   if (myRobot && myRobot->isRunning() && myRobot->isConnected() &&
       myInited && (myStatus & ArmGood) && (myStatus & ArmInited))
@@ -669,7 +669,7 @@ AREXPORT bool ArP2Arm::isGood()
     return(false);
 }
 
-AREXPORT ArP2Arm::State ArP2Arm::park()
+MVREXPORT ArP2Arm::State ArP2Arm::park()
 {
   if (!isGood())
     return(NOT_INITED);
@@ -688,7 +688,7 @@ AREXPORT ArP2Arm::State ArP2Arm::park()
 
    @param waitSecs seconds to wait till parking the arm when idle
 */
-AREXPORT ArP2Arm::State ArP2Arm::setAutoParkTimer(int waitSecs)
+MVREXPORT ArP2Arm::State ArP2Arm::setAutoParkTimer(int waitSecs)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -708,7 +708,7 @@ AREXPORT ArP2Arm::State ArP2Arm::setAutoParkTimer(int waitSecs)
 
    @param waitSecs seconds to wait till parking the gripper once it has begun to grip something
 */
-AREXPORT ArP2Arm::State ArP2Arm::setGripperParkTimer(int waitSecs)
+MVREXPORT ArP2Arm::State ArP2Arm::setGripperParkTimer(int waitSecs)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -719,7 +719,7 @@ AREXPORT ArP2Arm::State ArP2Arm::setGripperParkTimer(int waitSecs)
     return(COMM_FAILED);
 }
 
-AREXPORT bool ArP2Arm::convertDegToTicks(int joint, float pos,
+MVREXPORT bool ArP2Arm::convertDegToTicks(int joint, float pos,
 				       unsigned char *ticks)
 {
   long val;
@@ -746,7 +746,7 @@ AREXPORT bool ArP2Arm::convertDegToTicks(int joint, float pos,
   return(true);
 }
 
-AREXPORT bool ArP2Arm::convertTicksToDeg(int joint, unsigned char pos,
+MVREXPORT bool ArP2Arm::convertTicksToDeg(int joint, unsigned char pos,
 				       float *degrees)
 {
   long val;
@@ -768,7 +768,7 @@ AREXPORT bool ArP2Arm::convertTicksToDeg(int joint, unsigned char pos,
   return(true);
 }
 
-AREXPORT P2ArmJoint::P2ArmJoint() :
+MVREXPORT P2ArmJoint::P2ArmJoint() :
   myPos(0),
   myVel(0),
   myHome(0),
@@ -779,7 +779,7 @@ AREXPORT P2ArmJoint::P2ArmJoint() :
 {
 }
 
-AREXPORT P2ArmJoint::~P2ArmJoint()
+MVREXPORT P2ArmJoint::~P2ArmJoint()
 {
 }
 

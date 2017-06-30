@@ -94,11 +94,11 @@ public:
     std::list<ArFunctor*> doneCallbacks;
     std::list<PlaybackConditionFunctor*> playbackConditionCallbacks;
 
-    AREXPORT Item();
-    AREXPORT Item(std::string _data, ItemType _type, std::string _params = "", int priority = 0);
-    AREXPORT Item(std::string _data, ItemType _type, std::string _params, int priority, std::list<PlayItemFunctor*> callbacks); 
+    MVREXPORT Item();
+    MVREXPORT Item(std::string _data, ItemType _type, std::string _params = "", int priority = 0);
+    MVREXPORT Item(std::string _data, ItemType _type, std::string _params, int priority, std::list<PlayItemFunctor*> callbacks); 
 
-	  AREXPORT Item(const MvrSoundsQueue::Item& toCopy);
+	  MVREXPORT Item(const MvrSoundsQueue::Item& toCopy);
 
     /** Note: does not compare priority! */
     bool operator==(const Item& other) const
@@ -119,7 +119,7 @@ public:
   };
 
 
-  AREXPORT MvrSoundsQueue();
+  MVREXPORT MvrSoundsQueue();
 
   /** @deprecated
    *  @see addInitCallback()
@@ -128,7 +128,7 @@ public:
    *  @see setPlayFileCallback
    *  @see setInterruptFileCallback
    */
-  AREXPORT MvrSoundsQueue(MvrRetFunctor<bool> *speakInitCB, 
+  MVREXPORT MvrSoundsQueue(MvrRetFunctor<bool> *speakInitCB, 
 		    PlayItemFunctor *speakCB = 0, 
         InterruptItemFunctor *interruptSpeechCB = 0,
 		    MvrRetFunctor<bool> *playInitCB = 0, 
@@ -140,36 +140,36 @@ public:
    * Omit the last three arguments to use 
    * callbacks into MvrSoundPlayer.
    */
-  AREXPORT MvrSoundsQueue(MvrSpeechSynth* speechSynthesizer, 
+  MVREXPORT MvrSoundsQueue(MvrSpeechSynth* speechSynthesizer, 
 		    MvrRetFunctor<bool> *playInitCB = 0, 
 		    PlayItemFunctor *playFileCB = 0,
         InterruptItemFunctor *interruptFileCB = 0);
 
-  AREXPORT virtual ~ArSoundsQueue();
+  MVREXPORT virtual ~MvrSoundsQueue();
 
   /** Add a callback to be called when the sound queue begins to run in its
    *  thread.  (For example, the speech synthesizers must be initialized in
    *  the same thread as they are used.)
    */
-  AREXPORT void addInitCallback(MvrRetFunctor<bool> *cb) {
+  MVREXPORT void addInitCallback(MvrRetFunctor<bool> *cb) {
     myInitCallbacks.push_back(cb);
   }
 
   /** @deprecated */
-  AREXPORT void setSpeakInitCallback(MvrRetFunctor<bool> *cb) {
+  MVREXPORT void setSpeakInitCallback(MvrRetFunctor<bool> *cb) {
     addInitCallback(cb);
   }
 
   /** Add (a copy of) the given item to the queue. */
-  AREXPORT void addItem(MvrSoundsQueue::Item item);
+  MVREXPORT void addItem(MvrSoundsQueue::Item item);
 
   /** Create a new queue item with the given data and add to the queue. */
-  AREXPORT void addItem(ItemType type, const char* data, std::list<PlayItemFunctor*> callbacks, int priority = 0, const char* params = 0);
+  MVREXPORT void addItem(ItemType type, const char* data, std::list<PlayItemFunctor*> callbacks, int priority = 0, const char* params = 0);
 
   /** Return true if all initialization callbacks have completed, false
    * otherwise.  
    */
-  AREXPORT bool isInitialized()
+  MVREXPORT bool isInitialized()
   {
     return myInitialized;
   }
@@ -177,44 +177,44 @@ public:
   /** @deprecated
    *  @see isPlaying()
    */
-  AREXPORT bool isSpeakingOrPlaying(void) { return (myPlayingSomething); }
+  MVREXPORT bool isSpeakingOrPlaying(void) { return (myPlayingSomething); }
 
   /// Returns true if an item is currently being played.
-  AREXPORT bool isPlaying() { return myPlayingSomething; }
+  MVREXPORT bool isPlaying() { return myPlayingSomething; }
 
 
   /** @deprecated
    *  @return true if any queue item is being played.
    *  @see isPlaying()
    */
-  AREXPORT bool isSpeaking() { return myPlayingSomething; }
+  MVREXPORT bool isSpeaking() { return myPlayingSomething; }
 
 
   /// Begin processing the sounds queue synchronously (in this thread; does not return)
-  AREXPORT void run(void) { runInThisThread(); }
+  MVREXPORT void run(void) { runInThisThread(); }
 
   /// Begin processing the sounds queue in a background thread
-  AREXPORT void runAsync(void) { create(false); }
+  MVREXPORT void runAsync(void) { create(false); }
 
   /** Temporarily stop processing the sounds queue. (Any currently playing sound
       or speech utterance will finish. The sound device may remain open.)
   */
-  AREXPORT void pause();
+  MVREXPORT void pause();
 
   /// Resume processing the sounds queue
-  AREXPORT void resume() ;
+  MVREXPORT void resume() ;
 
   /** @return true if the queue is paused */
-  AREXPORT bool isPaused();
+  MVREXPORT bool isPaused();
 
   /// If sound is currently being played or speech is being spoken, interrupt it. (but continue processing the queue). SoundFinished callbacks will not be called.
-  AREXPORT void interrupt();
+  MVREXPORT void interrupt();
 
   /** Empty the queue.  If a sound is currently playing, it will not be interrupted.
       QueueEmpty callbacks will be called. SoundFinished callbacks will not be
       called.
   */
-  AREXPORT void clearQueue();
+  MVREXPORT void clearQueue();
 
   /**  End the processing thread.
    * This function is deprecated. Use stopRunning() instead.
@@ -223,25 +223,25 @@ public:
       temporarily stop the queue processing, use pause(). To interrupt the
       currently playing sound, use interrupt().
   */
-  AREXPORT void stop() ;
+  MVREXPORT void stop() ;
 
   /// Create and return a new a functor for pause(), which other modules can use to pause this sounds
   /// queue.
-  AREXPORT MvrFunctor* getPauseCallback() 
+  MVREXPORT MvrFunctor* getPauseCallback() 
   {
     return new MvrFunctorC<ArSoundsQueue>(this, &ArSoundsQueue::pause);
   }
 
   /// Create and return a new functor for resume(), which other modules can use to resume this
   ///  sounds queue.
-  AREXPORT MvrFunctor* getResumeCallback() 
+  MVREXPORT MvrFunctor* getResumeCallback() 
   {
     return new MvrFunctorC<ArSoundsQueue>(this, &ArSoundsQueue::resume);
   }
 
 
   /// Get the current size of the speech/sound playback queue.
-  AREXPORT size_t getCurrentQueueSize()
+  MVREXPORT size_t getCurrentQueueSize()
   {
     size_t size;
     lock();
@@ -251,40 +251,40 @@ public:
   }
 
   /** Add a callback functor to be invoked when playback of one sound or speech utterance starts. */
-  AREXPORT void addSoundStartedCallback(MvrFunctor* f)
+  MVREXPORT void addSoundStartedCallback(MvrFunctor* f)
   {
     myStartPlaybackCBList.push_back(f);
   }
 
   /** Remove a callback functor to be invoked when playback one sound or speech utterance starts. */
-  AREXPORT void remSoundStartedCallback(MvrFunctor* f)
+  MVREXPORT void remSoundStartedCallback(MvrFunctor* f)
   {
     myStartPlaybackCBList.remove(f);
   }
 
   /** Add a callback functor to be invoked when plackback of one sound or speech
    * utterance finishes */
-  AREXPORT void addSoundFinishedCallback(MvrFunctor* f)
+  MVREXPORT void addSoundFinishedCallback(MvrFunctor* f)
   {
     myEndPlaybackCBList.push_back(f);
   }
 
   /** Remove a callback functor to be invoked when plackback of one sound or
    * speech utterance finishes. */
-  AREXPORT void remSoundFinishedCallback(MvrFunctor* f)
+  MVREXPORT void remSoundFinishedCallback(MvrFunctor* f)
   {
     myEndPlaybackCBList.remove(f);
   }
 
   /** Add a callback functor to be invoked when playback of one sound or speech utterance starts. */
-  AREXPORT void addSoundItemStartedCallback(
+  MVREXPORT void addSoundItemStartedCallback(
 	  MvrFunctor1<ArSoundsQueue::Item> *f)
   {
     myStartItemPlaybackCBList.push_back(f);
   }
 
   /** Remove a callback functor to be invoked when playback one sound or speech utterance starts. */
-  AREXPORT void remSoundItemStartedCallback(
+  MVREXPORT void remSoundItemStartedCallback(
 	  MvrFunctor1<ArSoundsQueue::Item> *f)
   {
     myStartItemPlaybackCBList.remove(f);
@@ -292,7 +292,7 @@ public:
 
   /** Add a callback functor to be invoked when plackback of one sound or speech
    * utterance finishes */
-  AREXPORT void addSoundItemFinishedCallback(
+  MVREXPORT void addSoundItemFinishedCallback(
 	  MvrFunctor1<ArSoundsQueue::Item> *f)
   {
     myEndItemPlaybackCBList.push_back(f);
@@ -300,7 +300,7 @@ public:
 
   /** Remove a callback functor to be invoked when plackback of one sound or
    * speech utterance finishes. */
-  AREXPORT void remSoundItemFinishedCallback(
+  MVREXPORT void remSoundItemFinishedCallback(
 	  MvrFunctor1<ArSoundsQueue::Item> *f)
   {
     myEndItemPlaybackCBList.remove(f);
@@ -309,13 +309,13 @@ public:
   /** Add a callback functor to be invoked when a the sound queue becomes
    * non-empty, that is, when a block of sounds/speech utterances begins.
    */
-  AREXPORT void addQueueNonemptyCallback(MvrFunctor* f)
+  MVREXPORT void addQueueNonemptyCallback(MvrFunctor* f)
   {
     myQueueNonemptyCallbacks.push_back(f);
   }
 
   /** Remove a functor added by addQueueNonemptyCallback(). */
-  AREXPORT void remQueueNonemptyCallback(MvrFunctor* f)
+  MVREXPORT void remQueueNonemptyCallback(MvrFunctor* f)
   {
     myQueueNonemptyCallbacks.remove(f);
   }
@@ -325,13 +325,13 @@ public:
    * that is, when a block of sounds/speech utterances ends. This will not
    * be called when the sound queue first begins running.
    */
-  AREXPORT void addQueueEmptyCallback(MvrFunctor* f)
+  MVREXPORT void addQueueEmptyCallback(MvrFunctor* f)
   {
     myQueueEmptyCallbacks.push_back(f);
   }
 
   /** Remove a functor added by addQueueEmptyCallback() */
-  AREXPORT void remQueueEmptyCallback(MvrFunctor* f)
+  MVREXPORT void remQueueEmptyCallback(MvrFunctor* f)
   {
     myQueueEmptyCallbacks.remove(f);
   }
@@ -347,32 +347,32 @@ public:
    * after this method returns, but before you on the information returned.
    * For best results, pause the sound queue while using this information.
    */
-  AREXPORT std::set<int> findPendingItems(const char* item);
+  MVREXPORT std::set<int> findPendingItems(const char* item);
 
   /** Remove pending items with the given data and type. */
-  AREXPORT void removePendingItems(const char* item, ItemType type);
+  MVREXPORT void removePendingItems(const char* item, ItemType type);
 
   /** Remove pending items with the given data. */
-  AREXPORT void removePendingItems(const char* data);
+  MVREXPORT void removePendingItems(const char* data);
 
   /** Remove pending items with a priority less than that given. */
-  AREXPORT void removePendingItems(int priority);
+  MVREXPORT void removePendingItems(int priority);
 
   /** Remove pending items with priority less the given priority and with the given type. */
-  AREXPORT void removePendingItems(int priority, ItemType type);
+  MVREXPORT void removePendingItems(int priority, ItemType type);
 
   /** Remove pending items with the given type. */
-  AREXPORT void removePendingItems(ItemType type);
+  MVREXPORT void removePendingItems(ItemType type);
 
   /** Remove pending and current items with a priority less than that given. */
-  AREXPORT void removeItems(int priority);
+  MVREXPORT void removeItems(int priority);
 
   /** Removes pending and current items with the same data and type as the given item **/
-  AREXPORT void removeItems(Item item);
+  MVREXPORT void removeItems(Item item);
 
-  AREXPORT std::string nextItem(ItemType type);
-  AREXPORT std::string nextItem(int priority);
-  AREXPORT std::string nextItem(ItemType type, int priority);
+  MVREXPORT std::string nextItem(ItemType type);
+  MVREXPORT std::string nextItem(int priority);
+  MVREXPORT std::string nextItem(ItemType type, int priority);
 
   /// Convenience methods for special speech synthesis and WAV file queue items: 
   //@{
@@ -383,7 +383,7 @@ public:
    * with those callbacks. 
    * @sa Item
    */
-  AREXPORT void setSpeakCallback(PlayItemFunctor *cb) {
+  MVREXPORT void setSpeakCallback(PlayItemFunctor *cb) {
     myDefaultSpeakCB = cb;
   }
 
@@ -391,7 +391,7 @@ public:
    * by speak() 
    * @sa Item
    */
-  AREXPORT void setInterruptSpeechCallback(InterruptItemFunctor *cb) {
+  MVREXPORT void setInterruptSpeechCallback(InterruptItemFunctor *cb) {
     myDefaultInterruptSpeechCB = cb;
   }
 
@@ -400,12 +400,12 @@ public:
    * this callback.
    * @sa Item
    */
-  AREXPORT void setPlayFileCallback(PlayItemFunctor *cb) {
+  MVREXPORT void setPlayFileCallback(PlayItemFunctor *cb) {
     myDefaultPlayFileCB = cb;
   }
 
   /** @deprecated use setPlayFileCallback() */
-  AREXPORT void setPlayWavFileCallback(PlayItemFunctor* cb) {
+  MVREXPORT void setPlayWavFileCallback(PlayItemFunctor* cb) {
     setPlayFileCallback(cb);
   }
 
@@ -413,12 +413,12 @@ public:
    * by the play() convenience method. 
    * @sa Item
    */
-  AREXPORT void setInterruptFileCallback(InterruptItemFunctor *cb) {
+  MVREXPORT void setInterruptFileCallback(InterruptItemFunctor *cb) {
     myDefaultInterruptFileCB = cb;
   }
 
   /** @deprecated use setInterruptFileCallback() */
-  AREXPORT void setInterruptWavFileCallback(InterruptItemFunctor* cb) {
+  MVREXPORT void setInterruptWavFileCallback(InterruptItemFunctor* cb) {
     setInterruptFileCallback(cb);
   }
   
@@ -427,10 +427,10 @@ public:
    * sent to the "speak" callback, if set, otherwise the SynthesiseToSound and
    * PlaySynthesizedSound callbacks are used, if set.
    */
-  AREXPORT void speak(const char *str);
+  MVREXPORT void speak(const char *str);
 
   /** Add a sound file to the queue for default sound file playback.  */
-  AREXPORT void play(const char *filename);
+  MVREXPORT void play(const char *filename);
   
 #if !(defined(WIN32) && defined(_MANAGED)) && !defined(SWIG)
 
@@ -442,14 +442,14 @@ public:
    * @param fmt Format string. 
    * @param ... Mvrguments to format into the format string.
    */
-  AREXPORT void speakf(const char *fmt, ...);
+  MVREXPORT void speakf(const char *fmt, ...);
 
 
   /** Speak with alternate voice. */
-  AREXPORT void speakWithVoice(const char* voice, const char* fmt, ...);
+  MVREXPORT void speakWithVoice(const char* voice, const char* fmt, ...);
 
   /** Speak with alternate priority. */
-  AREXPORT void speakWithPriority(int priority, const char* fmt, ...);
+  MVREXPORT void speakWithPriority(int priority, const char* fmt, ...);
 
   /** Add a sound file to the queue for default sound file playback.
    *
@@ -457,7 +457,7 @@ public:
    * file, same as printf().
    * @param ... If given, arguments to format into the format string.
    */
-  AREXPORT void playf(const char *filename_fmt, ...);
+  MVREXPORT void playf(const char *filename_fmt, ...);
 
 #endif // MS Managed C++ or SWIG
 
@@ -467,7 +467,7 @@ public:
    * @see setSpeechCallback()
    * @see addItem()
    */
-  AREXPORT MvrSoundsQueue::Item createDefaultSpeechItem(const char* speech = 0);
+  MVREXPORT MvrSoundsQueue::Item createDefaultSpeechItem(const char* speech = 0);
 
   /** Return an item set up for sound file playback with previously set default
    * play callbacks.
@@ -475,19 +475,19 @@ public:
    * @see setPlayFileCallback()
    * @see addItem()
    */
-  AREXPORT MvrSoundsQueue::Item createDefaultFileItem(const char* filename = 0);
+  MVREXPORT MvrSoundsQueue::Item createDefaultFileItem(const char* filename = 0);
 
   //@}
 
   /** Set a playback condition functor used for default speech and sound file
    * items. Set to NULL to clear. */
-  AREXPORT void setDefaultPlayConditionCB(PlaybackConditionFunctor* f) {
+  MVREXPORT void setDefaultPlayConditionCB(PlaybackConditionFunctor* f) {
     myDefaultPlayConditionCB = f;
   }
   
   /// main function for thread
   /** @internal */
-  AREXPORT virtual void *runThread(void *arg);
+  MVREXPORT virtual void *runThread(void *arg);
 
 protected:
   bool myInitialized;

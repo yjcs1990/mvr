@@ -48,23 +48,23 @@ class MvrIrrfDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT MvrIrrfDevice(size_t currentBufferSize = 91,
+  MVREXPORT MvrIrrfDevice(size_t currentBufferSize = 91,
                         size_t cumulativeBufferSize = 273,
                         const char * name = "irrf");
   /// Destructor
-  AREXPORT virtual ~ArIrrfDevice();
+  MVREXPORT virtual ~MvrIrrfDevice();
 
   /// The packet handler for use when connecting to an H8 micro-controller
-  AREXPORT bool packetHandler(MvrRobotPacket *packet);
+  MVREXPORT bool packetHandler(MvrRobotPacket *packet);
 
   /// Maximum range for a reading to be added to the cumulative buffer (mm)
-  AREXPORT void setCumulativeMaxRange(double r) { myCumulativeMaxRange = r; }
-  AREXPORT virtual void setRobot(MvrRobot *);
+  MVREXPORT void setCumulativeMaxRange(double r) { myCumulativeMaxRange = r; }
+  MVREXPORT virtual void setRobot(MvrRobot *);
 
 protected:
   MvrRetFunctor1C<bool, MvrIrrfDevice, MvrRobotPacket *> myPacketHandler;
   MvrTime myLastReading;
-  AREXPORT void processReadings(void);
+  MVREXPORT void processReadings(void);
   double myCumulativeMaxRange;
   double myFilterNearDist;
   double myFilterFarDist;

@@ -39,24 +39,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   #define IFDEBUG(code)
 #endif
 
-AREXPORT ArSZSeriesPacket::ArSZSeriesPacket() :
+MVREXPORT ArSZSeriesPacket::ArSZSeriesPacket() :
 ArBasePacket(10000, 1, NULL, 1) {
 
 }
 
-AREXPORT ArSZSeriesPacket::~ArSZSeriesPacket() {
+MVREXPORT ArSZSeriesPacket::~MvrSZSeriesPacket() {
 
 }
 
-AREXPORT ArTime ArSZSeriesPacket::getTimeReceived(void) {
+MVREXPORT ArTime ArSZSeriesPacket::getTimeReceived(void) {
 	return myTimeReceived;
 }
 
-AREXPORT void ArSZSeriesPacket::setTimeReceived(MvrTime timeReceived) {
+MVREXPORT void ArSZSeriesPacket::setTimeReceived(MvrTime timeReceived) {
 	myTimeReceived = timeReceived;
 }
 
-AREXPORT void ArSZSeriesPacket::duplicatePacket(MvrSZSeriesPacket *packet) {
+MVREXPORT void ArSZSeriesPacket::duplicatePacket(MvrSZSeriesPacket *packet) {
 	myLength = packet->getLength();
 	myReadLength = packet->getReadLength();
 	myTimeReceived = packet->getTimeReceived();
@@ -69,13 +69,13 @@ AREXPORT void ArSZSeriesPacket::duplicatePacket(MvrSZSeriesPacket *packet) {
 	memcpy(myBuf, packet->getBuf(), myLength);
 }
 
-AREXPORT void ArSZSeriesPacket::empty(void) {
+MVREXPORT void ArSZSeriesPacket::empty(void) {
 	myLength = 0;
 	myReadLength = 0;
 }
 
 #if 0
-AREXPORT void ArSZSeriesPacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void ArSZSeriesPacket::uByteToBuf(MvrTypes::UByte val)
 {
 	char buf[1024];
 	sprintf(buf, "%u", val);
@@ -83,7 +83,7 @@ AREXPORT void ArSZSeriesPacket::uByteToBuf(MvrTypes::UByte val)
 }
 #endif
 
-AREXPORT void ArSZSeriesPacket::byteToBuf(MvrTypes::Byte val)
+MVREXPORT void ArSZSeriesPacket::byteToBuf(MvrTypes::Byte val)
 {
 	char buf[1024];
 	if (val > 0)
@@ -94,7 +94,7 @@ AREXPORT void ArSZSeriesPacket::byteToBuf(MvrTypes::Byte val)
 }
 
 
-AREXPORT ArTypes::Byte ArSZSeriesPacket::bufToByte(void)
+MVREXPORT ArTypes::Byte ArSZSeriesPacket::bufToByte(void)
 {
 	ArTypes::Byte ret=0;
 
@@ -130,20 +130,20 @@ int ArSZSeriesPacket::deascii(char c)
 		return 0;
 }
 
-AREXPORT ArSZSeriesPacketReceiver::ArSZSeriesPacketReceiver() {
+MVREXPORT ArSZSeriesPacketReceiver::ArSZSeriesPacketReceiver() {
 
 }
 
-AREXPORT ArSZSeriesPacketReceiver::~ArSZSeriesPacketReceiver() {
+MVREXPORT ArSZSeriesPacketReceiver::~MvrSZSeriesPacketReceiver() {
 
 }
 
-AREXPORT void ArSZSeriesPacketReceiver::setDeviceConnection(
+MVREXPORT void ArSZSeriesPacketReceiver::setDeviceConnection(
 		ArDeviceConnection *conn) {
 	myConn = conn;
 }
 
-AREXPORT ArDeviceConnection *ArSZSeriesPacketReceiver::getDeviceConnection(void) {
+MVREXPORT ArDeviceConnection *ArSZSeriesPacketReceiver::getDeviceConnection(void) {
 	return myConn;
 }
 
@@ -489,7 +489,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 	return NULL;
 }
 
-AREXPORT ArSZSeries::ArSZSeries(int laserNumber, const char *name) :
+MVREXPORT ArSZSeries::ArSZSeries(int laserNumber, const char *name) :
 			ArLaser(laserNumber, name, 16382),
 			mySensorInterpTask(this, &ArSZSeries::sensorInterp),
 			myAriaExitCB(this, &ArSZSeries::disconnect) {
@@ -559,7 +559,7 @@ AREXPORT ArSZSeries::ArSZSeries(int laserNumber, const char *name) :
 
 }
 
-AREXPORT ArSZSeries::~ArSZSeries() {
+MVREXPORT ArSZSeries::~MvrSZSeries() {
 	Aria::remExitCallback(&myAriaExitCB);
 	if (myRobot != NULL) {
 		myRobot->remRangeDevice(this);
@@ -586,7 +586,7 @@ void ArSZSeries::clear(void) {
 	myNumChans = 0;
 }
 
-AREXPORT void ArSZSeries::laserSetName(const char *name) {
+MVREXPORT void ArSZSeries::laserSetName(const char *name) {
 	myName = name;
 
 	myConnMutex.setLogNameVar("%s::myConnMutex", getName());
@@ -597,7 +597,7 @@ AREXPORT void ArSZSeries::laserSetName(const char *name) {
 	ArLaser::laserSetName( getName());
 }
 
-AREXPORT void ArSZSeries::setRobot(MvrRobot *robot) {
+MVREXPORT void ArSZSeries::setRobot(MvrRobot *robot) {
 	myRobot = robot;
 
 	if (myRobot != NULL) {
@@ -607,14 +607,14 @@ AREXPORT void ArSZSeries::setRobot(MvrRobot *robot) {
 	ArLaser::setRobot(robot);
 }
 
-AREXPORT bool ArSZSeries::asyncConnect(void) {
+MVREXPORT bool ArSZSeries::asyncConnect(void) {
 	myStartConnect = true;
 	if (!getRunning())
 		runAsync();
 	return true;
 }
 
-AREXPORT bool ArSZSeries::disconnect(void) {
+MVREXPORT bool ArSZSeries::disconnect(void) {
 	if (!isConnected())
 		return true;
 
@@ -815,7 +815,7 @@ void ArSZSeries::sensorInterp(void) {
 	}
 }
 
-AREXPORT bool ArSZSeries::blockingConnect(void) {
+MVREXPORT bool ArSZSeries::blockingConnect(void) {
 
 	if (!getRunning())
 		runAsync();
@@ -1023,7 +1023,7 @@ AREXPORT bool ArSZSeries::blockingConnect(void) {
 
 }
 
-AREXPORT void * ArSZSeries::runThread(void *arg) {
+MVREXPORT void * ArSZSeries::runThread(void *arg) {
 	//char buf[1024];
 	ArSZSeriesPacket *packet;
 

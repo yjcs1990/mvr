@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrIrrfDevice.h"
 #include "MvrCommands.h"
 
-AREXPORT MvrIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
+MVREXPORT MvrIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
                              size_t cumulativeBufferSize, const char *name) :
   MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000),
   myPacketHandler(this, &ArIrrfDevice::packetHandler)
@@ -50,7 +50,7 @@ AREXPORT MvrIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
     myRawReadings->push_back(new MvrSensorReading(0, 0, (1.8*i - 81)));
 }
 
-AREXPORT MvrIrrfDevice::~ArIrrfDevice()
+MVREXPORT MvrIrrfDevice::~MvrIrrfDevice()
 {
   if (myRobot != NULL)
   {
@@ -59,14 +59,14 @@ AREXPORT MvrIrrfDevice::~ArIrrfDevice()
   }
 }
 
-AREXPORT void MvrIrrfDevice::setRobot(MvrRobot *robot)
+MVREXPORT void MvrIrrfDevice::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
     myRobot->addPacketHandler(&myPacketHandler, MvrListPos::LAST);
 }
 
-AREXPORT void MvrIrrfDevice::processReadings(void)
+MVREXPORT void MvrIrrfDevice::processReadings(void)
 {
   int i;
   double rx, ry, nx, ny, dx, dy, dist;
@@ -143,7 +143,7 @@ AREXPORT void MvrIrrfDevice::processReadings(void)
   and then call processReadings to filter add the data to the current and
   cumulative buffers.
 */
-AREXPORT bool MvrIrrfDevice::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrIrrfDevice::packetHandler(MvrRobotPacket *packet)
 {
   int portNum, i, dist, packetCounter;
   double conv;

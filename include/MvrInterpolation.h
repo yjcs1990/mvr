@@ -68,36 +68,36 @@ class MvrInterpolation
 {
 public:
   /// Constructor
-  AREXPORT MvrInterpolation(size_t numberOfReadings = 100);
+  MVREXPORT MvrInterpolation(size_t numberOfReadings = 100);
   /// Destructor
-  AREXPORT virtual ~ArInterpolation();
+  MVREXPORT virtual ~MvrInterpolation();
   /// Adds a new reading
-  AREXPORT bool addReading(MvrTime timeOfReading, MvrPose position);
+  MVREXPORT bool addReading(MvrTime timeOfReading, MvrPose position);
   /// Finds a position
-  AREXPORT int getPose(MvrTime timeStamp, MvrPose *position, 
+  MVREXPORT int getPose(MvrTime timeStamp, MvrPose *position, 
 		       MvrPoseWithTime *lastData = NULL);
   /// Sets the name
-  AREXPORT void setName(const char *name);
+  MVREXPORT void setName(const char *name);
   /// Gets the name
-  AREXPORT const char *getName(void);
+  MVREXPORT const char *getName(void);
   /// Sets the allowed milliseconds for prediction
-  AREXPORT void setAllowedMSForPrediction(int ms = -1);
+  MVREXPORT void setAllowedMSForPrediction(int ms = -1);
   /// Sets the allowed milliseconds for prediction
-  AREXPORT int getAllowedMSForPrediction(void);
+  MVREXPORT int getAllowedMSForPrediction(void);
   /// Sets the allowed percentage for prediction
-  AREXPORT void setAllowedPercentageForPrediction(int percentage = 5000);
+  MVREXPORT void setAllowedPercentageForPrediction(int percentage = 5000);
   /// Sets the allowed milliseconds for prediction
-  AREXPORT int getAllowedPercentageForPrediction(void);
+  MVREXPORT int getAllowedPercentageForPrediction(void);
   /// Sets if we should log events for this interpolation
-  AREXPORT void setLogPrediction(bool logPrediction = false);
+  MVREXPORT void setLogPrediction(bool logPrediction = false);
   /// Gets if we should log events for this interpolation
-  AREXPORT bool getLogPrediction(void);
+  MVREXPORT bool getLogPrediction(void);
   /// Sets the number of readings this instance holds back in time
-  AREXPORT void setNumberOfReadings(size_t numberOfReadings);
+  MVREXPORT void setNumberOfReadings(size_t numberOfReadings);
   /// Gets the number of readings this instance holds back in time
-  AREXPORT size_t getNumberOfReadings(void) const;
+  MVREXPORT size_t getNumberOfReadings(void) const;
   /// Empties the interpolated positions
-  AREXPORT void reset(void);
+  MVREXPORT void reset(void);
 protected:
   MvrMutex myDataMutex;
   std::string myName;

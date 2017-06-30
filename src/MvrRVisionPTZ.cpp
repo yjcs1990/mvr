@@ -30,18 +30,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobot.h"
 #include "MvrCommands.h"
 
-AREXPORT ArRVisionPacket::ArRVisionPacket(MvrTypes::UByte2 bufferSize) :
+MVREXPORT ArRVisionPacket::ArRVisionPacket(MvrTypes::UByte2 bufferSize) :
   ArBasePacket(bufferSize)
 {
 
 }
 
-AREXPORT ArRVisionPacket::~ArRVisionPacket()
+MVREXPORT ArRVisionPacket::~MvrRVisionPacket()
 {
 
 }
 
-AREXPORT void ArRVisionPacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void ArRVisionPacket::uByteToBuf(MvrTypes::UByte val)
 {
   if (myLength + 1 > myMaxLength)
   {
@@ -52,7 +52,7 @@ AREXPORT void ArRVisionPacket::uByteToBuf(MvrTypes::UByte val)
   ++myLength;
 }
 
-AREXPORT void ArRVisionPacket::byte2ToBuf(MvrTypes::Byte2 val)
+MVREXPORT void ArRVisionPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 4) > myMaxLength)
   {
@@ -79,7 +79,7 @@ AREXPORT void ArRVisionPacket::byte2ToBuf(MvrTypes::Byte2 val)
    @param val the Byte2 to put into the packet
    @param pose the position in the packets array to put the value
 */
-AREXPORT void ArRVisionPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
+MVREXPORT void ArRVisionPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 					    ArTypes::UByte2 pose)
 {
   ArTypes::Byte2 prevLength = myLength;
@@ -95,7 +95,7 @@ AREXPORT void ArRVisionPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 }
 
 
-AREXPORT ArRVisionPTZ::ArRVisionPTZ(MvrRobot *robot) :
+MVREXPORT ArRVisionPTZ::ArRVisionPTZ(MvrRobot *robot) :
   ArPTZ(NULL),
   myPacket(255), 
   myZoomPacket(9),
@@ -115,17 +115,17 @@ AREXPORT ArRVisionPTZ::ArRVisionPTZ(MvrRobot *robot) :
 
   ArPTZ::setLimits(MAX_PAN, MIN_PAN, MAX_TILT, MIN_TILT, MAX_ZOOM, MIN_ZOOM);
     /*
-  AREXPORT virtual double getMaxPosPan(void) const { return MAX_PAN; }
-  AREXPORT virtual double getMaxNegPan(void) const { return MIN_PAN; }
-  AREXPORT virtual double getMaxPosTilt(void) const { return MAX_TILT; }
-  AREXPORT virtual double getMaxNegTilt(void) const { return MIN_TILT; }
-  AREXPORT virtual int getMaxZoom(void) const { return MAX_ZOOM; }
-  AREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
+  MVREXPORT virtual double getMaxPosPan(void) const { return MAX_PAN; }
+  MVREXPORT virtual double getMaxNegPan(void) const { return MIN_PAN; }
+  MVREXPORT virtual double getMaxPosTilt(void) const { return MAX_TILT; }
+  MVREXPORT virtual double getMaxNegTilt(void) const { return MIN_TILT; }
+  MVREXPORT virtual int getMaxZoom(void) const { return MAX_ZOOM; }
+  MVREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
   */
 
 }
 
-AREXPORT ArRVisionPTZ::~ArRVisionPTZ()
+MVREXPORT ArRVisionPTZ::~MvrRVisionPTZ()
 {
 }
 
@@ -161,7 +161,7 @@ void ArRVisionPTZ::initializePackets(void)
 }
 
 
-AREXPORT bool ArRVisionPTZ::init(void)
+MVREXPORT bool ArRVisionPTZ::init(void)
 {
   // send command to power on camera on seekur
   if(myRobot)
@@ -207,7 +207,7 @@ AREXPORT bool ArRVisionPTZ::init(void)
   return true;
 }
 
-AREXPORT bool ArRVisionPTZ::panTilt_i(double degreesPan, double degreesTilt)
+MVREXPORT bool ArRVisionPTZ::panTilt_i(double degreesPan, double degreesTilt)
 {
   if (degreesPan > MAX_PAN)
     degreesPan = MAX_PAN;
@@ -226,32 +226,32 @@ AREXPORT bool ArRVisionPTZ::panTilt_i(double degreesPan, double degreesTilt)
   return sendPacket(&myPanTiltPacket);
 }
 
-AREXPORT bool ArRVisionPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
+MVREXPORT bool ArRVisionPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
 {
   return panTilt_i(myPan + degreesPan, myTilt + degreesTilt);
 }
 
-AREXPORT bool ArRVisionPTZ::pan_i(double degrees)
+MVREXPORT bool ArRVisionPTZ::pan_i(double degrees)
 {
   return panTilt_i(degrees, myTilt);
 }
 
-AREXPORT bool ArRVisionPTZ::panRel_i(double degrees)
+MVREXPORT bool ArRVisionPTZ::panRel_i(double degrees)
 {
   return panTiltRel_i(degrees, 0);
 }
 
-AREXPORT bool ArRVisionPTZ::tilt_i(double degrees)
+MVREXPORT bool ArRVisionPTZ::tilt_i(double degrees)
 {
   return panTilt_i(myPan, degrees);
 }
 
-AREXPORT bool ArRVisionPTZ::tiltRel_i(double degrees)
+MVREXPORT bool ArRVisionPTZ::tiltRel_i(double degrees)
 {
   return panTiltRel_i(0, degrees);
 }
 
-AREXPORT bool ArRVisionPTZ::zoom(int zoomValue)
+MVREXPORT bool ArRVisionPTZ::zoom(int zoomValue)
 {
   //printf("MvrRVision::zoom(%d)\n", zoomValue);
   if (zoomValue > MAX_ZOOM)
@@ -264,13 +264,13 @@ AREXPORT bool ArRVisionPTZ::zoom(int zoomValue)
   return sendPacket(&myZoomPacket);
 }
 
-AREXPORT bool ArRVisionPTZ::zoomRel(int zoomValue)
+MVREXPORT bool ArRVisionPTZ::zoomRel(int zoomValue)
 {
   return zoom(myZoom + zoomValue);
 }
 
 /*
-AREXPORT bool ArRVisionPTZ::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool ArRVisionPTZ::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xE0)
     return false;
@@ -280,7 +280,7 @@ AREXPORT bool ArRVisionPTZ::packetHandler(MvrRobotPacket *packet)
 */
 
 #define ARRVISION_MAX_RESPONSE_BYTES 16
-//AREXPORT bool ArRVisionPTZ::packetHandler(MvrBasePacket *packet)
+//MVREXPORT bool ArRVisionPTZ::packetHandler(MvrBasePacket *packet)
 ArBasePacket * ArRVisionPTZ::readPacket(void)
 {
   unsigned char data[ARRVISION_MAX_RESPONSE_BYTES];

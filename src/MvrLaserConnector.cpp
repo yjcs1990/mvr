@@ -53,7 +53,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  lasers and such, this is also passed to all the lasers created as
  their infoLogLevel too
  */
-AREXPORT MvrLaserConnector::ArLaserConnector(
+MVREXPORT MvrLaserConnector::ArLaserConnector(
 	ArArgumentParser *parser, MvrRobot *robot,
 	ArRobotConnector *robotConnector, bool autoParseArgs,
 	ArLog::LogLevel infoLogLevel,
@@ -79,7 +79,7 @@ AREXPORT MvrLaserConnector::ArLaserConnector(
   Mvria::addLogOptionsCB(&myLogOptionsCB, 80);
 }
 
-AREXPORT MvrLaserConnector::~ArLaserConnector(void)
+MVREXPORT MvrLaserConnector::~MvrLaserConnector(void)
 {
 
 }
@@ -93,7 +93,7 @@ AREXPORT MvrLaserConnector::~ArLaserConnector(void)
   @return true if the arguments were parsed successfully false if not
  **/
 
-AREXPORT bool MvrLaserConnector::parseArgs(void)
+MVREXPORT bool MvrLaserConnector::parseArgs(void)
 {
   return parseArgs(myParser);
 }
@@ -154,7 +154,7 @@ AREXPORT bool MvrLaserConnector::parseArgs(void)
 
  **/
 
-AREXPORT bool MvrLaserConnector::parseArgs (MvrArgumentParser *parser)
+MVREXPORT bool MvrLaserConnector::parseArgs (MvrArgumentParser *parser)
 {
 	if (myParsedArgs)
 		return true;
@@ -286,7 +286,7 @@ AREXPORT bool MvrLaserConnector::parseArgs (MvrArgumentParser *parser)
 	return true;
 }
 
-AREXPORT bool MvrLaserConnector::parseLaserArgs(MvrArgumentParser *parser, 
+MVREXPORT bool MvrLaserConnector::parseLaserArgs(MvrArgumentParser *parser, 
 						LaserData *laserData)
 {
   char buf[512];
@@ -750,7 +750,7 @@ bool MvrLaserConnector::internalConfigureLaser(
   return true;
 }
 
-AREXPORT void MvrLaserConnector::logOptions(void) const
+MVREXPORT void MvrLaserConnector::logOptions(void) const
 {
   MvrLog::log(MvrLog::Terse, "Options for MvrLaserConnector:");
   MvrLog::log(MvrLog::Terse, "\nOptions shown are for currently set up lasers.  Activate lasers with -laserType<N> option");
@@ -769,7 +769,7 @@ AREXPORT void MvrLaserConnector::logOptions(void) const
 
 }
 
-AREXPORT void MvrLaserConnector::logLaserOptions(
+MVREXPORT void MvrLaserConnector::logLaserOptions(
 	LaserData *laserData, bool header, bool metaOpts) const
 {
   char buf[512];
@@ -924,7 +924,7 @@ AREXPORT void MvrLaserConnector::logLaserOptions(
 
    @internal
 **/
-AREXPORT bool MvrLaserConnector::addLaser(
+MVREXPORT bool MvrLaserConnector::addLaser(
 	ArLaser *laser, int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
@@ -975,7 +975,7 @@ AREXPORT bool MvrLaserConnector::addLaser(
    @internal
 **/
 
-AREXPORT bool MvrLaserConnector::addPlaceholderLaser(
+MVREXPORT bool MvrLaserConnector::addPlaceholderLaser(
 	ArLaser *placeholderLaser,
 	int laserNumber, bool takeOwnershipOfPlaceholder)
 {
@@ -1017,7 +1017,7 @@ AREXPORT bool MvrLaserConnector::addPlaceholderLaser(
   return true;
 }
 
-AREXPORT MvrLaser *ArLaserConnector::getLaser(int laserNumber)
+MVREXPORT MvrLaser *ArLaserConnector::getLaser(int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
   LaserData *laserData = NULL;
@@ -1033,7 +1033,7 @@ AREXPORT MvrLaser *ArLaserConnector::getLaser(int laserNumber)
   return laserData->myLaser;
 }
 
-AREXPORT bool MvrLaserConnector::replaceLaser(
+MVREXPORT bool MvrLaserConnector::replaceLaser(
 	ArLaser *laser, int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
@@ -1067,7 +1067,7 @@ AREXPORT bool MvrLaserConnector::replaceLaser(
 
    @internal
 **/
-AREXPORT bool MvrLaserConnector::setupLaser(MvrLaser *laser,
+MVREXPORT bool MvrLaserConnector::setupLaser(MvrLaser *laser,
 					   int laserNumber)
 {
 
@@ -1156,7 +1156,7 @@ AREXPORT bool MvrLaserConnector::setupLaser(MvrLaser *laser,
    
    @internal
 **/
-AREXPORT bool MvrLaserConnector::connectLaser(MvrLaser *laser,
+MVREXPORT bool MvrLaserConnector::connectLaser(MvrLaser *laser,
 					     int laserNumber, 
 					     bool forceConnection)
 {
@@ -1211,7 +1211,7 @@ AREXPORT bool MvrLaserConnector::connectLaser(MvrLaser *laser,
 
    @return true if successful connecting to lasers, false on any errors.
 **/
-AREXPORT bool MvrLaserConnector::connectLasers(
+MVREXPORT bool MvrLaserConnector::connectLasers(
 	bool continueOnFailedConnect, bool addConnectedLasersToRobot, 
 	bool addAllLasersToRobot, bool turnOnLasers,
 	bool powerCycleLaserOnFailedConnect, int *failedOnLaser)
@@ -1569,7 +1569,7 @@ AREXPORT bool MvrLaserConnector::connectLasers(
   return true;
 }
 
-AREXPORT void MvrLaserConnector::logLaserData()
+MVREXPORT void MvrLaserConnector::logLaserData()
 {
   for(std::map<int, LaserData*>::const_iterator i = myLasers.begin(); i != myLasers.end(); ++i)
   {

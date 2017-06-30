@@ -56,14 +56,14 @@ class MvrRatioInputRobotJoydrive
 {
 public:
   /// Constructor
-  AREXPORT MvrRatioInputRobotJoydrive(MvrRobot *robot, 
+  MVREXPORT MvrRatioInputRobotJoydrive(MvrRobot *robot, 
 				     MvrActionRatioInput *input,
 				     int priority = 75,
 				     bool requireDeadmanPushed = true);
   /// Destructor
-  AREXPORT virtual ~ArRatioInputRobotJoydrive();
+  MVREXPORT virtual ~MvrRatioInputRobotJoydrive();
 protected:
-  AREXPORT void fireCallback(void);
+  MVREXPORT void fireCallback(void);
 
   MvrRobot *myRobot;
   MvrActionRatioInput *myInput;

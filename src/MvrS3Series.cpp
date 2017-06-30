@@ -33,24 +33,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <time.h>
 
 
-AREXPORT ArS3SeriesPacket::ArS3SeriesPacket() :
+MVREXPORT ArS3SeriesPacket::ArS3SeriesPacket() :
 ArBasePacket(10000, 1, NULL, 1) {
 
 }
 
-AREXPORT ArS3SeriesPacket::~ArS3SeriesPacket() {
+MVREXPORT ArS3SeriesPacket::~MvrS3SeriesPacket() {
 
 }
 
-AREXPORT ArTime ArS3SeriesPacket::getTimeReceived(void) {
+MVREXPORT ArTime ArS3SeriesPacket::getTimeReceived(void) {
 	return myTimeReceived;
 }
 
-AREXPORT void ArS3SeriesPacket::setTimeReceived(MvrTime timeReceived) {
+MVREXPORT void ArS3SeriesPacket::setTimeReceived(MvrTime timeReceived) {
 	myTimeReceived = timeReceived;
 }
 
-AREXPORT void ArS3SeriesPacket::duplicatePacket(MvrS3SeriesPacket *packet) {
+MVREXPORT void ArS3SeriesPacket::duplicatePacket(MvrS3SeriesPacket *packet) {
 	myLength = packet->getLength();
 	myReadLength = packet->getReadLength();
 	myTimeReceived = packet->getTimeReceived();
@@ -74,25 +74,25 @@ AREXPORT void ArS3SeriesPacket::duplicatePacket(MvrS3SeriesPacket *packet) {
 	memcpy(myBuf, packet->getBuf(), myLength);
 }
 
-AREXPORT void ArS3SeriesPacket::empty(void) {
+MVREXPORT void ArS3SeriesPacket::empty(void) {
 	myLength = 0;
 	myReadLength = 0;
 }
 
-AREXPORT ArS3SeriesPacketReceiver::ArS3SeriesPacketReceiver() {
+MVREXPORT ArS3SeriesPacketReceiver::ArS3SeriesPacketReceiver() {
 
 }
 
-AREXPORT ArS3SeriesPacketReceiver::~ArS3SeriesPacketReceiver() {
+MVREXPORT ArS3SeriesPacketReceiver::~MvrS3SeriesPacketReceiver() {
 
 }
 
-AREXPORT void ArS3SeriesPacketReceiver::setDeviceConnection(
+MVREXPORT void ArS3SeriesPacketReceiver::setDeviceConnection(
 		ArDeviceConnection *conn) {
 	myConn = conn;
 }
 
-AREXPORT ArDeviceConnection *ArS3SeriesPacketReceiver::getDeviceConnection(void) {
+MVREXPORT ArDeviceConnection *ArS3SeriesPacketReceiver::getDeviceConnection(void) {
 	return myConn;
 }
 
@@ -566,7 +566,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 	return NULL;
 }
 
-AREXPORT ArS3Series::ArS3Series(int laserNumber, const char *name) :
+MVREXPORT ArS3Series::ArS3Series(int laserNumber, const char *name) :
 			ArLaser(laserNumber, name, 20000),
 			mySensorInterpTask(this, &ArS3Series::sensorInterp),
 			myAriaExitCB(this, &ArS3Series::disconnect),
@@ -673,7 +673,7 @@ AREXPORT ArS3Series::ArS3Series(int laserNumber, const char *name) :
 
 }
 
-AREXPORT ArS3Series::~ArS3Series() {
+MVREXPORT ArS3Series::~MvrS3Series() {
 	Aria::remExitCallback(&myAriaExitCB);
 	if (myRobot != NULL) {
 		myRobot->remRangeDevice(this);
@@ -700,7 +700,7 @@ void ArS3Series::clear(void) {
 	myNumChans = 0;
 }
 
-AREXPORT void ArS3Series::laserSetName(const char *name) {
+MVREXPORT void ArS3Series::laserSetName(const char *name) {
 	myName = name;
 
 	myConnMutex.setLogNameVar("%s::myConnMutex", getName());
@@ -713,7 +713,7 @@ AREXPORT void ArS3Series::laserSetName(const char *name) {
 	ArLaser::laserSetName( getName());
 }
 
-AREXPORT void ArS3Series::setRobot(MvrRobot *robot) {
+MVREXPORT void ArS3Series::setRobot(MvrRobot *robot) {
 	myRobot = robot;
 
 	if (myRobot != NULL) {
@@ -725,14 +725,14 @@ AREXPORT void ArS3Series::setRobot(MvrRobot *robot) {
 	ArLaser::setRobot(robot);
 }
 
-AREXPORT bool ArS3Series::asyncConnect(void) {
+MVREXPORT bool ArS3Series::asyncConnect(void) {
 	myStartConnect = true;
 	if (!getRunning())
 		runAsync();
 	return true;
 }
 
-AREXPORT bool ArS3Series::disconnect(void) {
+MVREXPORT bool ArS3Series::disconnect(void) {
 	if (!isConnected())
 		return true;
 
@@ -1153,7 +1153,7 @@ void ArS3Series::sensorInterp(void) {
 	unlockDevice();
 }
 
-AREXPORT bool ArS3Series::blockingConnect(void) {
+MVREXPORT bool ArS3Series::blockingConnect(void) {
 	long timeToRunFor;
 
 	if (!getRunning())
@@ -1299,7 +1299,7 @@ AREXPORT bool ArS3Series::blockingConnect(void) {
 
 }
 
-AREXPORT void * ArS3Series::runThread(void *arg) {
+MVREXPORT void * ArS3Series::runThread(void *arg) {
 	//char buf[1024];
 	ArS3SeriesPacket *packet;
 
@@ -1474,7 +1474,7 @@ while (getRunning() )
 	return NULL;
 }
 
-AREXPORT bool ArS3Series::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool ArS3Series::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xd9)
     return false;

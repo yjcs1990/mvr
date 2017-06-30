@@ -58,7 +58,7 @@ public:
   // ---------------------------------------------------------------------------
 
   /// Returns the current pan/tilt/zoom of the camera (in double format).
-	AREXPORT static const char *GET_CAMERA_DATA;
+	MVREXPORT static const char *GET_CAMERA_DATA;
 
   /// Returns general information about the camera (in double format).
   /**
@@ -66,55 +66,55 @@ public:
    * and whether zooming is available.  In general, clients need only 
    * to request this data once at startup.
   **/
-  AREXPORT static const char *GET_CAMERA_INFO;
+  MVREXPORT static const char *GET_CAMERA_INFO;
 
   /// Returns the last image obtained from the camera.
-  AREXPORT static const char *GET_PICTURE;
+  MVREXPORT static const char *GET_PICTURE;
   
   /// Returns the last image obtained from the camera.
-  AREXPORT static const char *GET_PICTURE_OPTIM;
+  MVREXPORT static const char *GET_PICTURE_OPTIM;
 
   /// Returns a high resolution image from the camera, suitable for saving.
   /**
    * This command is not yet fully supported.
   **/
-	AREXPORT static const char *GET_SNAPSHOT;
+	MVREXPORT static const char *GET_SNAPSHOT;
 
   /// Returns whether the camera/image should be displayed by the client.
   /**
    * This command is not yet fully supported.
   **/
-	AREXPORT static const char *GET_DISPLAY;
+	MVREXPORT static const char *GET_DISPLAY;
 	
 
   /// Sends a command to the camera to set its pan/tilt/zoom, in absolute terms (in double format).
-	AREXPORT static const char *SET_CAMERA_ABS;
+	MVREXPORT static const char *SET_CAMERA_ABS;
 
   /// Sends a command to the camera to set its pan/tilt, as specified by a percent offset of its current frame.
-	AREXPORT static const char *SET_CAMERA_PCT;
+	MVREXPORT static const char *SET_CAMERA_PCT;
 
   /// Sends a command to the camera to set its pan/tilt/zoom, relative to its current position (in double format).
-	AREXPORT static const char *SET_CAMERA_REL;
+	MVREXPORT static const char *SET_CAMERA_REL;
 
   /// Sends a packet back with the list of modes
-  AREXPORT static const char *GET_CAMERA_MODE_LIST;
+  MVREXPORT static const char *GET_CAMERA_MODE_LIST;
 
   /// A packet that gets sent out when the mode is changed
   /**
      Note that each mode might have arguments after it for just that
      mode, so only the mode name at the start is generic.
    **/
-  AREXPORT static const char *CAMERA_MODE_UPDATED;
+  MVREXPORT static const char *CAMERA_MODE_UPDATED;
 
   /// A command that sets the mode of the camera
   /**
      Note that each mode can have its own arguments so only the mode
      name at the start is generic.
    **/
-  AREXPORT static const char *SET_CAMERA_MODE;
+  MVREXPORT static const char *SET_CAMERA_MODE;
 
   /// A command that resets the camera 
-  AREXPORT static const char *RESET_CAMERA;
+  MVREXPORT static const char *RESET_CAMERA;
 
   // ---------------------------------------------------------------------------
   // Integer Format Commands
@@ -126,41 +126,41 @@ public:
   /**
    * @deprecated GET_CAMERA_DATA is preferred instead
   **/
- 	AREXPORT static const char *GET_CAMERA_DATA_INT;
+ 	MVREXPORT static const char *GET_CAMERA_DATA_INT;
 
   /// Returns general information about the camera (as byte2 integers).
   /**
    * @deprecated GET_CAMERA_INFO is preferred instead
   **/
-  AREXPORT static const char *GET_CAMERA_INFO_INT;
+  MVREXPORT static const char *GET_CAMERA_INFO_INT;
 
   /// Sends a command to the camera to set its pan/tilt/zoom, in absolute terms (as byte integers).
   /**
    * @deprecated SET_CAMERA_ABS is preferred instead
   **/
-	AREXPORT static const char *SET_CAMERA_ABS_INT;
+	MVREXPORT static const char *SET_CAMERA_ABS_INT;
 
   /// Sends a command to the camera to set its pan/tilt/zoom, relative to its current position (as byte integers).
   /**
    * @deprecated SET_CAMERA_REL is preferred instead
   **/
-	AREXPORT static const char *SET_CAMERA_REL_INT;
+	MVREXPORT static const char *SET_CAMERA_REL_INT;
 
   /// Sends a command to the camera to set its pan/tilt, as specified by a percent offset (as byte integers).
   /**
    * @deprecated SET_CAMERA_PCT is preferred instead
   **/
-	AREXPORT static const char *SET_CAMERA_PCT_INT;
+	MVREXPORT static const char *SET_CAMERA_PCT_INT;
  
   /**
    * @deprecated GET_PICTURE is preferred instead
   **/
-  AREXPORT static const char *GET_VIDEO;
+  MVREXPORT static const char *GET_VIDEO;
   
   /**
    * @deprecated GET_SNAPSHOT is preferred instead
   **/
-  AREXPORT static const char *GET_SNAPSHOT_PLAIN;
+  MVREXPORT static const char *GET_SNAPSHOT_PLAIN;
 
 }; // end class MvrCameraCommands
 

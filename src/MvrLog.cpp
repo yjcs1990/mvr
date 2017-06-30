@@ -57,7 +57,7 @@ std::string MvrLog::ourFileName;
 int MvrLog::ourColbertStream = -1;
 bool MvrLog::ourLoggingTime = false;
 bool MvrLog::ourAlsoPrint = false;
-AREXPORT void (* MvrLog::colbertPrint)(int i, const char *str);
+MVREXPORT void (* MvrLog::colbertPrint)(int i, const char *str);
 
 ArLog::LogType MvrLog::ourConfigLogType = MvrLog::StdOut;
 ArLog::LogLevel MvrLog::ourConfigLogLevel = MvrLog::Normal;
@@ -80,7 +80,7 @@ bool MvrLog::ourAramDaemonized = false;
 ArFunctor1<const char *> *ArLog::ourFunctor;
 
 
-AREXPORT void MvrLog::logPlain(LogLevel level, const char *str)
+MVREXPORT void MvrLog::logPlain(LogLevel level, const char *str)
 {
   log(level, str);
 }
@@ -91,7 +91,7 @@ AREXPORT void MvrLog::logPlain(LogLevel level, const char *str)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
+MVREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -175,7 +175,7 @@ AREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void MvrLog::logErrorFromOSPlain(LogLevel level, const char *str)
+MVREXPORT void MvrLog::logErrorFromOSPlain(LogLevel level, const char *str)
 {
   logErrorFromOS(level, str);
 }
@@ -187,7 +187,7 @@ AREXPORT void MvrLog::logErrorFromOSPlain(LogLevel level, const char *str)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void MvrLog::logErrorFromOS(LogLevel level, const char *str, ...)
+MVREXPORT void MvrLog::logErrorFromOS(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -305,7 +305,7 @@ AREXPORT void MvrLog::logErrorFromOS(LogLevel level, const char *str, ...)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void MvrLog::logErrorFromOSPlainNoLock(LogLevel level, const char *str)
+MVREXPORT void MvrLog::logErrorFromOSPlainNoLock(LogLevel level, const char *str)
 {
   logErrorFromOSNoLock(level, str);
 }
@@ -317,7 +317,7 @@ AREXPORT void MvrLog::logErrorFromOSPlainNoLock(LogLevel level, const char *str)
    @param level level of logging
    @param str printf() like formating string
 */
-AREXPORT void MvrLog::logErrorFromOSNoLock(LogLevel level, const char *str, ...)
+MVREXPORT void MvrLog::logErrorFromOSNoLock(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -435,7 +435,7 @@ AREXPORT void MvrLog::logErrorFromOSNoLock(LogLevel level, const char *str, ...)
    @param alsoPrint if this is true then in addition to whatever other logging (to a file for instance) the results will also be printed
    @param printThisCall if this is true the new settings will be printed otherwise they won't
 */
-AREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
+MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
 			  bool logTime, bool alsoPrint, bool printThisCall)
 {
   ourMutex.setLogName("MvrLog::ourMutex");
@@ -551,7 +551,7 @@ AREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
   return(true);
 }
 
-AREXPORT void MvrLog::close()
+MVREXPORT void MvrLog::close()
 {
   if (ourFP && (ourType == File))
   {
@@ -561,7 +561,7 @@ AREXPORT void MvrLog::close()
   }
 }
 
-AREXPORT void MvrLog::logNoLock(LogLevel level, const char *str, ...)
+MVREXPORT void MvrLog::logNoLock(LogLevel level, const char *str, ...)
 {
   if (level > ourLevel)
     return;
@@ -614,7 +614,7 @@ AREXPORT void MvrLog::logNoLock(LogLevel level, const char *str, ...)
   va_end(ptr);
 }
 
-AREXPORT void MvrLog::logBacktrace(LogLevel level)
+MVREXPORT void MvrLog::logBacktrace(LogLevel level)
 {
 #ifndef WIN32
   int size = 100;
@@ -638,7 +638,7 @@ AREXPORT void MvrLog::logBacktrace(LogLevel level)
 }
 
 /// Log a file if it exists
-AREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
+MVREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
 {
   FILE *strFile;
   unsigned int i;
@@ -670,7 +670,7 @@ AREXPORT bool MvrLog::logFileContents(LogLevel level, const char *fileName)
   }
 }
 
-AREXPORT void MvrLog::addToConfig(MvrConfig *config)
+MVREXPORT void MvrLog::addToConfig(MvrConfig *config)
 {
   std::string section = "LogConfig";
   config->addParam(
@@ -699,7 +699,7 @@ AREXPORT void MvrLog::addToConfig(MvrConfig *config)
   config->addProcessFileCB(&ourConfigProcessFileCB, 200);
 }
 
-AREXPORT bool MvrLog::processFile(void)
+MVREXPORT bool MvrLog::processFile(void)
 {
   if (ourConfigLogType != ourType || ourConfigLogLevel != ourLevel ||
       strcmp(ourConfigFileName, ourFileName.c_str()) != 0 || 
@@ -713,7 +713,7 @@ AREXPORT bool MvrLog::processFile(void)
 }
 
 #ifndef ARINTERFACE
-AREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLevel,
+MVREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLevel,
 			      double defaultSize, bool daemonized)
 {
   if (prefix == NULL || prefix[0] == '\0')
@@ -786,7 +786,7 @@ AREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLevel
   ourAramLogSize = MvrMath::roundInt(ourAramConfigLogSize * 1000000);  // even megabytes
 }
 
-AREXPORT bool MvrLog::aramProcessFile(void)
+MVREXPORT bool MvrLog::aramProcessFile(void)
 {
   ourMutex.lock();
   ourAramLogSize = MvrMath::roundInt(ourAramConfigLogSize * 1000000);  // even megabytes
@@ -807,7 +807,7 @@ AREXPORT bool MvrLog::aramProcessFile(void)
   return true;
 }
 
-AREXPORT void MvrLog::filledAramLog(void)
+MVREXPORT void MvrLog::filledAramLog(void)
 {
   MvrLog::logNoLock(MvrLog::Normal, "MvrLog: Log filled, starting new file");
 
@@ -863,17 +863,17 @@ AREXPORT void MvrLog::filledAramLog(void)
 
 #endif // ARINTERFACE
 
-AREXPORT void MvrLog::setFunctor(MvrFunctor1<const char *> *functor)
+MVREXPORT void MvrLog::setFunctor(MvrFunctor1<const char *> *functor)
 {
   ourFunctor = functor;
 }
 
-AREXPORT void MvrLog::clearFunctor()
+MVREXPORT void MvrLog::clearFunctor()
 {
   ourFunctor = NULL;
 }
 
-AREXPORT void MvrLog::invokeFunctor(const char *message)
+MVREXPORT void MvrLog::invokeFunctor(const char *message)
 {
   MvrFunctor1<const char *> *functor;
   functor = ourFunctor;
@@ -881,7 +881,7 @@ AREXPORT void MvrLog::invokeFunctor(const char *message)
     functor->invoke(message);
 }
 
-AREXPORT void MvrLog::checkFileSize(void)
+MVREXPORT void MvrLog::checkFileSize(void)
 {
   if (ourAramDaemonized)
   {
@@ -894,13 +894,13 @@ AREXPORT void MvrLog::checkFileSize(void)
   }
 }
 
-AREXPORT void MvrLog::internalForceLockup(void)
+MVREXPORT void MvrLog::internalForceLockup(void)
 {
   MvrLog::log(MvrLog::Terse, "MvrLog: forcing internal lockup");
   ourMutex.lock();
 }
 
-AREXPORT void MvrLog::log_v(LogLevel level, const char *prefix, const char *str, va_list ptr)
+MVREXPORT void MvrLog::log_v(LogLevel level, const char *prefix, const char *str, va_list ptr)
 {
   char buf[1024];
   strncpy(buf, prefix, sizeof(buf));
@@ -911,7 +911,7 @@ AREXPORT void MvrLog::log_v(LogLevel level, const char *prefix, const char *str,
 }
 
 
-AREXPORT void MvrLog::info(const char *str, ...)
+MVREXPORT void MvrLog::info(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -921,7 +921,7 @@ AREXPORT void MvrLog::info(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void MvrLog::warning(const char *str, ...)
+MVREXPORT void MvrLog::warning(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -931,7 +931,7 @@ AREXPORT void MvrLog::warning(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void MvrLog::error(const char *str, ...)
+MVREXPORT void MvrLog::error(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -941,7 +941,7 @@ AREXPORT void MvrLog::error(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void MvrLog::debug(const char *str, ...)
+MVREXPORT void MvrLog::debug(const char *str, ...)
 {
   ourMutex.lock();
   va_list ptr;
@@ -951,7 +951,7 @@ AREXPORT void MvrLog::debug(const char *str, ...)
   ourMutex.unlock();
 }
 
-AREXPORT void MvrLog::setLogLevel(LogLevel level) {
+MVREXPORT void MvrLog::setLogLevel(LogLevel level) {
 	ourMutex.lock();
 	ourLevel = level;
 	ourMutex.unlock();

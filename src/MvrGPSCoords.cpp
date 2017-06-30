@@ -33,20 +33,20 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include <math.h>
 
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mya = 6378137; // meters
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myb = 6356752.3142; // meters
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myep = 8.2094437949696e-2; 
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myc = 299792458; // m/sec
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mye = 8.1819190842622e-2;
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::my1byf = 298.257223563;
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myOmega = 7292115e-11; // rad/sec
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myGM = 3986004.418e8; // m^3/sec^2
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myg = 9.7976432222; // m/sec^2. Ave g.
-AREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myM = 5.9733328e24; // kg. Mass of earth.
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mya = 6378137; // meters
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myb = 6356752.3142; // meters
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myep = 8.2094437949696e-2; 
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myc = 299792458; // m/sec
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mye = 8.1819190842622e-2;
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::my1byf = 298.257223563;
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myOmega = 7292115e-11; // rad/sec
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myGM = 3986004.418e8; // m^3/sec^2
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myg = 9.7976432222; // m/sec^2. Ave g.
+MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myM = 5.9733328e24; // kg. Mass of earth.
 
 
 
-AREXPORT void Mvr3DPoint::print(const char *head)
+MVREXPORT void Mvr3DPoint::print(const char *head)
 {
     char buffer[2064];
     if(head != NULL)
@@ -60,7 +60,7 @@ AREXPORT void Mvr3DPoint::print(const char *head)
  * Altitude coordinates.
  *
  */
-AREXPORT MvrLLACoords
+MVREXPORT MvrLLACoords
 ArECEFCoords::ECEF2LLA(void)
 {
   // ECEF2LLA - convert earth-centered earth-fixed (ECEF)
@@ -124,7 +124,7 @@ ArECEFCoords::ECEF2LLA(void)
  * @param ref: The ECEF coords of the origin.
  *
  */
-AREXPORT MvrENUCoords
+MVREXPORT MvrENUCoords
 ArECEFCoords::ECEF2ENU(MvrECEFCoords ref)
 {
   //    function [e,n,u] = xyz2enuTest(Xr, Yr, Zr, X, Y, Z)
@@ -158,7 +158,7 @@ ArECEFCoords::ECEF2ENU(MvrECEFCoords ref)
  * Earth Fixed coordinates.
  *
  */
-AREXPORT MvrECEFCoords
+MVREXPORT MvrECEFCoords
 ArLLACoords::LLA2ECEF(void)
 {
   // LLA2ECEF - convert latitude, longitude, and altitude to
@@ -212,7 +212,7 @@ ArLLACoords::LLA2ECEF(void)
  * @param ref: The coordinates of the origin.
  *
  */
-AREXPORT MvrECEFCoords
+MVREXPORT MvrECEFCoords
 ArENUCoords::ENU2ECEF(MvrLLACoords ref)
 {
 
@@ -263,7 +263,7 @@ ArENUCoords::ENU2ECEF(MvrLLACoords ref)
  * @return true if conversion is possible else false.
  *
  */
-AREXPORT bool
+MVREXPORT bool
 ArMapGPSCoords::convertLLA2MapCoords(const double lat, const double lon, const double alt,
 				     double& ea, double& no, double& up) const
 {						    
@@ -295,7 +295,7 @@ ArMapGPSCoords::convertLLA2MapCoords(const double lat, const double lon, const d
  *
  * @return true if conversion is possible else false.
  */
-AREXPORT bool
+MVREXPORT bool
 ArMapGPSCoords::convertMap2LLACoords(const double ea, const double no, const double up,
 				     double& lat, double& lon, double& alt) const
 {						    

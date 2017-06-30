@@ -16,7 +16,7 @@
    MvrActionDeceleratingLimiter to choose the right values and choose X or Y translation
    decelerations and speeds.
 */
-AREXPORT MvrActionDeceleratingLimiter::MvrActionDeceleratingLimiter(
+MVREXPORT MvrActionDeceleratingLimiter::MvrActionDeceleratingLimiter(
 	const char *name, 
 	LimiterType type) :
   MvrAction(name,
@@ -31,7 +31,7 @@ AREXPORT MvrActionDeceleratingLimiter::MvrActionDeceleratingLimiter(
 
 }
 
-AREXPORT MvrActionDeceleratingLimiter::~MvrActionDeceleratingLimiter()
+MVREXPORT MvrActionDeceleratingLimiter::~MvrActionDeceleratingLimiter()
 {
 
 }
@@ -48,7 +48,7 @@ AREXPORT MvrActionDeceleratingLimiter::~MvrActionDeceleratingLimiter()
    @param useEStop if something is detected within the clearance, cause an immediate emergecy stop
    @param maxEmergencyDecel ultimate limit on deceleration to apply when slowing for an obstacle detected within clearance  (mm/sec/sec); if 0, use the robot's maximum decel parameter.
 */
-AREXPORT void MvrActionDeceleratingLimiter::setParameters(
+MVREXPORT void MvrActionDeceleratingLimiter::setParameters(
 	double clearance,
 	double sideClearanceAtSlowSpeed,
 	double paddingAtSlowSpeed,
@@ -72,7 +72,7 @@ AREXPORT void MvrActionDeceleratingLimiter::setParameters(
   myMaxEmergencyDecel = maxEmergencyDecel;
 }
 
-AREXPORT void MvrActionDeceleratingLimiter::addToConfig(MvrConfig *config, 
+MVREXPORT void MvrActionDeceleratingLimiter::addToConfig(MvrConfig *config, 
 						       const char *section, 
 						       const char *prefix)
 {
@@ -165,7 +165,7 @@ AREXPORT void MvrActionDeceleratingLimiter::addToConfig(MvrConfig *config,
   config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
 }
 
-AREXPORT MvrActionDesired *
+MVREXPORT MvrActionDesired *
 MvrActionDeceleratingLimiter::fire(MvrActionDesired currentDesired)
 {
   double dist;

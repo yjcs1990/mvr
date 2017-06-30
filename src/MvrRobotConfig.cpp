@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrAnalogGyro.h"
 #include "ariaInternal.h"
 
-AREXPORT ArRobotConfig::ArRobotConfig(MvrRobot *robot) : 
+MVREXPORT ArRobotConfig::ArRobotConfig(MvrRobot *robot) : 
   myConnectCB(this, &ArRobotConfig::connectCallback),
   myProcessFileCB(this, &ArRobotConfig::processFile)
 {
@@ -69,11 +69,11 @@ AREXPORT ArRobotConfig::ArRobotConfig(MvrRobot *robot) :
     connectCallback();
 }
 
-AREXPORT ArRobotConfig::~ArRobotConfig()
+MVREXPORT ArRobotConfig::~MvrRobotConfig()
 {
 }
 
-AREXPORT bool ArRobotConfig::processFile(void)
+MVREXPORT bool ArRobotConfig::processFile(void)
 {
     if (myTransVelMax != 0)
     myRobot->setTransVelMax(myTransVelMax);
@@ -122,14 +122,14 @@ AREXPORT bool ArRobotConfig::processFile(void)
   return true;
 }
 
-AREXPORT void ArRobotConfig::addAnalogGyro(MvrAnalogGyro *gyro)
+MVREXPORT void ArRobotConfig::addAnalogGyro(MvrAnalogGyro *gyro)
 {
   myAnalogGyro = gyro;
   if (myRobot->isConnected())
     connectCallback();
 }
 
-AREXPORT void ArRobotConfig::connectCallback(void)
+MVREXPORT void ArRobotConfig::connectCallback(void)
 {
   std::string section;
   section = "Robot config";

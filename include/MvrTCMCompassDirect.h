@@ -74,32 +74,32 @@ private:
   MvrFunctor1C<ArTCMCompassDirect, MvrNMEAParser::Message>  myHCHDMHandler;
   void handleHCHDM(MvrNMEAParser::Message);
 public:
-  AREXPORT MvrTCMCompassDirect(MvrDeviceConnection *devCon);
-  AREXPORT MvrTCMCompassDirect(const char *serialPortName = ARTCM2_DEFAULT_SERIAL_PORT);
-  AREXPORT ~ArTCMCompassDirect();
+  MVREXPORT MvrTCMCompassDirect(MvrDeviceConnection *devCon);
+  MVREXPORT MvrTCMCompassDirect(const char *serialPortName = ARTCM2_DEFAULT_SERIAL_PORT);
+  MVREXPORT ~MvrTCMCompassDirect();
 
   /** Open device connection if not yet open  and send commands to configure compass. */
-  AREXPORT virtual bool connect();
-  AREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
+  MVREXPORT virtual bool connect();
+  MVREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
 
 
   /** Send commands to begin calibrating */
-  AREXPORT virtual void commandAutoCalibration();
-  AREXPORT virtual void commandUserCalibration();
-  AREXPORT virtual void commandStopCalibration();
+  MVREXPORT virtual void commandAutoCalibration();
+  MVREXPORT virtual void commandUserCalibration();
+  MVREXPORT virtual void commandStopCalibration();
 
   /** Send commands to start/stop sending data.  */
   //@{
-  AREXPORT virtual void commandContinuousPackets();
-  AREXPORT virtual void commandOnePacket();
-  AREXPORT virtual void commandOff();
+  MVREXPORT virtual void commandContinuousPackets();
+  MVREXPORT virtual void commandOnePacket();
+  MVREXPORT virtual void commandOff();
   //@}
 
   /** Not implemented yet. @todo */
-  AREXPORT virtual void commandSoftReset() { /* TODO */ }
+  MVREXPORT virtual void commandSoftReset() { /* TODO */ }
 
   /** Same as commandContinuousPackets() in this implementation. */
-  AREXPORT virtual void commandJustCompass() { commandContinuousPackets(); }
+  MVREXPORT virtual void commandJustCompass() { commandContinuousPackets(); }
 
   /** Read all available data, store, and call callbacks if any were added. 
    *  unsigned int msWait If 0, wait indefinately for new data. Otherwise, wait
@@ -107,10 +107,10 @@ public:
    *  @return A value > 0 if messages were recieved from the compass, 0 if no
    *  data was recieved, and a value < 0 on error reading from the compass.
    * */
-  AREXPORT int read(unsigned int msWait = 1);
+  MVREXPORT int read(unsigned int msWait = 1);
  
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *devCon) { myDeviceConnection = devCon; }
-  AREXPORT MvrDeviceConnection *getDeviceConnetion() { return myDeviceConnection; }
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *devCon) { myDeviceConnection = devCon; }
+  MVREXPORT MvrDeviceConnection *getDeviceConnetion() { return myDeviceConnection; }
 
 
 };

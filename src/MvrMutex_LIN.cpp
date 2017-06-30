@@ -84,18 +84,18 @@ ArMutex::ArMutex(bool recursive) :
   //myStrMap.insert(std::pair<int, std::string>(STATUS_ALREADY_LOCKED, "Mutex already locked"));
 }
 
-ArMutex::~ArMutex()
+ArMutex::~MvrMutex()
 {
   int ret;
   if (!myFailedInit && (ret = pthread_mutex_destroy(&myMutex)) != 0)
   {
     if (ret == EBUSY)
       ArLog::logNoLock(MvrLog::Verbose, 
-		       "MvrMutex::~ArMutex: Failed to destroy mutex %s. A thread is currently blocked waiting for this mutex.", 
+		       "MvrMutex::~MvrMutex: Failed to destroy mutex %s. A thread is currently blocked waiting for this mutex.", 
 		       myLogName.c_str());
     else
       ArLog::logNoLock(MvrLog::Terse, 
-	     "MvrMutex::~ArMutex: Failed to destroy mutex %s. Unknown error.",
+	     "MvrMutex::~MvrMutex: Failed to destroy mutex %s. Unknown error.",
 		       myLogName.c_str());
   }      
   uninitLockTiming();
@@ -328,7 +328,7 @@ int ArMutex::unlock()
   return(0);
 }
 
-AREXPORT const char *ArMutex::getError(int messageNumber) const
+MVREXPORT const char *ArMutex::getError(int messageNumber) const
 {
   ArStrMap::const_iterator it;
   if ((it = myStrMap.find(messageNumber)) != myStrMap.end())

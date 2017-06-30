@@ -55,18 +55,18 @@ public:
 
   };
   /// Constructor
-  AREXPORT MvrActionDeceleratingLimiter(const char *name = "limitAndDecel", 
+  MVREXPORT MvrActionDeceleratingLimiter(const char *name = "limitAndDecel", 
 				       LimiterType type = FORWARDS);
   /// Destructor
-  AREXPORT virtual ~ArActionDeceleratingLimiter();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionDeceleratingLimiter();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
   /// Sets the parameters (don't use this if you're using the addToConfig)
-  AREXPORT void setParameters(double clearance = 100,
+  MVREXPORT void setParameters(double clearance = 100,
 			      double sideClearanceAtSlowSpeed = 50,
 			      double paddingAtSlowSpeed = 50,
 			      double slowSpeed = 200,
@@ -81,7 +81,7 @@ public:
   /// Sets if this will control us when going forwards
   void setType(LimiterType type) { myType = type; }
   /// Adds to the MvrConfig given, in section, with prefix
-  AREXPORT void addToConfig(MvrConfig *config, const char *section,
+  MVREXPORT void addToConfig(MvrConfig *config, const char *section,
 			    const char *prefix = NULL);
   /// Sets if we're using locationDependent range devices or not
   bool getUseLocationDependentDevices(void) 

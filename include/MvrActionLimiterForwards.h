@@ -43,20 +43,20 @@ class MvrActionLimiterForwards : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionLimiterForwards(const char *name = "speed limiter", 
+  MVREXPORT MvrActionLimiterForwards(const char *name = "speed limiter", 
 				   double stopDistance = 250,
 				   double slowDistance = 1000,
 				   double slowSpeed = 200,
 				   double widthRatio = 1);
   /// Destructor
-  AREXPORT virtual ~ArActionLimiterForwards();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionLimiterForwards();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  AREXPORT void setParameters(double stopDistance = 250,
+  MVREXPORT void setParameters(double stopDistance = 250,
 			      double slowDistance = 1000,
 			      double slowSpeed = 200,
 			      double widthRatio = 1);

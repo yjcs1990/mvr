@@ -35,12 +35,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param robot The robot that this action group is attached to. New actions added to this group (using addAction()) will be added to this robot object for evaluation in its action resolution task.
 **/
 
-AREXPORT MvrActionGroup::ArActionGroup(MvrRobot *robot)
+MVREXPORT MvrActionGroup::ArActionGroup(MvrRobot *robot)
 {
   myRobot = robot;
 }
 
-AREXPORT MvrActionGroup::~ArActionGroup()
+MVREXPORT MvrActionGroup::~MvrActionGroup()
 {
   removeActions();
 }
@@ -54,7 +54,7 @@ AREXPORT MvrActionGroup::~ArActionGroup()
    @param priority the priority to give the action; same meaning as in MvrRobot::addAction
    @see MvrRobot::addAction
 */
-AREXPORT void MvrActionGroup::addAction(MvrAction *action, int priority)
+MVREXPORT void MvrActionGroup::addAction(MvrAction *action, int priority)
 {
   if (myRobot == NULL)
   {
@@ -70,7 +70,7 @@ AREXPORT void MvrActionGroup::addAction(MvrAction *action, int priority)
    @param action the action to remove from the robot
    @see MvrRobot::remAction
 */
-AREXPORT void MvrActionGroup::remAction(MvrAction *action)
+MVREXPORT void MvrActionGroup::remAction(MvrAction *action)
 {
   if (myRobot == NULL)
   {
@@ -82,7 +82,7 @@ AREXPORT void MvrActionGroup::remAction(MvrAction *action)
   myRobot->remAction(action);
 }
 
-AREXPORT void MvrActionGroup::activate(void)
+MVREXPORT void MvrActionGroup::activate(void)
 {
   std::list<ArAction *>::iterator it;
   if (myRobot == NULL)
@@ -95,7 +95,7 @@ AREXPORT void MvrActionGroup::activate(void)
     (*it)->activate();
 }
 
-AREXPORT void MvrActionGroup::activateExclusive(void)
+MVREXPORT void MvrActionGroup::activateExclusive(void)
 {
   std::list<ArAction *>::iterator it;
   
@@ -110,7 +110,7 @@ AREXPORT void MvrActionGroup::activateExclusive(void)
     (*it)->activate();
 }
 
-AREXPORT void MvrActionGroup::deactivate(void)
+MVREXPORT void MvrActionGroup::deactivate(void)
 {
   std::list<ArAction *>::iterator it;
   if (myRobot == NULL)
@@ -127,12 +127,12 @@ AREXPORT void MvrActionGroup::deactivate(void)
     (*it)->deactivate();
 }
 
-AREXPORT std::list<ArAction *> *ArActionGroup::getActionList(void)
+MVREXPORT std::list<ArAction *> *ArActionGroup::getActionList(void)
 {
   return &myActions;
 }
 
-AREXPORT void MvrActionGroup::removeActions(void)
+MVREXPORT void MvrActionGroup::removeActions(void)
 {
   std::list<ArAction *>::iterator it;
 
@@ -147,7 +147,7 @@ AREXPORT void MvrActionGroup::removeActions(void)
     myRobot->remAction((*it));
 }
 
-AREXPORT void MvrActionGroup::deleteActions(void)
+MVREXPORT void MvrActionGroup::deleteActions(void)
 {
   /* MPL removed this since it doesn't differentiate between actions it added and actions added to it, double deletes are no fun
    */

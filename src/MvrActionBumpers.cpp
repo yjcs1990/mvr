@@ -10,7 +10,7 @@
    @param turnTime number of milisecons to alow for turn (msec)
    @param setMaximums if true, set desired maximum translation velocity limits to backOffSpeed while performing the action; if false, retain existing limits.
 */
-AREXPORT MvrActionBumpers::MvrActionBumpers(const char *name, 
+MVREXPORT MvrActionBumpers::MvrActionBumpers(const char *name, 
 					  double backOffSpeed,
 					  int backOffTime, int turnTime,
 					  bool setMaximums) :
@@ -43,18 +43,18 @@ AREXPORT MvrActionBumpers::MvrActionBumpers(const char *name,
 		MvrUtil::BIT5 | MvrUtil::BIT6 | MvrUtil::BIT7 | MvrUtil::BIT8); 
 }
 
-AREXPORT MvrActionBumpers::~MvrActionBumpers()
+MVREXPORT MvrActionBumpers::~MvrActionBumpers()
 {
 
 }
 
-AREXPORT void MvrActionBumpers::activate(void)
+MVREXPORT void MvrActionBumpers::activate(void)
 {
   myFiring = false;
   MvrAction::activate();
 }
 
-AREXPORT double MvrActionBumpers::findDegreesToTurn(int bumpValue, int whichBumper)
+MVREXPORT double MvrActionBumpers::findDegreesToTurn(int bumpValue, int whichBumper)
 {
   double totalTurn = 0;
   int numTurn = 0;
@@ -91,7 +91,7 @@ AREXPORT double MvrActionBumpers::findDegreesToTurn(int bumpValue, int whichBump
   return totalTurn;
 }
 
-AREXPORT MvrActionDesired *MvrActionBumpers::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *MvrActionBumpers::fire(MvrActionDesired currentDesired)
 {
   int frontBump;
   int rearBump;

@@ -67,11 +67,11 @@ class MvrRobot;
 
 class MvrGPSConnector {
 public:
-  AREXPORT MvrGPSConnector(MvrArgumentParser* argParser);
-  AREXPORT ~ArGPSConnector();
+  MVREXPORT MvrGPSConnector(MvrArgumentParser* argParser);
+  MVREXPORT ~MvrGPSConnector();
 
   /** Gets command line arguments */
-  AREXPORT bool parseArgs();
+  MVREXPORT bool parseArgs();
 
 
   /** Create a new GPS object (may be an MvrGPS subclass based on device type)
@@ -85,9 +85,9 @@ public:
    * creating and opening its device connection. Otherwise, return the new GPS
    * object.  
    */
-  AREXPORT MvrGPS* createGPS(MvrRobot *robot = NULL);
+  MVREXPORT MvrGPS* createGPS(MvrRobot *robot = NULL);
   /** @copydoc createGPS() */
-  AREXPORT MvrGPS* create(MvrRobot *robot = NULL) { return createGPS(robot); }
+  MVREXPORT MvrGPS* create(MvrRobot *robot = NULL) { return createGPS(robot); }
 
 #if 0  
 
@@ -95,9 +95,9 @@ public:
   /** Try to establish a device connection between @a gps (created by calling
    * createGPS() and the GPS receiver.
    */
-  AREXPORT bool connectGPS(MvrGPS *gps);
+  MVREXPORT bool connectGPS(MvrGPS *gps);
   /** @copydoc connectGPS() */
-  AREXPORT bool connect(MvrGPS *gps) { return connectGPS(gps) ; }
+  MVREXPORT bool connect(MvrGPS *gps) { return connectGPS(gps) ; }
 #endif
 
   /** @brief Device type identifiers */
@@ -118,7 +118,7 @@ public:
       Simulator
   } GPSType;
 
-  AREXPORT GPSType getGPSType() const { return myDeviceType; }
+  MVREXPORT GPSType getGPSType() const { return myDeviceType; }
 
 protected:
   MvrDeviceConnection *myDeviceCon;
@@ -133,8 +133,8 @@ protected:
 
 
   /** Log argument option information */
-  AREXPORT void logOptions();
-  AREXPORT GPSType deviceTypeFromString(const char *str);
+  MVREXPORT void logOptions();
+  MVREXPORT GPSType deviceTypeFromString(const char *str);
 };
 
 

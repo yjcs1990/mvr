@@ -42,7 +42,7 @@ class MvrRangeDeviceThreaded : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT MvrRangeDeviceThreaded(size_t currentBufferSize, 
+  MVREXPORT MvrRangeDeviceThreaded(size_t currentBufferSize, 
 				 size_t cumulativeBufferSize,
 				 const char *name, unsigned int maxRange,
 				 int maxSecondsTokeepCurrent = 0,
@@ -50,24 +50,24 @@ public:
 				 double maxDistToKeepCumulative = 0,
 				 bool locationDependent = false);
   /// Destructor
-  AREXPORT virtual ~ArRangeDeviceThreaded();
+  MVREXPORT virtual ~MvrRangeDeviceThreaded();
   /// The functor you need to implement that will be the one executed by the thread
-  AREXPORT virtual void * runThread(void *arg) = 0;
+  MVREXPORT virtual void * runThread(void *arg) = 0;
   /// Run in this thread
-  AREXPORT virtual void run(void) { myTask.run(); }
+  MVREXPORT virtual void run(void) { myTask.run(); }
   /// Run in its own thread
-  AREXPORT virtual void runAsync(void) { myTask.runAsync(); }
+  MVREXPORT virtual void runAsync(void) { myTask.runAsync(); }
   /// Stop the thread
-  AREXPORT virtual void stopRunning(void) { myTask.stopRunning(); }
+  MVREXPORT virtual void stopRunning(void) { myTask.stopRunning(); }
   /// Get the running status of the thread
-  AREXPORT virtual bool getRunning(void) { return myTask.getRunning();}
+  MVREXPORT virtual bool getRunning(void) { return myTask.getRunning();}
   /// Get the running status of the thread, locking around the variable
-  AREXPORT virtual bool getRunningWithLock(void) 
+  MVREXPORT virtual bool getRunningWithLock(void) 
     { return myTask.getRunningWithLock(); }
 
-  AREXPORT virtual int lockDevice(void) { return myTask.lock(); }
-  AREXPORT virtual int tryLockDevice(void) { return myTask.tryLock(); }
-  AREXPORT virtual int unlockDevice(void) { return myTask.unlock(); }
+  MVREXPORT virtual int lockDevice(void) { return myTask.lock(); }
+  MVREXPORT virtual int tryLockDevice(void) { return myTask.tryLock(); }
+  MVREXPORT virtual int unlockDevice(void) { return myTask.unlock(); }
 protected:
   MvrRetFunctor1C<void *, MvrRangeDeviceThreaded, void *> myRunThreadCB;
   MvrFunctorASyncTask myTask;

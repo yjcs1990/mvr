@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrActionTurn.h"
 #include "MvrRobot.h"
 
-AREXPORT MvrActionTurn::ArActionTurn(const char *name, double speedStartTurn,
+MVREXPORT MvrActionTurn::ArActionTurn(const char *name, double speedStartTurn,
 				    double speedFullTurn, double turnAmount) :
   MvrAction(name, 
 	   "Turns the robot depending on actions by higher priority actions.")
@@ -50,12 +50,12 @@ AREXPORT MvrActionTurn::ArActionTurn(const char *name, double speedStartTurn,
 
 }
 
-AREXPORT MvrActionTurn::~ArActionTurn()
+MVREXPORT MvrActionTurn::~MvrActionTurn()
 {
 
 }
 
-AREXPORT MvrActionDesired *ArActionTurn::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *ArActionTurn::fire(MvrActionDesired currentDesired)
 {
   myDesired.reset();
   double turnAmount;

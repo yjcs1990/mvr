@@ -33,7 +33,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
    @param name the name of this instance of the action
  **/
-AREXPORT MvrActionMovementParametersDebugging::ArActionMovementParametersDebugging(
+MVREXPORT MvrActionMovementParametersDebugging::ArActionMovementParametersDebugging(
 	const char *name) :
   MvrAction(name, "Sets all the max vel and accels/decels in a way appropriate for debugging")
 {
@@ -64,12 +64,12 @@ AREXPORT MvrActionMovementParametersDebugging::ArActionMovementParametersDebuggi
   myLatDecel = 500;
 }
 
-AREXPORT MvrActionMovementParametersDebugging::~ArActionMovementParametersDebugging()
+MVREXPORT MvrActionMovementParametersDebugging::~MvrActionMovementParametersDebugging()
 {
 
 }
 
-AREXPORT void MvrActionMovementParametersDebugging::addToConfig(
+MVREXPORT void MvrActionMovementParametersDebugging::addToConfig(
 	ArConfig *config, const char *section, const char *prefix)
 {
   std::string strPrefix;
@@ -240,7 +240,7 @@ AREXPORT void MvrActionMovementParametersDebugging::addToConfig(
 
 }
 
-AREXPORT MvrActionDesired *ArActionMovementParametersDebugging::fire(
+MVREXPORT MvrActionDesired *ArActionMovementParametersDebugging::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

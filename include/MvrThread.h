@@ -94,50 +94,50 @@ public:
   } Status;
 
   /// Constructor
-  AREXPORT MvrThread(bool blockAllSignals=true);
+  MVREXPORT MvrThread(bool blockAllSignals=true);
   /// Constructor - starts the thread
-  AREXPORT MvrThread(ThreadType thread, bool joinable,
+  MVREXPORT MvrThread(ThreadType thread, bool joinable,
 		    bool blockAllSignals=true);
   /// Constructor - starts the thread
-  AREXPORT MvrThread(MvrFunctor *func, bool joinable=true,
+  MVREXPORT MvrThread(MvrFunctor *func, bool joinable=true,
 		    bool blockAllSignals=true);
   /// Destructor
-  AREXPORT virtual ~ArThread();
+  MVREXPORT virtual ~MvrThread();
 
   /// Initialize the internal book keeping structures
-  AREXPORT static void init(void);
+  MVREXPORT static void init(void);
   /// Returns the instance of your own thread (the current one)
-  AREXPORT static MvrThread * self(void);
+  MVREXPORT static MvrThread * self(void);
   /// Returns the os self of the current thread
-  AREXPORT static ThreadType osSelf(void);
+  MVREXPORT static ThreadType osSelf(void);
   /// Stop all threads
-  AREXPORT static void stopAll();
+  MVREXPORT static void stopAll();
   /// Cancel all threads
-  AREXPORT static void cancelAll(void);
+  MVREXPORT static void cancelAll(void);
   /// Join on all threads
-  AREXPORT static void joinAll(void);
+  MVREXPORT static void joinAll(void);
 
   /// Shuts down and deletes the last remaining thread; call after joinAll
-  AREXPORT static void shutdown();
+  MVREXPORT static void shutdown();
 
   /// Yield the processor to another thread
-  AREXPORT static void yieldProcessor(void);
+  MVREXPORT static void yieldProcessor(void);
   /// Gets the logging level for thread information
   static MvrLog::LogLevel getLogLevel(void) { return ourLogLevel; }
   /// Sets the logging level for thread information
   static void setLogLevel(MvrLog::LogLevel level) { ourLogLevel = level; }
 
   /// Create and start the thread
-  AREXPORT virtual int create(MvrFunctor *func, bool joinable=true,
+  MVREXPORT virtual int create(MvrFunctor *func, bool joinable=true,
 			      bool lowerPriority=true);
   /// Stop the thread
   virtual void stopRunning(void) {myRunning=false;}
   /// Join on the thread
-  AREXPORT virtual int join(void **ret=NULL);
+  MVREXPORT virtual int join(void **ret=NULL);
   /// Detatch the thread so it cant be joined
-  AREXPORT virtual int detach(void);
+  MVREXPORT virtual int detach(void);
   /// Cancel the thread
-  AREXPORT virtual void cancel(void);
+  MVREXPORT virtual void cancel(void);
 
   /// Get the running status of the thread
   virtual bool getRunning(void) const {return(myRunning);}
@@ -178,7 +178,7 @@ public:
   virtual const char *getThreadName(void) { return myName.c_str();  }
 
   /// Sets the name of the thread
-  AREXPORT virtual void setThreadName(const char *name);
+  MVREXPORT virtual void setThreadName(const char *name);
 
   /// Gets a string that describes what the thread is doing NULL if it
   /// doesn't know
@@ -190,7 +190,7 @@ public:
      then call some things for logging (to make debugging easier)
      This method should be called before the main thread loop begins.
    **/
-  AREXPORT virtual void threadStarted(void);
+  MVREXPORT virtual void threadStarted(void);
 
   /// Marks the thread as finished and logs useful debugging information.
   /**
@@ -198,25 +198,25 @@ public:
      enables the creator of the thread to determine that the thread has
      actually been completed and can be deleted.
    **/
-  AREXPORT virtual void threadFinished(void);
+  MVREXPORT virtual void threadFinished(void);
 
   /// Returns whether the thread has been started.
   /**
    * This is dependent on the thread implementation calling the 
    * threadStarted() method.
   **/
-  AREXPORT virtual bool isThreadStarted() const;
+  MVREXPORT virtual bool isThreadStarted() const;
 
   /// Returns whether the thread has been completed and can be deleted.
   /**
    * This is dependent on the thread implementation calling the 
    * threadFinished() method.
   **/
-  AREXPORT virtual bool isThreadFinished() const;
+  MVREXPORT virtual bool isThreadFinished() const;
 
 
   /// Logs the information about this thread
-  AREXPORT virtual void logThreadInfo(void);
+  MVREXPORT virtual void logThreadInfo(void);
 
 #ifndef WIN32
   pid_t getPID(void) { return myPID; }
@@ -224,11 +224,11 @@ public:
 #endif
 
   /// Gets the name of the this thread
-  AREXPORT static const char *getThisThreadName(void);
+  MVREXPORT static const char *getThisThreadName(void);
   /// Get the underlying thread type of this thread
-  AREXPORT static const ThreadType * getThisThread(void);
+  MVREXPORT static const ThreadType * getThisThread(void);
   /// Get the underlying os thread type of this thread
-  AREXPORT static ThreadType getThisOSThread(void);
+  MVREXPORT static ThreadType getThisOSThread(void);
 
 protected:
   static MvrMutex ourThreadsMutex;
@@ -236,9 +236,9 @@ protected:
 #if defined(WIN32) && !defined(MINGW)
   static std::map<HANDLE, MvrThread *> ourThreadHandles;
 #endif 
-  AREXPORT static MvrLog::LogLevel ourLogLevel; 
+  MVREXPORT static MvrLog::LogLevel ourLogLevel; 
 
-  AREXPORT virtual int doJoin(void **ret=NULL);
+  MVREXPORT virtual int doJoin(void **ret=NULL);
 
   std::string myName;
 

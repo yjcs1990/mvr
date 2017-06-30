@@ -65,7 +65,7 @@ ArMutex::ArMutex(bool recursive) :
   initLockTiming();
 }
 
-AREXPORT ArMutex::ArMutex(const ArMutex &mutex) :
+MVREXPORT ArMutex::ArMutex(const ArMutex &mutex) :
   myFailedInit(false),
   myMutex(),
   // KMC TESTING myStrMap(),
@@ -95,10 +95,10 @@ AREXPORT ArMutex::ArMutex(const ArMutex &mutex) :
   initLockTiming();
 }
 
-ArMutex::~ArMutex()
+ArMutex::~MvrMutex()
 {
   if (!myFailedInit && !CloseHandle(myMutex))
-    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::~ArMutex: Failed to destroy mutex.");
+    ArLog::logNoLock(MvrLog::Terse, "MvrMutex::~MvrMutex: Failed to destroy mutex.");
 
   uninitLockTiming();
 }
@@ -257,7 +257,7 @@ int ArMutex::unlock()
   return(0);
 }
 
-AREXPORT const char * ArMutex::getError(int messageNumber) const
+MVREXPORT const char * ArMutex::getError(int messageNumber) const
 {
   switch (messageNumber) {
   case STATUS_FAILED_INIT:

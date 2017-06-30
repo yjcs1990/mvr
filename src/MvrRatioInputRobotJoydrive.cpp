@@ -42,7 +42,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    joystick input no matter what
 **/
 
-AREXPORT ArRatioInputRobotJoydrive::ArRatioInputRobotJoydrive(
+MVREXPORT ArRatioInputRobotJoydrive::ArRatioInputRobotJoydrive(
 	ArRobot *robot, ArActionRatioInput *input, 
 	int priority, bool requireDeadmanPushed) :
   myFireCB(this, &ArRatioInputRobotJoydrive::fireCallback)
@@ -63,12 +63,12 @@ AREXPORT ArRatioInputRobotJoydrive::ArRatioInputRobotJoydrive(
 
 }
 
-AREXPORT ArRatioInputRobotJoydrive::~ArRatioInputRobotJoydrive()
+MVREXPORT ArRatioInputRobotJoydrive::~MvrRatioInputRobotJoydrive()
 {
 
 }
 
-AREXPORT void ArRatioInputRobotJoydrive::fireCallback(void)
+MVREXPORT void ArRatioInputRobotJoydrive::fireCallback(void)
 {
   bool printing = false;
 

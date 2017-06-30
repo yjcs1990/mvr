@@ -40,34 +40,34 @@ class MvrLogFileConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT MvrLogFileConnection();
+  MVREXPORT MvrLogFileConnection();
   /// Destructor also closes connection
-  AREXPORT virtual ~ArLogFileConnection();
+  MVREXPORT virtual ~MvrLogFileConnection();
 
   /// Opens a connection to the given host and port
-  AREXPORT int open(const char * fname = NULL);
+  MVREXPORT int open(const char * fname = NULL);
 
-  AREXPORT void setLogFile(const char *fname = NULL);
-  AREXPORT virtual bool openSimple(void);  
-  AREXPORT virtual int getStatus(void);
-  AREXPORT virtual bool close(void);
-  AREXPORT virtual int read(const char *data, unsigned int size, 
+  MVREXPORT void setLogFile(const char *fname = NULL);
+  MVREXPORT virtual bool openSimple(void);  
+  MVREXPORT virtual int getStatus(void);
+  MVREXPORT virtual bool close(void);
+  MVREXPORT virtual int read(const char *data, unsigned int size, 
 			    unsigned int msWait = 0);
-  AREXPORT virtual int write(const char *data, unsigned int size);
-  AREXPORT virtual const char * getOpenMessage(int messageNumber);
-  AREXPORT virtual MvrTime getTimeRead(int index);
-  AREXPORT virtual bool isTimeStamping(void);
+  MVREXPORT virtual int write(const char *data, unsigned int size);
+  MVREXPORT virtual const char * getOpenMessage(int messageNumber);
+  MVREXPORT virtual MvrTime getTimeRead(int index);
+  MVREXPORT virtual bool isTimeStamping(void);
 
   /// Gets the name of the host connected to
-  AREXPORT const char *getLogFile(void);
+  MVREXPORT const char *getLogFile(void);
 
   /* This doens't exist in the C++ file so I'm commenting it out
   /// Gets the initial pose of the robot
-  AREXPORT MvrPose getLogPose(void);
+  MVREXPORT MvrPose getLogPose(void);
   */
 
   /// Internal function used by open and openSimple
-  AREXPORT int internalOpen(void);
+  MVREXPORT int internalOpen(void);
 
   enum Open { 
       OPEN_FILE_NOT_FOUND = 1,  ///< Can't find the file

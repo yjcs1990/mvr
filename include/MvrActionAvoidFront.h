@@ -53,15 +53,15 @@ class MvrActionAvoidFront : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionAvoidFront(const char *name = "avoid front obstacles", 
+  MVREXPORT MvrActionAvoidFront(const char *name = "avoid front obstacles", 
 		     double obstacleDistance = 450, double avoidVelocity = 200,
 		     double turnAmount = 15, bool useTableIRIfAvail = true);
   /// Destructor
-  AREXPORT virtual ~ArActionAvoidFront();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionAvoidFront();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

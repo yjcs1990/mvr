@@ -77,24 +77,24 @@ class MvrRatioInputJoydrive
 {
 public:
   /// Constructor
-  AREXPORT MvrRatioInputJoydrive(MvrRobot *robot, MvrActionRatioInput *input,
+  MVREXPORT MvrRatioInputJoydrive(MvrRobot *robot, MvrActionRatioInput *input,
 				int priority = 50,
 				bool stopIfNoButtonPressed = false,
 				bool useOSCalForJoystick = true);
   /// Destructor
-  AREXPORT virtual ~ArRatioInputJoydrive();
+  MVREXPORT virtual ~MvrRatioInputJoydrive();
   /// Whether the joystick is initalized or not
-  AREXPORT bool joystickInited(void);
+  MVREXPORT bool joystickInited(void);
   /// Set if we'll stop if no button is pressed, otherwise just do nothing
-  AREXPORT void setStopIfNoButtonPressed(bool stopIfNoButtonPressed);
+  MVREXPORT void setStopIfNoButtonPressed(bool stopIfNoButtonPressed);
   /// Get if we'll stop if no button is pressed, otherwise just do nothing
-  AREXPORT bool getStopIfNoButtonPressed(void);
+  MVREXPORT bool getStopIfNoButtonPressed(void);
   /// Sets whether to use OSCalibration the joystick or not
-  AREXPORT void setUseOSCal(bool useOSCal);
+  MVREXPORT void setUseOSCal(bool useOSCal);
   /// Gets whether OSCalibration is being used for the joystick or not
-  AREXPORT bool getUseOSCal(void);
+  MVREXPORT bool getUseOSCal(void);
   /// Gets the joyHandler
-  AREXPORT MvrJoyHandler *getJoyHandler(void) { return myJoyHandler; }
+  MVREXPORT MvrJoyHandler *getJoyHandler(void) { return myJoyHandler; }
 protected:
   void fireCallback(void);
   MvrRobot *myRobot;

@@ -68,39 +68,39 @@ class MvrFileParser
 public:
 
   /// Constructor
-  AREXPORT MvrFileParser(const char *baseDirectory = "./",
+  MVREXPORT MvrFileParser(const char *baseDirectory = "./",
                         bool isPreCompressQuotes = false);
 
 
 
   /// Destructor
-  AREXPORT ~ArFileParser(void);
+  MVREXPORT ~MvrFileParser(void);
 
   /// Adds a functor to handle a keyword that wants an easily parsable string
-  AREXPORT bool addHandler(const char *keyword, 
+  MVREXPORT bool addHandler(const char *keyword, 
 			   MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor);
   /// Adds a functor to handle a keyword that wants an easily parsable string and returns error messages
-  AREXPORT bool addHandlerWithError(const char *keyword, 
+  MVREXPORT bool addHandlerWithError(const char *keyword, 
 			   MvrRetFunctor3<bool, MvrArgumentBuilder *, 
 				    char *, size_t> *functor);
   /// Removes a handler for a keyword
-  AREXPORT bool remHandler(const char *keyword, bool logIfCannotFind = true);
+  MVREXPORT bool remHandler(const char *keyword, bool logIfCannotFind = true);
   /// Removes any handlers with this functor
-  AREXPORT bool remHandler(MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor);
+  MVREXPORT bool remHandler(MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor);
   /// Removes any handlers with this functor
-  AREXPORT bool remHandler(
+  MVREXPORT bool remHandler(
 	  MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor);
   /* this shouldn't be needed and would be inelegant with the new scheme, 
      if someone needs it let us know and I'll update it somehow
   /// Gets handler data for some keyword
-  AREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *getHandler(const char *keyword);
+  MVREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *getHandler(const char *keyword);
   */
   
-	AREXPORT void setPreParseFunctor(MvrFunctor1<const char *> *functor);
+	MVREXPORT void setPreParseFunctor(MvrFunctor1<const char *> *functor);
 
 
   /// Opens, parses, and then closes the specified file.
-  AREXPORT bool parseFile(const char *fileName, bool continueOnErrors = true,
+  MVREXPORT bool parseFile(const char *fileName, bool continueOnErrors = true,
 			  bool noFileNotFoundMessage = false,
 			  char *errorBuffer = NULL, size_t errorBufferLen = 0);
 
@@ -112,37 +112,37 @@ public:
    * @param continueOnErrors a bool set to true if parsing should continue
    * even after an error is detected
   **/
-  AREXPORT bool parseFile(FILE *file, char *buffer, int bufferLength, 
+  MVREXPORT bool parseFile(FILE *file, char *buffer, int bufferLength, 
 			                    bool continueOnErrors = true, 
 			                    char *errorBuffer = NULL, size_t errorBufferLen = 0);
 
 
   /// If parseFile is currently in progress, then terminates it as soon as possible.
-  AREXPORT void cancelParsing();
+  MVREXPORT void cancelParsing();
 
 
   /// Gets the base directory
-  AREXPORT const char *getBaseDirectory(void) const;
+  MVREXPORT const char *getBaseDirectory(void) const;
   /// Sets the base directory
-  AREXPORT void setBaseDirectory(const char *baseDirectory);
+  MVREXPORT void setBaseDirectory(const char *baseDirectory);
 
   /// Sets the strings used to mark comments in the file to be parsed.
-  AREXPORT void setCommentDelimiters(const std::list<std::string> &delimiters);
+  MVREXPORT void setCommentDelimiters(const std::list<std::string> &delimiters);
 
   /// Clears the strings used to mark comments in the file to be parsed.
-  AREXPORT void clearCommentDelimiters();
+  MVREXPORT void clearCommentDelimiters();
 
 
   /// Function to parse a single line 
-  AREXPORT bool parseLine(char *line, char *errorBuffer = NULL, 
+  MVREXPORT bool parseLine(char *line, char *errorBuffer = NULL, 
 			  size_t errorBufferLen = 0);
   /// Function to reset counters
-  AREXPORT void resetCounters(void);
+  MVREXPORT void resetCounters(void);
   /// Sets the maximum number of arguments in a line we can expect
-  AREXPORT void setMaxNumArguments(size_t maxNumArguments = 512)
+  MVREXPORT void setMaxNumArguments(size_t maxNumArguments = 512)
     { myMaxNumArguments = maxNumArguments; }
   /// Turn on this flag to reduce the number of verbose log messages.
-  AREXPORT void setQuiet(bool isQuiet);
+  MVREXPORT void setQuiet(bool isQuiet);
 
 protected:
 

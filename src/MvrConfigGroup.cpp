@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrArgumentBuilder.h"
 #include "MvrLog.h"
 
-AREXPORT MvrConfigGroup::ArConfigGroup(const char *baseDirectory)
+MVREXPORT MvrConfigGroup::ArConfigGroup(const char *baseDirectory)
 {
   if (baseDirectory != NULL)
     myBaseDirectory = baseDirectory;
@@ -38,22 +38,22 @@ AREXPORT MvrConfigGroup::ArConfigGroup(const char *baseDirectory)
     myBaseDirectory = "";
 }
 
-AREXPORT MvrConfigGroup::~ArConfigGroup(void)
+MVREXPORT MvrConfigGroup::~MvrConfigGroup(void)
 {
   
 }
 
-AREXPORT void MvrConfigGroup::addConfig(MvrConfig *config)
+MVREXPORT void MvrConfigGroup::addConfig(MvrConfig *config)
 {
   myConfigs.push_back(config);
 }
 
-AREXPORT void MvrConfigGroup::remConfig(MvrConfig *config)
+MVREXPORT void MvrConfigGroup::remConfig(MvrConfig *config)
 {
   myConfigs.remove(config);
 }
 
-AREXPORT bool MvrConfigGroup::parseFile(const char *fileName, 
+MVREXPORT bool MvrConfigGroup::parseFile(const char *fileName, 
 				       bool continueOnError)
 {
   std::list<ArConfig *>::iterator it;
@@ -84,12 +84,12 @@ AREXPORT bool MvrConfigGroup::parseFile(const char *fileName,
   return ret;
 }
 
-AREXPORT bool MvrConfigGroup::reloadFile(bool continueOnError)
+MVREXPORT bool MvrConfigGroup::reloadFile(bool continueOnError)
 {
   return parseFile(myLastFile.c_str(), continueOnError);
 }
 
-AREXPORT bool MvrConfigGroup::writeFile(const char *fileName)
+MVREXPORT bool MvrConfigGroup::writeFile(const char *fileName)
 {
   std::set<std::string> alreadyWritten;
   std::list<ArConfig *>::iterator it;
@@ -120,12 +120,12 @@ AREXPORT bool MvrConfigGroup::writeFile(const char *fileName)
   
 }
 
-AREXPORT void MvrConfigGroup::setBaseDirectory(const char *baseDirectory)
+MVREXPORT void MvrConfigGroup::setBaseDirectory(const char *baseDirectory)
 {
   myBaseDirectory = baseDirectory;
 }
 
-AREXPORT const char *ArConfigGroup::getBaseDirectory(void) const
+MVREXPORT const char *ArConfigGroup::getBaseDirectory(void) const
 {
   return myBaseDirectory.c_str();
 }

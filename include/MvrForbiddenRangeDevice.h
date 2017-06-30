@@ -37,29 +37,29 @@ class MvrForbiddenRangeDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT MvrForbiddenRangeDevice(MvrMapInterface *armap, 
+  MVREXPORT MvrForbiddenRangeDevice(MvrMapInterface *armap, 
                                   double distanceIncrement = 100,
 				                          unsigned int maxRange = 4000,
 				                          const char *name = "forbidden");
   /// Destructor
-  AREXPORT virtual ~ArForbiddenRangeDevice();
+  MVREXPORT virtual ~MvrForbiddenRangeDevice();
   /// Saves the forbidden lines from the map
-  AREXPORT void processMap(void);
+  MVREXPORT void processMap(void);
   /// Remakes the readings 
-  AREXPORT void processReadings(void);
+  MVREXPORT void processReadings(void);
   /// Sets the robot pointer and attachs its process function
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
 
   /// Enable readings 
-  AREXPORT void enable(void);
+  MVREXPORT void enable(void);
   /// Disables readings until reenabled
-  AREXPORT void disable(void);
+  MVREXPORT void disable(void);
   /// Sees if this device is active or not
-  AREXPORT bool isEnabled(void) const { return myIsEnabled;; }
+  MVREXPORT bool isEnabled(void) const { return myIsEnabled;; }
   /// Gets a callback to enable the device
-  AREXPORT MvrFunctor *getEnableCB(void) { return &myEnableCB; } 
+  MVREXPORT MvrFunctor *getEnableCB(void) { return &myEnableCB; } 
   /// Gets a callback to disable the device
-  AREXPORT MvrFunctor *getDisableCB(void) { return &myDisableCB; } 
+  MVREXPORT MvrFunctor *getDisableCB(void) { return &myDisableCB; } 
 protected:
   MvrMutex myDataMutex;
   MvrMapInterface *myMap;

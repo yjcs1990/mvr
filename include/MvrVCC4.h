@@ -155,13 +155,13 @@ class MvrVCC4Packet: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrVCC4Packet(MvrTypes::UByte2 bufferSize = 30);
+  MVREXPORT MvrVCC4Packet(MvrTypes::UByte2 bufferSize = 30);
   /// Destructor
-  AREXPORT virtual ~ArVCC4Packet();
+  MVREXPORT virtual ~MvrVCC4Packet();
 
-  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte4 val);
+  MVREXPORT virtual void byte2ToBuf(MvrTypes::Byte4 val);
 
-  AREXPORT virtual void finalizePacket(void);
+  MVREXPORT virtual void finalizePacket(void);
 
 protected:
 };
@@ -182,20 +182,20 @@ public:
   };
 
   /// Constructor
-  AREXPORT MvrVCC4(MvrRobot *robot, bool inverted = false, CommState commDirection = COMM_UNKNOWN, bool autoUpdate = true, bool disableLED = false, CameraType cameraType = CAMERA_VCC4);
+  MVREXPORT MvrVCC4(MvrRobot *robot, bool inverted = false, CommState commDirection = COMM_UNKNOWN, bool autoUpdate = true, bool disableLED = false, CameraType cameraType = CAMERA_VCC4);
   /// Destructor
-  AREXPORT virtual ~ArVCC4();
+  MVREXPORT virtual ~MvrVCC4();
 
-  AREXPORT virtual bool power(bool state) { myPowerStateDesired = state; return true; }
-  AREXPORT bool getPower(void) { return myPowerState; }
-  AREXPORT virtual bool init(void) { myInitRequested = true; return true; }
-  AREXPORT virtual void reset(void) { MvrPTZ::reset(); init(); }
-  AREXPORT virtual const char  *getTypeName() { return "vcc4"; }
+  MVREXPORT virtual bool power(bool state) { myPowerStateDesired = state; return true; }
+  MVREXPORT bool getPower(void) { return myPowerState; }
+  MVREXPORT virtual bool init(void) { myInitRequested = true; return true; }
+  MVREXPORT virtual void reset(void) { MvrPTZ::reset(); init(); }
+  MVREXPORT virtual const char  *getTypeName() { return "vcc4"; }
 
   /// Returns true if the camera has been initialized
    bool isInitted(void) { return myCameraIsInitted; }
-  AREXPORT virtual void connectHandler(void);
-  AREXPORT virtual bool packetHandler(MvrBasePacket *packet);
+  MVREXPORT virtual void connectHandler(void);
+  MVREXPORT virtual bool packetHandler(MvrBasePacket *packet);
 
 protected:
    virtual bool pan_i(double deg) { return panTilt_i(deg, myTiltDesired); }
@@ -207,82 +207,82 @@ protected:
 public:
 
   /*
-  AREXPORT virtual double getMaxPosPan(void) const 
+  MVREXPORT virtual double getMaxPosPan(void) const 
     { if (myInverted) return invert(MIN_PAN); else return MAX_PAN; }
-  AREXPORT virtual double getMaxNegPan(void) const 
+  MVREXPORT virtual double getMaxNegPan(void) const 
     { if (myInverted) return invert(MAX_PAN); else return MIN_PAN; }
-  AREXPORT virtual double getMaxPosTilt(void) const 
+  MVREXPORT virtual double getMaxPosTilt(void) const 
     { if (myInverted) return invert(MIN_TILT); else return MAX_TILT; }
-  AREXPORT virtual double getMaxNegTilt(void) const
+  MVREXPORT virtual double getMaxNegTilt(void) const
     { if (myInverted) return invert(MAX_TILT); else return MIN_TILT; }
  */
 
   /// Requests that a packet be sent to the camera to retrieve what
   /// the camera thinks are its pan/tilt positions. getPan() and getTilt()
   /// will then return this information instead of your last requested values.
-  AREXPORT void getRealPanTilt(void) { myRealPanTiltRequested = true; }
+  MVREXPORT void getRealPanTilt(void) { myRealPanTiltRequested = true; }
 
   /// Requests that a packet be sent to the camera to retrieve what
   /// the camera thinks is its zoom position. getZoom()
   /// will then return this information instead of your last requested value.
-  AREXPORT void getRealZoomPos(void) { myRealZoomRequested = true; }
+  MVREXPORT void getRealZoomPos(void) { myRealZoomRequested = true; }
 
-  AREXPORT virtual bool canZoom(void) const { return true; }
+  MVREXPORT virtual bool canZoom(void) const { return true; }
 
 protected:
-  AREXPORT virtual bool panTilt_i(double pdeg, double tdeg);
+  MVREXPORT virtual bool panTilt_i(double pdeg, double tdeg);
 
 public:
-  AREXPORT virtual bool zoom(int deg);
+  MVREXPORT virtual bool zoom(int deg);
   /// adjust the digital zoom amount.  Has four states, takes 0-3 for:
   /// 1x, 2x, 4x, 8x
-  AREXPORT bool digitalZoom(int deg);
+  MVREXPORT bool digitalZoom(int deg);
 
   /// Adds an error callback to a list of callbacks to be called when there
   /// is a serious error in communicating - either the parameters were incorrect,
   /// the mode was incorrect, or there was an unknown error.
-  AREXPORT void addErrorCB(MvrFunctor *functor, MvrListPos::Pos position);
+  MVREXPORT void addErrorCB(MvrFunctor *functor, MvrListPos::Pos position);
 
   /// Remove an error callback from the callback list
-  AREXPORT void remErrorCB(MvrFunctor *functor);
+  MVREXPORT void remErrorCB(MvrFunctor *functor);
 
   /// Halts all pan-tilt movement
-  AREXPORT bool haltPanTilt(void) { myHaltPanTiltRequested = true; return true; }
+  MVREXPORT bool haltPanTilt(void) { myHaltPanTiltRequested = true; return true; }
   /// Halts zoom movement
-  AREXPORT bool haltZoom(void) { myHaltZoomRequested = true; return true; }
+  MVREXPORT bool haltZoom(void) { myHaltZoomRequested = true; return true; }
 
   /// Sets the rate that the unit pans at
-  AREXPORT bool panSlew(double deg) { myPanSlewDesired = deg; return true; }
+  MVREXPORT bool panSlew(double deg) { myPanSlewDesired = deg; return true; }
   /// Sets the rate the unit tilts at 
-  AREXPORT bool tiltSlew(double deg) { myTiltSlewDesired = deg; return true; }
+  MVREXPORT bool tiltSlew(double deg) { myTiltSlewDesired = deg; return true; }
   bool canSetPanTiltSlew() { return true; }
 
   /// Adds device ID and delimeter to packet buffer
-  AREXPORT void preparePacket(MvrVCC4Packet *packet);
+  MVREXPORT void preparePacket(MvrVCC4Packet *packet);
 
 protected:
-  AREXPORT virtual double getPan_i(void) const { return myPanDesired; }
-  AREXPORT virtual double getTilt_i(void) const { return myTiltDesired; }
+  MVREXPORT virtual double getPan_i(void) const { return myPanDesired; }
+  MVREXPORT virtual double getTilt_i(void) const { return myTiltDesired; }
 
 public:
-  AREXPORT virtual int getZoom(void) const { return myZoomDesired; }
-  AREXPORT double getDigitalZoom(void) const { return myDigitalZoomDesired; }
+  MVREXPORT virtual int getZoom(void) const { return myZoomDesired; }
+  MVREXPORT double getDigitalZoom(void) const { return myDigitalZoomDesired; }
 
-  AREXPORT virtual bool canGetRealPanTilt(void) const { return true; }
-  AREXPORT virtual bool canGetRealZoom(void) const { return true; }
-  AREXPORT virtual bool canSetFocus(void) const { return false; }
+  MVREXPORT virtual bool canGetRealPanTilt(void) const { return true; }
+  MVREXPORT virtual bool canGetRealZoom(void) const { return true; }
+  MVREXPORT virtual bool canSetFocus(void) const { return false; }
   /// Set autofocus mode:
   /// @deprecated use setAutoFocus() instead
-  AREXPORT virtual bool autoFocus(void) { myFocusModeDesired = 0; return true;}
+  MVREXPORT virtual bool autoFocus(void) { myFocusModeDesired = 0; return true;}
   /// set manual focus mode
   /// @deprecated use setAutoFocus() instead
-  AREXPORT virtual bool manualFocus(void) { myFocusModeDesired = 1; return true;}
+  MVREXPORT virtual bool manualFocus(void) { myFocusModeDesired = 1; return true;}
   /// auto-focus on a near object
-  AREXPORT virtual bool focusNear(void) { myFocusModeDesired = 2; return true;}
+  MVREXPORT virtual bool focusNear(void) { myFocusModeDesired = 2; return true;}
   /// auto-focus on a far object
-  AREXPORT virtual bool focusFar(void) { myFocusModeDesired = 3; return true; }
+  MVREXPORT virtual bool focusFar(void) { myFocusModeDesired = 3; return true; }
 
-  AREXPORT virtual bool setAutoFocus(bool af = true) 
+  MVREXPORT virtual bool setAutoFocus(bool af = true) 
   {
     if(af)
       return autoFocus();
@@ -291,52 +291,52 @@ public:
   }
 
   /// Gets the current pan slew
-  AREXPORT double getPanSlew(void) { return myPanSlewDesired; }
+  MVREXPORT double getPanSlew(void) { return myPanSlewDesired; }
   /// Gets the maximum pan slew
-  AREXPORT double getMaxPanSlew(void) { return MAX_PAN_SLEW; }
+  MVREXPORT double getMaxPanSlew(void) { return MAX_PAN_SLEW; }
   /// Gets the minimum pan slew
-  AREXPORT double getMinPanSlew(void) { return MIN_PAN_SLEW; }
+  MVREXPORT double getMinPanSlew(void) { return MIN_PAN_SLEW; }
 
   /// Gets the current tilt slew
-  AREXPORT double getTiltSlew(void) { return myTiltSlewDesired; }
+  MVREXPORT double getTiltSlew(void) { return myTiltSlewDesired; }
   /// Gets the maximum tilt slew
-  AREXPORT double getMaxTiltSlew(void) { return MAX_TILT_SLEW; }
+  MVREXPORT double getMaxTiltSlew(void) { return MAX_TILT_SLEW; }
   /// Gets the minimum tilt slew
-  AREXPORT double getMinTiltSlew(void) { return MIN_TILT_SLEW; }
+  MVREXPORT double getMinTiltSlew(void) { return MIN_TILT_SLEW; }
 
-  AREXPORT virtual int getMaxZoom(void) const;
-  AREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
+  MVREXPORT virtual int getMaxZoom(void) const;
+  MVREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
 
-  AREXPORT virtual bool canGetFOV(void) { return true; }
+  MVREXPORT virtual bool canGetFOV(void) { return true; }
   /// Gets the field of view at maximum zoom
-  AREXPORT virtual double getFOVAtMaxZoom(void) { return myFOVAtMaxZoom; }
+  MVREXPORT virtual double getFOVAtMaxZoom(void) { return myFOVAtMaxZoom; }
   /// Gets the field of view at minimum zoom
-  AREXPORT virtual double getFOVAtMinZoom(void) { return myFOVAtMinZoom; }
+  MVREXPORT virtual double getFOVAtMinZoom(void) { return myFOVAtMinZoom; }
 
 
   /// Returns true if the error callback list was called during the last cycle
-  AREXPORT bool wasError(void) { return myWasError; }
+  MVREXPORT bool wasError(void) { return myWasError; }
 
   /// Toggle the state of the auto-update
-  AREXPORT void enableAutoUpdate(void) { myAutoUpdate = true; }
-  AREXPORT void disableAutoUpdate(void) { myAutoUpdate = false; }
-  AREXPORT bool getAutoUpdate(void) { return myAutoUpdate; }
+  MVREXPORT void enableAutoUpdate(void) { myAutoUpdate = true; }
+  MVREXPORT void disableAutoUpdate(void) { myAutoUpdate = false; }
+  MVREXPORT bool getAutoUpdate(void) { return myAutoUpdate; }
 
   /// Set the control mode for the status LED on the front of the camera
   /// 0 = auto-control, 1 = Green ON, 2 = All OFF, 3 = Red ON, 4 = Orange ON
-  AREXPORT void setLEDControlMode(int controlMode) { myDesiredLEDControlMode = controlMode; }
+  MVREXPORT void setLEDControlMode(int controlMode) { myDesiredLEDControlMode = controlMode; }
   /// Turn on IR LEDs.  IR-filter must be in place for LEDs to turn on
-  AREXPORT void enableIRLEDs(void) { myDesiredIRLEDsMode = true; }
+  MVREXPORT void enableIRLEDs(void) { myDesiredIRLEDsMode = true; }
   /// Turn off IR LEDs
-  AREXPORT void disableIRLEDs(void) { myDesiredIRLEDsMode = false; }
+  MVREXPORT void disableIRLEDs(void) { myDesiredIRLEDsMode = false; }
   /// Returns true if the IR LEDs are on
-  AREXPORT bool getIRLEDsEnabled(void) { return myIRLEDsEnabled; }
+  MVREXPORT bool getIRLEDsEnabled(void) { return myIRLEDsEnabled; }
   /// Enable physical IR cutoff filter
-  AREXPORT void enableIRFilterMode(void) { myDesiredIRFilterMode = true; }
+  MVREXPORT void enableIRFilterMode(void) { myDesiredIRFilterMode = true; }
   /// Disable IR cutoff filter.  This also turns off the LEDs, if they're on
-  AREXPORT void disableIRFilterMode(void) { myDesiredIRFilterMode = false; }
+  MVREXPORT void disableIRFilterMode(void) { myDesiredIRFilterMode = false; }
   /// Returns true if the IR cutoff filter is in place
-  AREXPORT bool getIRFilterModeEnabled (void) { return myIRFilterModeEnabled; }
+  MVREXPORT bool getIRFilterModeEnabled (void) { return myIRFilterModeEnabled; }
 protected:
 
   // preset limits on movements.  Based on empirical data

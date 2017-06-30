@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrACTS.h"
 
 
-AREXPORT MvrACTS_1_2::ArACTS_1_2() :
+MVREXPORT MvrACTS_1_2::ArACTS_1_2() :
   mySensorTaskCB(this, &ArACTS_1_2::actsHandler)
 {
   myRobot = NULL;
@@ -37,7 +37,7 @@ AREXPORT MvrACTS_1_2::ArACTS_1_2() :
   myInverted = false;
 }
 
-AREXPORT MvrACTS_1_2::~ArACTS_1_2()
+MVREXPORT MvrACTS_1_2::~MvrACTS_1_2()
 {
 
 }
@@ -54,7 +54,7 @@ AREXPORT MvrACTS_1_2::~ArACTS_1_2()
     (ie this machine)
     @return true if the connection was established, false otherwise
 */
-AREXPORT bool MvrACTS_1_2::openPort(MvrRobot *robot, const char *host, int port)
+MVREXPORT bool MvrACTS_1_2::openPort(MvrRobot *robot, const char *host, int port)
 {
   int ret;
   std::string str;
@@ -74,7 +74,7 @@ AREXPORT bool MvrACTS_1_2::openPort(MvrRobot *robot, const char *host, int port)
    Closes the port to the ACTS server
    @return true if the connection was closed properly, false otherwise
 */
-AREXPORT bool MvrACTS_1_2::closePort(void)
+MVREXPORT bool MvrACTS_1_2::closePort(void)
 {
   return myConn.close();
 }
@@ -84,7 +84,7 @@ AREXPORT bool MvrACTS_1_2::closePort(void)
    request to the acts server over its connection
    @return true if the command was sent succesfully, false otherwise
 */
-AREXPORT bool MvrACTS_1_2::requestPacket(void)
+MVREXPORT bool MvrACTS_1_2::requestPacket(void)
 {
   const char c = '0';
   if (myConn.getStatus() != MvrDeviceConnection::STATUS_OPEN)
@@ -100,7 +100,7 @@ AREXPORT bool MvrACTS_1_2::requestPacket(void)
    Sends a command to the ACTS server requesting that ACTS quit
    @return true if the request was sent succesfully, false otherwise
 */
-AREXPORT bool MvrACTS_1_2::requestQuit(void)
+MVREXPORT bool MvrACTS_1_2::requestQuit(void)
 {
   const char c = '1';
   if (myConn.getStatus() != MvrDeviceConnection::STATUS_OPEN)
@@ -117,7 +117,7 @@ AREXPORT bool MvrACTS_1_2::requestQuit(void)
    fills in the blob information, otherwise just returns false
    @return true if there was new data and the data could be read succesfully
 */
-AREXPORT bool MvrACTS_1_2::receiveBlobInfo(void)
+MVREXPORT bool MvrACTS_1_2::receiveBlobInfo(void)
 {
   int i;
   char *data;
@@ -164,7 +164,7 @@ AREXPORT bool MvrACTS_1_2::receiveBlobInfo(void)
 /**
    @return the number of blobs on the channel, or -1 if the channel is invalid
 */
-AREXPORT int MvrACTS_1_2::getNumBlobs(int channel)
+MVREXPORT int MvrACTS_1_2::getNumBlobs(int channel)
 {
 
   if (channel >= 1 && channel <= NUM_CHANNELS)
@@ -195,7 +195,7 @@ int MvrACTS_1_2::getData(char *rawData)
    blob
    @return true if the blob instance could be filled in from the 
 */
-AREXPORT bool MvrACTS_1_2::getBlob(int channel, int blobNumber, MvrACTSBlob *blob)
+MVREXPORT bool MvrACTS_1_2::getBlob(int channel, int blobNumber, MvrACTSBlob *blob)
 {
   char * blobInfo;
   int i;
@@ -280,14 +280,14 @@ int MvrACTS_1_2::invertY(int before)
    @param width the width of the images acts is grabbing (pixels)
    @param height the height of the images acts is grabbing (pixels)
 **/
-AREXPORT void MvrACTS_1_2::invert(int width, int height)
+MVREXPORT void MvrACTS_1_2::invert(int width, int height)
 {
   myInverted = true;
   myWidth = true;
   myHeight = true;
 }
 
-AREXPORT bool MvrACTS_1_2::isConnected(void)
+MVREXPORT bool MvrACTS_1_2::isConnected(void)
 {
   if (myConn.getStatus() != MvrDeviceConnection::STATUS_OPEN)
     return false;
@@ -295,11 +295,11 @@ AREXPORT bool MvrACTS_1_2::isConnected(void)
     return true;
 }
 
-AREXPORT MvrRobot *ArACTS_1_2::getRobot(void)
+MVREXPORT MvrRobot *ArACTS_1_2::getRobot(void)
 {
   return myRobot;
 }
-AREXPORT void MvrACTS_1_2::setRobot(MvrRobot *robot)
+MVREXPORT void MvrACTS_1_2::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL) 
@@ -309,7 +309,7 @@ AREXPORT void MvrACTS_1_2::setRobot(MvrRobot *robot)
   }
 }
 
-AREXPORT void MvrACTS_1_2::actsHandler(void)
+MVREXPORT void MvrACTS_1_2::actsHandler(void)
 {
   if (!myRequested || receiveBlobInfo())
   {

@@ -44,7 +44,7 @@ ArConfig)
    @param enabled default value of "enabled" state configuration parameter (may
 be changed via MvrConfig)
 */
-AREXPORT
+MVREXPORT
 ArActionStallRecover::ArActionStallRecover(const char * name,
 					   double obstacleDistance, 
 					   int cyclesToMove, 
@@ -87,14 +87,14 @@ ArActionStallRecover::ArActionStallRecover(const char * name,
   myLastFired = 0;
 }
 
-AREXPORT
-ArActionStallRecover::~ArActionStallRecover()
+MVREXPORT
+ArActionStallRecover::~MvrActionStallRecover()
 {
 
 
 }
 
-AREXPORT void MvrActionStallRecover::activate(void)
+MVREXPORT void MvrActionStallRecover::activate(void)
 {
   myState = STATE_NOTHING;
   MvrAction::activate();
@@ -106,7 +106,7 @@ void MvrActionStallRecover::addSequence(int sequence)
   ++mySequenceNum;
 }
 
-AREXPORT
+MVREXPORT
 ArActionDesired *ArActionStallRecover::fire(MvrActionDesired currentDesired)
 {
   std::string doingString;

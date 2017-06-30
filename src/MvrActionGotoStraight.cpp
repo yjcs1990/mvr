@@ -29,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrActionGotoStraight.h"
 #include "MvrRobot.h"
 
-AREXPORT MvrActionGotoStraight::ArActionGotoStraight(const char *name,
+MVREXPORT MvrActionGotoStraight::ArActionGotoStraight(const char *name,
 						    double speed) :
   MvrAction(name, "Goes to the given goal.")
 {
@@ -45,12 +45,12 @@ AREXPORT MvrActionGotoStraight::ArActionGotoStraight(const char *name,
   setCloseDist();
 }
 
-AREXPORT MvrActionGotoStraight::~ArActionGotoStraight()
+MVREXPORT MvrActionGotoStraight::~MvrActionGotoStraight()
 {
 
 }
 
-AREXPORT bool MvrActionGotoStraight::haveAchievedGoal(void)
+MVREXPORT bool MvrActionGotoStraight::haveAchievedGoal(void)
 {
   if (myState == STATE_ACHIEVED_GOAL)
     return true;
@@ -58,12 +58,12 @@ AREXPORT bool MvrActionGotoStraight::haveAchievedGoal(void)
     return false;
 }
 
-AREXPORT void MvrActionGotoStraight::cancelGoal(void)
+MVREXPORT void MvrActionGotoStraight::cancelGoal(void)
 {
   myState = STATE_NO_GOAL;
 }
 
-AREXPORT void MvrActionGotoStraight::setGoal(MvrPose goal, bool backToGoal, 
+MVREXPORT void MvrActionGotoStraight::setGoal(MvrPose goal, bool backToGoal, 
 					    bool justDistance)
 {
   myState = STATE_GOING_TO_GOAL;
@@ -76,7 +76,7 @@ AREXPORT void MvrActionGotoStraight::setGoal(MvrPose goal, bool backToGoal,
   myDistTravelled = 0;
 }
 
-AREXPORT void MvrActionGotoStraight::setGoalRel(double dist, 
+MVREXPORT void MvrActionGotoStraight::setGoalRel(double dist, 
 					       double deltaHeading,
 					       bool backToGoal, 
 					       bool justDistance)
@@ -88,7 +88,7 @@ AREXPORT void MvrActionGotoStraight::setGoalRel(double dist,
   setGoal(goal, backToGoal, justDistance);
 }
 
-AREXPORT void MvrActionGotoStraight::setEncoderGoal(MvrPose encoderGoal, 
+MVREXPORT void MvrActionGotoStraight::setEncoderGoal(MvrPose encoderGoal, 
 						   bool backToGoal,
 						   bool justDistance)
 {
@@ -102,7 +102,7 @@ AREXPORT void MvrActionGotoStraight::setEncoderGoal(MvrPose encoderGoal,
   myLastPose = myRobot->getEncoderPose();
 }
 
-AREXPORT void MvrActionGotoStraight::setEncoderGoalRel(double dist, 
+MVREXPORT void MvrActionGotoStraight::setEncoderGoalRel(double dist, 
 						      double deltaHeading,
 						      bool backToGoal,
 						      bool justDistance)
@@ -115,7 +115,7 @@ AREXPORT void MvrActionGotoStraight::setEncoderGoalRel(double dist,
   setEncoderGoal(goal, backToGoal, justDistance);
 }
 
-AREXPORT MvrActionDesired *ArActionGotoStraight::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *ArActionGotoStraight::fire(MvrActionDesired currentDesired)
 {
   double angle;
   double dist;

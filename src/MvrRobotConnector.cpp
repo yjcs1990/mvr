@@ -55,7 +55,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * disconnectAll(); Use ArRobot::disconnect() to disconnect from just
  * the robot.
  */
-AREXPORT ArRobotConnector::ArRobotConnector(
+MVREXPORT ArRobotConnector::ArRobotConnector(
 	ArArgumentParser *parser, ArRobot *robot, bool autoParseArgs, bool connectAllComponents) :
   myParseArgsCB(this, &ArRobotConnector::parseArgs),
   myLogOptionsCB(this, &ArRobotConnector::logOptions),
@@ -97,7 +97,7 @@ AREXPORT ArRobotConnector::ArRobotConnector(
 
 }
 
-AREXPORT ArRobotConnector::~ArRobotConnector(void)
+MVREXPORT ArRobotConnector::~MvrRobotConnector(void)
 {
   if(myBatteryConnector)
     delete myBatteryConnector;
@@ -117,7 +117,7 @@ AREXPORT ArRobotConnector::~ArRobotConnector(void)
   @return true if the arguments were parsed successfully false if not
  **/
 
-AREXPORT bool ArRobotConnector::parseArgs(void)
+MVREXPORT bool ArRobotConnector::parseArgs(void)
 {
   if(myParser)
     return parseArgs(myParser);
@@ -167,7 +167,7 @@ AREXPORT bool ArRobotConnector::parseArgs(void)
 
  **/
 
-AREXPORT bool ArRobotConnector::parseArgs(MvrArgumentParser *parser)
+MVREXPORT bool ArRobotConnector::parseArgs(MvrArgumentParser *parser)
 {
   myHaveParsedArgs = true;
 
@@ -238,7 +238,7 @@ AREXPORT bool ArRobotConnector::parseArgs(MvrArgumentParser *parser)
 }
 
 /** Normally called by Aria::logOptions(). */
-AREXPORT void ArRobotConnector::logOptions(void) const
+MVREXPORT void ArRobotConnector::logOptions(void) const
 {
   ArLog::log(MvrLog::Terse, "Options for ArRobotConnector (see docs for more details):");
   ArLog::log(MvrLog::Terse, "");
@@ -287,7 +287,7 @@ AREXPORT void ArRobotConnector::logOptions(void) const
  * @return false if -remoteHost was given and there was an error connecting to
  * the remote host, true otherwise.
  **/
-AREXPORT bool ArRobotConnector::setupRobot(void)
+MVREXPORT bool ArRobotConnector::setupRobot(void)
 {
   return setupRobot(myRobot);
 }
@@ -311,7 +311,7 @@ AREXPORT bool ArRobotConnector::setupRobot(void)
  * @return false if -remoteHost was given and there was an error connecting to
  * the remote host, true otherwise.
  **/
-AREXPORT bool ArRobotConnector::setupRobot(MvrRobot *robot)
+MVREXPORT bool ArRobotConnector::setupRobot(MvrRobot *robot)
 {
   if (myRobot == NULL)
     myRobot = robot;
@@ -407,7 +407,7 @@ AREXPORT bool ArRobotConnector::setupRobot(MvrRobot *robot)
   return true;
 }
 
-AREXPORT bool ArRobotConnector::disconnectAll()
+MVREXPORT bool ArRobotConnector::disconnectAll()
 {
   bool r = true;
   if(myBatteryConnector)
@@ -426,7 +426,7 @@ AREXPORT bool ArRobotConnector::disconnectAll()
  * If you wish to simply prepare the ArRobot object, but not begin
  * the connection, then use setupRobot().
  */
-AREXPORT bool ArRobotConnector::connectRobot(void)
+MVREXPORT bool ArRobotConnector::connectRobot(void)
 {
   if(! connectRobot(myRobot) )
     return false;
@@ -485,7 +485,7 @@ assert(mySonarConnector);
  * If you wish to simply prepare the ArRobot object, but not begin
  * the connection, then use setupRobot().
  */
-AREXPORT bool ArRobotConnector::connectRobot(MvrRobot *robot)
+MVREXPORT bool ArRobotConnector::connectRobot(MvrRobot *robot)
 {
   if (!setupRobot(robot))
     return false;
@@ -493,13 +493,13 @@ AREXPORT bool ArRobotConnector::connectRobot(MvrRobot *robot)
     return robot->blockingConnect();
 }
 
-AREXPORT const char *ArRobotConnector::getRemoteHost(void) const
+MVREXPORT const char *ArRobotConnector::getRemoteHost(void) const
 {
   return myRemoteHost;
 }
 
 
-AREXPORT bool ArRobotConnector::getRemoteIsSim(void) const
+MVREXPORT bool ArRobotConnector::getRemoteIsSim(void) const
 {
   if (myRemoteIsSim) 
     return true;
@@ -512,7 +512,7 @@ AREXPORT bool ArRobotConnector::getRemoteIsSim(void) const
     return false;
 }
 
-AREXPORT void ArRobotConnector::setRemoteIsSim(bool remoteIsSim) 
+MVREXPORT void ArRobotConnector::setRemoteIsSim(bool remoteIsSim) 
 {
   if (remoteIsSim)
   {
@@ -526,7 +526,7 @@ AREXPORT void ArRobotConnector::setRemoteIsSim(bool remoteIsSim)
   }
 }
 
-AREXPORT ArRobot *ArRobotConnector::getRobot(void) 
+MVREXPORT ArRobot *ArRobotConnector::getRobot(void) 
 {
   return myRobot;
 }

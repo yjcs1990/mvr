@@ -34,12 +34,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 class MvrActionDesiredChannel
 {
 public:
-  AREXPORT static const double NO_STRENGTH;
-  AREXPORT static const double MIN_STRENGTH;
-  AREXPORT static const double MAX_STRENGTH;
+  MVREXPORT static const double NO_STRENGTH;
+  MVREXPORT static const double MIN_STRENGTH;
+  MVREXPORT static const double MAX_STRENGTH;
   
   MvrActionDesiredChannel() { reset(); myOverrideDoesLessThan = true; }
-  ~ArActionDesiredChannel() {}
+  ~MvrActionDesiredChannel() {}
   void setOverrideDoesLessThan(bool overrideDoesLessThan) 
     { myOverrideDoesLessThan = overrideDoesLessThan; }
   void setDesired(double desired, double desiredStrength, 
@@ -226,9 +226,9 @@ protected:
 class MvrActionDesired
 {
 public:
-  AREXPORT static const double NO_STRENGTH;
-  AREXPORT static const double MIN_STRENGTH;
-  AREXPORT static const double MAX_STRENGTH;
+  MVREXPORT static const double NO_STRENGTH;
+  MVREXPORT static const double MIN_STRENGTH;
+  MVREXPORT static const double MAX_STRENGTH;
   /// Constructor
   MvrActionDesired() 
     { 
@@ -238,7 +238,7 @@ public:
       myMaxNegVelDes.setOverrideDoesLessThan(false); 
     }
   /// Destructor
-  virtual ~ArActionDesired() {}
+  virtual ~MvrActionDesired() {}
   
   /// Sets the velocity (mm/sec) and strength
   /**
@@ -842,12 +842,12 @@ public:
       myHeadingSet = false;
     }
   /// Logs what is desired
-  AREXPORT virtual void log(void) const;
+  MVREXPORT virtual void log(void) const;
   /// Gets whether anything is desired (should only really be used in relation to logging)
-  AREXPORT virtual bool isAnythingDesired(void) const;
+  MVREXPORT virtual bool isAnythingDesired(void) const;
   /// Do a sanity check on the action (this is set up this way so the
   /// action name can be passed in)
-  AREXPORT virtual void sanityCheck(const char *actionName);
+  MVREXPORT virtual void sanityCheck(const char *actionName);
 
 protected:
   double myHeading;

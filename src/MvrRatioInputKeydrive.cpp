@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaInternal.h"
 #include "MvrKeyHandler.h"
 
-AREXPORT ArRatioInputKeydrive::ArRatioInputKeydrive(MvrRobot *robot, 
+MVREXPORT ArRatioInputKeydrive::ArRatioInputKeydrive(MvrRobot *robot, 
 						    ArActionRatioInput *input,
 						    int priority,
 						    double velIncrement) :
@@ -62,14 +62,14 @@ AREXPORT ArRatioInputKeydrive::ArRatioInputKeydrive(MvrRobot *robot,
   myPrinting = false;
 }
 
-AREXPORT ArRatioInputKeydrive::~ArRatioInputKeydrive()
+MVREXPORT ArRatioInputKeydrive::~MvrRatioInputKeydrive()
 {
   myInput->remFireCallback(&myFireCB);
   myInput->remActivateCallback(&myActivateCB);
 }
 
 
-AREXPORT void ArRatioInputKeydrive::takeKeys(void)
+MVREXPORT void ArRatioInputKeydrive::takeKeys(void)
 {
   myHaveKeys = true;
   ArKeyHandler *keyHandler;
@@ -110,7 +110,7 @@ AREXPORT void ArRatioInputKeydrive::takeKeys(void)
   }
 }
 
-AREXPORT void ArRatioInputKeydrive::giveUpKeys(void)
+MVREXPORT void ArRatioInputKeydrive::giveUpKeys(void)
 {
   ArKeyHandler *keyHandler;
   myHaveKeys = false;
@@ -147,7 +147,7 @@ AREXPORT void ArRatioInputKeydrive::giveUpKeys(void)
 }
 
 
-AREXPORT void ArRatioInputKeydrive::up(void)
+MVREXPORT void ArRatioInputKeydrive::up(void)
 {
   if (myPrinting)
     printf("up\n");
@@ -156,7 +156,7 @@ AREXPORT void ArRatioInputKeydrive::up(void)
     myTransRatio = 100;
 }
 
-AREXPORT void ArRatioInputKeydrive::down(void)
+MVREXPORT void ArRatioInputKeydrive::down(void)
 {
   if (myPrinting)
     printf("down\n");
@@ -165,21 +165,21 @@ AREXPORT void ArRatioInputKeydrive::down(void)
     myTransRatio = -100;
 }
 
-AREXPORT void ArRatioInputKeydrive::left(void)
+MVREXPORT void ArRatioInputKeydrive::left(void)
 {
   if (myPrinting)
     printf("left\n");
   myRotRatio = 100;
 }
 
-AREXPORT void ArRatioInputKeydrive::right(void)
+MVREXPORT void ArRatioInputKeydrive::right(void)
 {
   if (myPrinting)
     printf("right\n");
   myRotRatio = -100;
 }
 
-AREXPORT void ArRatioInputKeydrive::space(void)
+MVREXPORT void ArRatioInputKeydrive::space(void)
 {
   if (myPrinting)
     printf("stop\n");
@@ -188,7 +188,7 @@ AREXPORT void ArRatioInputKeydrive::space(void)
   myLatRatio = 0;
 }
 
-AREXPORT void ArRatioInputKeydrive::z(void)
+MVREXPORT void ArRatioInputKeydrive::z(void)
 {
   if (myPrinting)
     printf("up\n");
@@ -197,7 +197,7 @@ AREXPORT void ArRatioInputKeydrive::z(void)
     myLatRatio = 100;
 }
 
-AREXPORT void ArRatioInputKeydrive::x(void)
+MVREXPORT void ArRatioInputKeydrive::x(void)
 {
   if (myPrinting)
     printf("down\n");
@@ -206,7 +206,7 @@ AREXPORT void ArRatioInputKeydrive::x(void)
     myLatRatio = -100;
 }
 
-AREXPORT void ArRatioInputKeydrive::activate(void)
+MVREXPORT void ArRatioInputKeydrive::activate(void)
 {
   // set things so we'll stop
   myTransRatio = 0;
@@ -216,13 +216,13 @@ AREXPORT void ArRatioInputKeydrive::activate(void)
     takeKeys();
 }
 
-AREXPORT void ArRatioInputKeydrive::deactivate(void)
+MVREXPORT void ArRatioInputKeydrive::deactivate(void)
 {
   if (myHaveKeys)
     giveUpKeys();
 }
 
-AREXPORT void ArRatioInputKeydrive::fireCallback(void)
+MVREXPORT void ArRatioInputKeydrive::fireCallback(void)
 {
   // set what we want to do
   myInput->setTransRatio(myTransRatio);

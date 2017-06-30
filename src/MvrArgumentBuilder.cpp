@@ -55,7 +55,7 @@ char * cppstrdup(const char *str)
  * is false and preserves the original behavior where each argument is a 
  * space-separated alphanumeric string.
 **/
-AREXPORT MvrArgumentBuilder::ArArgumentBuilder(size_t argvLen, 
+MVREXPORT MvrArgumentBuilder::ArArgumentBuilder(size_t argvLen, 
 					                                    char extraSpaceChar,
 					                                    bool ignoreNormalSpaces,
                                               bool isPreCompressQuotes)
@@ -72,7 +72,7 @@ AREXPORT MvrArgumentBuilder::ArArgumentBuilder(size_t argvLen,
   myIsQuiet = false;
 }
 
-AREXPORT MvrArgumentBuilder::ArArgumentBuilder(const MvrArgumentBuilder & builder)
+MVREXPORT MvrArgumentBuilder::ArArgumentBuilder(const MvrArgumentBuilder & builder)
 {
   size_t i;
   myFullString = builder.myFullString;
@@ -90,7 +90,7 @@ AREXPORT MvrArgumentBuilder::ArArgumentBuilder(const MvrArgumentBuilder & builde
   myIsPreCompressQuotes = builder.myIsPreCompressQuotes;
 }
 
-AREXPORT MvrArgumentBuilder &ArArgumentBuilder::operator=(const MvrArgumentBuilder & builder)
+MVREXPORT MvrArgumentBuilder &ArArgumentBuilder::operator=(const MvrArgumentBuilder & builder)
 {
   if (this != &builder) {
 
@@ -123,7 +123,7 @@ AREXPORT MvrArgumentBuilder &ArArgumentBuilder::operator=(const MvrArgumentBuild
   return *this;
 }
 
-AREXPORT MvrArgumentBuilder::~ArArgumentBuilder()
+MVREXPORT MvrArgumentBuilder::~MvrArgumentBuilder()
 {
   size_t i;
   if (myOrigArgc > 0)
@@ -135,7 +135,7 @@ AREXPORT MvrArgumentBuilder::~ArArgumentBuilder()
 }
 
 
-AREXPORT void MvrArgumentBuilder::removeArg(size_t which, bool isRebuildFullString)
+MVREXPORT void MvrArgumentBuilder::removeArg(size_t which, bool isRebuildFullString)
 {
   size_t i;
   char *temp;
@@ -170,7 +170,7 @@ AREXPORT void MvrArgumentBuilder::removeArg(size_t which, bool isRebuildFullStri
 
 }
 
-AREXPORT void MvrArgumentBuilder::add(const char *str, ...)
+MVREXPORT void MvrArgumentBuilder::add(const char *str, ...)
 {
   char buf[10000];
   va_list ptr;
@@ -273,7 +273,7 @@ bool MvrArgumentBuilder::isEndArg(const char *buf,
    than 0 means to add at the end, if this number is greater than how
    many positions exist then it will also be added at the end
  **/
-AREXPORT void MvrArgumentBuilder::internalAdd(const char *str, int position)
+MVREXPORT void MvrArgumentBuilder::internalAdd(const char *str, int position)
 {
   char buf[10000];
   int i = 0;
@@ -429,7 +429,7 @@ AREXPORT void MvrArgumentBuilder::internalAdd(const char *str, int position)
    than 0 means to add at the end, if this number is greater than how
    many positions exist then it will also be added at the end
 **/
-AREXPORT void MvrArgumentBuilder::addPlain(const char *str, int position)
+MVREXPORT void MvrArgumentBuilder::addPlain(const char *str, int position)
 {
   internalAdd(str, position);
 }
@@ -441,7 +441,7 @@ AREXPORT void MvrArgumentBuilder::addPlain(const char *str, int position)
    than 0 means to add at the end, if this number is greater than how
    many positions exist then it will also be added at the end
 **/
-AREXPORT void MvrArgumentBuilder::addStrings(char **argv, int argc,
+MVREXPORT void MvrArgumentBuilder::addStrings(char **argv, int argc,
 					    int position)
 {
   addStrings(argc, argv, position);
@@ -454,7 +454,7 @@ AREXPORT void MvrArgumentBuilder::addStrings(char **argv, int argc,
    than 0 means to add at the end, if this number is greater than how
    many positions exist then it will also be added at the end
 **/
-AREXPORT void MvrArgumentBuilder::addStrings(int argc, char **argv, 
+MVREXPORT void MvrArgumentBuilder::addStrings(int argc, char **argv, 
 					    int position)
 {
   int i;
@@ -480,7 +480,7 @@ AREXPORT void MvrArgumentBuilder::addStrings(int argc, char **argv,
    than 0 means to add at the end, if this number is greater than how
    many positions exist then it will also be added at the end
 **/
-AREXPORT void MvrArgumentBuilder::addStringsAsIs(int argc, char **argv, 
+MVREXPORT void MvrArgumentBuilder::addStringsAsIs(int argc, char **argv, 
 						int position)
 {
   int i;
@@ -506,12 +506,12 @@ AREXPORT void MvrArgumentBuilder::addStringsAsIs(int argc, char **argv,
    than 0 means to add at the end, if this number is greater than how
    many positions exist then it will also be added at the end
 **/
-AREXPORT void MvrArgumentBuilder::addPlainAsIs(const char *str, int position)
+MVREXPORT void MvrArgumentBuilder::addPlainAsIs(const char *str, int position)
 {
   internalAddAsIs(str, position);
 }
 
-AREXPORT void MvrArgumentBuilder::internalAddAsIs(const char *str, int position)
+MVREXPORT void MvrArgumentBuilder::internalAddAsIs(const char *str, int position)
 { 
   size_t k = 0;
 
@@ -562,37 +562,37 @@ AREXPORT void MvrArgumentBuilder::internalAddAsIs(const char *str, int position)
 
 }
 
-AREXPORT size_t MvrArgumentBuilder::getArgc(void) const
+MVREXPORT size_t MvrArgumentBuilder::getArgc(void) const
 {
   return myArgc;
 }
 
-AREXPORT char** MvrArgumentBuilder::getArgv(void) const
+MVREXPORT char** MvrArgumentBuilder::getArgv(void) const
 {
   return myArgv;
 }
 
-AREXPORT const char *ArArgumentBuilder::getFullString(void) const
+MVREXPORT const char *ArArgumentBuilder::getFullString(void) const
 {
   return myFullString.c_str();
 }
 
-AREXPORT const char *ArArgumentBuilder::getExtraString(void) const
+MVREXPORT const char *ArArgumentBuilder::getExtraString(void) const
 {
   return myExtraString.c_str();
 }
 
-AREXPORT void MvrArgumentBuilder::setExtraString(const char *str)
+MVREXPORT void MvrArgumentBuilder::setExtraString(const char *str)
 {
   myExtraString = str;
 }
 
-AREXPORT void MvrArgumentBuilder::setFullString(const char *str)
+MVREXPORT void MvrArgumentBuilder::setFullString(const char *str)
 {
   myFullString = str;
 }
 
-AREXPORT const char* MvrArgumentBuilder::getArg(size_t whichArg) const
+MVREXPORT const char* MvrArgumentBuilder::getArg(size_t whichArg) const
 {
   if ((whichArg >= 0) && (whichArg < myArgc)) {
     return myArgv[whichArg];
@@ -602,7 +602,7 @@ AREXPORT const char* MvrArgumentBuilder::getArg(size_t whichArg) const
   }
 }
 
-AREXPORT void MvrArgumentBuilder::log(void) const
+MVREXPORT void MvrArgumentBuilder::log(void) const
 {
   size_t i;
   MvrLog::log(MvrLog::Terse, "Num arguments: %d", myArgc);
@@ -610,7 +610,7 @@ AREXPORT void MvrArgumentBuilder::log(void) const
     MvrLog::log(MvrLog::Terse, "Mvrg %d: %s", i, myArgv[i]);
 }
 
-AREXPORT bool MvrArgumentBuilder::isArgBool(size_t whichArg) const
+MVREXPORT bool MvrArgumentBuilder::isArgBool(size_t whichArg) const
 {
   if (whichArg > myArgc || getArg(whichArg) == NULL)
     return false;
@@ -624,7 +624,7 @@ AREXPORT bool MvrArgumentBuilder::isArgBool(size_t whichArg) const
     return false;
 }
 
-AREXPORT bool MvrArgumentBuilder::getArgBool(size_t whichArg, 
+MVREXPORT bool MvrArgumentBuilder::getArgBool(size_t whichArg, 
                                             bool *ok) const
 {
   bool isSuccess = false;
@@ -659,7 +659,7 @@ AREXPORT bool MvrArgumentBuilder::getArgBool(size_t whichArg,
 } // end method getArgBool
 
 
-AREXPORT bool MvrArgumentBuilder::isArgInt(size_t whichArg, bool forceHex) const
+MVREXPORT bool MvrArgumentBuilder::isArgInt(size_t whichArg, bool forceHex) const
 {
   const char *str;
   char *endPtr;
@@ -685,7 +685,7 @@ AREXPORT bool MvrArgumentBuilder::isArgInt(size_t whichArg, bool forceHex) const
     return false;
 }
 
-AREXPORT int MvrArgumentBuilder::getArgInt(size_t whichArg,
+MVREXPORT int MvrArgumentBuilder::getArgInt(size_t whichArg,
                                           bool *ok, bool forceHex) const
 {
   bool isSuccess = false;
@@ -724,7 +724,7 @@ AREXPORT int MvrArgumentBuilder::getArgInt(size_t whichArg,
 
 } // end method getArgInt
 
-AREXPORT bool MvrArgumentBuilder::isArgLongLongInt(size_t whichArg) const
+MVREXPORT bool MvrArgumentBuilder::isArgLongLongInt(size_t whichArg) const
 {
   const char *str;
   char *endPtr;
@@ -752,7 +752,7 @@ AREXPORT bool MvrArgumentBuilder::isArgLongLongInt(size_t whichArg) const
     return false;
 }
 
-AREXPORT int MvrArgumentBuilder::getArgLongLongInt(size_t whichArg,
+MVREXPORT int MvrArgumentBuilder::getArgLongLongInt(size_t whichArg,
 						  bool *ok) const
 {
   bool isSuccess = false;
@@ -794,7 +794,7 @@ AREXPORT int MvrArgumentBuilder::getArgLongLongInt(size_t whichArg,
 
 } // end method getArgInt
 
-AREXPORT bool MvrArgumentBuilder::isArgDouble(size_t whichArg) const
+MVREXPORT bool MvrArgumentBuilder::isArgDouble(size_t whichArg) const
 {
   const char *str;
   char *endPtr;
@@ -821,7 +821,7 @@ AREXPORT bool MvrArgumentBuilder::isArgDouble(size_t whichArg) const
 
 }
 
-AREXPORT double MvrArgumentBuilder::getArgDouble(size_t whichArg,
+MVREXPORT double MvrArgumentBuilder::getArgDouble(size_t whichArg,
                                                 bool *ok) const
 {
   bool isSuccess = false;
@@ -864,7 +864,7 @@ AREXPORT double MvrArgumentBuilder::getArgDouble(size_t whichArg,
 } // end method getArgDouble
 
 
-AREXPORT void MvrArgumentBuilder::compressQuoted(bool stripQuotationMarks)
+MVREXPORT void MvrArgumentBuilder::compressQuoted(bool stripQuotationMarks)
 {
   size_t argLen;
   size_t i;
@@ -928,12 +928,12 @@ AREXPORT void MvrArgumentBuilder::compressQuoted(bool stripQuotationMarks)
   }
 }
 
-AREXPORT void MvrArgumentBuilder::setQuiet(bool isQuiet)
+MVREXPORT void MvrArgumentBuilder::setQuiet(bool isQuiet)
 {
   myIsQuiet = isQuiet;
 }
 
-AREXPORT void MvrArgumentBuilder::rebuildFullString()
+MVREXPORT void MvrArgumentBuilder::rebuildFullString()
 {
 	myFullString = "";
 	for (size_t k = 0; k < myArgc; k++)
@@ -949,7 +949,7 @@ AREXPORT void MvrArgumentBuilder::rebuildFullString()
 
 // ----------------------------------------------------------------------------
 
-AREXPORT bool MvrArgumentBuilderCompareOp::operator()(MvrArgumentBuilder* arg1, 
+MVREXPORT bool MvrArgumentBuilderCompareOp::operator()(MvrArgumentBuilder* arg1, 
                                             MvrArgumentBuilder* arg2) const
 {
   if (arg1 == NULL) {

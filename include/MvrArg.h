@@ -65,91 +65,91 @@ public:
   };
 
   /// Default empty contructor
-  AREXPORT MvrArg();
+  MVREXPORT MvrArg();
   /// Constructor for making an integer argument
-  AREXPORT MvrArg(const char * name, int *pointer, 
+  MVREXPORT MvrArg(const char * name, int *pointer, 
 		 const char * description = "", 
 		 int minInt = INT_MIN, 
 		 int maxInt = INT_MAX); 
   /// Constructor for making a double argument
-  AREXPORT MvrArg(const char * name, double *pointer,
+  MVREXPORT MvrArg(const char * name, double *pointer,
 		 const char * description = "", 
 		 double minDouble = -HUGE_VAL,
 		 double maxDouble = HUGE_VAL); 
   /// Constructor for making a boolean argument
-  AREXPORT MvrArg(const char * name, bool *pointer,
+  MVREXPORT MvrArg(const char * name, bool *pointer,
 		 const char * description = ""); 
   /// Constructor for making a position argument
-  AREXPORT MvrArg(const char * name, MvrPose *pointer,
+  MVREXPORT MvrArg(const char * name, MvrPose *pointer,
 		 const char * description = ""); 
   /// Constructor for making an argument of a string
-  AREXPORT MvrArg(const char *name, char *pointer, 
+  MVREXPORT MvrArg(const char *name, char *pointer, 
 		 const char *description,
 		 size_t maxStrLen);
   /// Constructor for making an argument that has functors to handle things
-  AREXPORT MvrArg(const char *name, 
+  MVREXPORT MvrArg(const char *name, 
 		 MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
 		 MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
 		 const char *description);
   /// Constructor for just holding a description (for MvrConfig)
-  AREXPORT MvrArg(const char *description);
+  MVREXPORT MvrArg(const char *description);
   /// Copy constructor
-  AREXPORT MvrArg(const MvrArg & arg);
+  MVREXPORT MvrArg(const MvrArg & arg);
   /// Assignment operator
-  AREXPORT MvrArg &operator=(const MvrArg &arg);
+  MVREXPORT MvrArg &operator=(const MvrArg &arg);
   /// Destructor
-  AREXPORT virtual ~ArArg();
+  MVREXPORT virtual ~MvrArg();
 
   /// Gets the type of the argument
-  AREXPORT Type getType(void) const;
+  MVREXPORT Type getType(void) const;
   /// Gets the name of the argument
-  AREXPORT const char *getName(void) const;
+  MVREXPORT const char *getName(void) const;
   /// Gets the long description of the argument
-  AREXPORT const char *getDescription(void) const;
+  MVREXPORT const char *getDescription(void) const;
   /// Sets the argument value, for int arguments
-  AREXPORT bool setInt(int val);
+  MVREXPORT bool setInt(int val);
   /// Sets the argument value, for double arguments
-  AREXPORT bool setDouble(double val);
+  MVREXPORT bool setDouble(double val);
   /// Sets the argument value, for bool arguments
-  AREXPORT bool setBool(bool val);
+  MVREXPORT bool setBool(bool val);
   /// Sets the argument value, for MvrPose arguments
-  AREXPORT bool setPose(MvrPose pose);
+  MVREXPORT bool setPose(MvrPose pose);
   /// Sets the argument value for MvrArgumentBuilder arguments
-  AREXPORT bool setString(const char *str);
+  MVREXPORT bool setString(const char *str);
   /// Sets the argument by calling the setFunctor callback
-  AREXPORT bool setArgWithFunctor(MvrArgumentBuilder *argument);
+  MVREXPORT bool setArgWithFunctor(MvrArgumentBuilder *argument);
   /// Gets the argument value, for int arguments
-  AREXPORT int getInt(void) const; 
+  MVREXPORT int getInt(void) const; 
   /// Gets the argument value, for double arguments
-  AREXPORT double getDouble(void) const;
+  MVREXPORT double getDouble(void) const;
   /// Gets the argument value, for bool arguments
-  AREXPORT bool getBool(void) const;
+  MVREXPORT bool getBool(void) const;
   /// Gets the argument value, for pose arguments
-  AREXPORT MvrPose getPose(void) const;
+  MVREXPORT MvrPose getPose(void) const;
   /// Gets the argument value, for string arguments
-  AREXPORT const char *getString(void) const;
+  MVREXPORT const char *getString(void) const;
   /// Gets the argument value, which is a list of argumentbuilders here
-  AREXPORT const std::list<ArArgumentBuilder *> *getArgsWithFunctor(void) const;
+  MVREXPORT const std::list<ArArgumentBuilder *> *getArgsWithFunctor(void) const;
   /// Logs the type, name, and value of this argument
-  AREXPORT void log(void) const;
+  MVREXPORT void log(void) const;
   /// Gets the minimum int value
-  AREXPORT int getMinInt(void) const;
+  MVREXPORT int getMinInt(void) const;
   /// Gets the maximum int value
-  AREXPORT int getMaxInt(void) const;
+  MVREXPORT int getMaxInt(void) const;
   /// Gets the minimum double value
-  AREXPORT double getMinDouble(void) const;
+  MVREXPORT double getMinDouble(void) const;
   /// Gets the maximum double value
-  AREXPORT double getMaxDouble(void) const;
+  MVREXPORT double getMaxDouble(void) const;
   /// Gets if the config priority is set
-  AREXPORT bool getConfigPrioritySet(void) const;
+  MVREXPORT bool getConfigPrioritySet(void) const;
   /// Gets the priority (only used by MvrConfig)
-  AREXPORT MvrPriority::Priority getConfigPriority(void) const;
+  MVREXPORT MvrPriority::Priority getConfigPriority(void) const;
   /// Sets the priority (only used by MvrConfig)
-  AREXPORT void setConfigPriority(MvrPriority::Priority priority);
+  MVREXPORT void setConfigPriority(MvrPriority::Priority priority);
 
 private:
   /// Internal helper function
-  AREXPORT void clear(void);
+  MVREXPORT void clear(void);
 
 protected:
 

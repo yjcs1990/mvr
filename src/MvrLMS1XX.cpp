@@ -39,7 +39,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   #define IFDEBUG(code)
 #endif
 
-AREXPORT MvrLMS1XXPacket::ArLMS1XXPacket() : 
+MVREXPORT MvrLMS1XXPacket::ArLMS1XXPacket() : 
 ArBasePacket(10000, 1, NULL, 1)
 {
 	myFirstAdd = true;
@@ -47,30 +47,30 @@ ArBasePacket(10000, 1, NULL, 1)
 	myCommandName[0] = '\0';
 }
 
-AREXPORT MvrLMS1XXPacket::~ArLMS1XXPacket()
+MVREXPORT MvrLMS1XXPacket::~MvrLMS1XXPacket()
 {
 
 }
 
-AREXPORT const char *ArLMS1XXPacket::getCommandType(void)
+MVREXPORT const char *ArLMS1XXPacket::getCommandType(void)
 {
 	return myCommandType;
 }
 
-AREXPORT const char *ArLMS1XXPacket::getCommandName(void)
+MVREXPORT const char *ArLMS1XXPacket::getCommandName(void)
 {
 	return myCommandName;
 }
 
 
-AREXPORT void MvrLMS1XXPacket::finalizePacket(void)
+MVREXPORT void MvrLMS1XXPacket::finalizePacket(void)
 {
 	myBuf[0] = '\002';
 	rawCharToBuf('\003');
 	myBuf[myLength] = '\0';
 }
 
-AREXPORT void MvrLMS1XXPacket::resetRead(void)
+MVREXPORT void MvrLMS1XXPacket::resetRead(void)
 {
 	myReadLength = 1;
 
@@ -81,17 +81,17 @@ AREXPORT void MvrLMS1XXPacket::resetRead(void)
 	bufToStr(myCommandName, sizeof(myCommandName));
 }
 
-AREXPORT MvrTime MvrLMS1XXPacket::getTimeReceived(void)
+MVREXPORT MvrTime MvrLMS1XXPacket::getTimeReceived(void)
 {
 	return myTimeReceived;
 }
 
-AREXPORT void MvrLMS1XXPacket::setTimeReceived(MvrTime timeReceived)
+MVREXPORT void MvrLMS1XXPacket::setTimeReceived(MvrTime timeReceived)
 {
 	myTimeReceived = timeReceived;
 }
 
-AREXPORT void MvrLMS1XXPacket::duplicatePacket(MvrLMS1XXPacket *packet)
+MVREXPORT void MvrLMS1XXPacket::duplicatePacket(MvrLMS1XXPacket *packet)
 {
 	myLength = packet->getLength();
 	myReadLength = packet->getReadLength();
@@ -102,7 +102,7 @@ AREXPORT void MvrLMS1XXPacket::duplicatePacket(MvrLMS1XXPacket *packet)
 	memcpy(myBuf, packet->getBuf(), myLength);
 }
 
-AREXPORT void MvrLMS1XXPacket::empty(void)
+MVREXPORT void MvrLMS1XXPacket::empty(void)
 {
 	myLength = 0;
 	myReadLength = 0;
@@ -112,7 +112,7 @@ AREXPORT void MvrLMS1XXPacket::empty(void)
 }
 
 
-AREXPORT void MvrLMS1XXPacket::byteToBuf(MvrTypes::Byte val)
+MVREXPORT void MvrLMS1XXPacket::byteToBuf(MvrTypes::Byte val)
 {
 	char buf[1024];
 	if (val > 0)
@@ -122,7 +122,7 @@ AREXPORT void MvrLMS1XXPacket::byteToBuf(MvrTypes::Byte val)
 	strToBuf(buf);
 }
 
-AREXPORT void MvrLMS1XXPacket::byte2ToBuf(MvrTypes::Byte2 val)
+MVREXPORT void MvrLMS1XXPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
 	char buf[1024];
 	if (val > 0)
@@ -132,7 +132,7 @@ AREXPORT void MvrLMS1XXPacket::byte2ToBuf(MvrTypes::Byte2 val)
 	strToBuf(buf);
 }
 
-AREXPORT void MvrLMS1XXPacket::byte4ToBuf(MvrTypes::Byte4 val)
+MVREXPORT void MvrLMS1XXPacket::byte4ToBuf(MvrTypes::Byte4 val)
 {
 	char buf[1024];
 	if (val > 0)
@@ -142,27 +142,27 @@ AREXPORT void MvrLMS1XXPacket::byte4ToBuf(MvrTypes::Byte4 val)
 	strToBuf(buf);
 }
 
-AREXPORT void MvrLMS1XXPacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void MvrLMS1XXPacket::uByteToBuf(MvrTypes::UByte val)
 {
 	char buf[1024];
 	sprintf(buf, "%u", val);
 	strToBuf(buf);
 }
 
-AREXPORT void MvrLMS1XXPacket::uByte2ToBuf(MvrTypes::UByte2 val)
+MVREXPORT void MvrLMS1XXPacket::uByte2ToBuf(MvrTypes::UByte2 val)
 {
 	uByteToBuf(val & 0xff);
 	uByteToBuf((val >> 8) & 0xff);
 }
 
-AREXPORT void MvrLMS1XXPacket::uByte4ToBuf(MvrTypes::UByte4 val)
+MVREXPORT void MvrLMS1XXPacket::uByte4ToBuf(MvrTypes::UByte4 val)
 {
 	char buf[1024];
 	sprintf(buf, "%u", val);
 	strToBuf(buf);
 }
 
-AREXPORT void MvrLMS1XXPacket::strToBuf(const char *str)
+MVREXPORT void MvrLMS1XXPacket::strToBuf(const char *str)
 {
 	if (str == NULL) {
 		str = "";
@@ -186,7 +186,7 @@ AREXPORT void MvrLMS1XXPacket::strToBuf(const char *str)
 	myLength += tempLen;
 }
 
-AREXPORT MvrTypes::Byte MvrLMS1XXPacket::bufToByte(void)
+MVREXPORT MvrTypes::Byte MvrLMS1XXPacket::bufToByte(void)
 {
 	ArTypes::Byte ret=0;
 
@@ -210,7 +210,7 @@ AREXPORT MvrTypes::Byte MvrLMS1XXPacket::bufToByte(void)
 	return ret;
 }
 
-AREXPORT MvrTypes::Byte2 MvrLMS1XXPacket::bufToByte2(void)
+MVREXPORT MvrTypes::Byte2 MvrLMS1XXPacket::bufToByte2(void)
 {
 	ArTypes::Byte2 ret=0;
 
@@ -235,7 +235,7 @@ AREXPORT MvrTypes::Byte2 MvrLMS1XXPacket::bufToByte2(void)
 	return ret;
 }
 
-AREXPORT MvrTypes::Byte4 MvrLMS1XXPacket::bufToByte4(void)
+MVREXPORT MvrTypes::Byte4 MvrLMS1XXPacket::bufToByte4(void)
 {
 	ArTypes::Byte4 ret=0;
 
@@ -264,7 +264,7 @@ AREXPORT MvrTypes::Byte4 MvrLMS1XXPacket::bufToByte4(void)
 	return ret;
 }
 
-AREXPORT MvrTypes::UByte MvrLMS1XXPacket::bufToUByte(void)
+MVREXPORT MvrTypes::UByte MvrLMS1XXPacket::bufToUByte(void)
 {
 	ArTypes::UByte ret=0;
 	if (!isNextGood(1))
@@ -286,7 +286,7 @@ AREXPORT MvrTypes::UByte MvrLMS1XXPacket::bufToUByte(void)
 	return ret;
 }
 
-AREXPORT MvrTypes::UByte2 MvrLMS1XXPacket::bufToUByte2(void)
+MVREXPORT MvrTypes::UByte2 MvrLMS1XXPacket::bufToUByte2(void)
 {
 	//printf("@ 1\n");
 
@@ -316,7 +316,7 @@ AREXPORT MvrTypes::UByte2 MvrLMS1XXPacket::bufToUByte2(void)
 	return ret;
 }
 
-AREXPORT MvrTypes::UByte4 MvrLMS1XXPacket::bufToUByte4(void)
+MVREXPORT MvrTypes::UByte4 MvrLMS1XXPacket::bufToUByte4(void)
 {
 	ArTypes::Byte4 ret=0;
 
@@ -351,7 +351,7 @@ if @a len bytes are copied).
 @param buf Destination buffer
 @param len Maximum number of characters to copy into the destination buffer
  */
-AREXPORT void MvrLMS1XXPacket::bufToStr(char *buf, int len)
+MVREXPORT void MvrLMS1XXPacket::bufToStr(char *buf, int len)
 {
 	if (buf == NULL)
 	{
@@ -405,7 +405,7 @@ AREXPORT void MvrLMS1XXPacket::bufToStr(char *buf, int len)
 	buf[len - 1] = '\0';
 }
 
-AREXPORT void MvrLMS1XXPacket::rawCharToBuf(unsigned char c)
+MVREXPORT void MvrLMS1XXPacket::rawCharToBuf(unsigned char c)
 {
 	if (!hasWriteCapacity(1)) {
 		return;
@@ -427,22 +427,22 @@ int MvrLMS1XXPacket::deascii(char c)
 		return 0;
 }
 
-AREXPORT MvrLMS1XXPacketReceiver::ArLMS1XXPacketReceiver()
+MVREXPORT MvrLMS1XXPacketReceiver::ArLMS1XXPacketReceiver()
 {
 	myState = STARTING;
 }
 
-AREXPORT MvrLMS1XXPacketReceiver::~ArLMS1XXPacketReceiver()
+MVREXPORT MvrLMS1XXPacketReceiver::~MvrLMS1XXPacketReceiver()
 {
 
 }
 
-AREXPORT void MvrLMS1XXPacketReceiver::setDeviceConnection(MvrDeviceConnection *conn)
+MVREXPORT void MvrLMS1XXPacketReceiver::setDeviceConnection(MvrDeviceConnection *conn)
 {
 	myConn = conn;
 }
 
-AREXPORT MvrDeviceConnection *ArLMS1XXPacketReceiver::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *ArLMS1XXPacketReceiver::getDeviceConnection(void)
 {
 	return myConn;
 }
@@ -910,7 +910,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 }
 
 
-AREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
+MVREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
 		const char *name, LaserModel laserModel) :
 		ArLaser(laserNumber, name, 20000),
 		mySensorInterpTask(this, &ArLMS1XX::sensorInterp),
@@ -1132,7 +1132,7 @@ AREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
 
 }
 
-AREXPORT MvrLMS1XX::~ArLMS1XX()
+MVREXPORT MvrLMS1XX::~MvrLMS1XX()
 {
 	Aria::remExitCallback(&myAriaExitCB);
 	if (myRobot != NULL)
@@ -1182,7 +1182,7 @@ void MvrLMS1XX::clear(void)
 	myFirstReadings = true;
 }
 
-AREXPORT void MvrLMS1XX::laserSetName(const char *name)
+MVREXPORT void MvrLMS1XX::laserSetName(const char *name)
 {
 	myName = name;
 
@@ -1194,7 +1194,7 @@ AREXPORT void MvrLMS1XX::laserSetName(const char *name)
 	ArLaser::laserSetName(getName());
 }
 
-AREXPORT void MvrLMS1XX::setRobot(MvrRobot *robot)
+MVREXPORT void MvrLMS1XX::setRobot(MvrRobot *robot)
 {
 	myRobot = robot;
 
@@ -1213,7 +1213,7 @@ AREXPORT void MvrLMS1XX::setRobot(MvrRobot *robot)
 
 
 
-AREXPORT bool MvrLMS1XX::asyncConnect(void)
+MVREXPORT bool MvrLMS1XX::asyncConnect(void)
 {
 	myStartConnect = true;
 	if (!getRunning())
@@ -1221,7 +1221,7 @@ AREXPORT bool MvrLMS1XX::asyncConnect(void)
 	return true;
 }
 
-AREXPORT bool MvrLMS1XX::disconnect(void)
+MVREXPORT bool MvrLMS1XX::disconnect(void)
 {
 	if (!isConnected())
 		return true;
@@ -1762,7 +1762,7 @@ void MvrLMS1XX::sensorInterp (void)
 	*/
 }
 
-AREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
+MVREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
 		ArTime timeout, MvrLMS1XXPacket *sendPacket, const char *recvName)
 {
 	ArLMS1XXPacket *packet;
@@ -1842,7 +1842,7 @@ AREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
 	return NULL;
 }
 
-AREXPORT bool MvrLMS1XX::blockingConnect(void)
+MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 {
 //	char buf[1024];
   MvrSerialConnection *conn;
@@ -1959,7 +1959,7 @@ AREXPORT bool MvrLMS1XX::blockingConnect(void)
 // scanfreq is scannnin frequency in hz, resolution is angle increment in
 // degrees. these values will be converted as appropriate.
 
-AREXPORT bool MvrLMS1XX::lms5xxConnect(void)
+MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 {
 
 		ArTime timeDone;
@@ -2521,7 +2521,7 @@ AREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 }
 
-AREXPORT bool MvrLMS1XX::lms1xxConnect(void)
+MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 {
 
 		ArTime timeDone;
@@ -2776,7 +2776,7 @@ AREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 
 }
 
-AREXPORT bool MvrLMS1XX::timConnect(void)
+MVREXPORT bool MvrLMS1XX::timConnect(void)
 {
 
 		ArTime timeDone;
@@ -2934,7 +2934,7 @@ AREXPORT bool MvrLMS1XX::timConnect(void)
 
 }
 
-AREXPORT void * MvrLMS1XX::runThread(void *arg)
+MVREXPORT void * MvrLMS1XX::runThread(void *arg)
 {
   //char buf[1024];
   MvrLMS1XXPacket *packet;

@@ -43,16 +43,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 class MvrBumpers : public MvrRangeDevice
 {
 public:
-  AREXPORT MvrBumpers(size_t currentBufferSize = 30, 
+  MVREXPORT MvrBumpers(size_t currentBufferSize = 30, 
 		     size_t cumulativeBufferSize = 30,
 		     const char *name = "bumpers",
 		     int maxSecondsToKeepCurrent = 15,
 		     double angleRange = 135);
-  AREXPORT virtual ~ArBumpers(void);
+  MVREXPORT virtual ~MvrBumpers(void);
 
-  AREXPORT virtual void setRobot(MvrRobot *robot);
-  AREXPORT void processReadings(void);
-  AREXPORT void addBumpToBuffer(int bumpValue, int whichBumper);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT void processReadings(void);
+  MVREXPORT void addBumpToBuffer(int bumpValue, int whichBumper);
 
 protected:
   MvrFunctorC<ArBumpers> myProcessCB;

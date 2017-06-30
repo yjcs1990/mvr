@@ -53,9 +53,9 @@ class MvrASyncTask : public MvrThread
 public:
 
   /// Constructor
-  AREXPORT MvrASyncTask();
+  MVREXPORT MvrASyncTask();
   /// Destructor
-  AREXPORT virtual ~ArASyncTask();
+  MVREXPORT virtual ~MvrASyncTask();
 
   /// The main run loop
   /**
@@ -66,7 +66,7 @@ public:
      can be ignored.
      @swignote In the wrapper libraries, this method takes no arguments and has no return value.
   */
-  AREXPORT virtual void * runThread(void *arg) = 0;
+  MVREXPORT virtual void * runThread(void *arg) = 0;
 
   /// Run without creating a new thread
 /**
@@ -84,13 +84,13 @@ public:
   virtual void stopRunning(void) {myRunning=false;}
 
   /// Create the task and start it going
-  AREXPORT virtual int create(bool joinable=true, bool lowerPriority=true);
+  MVREXPORT virtual int create(bool joinable=true, bool lowerPriority=true);
 
   /** Internal function used with system threading system to run the new thread.
       In general, use run() or runAsync() instead.
       @internal
   */
-  AREXPORT virtual void * runInThisThread(void *arg=0);
+  MVREXPORT virtual void * runInThisThread(void *arg=0);
 
   /// Gets a string that describes what the thread is doing, or NULL if it
   /// doesn't know. Override this in your subclass to return a status

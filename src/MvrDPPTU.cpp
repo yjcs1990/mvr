@@ -50,17 +50,17 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define DEBUG_POS(code) {}
 #endif
 
-AREXPORT MvrDPPTUPacket::ArDPPTUPacket(MvrTypes::UByte2 bufferSize) :
+MVREXPORT MvrDPPTUPacket::ArDPPTUPacket(MvrTypes::UByte2 bufferSize) :
   MvrBasePacket(bufferSize, 0)
 {
 }
 
-AREXPORT MvrDPPTUPacket::~ArDPPTUPacket()
+MVREXPORT MvrDPPTUPacket::~MvrDPPTUPacket()
 {
 
 }
 
-AREXPORT void MvrDPPTUPacket::byte2ToBuf(int val)
+MVREXPORT void MvrDPPTUPacket::byte2ToBuf(int val)
 {
   //ArLog::log(MvrLog::Normal, "Putting %d in an DPPTU packet...", val);
   int i;
@@ -83,7 +83,7 @@ AREXPORT void MvrDPPTUPacket::byte2ToBuf(int val)
   }
 }
 
-AREXPORT void MvrDPPTUPacket::finalizePacket(void)
+MVREXPORT void MvrDPPTUPacket::finalizePacket(void)
 {
     MvrDPPTUPacket::uByteToBuf(MvrDPPTUCommands::DELIM);
 }
@@ -97,7 +97,7 @@ AREXPORT void MvrDPPTUPacket::finalizePacket(void)
  * specifies one device to power on at startup and power off on exit. If -1
  * (default value), then all possible PTU power ports are powered on.
  */
-AREXPORT MvrDPPTU::ArDPPTU(MvrRobot *robot, DeviceType deviceType, int deviceIndex) :
+MVREXPORT MvrDPPTU::ArDPPTU(MvrRobot *robot, DeviceType deviceType, int deviceIndex) :
   MvrPTZ(robot),
   myCanGetRealPanTilt(true),
   myInit(false),
@@ -186,7 +186,7 @@ AREXPORT MvrDPPTU::ArDPPTU(MvrRobot *robot, DeviceType deviceType, int deviceInd
     
 }
 
-AREXPORT MvrDPPTU::~ArDPPTU()
+MVREXPORT MvrDPPTU::~MvrDPPTU()
 {
   shutdown();
   Mvria::remExitCallback(&myShutdownCB);
@@ -215,7 +215,7 @@ void MvrDPPTU::preparePacket(void)
   myPacket.byteToBuf(MvrDPPTUCommands::DELIM);
 }
 
-AREXPORT bool MvrDPPTU::init(void)
+MVREXPORT bool MvrDPPTU::init(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::INIT);
@@ -284,13 +284,13 @@ AREXPORT bool MvrDPPTU::init(void)
 }
 
 /** A blank packet can be sent to exit monitor mode **/
-AREXPORT bool MvrDPPTU::blank(void)
+MVREXPORT bool MvrDPPTU::blank(void)
 {
   myPacket.empty();
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::pan_i(double pdeg)
+MVREXPORT bool MvrDPPTU::pan_i(double pdeg)
 {
   //ArLog::log(MvrLog::Normal, "MvrDPPTU::panTilt(%f, %f)", pdeg, tdeg);
   if (pdeg > getMaxPosPan_i())
@@ -316,7 +316,7 @@ AREXPORT bool MvrDPPTU::pan_i(double pdeg)
 return true;
 }
 
-AREXPORT bool MvrDPPTU::tilt_i(double tdeg)
+MVREXPORT bool MvrDPPTU::tilt_i(double tdeg)
 {
   if (tdeg > getMaxPosTilt_i())
     tdeg = getMaxPosTilt_i();
@@ -342,7 +342,7 @@ AREXPORT bool MvrDPPTU::tilt_i(double tdeg)
   return true;
 }
 
-AREXPORT bool MvrDPPTU::panSlew(double deg)
+MVREXPORT bool MvrDPPTU::panSlew(double deg)
 {
   if (deg > getMaxPanSlew())
     deg = getMaxPanSlew();
@@ -359,7 +359,7 @@ AREXPORT bool MvrDPPTU::panSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::tiltSlew(double deg)
+MVREXPORT bool MvrDPPTU::tiltSlew(double deg)
 {
   if (deg > getMaxTiltSlew())
     deg = getMaxTiltSlew();
@@ -376,14 +376,14 @@ AREXPORT bool MvrDPPTU::tiltSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::resetCalib(void)
+MVREXPORT bool MvrDPPTU::resetCalib(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::RESET);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::disableReset(void)
+MVREXPORT bool MvrDPPTU::disableReset(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::RESET);
@@ -392,7 +392,7 @@ AREXPORT bool MvrDPPTU::disableReset(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::resetTilt(void)
+MVREXPORT bool MvrDPPTU::resetTilt(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::RESET);
@@ -401,7 +401,7 @@ AREXPORT bool MvrDPPTU::resetTilt(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::resetPan(void)
+MVREXPORT bool MvrDPPTU::resetPan(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::RESET);
@@ -410,7 +410,7 @@ AREXPORT bool MvrDPPTU::resetPan(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::resetAll(void)
+MVREXPORT bool MvrDPPTU::resetAll(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::RESET);
@@ -419,7 +419,7 @@ AREXPORT bool MvrDPPTU::resetAll(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::saveSet(void)
+MVREXPORT bool MvrDPPTU::saveSet(void)
 {
   preparePacket();
   myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
@@ -428,7 +428,7 @@ AREXPORT bool MvrDPPTU::saveSet(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::restoreSet(void)
+MVREXPORT bool MvrDPPTU::restoreSet(void)
 {
   preparePacket();
   myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
@@ -437,7 +437,7 @@ AREXPORT bool MvrDPPTU::restoreSet(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::factorySet(void)
+MVREXPORT bool MvrDPPTU::factorySet(void)
 {
   preparePacket();
   myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
@@ -446,7 +446,7 @@ AREXPORT bool MvrDPPTU::factorySet(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::limitEnforce(bool val)
+MVREXPORT bool MvrDPPTU::limitEnforce(bool val)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::LIMIT);
@@ -459,7 +459,7 @@ AREXPORT bool MvrDPPTU::limitEnforce(bool val)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::immedExec(void)
+MVREXPORT bool MvrDPPTU::immedExec(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::IMMED);
@@ -467,7 +467,7 @@ AREXPORT bool MvrDPPTU::immedExec(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::slaveExec(void)
+MVREXPORT bool MvrDPPTU::slaveExec(void)
 {
   preparePacket();
   myPacket.byteToBuf('S'); //ArDPPTUCommands::SPEED);
@@ -475,7 +475,7 @@ AREXPORT bool MvrDPPTU::slaveExec(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::awaitExec(void)
+MVREXPORT bool MvrDPPTU::awaitExec(void)
 {
   preparePacket();
   myPacket.byteToBuf('A'); //ArDPPTUCommands::ACCEL);
@@ -484,7 +484,7 @@ AREXPORT bool MvrDPPTU::awaitExec(void)
 }
 
 
-AREXPORT bool MvrDPPTU::haltAll(void)
+MVREXPORT bool MvrDPPTU::haltAll(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::HALT);
@@ -492,7 +492,7 @@ AREXPORT bool MvrDPPTU::haltAll(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::haltPan(void)
+MVREXPORT bool MvrDPPTU::haltPan(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::HALT);
@@ -501,7 +501,7 @@ AREXPORT bool MvrDPPTU::haltPan(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::haltTilt(void)
+MVREXPORT bool MvrDPPTU::haltTilt(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::HALT);
@@ -511,7 +511,7 @@ AREXPORT bool MvrDPPTU::haltTilt(void)
 }
 
 
-AREXPORT bool MvrDPPTU::panAccel(double deg)
+MVREXPORT bool MvrDPPTU::panAccel(double deg)
 {
   if (deg > getMaxPanAccel())
     deg = getMaxPanAccel();
@@ -530,7 +530,7 @@ AREXPORT bool MvrDPPTU::panAccel(double deg)
   return true;
 }
 
-AREXPORT bool MvrDPPTU::tiltAccel(double deg)
+MVREXPORT bool MvrDPPTU::tiltAccel(double deg)
 {
   if (deg > getMaxPanAccel())
     deg = getMaxPanAccel();
@@ -549,7 +549,7 @@ AREXPORT bool MvrDPPTU::tiltAccel(double deg)
   return true;
 }
 
-AREXPORT bool MvrDPPTU::basePanSlew(double deg)
+MVREXPORT bool MvrDPPTU::basePanSlew(double deg)
 {
   myBasePanSlew = deg;
 
@@ -561,7 +561,7 @@ AREXPORT bool MvrDPPTU::basePanSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::baseTiltSlew(double deg)
+MVREXPORT bool MvrDPPTU::baseTiltSlew(double deg)
 {
   myBaseTiltSlew = deg;
 
@@ -573,7 +573,7 @@ AREXPORT bool MvrDPPTU::baseTiltSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::upperPanSlew(double deg)
+MVREXPORT bool MvrDPPTU::upperPanSlew(double deg)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::PAN);
@@ -583,7 +583,7 @@ AREXPORT bool MvrDPPTU::upperPanSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::lowerPanSlew(double deg)
+MVREXPORT bool MvrDPPTU::lowerPanSlew(double deg)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::PAN);
@@ -593,7 +593,7 @@ AREXPORT bool MvrDPPTU::lowerPanSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::upperTiltSlew(double deg)
+MVREXPORT bool MvrDPPTU::upperTiltSlew(double deg)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::TILT);
@@ -603,7 +603,7 @@ AREXPORT bool MvrDPPTU::upperTiltSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::lowerTiltSlew(double deg)
+MVREXPORT bool MvrDPPTU::lowerTiltSlew(double deg)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::TILT);
@@ -613,7 +613,7 @@ AREXPORT bool MvrDPPTU::lowerTiltSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::indepMove(void)
+MVREXPORT bool MvrDPPTU::indepMove(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::CONTROL);
@@ -622,7 +622,7 @@ AREXPORT bool MvrDPPTU::indepMove(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::velMove(void)
+MVREXPORT bool MvrDPPTU::velMove(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::CONTROL);
@@ -631,7 +631,7 @@ AREXPORT bool MvrDPPTU::velMove(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::enMon(void)
+MVREXPORT bool MvrDPPTU::enMon(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::MONITOR);
@@ -640,7 +640,7 @@ AREXPORT bool MvrDPPTU::enMon(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::disMon(void)
+MVREXPORT bool MvrDPPTU::disMon(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::MONITOR);
@@ -649,7 +649,7 @@ AREXPORT bool MvrDPPTU::disMon(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::initMon(double deg1, double deg2, 
+MVREXPORT bool MvrDPPTU::initMon(double deg1, double deg2, 
 			       double deg3, double deg4)
 {
 
@@ -667,7 +667,7 @@ AREXPORT bool MvrDPPTU::initMon(double deg1, double deg2,
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::setHoldPower(Axis axis, PowerMode mode)
+MVREXPORT bool MvrDPPTU::setHoldPower(Axis axis, PowerMode mode)
 {
   preparePacket();
   myPacket.byteToBuf(axis);
@@ -676,7 +676,7 @@ AREXPORT bool MvrDPPTU::setHoldPower(Axis axis, PowerMode mode)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrDPPTU::setMovePower(Axis axis, PowerMode mode)
+MVREXPORT bool MvrDPPTU::setMovePower(Axis axis, PowerMode mode)
 {
   preparePacket();
   myPacket.byteToBuf(axis);
@@ -686,7 +686,7 @@ AREXPORT bool MvrDPPTU::setMovePower(Axis axis, PowerMode mode)
 }
 
 
-AREXPORT MvrBasePacket *ArDPPTU::readPacket()
+MVREXPORT MvrBasePacket *ArDPPTU::readPacket()
 {
   if(!myConn)
     return NULL;

@@ -3,7 +3,7 @@
 #include "MvrActionDriveDistance.h"
 #include "MvrRobot.h"
 
-AREXPORT MvrActionDriveDistance::MvrActionDriveDistance(const char *name,
+MVREXPORT MvrActionDriveDistance::MvrActionDriveDistance(const char *name,
 						      double speed,
 						      double deceleration) :
   MvrAction(name, "Drives a given distance.")
@@ -19,12 +19,12 @@ AREXPORT MvrActionDriveDistance::MvrActionDriveDistance(const char *name,
   myState = STATE_NO_DISTANCE;
 }
 
-AREXPORT MvrActionDriveDistance::~MvrActionDriveDistance()
+MVREXPORT MvrActionDriveDistance::~MvrActionDriveDistance()
 {
 
 }
 
-AREXPORT bool MvrActionDriveDistance::haveAchievedDistance(void)
+MVREXPORT bool MvrActionDriveDistance::haveAchievedDistance(void)
 {
   if (myState == STATE_ACHIEVED_DISTANCE)
     return true;
@@ -32,12 +32,12 @@ AREXPORT bool MvrActionDriveDistance::haveAchievedDistance(void)
     return false;
 }
 
-AREXPORT void MvrActionDriveDistance::cancelDistance(void)
+MVREXPORT void MvrActionDriveDistance::cancelDistance(void)
 {
   myState = STATE_NO_DISTANCE;
 }
 
-AREXPORT void MvrActionDriveDistance::setDistance(
+MVREXPORT void MvrActionDriveDistance::setDistance(
 	double distance, bool useEncoders)
 {
   myState = STATE_GOING_DISTANCE;
@@ -52,7 +52,7 @@ AREXPORT void MvrActionDriveDistance::setDistance(
 }
 
 
-AREXPORT MvrActionDesired *MvrActionDriveDistance::fire(
+MVREXPORT MvrActionDesired *MvrActionDriveDistance::fire(
 	MvrActionDesired currentDesired)
 {
   double distToGo;

@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobot.h"
 #include "MvrTCMCompassRobot.h"
 
-AREXPORT ArTCMCompassRobot::ArTCMCompassRobot(MvrRobot *robot) :
+MVREXPORT ArTCMCompassRobot::ArTCMCompassRobot(MvrRobot *robot) :
   myPacketHandlerCB(this, &ArTCMCompassRobot::packetHandler)
 {
   myRobot = robot;
@@ -39,7 +39,7 @@ AREXPORT ArTCMCompassRobot::ArTCMCompassRobot(MvrRobot *robot) :
     myRobot->addPacketHandler(&myPacketHandlerCB);
 }
 
-AREXPORT ArTCMCompassRobot::~ArTCMCompassRobot()
+MVREXPORT ArTCMCompassRobot::~MvrTCMCompassRobot()
 {
   if (myRobot != NULL)
     myRobot->remPacketHandler(&myPacketHandlerCB);

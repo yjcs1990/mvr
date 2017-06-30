@@ -70,7 +70,7 @@ public:
 	/// @a other is not a missing/null/empty value (exactly how
 	///"empty/null/missing/default" is represented depends on the specific
 	///parameter, see parameter documentation and definition of merge() method in MvrRobotParams.cpp)
-	AREXPORT void merge(const MvrVideoParams& other);
+	MVREXPORT void merge(const MvrVideoParams& other);
 	void setType(const std::string& t) { type = t; }
 	void setConnect(bool c) { connect = c; connectSet = true; }
 	void setImageSize(int w, int h) { imageWidth = w; imageHeight = h; }
@@ -138,9 +138,9 @@ class MvrRobotParams : public MvrConfig
 {
 public:
   /// Constructor
-  AREXPORT MvrRobotParams();
+  MVREXPORT MvrRobotParams();
   /// Destructor
-  AREXPORT virtual ~ArRobotParams();
+  MVREXPORT virtual ~MvrRobotParams();
   /// Returns the class from the parameter file
   const char *getClassName(void) const { return myClass; }
   /// Returns the subclass from the parameter file
@@ -850,7 +850,7 @@ public:
   /// Gets the lat decel from param file (0 uses microcontroller param)
   int getLatDecel(void) const { return myTransDecel; }
   /// Saves it to the subtype.p in Mvria::getDirectory/params
-  AREXPORT bool save(void);
+  MVREXPORT bool save(void);
 
   /// The X (forward-back) location of the GPS (antenna) on the robot
   int getGPSX() const { return myGPSX; }
@@ -905,35 +905,35 @@ protected:
   static std::string ourPowerOutputChoices;
 
   // Adds a laser to the config
-  AREXPORT void addLaserToConfig(int laserNumber, MvrConfig *config, 
+  MVREXPORT void addLaserToConfig(int laserNumber, MvrConfig *config, 
 				 bool useDefaultBehavior, 
 				 const char *section);
 
   // Adds a battery to the config 
-  AREXPORT void addBatteryToConfig(int batteryNumber, MvrConfig *config, 
+  MVREXPORT void addBatteryToConfig(int batteryNumber, MvrConfig *config, 
 				   bool useDefaultBehavior);
 
   // Adds an LCD to the config 
-  AREXPORT void addLCDToConfig(int lcdNumber, MvrConfig *config, 
+  MVREXPORT void addLCDToConfig(int lcdNumber, MvrConfig *config, 
 			       bool useDefaultBehavior);
 
   // Adds the sonar to the config (it's added automatically for
   // non-commercial)
-  AREXPORT void addSonarToConfigCommercial(MvrConfig *config, bool isMTXSonar);
+  MVREXPORT void addSonarToConfigCommercial(MvrConfig *config, bool isMTXSonar);
 
   // Processes the 
-  AREXPORT void processSonarCommercial(MvrConfig *config);
+  MVREXPORT void processSonarCommercial(MvrConfig *config);
 
   // Adds a sonarBoard to the config 
-  AREXPORT void addSonarBoardToConfig(int sonarBoardNumber, 
+  MVREXPORT void addSonarBoardToConfig(int sonarBoardNumber, 
 				      MvrConfig *config,
 				      bool useDefaultBehavior);
 
-  AREXPORT void addPTZToConfig(int i, MvrConfig *config);
-  AREXPORT void addVideoToConfig(int i, MvrConfig *config);
+  MVREXPORT void addPTZToConfig(int i, MvrConfig *config);
+  MVREXPORT void addVideoToConfig(int i, MvrConfig *config);
   
   // Processes the config for commercial
-  AREXPORT bool commercialProcessFile(void);
+  MVREXPORT bool commercialProcessFile(void);
     
   char myClass[1024];
   char mySubClass[1024];
@@ -1225,12 +1225,12 @@ protected:
     SONAR_MAX_RANGE,
 		SONAR_USE_FOR_AUTONOMOUS_DRIVING
   };
-  AREXPORT void internalSetSonar(int num, int x, int y, int th, 
+  MVREXPORT void internalSetSonar(int num, int x, int y, int th, 
     int mtxboard = 0, int mtxunit = 0, int mtxgain = 0, int mtxthresh = 0, int mtxmax = 0);
-  AREXPORT bool parseSonarUnit(MvrArgumentBuilder *builder);
-  AREXPORT bool parseMTXSonarUnit(MvrArgumentBuilder *builder);
-	AREXPORT const std::list<ArArgumentBuilder *> *getSonarUnits(void);
-	//AREXPORT const std::list<ArArgumentBuilder *> *getMTXSonarUnits(void);
+  MVREXPORT bool parseSonarUnit(MvrArgumentBuilder *builder);
+  MVREXPORT bool parseMTXSonarUnit(MvrArgumentBuilder *builder);
+	MVREXPORT const std::list<ArArgumentBuilder *> *getSonarUnits(void);
+	//MVREXPORT const std::list<ArArgumentBuilder *> *getMTXSonarUnits(void);
   std::list<ArArgumentBuilder *> myGetSonarUnitList;
   MvrRetFunctorC<const std::list<ArArgumentBuilder *> *, MvrRobotParams> mySonarUnitGetFunctor;
   MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> mySonarUnitSetFunctor;
@@ -1255,9 +1255,9 @@ protected:
     IR_TYPE,
     IR_CYCLES
   };
-  AREXPORT void internalSetIR(int num, int type, int cycles, int x, int y);
-  AREXPORT bool parseIRUnit(MvrArgumentBuilder *builder);
-  AREXPORT const std::list<ArArgumentBuilder *> *getIRUnits(void);
+  MVREXPORT void internalSetIR(int num, int type, int cycles, int x, int y);
+  MVREXPORT bool parseIRUnit(MvrArgumentBuilder *builder);
+  MVREXPORT const std::list<ArArgumentBuilder *> *getIRUnits(void);
   std::list<ArArgumentBuilder *> myGetIRUnitList;
   MvrRetFunctorC<const std::list<ArArgumentBuilder *> *, MvrRobotParams> myIRUnitGetFunctor;
   MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> myIRUnitSetFunctor;

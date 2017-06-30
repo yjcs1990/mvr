@@ -36,11 +36,11 @@ class MvrFunctorASyncTask : public MvrASyncTask
 {
 public:
   /// Constructor
-  AREXPORT MvrFunctorASyncTask(MvrRetFunctor1<void *, void *> *functor);
+  MVREXPORT MvrFunctorASyncTask(MvrRetFunctor1<void *, void *> *functor);
   /// Destructor
-  AREXPORT virtual ~ArFunctorASyncTask();
+  MVREXPORT virtual ~MvrFunctorASyncTask();
   /// Our reimplementation of runThread
-  AREXPORT virtual void *runThread(void *arg);
+  MVREXPORT virtual void *runThread(void *arg);
 protected:
   MvrRetFunctor1<void *, void *> *myFunc;
 };

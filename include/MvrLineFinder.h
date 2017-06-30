@@ -43,30 +43,30 @@ class MvrLineFinder
 {
 public:
   /// Constructor
-  AREXPORT MvrLineFinder(MvrRangeDevice *dev);
+  MVREXPORT MvrLineFinder(MvrRangeDevice *dev);
   /// Destructor
-  AREXPORT virtual ~ArLineFinder();
+  MVREXPORT virtual ~MvrLineFinder();
 
 #ifndef SWIG
   /// Finds the lines and returns a pointer to MvrLineFinder's map of them 
   /** @swigomit */
-  AREXPORT std::map<int, MvrLineFinderSegment *> *getLines(void);
+  MVREXPORT std::map<int, MvrLineFinderSegment *> *getLines(void);
   /// Finds the lines, but then returns a pointer to MvrLineFinder's map of the points that AREN'T in lines
   /** @swigomit */
-  AREXPORT std::map<int, MvrPose> *getNonLinePoints(void);
+  MVREXPORT std::map<int, MvrPose> *getNonLinePoints(void);
 #endif
   /// Finds the lines, then copies @b pointers to them them into a new set
-  AREXPORT std::set<ArLineFinderSegment*> getLinesAsSet();
+  MVREXPORT std::set<ArLineFinderSegment*> getLinesAsSet();
   /// Finds the lines, and then copies the points that AREN'T in the lines into a new set
-  AREXPORT std::set<ArPose> getNonLinePointsAsSet();
+  MVREXPORT std::set<ArPose> getNonLinePointsAsSet();
 
   /// Gets the robot pose at which the data from the range device (provided in
   /// constructor) was received
   MvrPose getLinesTakenPose(void) { return myPoseTaken; }
   /// Logs all the points and lines from the last getLines
-  AREXPORT void saveLast(void);
+  MVREXPORT void saveLast(void);
   /// Gets the lines, then prints them
-  AREXPORT void getLinesAndSaveThem(void);
+  MVREXPORT void getLinesAndSaveThem(void);
   /// Whether to print verbose information about line decisions
   void setVerbose(bool verbose) { myPrinting = verbose; }
   /// Whether to print verbose information about line decisions
@@ -98,7 +98,7 @@ public:
     { myMaxDistBetweenPoints = maxDistBetweenPoints; }
 
   /// Add this MvrLineFinder's parameters to the given MvrConfig object.
-  AREXPORT void addToConfig(MvrConfig *config,
+  MVREXPORT void addToConfig(MvrConfig *config,
 			    const char *section);
 protected:
   // where the readings were taken
@@ -108,16 +108,16 @@ protected:
   std::map<int, MvrLineFinderSegment *> *myLines;
   std::map<int, MvrPose> *myNonLinePoints;
   // fills up the myPoints variable from sick laser
-  AREXPORT void fillPointsFromLaser(void);
+  MVREXPORT void fillPointsFromLaser(void);
   // fills up the myLines variable from the myPoints
-  AREXPORT void findLines(void);
+  MVREXPORT void findLines(void);
   // cleans the lines and puts them into myLines 
-  AREXPORT bool combineLines();
+  MVREXPORT bool combineLines();
   // takes two segments and sees if it can average them
-  AREXPORT MvrLineFinderSegment *averageSegments(MvrLineFinderSegment *line1, 
+  MVREXPORT MvrLineFinderSegment *averageSegments(MvrLineFinderSegment *line1, 
 					  MvrLineFinderSegment *line2);
   // removes lines that don't have enough points added in
-  AREXPORT void filterLines();
+  MVREXPORT void filterLines();
 
   bool myFlippedFound;
   bool myFlipped;
@@ -143,7 +143,7 @@ public:
   MvrLineFinderSegment(double x1, double y1, double x2, double y2, 
 		      int numPoints = 0, int startPoint = 0, int endPoint = 0)
     { newEndPoints(x1, y1, x2, y2, numPoints, startPoint, endPoint); }
-  virtual ~ArLineFinderSegment() {}
+  virtual ~MvrLineFinderSegment() {}
   void newEndPoints(double x1, double y1, double x2, double y2, 
 		    int numPoints = 0, int startPoint = 0, int endPoint = 0)
     {

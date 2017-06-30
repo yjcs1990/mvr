@@ -126,7 +126,7 @@ std::string Mvria::ourIdentifier = "generic";
    @see MvrSocket
 
  */
-AREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, 
+MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, 
 			 bool sigHandleExitNotShutdown)
 {
 #ifndef ARINTERFACE
@@ -277,7 +277,7 @@ AREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
    For both Linux and Windows, it closes all the open MvrModules. For Windows
    it deinitializes the socket layer as well.
 */
-AREXPORT void Mvria::uninit()
+MVREXPORT void Mvria::uninit()
 {
   std::list<ArFunctor*>::iterator iter;
 
@@ -295,7 +295,7 @@ AREXPORT void Mvria::uninit()
    This will add a callback to the list of callbacks to call when Mvria
    has been initialized. It can be called before anything else.
 */
-AREXPORT void Mvria::addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
+MVREXPORT void Mvria::addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)
     ourInitCBs.push_front(cb);
@@ -310,7 +310,7 @@ AREXPORT void Mvria::addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
    and packages that are based on Mvria are unitited as well. It simplifies
    the entire uninit process.
 */
-AREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
+MVREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)
     ourUninitCBs.push_front(cb);
@@ -334,7 +334,7 @@ AREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
    Mvria::exit() instead. 
    @sa Mvria::exit()
 */
-AREXPORT void Mvria::shutdown()
+MVREXPORT void Mvria::shutdown()
 {
   bool doExit=false;
 
@@ -369,7 +369,7 @@ AREXPORT void Mvria::shutdown()
 
    @sa addExitCallback()
 **/
-AREXPORT void Mvria::exit(int exitCode)
+MVREXPORT void Mvria::exit(int exitCode)
 {
   bool doReturn = false;
   ourShuttingDownMutex.lock();
@@ -388,7 +388,7 @@ AREXPORT void Mvria::exit(int exitCode)
 }
 
 /** @internal */
-AREXPORT void Mvria::callExitCallbacks(void)
+MVREXPORT void Mvria::callExitCallbacks(void)
 {
   ourRunning = false;
 
@@ -421,7 +421,7 @@ AREXPORT void Mvria::callExitCallbacks(void)
  * Note, an exit callback may be called at any time; it should not
  * block or wait on any locked mutexes or similar.
  */
-AREXPORT void Mvria::addExitCallback(MvrFunctor *functor, int position)
+MVREXPORT void Mvria::addExitCallback(MvrFunctor *functor, int position)
 {
   if (ourExiting)
   {
@@ -447,7 +447,7 @@ AREXPORT void Mvria::addExitCallback(MvrFunctor *functor, int position)
 
  @since 2.7.0
  */
-AREXPORT void Mvria::remExitCallback(MvrFunctor *functor)
+MVREXPORT void Mvria::remExitCallback(MvrFunctor *functor)
 {
   if (ourExiting)
   {
@@ -486,7 +486,7 @@ AREXPORT void Mvria::remExitCallback(MvrFunctor *functor)
    @deprecated
 **/
 
-AREXPORT void Mvria::exitOld(int exitCode)
+MVREXPORT void Mvria::exitOld(int exitCode)
 {
   ourRunning = false;
   MvrThread::cancelAll();
@@ -495,12 +495,12 @@ AREXPORT void Mvria::exitOld(int exitCode)
 }
 
 #ifndef ARINTERFACE
-AREXPORT void Mvria::addRobot(MvrRobot *robot)
+MVREXPORT void Mvria::addRobot(MvrRobot *robot)
 {
   ourRobots.push_back(robot);
 }
 
-AREXPORT void Mvria::delRobot(MvrRobot *robot)
+MVREXPORT void Mvria::delRobot(MvrRobot *robot)
 {
   ourRobots.remove(robot);
 }
@@ -510,7 +510,7 @@ AREXPORT void Mvria::delRobot(MvrRobot *robot)
    @return NULL if there is no robot of that name, otherwise the robot with 
    that name
 */
-AREXPORT MvrRobot *Aria::findRobot(char *name)
+MVREXPORT MvrRobot *Aria::findRobot(char *name)
 {
   std::string rname;
   std::list<ArRobot *>::iterator it;
@@ -527,7 +527,7 @@ AREXPORT MvrRobot *Aria::findRobot(char *name)
 
 }
 
-AREXPORT std::list<ArRobot*> * Mvria::getRobotList()
+MVREXPORT std::list<ArRobot*> * Mvria::getRobotList()
 {
   return(&ourRobots);
 }
@@ -535,7 +535,7 @@ AREXPORT std::list<ArRobot*> * Mvria::getRobotList()
 #endif // ARINTERFACE
 
 /** @internal */
-AREXPORT void Mvria::signalHandlerCB(int sig)
+MVREXPORT void Mvria::signalHandlerCB(int sig)
 {
 
   // if we want to exit instead of shutdown then do that ( call never returns)
@@ -591,7 +591,7 @@ AREXPORT void Mvria::signalHandlerCB(int sig)
    @param directory the directory Mvria is located in
    @see getDirectory
 */
-AREXPORT void Mvria::setDirectory(const char *directory)
+MVREXPORT void Mvria::setDirectory(const char *directory)
 {
   int ind;
   if (directory != NULL)
@@ -620,44 +620,44 @@ AREXPORT void Mvria::setDirectory(const char *directory)
    @return the directory ARIA is located in
    @see setDirectory
 */
-AREXPORT const char *Aria::getDirectory(void)
+MVREXPORT const char *Aria::getDirectory(void)
 {
   return ourDirectory.c_str();
 }
 
 /// Sets the key handler, so that other classes can find it
-AREXPORT void Mvria::setKeyHandler(MvrKeyHandler *keyHandler)
+MVREXPORT void Mvria::setKeyHandler(MvrKeyHandler *keyHandler)
 {
   ourKeyHandler = keyHandler;
 }
 
 /// Gets the key handler if one has been set
-AREXPORT MvrKeyHandler *Aria::getKeyHandler(void)
+MVREXPORT MvrKeyHandler *Aria::getKeyHandler(void)
 {
   return ourKeyHandler;
 }
 
 /// Sets the joy handler, so that other classes can find it
-AREXPORT void Mvria::setJoyHandler(MvrJoyHandler *joyHandler)
+MVREXPORT void Mvria::setJoyHandler(MvrJoyHandler *joyHandler)
 {
   ourJoyHandler = joyHandler;
 }
 
 /// Gets the joy handler if one has been set
-AREXPORT MvrJoyHandler *Aria::getJoyHandler(void)
+MVREXPORT MvrJoyHandler *Aria::getJoyHandler(void)
 {
   return ourJoyHandler;
 }
 
 #ifndef ARINTERFACE
 /// Sets the robot joy handler, so that other classes can find it
-AREXPORT void Mvria::setRobotJoyHandler(MvrRobotJoyHandler *robotJoyHandler)
+MVREXPORT void Mvria::setRobotJoyHandler(MvrRobotJoyHandler *robotJoyHandler)
 {
   ourRobotJoyHandler = robotJoyHandler;
 }
 
 /// Gets the robot joy handler if one has been set
-AREXPORT MvrRobotJoyHandler *Aria::getRobotJoyHandler(void)
+MVREXPORT MvrRobotJoyHandler *Aria::getRobotJoyHandler(void)
 {
   return ourRobotJoyHandler;
 }
@@ -665,7 +665,7 @@ AREXPORT MvrRobotJoyHandler *Aria::getRobotJoyHandler(void)
 /**
    This gets the global config aria uses.
  **/
-AREXPORT MvrConfig *Aria::getConfig(void)
+MVREXPORT MvrConfig *Aria::getConfig(void)
 {
   return &ourConfig;
 }
@@ -673,7 +673,7 @@ AREXPORT MvrConfig *Aria::getConfig(void)
 /**
    This gets the global string group aria uses.
  **/
-AREXPORT MvrStringInfoGroup *Aria::getInfoGroup(void)
+MVREXPORT MvrStringInfoGroup *Aria::getInfoGroup(void)
 {
   return &ourInfoGroup;
 }
@@ -681,7 +681,7 @@ AREXPORT MvrStringInfoGroup *Aria::getInfoGroup(void)
 /**
    Gets the maximum number of lasers to check for and use
 **/
-AREXPORT int Mvria::getMaxNumLasers(void)
+MVREXPORT int Mvria::getMaxNumLasers(void)
 {
   return ourMaxNumLasers;
 }
@@ -691,7 +691,7 @@ AREXPORT int Mvria::getMaxNumLasers(void)
    going to set this you should do it after the Mvria::init before you
    start making laser connectors or robots or robot params.
 **/
-AREXPORT void Mvria::setMaxNumLasers(int maxNumLasers)
+MVREXPORT void Mvria::setMaxNumLasers(int maxNumLasers)
 {
   ourMaxNumLasers = maxNumLasers;
 }
@@ -699,7 +699,7 @@ AREXPORT void Mvria::setMaxNumLasers(int maxNumLasers)
 /**
    Gets the maximum number of sonar boards to check for and use
 **/
-AREXPORT int Mvria::getMaxNumSonarBoards(void)
+MVREXPORT int Mvria::getMaxNumSonarBoards(void)
 {
   return ourMaxNumSonarBoards;
 }
@@ -708,7 +708,7 @@ AREXPORT int Mvria::getMaxNumSonarBoards(void)
    Sets the maximum number of sonars to check for and use, if you are
    going to set this you should do it after the Mvria::init
 **/
-AREXPORT void Mvria::setMaxNumSonarBoards(int maxNumSonarBoards)
+MVREXPORT void Mvria::setMaxNumSonarBoards(int maxNumSonarBoards)
 {
   ourMaxNumSonarBoards = maxNumSonarBoards;
 }
@@ -716,7 +716,7 @@ AREXPORT void Mvria::setMaxNumSonarBoards(int maxNumSonarBoards)
 /**
    Gets the maximum number of batteries to check for and use
 **/
-AREXPORT int Mvria::getMaxNumBatteries(void)
+MVREXPORT int Mvria::getMaxNumBatteries(void)
 {
   return ourMaxNumBatteries;
 }
@@ -725,7 +725,7 @@ AREXPORT int Mvria::getMaxNumBatteries(void)
    Sets the maximum number of sonars to check for and use, if you are
    going to set this you should do it after the Mvria::init
 **/
-AREXPORT void Mvria::setMaxNumBatteries(int maxNumBatteries)
+MVREXPORT void Mvria::setMaxNumBatteries(int maxNumBatteries)
 {
   ourMaxNumBatteries = maxNumBatteries;
 }
@@ -733,7 +733,7 @@ AREXPORT void Mvria::setMaxNumBatteries(int maxNumBatteries)
 /**
    Gets the maximum number of lcds to check for and use
 **/
-AREXPORT int Mvria::getMaxNumLCDs(void)
+MVREXPORT int Mvria::getMaxNumLCDs(void)
 {
   return ourMaxNumLCDs;
 }
@@ -742,7 +742,7 @@ AREXPORT int Mvria::getMaxNumLCDs(void)
    Sets the maximum number of sonars to check for and use, if you are
    going to set this you should do it after the Mvria::init
 **/
-AREXPORT void Mvria::setMaxNumLCDs(int maxNumLCDs)
+MVREXPORT void Mvria::setMaxNumLCDs(int maxNumLCDs)
 {
   ourMaxNumLCDs = maxNumLCDs;
 }
@@ -755,13 +755,13 @@ AREXPORT void Mvria::setMaxNumLCDs(int maxNumLCDs)
    a call to Mvria::shutdown() or Mvria::exit() and an operating system signal has not occured (e.g. 
    external KILL signal)
 **/
-AREXPORT bool Mvria::getRunning(void)
+MVREXPORT bool Mvria::getRunning(void)
 {
   return ourRunning;
 }
 
 /** @sa addParseArgsCB() */
-AREXPORT bool Mvria::parseArgs(void)
+MVREXPORT bool Mvria::parseArgs(void)
 {
   std::multimap<int, MvrRetFunctor<bool> *>::reverse_iterator it;
   MvrRetFunctor<bool> *callback;
@@ -796,7 +796,7 @@ AREXPORT bool Mvria::parseArgs(void)
 }
 
 /** @sa addLogOptionsCB() */
-AREXPORT void Mvria::logOptions(void)
+MVREXPORT void Mvria::logOptions(void)
 {
   std::multimap<int, MvrFunctor *>::reverse_iterator it;
 
@@ -812,24 +812,24 @@ AREXPORT void Mvria::logOptions(void)
   MvrLog::log(MvrLog::Terse, "");
 }
 
-AREXPORT void Mvria::addParseArgsCB(MvrRetFunctor<bool> *functor, 
+MVREXPORT void Mvria::addParseArgsCB(MvrRetFunctor<bool> *functor, 
 					  int position)
 {
   ourParseArgCBs.insert(std::pair<int, MvrRetFunctor<bool> *>(position, 
 							     functor));
 }
 
-AREXPORT void Mvria::setParseArgLogLevel(MvrLog::LogLevel level)
+MVREXPORT void Mvria::setParseArgLogLevel(MvrLog::LogLevel level)
 {
   ourParseArgsLogLevel = level;
 }
 
-AREXPORT void Mvria::addLogOptionsCB(MvrFunctor *functor, int position)
+MVREXPORT void Mvria::addLogOptionsCB(MvrFunctor *functor, int position)
 {
   ourLogOptionsCBs.insert(std::pair<int, MvrFunctor *>(position, functor));
 }
 
-AREXPORT void Mvria::setExitCallbacksLogLevel(MvrLog::LogLevel level)
+MVREXPORT void Mvria::setExitCallbacksLogLevel(MvrLog::LogLevel level)
 {
   ourExitCallbacksLogLevel = level;
 }
@@ -846,7 +846,7 @@ AREXPORT void Mvria::setExitCallbacksLogLevel(MvrLog::LogLevel level)
    @param creator A functor which takes an int (laser number) and a
    const char * (logPrefix) and returns a new laser of the laserType
 **/
-AREXPORT bool Mvria::laserAddCreator(
+MVREXPORT bool Mvria::laserAddCreator(
 	const char *laserType, 
 	ArRetFunctor2<ArLaser *, int, const char *> *creator)
 {
@@ -876,7 +876,7 @@ AREXPORT bool Mvria::laserAddCreator(
    Gets a string that is the types of lasers that can be created
    separated by | characters.  Mostly for internal use by MvrLaserConnector.
 **/
-AREXPORT const char *Aria::laserGetTypes(void)
+MVREXPORT const char *Aria::laserGetTypes(void)
 {
   return ourLaserTypes.c_str();
 }
@@ -885,7 +885,7 @@ AREXPORT const char *Aria::laserGetTypes(void)
    Gets a string that is the types of lasers that can be created
    separated by ;; characters.  Mostly for internal use by the config
 **/
-AREXPORT const char *Aria::laserGetChoices(void)
+MVREXPORT const char *Aria::laserGetChoices(void)
 {
   return ourLaserChoices.c_str();
 }
@@ -902,7 +902,7 @@ AREXPORT const char *Aria::laserGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-AREXPORT MvrLaser *Aria::laserCreate(const char *laserType, int laserNumber,
+MVREXPORT MvrLaser *Aria::laserCreate(const char *laserType, int laserNumber,
 				    const char *logPrefix)
 {
   std::map<std::string, MvrRetFunctor2<ArLaser *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
@@ -927,7 +927,7 @@ AREXPORT MvrLaser *Aria::laserCreate(const char *laserType, int laserNumber,
    @param creator A functor which takes an int (battery number) and a
    const char * (logPrefix) and returns a new battery of the batteryType
 **/
-AREXPORT bool Mvria::batteryAddCreator(
+MVREXPORT bool Mvria::batteryAddCreator(
 	const char *batteryType, 
 	ArRetFunctor2<ArBatteryMTX *, int, const char *> *creator)
 {
@@ -957,7 +957,7 @@ AREXPORT bool Mvria::batteryAddCreator(
    Gets a string that is the types of batteries that can be created
    separated by | characters.  Mostly for internal use by MvrBatteryConnector.
 **/
-AREXPORT const char *Aria::batteryGetTypes(void)
+MVREXPORT const char *Aria::batteryGetTypes(void)
 {
   return ourBatteryTypes.c_str();
 }
@@ -966,7 +966,7 @@ AREXPORT const char *Aria::batteryGetTypes(void)
    Gets a string that is the types of batteries that can be created
    separated by ;; characters.  Mostly for internal use by the config.
 **/
-AREXPORT const char *Aria::batteryGetChoices(void)
+MVREXPORT const char *Aria::batteryGetChoices(void)
 {
   return ourBatteryChoices.c_str();
 }
@@ -983,7 +983,7 @@ AREXPORT const char *Aria::batteryGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-AREXPORT MvrBatteryMTX *Aria::batteryCreate(const char *batteryType, int batteryNumber,
+MVREXPORT MvrBatteryMTX *Aria::batteryCreate(const char *batteryType, int batteryNumber,
 				    const char *logPrefix)
 {
   std::map<std::string, MvrRetFunctor2<ArBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
@@ -1008,7 +1008,7 @@ AREXPORT MvrBatteryMTX *Aria::batteryCreate(const char *batteryType, int battery
    @param creator A functor which takes an int (lcd number) and a
    const char * (logPrefix) and returns a new lcd of the lcdType
 **/
-AREXPORT bool Mvria::lcdAddCreator(
+MVREXPORT bool Mvria::lcdAddCreator(
 	const char *lcdType, 
 	ArRetFunctor2<ArLCDMTX *, int, const char *> *creator)
 {
@@ -1040,7 +1040,7 @@ AREXPORT bool Mvria::lcdAddCreator(
    Gets a string that is the types of batteries that can be created
    separated by | characters.  Mostly for internal use by MvrLCDConnector.
 **/
-AREXPORT const char *Aria::lcdGetTypes(void)
+MVREXPORT const char *Aria::lcdGetTypes(void)
 {
   return ourLCDTypes.c_str();
 }
@@ -1049,7 +1049,7 @@ AREXPORT const char *Aria::lcdGetTypes(void)
    Gets a string that is the types of batteries that can be created
    separated by ;; characters.  Mostly for internal use by MvrLCDConnector.
 **/
-AREXPORT const char *Aria::lcdGetChoices(void)
+MVREXPORT const char *Aria::lcdGetChoices(void)
 {
   return ourLCDChoices.c_str();
 }
@@ -1066,7 +1066,7 @@ AREXPORT const char *Aria::lcdGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-AREXPORT MvrLCDMTX *Aria::lcdCreate(const char *lcdType, int lcdNumber,
+MVREXPORT MvrLCDMTX *Aria::lcdCreate(const char *lcdType, int lcdNumber,
 				    const char *logPrefix)
 {
   std::map<std::string, MvrRetFunctor2<ArLCDMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
@@ -1091,7 +1091,7 @@ AREXPORT MvrLCDMTX *Aria::lcdCreate(const char *lcdType, int lcdNumber,
    @param creator A functor which takes an int (sonar number) and a
    const char * (logPrefix) and returns a new sonar of the sonarType
 **/
-AREXPORT bool Mvria::sonarAddCreator(
+MVREXPORT bool Mvria::sonarAddCreator(
 	const char *sonarType, 
 	ArRetFunctor2<ArSonarMTX *, int, const char *> *creator)
 {
@@ -1121,7 +1121,7 @@ AREXPORT bool Mvria::sonarAddCreator(
    Gets a string that is the types of sonars that can be created
    separated by | characters.  Mostly for internal use by MvrSonarConnector.
 **/
-AREXPORT const char *Aria::sonarGetTypes(void)
+MVREXPORT const char *Aria::sonarGetTypes(void)
 {
   return ourSonarTypes.c_str();
 }
@@ -1130,7 +1130,7 @@ AREXPORT const char *Aria::sonarGetTypes(void)
    Gets a string that is the types of sonars that can be created
    separated by ;; characters.  Mostly for internal use by the config.
 **/
-AREXPORT const char *Aria::sonarGetChoices(void)
+MVREXPORT const char *Aria::sonarGetChoices(void)
 {
   return ourSonarChoices.c_str();
 }
@@ -1147,7 +1147,7 @@ AREXPORT const char *Aria::sonarGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-AREXPORT MvrSonarMTX *Aria::sonarCreate(const char *sonarType, int sonarNumber,
+MVREXPORT MvrSonarMTX *Aria::sonarCreate(const char *sonarType, int sonarNumber,
 				    const char *logPrefix)
 {
   std::map<std::string, MvrRetFunctor2<ArSonarMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
@@ -1177,7 +1177,7 @@ AREXPORT MvrSonarMTX *Aria::sonarCreate(const char *sonarType, int sonarNumber,
    deviceConnectionType if it can create the desired connection.  If
    the connection failes then it should return NULL.
 **/
-AREXPORT bool Mvria::deviceConnectionAddCreator(
+MVREXPORT bool Mvria::deviceConnectionAddCreator(
 	const char *deviceConnectionType, 
 	ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *creator)
 {
@@ -1207,7 +1207,7 @@ AREXPORT bool Mvria::deviceConnectionAddCreator(
    Gets a string that is the types of device connections that can be created
    separated by | characters.  Mostly for internal use by MvrLaserConnector.
 **/
-AREXPORT const char *Aria::deviceConnectionGetTypes(void)
+MVREXPORT const char *Aria::deviceConnectionGetTypes(void)
 {
     return ourDeviceConnectionTypes.c_str();
 }
@@ -1216,7 +1216,7 @@ AREXPORT const char *Aria::deviceConnectionGetTypes(void)
    Gets a string that is the types of device connections that can be created
    separated by ;; characters.  Mostly for internal use by the config.
 **/
-AREXPORT const char *Aria::deviceConnectionGetChoices(void)
+MVREXPORT const char *Aria::deviceConnectionGetChoices(void)
 {
     return ourDeviceConnectionChoices.c_str();
 }
@@ -1237,7 +1237,7 @@ AREXPORT const char *Aria::deviceConnectionGetChoices(void)
    
    @param logPrefix The prefix to use when logging 
 */
-AREXPORT MvrDeviceConnection *Aria::deviceConnectionCreate(
+MVREXPORT MvrDeviceConnection *Aria::deviceConnectionCreate(
 	const char *deviceConnectionType, const char *port, 
 	const char *defaultInfo, const char *logPrefix)
 {
@@ -1253,17 +1253,17 @@ AREXPORT MvrDeviceConnection *Aria::deviceConnectionCreate(
 }
 
 
-AREXPORT  void Mvria::setMaxNumVideoDevices(size_t n) { ourMaxNumVideoDevices = n; }
-AREXPORT  size_t Mvria::getMaxNumVideoDevices() { return ourMaxNumVideoDevices; }
-AREXPORT  void Mvria::setMaxNumPTZs(size_t n) { ourMaxNumVideoDevices = n; }
-AREXPORT  size_t Mvria::getMaxNumPTZs() { return ourMaxNumVideoDevices; }
+MVREXPORT  void Mvria::setMaxNumVideoDevices(size_t n) { ourMaxNumVideoDevices = n; }
+MVREXPORT  size_t Mvria::getMaxNumVideoDevices() { return ourMaxNumVideoDevices; }
+MVREXPORT  void Mvria::setMaxNumPTZs(size_t n) { ourMaxNumVideoDevices = n; }
+MVREXPORT  size_t Mvria::getMaxNumPTZs() { return ourMaxNumVideoDevices; }
 
-AREXPORT const char *Aria::getIdentifier(void)
+MVREXPORT const char *Aria::getIdentifier(void)
 {
   return ourIdentifier.c_str();
 }
 
-AREXPORT void Mvria::setIdentifier(const char *identifier)
+MVREXPORT void Mvria::setIdentifier(const char *identifier)
 {
   ourIdentifier = identifier;
 

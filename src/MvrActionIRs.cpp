@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param turnTime number of msec to alow for turn (msec)
    @param setMaximums if true, set desired maximum speed limits to backOffSpeed when performing the action; otherwise use existing speed limits.
 */
-AREXPORT MvrActionIRs::ArActionIRs(const char *name, 
+MVREXPORT MvrActionIRs::ArActionIRs(const char *name, 
 					  double backOffSpeed,
 					  int backOffTime, int turnTime,
 					  bool setMaximums) :
@@ -66,12 +66,12 @@ AREXPORT MvrActionIRs::ArActionIRs(const char *name,
   myHeading = 0.0;
 }
 
-AREXPORT MvrActionIRs::~ArActionIRs()
+MVREXPORT MvrActionIRs::~MvrActionIRs()
 {
 
 }
 
-AREXPORT void MvrActionIRs::setRobot(MvrRobot *robot)
+MVREXPORT void MvrActionIRs::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   const MvrRobotParams *params;
@@ -82,7 +82,7 @@ AREXPORT void MvrActionIRs::setRobot(MvrRobot *robot)
     cycleCounters.push_back(1);
 }
 
-AREXPORT MvrActionDesired *ArActionIRs::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *ArActionIRs::fire(MvrActionDesired currentDesired)
 {
   myDesired.reset();
 

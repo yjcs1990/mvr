@@ -59,15 +59,15 @@ public:
   };
 
   /// Constructor
-	AREXPORT MvrZippable() 
+	MVREXPORT MvrZippable() 
   {}
 	
   /// Destructor
-	AREXPORT virtual ~ArZippable()
+	MVREXPORT virtual ~MvrZippable()
   {}
 
   /// Returns the complete file path name of the zip file
-  AREXPORT virtual const char *getFilePathName() const  = 0;
+  MVREXPORT virtual const char *getFilePathName() const  = 0;
 
   /// Modes in which the zip file may be opened
   enum ModeType {
@@ -82,16 +82,16 @@ public:
    * @return bool true if the zip file was successfully opened in the specified
    * mode; false, otherwise.
   **/
-  AREXPORT virtual bool open(ModeType mode) = 0;
+  MVREXPORT virtual bool open(ModeType mode) = 0;
 
   /// Closes the zip file
-  AREXPORT virtual void close() = 0;
+  MVREXPORT virtual void close() = 0;
 
   /// Determines whether the zip file exists (according to the file path name)
   /**
    * @return bool true if the file exists and can be read; false, otherwise
   **/
-  AREXPORT virtual bool exists() const = 0;
+  MVREXPORT virtual bool exists() const = 0;
 
 
   /// Determines whether the zip file contains the specified member name
@@ -100,7 +100,7 @@ public:
    * @return bool true if the zip file contains the specified member; false
    * otherwise
   **/
-  AREXPORT virtual bool contains(const char *memberName) = 0;
+  MVREXPORT virtual bool contains(const char *memberName) = 0;
 
   
   // TODO: Perhaps add a callback to be invoked when isOverwrite is false and
@@ -119,7 +119,7 @@ public:
    * @return bool set to true if all files were successfully extracted (or 
    * correctly skipped); false if an error occurred
   **/
-  AREXPORT virtual bool extractAll(const char *destDir,
+  MVREXPORT virtual bool extractAll(const char *destDir,
                                    bool isOverwrite,
                                    const char *password = NULL) = 0;
 
@@ -139,7 +139,7 @@ public:
    * @return bool set to true if the file was successfully extracted (or 
    * correctly skipped); false if an error occurred
   **/
-  AREXPORT virtual bool extractFile(const char *memberName, 
+  MVREXPORT virtual bool extractFile(const char *memberName, 
                                     const char *destDir,
                                     bool isOverwrite,
                                     const char *destFileName = NULL,
@@ -162,7 +162,7 @@ public:
    * @return bool set to true if all files were successfully added (or 
    * correctly skipped); false if an error occurred
   **/
-  AREXPORT virtual bool addAll(const char *sourceDir,
+  MVREXPORT virtual bool addAll(const char *sourceDir,
                                bool isIncludeSubDirs,
                                bool isOverwrite,
                                const char *password = NULL,
@@ -182,7 +182,7 @@ public:
    * @return bool set to true if all files were successfully added (or 
    * correctly skipped); false if an error occurred
   **/ 
-  AREXPORT virtual bool addFile(const char *memberName,
+  MVREXPORT virtual bool addFile(const char *memberName,
                                 bool isOverwrite,
                                 const char *sourceFileName,
                                 const char *password,

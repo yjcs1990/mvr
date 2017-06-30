@@ -31,18 +31,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobot.h"
 
 
-AREXPORT ArVCC4Packet::ArVCC4Packet(MvrTypes::UByte2 bufferSize) :
+MVREXPORT ArVCC4Packet::ArVCC4Packet(MvrTypes::UByte2 bufferSize) :
   ArBasePacket(bufferSize, 0)
 {
 }
 
-AREXPORT ArVCC4Packet::~ArVCC4Packet()
+MVREXPORT ArVCC4Packet::~MvrVCC4Packet()
 {
 
 }
 
 
-AREXPORT void ArVCC4Packet::byte2ToBuf(MvrTypes::Byte4 val)
+MVREXPORT void ArVCC4Packet::byte2ToBuf(MvrTypes::Byte4 val)
 {
   int i;
   char buf[5];
@@ -62,7 +62,7 @@ AREXPORT void ArVCC4Packet::byte2ToBuf(MvrTypes::Byte4 val)
 
 
 /* Automatically tacks on footer char */
-AREXPORT void ArVCC4Packet::finalizePacket(void)
+MVREXPORT void ArVCC4Packet::finalizePacket(void)
 {
   uByteToBuf(MvrVCC4Commands::FOOTER);
 }
@@ -71,7 +71,7 @@ AREXPORT void ArVCC4Packet::finalizePacket(void)
 /*
 Creates new packet with default header, device id, and delimeter - FE 30 30 00
 */
-AREXPORT void ArVCC4::preparePacket(MvrVCC4Packet *myPacket)		
+MVREXPORT void ArVCC4::preparePacket(MvrVCC4Packet *myPacket)		
 {
   myPacket->uByteToBuf(MvrVCC4Commands::HEADER);
   myPacket->uByteToBuf(MvrVCC4Commands::DEVICEID);
@@ -111,7 +111,7 @@ AREXPORT void ArVCC4::preparePacket(MvrVCC4Packet *myPacket)
 
    @param cameraType used to discriminate between VC-C4 and C50i
 **/
-AREXPORT ArVCC4::ArVCC4(MvrRobot *robot, bool inverted, CommState commDirection, bool autoUpdate, bool disableLED, CameraType cameraType) :
+MVREXPORT ArVCC4::ArVCC4(MvrRobot *robot, bool inverted, CommState commDirection, bool autoUpdate, bool disableLED, CameraType cameraType) :
   ArPTZ(robot),
   myTaskCB(this, &ArVCC4::camTask)
 {
@@ -219,7 +219,7 @@ AREXPORT ArVCC4::ArVCC4(MvrRobot *robot, bool inverted, CommState commDirection,
     myRobot->addUserTask("vcc4", 50, &myTaskCB);
 }
 
-AREXPORT ArVCC4::~ArVCC4()
+MVREXPORT ArVCC4::~MvrVCC4()
 {
   if (myRobot != NULL)
     myRobot->remUserTask(&myTaskCB);
@@ -1533,7 +1533,7 @@ ArBasePacket* ArVCC4::readPacket(void)
   to process the buffer, depending on what type of response we were 
   waiting for.
 */
-AREXPORT bool ArVCC4::packetHandler(MvrBasePacket *packet)
+MVREXPORT bool ArVCC4::packetHandler(MvrBasePacket *packet)
 {
   unsigned int errorCode;
 
@@ -1746,7 +1746,7 @@ AREXPORT bool ArVCC4::packetHandler(MvrBasePacket *packet)
 }
 
 /* This needs to eventually use digital zooming, too */
-AREXPORT int ArVCC4::getMaxZoom(void) const
+MVREXPORT int ArVCC4::getMaxZoom(void) const
 {
   if (myCameraType == CAMERA_C50I)
     return MAX_ZOOM_OPTIC;
@@ -1754,7 +1754,7 @@ AREXPORT int ArVCC4::getMaxZoom(void) const
     return MAX_ZOOM_OPTIC;
 }
 
-AREXPORT bool ArVCC4::panTilt_i(double pdeg, double tdeg)
+MVREXPORT bool ArVCC4::panTilt_i(double pdeg, double tdeg)
 {
   if (pdeg > getMaxPosPan_i())
     myPanDesired = getMaxPosPan_i();
@@ -1773,7 +1773,7 @@ AREXPORT bool ArVCC4::panTilt_i(double pdeg, double tdeg)
   return true;
 }
 
-AREXPORT bool ArVCC4::zoom(int deg)
+MVREXPORT bool ArVCC4::zoom(int deg)
 {
   if (deg > getMaxZoom())
     myZoomDesired = getMaxZoom();
@@ -1787,7 +1787,7 @@ AREXPORT bool ArVCC4::zoom(int deg)
 
 /* Is supposed to accept 1x, 2x, 4x, 8x, and 12x, but doesn't seem to work
  for 12x*/
-AREXPORT bool ArVCC4::digitalZoom(int deg)
+MVREXPORT bool ArVCC4::digitalZoom(int deg)
 {
   if (deg < 0)
     myDigitalZoomDesired = 0;
@@ -1941,7 +1941,7 @@ bool ArVCC4::setControlMode(void)
   return sendPacket(&myPacket);
 }
 
-AREXPORT void ArVCC4::addErrorCB(MvrFunctor *functor, ArListPos::Pos position)
+MVREXPORT void ArVCC4::addErrorCB(MvrFunctor *functor, ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
     myErrorCBList.push_front(functor);
@@ -1951,7 +1951,7 @@ AREXPORT void ArVCC4::addErrorCB(MvrFunctor *functor, ArListPos::Pos position)
     ArLog::log(MvrLog::Terse, "MvrVCC4::addErrorCB: Invalid position.");
 }
 
-AREXPORT void ArVCC4::remErrorCB(MvrFunctor *functor)
+MVREXPORT void ArVCC4::remErrorCB(MvrFunctor *functor)
 {
   myErrorCBList.remove(functor);
 }

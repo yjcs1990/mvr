@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param useOld use the old linux interface to the joystick
 **/
 
-AREXPORT MvrJoyHandler::ArJoyHandler(bool useOSCal, bool useOld)
+MVREXPORT MvrJoyHandler::ArJoyHandler(bool useOSCal, bool useOld)
 {
   myInitialized = false;
   myUseOSCal = useOSCal;
@@ -46,7 +46,7 @@ AREXPORT MvrJoyHandler::ArJoyHandler(bool useOSCal, bool useOld)
   myFirstData = true;
 }
 
-AREXPORT MvrJoyHandler::~ArJoyHandler()
+MVREXPORT MvrJoyHandler::~MvrJoyHandler()
 {
 }
 
@@ -57,7 +57,7 @@ AREXPORT MvrJoyHandler::~ArJoyHandler()
    max and use those values for calibration
 **/
 
-AREXPORT void MvrJoyHandler::setUseOSCal(bool useOSCal)
+MVREXPORT void MvrJoyHandler::setUseOSCal(bool useOSCal)
 {
   myUseOSCal = useOSCal;
 }
@@ -68,7 +68,7 @@ AREXPORT void MvrJoyHandler::setUseOSCal(bool useOSCal)
    max and use those values for calibration
 **/
 
-AREXPORT bool MvrJoyHandler::getUseOSCal(void)
+MVREXPORT bool MvrJoyHandler::getUseOSCal(void)
 {
   return myUseOSCal;
 }
@@ -77,7 +77,7 @@ AREXPORT bool MvrJoyHandler::getUseOSCal(void)
    Starts the calibration, which resets all the min and max variables as well
    as the center variables.
    @see endCal */
-AREXPORT void MvrJoyHandler::startCal(void)
+MVREXPORT void MvrJoyHandler::startCal(void)
 {
   int x, y;
   getUnfiltered(&x, &y);
@@ -96,7 +96,7 @@ AREXPORT void MvrJoyHandler::startCal(void)
     @see startCal
 */
     
-AREXPORT void MvrJoyHandler::endCal(void)
+MVREXPORT void MvrJoyHandler::endCal(void)
 {
   int x, y;
   
@@ -105,7 +105,7 @@ AREXPORT void MvrJoyHandler::endCal(void)
   myCenY = y;
 }
 
-AREXPORT void MvrJoyHandler::getStats(int *maxX, int *minX, int *maxY, 
+MVREXPORT void MvrJoyHandler::getStats(int *maxX, int *minX, int *maxY, 
 				     int *minY, int *cenX, int *cenY)
 {
   *maxX = myMaxX;
@@ -116,7 +116,7 @@ AREXPORT void MvrJoyHandler::getStats(int *maxX, int *minX, int *maxY,
   *cenY = myCenY;
 }
 
-AREXPORT void MvrJoyHandler::setStats(int maxX, int minX, int maxY, int minY, 
+MVREXPORT void MvrJoyHandler::setStats(int maxX, int minX, int maxY, int minY, 
 			   int cenX, int cenY)
 {
   myMaxX = maxX;
@@ -130,7 +130,7 @@ AREXPORT void MvrJoyHandler::setStats(int maxX, int minX, int maxY, int minY,
 /**
    @swignote   Use the version of this method returning MvrJoyVec3i
 */
-AREXPORT void MvrJoyHandler::getSpeeds(int *x, int *y, int *z)
+MVREXPORT void MvrJoyHandler::getSpeeds(int *x, int *y, int *z)
 {
   *x = myTopX;
   *y = myTopY;
@@ -155,7 +155,7 @@ AREXPORT void MvrJoyHandler::getSpeeds(int *x, int *y, int *z)
    @python returns a tuple of (x, y, z) instead
 **/
 
-AREXPORT void MvrJoyHandler::getAdjusted(int *x, int *y, int *z)
+MVREXPORT void MvrJoyHandler::getAdjusted(int *x, int *y, int *z)
 {
   int curX, curY, curZ;
 
@@ -211,7 +211,7 @@ AREXPORT void MvrJoyHandler::getAdjusted(int *x, int *y, int *z)
    @python Returns a tuple of (x, y, z) instead
 **/
 
-AREXPORT void MvrJoyHandler::getDoubles(double *x, double *y, double *z)
+MVREXPORT void MvrJoyHandler::getDoubles(double *x, double *y, double *z)
 {
   int curX, curY, curZ;
 
@@ -256,7 +256,7 @@ AREXPORT void MvrJoyHandler::getDoubles(double *x, double *y, double *z)
    @java   Use the version of this method returning MvrJoyVec3i
    @python Returns a tuple of (x, y, z) instead
 */
-AREXPORT void MvrJoyHandler::getUnfiltered(int *x, int* y, int *z)
+MVREXPORT void MvrJoyHandler::getUnfiltered(int *x, int* y, int *z)
 {
   getData();
   *x = myAxes[1];
@@ -269,7 +269,7 @@ AREXPORT void MvrJoyHandler::getUnfiltered(int *x, int* y, int *z)
    @param axis axis to get, should range from 1 through getNumAxes()
 **/
 
-AREXPORT double MvrJoyHandler::getAxis(unsigned int axis)
+MVREXPORT double MvrJoyHandler::getAxis(unsigned int axis)
 {
   // make sure we have that axis
   if (axis < 1 || axis > myAxes.size())
@@ -297,7 +297,7 @@ AREXPORT double MvrJoyHandler::getAxis(unsigned int axis)
    @return true if the button is pressed, false otherwise
 **/
 
-AREXPORT bool MvrJoyHandler::getButton(unsigned int button)
+MVREXPORT bool MvrJoyHandler::getButton(unsigned int button)
 {
   getData();
   // make sure we have that axis
@@ -315,7 +315,7 @@ AREXPORT bool MvrJoyHandler::getButton(unsigned int button)
    @return the number of axes (axes are indexed as 1 through this number)
 **/
 
-AREXPORT unsigned int MvrJoyHandler::getNumAxes(void)
+MVREXPORT unsigned int MvrJoyHandler::getNumAxes(void)
 {
   return (unsigned int) myAxes.size();
 }
@@ -324,7 +324,7 @@ AREXPORT unsigned int MvrJoyHandler::getNumAxes(void)
    @return the number of buttons (buttons are indexed as 1 through this number)
 **/
 
-AREXPORT unsigned int MvrJoyHandler::getNumButtons(void)
+MVREXPORT unsigned int MvrJoyHandler::getNumButtons(void)
 {
   return (unsigned int) myButtons.size();
 }

@@ -73,45 +73,45 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #ifdef WIN32
 #include <io.h>
-AREXPORT const char *ArUtil::COM1 = "COM1";
-AREXPORT const char *ArUtil::COM2 = "COM2";
-AREXPORT const char *ArUtil::COM3 = "COM3";
-AREXPORT const char *ArUtil::COM4 = "COM4";
-AREXPORT const char *ArUtil::COM5 = "COM5";
-AREXPORT const char *ArUtil::COM6 = "COM6";
-AREXPORT const char *ArUtil::COM7 = "COM7";
-AREXPORT const char *ArUtil::COM8 = "COM8";
-AREXPORT const char *ArUtil::COM9 = "COM9";
-AREXPORT const char *ArUtil::COM10 = "\\\\.\\COM10";
-AREXPORT const char *ArUtil::COM11 = "\\\\.\\COM11";
-AREXPORT const char *ArUtil::COM12 = "\\\\.\\COM12";
-AREXPORT const char *ArUtil::COM13 = "\\\\.\\COM13";
-AREXPORT const char *ArUtil::COM14 = "\\\\.\\COM14";
-AREXPORT const char *ArUtil::COM15 = "\\\\.\\COM15";
-AREXPORT const char *ArUtil::COM16 = "\\\\.\\COM16";
+MVREXPORT const char *ArUtil::COM1 = "COM1";
+MVREXPORT const char *ArUtil::COM2 = "COM2";
+MVREXPORT const char *ArUtil::COM3 = "COM3";
+MVREXPORT const char *ArUtil::COM4 = "COM4";
+MVREXPORT const char *ArUtil::COM5 = "COM5";
+MVREXPORT const char *ArUtil::COM6 = "COM6";
+MVREXPORT const char *ArUtil::COM7 = "COM7";
+MVREXPORT const char *ArUtil::COM8 = "COM8";
+MVREXPORT const char *ArUtil::COM9 = "COM9";
+MVREXPORT const char *ArUtil::COM10 = "\\\\.\\COM10";
+MVREXPORT const char *ArUtil::COM11 = "\\\\.\\COM11";
+MVREXPORT const char *ArUtil::COM12 = "\\\\.\\COM12";
+MVREXPORT const char *ArUtil::COM13 = "\\\\.\\COM13";
+MVREXPORT const char *ArUtil::COM14 = "\\\\.\\COM14";
+MVREXPORT const char *ArUtil::COM15 = "\\\\.\\COM15";
+MVREXPORT const char *ArUtil::COM16 = "\\\\.\\COM16";
 // See http://support.microsoft.com/kb/115831 for explanation of port names for
 // COM10 and up.
 #else // ifndef WIN32
-AREXPORT const char *ArUtil::COM1 = "/dev/ttyS0";
-AREXPORT const char *ArUtil::COM2 = "/dev/ttyS1";
-AREXPORT const char *ArUtil::COM3 = "/dev/ttyS2";
-AREXPORT const char *ArUtil::COM4 = "/dev/ttyS3";
-AREXPORT const char *ArUtil::COM5 = "/dev/ttyS4";
-AREXPORT const char *ArUtil::COM6 = "/dev/ttyS5";
-AREXPORT const char *ArUtil::COM7 = "/dev/ttyS6";
-AREXPORT const char *ArUtil::COM8 = "/dev/ttyS7";
-AREXPORT const char *ArUtil::COM9 = "/dev/ttyS8";
-AREXPORT const char *ArUtil::COM10 = "/dev/ttyS9";
-AREXPORT const char *ArUtil::COM11 = "/dev/ttyS10";
-AREXPORT const char *ArUtil::COM12 = "/dev/ttyS11";
-AREXPORT const char *ArUtil::COM13 = "/dev/ttyS12";
-AREXPORT const char *ArUtil::COM14 = "/dev/ttyS13";
-AREXPORT const char *ArUtil::COM15 = "/dev/ttyS14";
-AREXPORT const char *ArUtil::COM16 = "/dev/ttyS15";
+MVREXPORT const char *ArUtil::COM1 = "/dev/ttyS0";
+MVREXPORT const char *ArUtil::COM2 = "/dev/ttyS1";
+MVREXPORT const char *ArUtil::COM3 = "/dev/ttyS2";
+MVREXPORT const char *ArUtil::COM4 = "/dev/ttyS3";
+MVREXPORT const char *ArUtil::COM5 = "/dev/ttyS4";
+MVREXPORT const char *ArUtil::COM6 = "/dev/ttyS5";
+MVREXPORT const char *ArUtil::COM7 = "/dev/ttyS6";
+MVREXPORT const char *ArUtil::COM8 = "/dev/ttyS7";
+MVREXPORT const char *ArUtil::COM9 = "/dev/ttyS8";
+MVREXPORT const char *ArUtil::COM10 = "/dev/ttyS9";
+MVREXPORT const char *ArUtil::COM11 = "/dev/ttyS10";
+MVREXPORT const char *ArUtil::COM12 = "/dev/ttyS11";
+MVREXPORT const char *ArUtil::COM13 = "/dev/ttyS12";
+MVREXPORT const char *ArUtil::COM14 = "/dev/ttyS13";
+MVREXPORT const char *ArUtil::COM15 = "/dev/ttyS14";
+MVREXPORT const char *ArUtil::COM16 = "/dev/ttyS15";
 #endif  // WIN32
 
-AREXPORT const char *ArUtil::TRUESTRING = "true";
-AREXPORT const char *ArUtil::FALSESTRING = "false";
+MVREXPORT const char *ArUtil::TRUESTRING = "true";
+MVREXPORT const char *ArUtil::FALSESTRING = "false";
 
 // const double eps = std::numeric_limits<double>::epsilon();  
 const double MvrMath::ourEpsilon = 0.00000001; 
@@ -151,7 +151,7 @@ requested (for small sleep times especially, it sleeps for the next highest
 multiple of 10.)
    @param ms the number of milliseconds to sleep for
 */
-AREXPORT void MvrUtil::sleep(unsigned int ms)
+MVREXPORT void MvrUtil::sleep(unsigned int ms)
 {
 #ifdef WIN32
   Sleep(ms);
@@ -178,7 +178,7 @@ timeGetTime() function is used from the winmm library -- this means programs
 using ARIA on Windows must be linked to the winmm.lib library as well as ARIA.
    @return millisecond time
 */
-AREXPORT unsigned int MvrUtil::getTime(void)
+MVREXPORT unsigned int MvrUtil::getTime(void)
 {
 // the good unix way
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
@@ -205,7 +205,7 @@ AREXPORT unsigned int MvrUtil::getTime(void)
    @param outList the list in which to store the words that are found
 */
 /*
-AREXPORT void MvrUtil::splitString(std::string inString,
+MVREXPORT void MvrUtil::splitString(std::string inString,
 				  std::list<std::string> &outList)
 {
   const char *start, *end;
@@ -235,7 +235,7 @@ AREXPORT void MvrUtil::splitString(std::string inString,
    @return size in bytes. -1 on error.
    @param fileName name of the file to size
 */
-AREXPORT long MvrUtil::sizeFile(std::string fileName)
+MVREXPORT long MvrUtil::sizeFile(std::string fileName)
 {
   struct _stat buf;
 
@@ -252,7 +252,7 @@ AREXPORT long MvrUtil::sizeFile(std::string fileName)
    @return size in bytes. -1 on error.
    @param fileName name of the file to size
 */
-AREXPORT long MvrUtil::sizeFile(const char * fileName)
+MVREXPORT long MvrUtil::sizeFile(const char * fileName)
 {
   struct _stat buf;
 
@@ -267,7 +267,7 @@ AREXPORT long MvrUtil::sizeFile(const char * fileName)
 
 #else // !WIN32
 
-AREXPORT long MvrUtil::sizeFile(std::string fileName)
+MVREXPORT long MvrUtil::sizeFile(std::string fileName)
 {
   struct stat buf;
 
@@ -288,7 +288,7 @@ AREXPORT long MvrUtil::sizeFile(std::string fileName)
    @return size in bytes. -1 on error.
    @param fileName name of the file to size
 */
-AREXPORT long MvrUtil::sizeFile(const char * fileName)
+MVREXPORT long MvrUtil::sizeFile(const char * fileName)
 {
   struct stat buf;
 
@@ -310,7 +310,7 @@ AREXPORT long MvrUtil::sizeFile(const char * fileName)
    @return true if file is found
    @param fileName name of the file to size
 */
-AREXPORT bool MvrUtil::findFile(const char *fileName)
+MVREXPORT bool MvrUtil::findFile(const char *fileName)
 {
   FILE *fp;
 
@@ -333,7 +333,7 @@ AREXPORT bool MvrUtil::findFile(const char *fileName)
    @param fileIn input path/fileName
    @param fileOut output fileName
 */
-/*AREXPORT bool MvrUtil::stripDir(std::string fileIn, std::string &fileOut)
+/*MVREXPORT bool MvrUtil::stripDir(std::string fileIn, std::string &fileOut)
 {
   const char *ptr;
 
@@ -361,7 +361,7 @@ AREXPORT bool MvrUtil::findFile(const char *fileName)
    @param fileOut output path
 */
 /*
-AREXPORT bool MvrUtil::stripFile(std::string fileIn, std::string &fileOut)
+MVREXPORT bool MvrUtil::stripFile(std::string fileIn, std::string &fileOut)
 {
   const char *start, *end;
 
@@ -385,7 +385,7 @@ AREXPORT bool MvrUtil::stripFile(std::string fileIn, std::string &fileOut)
   return(false);
 }
 */
-AREXPORT bool MvrUtil::stripQuotes(char *dest, const char *src, size_t destLen)
+MVREXPORT bool MvrUtil::stripQuotes(char *dest, const char *src, size_t destLen)
 {
   size_t srcLen = strlen(src);
   if (destLen < srcLen + 1)
@@ -416,7 +416,7 @@ AREXPORT bool MvrUtil::stripQuotes(char *dest, const char *src, size_t destLen)
  * non-NULL
  * @return bool true if the string was successfully processed; false otherwise 
 **/  
-AREXPORT bool MvrUtil::stripQuotes(std::string *strToStrip)
+MVREXPORT bool MvrUtil::stripQuotes(std::string *strToStrip)
 {
   if (strToStrip == NULL) {
     MvrLog::log(MvrLog::Normal,
@@ -443,7 +443,7 @@ AREXPORT bool MvrUtil::stripQuotes(std::string *strToStrip)
 /**
  * This method strips out bad characters
 **/  
-AREXPORT bool MvrUtil::fixBadCharacters(
+MVREXPORT bool MvrUtil::fixBadCharacters(
 	std::string *strToStrip, bool removeSpaces, bool fixOtherWhiteSpace)
 {
   if (strToStrip == NULL) {
@@ -487,7 +487,7 @@ AREXPORT bool MvrUtil::fixBadCharacters(
    @param path the path string to append a slash to
    @param pathLength maximum length allocated for path string
 */
-AREXPORT void MvrUtil::appendSlash(char *path, size_t pathLength)
+MVREXPORT void MvrUtil::appendSlash(char *path, size_t pathLength)
 {
   // first check boundary
   size_t len;
@@ -509,7 +509,7 @@ AREXPORT void MvrUtil::appendSlash(char *path, size_t pathLength)
 /** Append the appropriate directory separator for this platform (a forward
  * slash "/" on Linux, or a backslash "\" on Windows) to @arg path.
  */
-AREXPORT void MvrUtil::appendSlash(std::string &path)
+MVREXPORT void MvrUtil::appendSlash(std::string &path)
 {
   // first check boundary
   size_t len = path.length();
@@ -527,7 +527,7 @@ the correct directory separator character (forward slash '/' on Linux, backslash
    @param path the path in which to fix the orientation of the slashes
    @param pathLength the maximum length of path
 */
-AREXPORT void MvrUtil::fixSlashes(char *path, size_t pathLength)
+MVREXPORT void MvrUtil::fixSlashes(char *path, size_t pathLength)
 {
 #ifdef WIN32
   fixSlashesBackward(path, pathLength);
@@ -540,7 +540,7 @@ AREXPORT void MvrUtil::fixSlashes(char *path, size_t pathLength)
    @param path the path in which to fix the orientation of the slashes
    @param pathLength size of @a path
 */
-AREXPORT void MvrUtil::fixSlashesBackward(char *path, size_t pathLength)
+MVREXPORT void MvrUtil::fixSlashesBackward(char *path, size_t pathLength)
 {
   for (size_t i=0; path[i] != '\0' && i < pathLength; i++)
   {
@@ -553,7 +553,7 @@ AREXPORT void MvrUtil::fixSlashesBackward(char *path, size_t pathLength)
    @param path the path in which to fix the orientation of the slashes
    @param pathLength size of @a path
 */
-AREXPORT void MvrUtil::fixSlashesForward(char *path, size_t pathLength)
+MVREXPORT void MvrUtil::fixSlashesForward(char *path, size_t pathLength)
 {
 
   for (size_t i=0; path[i] != '\0' && i < pathLength; i++)
@@ -569,7 +569,7 @@ the correct directory separator character (forward slash '/' on Linux, backslash
 '\' on Windows).
    @param path the path in which to fix the orientation of the slashes
 */
-AREXPORT void MvrUtil::fixSlashes(std::string &path) 
+MVREXPORT void MvrUtil::fixSlashes(std::string &path) 
 {
   for (size_t i = 0; i < path.length(); i++)
   {
@@ -580,7 +580,7 @@ AREXPORT void MvrUtil::fixSlashes(std::string &path)
   
 /** What is the appropriate directory path separator character for this
  * platform? */
-AREXPORT char MvrUtil::getSlash()
+MVREXPORT char MvrUtil::getSlash()
 {
   return SEPARATOR_CHAR;
 }
@@ -599,7 +599,7 @@ AREXPORT char MvrUtil::getSlash()
    @param baseDir the directory to start with
    @param insideDir the directory to place after the baseDir 
 **/
-AREXPORT void MvrUtil::addDirectories(char *dest, size_t destLength, 
+MVREXPORT void MvrUtil::addDirectories(char *dest, size_t destLength, 
 				     const char *baseDir,
 				     const char *insideDir)
 {
@@ -628,7 +628,7 @@ AREXPORT void MvrUtil::addDirectories(char *dest, size_t destLength,
     @return an integer less than, equal to, or greater than zero if str is 
     found, respectively, to be less than, to match, or be greater than str2.
 */
-AREXPORT int MvrUtil::strcmp(const std::string &str, const std::string &str2)
+MVREXPORT int MvrUtil::strcmp(const std::string &str, const std::string &str2)
 {
   return ::strcmp(str.c_str(), str2.c_str());
 }
@@ -644,7 +644,7 @@ AREXPORT int MvrUtil::strcmp(const std::string &str, const std::string &str2)
     @return an integer less than, equal to, or greater than zero if str is 
     found, respectively, to be less than, to match, or be greater than str2.
 */
-AREXPORT int MvrUtil::strcmp(const std::string &str, const char *str2)
+MVREXPORT int MvrUtil::strcmp(const std::string &str, const char *str2)
 {
   if (str2 != NULL) {
     return ::strcmp(str.c_str(), str2);
@@ -665,7 +665,7 @@ AREXPORT int MvrUtil::strcmp(const std::string &str, const char *str2)
     @return an integer less than, equal to, or greater than zero if str is 
     found, respectively, to be less than, to match, or be greater than str2.
 */
-AREXPORT int MvrUtil::strcmp(const char *str, const std::string &str2)
+MVREXPORT int MvrUtil::strcmp(const char *str, const std::string &str2)
 {
   if (str != NULL) {
     return ::strcmp(str, str2.c_str());
@@ -684,7 +684,7 @@ AREXPORT int MvrUtil::strcmp(const char *str, const std::string &str2)
     @return an integer less than, equal to, or greater than zero if str is 
     found, respectively, to be less than, to match, or be greater than str2.
 */
-AREXPORT int MvrUtil::strcmp(const char *str, const char *str2)
+MVREXPORT int MvrUtil::strcmp(const char *str, const char *str2)
 {
   if ((str != NULL) && (str2 != NULL)) {
     return ::strcmp(str, str2);
@@ -709,7 +709,7 @@ AREXPORT int MvrUtil::strcmp(const char *str, const char *str2)
     compare @return an integer less than, equal to, or greater than
     zero if str is found, respectively, to be less than, to match, or
     be greater than str2.  */
-AREXPORT int MvrUtil::strcasecmp(const std::string &str, 
+MVREXPORT int MvrUtil::strcasecmp(const std::string &str, 
                                 const std::string &str2)
 {
   return ::strcasecmp(str.c_str(), str2.c_str());
@@ -723,7 +723,7 @@ AREXPORT int MvrUtil::strcasecmp(const std::string &str,
     compare @return an integer less than, equal to, or greater than
     zero if str is found, respectively, to be less than, to match, or
     be greater than str2.  */
-AREXPORT int MvrUtil::strcasecmp(const std::string &str, const char *str2)
+MVREXPORT int MvrUtil::strcasecmp(const std::string &str, const char *str2)
 {
   if (str2 != NULL) {
     return ::strcasecmp(str.c_str(), str2);
@@ -741,7 +741,7 @@ AREXPORT int MvrUtil::strcasecmp(const std::string &str, const char *str2)
     compare @return an integer less than, equal to, or greater than
     zero if str is found, respectively, to be less than, to match, or
     be greater than str2.  */
-AREXPORT int MvrUtil::strcasecmp(const char *str, const std::string &str2)
+MVREXPORT int MvrUtil::strcasecmp(const char *str, const std::string &str2)
 {
   if (str != NULL) {
     return ::strcasecmp(str, str2.c_str());
@@ -759,7 +759,7 @@ AREXPORT int MvrUtil::strcasecmp(const char *str, const std::string &str2)
     compare @return an integer less than, equal to, or greater than
     zero if str is found, respectively, to be less than, to match, or
     be greater than str2.  */
-AREXPORT int MvrUtil::strcasecmp(const char *str, const char *str2)
+MVREXPORT int MvrUtil::strcasecmp(const char *str, const char *str2)
 {
   if ((str != NULL) && (str2 != NULL)) {
     return ::strcasecmp(str, str2);
@@ -776,7 +776,7 @@ AREXPORT int MvrUtil::strcasecmp(const char *str, const char *str2)
 }
 
 
-AREXPORT bool MvrUtil::strSuffixCmp(const char *str, const char *suffix)
+MVREXPORT bool MvrUtil::strSuffixCmp(const char *str, const char *suffix)
 {
   if (str != NULL && str[0] != '\0' && 
       suffix != NULL && suffix[0] != '\0' &&
@@ -789,7 +789,7 @@ AREXPORT bool MvrUtil::strSuffixCmp(const char *str, const char *suffix)
  
 }
 
-AREXPORT bool MvrUtil::strSuffixCaseCmp(const char *str, const char *suffix)
+MVREXPORT bool MvrUtil::strSuffixCaseCmp(const char *str, const char *suffix)
 {
   if (str != NULL && str[0] != '\0' && 
       suffix != NULL && suffix[0] != '\0' &&
@@ -802,7 +802,7 @@ AREXPORT bool MvrUtil::strSuffixCaseCmp(const char *str, const char *suffix)
 }
 
 
-AREXPORT int MvrUtil::strcasequotecmp(const std::string &inStr1, 
+MVREXPORT int MvrUtil::strcasequotecmp(const std::string &inStr1, 
                                      const std::string &inStr2)
 {
 std::string str1 = inStr1;
@@ -857,7 +857,7 @@ std::string str2 = inStr2;
    make sure you have at least maxLen spaces in the arrays that you're passing 
    as dest... this allocates no memory
 **/
-AREXPORT void MvrUtil::escapeSpaces(char *dest, const char *src, size_t maxLen)
+MVREXPORT void MvrUtil::escapeSpaces(char *dest, const char *src, size_t maxLen)
 {
   size_t i, adj, len;
 
@@ -882,7 +882,7 @@ AREXPORT void MvrUtil::escapeSpaces(char *dest, const char *src, size_t maxLen)
    have at least maxLen arrays that you're passing as dest... this
    allocates no memory
 **/
-AREXPORT void MvrUtil::lower(char *dest, const char *src, size_t maxLen)
+MVREXPORT void MvrUtil::lower(char *dest, const char *src, size_t maxLen)
 {
   size_t i;
   size_t len;
@@ -895,7 +895,7 @@ AREXPORT void MvrUtil::lower(char *dest, const char *src, size_t maxLen)
 }
 
 
-AREXPORT bool MvrUtil::isOnlyAlphaNumeric(const char *str)
+MVREXPORT bool MvrUtil::isOnlyAlphaNumeric(const char *str)
 {
   unsigned int ui;
   unsigned int len;
@@ -910,7 +910,7 @@ AREXPORT bool MvrUtil::isOnlyAlphaNumeric(const char *str)
   return true;
 }
 
-AREXPORT bool MvrUtil::isOnlyNumeric(const char *str)
+MVREXPORT bool MvrUtil::isOnlyNumeric(const char *str)
 {
   if (str == NULL)
     return true;
@@ -922,7 +922,7 @@ AREXPORT bool MvrUtil::isOnlyNumeric(const char *str)
   return true;
 }
 
-AREXPORT bool MvrUtil::isStrEmpty(const char *str)
+MVREXPORT bool MvrUtil::isStrEmpty(const char *str)
 {
 	if (str == NULL) {
 		return true;
@@ -935,7 +935,7 @@ AREXPORT bool MvrUtil::isStrEmpty(const char *str)
 } // end method isStrEmpty
 
   
-AREXPORT bool MvrUtil::isStrInList(const char *str,
+MVREXPORT bool MvrUtil::isStrInList(const char *str,
                                   const std::list<std::string> &list,
                                   bool isIgnoreCase)
 {
@@ -962,7 +962,7 @@ AREXPORT bool MvrUtil::isStrInList(const char *str,
 } // end method isStrInList
 
 
-AREXPORT const char *ArUtil::convertBool(int val)
+MVREXPORT const char *ArUtil::convertBool(int val)
 {
   if (val)
     return TRUESTRING;
@@ -970,7 +970,7 @@ AREXPORT const char *ArUtil::convertBool(int val)
     return FALSESTRING;
 }
 
-AREXPORT double MvrUtil::atof(const char *nptr)
+MVREXPORT double MvrUtil::atof(const char *nptr)
 {
   if (strcasecmp(nptr, "inf") == 0)
     return HUGE_VAL;
@@ -981,7 +981,7 @@ AREXPORT double MvrUtil::atof(const char *nptr)
 }
 
 
-AREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor,
+MVREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor,
 				    const char *str, ...)
 {
   char buf[10000];
@@ -996,7 +996,7 @@ AREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor,
 
 // preserving this old version that takes char* as format str instead of const char* 
 // to maximize compatibility
-AREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor,
+MVREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor,
 				    char *str, ...)
 {
   char buf[10000];
@@ -1010,7 +1010,7 @@ AREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor,
 }
 
 
-AREXPORT void MvrUtil::writeToFile(const char *str, FILE *file)
+MVREXPORT void MvrUtil::writeToFile(const char *str, FILE *file)
 {
   fputs(str, file);
 }
@@ -1028,7 +1028,7 @@ AREXPORT void MvrUtil::writeToFile(const char *str, FILE *file)
    @param str the string to copy the file contents into
    @param strLen the maximum allocated length of str
 **/
-AREXPORT bool MvrUtil::getStringFromFile(const char *fileName, 
+MVREXPORT bool MvrUtil::getStringFromFile(const char *fileName, 
 					char *str, size_t strLen)
 {
   FILE *strFile;
@@ -1075,7 +1075,7 @@ AREXPORT bool MvrUtil::getStringFromFile(const char *fileName,
    @return true if the string was found, false if it was not found or if there was a problem such as the string not being long enough 
  **/
 
-AREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root,
+MVREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root,
 						   const char *key,
 						   const char *value,
 						   char *str,
@@ -1184,7 +1184,7 @@ AREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root,
 bool MvrTime::ourMonotonicClock = true;
 #endif 
 
-AREXPORT void MvrTime::setToNow(void)
+MVREXPORT void MvrTime::setToNow(void)
 {
 // if we have the best way of finding time use that
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
@@ -1241,7 +1241,7 @@ AREXPORT void MvrTime::setToNow(void)
       
 }
 
-AREXPORT MvrRunningAverage::ArRunningAverage(size_t numToAverage)
+MVREXPORT MvrRunningAverage::ArRunningAverage(size_t numToAverage)
 {
   myNumToAverage = numToAverage;
   myTotal = 0;
@@ -1249,12 +1249,12 @@ AREXPORT MvrRunningAverage::ArRunningAverage(size_t numToAverage)
   myUseRootMeanSquare = false;
 }
 
-AREXPORT MvrRunningAverage::~ArRunningAverage()
+MVREXPORT MvrRunningAverage::~MvrRunningAverage()
 {
 
 }
 
-AREXPORT double MvrRunningAverage::getAverage(void) const
+MVREXPORT double MvrRunningAverage::getAverage(void) const
 {
   if (myNum == 0)
     return 0.0;
@@ -1265,7 +1265,7 @@ AREXPORT double MvrRunningAverage::getAverage(void) const
     return myTotal / myNum;
 }
 
-AREXPORT void MvrRunningAverage::add(double val)
+MVREXPORT void MvrRunningAverage::add(double val)
 {
   if (myUseRootMeanSquare)
     myTotal += (val * val);
@@ -1284,7 +1284,7 @@ AREXPORT void MvrRunningAverage::add(double val)
   }
 }
 
-AREXPORT void MvrRunningAverage::clear(void)
+MVREXPORT void MvrRunningAverage::clear(void)
 {
   while (myVals.size() > 0)
     myVals.pop_back();
@@ -1292,12 +1292,12 @@ AREXPORT void MvrRunningAverage::clear(void)
   myTotal = 0;
 }
 
-AREXPORT size_t MvrRunningAverage::getNumToAverage(void) const
+MVREXPORT size_t MvrRunningAverage::getNumToAverage(void) const
 {
   return myNumToAverage;
 }
 
-AREXPORT void MvrRunningAverage::setNumToAverage(size_t numToAverage)
+MVREXPORT void MvrRunningAverage::setNumToAverage(size_t numToAverage)
 {
   myNumToAverage = numToAverage;
   while (myVals.size() > myNumToAverage)
@@ -1311,12 +1311,12 @@ AREXPORT void MvrRunningAverage::setNumToAverage(size_t numToAverage)
   }
 }
 
-AREXPORT size_t MvrRunningAverage::getCurrentNumAveraged(void)
+MVREXPORT size_t MvrRunningAverage::getCurrentNumAveraged(void)
 {
   return myNum;
 }
 
-AREXPORT void MvrRunningAverage::setUseRootMeanSquare(bool useRootMeanSquare)
+MVREXPORT void MvrRunningAverage::setUseRootMeanSquare(bool useRootMeanSquare)
 {
   if (myUseRootMeanSquare != useRootMeanSquare)
   {
@@ -1334,23 +1334,23 @@ AREXPORT void MvrRunningAverage::setUseRootMeanSquare(bool useRootMeanSquare)
   myUseRootMeanSquare = useRootMeanSquare;
 }
 
-AREXPORT bool MvrRunningAverage::getUseRootMeanSquare(void)
+MVREXPORT bool MvrRunningAverage::getUseRootMeanSquare(void)
 {
   return myUseRootMeanSquare;
 }
 
-AREXPORT MvrRootMeanSquareCalculator::ArRootMeanSquareCalculator()
+MVREXPORT MvrRootMeanSquareCalculator::ArRootMeanSquareCalculator()
 {
   clear();
   myName = "MvrRootMeanSquareCalculator";
 }
 
-AREXPORT MvrRootMeanSquareCalculator::~ArRootMeanSquareCalculator()
+MVREXPORT MvrRootMeanSquareCalculator::~MvrRootMeanSquareCalculator()
 {
 
 }
 
-AREXPORT double MvrRootMeanSquareCalculator::getRootMeanSquare (void) const
+MVREXPORT double MvrRootMeanSquareCalculator::getRootMeanSquare (void) const
 {
   if (myNum == 0)
     return 0;
@@ -1358,7 +1358,7 @@ AREXPORT double MvrRootMeanSquareCalculator::getRootMeanSquare (void) const
     return sqrt((double) myTotal / (double)myNum);
 }
 
-AREXPORT void MvrRootMeanSquareCalculator::add(int val)
+MVREXPORT void MvrRootMeanSquareCalculator::add(int val)
 {
   myTotal += val * val;
   myNum++;
@@ -1371,18 +1371,18 @@ AREXPORT void MvrRootMeanSquareCalculator::add(int val)
   }
 }
 
-AREXPORT void MvrRootMeanSquareCalculator::clear(void)
+MVREXPORT void MvrRootMeanSquareCalculator::clear(void)
 {
   myTotal = 0;
   myNum = 0;
 }
 
-AREXPORT size_t MvrRootMeanSquareCalculator::getCurrentNumAveraged(void)
+MVREXPORT size_t MvrRootMeanSquareCalculator::getCurrentNumAveraged(void)
 {
   return myNum;
 }
 
-AREXPORT void MvrRootMeanSquareCalculator::setName(const char *name)
+MVREXPORT void MvrRootMeanSquareCalculator::setName(const char *name)
 {
   if (name != NULL)
     myName = name;
@@ -1390,14 +1390,14 @@ AREXPORT void MvrRootMeanSquareCalculator::setName(const char *name)
     myName = "MvrRootMeanSquareCalculator";
 }
 
-AREXPORT const char *ArRootMeanSquareCalculator::getName(void)
+MVREXPORT const char *ArRootMeanSquareCalculator::getName(void)
 {
   return myName.c_str();
 }
 
 #ifndef WIN32
 
-AREXPORT MvrDaemonizer::ArDaemonizer(int *argc, char **argv, 
+MVREXPORT MvrDaemonizer::ArDaemonizer(int *argc, char **argv, 
 				    bool closeStdErrAndStdOut) :
   myParser(argc, argv),
   myLogOptionsCB(this, &ArDaemonizer::logOptions)
@@ -1407,12 +1407,12 @@ AREXPORT MvrDaemonizer::ArDaemonizer(int *argc, char **argv,
   Mvria::addLogOptionsCB(&myLogOptionsCB);
 }
 
-AREXPORT MvrDaemonizer::~ArDaemonizer()
+MVREXPORT MvrDaemonizer::~MvrDaemonizer()
 {
 
 }
 
-AREXPORT bool MvrDaemonizer::daemonize(void)
+MVREXPORT bool MvrDaemonizer::daemonize(void)
 {
   if (myParser.checkArgument("-daemonize") ||
       myParser.checkArgument("-d"))
@@ -1428,7 +1428,7 @@ AREXPORT bool MvrDaemonizer::daemonize(void)
    This returns true if daemonizing worked, returns false if it
    didn't... the parent process exits here if forking worked.
  **/
-AREXPORT bool MvrDaemonizer::forceDaemonize(void)
+MVREXPORT bool MvrDaemonizer::forceDaemonize(void)
 {
     switch (fork())
     {
@@ -1450,7 +1450,7 @@ AREXPORT bool MvrDaemonizer::forceDaemonize(void)
     }
 }
 
-AREXPORT void MvrDaemonizer::logOptions(void) const
+MVREXPORT void MvrDaemonizer::logOptions(void) const
 {
   MvrLog::log(MvrLog::Terse, "Options for Daemonizing:");
   MvrLog::log(MvrLog::Terse, "-daemonize");
@@ -1467,7 +1467,7 @@ std::map<std::string, MvrPriority::Priority, MvrStrCaseCmpOp> MvrPriority::ourNa
 std::string MvrPriority::ourUnknownPriorityName;
 bool MvrPriority::ourStringsInited = false;
 
-AREXPORT const char *ArPriority::getPriorityName(Priority priority) 
+MVREXPORT const char *ArPriority::getPriorityName(Priority priority) 
 {
 
   if (!ourStringsInited)
@@ -1501,7 +1501,7 @@ AREXPORT const char *ArPriority::getPriorityName(Priority priority)
   }
 }
 
-AREXPORT MvrPriority::Priority MvrPriority::getPriorityFromName(const char *text, 
+MVREXPORT MvrPriority::Priority MvrPriority::getPriorityFromName(const char *text, 
                                                               bool *ok)
 {
   // This is merely called to initialize the map
@@ -1538,7 +1538,7 @@ AREXPORT MvrPriority::Priority MvrPriority::getPriorityFromName(const char *text
 } // end method getPriorityFromName
 
 
-AREXPORT void MvrUtil::putCurrentYearInString(char* s, size_t len)
+MVREXPORT void MvrUtil::putCurrentYearInString(char* s, size_t len)
 {
   struct tm t;
   MvrUtil::localtime(&t);
@@ -1546,7 +1546,7 @@ AREXPORT void MvrUtil::putCurrentYearInString(char* s, size_t len)
   s[len-1] = '\0';
 }
 
-AREXPORT void MvrUtil::putCurrentMonthInString(char* s, size_t len)
+MVREXPORT void MvrUtil::putCurrentMonthInString(char* s, size_t len)
 {
 
   struct tm t;
@@ -1554,28 +1554,28 @@ AREXPORT void MvrUtil::putCurrentMonthInString(char* s, size_t len)
   snprintf(s, len, "%02d", t.tm_mon + 1);
   s[len-1] = '\0';
 }
-AREXPORT void MvrUtil::putCurrentDayInString(char* s, size_t len)
+MVREXPORT void MvrUtil::putCurrentDayInString(char* s, size_t len)
 {
   struct tm t;
   MvrUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_mday);
   s[len-1] = '\0';
 }
-AREXPORT void MvrUtil::putCurrentHourInString(char* s, size_t len)
+MVREXPORT void MvrUtil::putCurrentHourInString(char* s, size_t len)
 {
   struct tm t;
   MvrUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_hour);
   s[len-1] = '\0';
 }
-AREXPORT void MvrUtil::putCurrentMinuteInString(char* s, size_t len)
+MVREXPORT void MvrUtil::putCurrentMinuteInString(char* s, size_t len)
 {
   struct tm t; 
   MvrUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_min);
   s[len-1] = '\0';
 }
-AREXPORT void MvrUtil::putCurrentSecondInString(char* s, size_t len)
+MVREXPORT void MvrUtil::putCurrentSecondInString(char* s, size_t len)
 {
   struct tm t;
   MvrUtil::localtime(&t);
@@ -1585,7 +1585,7 @@ AREXPORT void MvrUtil::putCurrentSecondInString(char* s, size_t len)
 
 
 
-AREXPORT time_t MvrUtil::parseTime(const char *str, bool *ok, bool toToday)
+MVREXPORT time_t MvrUtil::parseTime(const char *str, bool *ok, bool toToday)
 {
 
   struct tm tmOut;
@@ -1683,7 +1683,7 @@ AREXPORT time_t MvrUtil::parseTime(const char *str, bool *ok, bool toToday)
 
 
 
-AREXPORT bool MvrUtil::localtime(const time_t *timep, struct tm *result) 
+MVREXPORT bool MvrUtil::localtime(const time_t *timep, struct tm *result) 
 {
 #ifdef WIN32
   ourLocaltimeMutex.lock();
@@ -1704,7 +1704,7 @@ AREXPORT bool MvrUtil::localtime(const time_t *timep, struct tm *result)
 * time(NULL).
 *  @return false on error (e.g. invalid input), otherwise true.
 */
-AREXPORT bool MvrUtil::localtime(struct tm *result) 
+MVREXPORT bool MvrUtil::localtime(struct tm *result) 
 { 
   time_t now = time(NULL);
   return MvrUtil::localtime(&now, result); 
@@ -1722,7 +1722,7 @@ AREXPORT bool MvrUtil::localtime(struct tm *result)
    @return true if it could find the file, the result is in result,
    false if it couldn't find the file
 **/
-AREXPORT bool MvrUtil::matchCase(const char *baseDir, 
+MVREXPORT bool MvrUtil::matchCase(const char *baseDir, 
 					   const char *fileName,
 					   char *result,
 					   size_t resultLen)
@@ -1872,7 +1872,7 @@ AREXPORT bool MvrUtil::matchCase(const char *baseDir,
 #endif // !WIN32
 
 
-AREXPORT bool MvrUtil::getDirectory(const char *fileName, 
+MVREXPORT bool MvrUtil::getDirectory(const char *fileName, 
 					     char *result, size_t resultLen)
 {
   char separator;  
@@ -1910,7 +1910,7 @@ AREXPORT bool MvrUtil::getDirectory(const char *fileName,
   }
 }
 
-AREXPORT bool MvrUtil::getFileName(const char *fileName, 
+MVREXPORT bool MvrUtil::getFileName(const char *fileName, 
 					 char *result, size_t resultLen)
 {
   char separator;  
@@ -2027,7 +2027,7 @@ std::list<std::string> MvrUtil::splitFileName(const char *fileName)
 #endif // !WIN32
 
 
-AREXPORT bool MvrUtil::changeFileTimestamp(const char *fileName, 
+MVREXPORT bool MvrUtil::changeFileTimestamp(const char *fileName, 
                                           time_t timestamp) 
 {
   if (MvrUtil::isStrEmpty(fileName)) {
@@ -2087,7 +2087,7 @@ AREXPORT bool MvrUtil::changeFileTimestamp(const char *fileName,
 
 
 
-AREXPORT void MvrUtil::setFileCloseOnExec(int fd, bool closeOnExec)
+MVREXPORT void MvrUtil::setFileCloseOnExec(int fd, bool closeOnExec)
 {
 #ifndef WIN32
   if (fd <= 0)
@@ -2114,13 +2114,13 @@ AREXPORT void MvrUtil::setFileCloseOnExec(int fd, bool closeOnExec)
 #endif
 }
 
-AREXPORT void MvrUtil::setFileCloseOnExec(FILE *file, bool closeOnExec)
+MVREXPORT void MvrUtil::setFileCloseOnExec(FILE *file, bool closeOnExec)
 {
   if (file != NULL)
     setFileCloseOnExec(fileno(file));
 }
 
-AREXPORT FILE *ArUtil::fopen(const char *path, const char *mode, 
+MVREXPORT FILE *ArUtil::fopen(const char *path, const char *mode, 
 			     bool closeOnExec)
 {
   FILE *file;
@@ -2129,7 +2129,7 @@ AREXPORT FILE *ArUtil::fopen(const char *path, const char *mode,
   return file;
 }
 
-AREXPORT int MvrUtil::open(const char *pathname, int flags, 
+MVREXPORT int MvrUtil::open(const char *pathname, int flags, 
 			  bool closeOnExec)
 {
   int fd;
@@ -2138,7 +2138,7 @@ AREXPORT int MvrUtil::open(const char *pathname, int flags,
   return fd;
 }
 
-AREXPORT int MvrUtil::open(const char *pathname, int flags, mode_t mode, 
+MVREXPORT int MvrUtil::open(const char *pathname, int flags, mode_t mode, 
 			  bool closeOnExec)
 {
   int fd;
@@ -2147,12 +2147,12 @@ AREXPORT int MvrUtil::open(const char *pathname, int flags, mode_t mode,
   return fd;
 }
 
-AREXPORT int MvrUtil::close(int fd)
+MVREXPORT int MvrUtil::close(int fd)
 {
 	return ::close(fd);
 }
 
-AREXPORT int MvrUtil::creat(const char *pathname, mode_t mode, 
+MVREXPORT int MvrUtil::creat(const char *pathname, mode_t mode, 
 			   bool closeOnExec)
 {
   int fd;
@@ -2161,7 +2161,7 @@ AREXPORT int MvrUtil::creat(const char *pathname, mode_t mode,
   return fd;
 }
 
-AREXPORT FILE *ArUtil::popen(const char *command, const char *type, 
+MVREXPORT FILE *ArUtil::popen(const char *command, const char *type, 
 			     bool closeOnExec)
 {
   FILE *file;
@@ -2175,7 +2175,7 @@ AREXPORT FILE *ArUtil::popen(const char *command, const char *type,
 }
 
 
-AREXPORT bool MvrUtil::floatIsNormal(double f)
+MVREXPORT bool MvrUtil::floatIsNormal(double f)
 {
 #ifdef WIN32
 	  return (!::_isnan(f) && ::_finite(f));
@@ -2184,7 +2184,7 @@ AREXPORT bool MvrUtil::floatIsNormal(double f)
 #endif
 }
 
-AREXPORT int MvrUtil::atoi(const char *str, bool *ok, bool forceHex) 
+MVREXPORT int MvrUtil::atoi(const char *str, bool *ok, bool forceHex) 
 {
   bool isSuccess = false;
   int ret = 0;
@@ -2221,7 +2221,7 @@ AREXPORT int MvrUtil::atoi(const char *str, bool *ok, bool forceHex)
 } // end method atoi
 
 
-AREXPORT long MvrMath::randomInRange(long m, long n)
+MVREXPORT long MvrMath::randomInRange(long m, long n)
 {
     // simple method
     return m + random() / (ourRandMax / (n - m + 1) + 1);
@@ -2229,8 +2229,8 @@ AREXPORT long MvrMath::randomInRange(long m, long n)
     // drand48?), or keep trying numbers until we get one in range.
 }
 
-AREXPORT double MvrMath::epsilon() { return ourEpsilon; }
-AREXPORT long MvrMath::getRandMax() { return ourRandMax; }
+MVREXPORT double MvrMath::epsilon() { return ourEpsilon; }
+MVREXPORT long MvrMath::getRandMax() { return ourRandMax; }
 
 #ifndef ARINTERFACE
 
@@ -2592,7 +2592,7 @@ ArLog::LogLevel MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(void)
   return ourSuccessLogLevel;
 }
 
-AREXPORT std::list<ArPose> MvrPoseUtil::findCornersFromRobotBounds(
+MVREXPORT std::list<ArPose> MvrPoseUtil::findCornersFromRobotBounds(
 	double radius, double widthLeft, double widthRight, 
 	double lengthFront, double lengthRear, bool fastButUnsafe)
 {
@@ -2819,7 +2819,7 @@ AREXPORT std::list<ArPose> MvrPoseUtil::findCornersFromRobotBounds(
 }
 
 
-AREXPORT std::list<ArPose> MvrPoseUtil::breakUpDistanceEvenly(
+MVREXPORT std::list<ArPose> MvrPoseUtil::breakUpDistanceEvenly(
 	ArPose start, MvrPose end, int resolution)
 {
   std::list<ArPose> ret;
@@ -2853,7 +2853,7 @@ AREXPORT std::list<ArPose> MvrPoseUtil::breakUpDistanceEvenly(
   return ret;
 }
 
-AREXPORT MvrTimeChecker::ArTimeChecker(const char *name, int defaultMSecs)
+MVREXPORT MvrTimeChecker::ArTimeChecker(const char *name, int defaultMSecs)
 {
   if (name != NULL)
     myName = name;
@@ -2862,18 +2862,18 @@ AREXPORT MvrTimeChecker::ArTimeChecker(const char *name, int defaultMSecs)
   myMSecs = defaultMSecs;
 }
 
-AREXPORT MvrTimeChecker::~ArTimeChecker()
+MVREXPORT MvrTimeChecker::~MvrTimeChecker()
 {
 
 }
 
-AREXPORT void MvrTimeChecker::start(void)
+MVREXPORT void MvrTimeChecker::start(void)
 {
   myStarted.setToNow();
   myLastCheck.setToNow();
 }
 
-AREXPORT void MvrTimeChecker::check(const char *subName)
+MVREXPORT void MvrTimeChecker::check(const char *subName)
 {
   long long took = myLastCheck.mSecSinceLL();
 
@@ -2886,7 +2886,7 @@ AREXPORT void MvrTimeChecker::check(const char *subName)
 }
 
 
-AREXPORT void MvrTimeChecker::finish(void)
+MVREXPORT void MvrTimeChecker::finish(void)
 {
   long long took = myStarted.mSecSinceLL();
 

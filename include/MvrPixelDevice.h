@@ -62,7 +62,7 @@ class MvrPixelDevice
 {
  public:
   /// Base Constructor
-  AREXPORT MvrPixelDevice(int x_size, int y_size, double x_fov, double y_fov,
+  MVREXPORT MvrPixelDevice(int x_size, int y_size, double x_fov, double y_fov,
 		      const char *name)
   {
     myDeviceMutex.setLogName("MvrPixelDevice::myDeviceMutex");
@@ -93,7 +93,7 @@ class MvrPixelDevice
     }
   }
   /// Base destructor
-  AREXPORT virtual ~ArPixelDevice()
+  MVREXPORT virtual ~MvrPixelDevice()
   {
     if (mySensorData != NULL)
     {
@@ -160,11 +160,11 @@ class MvrPixelDevice
   /// Gets the raw XYZ data
   DataObject ***getRawSensorXYZ(void) { return mySensorXYZ; }
   /// Lock this device
-  AREXPORT virtual int lockDevice() { return(myDeviceMutex.lock()); }
+  MVREXPORT virtual int lockDevice() { return(myDeviceMutex.lock()); }
   /// Try to lock this device
-  AREXPORT virtual int tryLockDevice() { return(myDeviceMutex.tryLock()); }
+  MVREXPORT virtual int tryLockDevice() { return(myDeviceMutex.tryLock()); }
   /// Unlock this device
-  AREXPORT virtual int unlockDevice() { return(myDeviceMutex.unlock()); }
+  MVREXPORT virtual int unlockDevice() { return(myDeviceMutex.unlock()); }
 protected:
   std::string myName;
   int myXSize;

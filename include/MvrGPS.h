@@ -106,9 +106,9 @@ class MvrDeviceConnection; // for pointer in MvrGPS
 class MvrGPS {
 
 public:
-    AREXPORT MvrGPS();
+    MVREXPORT MvrGPS();
 
-    virtual ~ArGPS() { }
+    virtual ~MvrGPS() { }
 
     /** @brief Set device connection to use */
     void setDeviceConnection(MvrDeviceConnection* deviceConn) { myDevice = deviceConn; }
@@ -130,7 +130,7 @@ public:
      *
      *  @sa blockingConnect()
      */
-    AREXPORT virtual bool connect(unsigned long connectTimeout = 20000);
+    MVREXPORT virtual bool connect(unsigned long connectTimeout = 20000);
 
     /** Same as connect(). See connect().  */
     bool blockingConnect(unsigned long connectTimeout = 20000) { return connect(connectTimeout); }
@@ -165,7 +165,7 @@ public:
      * stored data was updated in MvrGPS,
      * ReadFinished if all available data was read.
      */
-    AREXPORT virtual int read(unsigned long maxTime = 0);
+    MVREXPORT virtual int read(unsigned long maxTime = 0);
 
     /** Calls lock(), calls read(maxTime), then calls unlock(). Note, this could
      * end up keeping MvrGPS locked until @a maxTime is reached, or for any amount
@@ -191,12 +191,12 @@ public:
     void setIgnoreChecksum(bool ignore) { myNMEAParser.setIgnoreChecksum(ignore); }
 
     /** @brief Log last received data using MvrLog. */
-    AREXPORT void logData() const;
+    MVREXPORT void logData() const;
 
     /** Print basic navigation data on one line to standard output, with no newline at end. */
-    AREXPORT void printData(bool labels = true) const;
+    MVREXPORT void printData(bool labels = true) const;
 
-    AREXPORT void printDataLabelsHeader() const;
+    MVREXPORT void printDataLabelsHeader() const;
 
     /** Data accessors
      * @brief Access the last received data from the GPS */
@@ -212,7 +212,7 @@ public:
 
     class Data {
     public:
-        AREXPORT Data();
+        MVREXPORT Data();
         double latitude; ///< (from NMEA GPRMC)
         double longitude; ///< (from NMEA GPRMC)
         bool havePosition; ///< (from NMEA GPRMC)
@@ -269,15 +269,15 @@ public:
     /** (from NMEA GPGGA) */
     FixType getFixType() const { return myData.fixType; }
     /** (from NMEA GPGGA) */
-    AREXPORT const char* getFixTypeName() const;
-    static AREXPORT const char* getFixTypeName(FixType type);
+    MVREXPORT const char* getFixTypeName() const;
+    static MVREXPORT const char* getFixTypeName(FixType type);
 
     /** (from NMEA GPRMC) */
-    AREXPORT bool havePosition() const { return myData.havePosition; }
+    MVREXPORT bool havePosition() const { return myData.havePosition; }
     /** (from NMEA GPRMC) */
-    AREXPORT bool haveLatitude() const { return myData.havePosition; }
+    MVREXPORT bool haveLatitude() const { return myData.havePosition; }
     /** (from NMEA GPRMC) */
-    AREXPORT bool haveLongitude() const { return myData.havePosition; }
+    MVREXPORT bool haveLongitude() const { return myData.havePosition; }
 
     /** @return latitude in decimal degrees. 
         (from NMEA GPRMC) */
@@ -461,7 +461,7 @@ protected:
     /** Block until data is read from GPS.
         Waits by calling read() every 100 ms for @a timeout ms.
      */
-    AREXPORT bool waitForData(unsigned long timeout);
+    MVREXPORT bool waitForData(unsigned long timeout);
 
     /** Subclasses may override to send device initialization/configuration
      * commands and set up device-specific message handlers. (Default behavior
@@ -576,8 +576,8 @@ class MvrSimulatedGPS : public virtual MvrGPS
   MvrRetFunctor1C<bool, MvrSimulatedGPS, MvrRobotPacket*> mySimStatHandlerCB;
   MvrRobot *myRobot;
 public:
-  AREXPORT MvrSimulatedGPS(MvrRobot *robot = NULL);
-  AREXPORT virtual ~ArSimulatedGPS();
+  MVREXPORT MvrSimulatedGPS(MvrRobot *robot = NULL);
+  MVREXPORT virtual ~MvrSimulatedGPS();
   void setDummyPosition(double latitude, double longitude) {
     myData.latitude = latitude;
     myData.havePosition = true;
@@ -609,9 +609,9 @@ public:
     myData.altitude = altitude;
     setDummyPosition(latitude, longitude);
   }
-  AREXPORT void setDummyPosition(MvrArgumentBuilder *args); 
+  MVREXPORT void setDummyPosition(MvrArgumentBuilder *args); 
   void setDummyPositionFromArgs(MvrArgumentBuilder *args) { setDummyPosition(args); } // non-overloaded function can be used in functors
-  AREXPORT virtual bool connect(unsigned long connectTimeout = 10000);
+  MVREXPORT virtual bool connect(unsigned long connectTimeout = 10000);
   virtual bool initDevice() { return true; }
   virtual int read(unsigned long maxTime = 0) {
     if(myHaveDummyPosition)

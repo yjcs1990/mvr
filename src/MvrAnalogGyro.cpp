@@ -33,7 +33,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /**
 **/
-AREXPORT MvrAnalogGyro::ArAnalogGyro(MvrRobot *robot) : 
+MVREXPORT MvrAnalogGyro::ArAnalogGyro(MvrRobot *robot) : 
   myHandleGyroPacketCB(this, &ArAnalogGyro::handleGyroPacket),
   myEncoderCorrectCB(this, &ArAnalogGyro::encoderCorrect),
   myStabilizingCB(this, &ArAnalogGyro::stabilizingCallback),
@@ -72,7 +72,7 @@ AREXPORT MvrAnalogGyro::ArAnalogGyro(MvrRobot *robot) :
   
 }
 
-AREXPORT MvrAnalogGyro::~ArAnalogGyro()
+MVREXPORT MvrAnalogGyro::~MvrAnalogGyro()
 {
   myRobot->comInt(MvrCommands::GYRO, 0);
   myRobot->remPacketHandler(&myHandleGyroPacketCB);
@@ -80,7 +80,7 @@ AREXPORT MvrAnalogGyro::~ArAnalogGyro()
   myRobot->setEncoderCorrectionCallback(NULL);
 }
 
-AREXPORT void MvrAnalogGyro::stabilizingCallback(void)
+MVREXPORT void MvrAnalogGyro::stabilizingCallback(void)
 {
   if (myRobot->getOrigRobotConfig() != NULL &&
       myRobot->getOrigRobotConfig()->getHasGyro() == 1)
@@ -118,7 +118,7 @@ AREXPORT void MvrAnalogGyro::stabilizingCallback(void)
   }
 }
 
-AREXPORT bool MvrAnalogGyro::handleGyroPacket(MvrRobotPacket *packet)
+MVREXPORT bool MvrAnalogGyro::handleGyroPacket(MvrRobotPacket *packet)
 {
   int numReadings;
   int i;
@@ -202,7 +202,7 @@ AREXPORT bool MvrAnalogGyro::handleGyroPacket(MvrRobotPacket *packet)
   return true;
 }
 
-AREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
+MVREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
 {
   MvrPose ret;
 
@@ -296,7 +296,7 @@ AREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
 }
 
 
-AREXPORT void MvrAnalogGyro::activate(void)
+MVREXPORT void MvrAnalogGyro::activate(void)
 { 
   if (!myIsActive || myIsGyroOnlyActive)
     MvrLog::log(MvrLog::Normal, "Activating gyro"); 
@@ -306,7 +306,7 @@ AREXPORT void MvrAnalogGyro::activate(void)
     myRobot->comInt(MvrCommands::GYRO, 1);
 }
 
-AREXPORT void MvrAnalogGyro::deactivate(void)
+MVREXPORT void MvrAnalogGyro::deactivate(void)
 { 
   if (myIsActive || myIsGyroOnlyActive)
     MvrLog::log(MvrLog::Normal, "Dectivating gyro"); 
@@ -316,7 +316,7 @@ AREXPORT void MvrAnalogGyro::deactivate(void)
     myRobot->comInt(MvrCommands::GYRO, 0);
 }
 
-AREXPORT void MvrAnalogGyro::activateGyroOnly(void)
+MVREXPORT void MvrAnalogGyro::activateGyroOnly(void)
 { 
   if (!myHasGyroOnlyMode)
   {
@@ -332,7 +332,7 @@ AREXPORT void MvrAnalogGyro::activateGyroOnly(void)
     myRobot->comInt(MvrCommands::GYRO, 2);
 }
 
-AREXPORT void MvrAnalogGyro::userTaskCallback(void)
+MVREXPORT void MvrAnalogGyro::userTaskCallback(void)
 {
   if ((myRobot->getFaultFlags() & MvrUtil::BIT4) && myGyroWorking)
   {

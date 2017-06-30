@@ -41,7 +41,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 bool ArSocket::ourInitialized=false;
 
 
-AREXPORT ArSocket::ArSocket() :
+MVREXPORT ArSocket::ArSocket() :
   myType(Unknown),
   myError(NoErr),
   myErrorStr(),
@@ -55,7 +55,7 @@ AREXPORT ArSocket::ArSocket() :
   internalInit();
 }
 
-AREXPORT ArSocket::ArSocket(const char *host, int port, Type type) :
+MVREXPORT ArSocket::ArSocket(const char *host, int port, Type type) :
   myType(type),
   myError(NoErr),
   myErrorStr(),
@@ -70,7 +70,7 @@ AREXPORT ArSocket::ArSocket(const char *host, int port, Type type) :
   connect(host, port, type);
 }
 
-AREXPORT ArSocket::ArSocket(int port, bool doClose, Type type) :
+MVREXPORT ArSocket::ArSocket(int port, bool doClose, Type type) :
   myType(type),
   myError(NoErr),
   myErrorStr(),
@@ -85,13 +85,13 @@ AREXPORT ArSocket::ArSocket(int port, bool doClose, Type type) :
   open(port, type);
 }
 
-AREXPORT ArSocket::~ArSocket()
+MVREXPORT ArSocket::~MvrSocket()
 {
   close();
 }
 
 /** @return false failure. */
-AREXPORT bool ArSocket::init()
+MVREXPORT bool ArSocket::init()
 {
   WORD wVersionRequested;
   WSADATA wsaData;
@@ -112,7 +112,7 @@ AREXPORT bool ArSocket::init()
   return(true);
 }
 
-AREXPORT void ArSocket::shutdown()
+MVREXPORT void ArSocket::shutdown()
 {
   if (ourInitialized)
   {
@@ -123,7 +123,7 @@ AREXPORT void ArSocket::shutdown()
 }
 
 /** @return false on failure */
-AREXPORT bool ArSocket::hostAddr(const char *host, struct in_addr &addr)
+MVREXPORT bool ArSocket::hostAddr(const char *host, struct in_addr &addr)
 {
   struct hostent *hp;
 
@@ -141,7 +141,7 @@ AREXPORT bool ArSocket::hostAddr(const char *host, struct in_addr &addr)
 }
 
 /** @return false on failure */
-AREXPORT bool ArSocket::addrHost(struct in_addr &addr, char *host)
+MVREXPORT bool ArSocket::addrHost(struct in_addr &addr, char *host)
 {
   struct hostent *hp;
 
@@ -155,7 +155,7 @@ AREXPORT bool ArSocket::addrHost(struct in_addr &addr, char *host)
 }
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::connect(const char *host, int port, Type type,
+MVREXPORT bool ArSocket::connect(const char *host, int port, Type type,
 				const char *openOnIP)
 {
   char localhost[MAXGETHOSTSTRUCT];
@@ -259,7 +259,7 @@ AREXPORT bool ArSocket::connect(const char *host, int port, Type type,
 }
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::open(int port, Type type, const char *openOnIP)
+MVREXPORT bool ArSocket::open(int port, Type type, const char *openOnIP)
 {
   int ret;
   char localhost[MAXGETHOSTSTRUCT];
@@ -354,7 +354,7 @@ AREXPORT bool ArSocket::open(int port, Type type, const char *openOnIP)
 }
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::create(Type type)
+MVREXPORT bool ArSocket::create(Type type)
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -404,7 +404,7 @@ AREXPORT bool ArSocket::create(Type type)
 }
 
 /** @return false on failure */
-AREXPORT bool ArSocket::findValidPort(int startPort, const char *openOnIP)
+MVREXPORT bool ArSocket::findValidPort(int startPort, const char *openOnIP)
 {
 
   /*
@@ -453,7 +453,7 @@ AREXPORT bool ArSocket::findValidPort(int startPort, const char *openOnIP)
 }
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::connectTo(const char *host, int port)
+MVREXPORT bool ArSocket::connectTo(const char *host, int port)
 {
 
   char localhost[MAXGETHOSTSTRUCT];
@@ -502,7 +502,7 @@ AREXPORT bool ArSocket::connectTo(const char *host, int port)
 }
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::connectTo(struct sockaddr_in *sin)
+MVREXPORT bool ArSocket::connectTo(struct sockaddr_in *sin)
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -522,7 +522,7 @@ AREXPORT bool ArSocket::connectTo(struct sockaddr_in *sin)
 
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::close()
+MVREXPORT bool ArSocket::close()
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -595,7 +595,7 @@ AREXPORT bool ArSocket::close()
 }
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::setLinger(int time)
+MVREXPORT bool ArSocket::setLinger(int time)
 {
   struct linger lin;
   myError = NoErr;
@@ -625,7 +625,7 @@ AREXPORT bool ArSocket::setLinger(int time)
 }
 
 /** @return false and set error code and description string on failure */
-AREXPORT bool ArSocket::setBroadcast()
+MVREXPORT bool ArSocket::setBroadcast()
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -647,7 +647,7 @@ AREXPORT bool ArSocket::setBroadcast()
      (This apparently needs to be done after the socket is created before
      the socket is bound.)
 */
-AREXPORT bool ArSocket::setReuseAddress()
+MVREXPORT bool ArSocket::setReuseAddress()
 {
   int opt=1;
   myError = NoErr;
@@ -666,7 +666,7 @@ AREXPORT bool ArSocket::setReuseAddress()
 }
 
 /** @return false and set error code and description string on failure  */
-AREXPORT bool ArSocket::setNonBlock()
+MVREXPORT bool ArSocket::setNonBlock()
 {
   u_long arg=1;
   myError = NoErr;
@@ -687,7 +687,7 @@ AREXPORT bool ArSocket::setNonBlock()
 }
 
 /** @return false and set error code and description string on failure  */
-AREXPORT bool ArSocket::copy(int fd, bool doclose)
+MVREXPORT bool ArSocket::copy(int fd, bool doclose)
 {
   int len;
 
@@ -710,7 +710,7 @@ AREXPORT bool ArSocket::copy(int fd, bool doclose)
 }
 
 /** @return false and set error code and description string on failure  */
-AREXPORT bool ArSocket::accept(MvrSocket *sock)
+MVREXPORT bool ArSocket::accept(MvrSocket *sock)
 {
   int len;
   //unsigned char *bytes;
@@ -738,13 +738,13 @@ AREXPORT bool ArSocket::accept(MvrSocket *sock)
   return(true);
 }
 
-AREXPORT void ArSocket::inToA(struct in_addr *addr, char *buff)
+MVREXPORT void ArSocket::inToA(struct in_addr *addr, char *buff)
 {
   strcpy(buff, inet_ntoa(*addr));
 }
 
 /** @return false and set error code and description string on failure  */
-AREXPORT bool ArSocket::getSockName()
+MVREXPORT bool ArSocket::getSockName()
 {
   int size;
 
@@ -780,17 +780,17 @@ AREXPORT bool ArSocket::getSockName()
   return(true);
 }
 
-AREXPORT unsigned int ArSocket::hostToNetOrder(int i)
+MVREXPORT unsigned int ArSocket::hostToNetOrder(int i)
 {
   return(htons(i));
 }
 
-AREXPORT unsigned int ArSocket::netToHostOrder(int i)
+MVREXPORT unsigned int ArSocket::netToHostOrder(int i)
 {
   return(ntohs(i));
 }
 
-AREXPORT std::string ArSocket::getHostName()
+MVREXPORT std::string ArSocket::getHostName()
 {
   char localhost[MAXGETHOSTSTRUCT];
 
@@ -807,7 +807,7 @@ AREXPORT std::string ArSocket::getHostName()
  *  @return true of the flag was successfully set, false if there was an 
  *    error or this socket is not a TCP socket.
  */
-AREXPORT bool ArSocket::setNoDelay(bool flag)
+MVREXPORT bool ArSocket::setNoDelay(bool flag)
 {
   if(myType != TCP) return false;
   int f = flag?1:0;

@@ -45,16 +45,16 @@ class MvrLaserReflectorDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT MvrLaserReflectorDevice(MvrRangeDevice *laser, MvrRobot *robot,
+  MVREXPORT MvrLaserReflectorDevice(MvrRangeDevice *laser, MvrRobot *robot,
 				  const char * name = "reflector");
   /// Destructor
-  AREXPORT virtual ~ArLaserReflectorDevice();
+  MVREXPORT virtual ~MvrLaserReflectorDevice();
   /// Grabs the new readings from the robot and adds them to the buffers
-  AREXPORT void processReadings(void);
+  MVREXPORT void processReadings(void);
   /// Specifically does nothing since it was done in the constructor
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
   /// Adds a reflector threshold to the task
-  AREXPORT void addToConfig(MvrConfig *config, const char *section);
+  MVREXPORT void addToConfig(MvrConfig *config, const char *section);
 protected:
   MvrRangeDevice *myLaser;
   int myReflectanceThreshold;

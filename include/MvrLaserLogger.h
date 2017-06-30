@@ -57,7 +57,7 @@ class MvrLaserLogger
 {
 public:
   /// Constructor
-  AREXPORT MvrLaserLogger(
+  MVREXPORT MvrLaserLogger(
 	  MvrRobot *robot, MvrLaser *laser, double distDiff, 
 	  double degDiff, const char *fileName, 
 	  bool addGoals = false, 
@@ -70,27 +70,27 @@ public:
 	  MvrStrCaseCmpOp> *extraLocationData = NULL,
 	  std::list<ArLaser *> *extraLasers = NULL);
   /// Destructor
-  AREXPORT virtual ~ArLaserLogger();
+  MVREXPORT virtual ~MvrLaserLogger();
 
 #ifndef SWIG
   /** @brief Adds a string to the log file with a tag at the given moment
    *  @swigomit
    */
-  AREXPORT void addTagToLog(const char *str, ...);
+  MVREXPORT void addTagToLog(const char *str, ...);
 #endif
 
   /// Same ass addToLog, but no varargs, wrapper for java
-  AREXPORT void addTagToLogPlain(const char *str);
+  MVREXPORT void addTagToLogPlain(const char *str);
 
 #ifndef SWIG
   /** @brief Adds a string to the log file without a tag for where or when we are
    *  @swigomit
    */
-  AREXPORT void addInfoToLog(const char *str, ...);
+  MVREXPORT void addInfoToLog(const char *str, ...);
 #endif
 
   /// Same as addToInfo, but does it without marking robot position
-  AREXPORT void addInfoToLogPlain(const char *str);
+  MVREXPORT void addInfoToLogPlain(const char *str);
   /// Sets the distance at which the robot will take a new reading
   void setDistDiff(double distDiff) { myDistDiff = MvrMath::fabs(distDiff); }
   /// Gets the distance at which the robot will take a new reading
@@ -116,7 +116,7 @@ public:
   void takeNewReadings(bool takeNew) { myNewReadings = takeNew; }
 protected:
   /// The task which gets attached to the robot
-  AREXPORT void robotTask(void);
+  MVREXPORT void robotTask(void);
   // internal function that adds goals if needed (and specified)
   void internalAddGoal(void);
   // internal function that writes tags
@@ -131,7 +131,7 @@ protected:
   // internal function that logs the pose and conf
   void internalPrintLaserPoseAndConf(MvrLaser *laser, int laserNumber);
   // internal packet for handling the loop packets
-  AREXPORT bool loopPacketHandler(MvrRobotPacket *packet);
+  MVREXPORT bool loopPacketHandler(MvrRobotPacket *packet);
 
 
   // what type of readings we are taking

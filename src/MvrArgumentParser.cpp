@@ -38,7 +38,7 @@ std::list<bool> MvrArgumentParser::ourDefaultArgumentLocIsFile;
    @param argc pointer to program argument count (e.g. @a argc from main()) 
    @param argv array of program arguments (e.g. @a arcv from main())
 **/
-AREXPORT MvrArgumentParser::ArArgumentParser(int *argc, char **argv)
+MVREXPORT MvrArgumentParser::ArArgumentParser(int *argc, char **argv)
 {
   myArgc = argc;
   myArgv = argv;
@@ -53,7 +53,7 @@ AREXPORT MvrArgumentParser::ArArgumentParser(int *argc, char **argv)
 /**
  * @param builder an MvrArgumentBuilder object containing arguments
 **/
-AREXPORT MvrArgumentParser::ArArgumentParser(MvrArgumentBuilder *builder)
+MVREXPORT MvrArgumentParser::ArArgumentParser(MvrArgumentBuilder *builder)
 {
   myUsingBuilder = true;
   myBuilder = builder;
@@ -63,7 +63,7 @@ AREXPORT MvrArgumentParser::ArArgumentParser(MvrArgumentBuilder *builder)
   myHelp = false;
 }
 
-AREXPORT MvrArgumentParser::~ArArgumentParser()
+MVREXPORT MvrArgumentParser::~MvrArgumentParser()
 {
   if (myOwnBuilder)
   {
@@ -72,7 +72,7 @@ AREXPORT MvrArgumentParser::~ArArgumentParser()
   }
 }
 
-AREXPORT bool MvrArgumentParser::checkArgumentVar(const char *argument, ...)
+MVREXPORT bool MvrArgumentParser::checkArgumentVar(const char *argument, ...)
 {
   char arg[2048];
   va_list ptr;
@@ -93,7 +93,7 @@ AREXPORT bool MvrArgumentParser::checkArgumentVar(const char *argument, ...)
 
    @return true if the argument was found, false otherwise
 **/
-AREXPORT bool MvrArgumentParser::checkArgument(const char *argument)
+MVREXPORT bool MvrArgumentParser::checkArgument(const char *argument)
 {
   size_t i;
   std::string extraHyphen;
@@ -134,7 +134,7 @@ AREXPORT bool MvrArgumentParser::checkArgument(const char *argument)
    @return true if either this argument wasn't there or if the
    argument was there with a valid parameter
 **/
-AREXPORT bool MvrArgumentParser::checkParameterArgumentStringVar(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentStringVar(
 	bool *wasReallySet, const char **dest, const char *argument, ...)
 {
   char arg[2048];
@@ -168,7 +168,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentStringVar(
    @return true if either this argument wasn't there or if the
    argument was there with a valid parameter
 **/
-AREXPORT bool MvrArgumentParser::checkParameterArgumentString(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentString(
 	const char *argument, const char **dest, bool *wasReallySet, 
 	bool returnFirst)
 {
@@ -218,7 +218,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentString(
      value (an error), or true if @a argument was not found, or if the
      argument was there with a valid parameter
 */
-AREXPORT bool MvrArgumentParser::checkParameterArgumentBoolVar(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentBoolVar(
 	bool *wasReallySet, bool *dest, const char *argument, ...)
 {
   char arg[2048];
@@ -254,7 +254,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentBoolVar(
      value (an error), or true if @a argument was not found, or if the
      argument was there with a valid parameter
 */
-AREXPORT bool MvrArgumentParser::checkParameterArgumentBool(const char *argument,
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentBool(const char *argument,
 							   bool *dest,
 							   bool *wasReallySet,
 							   bool returnFirst)
@@ -322,7 +322,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentBool(const char *argument
    @return true if either this argument wasn't there or if the
    argument was there with a valid parameter
 **/
-AREXPORT bool MvrArgumentParser::checkParameterArgumentIntegerVar(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentIntegerVar(
 	bool *wasReallySet, int *dest, const char *argument, ...)
 {
   char arg[2048];
@@ -357,7 +357,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentIntegerVar(
    @return true if either this argument wasn't there or if the
    argument was there with a valid parameter
 **/
-AREXPORT bool MvrArgumentParser::checkParameterArgumentInteger(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentInteger(
 	const char *argument, int *dest, bool *wasReallySet, bool returnFirst)
 {
   char *param;
@@ -420,7 +420,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentInteger(
    @return true if either this argument wasn't there or if the
    argument was there with a valid parameter
 **/
-AREXPORT bool MvrArgumentParser::checkParameterArgumentFloatVar(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentFloatVar(
 	bool *wasReallySet, float *dest, const char *argument, ...)
 {
   char arg[2048];
@@ -445,7 +445,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentFloatVar(
      or false if @a argument was not found and @a dest was not changed.
    @return false if the argument was given but an error occurred while parsing the float parameter (i.e. no parameter given, or it was not a parsable float).
 */
-AREXPORT bool MvrArgumentParser::checkParameterArgumentFloat(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentFloat(
 	const char *argument, float *dest, bool *wasReallySet, bool returnFirst)
 {
   char *param = checkParameterArgument(argument, returnFirst);
@@ -499,7 +499,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentFloat(
    @return true if either this argument wasn't there or if the
    argument was there with a valid parameter
 **/
-AREXPORT bool MvrArgumentParser::checkParameterArgumentDoubleVar(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentDoubleVar(
 	bool *wasReallySet, double *dest, const char *argument, ...)
 {
   char arg[2048];
@@ -522,7 +522,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentDoubleVar(
      or false if @a argument was not found and @a dest was not changed.
    @return false if the argument was given but an error occurred while parsing the double parameter (i.e. no parameter given, or it was not a parsable double).
 */
-AREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(
+MVREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(
 	const char *argument, double *dest, bool *wasReallySet, bool returnFirst)
 {
   char *param = checkParameterArgument(argument, returnFirst);
@@ -566,7 +566,7 @@ AREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(
    one given if the argument was found, or a string with the first
    char as NULL again if the argument after the one given isn't there
  **/
-AREXPORT char *ArArgumentParser::checkParameterArgumentVar(const char *argument, ...)
+MVREXPORT char *ArArgumentParser::checkParameterArgumentVar(const char *argument, ...)
 {
   char arg[2048];
   va_list ptr;
@@ -588,7 +588,7 @@ AREXPORT char *ArArgumentParser::checkParameterArgumentVar(const char *argument,
    found argument; or at empty string (with a NULL first character) if
    the argument was found but no value followed the argument flag.
 **/
-AREXPORT char * MvrArgumentParser::checkParameterArgument(const char *argument,
+MVREXPORT char * MvrArgumentParser::checkParameterArgument(const char *argument,
 							 bool returnFirst)
 {
   char *ret;
@@ -657,7 +657,7 @@ void MvrArgumentParser::removeArg(size_t which)
     }
 }
 
-AREXPORT size_t MvrArgumentParser::getArgc(void) const
+MVREXPORT size_t MvrArgumentParser::getArgc(void) const
 {
   if (myUsingBuilder)
     return myBuilder->getArgc();
@@ -665,7 +665,7 @@ AREXPORT size_t MvrArgumentParser::getArgc(void) const
     return *myArgc;
 }
 
-AREXPORT char** MvrArgumentParser::getArgv(void) const
+MVREXPORT char** MvrArgumentParser::getArgv(void) const
 {
   if (myUsingBuilder)
     return myBuilder->getArgv();
@@ -673,7 +673,7 @@ AREXPORT char** MvrArgumentParser::getArgv(void) const
     return myArgv;
 }
 
-AREXPORT const char* MvrArgumentParser::getArg(size_t whichArg) const
+MVREXPORT const char* MvrArgumentParser::getArg(size_t whichArg) const
 {
   if (whichArg >= getArgc())
     return NULL;
@@ -681,7 +681,7 @@ AREXPORT const char* MvrArgumentParser::getArg(size_t whichArg) const
     return getArgv()[whichArg];
 }
 
-AREXPORT void MvrArgumentParser::log(void) const
+MVREXPORT void MvrArgumentParser::log(void) const
 {
   size_t i;
   MvrLog::log(MvrLog::Terse, "Num arguments: %d", getArgc());
@@ -689,7 +689,7 @@ AREXPORT void MvrArgumentParser::log(void) const
     MvrLog::log(MvrLog::Terse, "Mvrg %d: %s", i, getArgv()[i]);
 }
 
-AREXPORT const char *ArArgumentParser::getStartingArguments(void) const
+MVREXPORT const char *ArArgumentParser::getStartingArguments(void) const
 {
   if (myUsingBuilder)
     return myBuilder->getFullString();
@@ -697,7 +697,7 @@ AREXPORT const char *ArArgumentParser::getStartingArguments(void) const
     return NULL;
 }
 
-AREXPORT void MvrArgumentParser::addDefaultArgument(
+MVREXPORT void MvrArgumentParser::addDefaultArgument(
 	const char *argument, int position)
 {
   if (!myUsingBuilder)
@@ -710,7 +710,7 @@ AREXPORT void MvrArgumentParser::addDefaultArgument(
   myBuilder->addPlain(argument, position);
 }
 
-AREXPORT void MvrArgumentParser::addDefaultArgumentAsIs(
+MVREXPORT void MvrArgumentParser::addDefaultArgumentAsIs(
 	const char *argument, int position)
 {
   if (!myUsingBuilder)
@@ -734,7 +734,7 @@ AREXPORT void MvrArgumentParser::addDefaultArgumentAsIs(
  * getArgc() to get the actual original argument count.  This is a little wierd but is 
  * this way so lots of people don't have to change lots of code.   
  */
-AREXPORT void MvrArgumentParser::loadDefaultArguments(int position)
+MVREXPORT void MvrArgumentParser::loadDefaultArguments(int position)
 {
   std::list<std::string>::iterator it;
   std::list<bool>::iterator bIt;
@@ -794,7 +794,7 @@ AREXPORT void MvrArgumentParser::loadDefaultArguments(int position)
    This adds a file to the list of default argument locations.
    @param file Name of the file
  **/
-AREXPORT void MvrArgumentParser::addDefaultArgumentFile(const char *file)
+MVREXPORT void MvrArgumentParser::addDefaultArgumentFile(const char *file)
 {
   ourDefaultArgumentLocs.push_back(file);
   ourDefaultArgumentLocIsFile.push_back(true);
@@ -806,13 +806,13 @@ AREXPORT void MvrArgumentParser::addDefaultArgumentFile(const char *file)
    locations.
    @param env Name of the environment variable 
  **/
-AREXPORT void MvrArgumentParser::addDefaultArgumentEnv(const char *env)
+MVREXPORT void MvrArgumentParser::addDefaultArgumentEnv(const char *env)
 {
   ourDefaultArgumentLocs.push_back(env);
   ourDefaultArgumentLocIsFile.push_back(false);
 }
 
-AREXPORT void MvrArgumentParser::logDefaultArgumentLocations(void)
+MVREXPORT void MvrArgumentParser::logDefaultArgumentLocations(void)
 {
   std::list<std::string>::iterator it;
   std::list<bool>::iterator bIt;
@@ -838,7 +838,7 @@ AREXPORT void MvrArgumentParser::logDefaultArgumentLocations(void)
  * The following are the help flags: -help, -h, --help, /?, /h.  
  * @return false if a help flag was found true otherwise.
  */
-AREXPORT bool MvrArgumentParser::checkHelp()
+MVREXPORT bool MvrArgumentParser::checkHelp()
 {
   if (myHelp || checkArgument("-help") || checkArgument("-h") || 
       checkArgument("/?") || checkArgument("/h"))
@@ -862,7 +862,7 @@ AREXPORT bool MvrArgumentParser::checkHelp()
  *  yet.
  */
   
-AREXPORT bool MvrArgumentParser::checkHelpAndWarnUnparsed(
+MVREXPORT bool MvrArgumentParser::checkHelpAndWarnUnparsed(
 	unsigned int numArgsOkay)
 {
   if(!checkHelp())
@@ -886,7 +886,7 @@ AREXPORT bool MvrArgumentParser::checkHelpAndWarnUnparsed(
 /**
    See the description for the class for more information about this 
 **/
-AREXPORT void MvrArgumentParser::setWasReallySetOnlyTrue(
+MVREXPORT void MvrArgumentParser::setWasReallySetOnlyTrue(
 	bool wasReallySetOnlyTrue)
 {
   myReallySetOnlyTrue = wasReallySetOnlyTrue;
@@ -895,7 +895,7 @@ AREXPORT void MvrArgumentParser::setWasReallySetOnlyTrue(
 /**
    See the description for the class for more information about this 
 **/
-AREXPORT bool MvrArgumentParser::getWasReallySetOnlyTrue(void)
+MVREXPORT bool MvrArgumentParser::getWasReallySetOnlyTrue(void)
 {
   return myReallySetOnlyTrue;
 }

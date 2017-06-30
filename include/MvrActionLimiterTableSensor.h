@@ -42,13 +42,13 @@ class MvrActionLimiterTableSensor : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionLimiterTableSensor(const char *name = "TableSensorLimiter");
+  MVREXPORT MvrActionLimiterTableSensor(const char *name = "TableSensorLimiter");
   /// Destructor
-  AREXPORT virtual ~ArActionLimiterTableSensor();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionLimiterTableSensor();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

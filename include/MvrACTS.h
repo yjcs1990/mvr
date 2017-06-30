@@ -40,7 +40,7 @@ public:
   /// Constructor
   MvrACTSBlob() {}
   /// Destructor
-  virtual ~ArACTSBlob() {}
+  virtual ~MvrACTSBlob() {}
   /// Gets the number of pixels (area) covered by the blob
   int getArea(void) { return myArea; }
   /// Gets the X Center of Gravity of the blob
@@ -91,38 +91,38 @@ class MvrACTS_1_2
 {
 public:
   /// Constructor
-  AREXPORT MvrACTS_1_2();
+  MVREXPORT MvrACTS_1_2();
   /// Destructor
-  AREXPORT virtual ~ArACTS_1_2();
+  MVREXPORT virtual ~MvrACTS_1_2();
 
   /// Opens the connection to ACTS
-  AREXPORT bool openPort(MvrRobot *robot, const char *host = "localhost", int port = 5001);
+  MVREXPORT bool openPort(MvrRobot *robot, const char *host = "localhost", int port = 5001);
   /// Closes the connection
-  AREXPORT bool closePort(void);
+  MVREXPORT bool closePort(void);
 
   /// Finds out whether there is connection
-  AREXPORT bool isConnected(void);
+  MVREXPORT bool isConnected(void);
 
   /// Gets the robot this class is connected to
-  AREXPORT MvrRobot *getRobot(void);
+  MVREXPORT MvrRobot *getRobot(void);
   /// Sets the robot this class is connected to
-  AREXPORT void setRobot(MvrRobot *robot);
+  MVREXPORT void setRobot(MvrRobot *robot);
 
   /// Requests another packet
-  AREXPORT bool requestPacket(void);
+  MVREXPORT bool requestPacket(void);
   /// Requests that ACTS quits
-  AREXPORT bool requestQuit(void);
+  MVREXPORT bool requestQuit(void);
   /// Gets the blob information from the connection to acts
-  AREXPORT bool receiveBlobInfo(void);
+  MVREXPORT bool receiveBlobInfo(void);
   
   /// Gets the number of blobs for the given chanel
-  AREXPORT int getNumBlobs(int channel);
+  MVREXPORT int getNumBlobs(int channel);
   
   /// Gets the given blob from the given channel
-  AREXPORT bool getBlob(int channel, int blobNumber, MvrACTSBlob *blob);
+  MVREXPORT bool getBlob(int channel, int blobNumber, MvrACTSBlob *blob);
 
   /// A function that reads information from acts and requests packets
-  AREXPORT void actsHandler(void);
+  MVREXPORT void actsHandler(void);
   
   enum ActsConstants
   {
@@ -133,7 +133,7 @@ public:
     MAX_DATA = 5300 ///< Maximum amount of data
   };
   /// This will make the image stats inverted (for use with an inverted camera)
-  AREXPORT void invert(int width = 160, int height = 120);
+  MVREXPORT void invert(int width = 160, int height = 120);
 protected:
   int invertX(int before);
   int invertY(int before);

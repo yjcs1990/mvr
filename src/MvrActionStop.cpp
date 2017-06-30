@@ -32,16 +32,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
    @param name name of the action
 */
-AREXPORT MvrActionStop::ArActionStop(const char *name) :
+MVREXPORT MvrActionStop::ArActionStop(const char *name) :
     MvrAction(name, "Stops the robot")
 {
 }
 
-AREXPORT MvrActionStop::~ArActionStop()
+MVREXPORT MvrActionStop::~MvrActionStop()
 {
 }
 
-AREXPORT MvrActionDesired *ArActionStop::fire(
+MVREXPORT MvrActionDesired *ArActionStop::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

@@ -64,15 +64,15 @@ public:
   } Status;
 
   /// Load an MvrModule
-  AREXPORT static Status load(const char *modName, MvrRobot *robot,
+  MVREXPORT static Status load(const char *modName, MvrRobot *robot,
 			      void *modArgument = NULL, bool quiet = false);
   /// Close and then reload an MvrModule
-  AREXPORT static Status reload(const char *modName, MvrRobot *robot,
+  MVREXPORT static Status reload(const char *modName, MvrRobot *robot,
 				void * modArgument = NULL, bool quiet = false);
   /// Close an MvrModule
-  AREXPORT static Status close(const char *modName, bool quiet = false);
+  MVREXPORT static Status close(const char *modName, bool quiet = false);
   /// Close all open MvrModule
-  AREXPORT static void closeAll();
+  MVREXPORT static void closeAll();
 
 protected:
 

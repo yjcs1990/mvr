@@ -77,7 +77,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 **/
 
-AREXPORT ArRobot::ArRobot(const char *name, bool obsolete, 
+MVREXPORT ArRobot::ArRobot(const char *name, bool obsolete, 
 			  bool doSigHandle, bool normalInit,
 			  bool addAriaExitCallback) :
   myMotorPacketCB(this, &ArRobot::processMotorPacket),
@@ -209,7 +209,7 @@ AREXPORT ArRobot::ArRobot(const char *name, bool obsolete,
 
 
 
-AREXPORT ArRobot::~ArRobot()
+MVREXPORT ArRobot::~MvrRobot()
 {
   ArResolver::ActionMap::iterator it;
 
@@ -232,7 +232,7 @@ AREXPORT ArRobot::~ArRobot()
    Sets up the packet handlers, sets up the sync list and makes the default
    priority resolver.
 **/
-AREXPORT void ArRobot::init(void)
+MVREXPORT void ArRobot::init(void)
 {
   setUpPacketHandlers();
   setUpSyncList();
@@ -259,7 +259,7 @@ AREXPORT void ArRobot::init(void)
 
    @sa stopRunning()
 **/
-AREXPORT void ArRobot::run(bool stopRunIfNotConnected, bool runNonThreaded)
+MVREXPORT void ArRobot::run(bool stopRunIfNotConnected, bool runNonThreaded)
 {
   if (mySyncLoop.getRunning())
   {
@@ -284,7 +284,7 @@ AREXPORT void ArRobot::run(bool stopRunIfNotConnected, bool runNonThreaded)
    otherwise false
 **/
 
-AREXPORT bool ArRobot::isRunning(void) const
+MVREXPORT bool ArRobot::isRunning(void) const
 {
   return (mySyncLoop.getRunning() && 
 	  (myRunningNonThreaded || myPacketReader.getRunning()));
@@ -305,7 +305,7 @@ asychronous thread.  Mostly for internal use.
    @sa lock()
    @sa unlock()
 **/
-AREXPORT void ArRobot::runAsync(bool stopRunIfNotConnected, bool runNonThreadedPacketReader)
+MVREXPORT void ArRobot::runAsync(bool stopRunIfNotConnected, bool runNonThreadedPacketReader)
 {
   if (mySyncLoop.getRunning())
   {
@@ -344,7 +344,7 @@ AREXPORT void ArRobot::runAsync(bool stopRunIfNotConnected, bool runNonThreadedP
    @param doDisconnect If true, also disconnect from the robot connection (default is true). 
    @sa isRunning
 **/
-AREXPORT void ArRobot::stopRunning(bool doDisconnect)
+MVREXPORT void ArRobot::stopRunning(bool doDisconnect)
 {
   if (myKeyHandler != NULL)
     myKeyHandler->restore();
@@ -358,7 +358,7 @@ AREXPORT void ArRobot::stopRunning(bool doDisconnect)
   wakeAllWaitingThreads();
 }
 
-AREXPORT void ArRobot::setUpSyncList(void)
+MVREXPORT void ArRobot::setUpSyncList(void)
 {
   mySyncTaskRoot = new ArSyncTask("SyncTasks");
   mySyncTaskRoot->setWarningTimeCB(&myGetCycleWarningTimeCB);
@@ -373,7 +373,7 @@ AREXPORT void ArRobot::setUpSyncList(void)
 }
 
 
-AREXPORT void ArRobot::setUpPacketHandlers(void)
+MVREXPORT void ArRobot::setUpPacketHandlers(void)
 {
   addPacketHandler(&myMotorPacketCB, ArListPos::FIRST);
   addPacketHandler(&myEncoderPacketCB, ArListPos::LAST);
@@ -540,7 +540,7 @@ void ArRobot::reset(void)
   myAutonomousDrivingSonarEnabled = false;
 }
 
-AREXPORT void ArRobot::setTransVelMax(double vel)
+MVREXPORT void ArRobot::setTransVelMax(double vel)
 {
   if (vel <= 0)
   {
@@ -556,7 +556,7 @@ AREXPORT void ArRobot::setTransVelMax(double vel)
   myTransVelMax = vel;
 }
 
-AREXPORT void ArRobot::setTransNegVelMax(double negVel)
+MVREXPORT void ArRobot::setTransNegVelMax(double negVel)
 {
   if (negVel >= 0)
   {
@@ -572,7 +572,7 @@ AREXPORT void ArRobot::setTransNegVelMax(double negVel)
   myTransNegVelMax = negVel;
 }
 
-AREXPORT void ArRobot::setTransAccel(double acc)
+MVREXPORT void ArRobot::setTransAccel(double acc)
 {
   if (acc <= 0)
   {
@@ -588,7 +588,7 @@ AREXPORT void ArRobot::setTransAccel(double acc)
   myTransAccel = acc;
 }
 
-AREXPORT void ArRobot::setTransDecel(double decel)
+MVREXPORT void ArRobot::setTransDecel(double decel)
 {
   if (decel <= 0)
   {
@@ -604,7 +604,7 @@ AREXPORT void ArRobot::setTransDecel(double decel)
   myTransDecel = ArMath::fabs(decel);
 }
 
-AREXPORT void ArRobot::setRotVelMax(double vel)
+MVREXPORT void ArRobot::setRotVelMax(double vel)
 {
   if (vel <= 0)
   {
@@ -620,7 +620,7 @@ AREXPORT void ArRobot::setRotVelMax(double vel)
   myRotVelMax = vel;
 }
 
-AREXPORT void ArRobot::setRotAccel(double acc)
+MVREXPORT void ArRobot::setRotAccel(double acc)
 {
   if (acc <= 0)
   {
@@ -636,7 +636,7 @@ AREXPORT void ArRobot::setRotAccel(double acc)
   myRotAccel = acc;
 }
 
-AREXPORT void ArRobot::setRotDecel(double decel)
+MVREXPORT void ArRobot::setRotDecel(double decel)
 {
   if (decel <= 0)
   {
@@ -653,7 +653,7 @@ AREXPORT void ArRobot::setRotDecel(double decel)
 }
 
 /** @since 2.6.0 */
-AREXPORT void ArRobot::setLatVelMax(double vel)
+MVREXPORT void ArRobot::setLatVelMax(double vel)
 {
   if (vel <= 0)
   {
@@ -670,7 +670,7 @@ AREXPORT void ArRobot::setLatVelMax(double vel)
 }
 
 /** @since 2.6.0 */
-AREXPORT void ArRobot::setLatAccel(double acc)
+MVREXPORT void ArRobot::setLatAccel(double acc)
 {
   if (acc <= 0)
   {
@@ -687,7 +687,7 @@ AREXPORT void ArRobot::setLatAccel(double acc)
 }
 
 /** @since 2.6.0 */
-AREXPORT void ArRobot::setLatDecel(double decel)
+MVREXPORT void ArRobot::setLatDecel(double decel)
 {
   if (decel <= 0)
   {
@@ -704,55 +704,55 @@ AREXPORT void ArRobot::setLatDecel(double decel)
 }
 
 
-AREXPORT double ArRobot::getTransVelMax(void) const
+MVREXPORT double ArRobot::getTransVelMax(void) const
 {
   return myTransVelMax;
 }
 
-AREXPORT double ArRobot::getTransNegVelMax(void) const
+MVREXPORT double ArRobot::getTransNegVelMax(void) const
 {
   return myTransNegVelMax;
 }
 
-AREXPORT double ArRobot::getTransAccel(void) const
+MVREXPORT double ArRobot::getTransAccel(void) const
 {
   return myTransAccel;
 }
 
-AREXPORT double ArRobot::getTransDecel(void) const
+MVREXPORT double ArRobot::getTransDecel(void) const
 {
   return myTransDecel;
 }
 
-AREXPORT double ArRobot::getRotVelMax(void) const
+MVREXPORT double ArRobot::getRotVelMax(void) const
 {
   return myRotVelMax;
 }
 
-AREXPORT double ArRobot::getRotAccel(void) const
+MVREXPORT double ArRobot::getRotAccel(void) const
 {
   return myRotAccel;
 }
 
-AREXPORT double ArRobot::getRotDecel(void) const
+MVREXPORT double ArRobot::getRotDecel(void) const
 {
   return myRotDecel;
 }
 
 /** @since 2.6.0 */
-AREXPORT double ArRobot::getLatVelMax(void) const
+MVREXPORT double ArRobot::getLatVelMax(void) const
 {
   return myLatVelMax;
 }
 
 /** @since 2.6.0 */
-AREXPORT double ArRobot::getLatAccel(void) const
+MVREXPORT double ArRobot::getLatAccel(void) const
 {
   return myLatAccel;
 }
 
 /** @since 2.6.0 */
-AREXPORT double ArRobot::getLatDecel(void) const
+MVREXPORT double ArRobot::getLatDecel(void) const
 {
   return myLatDecel;
 }
@@ -765,7 +765,7 @@ AREXPORT double ArRobot::getLatDecel(void) const
 
    @see ArDeviceConnection, ArSerialConnection, ArTcpConnection
 **/
-AREXPORT void ArRobot::setDeviceConnection(MvrDeviceConnection *connection)
+MVREXPORT void ArRobot::setDeviceConnection(MvrDeviceConnection *connection)
 {
   myConn = connection;
   myConn->setDeviceName("uC");
@@ -781,7 +781,7 @@ AREXPORT void ArRobot::setDeviceConnection(MvrDeviceConnection *connection)
    @see ArSerialConnection
    @see ArTcpConnection
 **/
-AREXPORT ArDeviceConnection *ArRobot::getDeviceConnection(void) const
+MVREXPORT ArDeviceConnection *ArRobot::getDeviceConnection(void) const
 {
   return myConn;
 }
@@ -796,7 +796,7 @@ AREXPORT ArDeviceConnection *ArRobot::getDeviceConnection(void) const
    will be disabled, otherwise disconnect on error will be triggered
    after this number of seconds...  
 **/
-AREXPORT void ArRobot::setConnectionTimeoutTime(int mSecs)
+MVREXPORT void ArRobot::setConnectionTimeoutTime(int mSecs)
 {
   myConnectionTimeoutMutex.lock();
 
@@ -821,7 +821,7 @@ AREXPORT void ArRobot::setConnectionTimeoutTime(int mSecs)
    broken and the disconnect on error events will happen.
 
 **/
-AREXPORT int ArRobot::getConnectionTimeoutTime(void) 
+MVREXPORT int ArRobot::getConnectionTimeoutTime(void) 
 {
   myConnectionTimeoutMutex.lock();
   int ret = myTimeoutTime;
@@ -836,7 +836,7 @@ AREXPORT int ArRobot::getConnectionTimeoutTime(void)
 
    @return the time the last packet was received
 **/
-AREXPORT ArTime ArRobot::getLastPacketTime(void) 
+MVREXPORT ArTime ArRobot::getLastPacketTime(void) 
 {
   myConnectionTimeoutMutex.lock();
   ArTime ret = myLastPacketReceivedTime;
@@ -854,7 +854,7 @@ AREXPORT ArTime ArRobot::getLastPacketTime(void)
 
    @return the time the last SIP was received
 **/
-AREXPORT ArTime ArRobot::getLastOdometryTime(void) 
+MVREXPORT ArTime ArRobot::getLastOdometryTime(void) 
 {
   myConnectionTimeoutMutex.lock();
   ArTime ret = myLastOdometryReceivedTime;
@@ -899,7 +899,7 @@ AREXPORT ArTime ArRobot::getLastOdometryTime(void)
     @see runAsync
 **/
 
-AREXPORT bool ArRobot::asyncConnect(void)
+MVREXPORT bool ArRobot::asyncConnect(void)
 {
   if (!mySyncLoop.getRunning() || isConnected())
     return false;
@@ -945,7 +945,7 @@ AREXPORT bool ArRobot::asyncConnect(void)
 
 **/
 
-AREXPORT bool ArRobot::blockingConnect(void)
+MVREXPORT bool ArRobot::blockingConnect(void)
 {
   int ret = 0;
 
@@ -978,7 +978,7 @@ AREXPORT bool ArRobot::blockingConnect(void)
    @return 0 if its still trying to connect, 1 if it connected, 2 if it failed
 **/
 
-AREXPORT int ArRobot::asyncConnectHandler(bool tryHarderToConnect)
+MVREXPORT int ArRobot::asyncConnectHandler(bool tryHarderToConnect)
 {
   int ret = 0;
   ArRobotPacket *packet;
@@ -1460,7 +1460,7 @@ AREXPORT int ArRobot::asyncConnectHandler(bool tryHarderToConnect)
 /**
    @return true if the file could be loaded, false otherwise
  **/
-AREXPORT bool ArRobot::loadParamFile(const char *file)
+MVREXPORT bool ArRobot::loadParamFile(const char *file)
 {
   if (myParams != NULL)
     delete myParams;
@@ -1479,7 +1479,7 @@ AREXPORT bool ArRobot::loadParamFile(const char *file)
 /**
    This function will take over ownership of the passed in params
  **/
-AREXPORT void ArRobot::setRobotParams(MvrRobotParams *params)
+MVREXPORT void ArRobot::setRobotParams(MvrRobotParams *params)
 {
   if (myParams != NULL)
     delete myParams;
@@ -1490,7 +1490,7 @@ AREXPORT void ArRobot::setRobotParams(MvrRobotParams *params)
 }
 
 
-AREXPORT void ArRobot::processParamFile(void)
+MVREXPORT void ArRobot::processParamFile(void)
 {
 
 
@@ -1550,7 +1550,7 @@ AREXPORT void ArRobot::processParamFile(void)
 }
 
 
-AREXPORT bool ArRobot::madeConnection(bool resetConnectionTime)
+MVREXPORT bool ArRobot::madeConnection(bool resetConnectionTime)
 {
   if (resetConnectionTime)
     myConnectionOpenedTime.setToNow();
@@ -1774,7 +1774,7 @@ AREXPORT bool ArRobot::madeConnection(bool resetConnectionTime)
  * 0x90. See addPacketHandler() for details on how to write a general packet
  * handler.
  */
-AREXPORT void ArRobot::requestEncoderPackets(void)
+MVREXPORT void ArRobot::requestEncoderPackets(void)
 {
   comInt(MvrCommands::ENCODER, 2);
   myRequestedEncoderPackets = true;
@@ -1790,7 +1790,7 @@ AREXPORT void ArRobot::requestEncoderPackets(void)
   used to access the EBX-12 computer's IO interface.  Otherwise, a user-added
   peripheral DAC interface is suggested.  )
 */
-AREXPORT void ArRobot::requestIOPackets(void)
+MVREXPORT void ArRobot::requestIOPackets(void)
 {
   comInt(MvrCommands::IOREQUEST, 2);
   myRequestedIOPackets = true;
@@ -1799,30 +1799,30 @@ AREXPORT void ArRobot::requestIOPackets(void)
 /**
   @see requestEncoderPackets()
 */
-AREXPORT void ArRobot::stopEncoderPackets(void)
+MVREXPORT void ArRobot::stopEncoderPackets(void)
 {
   comInt(MvrCommands::ENCODER, 0);
   myRequestedEncoderPackets = false;
 }
 
-AREXPORT void ArRobot::stopIOPackets(void)
+MVREXPORT void ArRobot::stopIOPackets(void)
 {
   comInt(MvrCommands::IOREQUEST, 0);
   myRequestedIOPackets = false;
 }
 
 
-AREXPORT bool ArRobot::haveRequestedEncoderPackets(void)
+MVREXPORT bool ArRobot::haveRequestedEncoderPackets(void)
 {
   return myRequestedEncoderPackets;
 }
 
-AREXPORT bool ArRobot::haveRequestedIOPackets(void)
+MVREXPORT bool ArRobot::haveRequestedIOPackets(void)
 {
   return myRequestedIOPackets;
 }
 
-AREXPORT void ArRobot::startStabilization(void)
+MVREXPORT void ArRobot::startStabilization(void)
 {
   std::list<ArFunctor *>::iterator it;
   myIsStabilizing = true;
@@ -1835,7 +1835,7 @@ AREXPORT void ArRobot::startStabilization(void)
 
 }
 
-AREXPORT void ArRobot::finishedConnection(void)
+MVREXPORT void ArRobot::finishedConnection(void)
 {
   std::list<ArFunctor *>::iterator it;
 
@@ -1856,7 +1856,7 @@ AREXPORT void ArRobot::finishedConnection(void)
   wakeAllConnWaitingThreads();
 }
 
-AREXPORT void ArRobot::failedConnect(void)
+MVREXPORT void ArRobot::failedConnect(void)
 {
   std::list<ArFunctor *>::iterator it;  
 
@@ -1887,7 +1887,7 @@ AREXPORT void ArRobot::failedConnect(void)
   robot (ie connection hasn't failed)
  **/
 
-AREXPORT bool ArRobot::disconnect(void)
+MVREXPORT bool ArRobot::disconnect(void)
 {
   std::list<ArFunctor *>::iterator it;  
   bool ret;
@@ -1928,7 +1928,7 @@ AREXPORT bool ArRobot::disconnect(void)
   return ret;
 }
 
-AREXPORT void ArRobot::dropConnection(const char *technicalReason, 
+MVREXPORT void ArRobot::dropConnection(const char *technicalReason, 
 				      const char *userReason)
 {
   std::list<ArFunctor *>::iterator it;  
@@ -1958,7 +1958,7 @@ AREXPORT void ArRobot::dropConnection(const char *technicalReason,
   return;
 }
 
-AREXPORT void ArRobot::cancelConnection(void)
+MVREXPORT void ArRobot::cancelConnection(void)
 {
   //std::list<ArFunctor *>::iterator it;  
 
@@ -1978,7 +1978,7 @@ AREXPORT void ArRobot::cancelConnection(void)
   @see getDirectMotionPrecedenceTime
   @see clearDirectMotion
  **/
-AREXPORT void ArRobot::stop(void)
+MVREXPORT void ArRobot::stop(void)
 {
   comInt(MvrCommands::VEL, 0);
   comInt(MvrCommands::RVEL, 0);
@@ -2002,7 +2002,7 @@ cycle.
 
   @param velocity the desired translational velocity of the robot (mm/sec)
  **/
-AREXPORT void ArRobot::setVel(double velocity)
+MVREXPORT void ArRobot::setVel(double velocity)
 {
   myTransType = TRANS_VEL;
   myTransVal = velocity;
@@ -2020,7 +2020,7 @@ AREXPORT void ArRobot::setVel(double velocity)
 
   @param latVelocity the desired translational velocity of the robot (mm/sec)
  **/
-AREXPORT void ArRobot::setLatVel(double latVelocity)
+MVREXPORT void ArRobot::setLatVel(double latVelocity)
 {
   myLatType = LAT_VEL;
   myLatVal = latVelocity;
@@ -2055,7 +2055,7 @@ AREXPORT void ArRobot::setLatVel(double latVelocity)
   @param leftVelocity the desired velocity of the left wheel 
   @param rightVelocity the desired velocity of the right wheel
  **/
-AREXPORT void ArRobot::setVel2(double leftVelocity, double rightVelocity)
+MVREXPORT void ArRobot::setVel2(double leftVelocity, double rightVelocity)
 {
   myTransType = TRANS_VEL2;
   myTransVal = leftVelocity;
@@ -2075,7 +2075,7 @@ AREXPORT void ArRobot::setVel2(double leftVelocity, double rightVelocity)
   restrict the distance to the range (5000mm, 5000mm] if possible. Not all
   robots have this restriction, however.
  **/
-AREXPORT void ArRobot::move(double distance)
+MVREXPORT void ArRobot::move(double distance)
 {
   myTransType = TRANS_DIST_NEW;
   myTransDistStart = getPose();
@@ -2098,7 +2098,7 @@ AREXPORT void ArRobot::move(double distance)
   @sa setMoveDoneDist
   @sa getMoveDoneDist
  **/
-AREXPORT bool ArRobot::isMoveDone(double delta)
+MVREXPORT bool ArRobot::isMoveDone(double delta)
 {
   if (fabs(delta) < 0.001)
     delta = myMoveDoneDist;
@@ -2123,7 +2123,7 @@ AREXPORT bool ArRobot::isMoveDone(double delta)
   command or if the robot is no longer in heading mode mode (because
   its now running off of actions, setDHeading(), or setRotVel() was called).
  **/
-AREXPORT bool ArRobot::isHeadingDone(double delta) const
+MVREXPORT bool ArRobot::isHeadingDone(double delta) const
 {
   if (fabs(delta) < 0.001)
     delta = myHeadingDoneDiff;
@@ -2143,7 +2143,7 @@ AREXPORT bool ArRobot::isHeadingDone(double delta) const
 
   @param heading the desired heading of the robot (degrees)
  **/
-AREXPORT void ArRobot::setHeading(double heading)
+MVREXPORT void ArRobot::setHeading(double heading)
 {
   myRotVal = heading;
   myRotType = ROT_HEADING;
@@ -2163,7 +2163,7 @@ AREXPORT void ArRobot::setHeading(double heading)
 
   @param velocity the desired rotational velocity of the robot (deg/sec)
  **/
-AREXPORT void ArRobot::setRotVel(double velocity)
+MVREXPORT void ArRobot::setRotVel(double velocity)
 {
   myRotVal = velocity;
   myRotType = ROT_VEL;
@@ -2182,7 +2182,7 @@ AREXPORT void ArRobot::setRotVel(double velocity)
 
   @param deltaHeading the desired amount to change the heading of the robot by
  **/
-AREXPORT void ArRobot::setDeltaHeading(double deltaHeading)
+MVREXPORT void ArRobot::setDeltaHeading(double deltaHeading)
 {
   myRotVal = ArMath::addAngle(getTh(), deltaHeading);
   myRotType = ROT_HEADING;
@@ -2195,7 +2195,7 @@ AREXPORT void ArRobot::setDeltaHeading(double deltaHeading)
   }
 }
 
-AREXPORT bool ArRobot::isStopped(double stoppedVel, double stoppedRotVel,
+MVREXPORT bool ArRobot::isStopped(double stoppedVel, double stoppedRotVel,
 				 double stoppedLatVel)
 {
   if (stoppedVel < 0.001)
@@ -2213,7 +2213,7 @@ AREXPORT bool ArRobot::isStopped(double stoppedVel, double stoppedRotVel,
 }
 
 /// Sets the vels required to be stopped
-AREXPORT void ArRobot::setStoppedVels(double stoppedVel, double stoppedRotVel,
+MVREXPORT void ArRobot::setStoppedVels(double stoppedVel, double stoppedRotVel,
 			     double stoppedLatVel) {
 	myStoppedVel = stoppedVel;
 	myStoppedRotVel = stoppedRotVel;
@@ -2234,7 +2234,7 @@ AREXPORT void ArRobot::setStoppedVels(double stoppedVel, double stoppedRotVel,
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxTransVel(double maxVel)
+MVREXPORT bool ArRobot::setAbsoluteMaxTransVel(double maxVel)
 {
   if (maxVel <= 0)
   {
@@ -2272,7 +2272,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxTransVel(double maxVel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxTransNegVel(double maxNegVel)
+MVREXPORT bool ArRobot::setAbsoluteMaxTransNegVel(double maxNegVel)
 {
   if (maxNegVel >= 0)
   {
@@ -2311,7 +2311,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxTransNegVel(double maxNegVel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxTransAccel(double maxAccel)
+MVREXPORT bool ArRobot::setAbsoluteMaxTransAccel(double maxAccel)
 {
   if (maxAccel <= 0)
   {
@@ -2350,7 +2350,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxTransAccel(double maxAccel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxTransDecel(double maxDecel)
+MVREXPORT bool ArRobot::setAbsoluteMaxTransDecel(double maxDecel)
 {
   if (maxDecel <= 0)
   {
@@ -2387,7 +2387,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxTransDecel(double maxDecel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxRotVel(double maxVel)
+MVREXPORT bool ArRobot::setAbsoluteMaxRotVel(double maxVel)
 {
   if (maxVel <= 0)
   {
@@ -2426,7 +2426,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxRotVel(double maxVel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxRotAccel(double maxAccel)
+MVREXPORT bool ArRobot::setAbsoluteMaxRotAccel(double maxAccel)
 {
   if (maxAccel <= 0)
   {
@@ -2465,7 +2465,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxRotAccel(double maxAccel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxRotDecel(double maxDecel)
+MVREXPORT bool ArRobot::setAbsoluteMaxRotDecel(double maxDecel)
 {
   if (maxDecel <= 0)
   {    
@@ -2505,7 +2505,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxRotDecel(double maxDecel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxLatVel(double maxLatVel)
+MVREXPORT bool ArRobot::setAbsoluteMaxLatVel(double maxLatVel)
 {
   if (maxLatVel <= 0)
   {    
@@ -2545,7 +2545,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxLatVel(double maxLatVel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxLatAccel(double maxAccel)
+MVREXPORT bool ArRobot::setAbsoluteMaxLatAccel(double maxAccel)
 {
   if (maxAccel <= 0)
   {
@@ -2585,7 +2585,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxLatAccel(double maxAccel)
   @return true if the value is good, false othrewise
  **/
 
-AREXPORT bool ArRobot::setAbsoluteMaxLatDecel(double maxDecel)
+MVREXPORT bool ArRobot::setAbsoluteMaxLatDecel(double maxDecel)
 {
   if (maxDecel <= 0)
   {
@@ -2618,7 +2618,7 @@ AREXPORT bool ArRobot::setAbsoluteMaxLatDecel(double maxDecel)
 
   @see requestIOPackets()
  **/
-AREXPORT int ArRobot::getIOAnalog(int num) const
+MVREXPORT int ArRobot::getIOAnalog(int num) const
 {
   if (num <= getIOAnalogSize())
     return myIOAnalog[num];
@@ -2630,7 +2630,7 @@ AREXPORT int ArRobot::getIOAnalog(int num) const
   This gets the IO Analog value converted to a voltage between 0 and 5 voltes.
   @see requestIOPackets()
  **/
-AREXPORT double ArRobot::getIOAnalogVoltage(int num) const
+MVREXPORT double ArRobot::getIOAnalogVoltage(int num) const
 {
   if (num <= getIOAnalogSize())
   {
@@ -2643,7 +2643,7 @@ AREXPORT double ArRobot::getIOAnalogVoltage(int num) const
 /**
   @see requestIOPackets()
  */
-AREXPORT unsigned char ArRobot::getIODigIn(int num) const
+MVREXPORT unsigned char ArRobot::getIODigIn(int num) const
 {
   if (num <= getIODigInSize())
     return myIODigIn[num];
@@ -2654,7 +2654,7 @@ AREXPORT unsigned char ArRobot::getIODigIn(int num) const
 /**
   @see requestIOPackets()
  */
-AREXPORT unsigned char  ArRobot::getIODigOut(int num) const
+MVREXPORT unsigned char  ArRobot::getIODigOut(int num) const
 {
   if (num <= getIODigOutSize())
     return myIODigOut[num];
@@ -2665,7 +2665,7 @@ AREXPORT unsigned char  ArRobot::getIODigOut(int num) const
 /** 
   @return the ArRobotParams instance the robot is using for its parameters
  **/
-AREXPORT const ArRobotParams *ArRobot::getRobotParams(void) const
+MVREXPORT const ArRobotParams *ArRobot::getRobotParams(void) const
 {
   return myParams;
 }
@@ -2673,7 +2673,7 @@ AREXPORT const ArRobotParams *ArRobot::getRobotParams(void) const
 /** 
   @return the ArRobotParams instance the robot is using for its parameters
  **/
-AREXPORT ArRobotParams *ArRobot::getRobotParamsInternal(void) 
+MVREXPORT ArRobotParams *ArRobot::getRobotParamsInternal(void) 
 {
   return myParams;
 }
@@ -2682,7 +2682,7 @@ AREXPORT ArRobotParams *ArRobot::getRobotParamsInternal(void)
     @return the ArRobotConfigPacketReader taken when this instance got
     connected to the robot
 **/
-AREXPORT const ArRobotConfigPacketReader *ArRobot::getOrigRobotConfig(void) const
+MVREXPORT const ArRobotConfigPacketReader *ArRobot::getOrigRobotConfig(void) const
 {
   return myOrigRobotConfig;
 }
@@ -2703,7 +2703,7 @@ AREXPORT const ArRobotConfigPacketReader *ArRobot::getOrigRobotConfig(void) cons
    @param position whether to place the functor first or last
    @see remPacketHandler
 **/
-AREXPORT void ArRobot::addPacketHandler(
+MVREXPORT void ArRobot::addPacketHandler(
 	ArRetFunctor1<bool, ArRobotPacket *> *functor, 
 	ArListPos::Pos position) 
 {
@@ -2720,7 +2720,7 @@ AREXPORT void ArRobot::addPacketHandler(
    @param functor the functor to remove from the list of packet handlers
    @see addPacketHandler
 **/
-AREXPORT void ArRobot::remPacketHandler(
+MVREXPORT void ArRobot::remPacketHandler(
 	ArRetFunctor1<bool, ArRobotPacket *> *functor)
 {
   myPacketHandlerList.remove(functor);
@@ -2736,7 +2736,7 @@ AREXPORT void ArRobot::remPacketHandler(
    @param position whether to place the functor first or last
    @see remConnectCB
 **/
-AREXPORT void ArRobot::addConnectCB(MvrFunctor *functor, 
+MVREXPORT void ArRobot::addConnectCB(MvrFunctor *functor, 
 				    ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -2752,7 +2752,7 @@ AREXPORT void ArRobot::addConnectCB(MvrFunctor *functor,
     @param functor the functor to remove from the list of connect callbacks
     @see addConnectCB
 **/
-AREXPORT void ArRobot::remConnectCB(MvrFunctor *functor)
+MVREXPORT void ArRobot::remConnectCB(MvrFunctor *functor)
 {
   myConnectCBList.remove(functor);
 }
@@ -2771,7 +2771,7 @@ AREXPORT void ArRobot::remConnectCB(MvrFunctor *functor)
     @param position whether to place the functor first or last
     @see remFailedConnectCB
 **/
-AREXPORT void ArRobot::addFailedConnectCB(MvrFunctor *functor, 
+MVREXPORT void ArRobot::addFailedConnectCB(MvrFunctor *functor, 
 					  ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -2787,7 +2787,7 @@ AREXPORT void ArRobot::addFailedConnectCB(MvrFunctor *functor,
     @param functor the functor to remove from the list of connect callbacks
     @see addFailedConnectCB
 **/
-AREXPORT void ArRobot::remFailedConnectCB(MvrFunctor *functor)
+MVREXPORT void ArRobot::remFailedConnectCB(MvrFunctor *functor)
 {
   myFailedConnectCBList.remove(functor);
 }
@@ -2803,7 +2803,7 @@ AREXPORT void ArRobot::remFailedConnectCB(MvrFunctor *functor)
     @param position whether to place the functor first or last
     @see remFailedConnectCB
 **/
-AREXPORT void ArRobot::addDisconnectNormallyCB(MvrFunctor *functor, 
+MVREXPORT void ArRobot::addDisconnectNormallyCB(MvrFunctor *functor, 
 					       ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -2819,7 +2819,7 @@ AREXPORT void ArRobot::addDisconnectNormallyCB(MvrFunctor *functor,
     @param functor the functor to remove from the list of connect callbacks
     @see addDisconnectNormallyCB
 **/
-AREXPORT void ArRobot::remDisconnectNormallyCB(MvrFunctor *functor)
+MVREXPORT void ArRobot::remDisconnectNormallyCB(MvrFunctor *functor)
 {
   myDisconnectNormallyCBList.remove(functor);
 }
@@ -2840,7 +2840,7 @@ AREXPORT void ArRobot::remDisconnectNormallyCB(MvrFunctor *functor)
     @param position whether to place the functor first or last
     @see remDisconnectOnErrorCB
 **/
-AREXPORT void ArRobot::addDisconnectOnErrorCB(MvrFunctor *functor, 
+MVREXPORT void ArRobot::addDisconnectOnErrorCB(MvrFunctor *functor, 
 					      ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -2856,7 +2856,7 @@ AREXPORT void ArRobot::addDisconnectOnErrorCB(MvrFunctor *functor,
     @param functor the functor to remove from the list of connect callbacks
     @see addDisconnectOnErrorCB
 **/
-AREXPORT void ArRobot::remDisconnectOnErrorCB(MvrFunctor *functor)
+MVREXPORT void ArRobot::remDisconnectOnErrorCB(MvrFunctor *functor)
 {
   myDisconnectOnErrorCBList.remove(functor);
 }
@@ -2872,7 +2872,7 @@ AREXPORT void ArRobot::remDisconnectOnErrorCB(MvrFunctor *functor)
    @param position whether to place the functor first or last
    @see remRunExitCB
 **/   
-AREXPORT void ArRobot::addRunExitCB(MvrFunctor *functor,
+MVREXPORT void ArRobot::addRunExitCB(MvrFunctor *functor,
 				    ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -2887,7 +2887,7 @@ AREXPORT void ArRobot::addRunExitCB(MvrFunctor *functor,
     @param functor  The functor to remove from the list of run exit callbacks
     @see addRunExitCB
 **/
-AREXPORT void ArRobot::remRunExitCB(MvrFunctor *functor)
+MVREXPORT void ArRobot::remRunExitCB(MvrFunctor *functor)
 {
   myRunExitCBList.remove(functor);
 }
@@ -2904,7 +2904,7 @@ AREXPORT void ArRobot::remRunExitCB(MvrFunctor *functor)
 
    @see remConnectCB
 **/
-AREXPORT void ArRobot::addStabilizingCB(MvrFunctor *functor, 
+MVREXPORT void ArRobot::addStabilizingCB(MvrFunctor *functor, 
 				       ArListPos::Pos position)
 {
   if (position == ArListPos::FIRST)
@@ -2920,13 +2920,13 @@ AREXPORT void ArRobot::addStabilizingCB(MvrFunctor *functor,
     @param functor the functor to remove from the list of stabilizing callbacks
     @see addConnectCB
 **/
-AREXPORT void ArRobot::remStabilizingCB(MvrFunctor *functor)
+MVREXPORT void ArRobot::remStabilizingCB(MvrFunctor *functor)
 {
   myStabilizingCBList.remove(functor);
 }
 
 
-AREXPORT std::list<ArFunctor *> * ArRobot::getRunExitListCopy()
+MVREXPORT std::list<ArFunctor *> * ArRobot::getRunExitListCopy()
 {
   return(new std::list<ArFunctor *>(myRunExitCBList));
 }
@@ -2946,7 +2946,7 @@ AREXPORT std::list<ArFunctor *> * ArRobot::getRunExitListCopy()
    @see wakeAllConnWaitingThreads
    @see wakeAllRunExitWaitingThreads
 **/
-AREXPORT ArRobot::WaitState ArRobot::waitForConnect(unsigned int msecs)
+MVREXPORT ArRobot::WaitState ArRobot::waitForConnect(unsigned int msecs)
 {
   int ret;
 
@@ -2977,7 +2977,7 @@ AREXPORT ArRobot::WaitState ArRobot::waitForConnect(unsigned int msecs)
    @return WAIT_CONNECTED for success
    @see waitForConnect
 **/
-AREXPORT ArRobot::WaitState
+MVREXPORT ArRobot::WaitState
 ArRobot::waitForConnectOrConnFail(unsigned int msecs)
 {
   int ret;
@@ -3013,7 +3013,7 @@ ArRobot::waitForConnectOrConnFail(unsigned int msecs)
    @param msecs milliseconds in which to wait for the robot to connect
    @return WAIT_RUN_EXIT for success
 **/
-AREXPORT ArRobot::WaitState ArRobot::waitForRunExit(unsigned int msecs)
+MVREXPORT ArRobot::WaitState ArRobot::waitForRunExit(unsigned int msecs)
 {
   int ret;
 
@@ -3042,7 +3042,7 @@ AREXPORT ArRobot::WaitState ArRobot::waitForRunExit(unsigned int msecs)
    @see wakeAllConnWaitingThreads
    @see wakeAllRunExitWaitingThreads
 **/
-AREXPORT void ArRobot::wakeAllWaitingThreads()
+MVREXPORT void ArRobot::wakeAllWaitingThreads()
 {
   wakeAllConnWaitingThreads();
   wakeAllRunExitWaitingThreads();
@@ -3053,7 +3053,7 @@ AREXPORT void ArRobot::wakeAllWaitingThreads()
    @see wakeAllWaitingThreads
    @see wakeAllRunExitWaitingThreads
 **/
-AREXPORT void ArRobot::wakeAllConnWaitingThreads()
+MVREXPORT void ArRobot::wakeAllConnWaitingThreads()
 {
   myConnectCond.broadcast();
   myConnOrFailCond.broadcast();
@@ -3065,7 +3065,7 @@ AREXPORT void ArRobot::wakeAllConnWaitingThreads()
    @see wakeAllWaitingThreads
    @see wakeAllRunExitWaitingThreads
 **/
-AREXPORT void ArRobot::wakeAllConnOrFailWaitingThreads()
+MVREXPORT void ArRobot::wakeAllConnOrFailWaitingThreads()
 {
   myConnOrFailCond.broadcast();
 }
@@ -3075,7 +3075,7 @@ AREXPORT void ArRobot::wakeAllConnOrFailWaitingThreads()
    @see wakeAllWaitingThreads
    @see wakeAllConnWaitingThreads
 **/
-AREXPORT void ArRobot::wakeAllRunExitWaitingThreads()
+MVREXPORT void ArRobot::wakeAllRunExitWaitingThreads()
 {
   myRunExitCond.broadcast();
 }
@@ -3087,7 +3087,7 @@ AREXPORT void ArRobot::wakeAllRunExitWaitingThreads()
    @return the root of the sycnhronous task tree
    @see ArSyncTask
 **/
-AREXPORT ArSyncTask *ArRobot::getSyncTaskRoot(void)
+MVREXPORT ArSyncTask *ArRobot::getSyncTaskRoot(void)
 {
   return mySyncTaskRoot;
 }
@@ -3115,7 +3115,7 @@ AREXPORT ArSyncTask *ArRobot::getSyncTaskRoot(void)
 
    @see remUserTask
 **/
-AREXPORT bool ArRobot::addUserTask(const char *name, int position, 
+MVREXPORT bool ArRobot::addUserTask(const char *name, int position, 
 				      ArFunctor *functor, 
 				      ArTaskState::State *state)
 {
@@ -3135,7 +3135,7 @@ AREXPORT bool ArRobot::addUserTask(const char *name, int position,
    @see addUserTask
    @see remUserTask(MvrFunctor *functor)
 **/
-AREXPORT void ArRobot::remUserTask(const char *name)
+MVREXPORT void ArRobot::remUserTask(const char *name)
 {
   ArSyncTask *proc;
   ArSyncTask *userProc;
@@ -3160,7 +3160,7 @@ AREXPORT void ArRobot::remUserTask(const char *name)
    @see addUserTask
    @see remUserTask(std::string name)
 **/
-AREXPORT void ArRobot::remUserTask(MvrFunctor *functor)
+MVREXPORT void ArRobot::remUserTask(MvrFunctor *functor)
 {
   ArSyncTask *proc;
   ArSyncTask *userProc;
@@ -3198,7 +3198,7 @@ AREXPORT void ArRobot::remUserTask(MvrFunctor *functor)
    and may be NULL or omitted.
    @see remSensorInterpTask
 **/
-AREXPORT bool ArRobot::addSensorInterpTask(const char *name, int position, 
+MVREXPORT bool ArRobot::addSensorInterpTask(const char *name, int position, 
 					      ArFunctor *functor,
 					      ArTaskState::State *state)
 {
@@ -3218,7 +3218,7 @@ AREXPORT bool ArRobot::addSensorInterpTask(const char *name, int position,
    @see addSensorInterpTask
    @see remSensorInterpTask(MvrFunctor *functor)
 **/
-AREXPORT void ArRobot::remSensorInterpTask(const char *name)
+MVREXPORT void ArRobot::remSensorInterpTask(const char *name)
 {
   ArSyncTask *proc;
   ArSyncTask *sensorInterpProc;
@@ -3243,7 +3243,7 @@ AREXPORT void ArRobot::remSensorInterpTask(const char *name)
    @see addSensorInterpTask
    @see remSensorInterpTask(std::string name)
 **/
-AREXPORT void ArRobot::remSensorInterpTask(MvrFunctor *functor)
+MVREXPORT void ArRobot::remSensorInterpTask(MvrFunctor *functor)
 {
   ArSyncTask *proc;
   ArSyncTask *sensorInterpProc;
@@ -3268,7 +3268,7 @@ AREXPORT void ArRobot::remSensorInterpTask(MvrFunctor *functor)
 /** 
     @see ArLog
 **/
-AREXPORT void ArRobot::logUserTasks(void) const
+MVREXPORT void ArRobot::logUserTasks(void) const
 {
   ArSyncTask *proc;
   if (mySyncTaskRoot == NULL)
@@ -3284,7 +3284,7 @@ AREXPORT void ArRobot::logUserTasks(void) const
 /**
    @see ArLog
 **/
-AREXPORT void ArRobot::logAllTasks(void) const
+MVREXPORT void ArRobot::logAllTasks(void) const
 {
   if (mySyncTaskRoot != NULL)
     mySyncTaskRoot->log();
@@ -3295,7 +3295,7 @@ AREXPORT void ArRobot::logAllTasks(void) const
    @return NULL if no user task of that name found, otherwise a pointer to 
    the ArSyncTask for the first task found with that name
 **/
-AREXPORT ArSyncTask *ArRobot::findUserTask(const char *name)
+MVREXPORT ArSyncTask *ArRobot::findUserTask(const char *name)
 {
   ArSyncTask *proc;
   if (mySyncTaskRoot == NULL)
@@ -3313,7 +3313,7 @@ AREXPORT ArSyncTask *ArRobot::findUserTask(const char *name)
    @return NULL if no user task with that functor found, otherwise a pointer
    to the ArSyncTask for the first task found with that functor
 **/
-AREXPORT ArSyncTask *ArRobot::findUserTask(MvrFunctor *functor)
+MVREXPORT ArSyncTask *ArRobot::findUserTask(MvrFunctor *functor)
 {
   ArSyncTask *proc;
   if (mySyncTaskRoot == NULL)
@@ -3331,7 +3331,7 @@ AREXPORT ArSyncTask *ArRobot::findUserTask(MvrFunctor *functor)
    @return NULL if no task of that name found, otherwise a pointer to the
    ArSyncTask for the first task found with that name
 **/
-AREXPORT ArSyncTask *ArRobot::findTask(const char *name)
+MVREXPORT ArSyncTask *ArRobot::findTask(const char *name)
 {
   if (mySyncTaskRoot != NULL)
     return mySyncTaskRoot->find(name);
@@ -3345,7 +3345,7 @@ AREXPORT ArSyncTask *ArRobot::findTask(const char *name)
    @return NULL if no task with that functor found, otherwise a pointer
    to the ArSyncTask for the first task found with that functor
 **/
-AREXPORT ArSyncTask *ArRobot::findTask(MvrFunctor *functor)
+MVREXPORT ArSyncTask *ArRobot::findTask(MvrFunctor *functor)
 {
   if (mySyncTaskRoot != NULL)
     return mySyncTaskRoot->find(functor);
@@ -3375,7 +3375,7 @@ AREXPORT ArSyncTask *ArRobot::findTask(MvrFunctor *functor)
     @sa remAction(const char*)
     @sa findAction(const char*)
 */
-AREXPORT bool ArRobot::addAction(MvrAction *action, int priority)
+MVREXPORT bool ArRobot::addAction(MvrAction *action, int priority)
 {
   if (action == NULL)
   {
@@ -3399,7 +3399,7 @@ AREXPORT bool ArRobot::addAction(MvrAction *action, int priority)
    @sa remAction(MvrAction*)
    @sa findAction(const char*)
 **/
-AREXPORT bool ArRobot::remAction(const char *actionName)
+MVREXPORT bool ArRobot::remAction(const char *actionName)
 {
   ArResolver::ActionMap::iterator it;
   ArAction *act;
@@ -3429,7 +3429,7 @@ AREXPORT bool ArRobot::remAction(const char *actionName)
    *  @sa remAction(const char*)
    *  @sa findAction(const char*)
 **/
-AREXPORT bool ArRobot::remAction(MvrAction *action)
+MVREXPORT bool ArRobot::remAction(MvrAction *action)
 {
   ArResolver::ActionMap::iterator it;
   ArAction *act;
@@ -3459,7 +3459,7 @@ AREXPORT bool ArRobot::remAction(MvrAction *action)
    @sa remAction(MvrAction*)
    @sa remAction(const char*)
 **/
-AREXPORT ArAction *ArRobot::findAction(const char *actionName)
+MVREXPORT ArAction *ArRobot::findAction(const char *actionName)
 {
   ArResolver::ActionMap::reverse_iterator it;
   ArAction *act;
@@ -3483,12 +3483,12 @@ AREXPORT ArAction *ArRobot::findAction(const char *actionName)
    @return the actions the robot is using
 **/
 
-AREXPORT ArResolver::ActionMap *ArRobot::getActionMap(void)
+MVREXPORT ArResolver::ActionMap *ArRobot::getActionMap(void)
 {
   return &myActions;
 }
 
-AREXPORT void ArRobot::deactivateActions(void)
+MVREXPORT void ArRobot::deactivateActions(void)
 {
   ArResolver::ActionMap *am;
   ArResolver::ActionMap::iterator amit;
@@ -3507,7 +3507,7 @@ AREXPORT void ArRobot::deactivateActions(void)
 }
 
 
-AREXPORT void ArRobot::logActions(bool logDeactivated) const
+MVREXPORT void ArRobot::logActions(bool logDeactivated) const
 {
   ArResolver::ActionMap::const_reverse_iterator it;
   int lastPriority;
@@ -3535,12 +3535,12 @@ AREXPORT void ArRobot::logActions(bool logDeactivated) const
   }
 }
 
-AREXPORT ArResolver *ArRobot::getResolver(void)
+MVREXPORT ArResolver *ArRobot::getResolver(void)
 {
   return myResolver;
 }
 
-AREXPORT void ArRobot::setResolver(MvrResolver *resolver)
+MVREXPORT void ArRobot::setResolver(MvrResolver *resolver)
 {
   if (myOwnTheResolver)
   {
@@ -3562,7 +3562,7 @@ AREXPORT void ArRobot::setResolver(MvrResolver *resolver)
    time (setStateReflectionRefreshTime), if you don't wish this to happen
    simply set this to a very large value.
 **/
-AREXPORT void ArRobot::stateReflector(void)
+MVREXPORT void ArRobot::stateReflector(void)
 {
   short transVal;
   short transVal2;
@@ -4530,7 +4530,7 @@ AREXPORT void ArRobot::stateReflector(void)
   }
 }
 
-AREXPORT bool ArRobot::handlePacket(MvrRobotPacket *packet)
+MVREXPORT bool ArRobot::handlePacket(MvrRobotPacket *packet)
 {
   std::list<ArRetFunctor1<bool, ArRobotPacket *> *>::iterator it;
   bool handled;
@@ -4607,7 +4607,7 @@ AREXPORT bool ArRobot::handlePacket(MvrRobotPacket *packet)
 /** @note You must first start the encoder packet stream by calling
  * requestEncoderPackets() before this function will return encoder values.
  */
-AREXPORT long int ArRobot::getLeftEncoder()
+MVREXPORT long int ArRobot::getLeftEncoder()
 {
   return myLeftEncoder;
 }
@@ -4615,7 +4615,7 @@ AREXPORT long int ArRobot::getLeftEncoder()
 /** @note You must first start the encoder packet stream by calling
  * requestEncoderPackets() before this function will return encoder values.
  */
-AREXPORT long int ArRobot::getRightEncoder()
+MVREXPORT long int ArRobot::getRightEncoder()
 {
   return myRightEncoder;
 }
@@ -4625,7 +4625,7 @@ AREXPORT long int ArRobot::getRightEncoder()
  * @internal
    This just locks the robot, so that its locked for all the user tasks
 **/
-AREXPORT void ArRobot::robotLocker(void)
+MVREXPORT void ArRobot::robotLocker(void)
 {
   lock();
 }
@@ -4634,14 +4634,14 @@ AREXPORT void ArRobot::robotLocker(void)
  * @internal
    This just unlocks the robot
 **/
-AREXPORT void ArRobot::robotUnlocker(void)
+MVREXPORT void ArRobot::robotUnlocker(void)
 {
   unlock();
 }
 
 
 
-AREXPORT void ArRobot::packetHandler(void)
+MVREXPORT void ArRobot::packetHandler(void)
 {
   if (myRunningNonThreaded) 
     packetHandlerNonThreaded();
@@ -4659,7 +4659,7 @@ AREXPORT void ArRobot::packetHandler(void)
    @see addPacketHandler
    @see remPacketHandler
 **/
-AREXPORT void ArRobot::packetHandlerNonThreaded(void)
+MVREXPORT void ArRobot::packetHandlerNonThreaded(void)
 {
   ArRobotPacket *packet;
   int timeToWait;
@@ -4781,7 +4781,7 @@ AREXPORT void ArRobot::packetHandlerNonThreaded(void)
 
 }
 
-AREXPORT void ArRobot::packetHandlerThreadedProcessor(void)
+MVREXPORT void ArRobot::packetHandlerThreadedProcessor(void)
 {
   ArRobotPacket *packet;
   int timeToWait;
@@ -4932,7 +4932,7 @@ AREXPORT void ArRobot::packetHandlerThreadedProcessor(void)
 /// This function gets called from the ArRobotPacketReaderThread, and
 /// does the actual reading of packets... so that it their timing
 /// isn't affected by the rest of the sync loop
-AREXPORT void ArRobot::packetHandlerThreadedReader(void)
+MVREXPORT void ArRobot::packetHandlerThreadedReader(void)
 {
   bool isAllocatingPackets = myReceiver.isAllocatingPackets();
   myReceiver.setAllocatingPackets(true);
@@ -4989,7 +4989,7 @@ AREXPORT void ArRobot::packetHandlerThreadedReader(void)
    @see addAction 
    @see remAction
 **/
-AREXPORT void ArRobot::actionHandler(void)
+MVREXPORT void ArRobot::actionHandler(void)
 {
   ArActionDesired *actDesired;
 
@@ -5020,7 +5020,7 @@ AREXPORT void ArRobot::actionHandler(void)
    @param ms the number of milliseconds between cycles to warn over, 0
    turns warning off
  **/
-AREXPORT void ArRobot::setCycleWarningTime(unsigned int ms)
+MVREXPORT void ArRobot::setCycleWarningTime(unsigned int ms)
 {
   myCycleWarningTime = ms;
   // we don't have to send it down because the functor gets it each cycle
@@ -5034,7 +5034,7 @@ AREXPORT void ArRobot::setCycleWarningTime(unsigned int ms)
    @return the number of milliseconds between cycles to warn over, 0
    means warning is off
 **/
-AREXPORT unsigned int ArRobot::getCycleWarningTime(void) const
+MVREXPORT unsigned int ArRobot::getCycleWarningTime(void) const
 {
   return myCycleWarningTime;
 }
@@ -5047,7 +5047,7 @@ AREXPORT unsigned int ArRobot::getCycleWarningTime(void) const
    @return the number of milliseconds between cycles to warn over, 0
    means warning is off
 **/
-AREXPORT unsigned int ArRobot::getCycleWarningTime(void)
+MVREXPORT unsigned int ArRobot::getCycleWarningTime(void)
 {
   return myCycleWarningTime;
 }
@@ -5059,7 +5059,7 @@ AREXPORT unsigned int ArRobot::getCycleWarningTime(void)
    if you set this too small you could overflow your serial connection.
    @param ms the number of milliseconds between cycles
  **/
-AREXPORT void ArRobot::setCycleTime(unsigned int ms)
+MVREXPORT void ArRobot::setCycleTime(unsigned int ms)
 {
   myCycleTime = ms;
 }
@@ -5077,7 +5077,7 @@ AREXPORT void ArRobot::setCycleTime(unsigned int ms)
 
    @see addStabilizingCB
 **/
-AREXPORT void ArRobot::setStabilizingTime(int mSecs)
+MVREXPORT void ArRobot::setStabilizingTime(int mSecs)
 {
   if (mSecs > 0)
     myStabilizingTime = mSecs;
@@ -5090,7 +5090,7 @@ AREXPORT void ArRobot::setStabilizingTime(int mSecs)
    has connected to the robot (it won't report it is connected until
    after this time is over).
 **/
-AREXPORT int ArRobot::getStabilizingTime(void) const
+MVREXPORT int ArRobot::getStabilizingTime(void) const
 {
   return myStabilizingTime;
 }
@@ -5102,7 +5102,7 @@ AREXPORT int ArRobot::getStabilizingTime(void) const
    if you set this too small you could overflow your serial connection.
    @return the number of milliseconds between cycles
 **/
-AREXPORT unsigned int ArRobot::getCycleTime(void) const
+MVREXPORT unsigned int ArRobot::getCycleTime(void) const
 {
   return myCycleTime;
 }
@@ -5116,7 +5116,7 @@ AREXPORT unsigned int ArRobot::getCycleTime(void) const
    over a slow network then you may want to make it larger
 
  **/
-AREXPORT void ArRobot::setConnectionCycleMultiplier(unsigned int multiplier)
+MVREXPORT void ArRobot::setConnectionCycleMultiplier(unsigned int multiplier)
 {
   myConnectionCycleMultiplier = multiplier;
 }
@@ -5128,7 +5128,7 @@ AREXPORT void ArRobot::setConnectionCycleMultiplier(unsigned int multiplier)
    small for normal connections but if doing something over a slow
    network then you may want to make it larger
 **/
-AREXPORT unsigned int ArRobot::getConnectionCycleMultiplier(void) const
+MVREXPORT unsigned int ArRobot::getConnectionCycleMultiplier(void) const
 {
   return myConnectionCycleMultiplier;
 }
@@ -5140,7 +5140,7 @@ AREXPORT unsigned int ArRobot::getConnectionCycleMultiplier(void) const
     control in some other monolithic program, so you could work within its 
     framework, rather than trying to get it to work in ARIA.
 **/
-AREXPORT void ArRobot::loopOnce(void)
+MVREXPORT void ArRobot::loopOnce(void)
 {
   if (mySyncTaskRoot != NULL)
     mySyncTaskRoot->run();
@@ -5151,7 +5151,7 @@ AREXPORT void ArRobot::loopOnce(void)
 
 // DigIn IR logic is reverse.  0 means broken, 1 means not broken
 
-AREXPORT bool ArRobot::isLeftTableSensingIRTriggered(void) const
+MVREXPORT bool ArRobot::isLeftTableSensingIRTriggered(void) const
 {
   if (myParams->haveTableSensingIR())
   {
@@ -5163,7 +5163,7 @@ AREXPORT bool ArRobot::isLeftTableSensingIRTriggered(void) const
   return 0;
 }
 
-AREXPORT bool ArRobot::isRightTableSensingIRTriggered(void) const
+MVREXPORT bool ArRobot::isRightTableSensingIRTriggered(void) const
 {
   if (myParams->haveTableSensingIR())
   {
@@ -5175,7 +5175,7 @@ AREXPORT bool ArRobot::isRightTableSensingIRTriggered(void) const
   return 0;
 }
 
-AREXPORT bool ArRobot::isLeftBreakBeamTriggered(void) const
+MVREXPORT bool ArRobot::isLeftBreakBeamTriggered(void) const
 {
   if (myParams->haveTableSensingIR())
   {
@@ -5187,7 +5187,7 @@ AREXPORT bool ArRobot::isLeftBreakBeamTriggered(void) const
   return 0;
 }
 
-AREXPORT bool ArRobot::isRightBreakBeamTriggered(void) const
+MVREXPORT bool ArRobot::isRightBreakBeamTriggered(void) const
 {
   if (myParams->haveTableSensingIR())
   {
@@ -5199,7 +5199,7 @@ AREXPORT bool ArRobot::isRightBreakBeamTriggered(void) const
   return 0;
 }
 
-AREXPORT int ArRobot::getMotorPacCount(void) const
+MVREXPORT int ArRobot::getMotorPacCount(void) const
 {
   if (myTimeLastMotorPacket == time(NULL))
     return myMotorPacCount;
@@ -5208,7 +5208,7 @@ AREXPORT int ArRobot::getMotorPacCount(void) const
   return 0;
 }
 
-AREXPORT int ArRobot::getSonarPacCount(void) const
+MVREXPORT int ArRobot::getSonarPacCount(void) const
 {
   if (myTimeLastSonarPacket == time(NULL))
     return mySonarPacCount;
@@ -5218,7 +5218,7 @@ AREXPORT int ArRobot::getSonarPacCount(void) const
 }
 
 
-AREXPORT bool ArRobot::processMotorPacket(MvrRobotPacket *packet)
+MVREXPORT bool ArRobot::processMotorPacket(MvrRobotPacket *packet)
 {
   int x, y, th, qx, qy, qth; 
   double deltaX, deltaY, deltaTh;
@@ -5652,7 +5652,7 @@ AREXPORT bool ArRobot::processMotorPacket(MvrRobotPacket *packet)
   return true;
 }
 
-AREXPORT void ArRobot::processNewSonar(char number, int range, 
+MVREXPORT void ArRobot::processNewSonar(char number, int range, 
 				       ArTime timeReceived)
 {
   /**
@@ -5691,7 +5691,7 @@ AREXPORT void ArRobot::processNewSonar(char number, int range,
 
 
 
-AREXPORT bool ArRobot::processEncoderPacket(MvrRobotPacket *packet)
+MVREXPORT bool ArRobot::processEncoderPacket(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0x90)
     return false;
@@ -5700,7 +5700,7 @@ AREXPORT bool ArRobot::processEncoderPacket(MvrRobotPacket *packet)
   return true;
 }
 
-AREXPORT bool ArRobot::processIOPacket(MvrRobotPacket *packet)
+MVREXPORT bool ArRobot::processIOPacket(MvrRobotPacket *packet)
 {
   int i, num;
 
@@ -5739,7 +5739,7 @@ AREXPORT bool ArRobot::processIOPacket(MvrRobotPacket *packet)
    bounced back
    @see getNumSonar
 **/
-AREXPORT int ArRobot::getSonarRange(int num) const
+MVREXPORT int ArRobot::getSonarRange(int num) const
 {
   std::map<int, ArSensorReading *>::const_iterator it;
   
@@ -5759,7 +5759,7 @@ AREXPORT int ArRobot::getSonarRange(int num) const
    from a Sensor Interpretation Task Callback (see addSensorInterpTask).
 **/
 
-AREXPORT bool ArRobot::isSonarNew(int num) const
+MVREXPORT bool ArRobot::isSonarNew(int num) const
 {
   std::map<int, ArSensorReading *>::const_iterator it;
   
@@ -5781,7 +5781,7 @@ AREXPORT bool ArRobot::isSonarNew(int num) const
    parameter reader), if there has never been a reading from the sonar then
    the range of that sonar will be -1 and its counterTaken value will be 0
 **/
-AREXPORT ArSensorReading *ArRobot::getSonarReading(int num) const
+MVREXPORT ArSensorReading *ArRobot::getSonarReading(int num) const
 {
   std::map<int, ArSensorReading *>::const_iterator it;
   
@@ -5797,7 +5797,7 @@ AREXPORT ArSensorReading *ArRobot::getSonarReading(int num) const
    @return whether the command could be sent or not
    @sa ArCommands
 **/
-AREXPORT bool ArRobot::com(unsigned char command)
+MVREXPORT bool ArRobot::com(unsigned char command)
 {
   if (myPacketsSentTracking)
     ArLog::log(MvrLog::Normal, "Sent: com(%d)", command);
@@ -5810,7 +5810,7 @@ AREXPORT bool ArRobot::com(unsigned char command)
    @return whether the command could be sent or not
    @sa ArCommands
 **/
-AREXPORT bool ArRobot::comInt(unsigned char command, short int argument)
+MVREXPORT bool ArRobot::comInt(unsigned char command, short int argument)
 {
   if (myPacketsSentTracking)
     ArLog::log(MvrLog::Normal, "Sent: comInt(%d, %d)", command, argument);
@@ -5824,7 +5824,7 @@ AREXPORT bool ArRobot::comInt(unsigned char command, short int argument)
    @return whether the command could be sent or not
    @sa ArCommands
 **/
-AREXPORT bool ArRobot::com2Bytes(unsigned char command, char high, char low)
+MVREXPORT bool ArRobot::com2Bytes(unsigned char command, char high, char low)
 {
   if (myPacketsSentTracking)
     ArLog::log(MvrLog::Normal, "Sent: com2Bytes(%d, %d, %d)", command, 
@@ -5838,7 +5838,7 @@ AREXPORT bool ArRobot::com2Bytes(unsigned char command, char high, char low)
    @return whether the command could be sent or not
    @sa ArCommands
 **/
-AREXPORT bool ArRobot::comStr(unsigned char command, const char *argument)
+MVREXPORT bool ArRobot::comStr(unsigned char command, const char *argument)
 {
   if (myPacketsSentTracking)
     ArLog::log(MvrLog::Normal, "Sent: comStr(%d, '%s')", command, 
@@ -5855,7 +5855,7 @@ AREXPORT bool ArRobot::comStr(unsigned char command, const char *argument)
    @return whether the command could be sent or not
    @sa ArCommands
 **/
-AREXPORT bool ArRobot::comStrN(unsigned char command, const char *str, 
+MVREXPORT bool ArRobot::comStrN(unsigned char command, const char *str, 
 			       int size)
 {
   if (myPacketsSentTracking)
@@ -5869,7 +5869,7 @@ AREXPORT bool ArRobot::comStrN(unsigned char command, const char *str,
   return mySender.comStrN(command, str, size);
 }
 
-AREXPORT bool ArRobot::comDataN(unsigned char command, const char* data, int size)
+MVREXPORT bool ArRobot::comDataN(unsigned char command, const char* data, int size)
 {
   if(myPacketsSentTracking)
   {
@@ -5879,7 +5879,7 @@ AREXPORT bool ArRobot::comDataN(unsigned char command, const char* data, int siz
 }
 
 
-AREXPORT int ArRobot::getClosestSonarRange(double startAngle, double endAngle) const
+MVREXPORT int ArRobot::getClosestSonarRange(double startAngle, double endAngle) const
 {
   int num;
   num = getClosestSonarNumber(startAngle, endAngle);
@@ -5889,7 +5889,7 @@ AREXPORT int ArRobot::getClosestSonarRange(double startAngle, double endAngle) c
     return getSonarRange(num);
 }
 
-AREXPORT int ArRobot::getClosestSonarNumber(double startAngle, double endAngle) const
+MVREXPORT int ArRobot::getClosestSonarNumber(double startAngle, double endAngle) const
 {
   int i;
   ArSensorReading *sonar;
@@ -5933,7 +5933,7 @@ AREXPORT int ArRobot::getClosestSonarNumber(double startAngle, double endAngle) 
   classes automatically add the laser(s).  (But you may call this method with e.g.
   ArSonarDevice, ArIRs, ArBumpers, etc.)
 */
-AREXPORT void ArRobot::addRangeDevice(MvrRangeDevice *device)
+MVREXPORT void ArRobot::addRangeDevice(MvrRangeDevice *device)
 {
   device->setRobot(this);
   myRangeDeviceList.push_front(device);
@@ -5942,7 +5942,7 @@ AREXPORT void ArRobot::addRangeDevice(MvrRangeDevice *device)
 /**
    @param name remove the first device with this name
 **/
-AREXPORT void ArRobot::remRangeDevice(const char *name)
+MVREXPORT void ArRobot::remRangeDevice(const char *name)
 {
   std::list<ArRangeDevice *>::iterator it;
   for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
@@ -5958,7 +5958,7 @@ AREXPORT void ArRobot::remRangeDevice(const char *name)
 /**
    @param device remove the first device with this pointer value
 **/
-AREXPORT void ArRobot::remRangeDevice(MvrRangeDevice *device)
+MVREXPORT void ArRobot::remRangeDevice(MvrRangeDevice *device)
 {
   std::list<ArRangeDevice *>::iterator it;
   for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
@@ -5976,7 +5976,7 @@ AREXPORT void ArRobot::remRangeDevice(MvrRangeDevice *device)
    @param ignoreCase true to ignore case, false to pay attention to it
    @return if found, a range device with the given name, if not found NULL
 **/
-AREXPORT ArRangeDevice *ArRobot::findRangeDevice(const char *name, 
+MVREXPORT ArRangeDevice *ArRobot::findRangeDevice(const char *name, 
 						 bool ignoreCase)
 {
   std::list<ArRangeDevice *>::iterator it;
@@ -5999,7 +5999,7 @@ AREXPORT ArRangeDevice *ArRobot::findRangeDevice(const char *name,
    @param ignoreCase true to ignore case, false to pay attention to it
    @return if found, a range device with the given name, if not found NULL
 **/
-AREXPORT const ArRangeDevice *ArRobot::findRangeDevice(const char *name,
+MVREXPORT const ArRangeDevice *ArRobot::findRangeDevice(const char *name,
 						       bool ignoreCase) const
 {
   std::list<ArRangeDevice *>::const_iterator it;
@@ -6023,7 +6023,7 @@ AREXPORT const ArRangeDevice *ArRobot::findRangeDevice(const char *name,
     appropriate addRangeDevice, or remRangeDevice
     @return the list of range dvices attached to this robot
 **/
-AREXPORT std::list<ArRangeDevice *> *ArRobot::getRangeDeviceList(void)
+MVREXPORT std::list<ArRangeDevice *> *ArRobot::getRangeDeviceList(void)
 {
   return &myRangeDeviceList;
 }
@@ -6031,7 +6031,7 @@ AREXPORT std::list<ArRangeDevice *> *ArRobot::getRangeDeviceList(void)
 /**
    @param device the device to check for
 **/
-AREXPORT bool ArRobot::hasRangeDevice(MvrRangeDevice *device) const
+MVREXPORT bool ArRobot::hasRangeDevice(MvrRangeDevice *device) const
 {
   std::list<ArRangeDevice *>::const_iterator it;
   for (it = myRangeDeviceList.begin(); it != myRangeDeviceList.end(); ++it)
@@ -6057,7 +6057,7 @@ AREXPORT bool ArRobot::hasRangeDevice(MvrRangeDevice *device) const
  *
 **/
 
-AREXPORT double ArRobot::checkRangeDevicesCurrentPolar(
+MVREXPORT double ArRobot::checkRangeDevicesCurrentPolar(
 	double startAngle, double endAngle, double *angle, 
 	const ArRangeDevice **rangeDevice,
 	bool useLocationDependentDevices) const
@@ -6122,7 +6122,7 @@ AREXPORT double ArRobot::checkRangeDevicesCurrentPolar(
  *    that provided the returned reading is placed in this variable.
    @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
 **/
-AREXPORT double ArRobot::checkRangeDevicesCumulativePolar(
+MVREXPORT double ArRobot::checkRangeDevicesCumulativePolar(
 	double startAngle, double endAngle, double *angle, 
 	const ArRangeDevice **rangeDevice, 
 	bool useLocationDependentDevices) const
@@ -6192,7 +6192,7 @@ AREXPORT double ArRobot::checkRangeDevicesCumulativePolar(
    reading. If < 0 then there were no readings in the given region
 **/
 
-AREXPORT double ArRobot::checkRangeDevicesCurrentBox(
+MVREXPORT double ArRobot::checkRangeDevicesCurrentBox(
 	double x1, double y1, double x2, double y2, ArPose *readingPos,
 	const ArRangeDevice **rangeDevice, 
 	bool useLocationDependentDevices) const
@@ -6262,7 +6262,7 @@ AREXPORT double ArRobot::checkRangeDevicesCurrentBox(
    reading. If < 0 then there were no readings in the given region
 **/
 
-AREXPORT double ArRobot::checkRangeDevicesCumulativeBox(
+MVREXPORT double ArRobot::checkRangeDevicesCumulativeBox(
 	double x1, double y1, double x2, double y2, ArPose *readingPos,
 	const ArRangeDevice **rangeDevice, 
 	bool useLocationDependentDevices) const
@@ -6324,7 +6324,7 @@ AREXPORT double ArRobot::checkRangeDevicesCumulativeBox(
     @param pose New pose to set (in absolute world coordinates)
     @param doCumulative whether to update the cumulative buffers of range devices 
 **/
-AREXPORT void ArRobot::moveTo(MvrPose pose, bool doCumulative)
+MVREXPORT void ArRobot::moveTo(MvrPose pose, bool doCumulative)
 {
   std::list<ArRangeDevice *>::iterator it;
   ArSensorReading *son;
@@ -6375,7 +6375,7 @@ AREXPORT void ArRobot::moveTo(MvrPose pose, bool doCumulative)
     @param poseFrom the original absolute real world position
     @param doCumulative whether to update the cumulative buffers of range devices
 **/
-AREXPORT void ArRobot::moveTo(MvrPose poseTo, ArPose poseFrom,
+MVREXPORT void ArRobot::moveTo(MvrPose poseTo, ArPose poseFrom,
 			      bool doCumulative)
 {
   std::list<ArRangeDevice *>::iterator it;
@@ -6422,7 +6422,7 @@ AREXPORT void ArRobot::moveTo(MvrPose poseTo, ArPose poseFrom,
    @param deadReconPos the dead recon position to transform from
    @param globalPos the real world global position to transform to
 **/
-AREXPORT void ArRobot::setEncoderTransform(MvrPose deadReconPos, 
+MVREXPORT void ArRobot::setEncoderTransform(MvrPose deadReconPos, 
 				    ArPose globalPos)
 {
   myEncoderTransform.setTransform(deadReconPos, globalPos);
@@ -6437,7 +6437,7 @@ AREXPORT void ArRobot::setEncoderTransform(MvrPose deadReconPos,
  * @sa moveTo()
    @param transformPos the position to transform to
 **/
-AREXPORT void ArRobot::setEncoderTransform(MvrPose transformPos)
+MVREXPORT void ArRobot::setEncoderTransform(MvrPose transformPos)
 {
   myEncoderTransform.setTransform(transformPos);
   myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
@@ -6451,7 +6451,7 @@ AREXPORT void ArRobot::setEncoderTransform(MvrPose transformPos)
  * @sa moveTo()
    @param transformPos the position to transform to
 */
-AREXPORT void ArRobot::setEncoderTransform(MvrTransform transform)
+MVREXPORT void ArRobot::setEncoderTransform(MvrTransform transform)
 {
   myEncoderTransform = transform;
   myGlobalPose = myEncoderTransform.doTransform(myEncoderPose);
@@ -6461,7 +6461,7 @@ AREXPORT void ArRobot::setEncoderTransform(MvrTransform transform)
 /**
    @return the transform from encoder to global coords
 **/
-AREXPORT ArTransform ArRobot::getEncoderTransform(void) const
+MVREXPORT ArTransform ArRobot::getEncoderTransform(void) const
 {
   return myEncoderTransform;
 }
@@ -6469,7 +6469,7 @@ AREXPORT ArTransform ArRobot::getEncoderTransform(void) const
 /**
    @param pose the position to set the dead recon position to
 **/
-AREXPORT void ArRobot::setDeadReconPose(MvrPose pose)
+MVREXPORT void ArRobot::setDeadReconPose(MvrPose pose)
 {
   myEncoderPose.setPose(pose);
   myEncoderTransform.setTransform(myEncoderPose, myGlobalPose);
@@ -6482,7 +6482,7 @@ AREXPORT void ArRobot::setDeadReconPose(MvrPose pose)
     @return an ArTransform which can be used for transforming a position
     in local coordinates to one in global coordinates
 **/
-AREXPORT ArTransform ArRobot::getToGlobalTransform(void) const
+MVREXPORT ArTransform ArRobot::getToGlobalTransform(void) const
 {
   ArTransform trans;
   ArPose origin(0, 0, 0);
@@ -6496,7 +6496,7 @@ AREXPORT ArTransform ArRobot::getToGlobalTransform(void) const
     @return an ArTransform which can be used for transforming a position
     in global coordinates to one in local coordinates
 **/
-AREXPORT ArTransform ArRobot::getToLocalTransform(void) const
+MVREXPORT ArTransform ArRobot::getToLocalTransform(void) const
 {
   ArTransform trans;
   ArPose origin(0, 0, 0);
@@ -6513,7 +6513,7 @@ AREXPORT ArTransform ArRobot::getToLocalTransform(void) const
     @param trans the transform to apply
     @param doCumulative whether to transform the cumulative buffers or not
 **/    
-AREXPORT void ArRobot::applyTransform(MvrTransform trans, bool doCumulative)
+MVREXPORT void ArRobot::applyTransform(MvrTransform trans, bool doCumulative)
 {
   std::list<ArRangeDevice *>::iterator it;
   ArSensorReading *son;
@@ -6534,12 +6534,12 @@ AREXPORT void ArRobot::applyTransform(MvrTransform trans, bool doCumulative)
   }
 }
 
-AREXPORT const char *ArRobot::getName(void) const
+MVREXPORT const char *ArRobot::getName(void) const
 {
   return myName.c_str();
 }
 
-AREXPORT void ArRobot::setName(const char * name)
+MVREXPORT void ArRobot::setName(const char * name)
 {
 	std::list<ArRobot *> *robotList;
     std::list<ArRobot *>::iterator it;
@@ -6585,7 +6585,7 @@ AREXPORT void ArRobot::setName(const char * name)
    callback @see getEncoderCorrectionCallback
 **/
 
-AREXPORT void ArRobot::setEncoderCorrectionCallback(
+MVREXPORT void ArRobot::setEncoderCorrectionCallback(
 	ArRetFunctor1<double, ArPoseWithTime> *functor)
 {
   myEncoderCorrectionCB = functor;
@@ -6596,7 +6596,7 @@ AREXPORT void ArRobot::setEncoderCorrectionCallback(
 
    @return the callback, or NULL if there isn't one
 **/
-AREXPORT ArRetFunctor1<double, ArPoseWithTime> * 
+MVREXPORT ArRetFunctor1<double, ArPoseWithTime> * 
 ArRobot::getEncoderCorrectionCallback(void) const
 {
   return myEncoderCorrectionCB;
@@ -6612,7 +6612,7 @@ ArRobot::getEncoderCorrectionCallback(void) const
    @see setDirectMotionPrecedenceTime
    @see clearDirectMotion
 **/
-AREXPORT void ArRobot::setDirectMotionPrecedenceTime(int mSec)
+MVREXPORT void ArRobot::setDirectMotionPrecedenceTime(int mSec)
 {
   if (mSec < 0) 
     myDirectPrecedenceTime = 0;
@@ -6629,7 +6629,7 @@ AREXPORT void ArRobot::setDirectMotionPrecedenceTime(int mSec)
    @see setDirectMotionPrecedenceTime
    @see clearDirectMotion
 **/
-AREXPORT unsigned int ArRobot::getDirectMotionPrecedenceTime(void) const
+MVREXPORT unsigned int ArRobot::getDirectMotionPrecedenceTime(void) const
 {
   return myDirectPrecedenceTime;
 }
@@ -6641,7 +6641,7 @@ AREXPORT unsigned int ArRobot::getDirectMotionPrecedenceTime(void) const
    @see setDirectMotionPrecedenceTime
    @see getDirectMotionPrecedenceTime
 **/
-AREXPORT void ArRobot::clearDirectMotion(void)
+MVREXPORT void ArRobot::clearDirectMotion(void)
 {
   myTransType = TRANS_NONE;
   myLastTransType = TRANS_NONE;
@@ -6668,7 +6668,7 @@ AREXPORT void ArRobot::clearDirectMotion(void)
    reflection, but rotational velocity will remain disabled until you
    call setRotVel(), or call clearDirectMotion().
  **/
-AREXPORT void ArRobot::stopStateReflection(void)
+MVREXPORT void ArRobot::stopStateReflection(void)
 {
   myTransType = TRANS_IGNORE;
   myLastTransType = TRANS_IGNORE;
@@ -6682,7 +6682,7 @@ AREXPORT void ArRobot::stopStateReflection(void)
    Returns the state of direct motion commands: whether actions are allowed or not
    @see clearDirectMotion
 **/
-AREXPORT bool ArRobot::isDirectMotion(void) const
+MVREXPORT bool ArRobot::isDirectMotion(void) const
 {
   if (myTransType ==  TRANS_NONE && myLastTransType == TRANS_NONE &&
       myRotType == ROT_NONE && myLastRotType == ROT_NONE && 
@@ -6697,7 +6697,7 @@ AREXPORT bool ArRobot::isDirectMotion(void) const
 /**
    This command enables the motors on the robot, if it is connected.
 **/
-AREXPORT void ArRobot::enableMotors()
+MVREXPORT void ArRobot::enableMotors()
 {
   comInt(MvrCommands::ENABLE, 1);
 }
@@ -6705,7 +6705,7 @@ AREXPORT void ArRobot::enableMotors()
 /**
    This command disables the motors on the robot, if it is connected.
 **/
-AREXPORT void ArRobot::disableMotors()
+MVREXPORT void ArRobot::disableMotors()
 {
   comInt(MvrCommands::ENABLE, 0);
 }
@@ -6713,7 +6713,7 @@ AREXPORT void ArRobot::disableMotors()
 /**
    This command enables the sonars on the robot, if it is connected.
 **/
-AREXPORT void ArRobot::enableSonar()
+MVREXPORT void ArRobot::enableSonar()
 {
   mySonarEnabled = true;
   myAutonomousDrivingSonarEnabled = false;
@@ -6734,7 +6734,7 @@ AREXPORT void ArRobot::enableSonar()
 /**
    This command enables the sonars on the robot, if it is connected.
 **/
-AREXPORT void ArRobot::enableAutonomousDrivingSonar()
+MVREXPORT void ArRobot::enableAutonomousDrivingSonar()
 {
   mySonarEnabled = false;
   myAutonomousDrivingSonarEnabled = true;
@@ -6755,7 +6755,7 @@ AREXPORT void ArRobot::enableAutonomousDrivingSonar()
 /**
    This command disables the sonars on the robot, if it is connected.
 **/
-AREXPORT void ArRobot::disableSonar()
+MVREXPORT void ArRobot::disableSonar()
 {
   mySonarEnabled = false;
   myAutonomousDrivingSonarEnabled = false;
@@ -6782,7 +6782,7 @@ AREXPORT void ArRobot::disableSonar()
    @param mSec the refresh time, in milliseconds, non-negative, if negative is 
    given, then the value will be 0
 **/
-AREXPORT void ArRobot::setStateReflectionRefreshTime(int mSec)
+MVREXPORT void ArRobot::setStateReflectionRefreshTime(int mSec)
 {
   if (mSec < 0)
     myStateReflectionRefreshTime = 0;
@@ -6797,7 +6797,7 @@ AREXPORT void ArRobot::setStateReflectionRefreshTime(int mSec)
    the cyle time, it'll simply happen every cycle.
    @return the state reflection refresh time
 **/
-AREXPORT int ArRobot::getStateReflectionRefreshTime(void) const
+MVREXPORT int ArRobot::getStateReflectionRefreshTime(void) const
 {
   return myStateReflectionRefreshTime;
 }
@@ -6817,7 +6817,7 @@ AREXPORT int ArRobot::getStateReflectionRefreshTime(void) const
    @param useExitNotShutdown if true then Aria::exit will be called
    instead of Aria::shutdown if it tries to exit
 **/
-AREXPORT void ArRobot::attachKeyHandler(MvrKeyHandler *keyHandler, 
+MVREXPORT void ArRobot::attachKeyHandler(MvrKeyHandler *keyHandler, 
 					bool exitOnEscape, 
 					bool useExitNotShutdown)
 {
@@ -6833,12 +6833,12 @@ AREXPORT void ArRobot::attachKeyHandler(MvrKeyHandler *keyHandler,
     keyHandler->addKeyHandler(MvrKeyHandler::ESCAPE, &myKeyHandlerExitCB);
 }
 
-AREXPORT ArKeyHandler *ArRobot::getKeyHandler(void) const
+MVREXPORT ArKeyHandler *ArRobot::getKeyHandler(void) const
 {
   return myKeyHandler;
 }
 
-AREXPORT void ArRobot::keyHandlerExit(void)
+MVREXPORT void ArRobot::keyHandlerExit(void)
 {
   ArLog::log(MvrLog::Terse, "Escape was pressed, program is exiting.");
   // if we're using exit not the keyhandler then call Aria::exit
@@ -6850,7 +6850,7 @@ AREXPORT void ArRobot::keyHandlerExit(void)
   Aria::shutdown();
 }
 
-AREXPORT void ArRobot::setPacketsReceivedTracking(bool packetsReceivedTracking)
+MVREXPORT void ArRobot::setPacketsReceivedTracking(bool packetsReceivedTracking)
 {
 	if (packetsReceivedTracking)
       ArLog::log(MvrLog::Normal, "MvrRobot: tracking packets received");
@@ -6864,7 +6864,7 @@ AREXPORT void ArRobot::setPacketsReceivedTracking(bool packetsReceivedTracking)
   myPacketsReceivedTrackingStarted.setToNow(); 
 }
 
-AREXPORT void ArRobot::ariaExitCallback(void)
+MVREXPORT void ArRobot::ariaExitCallback(void)
 {
   mySyncLoop.stopRunIfNotConnected(false);
   disconnect();
@@ -6884,7 +6884,7 @@ AREXPORT void ArRobot::ariaExitCallback(void)
    (on these robots, you might be able to guess what the charger is doing based on 
    reported battery voltage, but this is not a direct measure.)
  **/
-AREXPORT ArRobot::ChargeState ArRobot::getChargeState(void) const
+MVREXPORT ArRobot::ChargeState ArRobot::getChargeState(void) const
 {
   return myChargeState;
 }
@@ -6892,13 +6892,13 @@ AREXPORT ArRobot::ChargeState ArRobot::getChargeState(void) const
 /**
    
  **/
-AREXPORT void ArRobot::setChargeState(MvrRobot::ChargeState chargeState) 
+MVREXPORT void ArRobot::setChargeState(MvrRobot::ChargeState chargeState) 
 {
   myOverriddenChargeState = true;
   myChargeState = chargeState;
 }
 
-AREXPORT bool ArRobot::isChargerPowerGood(void) const
+MVREXPORT bool ArRobot::isChargerPowerGood(void) const
 {
   if (myOverriddenIsChargerPowerGood)
     return myIsChargerPowerGood;
@@ -6906,27 +6906,27 @@ AREXPORT bool ArRobot::isChargerPowerGood(void) const
     return (getFlags() & ArUtil::BIT10);
 }
 
-AREXPORT void ArRobot::setIsChargerPowerGood(bool isChargerPowerGood) 
+MVREXPORT void ArRobot::setIsChargerPowerGood(bool isChargerPowerGood) 
 {
   myOverriddenIsChargerPowerGood = true;
   myIsChargerPowerGood = isChargerPowerGood;
 }
 
-AREXPORT void ArRobot::resetTripOdometer(void)
+MVREXPORT void ArRobot::resetTripOdometer(void)
 {
   myTripOdometerDistance = 0;
   myTripOdometerDegrees = 0;
   myTripOdometerStart.setToNow();
 }
 
-AREXPORT void ArRobot::setStateOfCharge(double stateOfCharge)
+MVREXPORT void ArRobot::setStateOfCharge(double stateOfCharge)
 {
   myHaveStateOfCharge = true;
   myStateOfCharge = stateOfCharge;
   myStateOfChargeSetTime.setToNow();
 }
 
-AREXPORT void ArRobot::setIgnoreMicroControllerBatteryInfo(
+MVREXPORT void ArRobot::setIgnoreMicroControllerBatteryInfo(
 	bool ignoreMicroControllerBatteryInfo)
 {
   if (myIgnoreMicroControllerBatteryInfo != ignoreMicroControllerBatteryInfo)
@@ -6939,7 +6939,7 @@ AREXPORT void ArRobot::setIgnoreMicroControllerBatteryInfo(
   myIgnoreMicroControllerBatteryInfo = ignoreMicroControllerBatteryInfo;
 }
 
-AREXPORT void ArRobot::setBatteryInfo(double realBatteryVoltage, 
+MVREXPORT void ArRobot::setBatteryInfo(double realBatteryVoltage, 
 				      double normalizedBatteryVoltage,
 				      bool haveStateOfCharge,
 				      double stateOfCharge)
@@ -6965,7 +6965,7 @@ AREXPORT void ArRobot::setBatteryInfo(double realBatteryVoltage,
   if using ArLaserConnector, it will automatically add laser(s).
   @internal
 */
-AREXPORT bool ArRobot::addLaser(MvrLaser *laser, int laserNumber, 
+MVREXPORT bool ArRobot::addLaser(MvrLaser *laser, int laserNumber, 
 				bool addAsRangeDevice)
 {
   std::map<int, ArLaser *>::iterator it;
@@ -7013,7 +7013,7 @@ AREXPORT bool ArRobot::addLaser(MvrLaser *laser, int laserNumber,
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
+MVREXPORT bool ArRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
 {
   if (laser == NULL)
   {
@@ -7052,7 +7052,7 @@ AREXPORT bool ArRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
+MVREXPORT bool ArRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
 {
   std::map<int, ArLaser *>::iterator it;
   if ((it = myLaserMap.find(laserNumber)) == myLaserMap.end())
@@ -7085,7 +7085,7 @@ AREXPORT bool ArRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
 /** @since 2.7.0 
   @see ArLaserConnector
 */
-AREXPORT const ArLaser *ArRobot::findLaser(int laserNumber) const
+MVREXPORT const ArLaser *ArRobot::findLaser(int laserNumber) const
 {
   std::map<int, ArLaser *>::const_iterator it;
   if ((it = myLaserMap.find(laserNumber)) == myLaserMap.end())
@@ -7097,7 +7097,7 @@ AREXPORT const ArLaser *ArRobot::findLaser(int laserNumber) const
 /** @since 2.7.0 
     @see ArLaserConnector
 */
-AREXPORT ArLaser *ArRobot::findLaser(int laserNumber)
+MVREXPORT ArLaser *ArRobot::findLaser(int laserNumber)
 {
   if (myLaserMap.find(laserNumber) == myLaserMap.end())
     return NULL;
@@ -7108,7 +7108,7 @@ AREXPORT ArLaser *ArRobot::findLaser(int laserNumber)
 /** @since 2.7.0 
     @see ArLaserConnector
 */
-AREXPORT const std::map<int, ArLaser *> *ArRobot::getLaserMap(void) const
+MVREXPORT const std::map<int, ArLaser *> *ArRobot::getLaserMap(void) const
 {
   return &myLaserMap;
 }
@@ -7117,7 +7117,7 @@ AREXPORT const std::map<int, ArLaser *> *ArRobot::getLaserMap(void) const
 /** @since 2.7.0 
     @see ArLaserConnector
 */
-AREXPORT std::map<int, ArLaser *> *ArRobot::getLaserMap(void) 
+MVREXPORT std::map<int, ArLaser *> *ArRobot::getLaserMap(void) 
 {
   return &myLaserMap;
 }
@@ -7125,7 +7125,7 @@ AREXPORT std::map<int, ArLaser *> *ArRobot::getLaserMap(void)
 /** @since 2.7.0 
     @see ArLaserConnector
 */
-AREXPORT bool ArRobot::hasLaser(MvrLaser *device) const
+MVREXPORT bool ArRobot::hasLaser(MvrLaser *device) const
 {
   for(std::map<int, ArLaser*>::const_iterator i = myLaserMap.begin();
         i != myLaserMap.end(); ++i)
@@ -7141,7 +7141,7 @@ AREXPORT bool ArRobot::hasLaser(MvrLaser *device) const
   if using ArBatteryConnector, it will automatically add battery(s).
   @internal
 */
-AREXPORT bool ArRobot::addBattery(MvrBatteryMTX *battery, int batteryNumber)
+MVREXPORT bool ArRobot::addBattery(MvrBatteryMTX *battery, int batteryNumber)
 {
   std::map<int, ArBatteryMTX *>::iterator it;
   if (battery == NULL)
@@ -7176,7 +7176,7 @@ AREXPORT bool ArRobot::addBattery(MvrBatteryMTX *battery, int batteryNumber)
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remBattery(MvrBatteryMTX *battery)
+MVREXPORT bool ArRobot::remBattery(MvrBatteryMTX *battery)
 {
   if (battery == NULL)
   {
@@ -7205,7 +7205,7 @@ AREXPORT bool ArRobot::remBattery(MvrBatteryMTX *battery)
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remBattery(int batteryNumber)
+MVREXPORT bool ArRobot::remBattery(int batteryNumber)
 {
   std::map<int, ArBatteryMTX *>::iterator it;
   if ((it = myBatteryMap.find(batteryNumber)) == myBatteryMap.end())
@@ -7228,7 +7228,7 @@ AREXPORT bool ArRobot::remBattery(int batteryNumber)
 /** @since 2.7.0 
   @see ArBatteryConnector
 */
-AREXPORT const ArBatteryMTX *ArRobot::findBattery(int batteryNumber) const
+MVREXPORT const ArBatteryMTX *ArRobot::findBattery(int batteryNumber) const
 {
   std::map<int, ArBatteryMTX *>::const_iterator it;
   if ((it = myBatteryMap.find(batteryNumber)) == myBatteryMap.end())
@@ -7240,7 +7240,7 @@ AREXPORT const ArBatteryMTX *ArRobot::findBattery(int batteryNumber) const
 /** @since 2.7.0 
     @see ArBatteryConnector
 */
-AREXPORT ArBatteryMTX *ArRobot::findBattery(int batteryNumber)
+MVREXPORT ArBatteryMTX *ArRobot::findBattery(int batteryNumber)
 {
   if (myBatteryMap.find(batteryNumber) == myBatteryMap.end())
     return NULL;
@@ -7251,7 +7251,7 @@ AREXPORT ArBatteryMTX *ArRobot::findBattery(int batteryNumber)
 /** @since 2.7.0 
     @see ArBatteryConnector
 */
-AREXPORT const std::map<int, ArBatteryMTX *> *ArRobot::getBatteryMap(void) const
+MVREXPORT const std::map<int, ArBatteryMTX *> *ArRobot::getBatteryMap(void) const
 {
   return &myBatteryMap;
 }
@@ -7260,7 +7260,7 @@ AREXPORT const std::map<int, ArBatteryMTX *> *ArRobot::getBatteryMap(void) const
 /** @since 2.7.0 
     @see ArBatteryConnector
 */
-AREXPORT std::map<int, ArBatteryMTX *> *ArRobot::getBatteryMap(void) 
+MVREXPORT std::map<int, ArBatteryMTX *> *ArRobot::getBatteryMap(void) 
 {
   return &myBatteryMap;
 }
@@ -7268,7 +7268,7 @@ AREXPORT std::map<int, ArBatteryMTX *> *ArRobot::getBatteryMap(void)
 /** @since 2.7.0 
     @see ArBatteryConnector
 */
-AREXPORT bool ArRobot::hasBattery(MvrBatteryMTX *device) const
+MVREXPORT bool ArRobot::hasBattery(MvrBatteryMTX *device) const
 {
   for(std::map<int, ArBatteryMTX *>::const_iterator i = myBatteryMap.begin();
         i != myBatteryMap.end(); ++i)
@@ -7284,7 +7284,7 @@ AREXPORT bool ArRobot::hasBattery(MvrBatteryMTX *device) const
   if using ArLCDConnector, it will automatically add lcd(s).
   @internal
 */
-AREXPORT bool ArRobot::addLCD(MvrLCDMTX *lcd, int lcdNumber)
+MVREXPORT bool ArRobot::addLCD(MvrLCDMTX *lcd, int lcdNumber)
 {
   std::map<int, ArLCDMTX *>::iterator it;
   if (lcd == NULL)
@@ -7319,7 +7319,7 @@ AREXPORT bool ArRobot::addLCD(MvrLCDMTX *lcd, int lcdNumber)
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remLCD(MvrLCDMTX *lcd)
+MVREXPORT bool ArRobot::remLCD(MvrLCDMTX *lcd)
 {
   if (lcd == NULL)
   {
@@ -7348,7 +7348,7 @@ AREXPORT bool ArRobot::remLCD(MvrLCDMTX *lcd)
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remLCD(int lcdNumber)
+MVREXPORT bool ArRobot::remLCD(int lcdNumber)
 {
   std::map<int, ArLCDMTX *>::iterator it;
   if ((it = myLCDMap.find(lcdNumber)) == myLCDMap.end())
@@ -7371,7 +7371,7 @@ AREXPORT bool ArRobot::remLCD(int lcdNumber)
 /** @since 2.7.0 
   @see ArLCDConnector
 */
-AREXPORT const ArLCDMTX *ArRobot::findLCD(int lcdNumber) const
+MVREXPORT const ArLCDMTX *ArRobot::findLCD(int lcdNumber) const
 {
   std::map<int, ArLCDMTX *>::const_iterator it;
   if ((it = myLCDMap.find(lcdNumber)) == myLCDMap.end())
@@ -7383,7 +7383,7 @@ AREXPORT const ArLCDMTX *ArRobot::findLCD(int lcdNumber) const
 /** @since 2.7.0 
     @see ArLCDConnector
 */
-AREXPORT ArLCDMTX *ArRobot::findLCD(int lcdNumber)
+MVREXPORT ArLCDMTX *ArRobot::findLCD(int lcdNumber)
 {
   if (myLCDMap.find(lcdNumber) == myLCDMap.end())
     return NULL;
@@ -7394,7 +7394,7 @@ AREXPORT ArLCDMTX *ArRobot::findLCD(int lcdNumber)
 /** @since 2.7.0 
     @see ArLCDConnector
 */
-AREXPORT const std::map<int, ArLCDMTX *> *ArRobot::getLCDMap(void) const
+MVREXPORT const std::map<int, ArLCDMTX *> *ArRobot::getLCDMap(void) const
 {
   return &myLCDMap;
 }
@@ -7403,7 +7403,7 @@ AREXPORT const std::map<int, ArLCDMTX *> *ArRobot::getLCDMap(void) const
 /** @since 2.7.0 
     @see ArLCDConnector
 */
-AREXPORT std::map<int, ArLCDMTX *> *ArRobot::getLCDMap(void) 
+MVREXPORT std::map<int, ArLCDMTX *> *ArRobot::getLCDMap(void) 
 {
   return &myLCDMap;
 }
@@ -7411,7 +7411,7 @@ AREXPORT std::map<int, ArLCDMTX *> *ArRobot::getLCDMap(void)
 /** @since 2.7.0 
     @see ArLCDConnector
 */
-AREXPORT bool ArRobot::hasLCD(MvrLCDMTX *device) const
+MVREXPORT bool ArRobot::hasLCD(MvrLCDMTX *device) const
 {
   for(std::map<int, ArLCDMTX *>::const_iterator i = myLCDMap.begin();
         i != myLCDMap.end(); ++i)
@@ -7426,7 +7426,7 @@ AREXPORT bool ArRobot::hasLCD(MvrLCDMTX *device) const
   if using ArBatteryConnector, it will automatically add battery(s).
   @internal
 */
-AREXPORT bool ArRobot::addSonar(MvrSonarMTX *sonar, int sonarNumber)
+MVREXPORT bool ArRobot::addSonar(MvrSonarMTX *sonar, int sonarNumber)
 {
   std::map<int, ArSonarMTX *>::iterator it;
   if (sonar == NULL)
@@ -7461,7 +7461,7 @@ AREXPORT bool ArRobot::addSonar(MvrSonarMTX *sonar, int sonarNumber)
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remSonar(MvrSonarMTX *sonar)
+MVREXPORT bool ArRobot::remSonar(MvrSonarMTX *sonar)
 {
   if (sonar == NULL)
   {
@@ -7490,7 +7490,7 @@ AREXPORT bool ArRobot::remSonar(MvrSonarMTX *sonar)
 /** @since 2.7.0 
     @internal
 */
-AREXPORT bool ArRobot::remSonar(int sonarNumber)
+MVREXPORT bool ArRobot::remSonar(int sonarNumber)
 {
   std::map<int, ArSonarMTX *>::iterator it;
   if ((it = mySonarMap.find(sonarNumber)) == mySonarMap.end())
@@ -7513,7 +7513,7 @@ AREXPORT bool ArRobot::remSonar(int sonarNumber)
 /** @since 2.7.0 
   @see ArSonarConnector
 */
-AREXPORT const ArSonarMTX *ArRobot::findSonar(int sonarNumber) const
+MVREXPORT const ArSonarMTX *ArRobot::findSonar(int sonarNumber) const
 {
   std::map<int, ArSonarMTX *>::const_iterator it;
   if ((it = mySonarMap.find(sonarNumber)) == mySonarMap.end())
@@ -7525,7 +7525,7 @@ AREXPORT const ArSonarMTX *ArRobot::findSonar(int sonarNumber) const
 /** @since 2.7.0 
     @see ArSonarConnector
 */
-AREXPORT ArSonarMTX *ArRobot::findSonar(int sonarNumber)
+MVREXPORT ArSonarMTX *ArRobot::findSonar(int sonarNumber)
 {
   if (mySonarMap.find(sonarNumber) == mySonarMap.end())
     return NULL;
@@ -7536,7 +7536,7 @@ AREXPORT ArSonarMTX *ArRobot::findSonar(int sonarNumber)
 /** @since 2.7.0 
     @see ArSonarConnector
 */
-AREXPORT const std::map<int, ArSonarMTX *> *ArRobot::getSonarMap(void) const
+MVREXPORT const std::map<int, ArSonarMTX *> *ArRobot::getSonarMap(void) const
 {
   return &mySonarMap;
 }
@@ -7545,7 +7545,7 @@ AREXPORT const std::map<int, ArSonarMTX *> *ArRobot::getSonarMap(void) const
 /** @since 2.7.0 
     @see ArSonarConnector
 */
-AREXPORT std::map<int, ArSonarMTX *> *ArRobot::getSonarMap(void) 
+MVREXPORT std::map<int, ArSonarMTX *> *ArRobot::getSonarMap(void) 
 {
   return &mySonarMap;
 }
@@ -7553,7 +7553,7 @@ AREXPORT std::map<int, ArSonarMTX *> *ArRobot::getSonarMap(void)
 /** @since 2.7.0 
     @see ArSonarConnector
 */
-AREXPORT bool ArRobot::hasSonar(MvrSonarMTX *device) const
+MVREXPORT bool ArRobot::hasSonar(MvrSonarMTX *device) const
 {
   for(std::map<int, ArSonarMTX *>::const_iterator i = mySonarMap.begin();
         i != mySonarMap.end(); ++i)
@@ -7575,7 +7575,7 @@ AREXPORT bool ArRobot::hasSonar(MvrSonarMTX *device) const
    @return This returns the same way that ArInterpolation::getPose does...
 @see ArInterpolation::getPose
 */
-AREXPORT int ArRobot::applyEncoderOffset(MvrPoseWithTime from, ArTime to, 
+MVREXPORT int ArRobot::applyEncoderOffset(MvrPoseWithTime from, ArTime to, 
 					 ArPose *result)
 {
 
@@ -7628,7 +7628,7 @@ AREXPORT int ArRobot::applyEncoderOffset(MvrPoseWithTime from, ArTime to,
   return -3;
 }
 
-AREXPORT void ArRobot::internalIgnoreNextPacket(void)
+MVREXPORT void ArRobot::internalIgnoreNextPacket(void)
 {
   myIgnoreNextPacket = true;
   myPacketMutex.lock();

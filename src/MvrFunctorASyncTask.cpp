@@ -28,18 +28,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaOSDef.h"
 #include "MvrFunctorASyncTask.h"
 
-AREXPORT MvrFunctorASyncTask::ArFunctorASyncTask(MvrRetFunctor1<void *, void *> *functor)
+MVREXPORT MvrFunctorASyncTask::ArFunctorASyncTask(MvrRetFunctor1<void *, void *> *functor)
 {
   setThreadName(functor->getName());
   myFunc = functor;
 }
 
-AREXPORT MvrFunctorASyncTask::~ArFunctorASyncTask()
+MVREXPORT MvrFunctorASyncTask::~MvrFunctorASyncTask()
 {
 
 }
 
-AREXPORT void *ArFunctorASyncTask::runThread(void *arg)
+MVREXPORT void *ArFunctorASyncTask::runThread(void *arg)
 {
   threadStarted();
   void *ret = myFunc->invokeR(arg);

@@ -44,7 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif
 
 
-AREXPORT ArSonarMTX::ArSonarMTX (int sonarBoardNum,
+MVREXPORT ArSonarMTX::ArSonarMTX (int sonarBoardNum,
 																	const char *name, ArDeviceConnection *conn,
                                  ArRobot *robot) :
 	mySensorInterpTask (this, &ArSonarMTX::sensorInterp),
@@ -89,7 +89,7 @@ AREXPORT ArSonarMTX::ArSonarMTX (int sonarBoardNum,
 
 }
 
-AREXPORT ArSonarMTX::~ArSonarMTX()
+MVREXPORT ArSonarMTX::~MvrSonarMTX()
 {
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask (&myProcessCB);
@@ -98,7 +98,7 @@ AREXPORT ArSonarMTX::~ArSonarMTX()
 }
 
 
-AREXPORT void ArSonarMTX::setDeviceConnection (
+MVREXPORT void ArSonarMTX::setDeviceConnection (
   ArDeviceConnection *conn)
 {
 	myConn = conn;
@@ -106,12 +106,12 @@ AREXPORT void ArSonarMTX::setDeviceConnection (
 }
 
 
-AREXPORT ArDeviceConnection *ArSonarMTX::getDeviceConnection (void)
+MVREXPORT ArDeviceConnection *ArSonarMTX::getDeviceConnection (void)
 {
 	return myConn;
 }
 
-AREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
+MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 {
 	myRobot = robot;
 
@@ -286,7 +286,7 @@ void ArSonarMTX::clear (void)
 
 }
 
-AREXPORT void ArSonarMTX::sonarSetName (const char *name)
+MVREXPORT void ArSonarMTX::sonarSetName (const char *name)
 {
 	myName = name;
 	myDeviceMutex.setLogNameVar ("%s::myDeviceMutex", getNameWithBoard());
@@ -300,7 +300,7 @@ AREXPORT void ArSonarMTX::sonarSetName (const char *name)
 }
 
 
-AREXPORT int ArSonarMTX::getReadingCount()
+MVREXPORT int ArSonarMTX::getReadingCount()
 {
   if (myTimeLastReading == time(NULL))
     return myReadingCount;
@@ -309,7 +309,7 @@ AREXPORT int ArSonarMTX::getReadingCount()
   return 0;
 }
 
-AREXPORT void ArSonarMTX::internalGotReading(void)
+MVREXPORT void ArSonarMTX::internalGotReading(void)
 {
   IFDEBUG(puts("internalGotReading");)
   if (myTimeLastReading != time(NULL)) 
@@ -324,7 +324,7 @@ AREXPORT void ArSonarMTX::internalGotReading(void)
   
 }
 
-AREXPORT bool ArSonarMTX::disconnect (void)
+MVREXPORT bool ArSonarMTX::disconnect (void)
 {
 	if (!isConnected())
 		return true;
@@ -491,7 +491,7 @@ void ArSonarMTX::sensorInterp (void)
 	} // end while
 }
 
-AREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking )
+MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking )
 {
   if (!mySendTrackingSet)
 	  mySendTracking = sendTracking;
@@ -863,7 +863,7 @@ AREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking 
 
 
 
-AREXPORT bool ArSonarMTX::fakeConnect ()
+MVREXPORT bool ArSonarMTX::fakeConnect ()
 {
 
 	if (myConn == NULL) {
@@ -916,17 +916,17 @@ AREXPORT bool ArSonarMTX::fakeConnect ()
 
 }
 
-AREXPORT const char * ArSonarMTX::getName (void) const
+MVREXPORT const char * ArSonarMTX::getName (void) const
 {
 	return myName.c_str();
 }
 
-AREXPORT const char * ArSonarMTX::getNameWithBoard (void) const
+MVREXPORT const char * ArSonarMTX::getNameWithBoard (void) const
 {
 	return myNameWithBoard;
 }
 
-AREXPORT void * ArSonarMTX::runThread (void *arg)
+MVREXPORT void * ArSonarMTX::runThread (void *arg)
 {
 	//char buf[1024];
 
@@ -990,7 +990,7 @@ AREXPORT void * ArSonarMTX::runThread (void *arg)
    getConnectionTimeoutSeconds.  If there is a robot then it will not
    start the check until the sonar is running and connected.
 **/
-AREXPORT bool ArSonarMTX::checkLostConnection(void)
+MVREXPORT bool ArSonarMTX::checkLostConnection(void)
 {
   //puts("checkLostConnection"); fflush(stdout);
   if ((myRobot == NULL || myRobotRunningAndConnected) && 
@@ -1008,13 +1008,13 @@ AREXPORT bool ArSonarMTX::checkLostConnection(void)
   return false;
 }
 
-AREXPORT void ArSonarMTX::disconnectOnError(void)
+MVREXPORT void ArSonarMTX::disconnectOnError(void)
 {
   ArLog::log(MvrLog::Normal, "%s: Disconnected because of error", getNameWithBoard());
   myDisconnectOnErrorCBList.invoke();
 }
 
-AREXPORT bool ArSonarMTX::sendAlive()
+MVREXPORT bool ArSonarMTX::sendAlive()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1047,7 +1047,7 @@ AREXPORT bool ArSonarMTX::sendAlive()
 
 
 
-AREXPORT bool ArSonarMTX::sendReset()
+MVREXPORT bool ArSonarMTX::sendReset()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1077,7 +1077,7 @@ AREXPORT bool ArSonarMTX::sendReset()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendStart()
+MVREXPORT bool ArSonarMTX::sendStart()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1101,7 +1101,7 @@ AREXPORT bool ArSonarMTX::sendStart()
 }
 
 
-AREXPORT bool ArSonarMTX::sendStop()
+MVREXPORT bool ArSonarMTX::sendStop()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1123,7 +1123,7 @@ AREXPORT bool ArSonarMTX::sendStop()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendGetTransducerCount()
+MVREXPORT bool ArSonarMTX::sendGetTransducerCount()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1145,7 +1145,7 @@ AREXPORT bool ArSonarMTX::sendGetTransducerCount()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendGetGain (unsigned char transducerNumber)
+MVREXPORT bool ArSonarMTX::sendGetGain (unsigned char transducerNumber)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1170,7 +1170,7 @@ AREXPORT bool ArSonarMTX::sendGetGain (unsigned char transducerNumber)
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendGetMaxRange (unsigned char transducerNumber)
+MVREXPORT bool ArSonarMTX::sendGetMaxRange (unsigned char transducerNumber)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1196,7 +1196,7 @@ AREXPORT bool ArSonarMTX::sendGetMaxRange (unsigned char transducerNumber)
 }
 
 
-AREXPORT bool ArSonarMTX::sendGetDelay()
+MVREXPORT bool ArSonarMTX::sendGetDelay()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1220,7 +1220,7 @@ AREXPORT bool ArSonarMTX::sendGetDelay()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendSetGain (unsigned char transducerNumber,
+MVREXPORT bool ArSonarMTX::sendSetGain (unsigned char transducerNumber,
                                        unsigned char gain)
 {
 
@@ -1246,7 +1246,7 @@ AREXPORT bool ArSonarMTX::sendSetGain (unsigned char transducerNumber,
 
 
 
-AREXPORT bool ArSonarMTX::requestFirmwareVersion ()
+MVREXPORT bool ArSonarMTX::requestFirmwareVersion ()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1268,7 +1268,7 @@ AREXPORT bool ArSonarMTX::requestFirmwareVersion ()
 }
 
 
-AREXPORT bool ArSonarMTX::sendSetMaxRange (unsigned char transducerNumber,
+MVREXPORT bool ArSonarMTX::sendSetMaxRange (unsigned char transducerNumber,
     int echoSampleSize)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1297,7 +1297,7 @@ AREXPORT bool ArSonarMTX::sendSetMaxRange (unsigned char transducerNumber,
 }
 
 
-AREXPORT bool ArSonarMTX::sendSetDelay (unsigned char delay)
+MVREXPORT bool ArSonarMTX::sendSetDelay (unsigned char delay)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1322,7 +1322,7 @@ AREXPORT bool ArSonarMTX::sendSetDelay (unsigned char delay)
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendSetMask (unsigned char maskLsb, unsigned char maskMsb)
+MVREXPORT bool ArSonarMTX::sendSetMask (unsigned char maskLsb, unsigned char maskMsb)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1347,7 +1347,7 @@ AREXPORT bool ArSonarMTX::sendSetMask (unsigned char maskLsb, unsigned char mask
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::validateTransducers()
+MVREXPORT bool ArSonarMTX::validateTransducers()
 {
 
 	ArRobotPacket *packet;
@@ -1410,7 +1410,7 @@ AREXPORT bool ArSonarMTX::validateTransducers()
 }
 
 
-AREXPORT bool ArSonarMTX::validateGain()
+MVREXPORT bool ArSonarMTX::validateGain()
 {
 	ArRobotPacket *packet;
 	// send get gain
@@ -1488,7 +1488,7 @@ AREXPORT bool ArSonarMTX::validateGain()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::validateDelay()
+MVREXPORT bool ArSonarMTX::validateDelay()
 {
 	ArRobotPacket *packet;
 	// send get delay
@@ -1559,7 +1559,7 @@ AREXPORT bool ArSonarMTX::validateDelay()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::validateNumThresholdRanges()
+MVREXPORT bool ArSonarMTX::validateNumThresholdRanges()
 {
 	ArRobotPacket *packet;
 	bool gotNumThres = false;
@@ -1604,7 +1604,7 @@ AREXPORT bool ArSonarMTX::validateNumThresholdRanges()
 }
 
 
-AREXPORT bool ArSonarMTX::queryFirmwareVersion()
+MVREXPORT bool ArSonarMTX::queryFirmwareVersion()
 {
 	ArRobotPacket *packet;
 	// send get delay
@@ -1663,7 +1663,7 @@ AREXPORT bool ArSonarMTX::queryFirmwareVersion()
 
 
 
-AREXPORT bool ArSonarMTX::validateMaxRange()
+MVREXPORT bool ArSonarMTX::validateMaxRange()
 {
 	ArRobotPacket *packet;
 
@@ -1749,7 +1749,7 @@ AREXPORT bool ArSonarMTX::validateMaxRange()
 }
 
 
-AREXPORT bool ArSonarMTX::validateThresholds()
+MVREXPORT bool ArSonarMTX::validateThresholds()
 {
 	ArRobotPacket *packet;
 
@@ -1833,7 +1833,7 @@ AREXPORT bool ArSonarMTX::validateThresholds()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendGetThresholds (unsigned char transducerNumber)
+MVREXPORT bool ArSonarMTX::sendGetThresholds (unsigned char transducerNumber)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -1858,7 +1858,7 @@ AREXPORT bool ArSonarMTX::sendGetThresholds (unsigned char transducerNumber)
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendGetMask ()
+MVREXPORT bool ArSonarMTX::sendGetMask ()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -1882,7 +1882,7 @@ AREXPORT bool ArSonarMTX::sendGetMask ()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendGetNumThresholdRanges ()
+MVREXPORT bool ArSonarMTX::sendGetNumThresholdRanges ()
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -1906,7 +1906,7 @@ AREXPORT bool ArSonarMTX::sendGetNumThresholdRanges ()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendSetThresholds (unsigned char transducerNumber,
+MVREXPORT bool ArSonarMTX::sendSetThresholds (unsigned char transducerNumber,
     int thres)
 {
 
@@ -1934,7 +1934,7 @@ AREXPORT bool ArSonarMTX::sendSetThresholds (unsigned char transducerNumber,
 	return true;
 }
 /*
-AREXPORT bool ArSonarMTX::validateNoiseDelta()
+MVREXPORT bool ArSonarMTX::validateNoiseDelta()
 {
 	ArRobotPacket *packet;
 
@@ -2016,7 +2016,7 @@ AREXPORT bool ArSonarMTX::validateNoiseDelta()
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendGetNoiseDelta (unsigned char transducerNumber)
+MVREXPORT bool ArSonarMTX::sendGetNoiseDelta (unsigned char transducerNumber)
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
 
@@ -2041,7 +2041,7 @@ AREXPORT bool ArSonarMTX::sendGetNoiseDelta (unsigned char transducerNumber)
 	return true;
 }
 
-AREXPORT bool ArSonarMTX::sendSetNoiseDelta (unsigned char transducerNumber,
+MVREXPORT bool ArSonarMTX::sendSetNoiseDelta (unsigned char transducerNumber,
     int noiseDelta)
 {
 
@@ -2114,7 +2114,7 @@ bool ArSonarMTX::turnOffTransducers()
 
 }
 
-AREXPORT bool ArSonarMTX::disableForAutonomousDriving()
+MVREXPORT bool ArSonarMTX::disableForAutonomousDriving()
 {
 
 

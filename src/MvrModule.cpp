@@ -29,11 +29,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrModule.h"
 
 
-AREXPORT ArModule::ArModule() :
+MVREXPORT ArModule::ArModule() :
   myRobot(0)
 {
 }
 
-AREXPORT ArModule::~ArModule()
+MVREXPORT ArModule::~MvrModule()
 {
 }

@@ -73,21 +73,21 @@ class MvrSoundPlayer
     * @param filename Name of the file to play
     * @param params ignored
     */
-  AREXPORT static bool playWavFile(const char* filename, const char* params);
+  MVREXPORT static bool playWavFile(const char* filename, const char* params);
 
-  AREXPORT static bool playWavFile(const char* filename) { return playWavFile(filename, NULL); }
+  MVREXPORT static bool playWavFile(const char* filename) { return playWavFile(filename, NULL); }
 
   /** Play a file in some native file format for the compilation platform. */
-  AREXPORT static bool playNativeFile(const char* filename, const char* params);
+  MVREXPORT static bool playNativeFile(const char* filename, const char* params);
 
   /** Cancel (interrupt) any current sound or file playback. */
-  AREXPORT static void stopPlaying();
+  MVREXPORT static void stopPlaying();
 
   /** Return the static functor for playWavFile */
-  AREXPORT static MvrRetFunctor2<bool, const char*, const char*> *getPlayWavFileCallback();
+  MVREXPORT static MvrRetFunctor2<bool, const char*, const char*> *getPlayWavFileCallback();
 
   /** Return the static functor for stopPlaying(). */
-  AREXPORT static MvrFunctor* getStopPlayingCallback();
+  MVREXPORT static MvrFunctor* getStopPlayingCallback();
 
   /** Play raw uncompressed PCM16 sound data. The format of this data is 
    *  numSamples samples of two bytes each. Each byte pair is a signed little endian
@@ -95,7 +95,7 @@ class MvrSoundPlayer
    *  The sound will be played back at 16kHz, monaurally.
    *  @return false on error, true on success.
    */
-  AREXPORT static bool playSoundPCM16(char* data, int numSamples);
+  MVREXPORT static bool playSoundPCM16(char* data, int numSamples);
 
   /** Set a volume adjustment applied to all sounds right before playing.
      (So this adjusts the volume in addition to, not instead of, the
@@ -103,7 +103,7 @@ class MvrSoundPlayer
       Any value less than or equal to 0 is no volume i.e. muted or no output.
       @linuxonly
   */
-  AREXPORT static void setVolume(double v);
+  MVREXPORT static void setVolume(double v);
 
   /**
       Set volume as a "percent" of normal, where 100% is normal or natural
@@ -111,7 +111,7 @@ class MvrSoundPlayer
       no volume, or mute.)
       @linuxonly
   */
-  AREXPORT static void setVolumePercent(double pct);
+  MVREXPORT static void setVolumePercent(double pct);
  
 protected:
   static int ourPlayChildPID; ///< Only used on Linux.

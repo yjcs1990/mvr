@@ -47,16 +47,16 @@ class MvrActionIRs : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionIRs(const char *name = "IRs", 
+  MVREXPORT MvrActionIRs(const char *name = "IRs", 
 		       double backOffSpeed = 100, int backOffTime = 5000,
 		       int turnTime = 3000, bool setMaximums = false);
   /// Destructor
-  AREXPORT virtual ~ArActionIRs();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual void setRobot(MvrRobot *robot);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionIRs();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

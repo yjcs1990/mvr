@@ -72,56 +72,56 @@ public:
    *    for constructing a formatted string, e.g. the % and + string
    *    operators in Python, and the methods of the Java String class.
    */
-  AREXPORT static void log(LogLevel level, const char *str, ...);
+  MVREXPORT static void log(LogLevel level, const char *str, ...);
 #endif
   /// Log a message containing just a plain string
-  AREXPORT static void logPlain(LogLevel level, const char *str);
+  MVREXPORT static void logPlain(LogLevel level, const char *str);
   /// Initialize the logging utility with options
-  AREXPORT static bool init(LogType type, LogLevel level,
+  MVREXPORT static bool init(LogType type, LogLevel level,
 			    const char *fileName="",
 			    bool logTime = false, bool alsoPrint = false, 
 			    bool printThisCall = true);
   /// Close the logging utility
-  AREXPORT static void close();
+  MVREXPORT static void close();
 
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message
-  AREXPORT static void logErrorFromOS(LogLevel level, const char *str, ...);
+  MVREXPORT static void logErrorFromOS(LogLevel level, const char *str, ...);
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message
-  AREXPORT static void logErrorFromOSPlain(LogLevel level, const char *str);
+  MVREXPORT static void logErrorFromOSPlain(LogLevel level, const char *str);
 #ifndef SWIG // these is internal we don't need to wrap it
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message... internal version, don't use it
-  AREXPORT static void logErrorFromOSNoLock(LogLevel level, const char *str, ...);
+  MVREXPORT static void logErrorFromOSNoLock(LogLevel level, const char *str, ...);
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message... internal version, dont' use it
-  AREXPORT static void logErrorFromOSPlainNoLock(LogLevel level, const char *str);
+  MVREXPORT static void logErrorFromOSPlainNoLock(LogLevel level, const char *str);
   // Do not use this unless you know what you are doing...
   /** @internal
    * @swigomit */
-  AREXPORT static void logNoLock(LogLevel level, const char *str, ...);
+  MVREXPORT static void logNoLock(LogLevel level, const char *str, ...);
 #endif 
   /// Log function call backtrace for debugging 
   /// @linuxonly
-  AREXPORT static void logBacktrace(LogLevel level);
+  MVREXPORT static void logBacktrace(LogLevel level);
   /// Read the contents of @fileName and print a log message for each line. File should be plain text.
-  AREXPORT static bool logFileContents(LogLevel level, const char *fileName);
+  MVREXPORT static bool logFileContents(LogLevel level, const char *fileName);
 
   // We use this to print to a Colbert stream, if available
   /// @deprecated
-  AREXPORT static void (* colbertPrint)(int i, const char *str);
+  MVREXPORT static void (* colbertPrint)(int i, const char *str);
 
   /// Use an MvrConfig object to control MvrLog's options
-  AREXPORT static void addToConfig(MvrConfig *config);
+  MVREXPORT static void addToConfig(MvrConfig *config);
 
   /// Set log level
-  AREXPORT static void setLogLevel(LogLevel level);
+  MVREXPORT static void setLogLevel(LogLevel level);
 
 #ifndef ARINTERFACE
   // Init for aram behavior
   /// @internal
-  AREXPORT static void aramInit(const char *prefix, 
+  MVREXPORT static void aramInit(const char *prefix, 
 				ArLog::LogLevel defaultLevel = MvrLog::Normal, 
 				double defaultSize = 10, 
 				bool daemonized = false);
@@ -129,35 +129,35 @@ public:
   
   /// Set a functor to be called when a log message is made 
   /// Call clearFunctor() to unset.
-  AREXPORT static void setFunctor(MvrFunctor1<const char *> *functor);
+  MVREXPORT static void setFunctor(MvrFunctor1<const char *> *functor);
   /// Clear functor set by setFunctor().
-  AREXPORT static void clearFunctor();
+  MVREXPORT static void clearFunctor();
   /// Internal function to force a lockup, only for debugging
   /// @internal
-  AREXPORT static void internalForceLockup(void);
+  MVREXPORT static void internalForceLockup(void);
 
   /// Convenience function to log a message at Terse log level with "Warning: " prepended
-  AREXPORT static void warning(const char *str, ...);
+  MVREXPORT static void warning(const char *str, ...);
   /// Convenience function to log a message at Terse log level with "Error: " prepended
-  AREXPORT static void error(const char *str, ...);
+  MVREXPORT static void error(const char *str, ...);
   /// Convenience function to log a message at Normal log level 
-  AREXPORT static void info(const char *str, ...);
+  MVREXPORT static void info(const char *str, ...);
   /// Convenience function to log a message at Verbose log level 
-  AREXPORT static void debug(const char *str, ...);
+  MVREXPORT static void debug(const char *str, ...);
 
 #ifndef SWIG
   /// @internal
-  AREXPORT static void log_v(LogLevel level, const char *prefix, const char *format, va_list vaptr);
+  MVREXPORT static void log_v(LogLevel level, const char *prefix, const char *format, va_list vaptr);
 #endif
 
 protected:
-  AREXPORT static bool processFile(void);
+  MVREXPORT static bool processFile(void);
 #ifndef ARINTERFACE
-  AREXPORT static bool aramProcessFile(void);
-  AREXPORT static void filledAramLog(void);
+  MVREXPORT static bool aramProcessFile(void);
+  MVREXPORT static void filledAramLog(void);
 #endif
-  AREXPORT static void invokeFunctor(const char *message);
-  AREXPORT static void checkFileSize(void);
+  MVREXPORT static void invokeFunctor(const char *message);
+  MVREXPORT static void checkFileSize(void);
 
   static MvrLog *ourLog;
   static MvrMutex ourMutex;

@@ -43,7 +43,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param maxRange how far out to look total
    @param name the name of the device
  **/
-AREXPORT MvrForbiddenRangeDevice::ArForbiddenRangeDevice(
+MVREXPORT MvrForbiddenRangeDevice::ArForbiddenRangeDevice(
 	ArMapInterface *armap, double distanceIncrement, unsigned int maxRange,
 	const char *name) :
   MvrRangeDevice(INT_MAX, 0, name, maxRange, 0, 0, 0, true),
@@ -62,12 +62,12 @@ AREXPORT MvrForbiddenRangeDevice::ArForbiddenRangeDevice(
   myMapChangedCB.setName("MvrForbiddenRangeDevice");
 }
 
-AREXPORT MvrForbiddenRangeDevice::~ArForbiddenRangeDevice()
+MVREXPORT MvrForbiddenRangeDevice::~MvrForbiddenRangeDevice()
 {
 
 }
 
-AREXPORT void MvrForbiddenRangeDevice::processMap(void)
+MVREXPORT void MvrForbiddenRangeDevice::processMap(void)
 {
   std::list<ArMapObject *>::const_iterator it;
   MvrMapObject *obj;
@@ -110,7 +110,7 @@ AREXPORT void MvrForbiddenRangeDevice::processMap(void)
   myDataMutex.unlock();
 }
 
-AREXPORT void MvrForbiddenRangeDevice::processReadings(void)
+MVREXPORT void MvrForbiddenRangeDevice::processReadings(void)
 {
   MvrPose intersection;
   std::list<ArLineSegment *>::iterator it;
@@ -193,7 +193,7 @@ AREXPORT void MvrForbiddenRangeDevice::processReadings(void)
   //printf("%d\n", startingTime.mSecSince());
 }
 
-AREXPORT void MvrForbiddenRangeDevice::setRobot(MvrRobot *robot)
+MVREXPORT void MvrForbiddenRangeDevice::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -205,14 +205,14 @@ AREXPORT void MvrForbiddenRangeDevice::setRobot(MvrRobot *robot)
   myMap->unlock();
 }
 
-AREXPORT void MvrForbiddenRangeDevice::enable(void)
+MVREXPORT void MvrForbiddenRangeDevice::enable(void)
 {
   myDataMutex.lock();
   myIsEnabled = true;
   myDataMutex.unlock();
 }
 
-AREXPORT void MvrForbiddenRangeDevice::disable(void)
+MVREXPORT void MvrForbiddenRangeDevice::disable(void)
 {
   myDataMutex.lock();
   myIsEnabled = false;

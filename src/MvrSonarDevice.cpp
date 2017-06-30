@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrSensorReading.h"
 #include "MvrRobot.h"
 
-AREXPORT ArSonarDevice::ArSonarDevice(size_t currentBufferSize,
+MVREXPORT ArSonarDevice::ArSonarDevice(size_t currentBufferSize,
 			     size_t cumulativeBufferSize, const char *name) :
   ArRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000), 
   myProcessCB(this, &ArSonarDevice::processReadings),
@@ -61,7 +61,7 @@ AREXPORT ArSonarDevice::ArSonarDevice(size_t currentBufferSize,
                         true);
 }
 
-AREXPORT ArSonarDevice::~ArSonarDevice()
+MVREXPORT ArSonarDevice::~MvrSonarDevice()
 {
   if (myRobot != NULL)
   {
@@ -70,7 +70,7 @@ AREXPORT ArSonarDevice::~ArSonarDevice()
   }
 }
 
-AREXPORT void ArSonarDevice::setRobot(MvrRobot *robot)
+MVREXPORT void ArSonarDevice::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -78,7 +78,7 @@ AREXPORT void ArSonarDevice::setRobot(MvrRobot *robot)
   ArRangeDevice::setRobot(robot);
 }
 
-AREXPORT void ArSonarDevice::processReadings(void)
+MVREXPORT void ArSonarDevice::processReadings(void)
 {
   int i;
   ArSensorReading *reading;
@@ -137,7 +137,7 @@ AREXPORT void ArSonarDevice::processReadings(void)
    @param x the global x coordinate of the reading
    @param y the global y coordinate of the reading
 */
-AREXPORT void ArSonarDevice::addReading(double x, double y)
+MVREXPORT void ArSonarDevice::addReading(double x, double y)
 {
   double rx = myRobot->getX();
   double ry = myRobot->getY();
@@ -174,7 +174,7 @@ AREXPORT void ArSonarDevice::addReading(double x, double y)
 }
 
 
-AREXPORT void ArSonarDevice::setIgnoreReadingCB(
+MVREXPORT void ArSonarDevice::setIgnoreReadingCB(
 	ArRetFunctor1<bool, ArPose> *ignoreReadingCB)
 {
   lockDevice();

@@ -69,17 +69,17 @@ private:
   MvrFunctor1C<ArTrimbleGPS, MvrNMEAParser::Message> myAuxDataHandler;
   void handlePTNLAG001(MvrNMEAParser::Message message);
 public:
-  AREXPORT MvrTrimbleGPS();
-  AREXPORT virtual ~ArTrimbleGPS();
+  MVREXPORT MvrTrimbleGPS();
+  MVREXPORT virtual ~MvrTrimbleGPS();
 
   /** Send a TSIP command to the Trimble GPS.
    *  See the TSIP Reference guide for details.
    *  Note, the data must be 66 characters or less.
    */
-  AREXPORT bool sendTSIPCommand(char command, const char *data, size_t dataLen);
+  MVREXPORT bool sendTSIPCommand(char command, const char *data, size_t dataLen);
 
 protected:
-  AREXPORT virtual bool initDevice();
+  MVREXPORT virtual bool initDevice();
 
 };
 

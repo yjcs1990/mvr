@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include "MvrLog.h"
 
-AREXPORT ArMD5Calculator::ArMD5Calculator(MvrFunctor1<const char*> *secondFunctor) :
+MVREXPORT ArMD5Calculator::ArMD5Calculator(MvrFunctor1<const char*> *secondFunctor) :
   myFunctor(this, &ArMD5Calculator::append),
   mySecondFunctor(secondFunctor),
   myState(),
@@ -43,11 +43,11 @@ AREXPORT ArMD5Calculator::ArMD5Calculator(MvrFunctor1<const char*> *secondFuncto
   md5_init(&myState);
 }
 
-AREXPORT ArMD5Calculator::~ArMD5Calculator()
+MVREXPORT ArMD5Calculator::~MvrMD5Calculator()
 {
 }
   
-AREXPORT void ArMD5Calculator::reset()
+MVREXPORT void ArMD5Calculator::reset()
 {
   myDigest[0] = '\0';
   md5_init(&myState);
@@ -55,22 +55,22 @@ AREXPORT void ArMD5Calculator::reset()
   myIsFinished = false;
 }
 
-AREXPORT ArFunctor1<const char *> *ArMD5Calculator::getFunctor()
+MVREXPORT ArFunctor1<const char *> *ArMD5Calculator::getFunctor()
 {
   return &myFunctor;
 }
 
-AREXPORT ArFunctor1<const char *> *ArMD5Calculator::getSecondFunctor()
+MVREXPORT ArFunctor1<const char *> *ArMD5Calculator::getSecondFunctor()
 {
   return mySecondFunctor;
 }
 
-AREXPORT void ArMD5Calculator::setSecondFunctor(MvrFunctor1<const char *> *secondFunctor)
+MVREXPORT void ArMD5Calculator::setSecondFunctor(MvrFunctor1<const char *> *secondFunctor)
 {
   mySecondFunctor = secondFunctor;
 }
 
-AREXPORT unsigned char *ArMD5Calculator::getDigest()
+MVREXPORT unsigned char *ArMD5Calculator::getDigest()
 {
   if (!myIsFinished) {
     md5_finish(&myState, myDigest);
@@ -81,7 +81,7 @@ AREXPORT unsigned char *ArMD5Calculator::getDigest()
 } // end method getDigest
 
 
-AREXPORT void ArMD5Calculator::toDisplay(const unsigned char *digestBuf,
+MVREXPORT void ArMD5Calculator::toDisplay(const unsigned char *digestBuf,
                                          size_t digestLength,
                                          char *displayBuf,
                                          size_t displayLength)
@@ -123,7 +123,7 @@ AREXPORT void ArMD5Calculator::toDisplay(const unsigned char *digestBuf,
 
 } // end method toDisplay
 
-AREXPORT bool ArMD5Calculator::calculateChecksum(const char *fileName,
+MVREXPORT bool ArMD5Calculator::calculateChecksum(const char *fileName,
                                                  unsigned char *md5DigestBuffer,
                                                  size_t md5DigestBufferLen)
 {
@@ -174,7 +174,7 @@ AREXPORT bool ArMD5Calculator::calculateChecksum(const char *fileName,
 
 
 
-AREXPORT void ArMD5Calculator::append(const char *str)
+MVREXPORT void ArMD5Calculator::append(const char *str)
 {
   if (str == NULL) {
     ArLog::log(MvrLog::Terse,

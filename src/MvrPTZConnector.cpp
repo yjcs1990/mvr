@@ -43,7 +43,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 std::map<std::string, ArPTZConnector::PTZCreateFunc*> ArPTZConnector::ourPTZCreateFuncs;
 
 
-AREXPORT ArPTZConnector::ArPTZConnector(MvrArgumentParser* argParser, ArRobot *robot) :
+MVREXPORT ArPTZConnector::ArPTZConnector(MvrArgumentParser* argParser, ArRobot *robot) :
   myArgParser(argParser),
   myRobot(robot),
   myParseArgsCallback(this, &ArPTZConnector::parseArgs),
@@ -58,7 +58,7 @@ AREXPORT ArPTZConnector::ArPTZConnector(MvrArgumentParser* argParser, ArRobot *r
 }
   
 
-AREXPORT ArPTZConnector::~ArPTZConnector()
+MVREXPORT ArPTZConnector::~MvrPTZConnector()
 {
   ///@todo not in Aria but should be: Aria::remParseArgsCB(&myParseArgsCallback);
   ///@todo not in Aria but should be: Aria::remLogOptionsCB(&myLogOptionsCallback);
@@ -67,7 +67,7 @@ AREXPORT ArPTZConnector::~ArPTZConnector()
 //  ArRobotParams::remPopulateParamsCB(&myPopulateRobotParamsCB);
 }
 
-AREXPORT bool ArPTZConnector::connect()
+MVREXPORT bool ArPTZConnector::connect()
 {
   // Copy ArRobot's default parameters:
   myParams.resize(Mvria::getMaxNumPTZs());
@@ -292,7 +292,7 @@ bool ArPTZConnector::parseArgsFor(MvrArgumentParser *parser, int which)
   return true;
 }
 
-AREXPORT void ArPTZConnector::logOptions() const
+MVREXPORT void ArPTZConnector::logOptions() const
 {
   ArLog::log(MvrLog::Terse, "Common PTU and Camera PTZ options:\n");
   ArLog::log(MvrLog::Terse, "\t-ptzType <type>\tSelect PTZ/PTU type. Required.  Available types are:");
@@ -321,7 +321,7 @@ AREXPORT void ArPTZConnector::logOptions() const
 
 
 
-  AREXPORT  void ArPTZConnector::registerPTZType(const std::string& typeName, ArPTZConnector::PTZCreateFunc* func)
+  MVREXPORT  void ArPTZConnector::registerPTZType(const std::string& typeName, ArPTZConnector::PTZCreateFunc* func)
   {
     ourPTZCreateFuncs[typeName] = func;
   }

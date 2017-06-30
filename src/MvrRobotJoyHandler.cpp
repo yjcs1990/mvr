@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrCommands.h"
 #include "ariaInternal.h"
 
-AREXPORT ArRobotJoyHandler::ArRobotJoyHandler(MvrRobot *robot) : 
+MVREXPORT ArRobotJoyHandler::ArRobotJoyHandler(MvrRobot *robot) : 
     myHandleJoystickPacketCB(this, &ArRobotJoyHandler::handleJoystickPacket),
     myConnectCB(this, &ArRobotJoyHandler::connectCallback),
     myStopPacketsCB(this, &ArRobotJoyHandler::stopPackets)
@@ -62,7 +62,7 @@ AREXPORT ArRobotJoyHandler::ArRobotJoyHandler(MvrRobot *robot) :
   myGotData = false;
 }
 
-AREXPORT ArRobotJoyHandler::~ArRobotJoyHandler()
+MVREXPORT ArRobotJoyHandler::~MvrRobotJoyHandler()
 {
   myRobot->remConnectCB(&myConnectCB);
   myRobot->remPacketHandler(&myHandleJoystickPacketCB);
@@ -71,7 +71,7 @@ AREXPORT ArRobotJoyHandler::~ArRobotJoyHandler()
   Aria::remExitCallback(&myStopPacketsCB);
 }
 
-AREXPORT void ArRobotJoyHandler::connectCallback(void)
+MVREXPORT void ArRobotJoyHandler::connectCallback(void)
 {
   myRobot->addDisconnectNormallyCB(&myStopPacketsCB);
   Aria::addExitCallback(&myStopPacketsCB);
@@ -83,7 +83,7 @@ void ArRobotJoyHandler::stopPackets()
   myRobot->comInt(MvrCommands::JOYINFO, 0);
 }
 
-AREXPORT bool ArRobotJoyHandler::handleJoystickPacket(MvrRobotPacket *packet)
+MVREXPORT bool ArRobotJoyHandler::handleJoystickPacket(MvrRobotPacket *packet)
 {
 
   if (packet->getID() != 0xF8)
@@ -158,7 +158,7 @@ AREXPORT bool ArRobotJoyHandler::handleJoystickPacket(MvrRobotPacket *packet)
   return true;
 }
 
-AREXPORT void ArRobotJoyHandler::getDoubles(double *x, double *y, double *z)
+MVREXPORT void ArRobotJoyHandler::getDoubles(double *x, double *y, double *z)
 {
   if (x != NULL)
     *x = myJoyX;
@@ -168,7 +168,7 @@ AREXPORT void ArRobotJoyHandler::getDoubles(double *x, double *y, double *z)
     *z = myThrottle;
 }
 
-AREXPORT void ArRobotJoyHandler::addToConfig(MvrConfig *config, 
+MVREXPORT void ArRobotJoyHandler::addToConfig(MvrConfig *config, 
 					     const char *section)
 {
   config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, ArPriority::NORMAL);

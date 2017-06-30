@@ -38,10 +38,10 @@ class MvrPriorityResolver : public MvrResolver
 {
 public:
   /// Constructor
-  AREXPORT MvrPriorityResolver();
+  MVREXPORT MvrPriorityResolver();
   /// Destructor
-  AREXPORT virtual ~ArPriorityResolver();
-  AREXPORT virtual MvrActionDesired *resolve(MvrResolver::ActionMap *actions,
+  MVREXPORT virtual ~MvrPriorityResolver();
+  MVREXPORT virtual MvrActionDesired *resolve(MvrResolver::ActionMap *actions,
 					    MvrRobot *robot,
 					    bool logActions = false);
 protected:

@@ -61,10 +61,10 @@ protected:
   void handleNovatelGPGGA(MvrNMEAParser::Message msg);
   MvrFunctor1C<ArNovatelGPS, MvrNMEAParser::Message> myNovatelGPGGAHandler;
 public:
-  AREXPORT MvrNovatelGPS();
-  AREXPORT virtual ~ArNovatelGPS();
+  MVREXPORT MvrNovatelGPS();
+  MVREXPORT virtual ~MvrNovatelGPS();
 protected:
-  AREXPORT virtual bool initDevice();
+  MVREXPORT virtual bool initDevice();
 };
 
 /** @brief GPS subclass to support the NovAtel SPAN GPS with integrated IMU. 
@@ -83,15 +83,15 @@ protected:
   * message in this class rather than MvrGPS. */
   void handleGPRMC(MvrNMEAParser::Message msg);
   void handleINGLL(MvrNMEAParser::Message msg);
-  AREXPORT virtual bool initDevice();
+  MVREXPORT virtual bool initDevice();
   MvrFunctor1C<ArNovatelSPAN, MvrNMEAParser::Message> myGPRMCHandler;
   MvrFunctor1C<ArNovatelSPAN, MvrNMEAParser::Message> myINGLLHandler;
 public:
   double GPSLatitude, GPSLongitude;
   bool haveGPSPosition, GPSValidFlag;
   MvrTime timeGotGPSPosition, GPSTimestamp;
-  AREXPORT MvrNovatelSPAN();
-  AREXPORT virtual ~ArNovatelSPAN();
+  MVREXPORT MvrNovatelSPAN();
+  MVREXPORT virtual ~MvrNovatelSPAN();
 };
 
 #endif 

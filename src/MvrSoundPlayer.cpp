@@ -37,13 +37,13 @@ ArGlobalRetFunctor2<bool, const char*, const char*> ArSoundPlayer::ourPlayWavFil
 ArGlobalFunctor ArSoundPlayer::ourStopPlayingCB(&ArSoundPlayer::stopPlaying);
 double ArSoundPlayer::ourVolume = 1.0;
 
-AREXPORT ArRetFunctor2<bool, const char*, const char*>* ArSoundPlayer::getPlayWavFileCallback() 
+MVREXPORT ArRetFunctor2<bool, const char*, const char*>* ArSoundPlayer::getPlayWavFileCallback() 
 {
   return &ourPlayWavFileCB;
 }
 
 
-AREXPORT ArFunctor* ArSoundPlayer::getStopPlayingCallback()
+MVREXPORT ArFunctor* ArSoundPlayer::getStopPlayingCallback()
 {
   return &ourStopPlayingCB;
 }
@@ -55,24 +55,24 @@ AREXPORT ArFunctor* ArSoundPlayer::getStopPlayingCallback()
 
 #include <assert.h>
 
-AREXPORT bool ArSoundPlayer::playWavFile(const char* filename, const char* params) 
+MVREXPORT bool ArSoundPlayer::playWavFile(const char* filename, const char* params) 
 {
   return (PlaySound(filename, NULL, SND_FILENAME) == TRUE);
 }
 
-AREXPORT bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
+MVREXPORT bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
 {
   /* WAV is the Windows native format */
   return playWavFile(filename, 0);
 }
 
-AREXPORT void ArSoundPlayer::stopPlaying()
+MVREXPORT void ArSoundPlayer::stopPlaying()
 {
   PlaySound(NULL, NULL, NULL);
 }
 
 
-AREXPORT bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
+MVREXPORT bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
 {
   ArLog::log(MvrLog::Terse, "INTERNAL ERROR: ArSoundPlayer::playSoundPCM16() is not implemented for Windows yet! Bug reed@activmedia.com about it!");
   assert(false);
@@ -299,12 +299,12 @@ bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
 
 #endif  // ifdef WIN32
 
-AREXPORT void ArSoundPlayer::setVolumePercent(double pct)
+MVREXPORT void ArSoundPlayer::setVolumePercent(double pct)
 {
   setVolume(1.0 + (pct / 100.0));
 }
 
-AREXPORT void ArSoundPlayer::setVolume(double v)
+MVREXPORT void ArSoundPlayer::setVolume(double v)
 {
   if(v < 0) ourVolume = 0;
   else ourVolume = v;

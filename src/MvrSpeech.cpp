@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaInternal.h"
 
 
-AREXPORT ArSpeechSynth::ArSpeechSynth() : 
+MVREXPORT ArSpeechSynth::ArSpeechSynth() : 
   mySpeakCB(this, &ArSpeechSynth::speak), 
   myInitCB(this, &ArSpeechSynth::init), 
   myInterruptCB(this, &ArSpeechSynth::interrupt),
@@ -43,44 +43,44 @@ AREXPORT ArSpeechSynth::ArSpeechSynth() :
 }
 
 
-AREXPORT bool ArSpeechSynth::init()
+MVREXPORT bool ArSpeechSynth::init()
 {
   return true;
 }
 
-AREXPORT void ArSpeechSynth::addToConfig(MvrConfig *config)
+MVREXPORT void ArSpeechSynth::addToConfig(MvrConfig *config)
 {
   addVoiceConfigParam(config);
   config->addProcessFileCB(&myProcessConfigCB, 100);
 }
 
-AREXPORT ArSpeechSynth::~ArSpeechSynth()
+MVREXPORT ArSpeechSynth::~MvrSpeechSynth()
 {
 }
 
-AREXPORT ArRetFunctorC<bool, ArSpeechSynth>* ArSpeechSynth::getInitCallback(void) 
+MVREXPORT ArRetFunctorC<bool, ArSpeechSynth>* ArSpeechSynth::getInitCallback(void) 
 {
   return &myInitCB;
 }
 
-AREXPORT ArRetFunctor2C<bool, ArSpeechSynth, const char*, const char*>* ArSpeechSynth::getSpeakCallback(void) 
+MVREXPORT ArRetFunctor2C<bool, ArSpeechSynth, const char*, const char*>* ArSpeechSynth::getSpeakCallback(void) 
 {
   return &mySpeakCB;
 }
 
 
-AREXPORT ArFunctorC<ArSpeechSynth>*  ArSpeechSynth::getInterruptCallback() 
+MVREXPORT ArFunctorC<ArSpeechSynth>*  ArSpeechSynth::getInterruptCallback() 
 {
   return &myInterruptCB;
 }
 
-AREXPORT void ArSpeechSynth::setAudioCallback(MvrRetFunctor2<bool, ArTypes::Byte2*, int>* cb)
+MVREXPORT void ArSpeechSynth::setAudioCallback(MvrRetFunctor2<bool, ArTypes::Byte2*, int>* cb)
 {
   myAudioPlaybackCB = cb;
 }
 
 
-AREXPORT bool ArSpeechSynth::speak(const char* text, const char* voiceParams) {
+MVREXPORT bool ArSpeechSynth::speak(const char* text, const char* voiceParams) {
   return speak(text, voiceParams, NULL, 0);
 }
   

@@ -47,19 +47,19 @@ class MvrActionBumpers : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionBumpers(const char *name = "bumpers", 
+  MVREXPORT MvrActionBumpers(const char *name = "bumpers", 
 			   double backOffSpeed = 100, int backOffTime = 3000,
 			   int turnTime = 3000, bool setMaximums = false);
   /// Destructor
-  AREXPORT virtual ~ArActionBumpers();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual ~MvrActionBumpers();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  AREXPORT double findDegreesToTurn(int bumpValue, int whichBumper);
-  AREXPORT virtual void activate(void);
+  MVREXPORT double findDegreesToTurn(int bumpValue, int whichBumper);
+  MVREXPORT virtual void activate(void);
 protected:
   MvrActionDesired myDesired;
   bool mySetMaximums;

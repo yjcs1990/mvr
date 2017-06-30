@@ -31,23 +31,23 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrMapInterface.h"
 
 
-AREXPORT const char *ArMapInfoInterface::MAP_INFO_NAME        = "MapInfo:"; 
-AREXPORT const char *ArMapInfoInterface::META_INFO_NAME       = "MetaInfo:";
-AREXPORT const char *ArMapInfoInterface::TASK_INFO_NAME       = "TaskInfo:";   
-AREXPORT const char *ArMapInfoInterface::ROUTE_INFO_NAME      = "RouteInfo:"; 
-AREXPORT const char *ArMapInfoInterface::SCHED_TASK_INFO_NAME = "SchedTaskInfo:";
-AREXPORT const char *ArMapInfoInterface::SCHED_INFO_NAME      = "SchedInfo:"; 
-AREXPORT const char *ArMapInfoInterface::CAIRN_INFO_NAME      = "CairnInfo:";  
-AREXPORT const char *ArMapInfoInterface::CUSTOM_INFO_NAME     = "CustomInfo:";
+MVREXPORT const char *ArMapInfoInterface::MAP_INFO_NAME        = "MapInfo:"; 
+MVREXPORT const char *ArMapInfoInterface::META_INFO_NAME       = "MetaInfo:";
+MVREXPORT const char *ArMapInfoInterface::TASK_INFO_NAME       = "TaskInfo:";   
+MVREXPORT const char *ArMapInfoInterface::ROUTE_INFO_NAME      = "RouteInfo:"; 
+MVREXPORT const char *ArMapInfoInterface::SCHED_TASK_INFO_NAME = "SchedTaskInfo:";
+MVREXPORT const char *ArMapInfoInterface::SCHED_INFO_NAME      = "SchedInfo:"; 
+MVREXPORT const char *ArMapInfoInterface::CAIRN_INFO_NAME      = "CairnInfo:";  
+MVREXPORT const char *ArMapInfoInterface::CUSTOM_INFO_NAME     = "CustomInfo:";
 
-AREXPORT const char *ArMapInterface::MAP_CATEGORY_2D = "2D-Map";
-AREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_MULTI_SOURCES = "2D-Map-Ex";
-AREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_EXTENDED  = "2D-Map-Ex2";
-AREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_COMPOSITE = "2D-Map-Ex3";
+MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D = "2D-Map";
+MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_MULTI_SOURCES = "2D-Map-Ex";
+MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_EXTENDED  = "2D-Map-Ex2";
+MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_COMPOSITE = "2D-Map-Ex3";
 
 
 
-AREXPORT bool MvrMapScanInterface::isDefaultScanType(const char *scanType)
+MVREXPORT bool MvrMapScanInterface::isDefaultScanType(const char *scanType)
 {
   bool b = false;
   if ((scanType != NULL) &&
@@ -57,7 +57,7 @@ AREXPORT bool MvrMapScanInterface::isDefaultScanType(const char *scanType)
   return b;
 }
 
-AREXPORT bool MvrMapScanInterface::isSummaryScanType(const char *scanType)
+MVREXPORT bool MvrMapScanInterface::isSummaryScanType(const char *scanType)
 {
   bool b = scanType == NULL;
   return b;
@@ -73,7 +73,7 @@ AREXPORT bool MvrMapScanInterface::isSummaryScanType(const char *scanType)
  * An absolute path starts with the '/' or '\' character, or on Windows, with "X:\" where X is any
  * upper or lower case alphabetic character A-Z or a-z.  
  */
-AREXPORT std::string MvrMapInterface::createRealFileName(const char *baseDirectory,
+MVREXPORT std::string MvrMapInterface::createRealFileName(const char *baseDirectory,
                                                         const char *fileName,
                                                         bool isIgnoreCase)
 { 
@@ -185,7 +185,7 @@ AREXPORT std::string MvrMapInterface::createRealFileName(const char *baseDirecto
 
 } // end method createRealFileName
 
-AREXPORT void MvrMapInterface::addMapChangedCB(MvrFunctor *functor, 
+MVREXPORT void MvrMapInterface::addMapChangedCB(MvrFunctor *functor, 
 					      MvrListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)
@@ -197,7 +197,7 @@ AREXPORT void MvrMapInterface::addMapChangedCB(MvrFunctor *functor,
 }
 
 
-AREXPORT void MvrMapInterface::addPreMapChangedCB(MvrFunctor *functor, 
+MVREXPORT void MvrMapInterface::addPreMapChangedCB(MvrFunctor *functor, 
 						 MvrListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)

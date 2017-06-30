@@ -41,7 +41,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param packetArrivedCB a functor to call when the packet comes in,
    note the robot is locked during this callback
  **/
-AREXPORT ArRobotConfigPacketReader::ArRobotConfigPacketReader(
+MVREXPORT ArRobotConfigPacketReader::ArRobotConfigPacketReader(
 	ArRobot *robot, bool onlyOneRequest, ArFunctor *packetArrivedCB) : 
   myPacketHandlerCB(this, &ArRobotConfigPacketReader::packetHandler),
   myConnectedCB(this, &ArRobotConfigPacketReader::connected)
@@ -56,13 +56,13 @@ AREXPORT ArRobotConfigPacketReader::ArRobotConfigPacketReader(
   myPacketArrivedCB = packetArrivedCB;
 }
 
-AREXPORT ArRobotConfigPacketReader::~ArRobotConfigPacketReader(void)
+MVREXPORT ArRobotConfigPacketReader::~MvrRobotConfigPacketReader(void)
 {
   myRobot->remPacketHandler(&myPacketHandlerCB);
   myRobot->remConnectCB(&myConnectedCB);
 }
 
-AREXPORT bool ArRobotConfigPacketReader::requestPacket(void)
+MVREXPORT bool ArRobotConfigPacketReader::requestPacket(void)
 {
   // make sure we haven't already gotten one
   if (myOnlyOneRequest && myPacketArrived)
@@ -78,13 +78,13 @@ AREXPORT bool ArRobotConfigPacketReader::requestPacket(void)
   return true;
 }
 
-AREXPORT void ArRobotConfigPacketReader::connected(void)
+MVREXPORT void ArRobotConfigPacketReader::connected(void)
 {
   if (myPacketRequested)
     myRobot->comInt(MvrCommands::CONFIG, 1);
 }
 
-AREXPORT bool ArRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool ArRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
 {
   char buf[256];
 
@@ -201,14 +201,14 @@ AREXPORT bool ArRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
   return true;
 }
   
-AREXPORT void ArRobotConfigPacketReader::log(void) const
+MVREXPORT void ArRobotConfigPacketReader::log(void) const
 {
   std::string str;
   str = buildString();
   ArLog::log(MvrLog::Terse, str.c_str());
 }
 
-AREXPORT void ArRobotConfigPacketReader::logMovement(void) const
+MVREXPORT void ArRobotConfigPacketReader::logMovement(void) const
 {
   std::string str;
   str = buildStringMovement();
@@ -219,7 +219,7 @@ AREXPORT void ArRobotConfigPacketReader::logMovement(void) const
    Like most memory stuff this won't work across DLL's in windows,
    it should work fine in linux or with static library files in windows.
 **/
-AREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
+MVREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
 {
   std::string ret;
 
@@ -370,7 +370,7 @@ AREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
    Like most memory stuff this won't work across DLL's in windows,
    it should work fine in linux or with static library files in windows.
 **/
-AREXPORT std::string ArRobotConfigPacketReader::buildStringMovement(void) const
+MVREXPORT std::string ArRobotConfigPacketReader::buildStringMovement(void) const
 {
   std::string ret;
 

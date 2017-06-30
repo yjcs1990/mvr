@@ -31,18 +31,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLog.h"
 #include "MvrRobot.h"
 
-AREXPORT MvrAMPTUPacket::ArAMPTUPacket(MvrTypes::UByte2 bufferSize) :
+MVREXPORT MvrAMPTUPacket::ArAMPTUPacket(MvrTypes::UByte2 bufferSize) :
   MvrBasePacket(bufferSize, 3)
 {
   myUnitNumber = 0;
 }
 
-AREXPORT MvrAMPTUPacket::~ArAMPTUPacket()
+MVREXPORT MvrAMPTUPacket::~MvrAMPTUPacket()
 {
 
 }
 
-AREXPORT void MvrAMPTUPacket::byteToBuf(MvrTypes::Byte val)
+MVREXPORT void MvrAMPTUPacket::byteToBuf(MvrTypes::Byte val)
 {
   if (myLength + 1 > myMaxLength)
   {
@@ -53,7 +53,7 @@ AREXPORT void MvrAMPTUPacket::byteToBuf(MvrTypes::Byte val)
   ++myLength;
 }
 
-AREXPORT void MvrAMPTUPacket::byte2ToBuf(MvrTypes::Byte2 val)
+MVREXPORT void MvrAMPTUPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 2) > myMaxLength)
   {
@@ -66,7 +66,7 @@ AREXPORT void MvrAMPTUPacket::byte2ToBuf(MvrTypes::Byte2 val)
   ++myLength;
 }
 
-AREXPORT void MvrAMPTUPacket::finalizePacket(void)
+MVREXPORT void MvrAMPTUPacket::finalizePacket(void)
 {
   int length = myLength;
   myLength = 0;
@@ -82,7 +82,7 @@ AREXPORT void MvrAMPTUPacket::finalizePacket(void)
    packet has to know what the number is.
    @return the unit number this packet has
 */
-AREXPORT unsigned char MvrAMPTUPacket::getUnitNumber(void)
+MVREXPORT unsigned char MvrAMPTUPacket::getUnitNumber(void)
 {
   return myUnitNumber;
 }
@@ -94,7 +94,7 @@ AREXPORT unsigned char MvrAMPTUPacket::getUnitNumber(void)
    @param unitNumber the unit number for this packet, this needs to be 0-7
    @return true if the number is acceptable, false otherwise
 */
-AREXPORT bool MvrAMPTUPacket::setUnitNumber(unsigned char unitNumber)
+MVREXPORT bool MvrAMPTUPacket::setUnitNumber(unsigned char unitNumber)
 {
   if (unitNumber > 7)
     return false;
@@ -107,7 +107,7 @@ AREXPORT bool MvrAMPTUPacket::setUnitNumber(unsigned char unitNumber)
    @param robot the robot to attach to
    @param unitNumber the unit number for this packet, this needs to be 0-7
 */
-AREXPORT MvrAMPTU::ArAMPTU(MvrRobot *robot, int unitNumber) :
+MVREXPORT MvrAMPTU::ArAMPTU(MvrRobot *robot, int unitNumber) :
   MvrPTZ(robot)
 {
   myRobot = robot;
@@ -119,11 +119,11 @@ AREXPORT MvrAMPTU::ArAMPTU(MvrRobot *robot, int unitNumber) :
   MvrPTZ::setLimits(150, -150, 90, -90);
 }
 
-AREXPORT MvrAMPTU::~ArAMPTU()
+MVREXPORT MvrAMPTU::~MvrAMPTU()
 {
 }
 
-AREXPORT bool MvrAMPTU::init(void)
+MVREXPORT bool MvrAMPTU::init(void)
 {
   if (!myPacket.setUnitNumber(myUnitNumber))
   {
@@ -147,7 +147,7 @@ AREXPORT bool MvrAMPTU::init(void)
   return true;
 }
 
-AREXPORT bool MvrAMPTU::pan_i(double deg)
+MVREXPORT bool MvrAMPTU::pan_i(double deg)
 {
   if (deg > getMaxPosPan_i())
     deg = getMaxPosPan_i();
@@ -163,7 +163,7 @@ AREXPORT bool MvrAMPTU::pan_i(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::panRel_i(double deg)
+MVREXPORT bool MvrAMPTU::panRel_i(double deg)
 {
   if (deg + myPan > getMaxPosPan_i())
     deg = getMaxPosPan_i() - myPan;
@@ -183,7 +183,7 @@ AREXPORT bool MvrAMPTU::panRel_i(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::tilt_i(double deg)
+MVREXPORT bool MvrAMPTU::tilt_i(double deg)
 {
   if (deg > getMaxPosTilt_i())
     deg = getMaxPosTilt_i();
@@ -199,7 +199,7 @@ AREXPORT bool MvrAMPTU::tilt_i(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::tiltRel_i(double deg)
+MVREXPORT bool MvrAMPTU::tiltRel_i(double deg)
 {
   if (deg + myTilt > getMaxPosTilt_i())
     deg = getMaxPosTilt_i() - myTilt;
@@ -219,7 +219,7 @@ AREXPORT bool MvrAMPTU::tiltRel_i(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::panTilt_i(double panDeg, double tiltDeg)
+MVREXPORT bool MvrAMPTU::panTilt_i(double panDeg, double tiltDeg)
 {
   if (panDeg > getMaxPosPan_i())
     panDeg = getMaxPosPan_i();
@@ -251,7 +251,7 @@ AREXPORT bool MvrAMPTU::panTilt_i(double panDeg, double tiltDeg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::panTiltRel_i(double panDeg, double tiltDeg)
+MVREXPORT bool MvrAMPTU::panTiltRel_i(double panDeg, double tiltDeg)
 {
   if (panDeg + myPan > getMaxPosPan_i())
     panDeg = getMaxPosPan_i() - myPan;
@@ -289,7 +289,7 @@ AREXPORT bool MvrAMPTU::panTiltRel_i(double panDeg, double tiltDeg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::panSlew(double deg)
+MVREXPORT bool MvrAMPTU::panSlew(double deg)
 {
   if (deg > MAX_PAN_SLEW)
     deg = MAX_PAN_SLEW;
@@ -303,7 +303,7 @@ AREXPORT bool MvrAMPTU::panSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::tiltSlew(double deg)
+MVREXPORT bool MvrAMPTU::tiltSlew(double deg)
 {
   if (deg > MAX_TILT_SLEW)
     deg = MAX_TILT_SLEW;
@@ -317,28 +317,28 @@ AREXPORT bool MvrAMPTU::tiltSlew(double deg)
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::pause(void)
+MVREXPORT bool MvrAMPTU::pause(void)
 {
   myPacket.empty();
   myPacket.byteToBuf(MvrAMPTUCommands::PAUSE);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::resume(void)
+MVREXPORT bool MvrAMPTU::resume(void)
 {
   myPacket.empty();
   myPacket.byteToBuf(MvrAMPTUCommands::CONT);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::purge(void)
+MVREXPORT bool MvrAMPTU::purge(void)
 {
   myPacket.empty();
   myPacket.byteToBuf(MvrAMPTUCommands::PURGE);
   return sendPacket(&myPacket);
 }
 
-AREXPORT bool MvrAMPTU::requestStatus(void)
+MVREXPORT bool MvrAMPTU::requestStatus(void)
 {
   myPacket.empty();
   myPacket.byteToBuf(MvrAMPTUCommands::STATUS);

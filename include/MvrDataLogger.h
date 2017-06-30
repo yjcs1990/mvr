@@ -50,13 +50,13 @@ class MvrDataLogger
 {
 public:
   /// Constructor
-  AREXPORT MvrDataLogger(MvrRobot *robot, const char *fileName = NULL);
+  MVREXPORT MvrDataLogger(MvrRobot *robot, const char *fileName = NULL);
   /// Destructor
-  AREXPORT ~ArDataLogger();
+  MVREXPORT ~MvrDataLogger();
   /// Adds the data logger information to the config
-  AREXPORT void addToConfig(MvrConfig *config);
+  MVREXPORT void addToConfig(MvrConfig *config);
   /// Adds a string to the list of options in the raw format
-  AREXPORT void addString(const char *name, MvrTypes::UByte2 maxLen, 
+  MVREXPORT void addString(const char *name, MvrTypes::UByte2 maxLen, 
 			  MvrFunctor2<char *, MvrTypes::UByte2> *functor);
 
   /// Gets the functor for adding a string (for MvrStringInfoGroup)
@@ -65,9 +65,9 @@ public:
                      getAddStringFunctor(void) { return &myAddStringFunctor; }
 
 protected:
-  AREXPORT void connectCallback(void);
-  AREXPORT bool processFile(char *errorBuffer, size_t errorBufferLen);
-  AREXPORT void userTask(void);
+  MVREXPORT void connectCallback(void);
+  MVREXPORT bool processFile(char *errorBuffer, size_t errorBufferLen);
+  MVREXPORT void userTask(void);
   MvrRobot *myRobot;
   MvrTime myLastLogged;
   MvrConfig *myConfig;

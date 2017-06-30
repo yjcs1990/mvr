@@ -82,7 +82,7 @@ class MvrLaserConnector
 {
 public:
   /// Constructor that takes argument parser
-  AREXPORT MvrLaserConnector(
+  MVREXPORT MvrLaserConnector(
 	  MvrArgumentParser *parser, 
 	  MvrRobot *robot, MvrRobotConnector *robotConnector,
 	  bool autoParseArgs = true,
@@ -90,42 +90,42 @@ public:
 	  MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
 	  MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
   /// Destructor
-  AREXPORT ~ArLaserConnector(void);
+  MVREXPORT ~MvrLaserConnector(void);
   /// Connects all the lasers the robot has that should be auto connected
-  AREXPORT bool connectLasers(bool continueOnFailedConnect = false,
+  MVREXPORT bool connectLasers(bool continueOnFailedConnect = false,
 			      bool addConnectedLasersToRobot = true,
 			      bool addAllLasersToRobot = false,
 			      bool turnOnLasers = true,
 			      bool powerCycleLaserOnFailedConnect = true,
 			      int *failedOnLaser = NULL);
   /// Sets up a laser to be connected
-  AREXPORT bool setupLaser(MvrLaser *laser, 
+  MVREXPORT bool setupLaser(MvrLaser *laser, 
 			   int laserNumber = 1);
   /// Connects the laser synchronously (will take up to a minute)
-  AREXPORT bool connectLaser(MvrLaser *laser,
+  MVREXPORT bool connectLaser(MvrLaser *laser,
 			     int laserNumber = 1,
 			     bool forceConnection = true);
   /// Adds a laser so parsing will get it
-  AREXPORT bool addLaser(MvrLaser *laser,
+  MVREXPORT bool addLaser(MvrLaser *laser,
 			 int laserNumber = 1);
   /// Adds a laser for parsing but where connectLaser will be called later
-  AREXPORT bool addPlaceholderLaser(MvrLaser *placeholderLaser,
+  MVREXPORT bool addPlaceholderLaser(MvrLaser *placeholderLaser,
 				    int laserNumber = 1,
 				    bool takeOwnershipOfPlaceholder = false);
   /// Function to parse the arguments given in the constructor
-  AREXPORT bool parseArgs(void);
+  MVREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(MvrArgumentParser *parser);
+  MVREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the command-line options available to the user
-  AREXPORT void logOptions(void) const;
+  MVREXPORT void logOptions(void) const;
   /// Internal function to get the laser (only useful between parseArgs and connectLasers)
-  AREXPORT MvrLaser *getLaser(int laserNumber);
+  MVREXPORT MvrLaser *getLaser(int laserNumber);
 
   /// Internal function to replace the laser (only useful between parseArgs and connectLasers) but not the laser data
-  AREXPORT bool replaceLaser(MvrLaser *laser, int laserNumber);
+  MVREXPORT bool replaceLaser(MvrLaser *laser, int laserNumber);
 
   /// Log all currently set paramter values
-  AREXPORT void logLaserData();
+  MVREXPORT void logLaserData();
   
 protected:
   /// Class that holds information about the laser data
@@ -223,10 +223,10 @@ protected:
   std::map<int, LaserData *> myLasers;
   
   /// Parses the laser arguments
-  AREXPORT bool parseLaserArgs(MvrArgumentParser *parser, 
+  MVREXPORT bool parseLaserArgs(MvrArgumentParser *parser, 
 			       LaserData *laserData);
   /// Logs the laser command line option help text. 
-  AREXPORT void logLaserOptions(LaserData *laserdata, bool header = true, bool metaOpts = true) const;
+  MVREXPORT void logLaserOptions(LaserData *laserdata, bool header = true, bool metaOpts = true) const;
   // Sets the laser parameters
   bool internalConfigureLaser(LaserData *laserData);
 

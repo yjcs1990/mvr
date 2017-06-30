@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 //#define DEBUGRANGEFILTER
 
-AREXPORT MvrLaserFilter::ArLaserFilter(
+MVREXPORT MvrLaserFilter::ArLaserFilter(
 	ArLaser *laser, const char *name) :
   MvrLaser(laser->getLaserNumber(),
 	  name != NULL && name[0] != '\0' ? name : laser->getName(), 
@@ -150,7 +150,7 @@ AREXPORT MvrLaserFilter::ArLaserFilter(
 
 }
 
-AREXPORT MvrLaserFilter::~ArLaserFilter()
+MVREXPORT MvrLaserFilter::~MvrLaserFilter()
 {
   if (myRobot != NULL)
   {
@@ -159,7 +159,7 @@ AREXPORT MvrLaserFilter::~ArLaserFilter()
   }
 }
 
-AREXPORT void MvrLaserFilter::addToConfig(MvrConfig *config, 
+MVREXPORT void MvrLaserFilter::addToConfig(MvrConfig *config, 
 					       const char *sectionName,
 					       const char *prefix)
 {
@@ -225,7 +225,7 @@ AREXPORT void MvrLaserFilter::addToConfig(MvrConfig *config,
 
 }
 
-AREXPORT void MvrLaserFilter::setRobot(MvrRobot *robot)
+MVREXPORT void MvrLaserFilter::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -498,17 +498,17 @@ bool MvrLaserFilter::checkRanges(int thisReading, int otherReading,
 }
 
 
-AREXPORT int MvrLaserFilter::selfLockDevice(void)
+MVREXPORT int MvrLaserFilter::selfLockDevice(void)
 {
   return lockDevice();
 }
 
-AREXPORT int MvrLaserFilter::selfTryLockDevice(void)
+MVREXPORT int MvrLaserFilter::selfTryLockDevice(void)
 {
   return tryLockDevice();
 }
 
-AREXPORT int MvrLaserFilter::selfUnlockDevice(void)
+MVREXPORT int MvrLaserFilter::selfUnlockDevice(void)
 {
   return unlockDevice();
 }

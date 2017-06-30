@@ -44,34 +44,34 @@ class MvrRatioInputKeydrive
 {
 public:
   /// Constructor
-  AREXPORT MvrRatioInputKeydrive(MvrRobot *robot, MvrActionRatioInput *input, 
+  MVREXPORT MvrRatioInputKeydrive(MvrRobot *robot, MvrActionRatioInput *input, 
 				int priority = 25, double velIncrement = 5);
   /// Destructor
-  AREXPORT virtual ~ArRatioInputKeydrive();
+  MVREXPORT virtual ~MvrRatioInputKeydrive();
   /// Takes the keys this action wants to use to drive
-  AREXPORT void takeKeys(void);
+  MVREXPORT void takeKeys(void);
   /// Gives up the keys this action wants to use to drive
-  AREXPORT void giveUpKeys(void);
+  MVREXPORT void giveUpKeys(void);
   /// Internal, callback for up arrow
-  AREXPORT void up(void);
+  MVREXPORT void up(void);
   /// Internal, callback for down arrow
-  AREXPORT void down(void);
+  MVREXPORT void down(void);
   /// Internal, callback for z
-  AREXPORT void z(void);
+  MVREXPORT void z(void);
   /// Internal, callback for x 
-  AREXPORT void x(void);
+  MVREXPORT void x(void);
   /// Internal, callback for left arrow
-  AREXPORT void left(void);
+  MVREXPORT void left(void);
   /// Internal, callback for right arrow
-  AREXPORT void right(void);
+  MVREXPORT void right(void);
   /// Internal, callback for space key
-  AREXPORT void space(void);
+  MVREXPORT void space(void);
   /// Internal, gets our firecb
-  AREXPORT MvrFunctor *getFireCB(void) { return &myFireCB; }
+  MVREXPORT MvrFunctor *getFireCB(void) { return &myFireCB; }
 protected:
-  AREXPORT void activate(void);
-  AREXPORT void deactivate(void);
-  AREXPORT void fireCallback(void);
+  MVREXPORT void activate(void);
+  MVREXPORT void deactivate(void);
+  MVREXPORT void fireCallback(void);
   MvrFunctorC<ArRatioInputKeydrive> myUpCB;
   MvrFunctorC<ArRatioInputKeydrive> myDownCB;
   MvrFunctorC<ArRatioInputKeydrive> myLeftCB;

@@ -9,7 +9,7 @@
    @param turnAmount degrees at which to turn (deg)
 */
 
-AREXPORT MvrActionAvoidSide::MvrActionAvoidSide(const char *name,
+MVREXPORT MvrActionAvoidSide::MvrActionAvoidSide(const char *name,
 					      double obstacleDistance,
 					      double turnAmount) :
   MvrAction(name, "Avoids side obstacles, ie walls")
@@ -25,12 +25,12 @@ AREXPORT MvrActionAvoidSide::MvrActionAvoidSide(const char *name,
 
 }
 
-AREXPORT MvrActionAvoidSide::~MvrActionAvoidSide()
+MVREXPORT MvrActionAvoidSide::~MvrActionAvoidSide()
 {
 
 }
 
-AREXPORT MvrActionDesired *MvrActionAvoidSide::fire(
+MVREXPORT MvrActionDesired *MvrActionAvoidSide::fire(
 	MvrActionDesired currentDesired)
 {
   double leftDist, rightDist;

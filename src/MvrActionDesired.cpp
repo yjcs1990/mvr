@@ -4,24 +4,24 @@
 
 /* Need to export symbols but can't prior to VS 2010 (The VS 2003 _MSC_VER is version 1310, 2005 is 14xx, 2008 is 15xx, 2010 is 1600)*/
 //#if (_MSC_VER < 1600)
-//#define STATIC_CONST_AREXPORT // defined to nothing
+//#define STATIC_CONST_MVREXPORT // defined to nothing
 //#else
-//#define STATIC_CONST_AREXPORT AREXPORT
+//#define STATIC_CONST_MVREXPORT MVREXPORT
 //#endif
 
-AREXPORT const double MvrActionDesired::NO_STRENGTH = 0.0;
-AREXPORT const double MvrActionDesired::MIN_STRENGTH = .000001;
-AREXPORT const double MvrActionDesired::MAX_STRENGTH = 1.0;
+MVREXPORT const double MvrActionDesired::NO_STRENGTH = 0.0;
+MVREXPORT const double MvrActionDesired::MIN_STRENGTH = .000001;
+MVREXPORT const double MvrActionDesired::MAX_STRENGTH = 1.0;
 
-AREXPORT const double MvrActionDesiredChannel::NO_STRENGTH =
+MVREXPORT const double MvrActionDesiredChannel::NO_STRENGTH =
                                                  MvrActionDesired::NO_STRENGTH;
-AREXPORT const double MvrActionDesiredChannel::MIN_STRENGTH = 
+MVREXPORT const double MvrActionDesiredChannel::MIN_STRENGTH = 
                                                 MvrActionDesired::MIN_STRENGTH;
-AREXPORT const double MvrActionDesiredChannel::MAX_STRENGTH = 
+MVREXPORT const double MvrActionDesiredChannel::MAX_STRENGTH = 
                                                 MvrActionDesired::MAX_STRENGTH;
 
 
-AREXPORT void MvrActionDesired::log(void) const
+MVREXPORT void MvrActionDesired::log(void) const
 {
   // all those maxes and movement parameters
   if (getMaxVelStrength() >= MvrActionDesired::MIN_STRENGTH)
@@ -81,7 +81,7 @@ AREXPORT void MvrActionDesired::log(void) const
 }
 
 
-AREXPORT bool MvrActionDesired::isAnythingDesired(void) const
+MVREXPORT bool MvrActionDesired::isAnythingDesired(void) const
 {
   if (getVelStrength() >= MvrActionDesired::MIN_STRENGTH ||
       getMaxVelStrength() >= MvrActionDesired::MIN_STRENGTH ||
@@ -108,7 +108,7 @@ AREXPORT bool MvrActionDesired::isAnythingDesired(void) const
     return false;
 }
 
-AREXPORT void MvrActionDesired::sanityCheck(const char *actionName)
+MVREXPORT void MvrActionDesired::sanityCheck(const char *actionName)
 {
   myMaxVelDes.checkLowerBound(actionName, "TransMaxVel", 0);
   myMaxNegVelDes.checkUpperBound(actionName, "TransMaxNegVel", 0);

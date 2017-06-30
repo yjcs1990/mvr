@@ -49,9 +49,9 @@ class MvrDeviceConnection
 {
  public:
   /// constructor
-  AREXPORT MvrDeviceConnection();
+  MVREXPORT MvrDeviceConnection();
   /// destructor also forces a close on the connection
-  AREXPORT virtual ~ArDeviceConnection();
+  MVREXPORT virtual ~MvrDeviceConnection();
   /// Reads data from connection
   /**
      Reads data from connection
@@ -61,7 +61,7 @@ class MvrDeviceConnection
      @return number of bytes read, or -1 for failure
      @see write, writePacket
   */
-  AREXPORT virtual int read(const char *data, unsigned int size, 
+  MVREXPORT virtual int read(const char *data, unsigned int size, 
 			    unsigned int msWait = 0) = 0;
   /// Writes data to connection
   /**
@@ -70,7 +70,7 @@ class MvrDeviceConnection
      @return number of bytes written, or -1 for failure
      @see read, write
   */
-  AREXPORT virtual int writePacket(MvrBasePacket *packet)
+  MVREXPORT virtual int writePacket(MvrBasePacket *packet)
     { if (packet == NULL || packet->getLength() == 0) return 0;
     return write(packet->getBuf(), packet->getLength()); }
   /// Writes data to connection
@@ -81,7 +81,7 @@ class MvrDeviceConnection
      @return number of bytes read, or -1 for failure
      @see read, writePacket
   */
-  AREXPORT virtual int write(const char *data, unsigned int size) = 0;
+  MVREXPORT virtual int write(const char *data, unsigned int size) = 0;
   /// Gets the status of the connection, which is one of the enum status
   /**
      Gets the status of the connection, which is one of the enum status.
@@ -90,14 +90,14 @@ class MvrDeviceConnection
      @return the status of the connection
      @see getStatusMessage
   */
-  AREXPORT virtual int getStatus(void) = 0;
+  MVREXPORT virtual int getStatus(void) = 0;
   /// Gets the description string associated with the status
   /** 
       @param messageNumber the int from getStatus you want the string for
       @return the description associated with the status
       @see getStatus
   */
-  AREXPORT const char *getStatusMessage(int messageNumber) const;
+  MVREXPORT const char *getStatusMessage(int messageNumber) const;
 
   /// Opens the connection again, using the values from setLocation or 
   // a previous open
@@ -116,7 +116,7 @@ class MvrDeviceConnection
      @param messageNumber the number returned from the open
      @return the error description associated with the messageNumber
   */
-  AREXPORT virtual const char * getOpenMessage(int messageNumber) = 0;
+  MVREXPORT virtual const char * getOpenMessage(int messageNumber) = 0;
   enum Status { 
       STATUS_NEVER_OPENED = 1, ///< Never opened
       STATUS_OPEN,  ///< Currently open
@@ -130,37 +130,37 @@ class MvrDeviceConnection
       last read in
       @return the time the last read data was read in 
   */
-  AREXPORT virtual MvrTime getTimeRead(int index) = 0;
+  MVREXPORT virtual MvrTime getTimeRead(int index) = 0;
   /// sees if timestamping is really going on or not
   /** @return true if real timestamping is happening, false otherwise */
-  AREXPORT virtual bool isTimeStamping(void) = 0;
+  MVREXPORT virtual bool isTimeStamping(void) = 0;
 
   /// Gets the port name
-  AREXPORT const char *getPortName(void) const;
+  MVREXPORT const char *getPortName(void) const;
   /// Gets the port type
-  AREXPORT const char *getPortType(void) const;
+  MVREXPORT const char *getPortType(void) const;
   
   /// Sets the device type (what this is connecting to)
-  AREXPORT void setDeviceName(const char *deviceName);
+  MVREXPORT void setDeviceName(const char *deviceName);
   /// Gets the device type (what this is connecting to)
-  AREXPORT const char *getDeviceName(void) const;
+  MVREXPORT const char *getDeviceName(void) const;
 
   /// Notifies the device connection that the start of a packet is
   /// trying to be read
-  AREXPORT void debugStartPacket(void);
+  MVREXPORT void debugStartPacket(void);
   /// Notifies the device connection that some bytes were read (should
   /// call with 0 if it read but got no bytes)
-  AREXPORT void debugBytesRead(int bytesRead);
+  MVREXPORT void debugBytesRead(int bytesRead);
   /// Notifies the device connection that the end of a packet was
   /// read, which will cause log messages if set to do so
-  AREXPORT void debugEndPacket(bool goodPacket, int type = 0);
+  MVREXPORT void debugEndPacket(bool goodPacket, int type = 0);
   /// Makes all device connections so that they'll dump data
-  AREXPORT static bool debugShouldLog(bool shouldLog);
+  MVREXPORT static bool debugShouldLog(bool shouldLog);
  protected:
   /// Sets the port name
-  AREXPORT void setPortName(const char *portName);
+  MVREXPORT void setPortName(const char *portName);
   /// Sets the port type
-  AREXPORT void setPortType(const char *portType);
+  MVREXPORT void setPortType(const char *portType);
 
   void buildStrMap(void);
   static bool ourStrMapInited;

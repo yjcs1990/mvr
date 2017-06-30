@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrSerialConnection.h"
 #include "ariaInternal.h"
 
-AREXPORT ArUrg_2_0::ArUrg_2_0(int laserNumber, const char *name) :
+MVREXPORT ArUrg_2_0::ArUrg_2_0(int laserNumber, const char *name) :
   ArLaser(laserNumber, name, 262144),
   mySensorInterpTask(this, &ArUrg_2_0::sensorInterp),
   myAriaExitCB(this, &ArUrg_2_0::disconnect)
@@ -90,7 +90,7 @@ AREXPORT ArUrg_2_0::ArUrg_2_0(int laserNumber, const char *name) :
   //myLogMore = true;
 }
 
-AREXPORT ArUrg_2_0::~ArUrg_2_0()
+MVREXPORT ArUrg_2_0::~MvrUrg_2_0()
 {
   Aria::remExitCallback(&myAriaExitCB);
   if (myRobot != NULL)
@@ -112,7 +112,7 @@ AREXPORT ArUrg_2_0::~ArUrg_2_0()
   unlockDevice();
 }
 
-AREXPORT void ArUrg_2_0::laserSetName(const char *name)
+MVREXPORT void ArUrg_2_0::laserSetName(const char *name)
 {
   myName = name;
   
@@ -124,7 +124,7 @@ AREXPORT void ArUrg_2_0::laserSetName(const char *name)
   ArLaser::laserSetName(getName());
 }
 
-AREXPORT bool ArUrg_2_0::setParams(
+MVREXPORT bool ArUrg_2_0::setParams(
 	double startingDegrees, double endingDegrees,
 	double incrementDegrees, bool flipped)
 {
@@ -166,7 +166,7 @@ AREXPORT bool ArUrg_2_0::setParams(
   return setParamsBySteps(startingStep, endingStep, clusterCount, flipped);
 }
 
-AREXPORT bool ArUrg_2_0::setParamsBySteps(int startingStep, int endingStep, 
+MVREXPORT bool ArUrg_2_0::setParamsBySteps(int startingStep, int endingStep, 
 				      int clusterCount, bool flipped)
 {
   if (startingStep > endingStep || clusterCount < 1)
@@ -293,7 +293,7 @@ void ArUrg_2_0::clear(void)
   myScan = 0;
 }
 
-AREXPORT void ArUrg_2_0::log(void)
+MVREXPORT void ArUrg_2_0::log(void)
 {
   ArLog::log(MvrLog::Normal, "URG %s:", getName());
   ArLog::log(MvrLog::Normal, "Vendor information: %s", myVendor.c_str());
@@ -317,7 +317,7 @@ AREXPORT void ArUrg_2_0::log(void)
   
 }
 
-AREXPORT void ArUrg_2_0::setRobot(MvrRobot *robot)
+MVREXPORT void ArUrg_2_0::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -489,7 +489,7 @@ bool ArUrg_2_0::sendCommandAndRecvStatus(
   return true;
 }
 
-AREXPORT bool ArUrg_2_0::blockingConnect(void)
+MVREXPORT bool ArUrg_2_0::blockingConnect(void)
 {
   if (!getRunning())
     runAsync();
@@ -798,7 +798,7 @@ bool ArUrg_2_0::internalConnect(void)
   return false;
 }
 
-AREXPORT bool ArUrg_2_0::asyncConnect(void)
+MVREXPORT bool ArUrg_2_0::asyncConnect(void)
 {
   myStartConnect = true;
   if (!getRunning())
@@ -806,7 +806,7 @@ AREXPORT bool ArUrg_2_0::asyncConnect(void)
   return true;
 }
 
-AREXPORT bool ArUrg_2_0::disconnect(void)
+MVREXPORT bool ArUrg_2_0::disconnect(void)
 {
   if (!isConnected())
     return true;
@@ -938,7 +938,7 @@ void ArUrg_2_0::sensorInterp(void)
   unlockDevice();
 }
 
-AREXPORT void * ArUrg_2_0::runThread(void *arg)
+MVREXPORT void * ArUrg_2_0::runThread(void *arg)
 {
   while (getRunning())
   {

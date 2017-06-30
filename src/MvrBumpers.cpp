@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param angleRange the range in front and behind the robot which is divided by the number of bumpers and used to detrmine where the sensor readings will be placed.
 */
 
-AREXPORT MvrBumpers::ArBumpers(size_t currentBufferSize, size_t cumulativeBufferSize, 
+MVREXPORT MvrBumpers::ArBumpers(size_t currentBufferSize, size_t cumulativeBufferSize, 
 		     const char *name, int maxSecondsToKeepCurrent, double angleRange) :
   MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000, maxSecondsToKeepCurrent), 
   myProcessCB(this, &ArBumpers::processReadings)
@@ -54,7 +54,7 @@ AREXPORT MvrBumpers::ArBumpers(size_t currentBufferSize, size_t cumulativeBuffer
 			true);
 }
 
-AREXPORT MvrBumpers::~ArBumpers()
+MVREXPORT MvrBumpers::~MvrBumpers()
 {
   if (myRobot != NULL)
     {
@@ -63,7 +63,7 @@ AREXPORT MvrBumpers::~ArBumpers()
     }
 }
 
-AREXPORT void MvrBumpers::setRobot(MvrRobot *robot)
+MVREXPORT void MvrBumpers::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -74,7 +74,7 @@ AREXPORT void MvrBumpers::setRobot(MvrRobot *robot)
 /**
    This function is called every 100 milliseconds.
 */
-AREXPORT void MvrBumpers::processReadings(void)
+MVREXPORT void MvrBumpers::processReadings(void)
 {
   int frontBump;
   int rearBump;
@@ -111,7 +111,7 @@ AREXPORT void MvrBumpers::processReadings(void)
    @param bumpValue This is the value that tells which individual bumper has been triggered
    @param whichBumper This value tells if the front or rear has been triggered
 */
-AREXPORT void MvrBumpers::addBumpToBuffer(int bumpValue, int whichBumper)
+MVREXPORT void MvrBumpers::addBumpToBuffer(int bumpValue, int whichBumper)
 {
   int numBumpers;
   double x;

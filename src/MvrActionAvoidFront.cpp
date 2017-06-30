@@ -16,7 +16,7 @@
    @param useTableIRIfAvail Whether to use the table sensing IR if they are 
    available
 */
-AREXPORT MvrActionAvoidFront::MvrActionAvoidFront(const char *name, 
+MVREXPORT MvrActionAvoidFront::MvrActionAvoidFront(const char *name, 
 						double obstacleDistance,
 						double avoidVelocity,
 						double turnAmount, 
@@ -42,12 +42,12 @@ AREXPORT MvrActionAvoidFront::MvrActionAvoidFront(const char *name,
   myTurning = 0;
 }
 
-AREXPORT MvrActionAvoidFront::~MvrActionAvoidFront()
+MVREXPORT MvrActionAvoidFront::~MvrActionAvoidFront()
 {
 
 }
 
-AREXPORT MvrActionDesired *MvrActionAvoidFront::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *MvrActionAvoidFront::fire(MvrActionDesired currentDesired)
 {
   double dist, angle;
 

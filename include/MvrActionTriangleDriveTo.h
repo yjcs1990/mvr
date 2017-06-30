@@ -73,14 +73,14 @@ class MvrActionTriangleDriveTo : public MvrAction
 {
 public:
   /// Constructor
-  AREXPORT MvrActionTriangleDriveTo(const char *name = "triangleDriveTo", 
+  MVREXPORT MvrActionTriangleDriveTo(const char *name = "triangleDriveTo", 
 				   double finalDistFromVertex = 400,
 				   double approachDistFromVertex = 1000,
 				   double speed = 200, 
 				   double closeDist = 100,
 				   double acquireTurnSpeed = 30);
   /// Destructor
-  AREXPORT virtual ~ArActionTriangleDriveTo();
+  MVREXPORT virtual ~MvrActionTriangleDriveTo();
   /// Sets if we will turn to see if we can acquire the triangle
   void setAcquire(bool acquire = false) { myAcquire = acquire; }
   /// Gets if we will turn to see if we can acquire the triangle
@@ -94,7 +94,7 @@ public:
 			 double angleBetween = 135,
 			 double line2Length = 254)
     { myLine1Length = line1Length; myAngleBetween = angleBetween; myLine2Length = line2Length; }
-  AREXPORT void setParameters(double finalDistFromVertex = 400,
+  MVREXPORT void setParameters(double finalDistFromVertex = 400,
 			      double approachDistFromVertex = 1000,
 			      double speed = 200, 
 			      double closeDist = 100,
@@ -158,21 +158,21 @@ public:
   /// Gets if we've seen the vertex ever for this attempted drive (it gets reset in searching, but that's the only time, so will only be set once an activation by default (unless setAcquire is called)
   bool getVertexSeen(void) { return myVertexSeen; }
   /// Sets the line finder to use
-  AREXPORT void setLineFinder(MvrLineFinder *lineFinder);
+  MVREXPORT void setLineFinder(MvrLineFinder *lineFinder);
   /// Sets the line finder used
-  AREXPORT MvrLineFinder *getLineFinder(void) { return myLineFinder; }
+  MVREXPORT MvrLineFinder *getLineFinder(void) { return myLineFinder; }
   
   /// Sets whether we're logging the driving or not
   void setLogging(bool logging) { myPrinting = logging; }
   /// Gets whether we're logging the driving or not
   bool setLogging(void) { return myPrinting; }
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
-  AREXPORT virtual void setRobot(MvrRobot *robot);
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 
@@ -236,9 +236,9 @@ public:
 #endif // ifndef SWIG
 protected:
   // Find our triangle, Internal function
-  AREXPORT void findTriangle(bool initial, bool goStraight = false);
+  MVREXPORT void findTriangle(bool initial, bool goStraight = false);
   // Finds a pose this dist from the vertex along the line from the vertex
-  AREXPORT MvrPose findPoseFromVertex(double distFromVertex);
+  MVREXPORT MvrPose findPoseFromVertex(double distFromVertex);
   // where the vertex was in encoder coords
   MvrPose myVertex;
 

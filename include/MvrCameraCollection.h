@@ -83,10 +83,10 @@ class MvrCameraCollection
 public:
 	
   /// Constructor
-  AREXPORT MvrCameraCollection();
+  MVREXPORT MvrCameraCollection();
 
   /// Destructor
-	AREXPORT virtual ~ArCameraCollection();
+	MVREXPORT virtual ~MvrCameraCollection();
 	
   // ---------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ public:
    * @return bool true if the camera was successfully added; false,
    * otherwise.
   **/
-  AREXPORT virtual bool addCamera(const char *cameraName,
+  MVREXPORT virtual bool addCamera(const char *cameraName,
                                   const char *cameraType,
                                   const char *displayName,
                                   const char *displayType);
@@ -113,7 +113,7 @@ public:
    * @return bool true if the camera was successfully removed; false, 
    * otherwise.
   **/
-  AREXPORT virtual bool removeCamera(const char *cameraName);
+  MVREXPORT virtual bool removeCamera(const char *cameraName);
 
   /// Adds the specified command to the camera.
   /**
@@ -133,7 +133,7 @@ public:
    * @return bool true if the command was successfully added;
    * false if an error occurred.
   **/
-  AREXPORT virtual bool addCameraCommand(const char *cameraName,
+  MVREXPORT virtual bool addCameraCommand(const char *cameraName,
                                          const char *command,
                                          const char *cameraCommandName,
                                          int requestInterval = -1);
@@ -148,7 +148,7 @@ public:
    * @return bool true if the command was successfully removed;
    * false if an error occurred.
   **/
-  AREXPORT virtual bool removeCameraCommand(const char *cameraName,
+  MVREXPORT virtual bool removeCameraCommand(const char *cameraName,
                                             const char *command);
 
 
@@ -165,7 +165,7 @@ public:
    * @return bool true if the parameter was successfully added to the 
    * camera; false if an error occurred
   **/
-  AREXPORT virtual bool addParameter(const char *cameraName,
+  MVREXPORT virtual bool addParameter(const char *cameraName,
                                      MvrCameraParameterSource *source,
                                      const MvrConfigArg &param);
 
@@ -178,7 +178,7 @@ public:
    * @return bool true if the parameter was successfully removed from the 
    * camera; false if an error occurred
   **/
-  AREXPORT virtual bool removeParameter(const char *cameraName,
+  MVREXPORT virtual bool removeParameter(const char *cameraName,
                                         const char *paramName);
 
   // ---------------------------------------------------------------------------
@@ -188,7 +188,7 @@ public:
    * @param outList the std::list<std::string> into which the names are output;
    * any previous contents of the outList are cleared.
   **/
-  AREXPORT virtual void getCameraNames(std::list<std::string> &outList);
+  MVREXPORT virtual void getCameraNames(std::list<std::string> &outList);
 
 
   /// Returns the type of the specified camera.
@@ -197,7 +197,7 @@ public:
    * @return char * the type of the specified camera; NULL if the camera was 
    * not found in the collection
   **/
-  AREXPORT virtual const char *getCameraType(const char *cameraName);
+  MVREXPORT virtual const char *getCameraType(const char *cameraName);
 
   /// Returns the display name of the specified camera.
   /**
@@ -205,7 +205,7 @@ public:
    * @return char * the string to be displayed as the name of the specified camera; 
    * NULL if the camera was not found in the collection
   **/
-  AREXPORT virtual const char *getDisplayName(const char *cameraName);
+  MVREXPORT virtual const char *getDisplayName(const char *cameraName);
 
   /// Returns the display type of the specified camera.
   /**
@@ -213,7 +213,7 @@ public:
    * @return char * the string to be displayed as the type of the specified camera; 
    * NULL if the camera was not found in the collection
   **/
-  AREXPORT virtual const char *getDisplayType(const char *cameraName);
+  MVREXPORT virtual const char *getDisplayType(const char *cameraName);
 
  // ---------------------------------------------------------------------------
 
@@ -223,7 +223,7 @@ public:
    * @param outList the std::list<std::string> into which the commands are output;
    * any previous contents of the outList are cleared.
   **/
-  AREXPORT virtual void getCameraCommands(const char *cameraName,
+  MVREXPORT virtual void getCameraCommands(const char *cameraName,
                                           std::list<std::string> &outList);
 
   /// Returns the specific camera command (/ network packet) name for the generic command.
@@ -234,7 +234,7 @@ public:
    * command on the specified camera; NULL, if the camera does not support the 
    * generic command
   **/
-  AREXPORT virtual const char *getCommandName(const char *cameraName,
+  MVREXPORT virtual const char *getCommandName(const char *cameraName,
                                               const char *command);
 
   /// Returns the default request interval for the specified camera command.
@@ -244,7 +244,7 @@ public:
    * @return int the default number of milliseconds between command requests;
    * if -1, then the command is not for refreshing data
   **/
-  AREXPORT virtual int getRequestInterval(const char *cameraName,
+  MVREXPORT virtual int getRequestInterval(const char *cameraName,
                                           const char *command);
 
   // ---------------------------------------------------------------------------
@@ -255,7 +255,7 @@ public:
    * @param outList the std::list<std::string> into which the parameter names are 
    * output; any previous contents of the outList are cleared.
   **/
-  AREXPORT virtual void getParameterNames(const char *cameraName,
+  MVREXPORT virtual void getParameterNames(const char *cameraName,
                                           std::list<std::string> &outList);
 
   /// Returns the specified camera parameter.
@@ -265,7 +265,7 @@ public:
    * @param paramOut the MvrConfigArg into which the parameter is copied
    * @return bool true if the parameter was successfully found; false, otherwise.
   **/
-  AREXPORT virtual bool getParameter(const char *cameraName,
+  MVREXPORT virtual bool getParameter(const char *cameraName,
                                      const char *parameterName,
                                      MvrConfigArg &paramOut);
   
@@ -276,20 +276,20 @@ public:
    * previously added to the camera with the addParameter() method
    * @return bool true if the parameter was found and set; false, otherwise.
   **/
-  AREXPORT virtual bool setParameter(const char *cameraName,
+  MVREXPORT virtual bool setParameter(const char *cameraName,
                                      const MvrConfigArg &param);
  
   // ---------------------------------------------------------------------------
 
   /// Returns whether the specified camera is contained in the collection.
-  AREXPORT virtual bool exists(const char *cameraName);
+  MVREXPORT virtual bool exists(const char *cameraName);
 
   /// Returns whether the specified command is defined for a particular camera.
-  AREXPORT virtual bool exists(const char *cameraName,
+  MVREXPORT virtual bool exists(const char *cameraName,
                                const char *command);
 
   /// Returns whether the specified parameter has been defined for a particular camera.
-  AREXPORT virtual bool parameterExists(const char *cameraName,
+  MVREXPORT virtual bool parameterExists(const char *cameraName,
 		  		        const char *paramName);
 
   // ---------------------------------------------------------------------------
@@ -302,7 +302,7 @@ public:
    * (beginning or end)
    * @return bool true if the callback was succesfully added; false, otherwise.
   **/
-  AREXPORT virtual bool addModifiedCB(MvrFunctor *functor,
+  MVREXPORT virtual bool addModifiedCB(MvrFunctor *functor,
                                       MvrListPos::Pos position = MvrListPos::LAST);
 
   /// Removes a callback from the modified notification list.
@@ -310,7 +310,7 @@ public:
    * @param functor the MvrFunctor * to be removed from the notification list
    * @return bool true if the callback was succesfully removed; false, otherwise.
   **/
-  AREXPORT virtual bool removeModifiedCB(MvrFunctor *functor);
+  MVREXPORT virtual bool removeModifiedCB(MvrFunctor *functor);
 
 
   /// Starts an update to the collection.
@@ -320,13 +320,13 @@ public:
    * The endUpdate() method should be called after all of the changes are complete
    * (and then the modified callbacks <em>will</em> be invoked).
   **/
-  AREXPORT virtual void startUpdate();
+  MVREXPORT virtual void startUpdate();
 
   /// Ends an update to the collection.
   /**
    * A call to startUpdate() must eventually be followed by a call to endUpdate().
   **/
-  AREXPORT virtual void endUpdate();
+  MVREXPORT virtual void endUpdate();
 
 
   // ---------------------------------------------------------------------------
@@ -464,7 +464,7 @@ public:
   /// Constructor
   MvrCameraCollectionItem() {};
   /// Destructor
-  virtual ~ArCameraCollectionItem() {};
+  virtual ~MvrCameraCollectionItem() {};
 
   /// Returns the name of the camera handled by this item.
   virtual const char *getCameraName() = 0;
@@ -492,7 +492,7 @@ public:
   /// Constructor
   MvrCameraParameterSource() {};
   /// Destructor
-  ~ArCameraParameterSource() {};
+  ~MvrCameraParameterSource() {};
 
   /// Gets the specified camera parameter.
   virtual bool getParameter(const char *paramName,

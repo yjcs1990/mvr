@@ -76,13 +76,13 @@ class MvrSensorReading
 {
 public:
   /// Constructor, the three args are the physical location of the sensor
-  AREXPORT MvrSensorReading(double xPos = 0.0, double yPos = 0.0, double thPos = 0.0);
+  MVREXPORT MvrSensorReading(double xPos = 0.0, double yPos = 0.0, double thPos = 0.0);
    /// Copy constructor
-  AREXPORT MvrSensorReading(const MvrSensorReading & reading);
+  MVREXPORT MvrSensorReading(const MvrSensorReading & reading);
   /// Assignment operator
-  AREXPORT MvrSensorReading &operator=(const MvrSensorReading &reading);
+  MVREXPORT MvrSensorReading &operator=(const MvrSensorReading &reading);
   /// Destructor
-  AREXPORT virtual ~ArSensorReading();
+  MVREXPORT virtual ~MvrSensorReading();
 
   /// Gets the range from sensor of the reading
   /**
@@ -204,7 +204,7 @@ coordinate system.
     @param ignoreThisReading Set the "ignore" flag for this reading. Data is stored but applications (e.g. navigation) may use this flag to ignore some sensor readings based on robot or user configuration.
     @param extraInt extra device-specific data. @see getExtraInt()
 */
-  AREXPORT void newData(int range, MvrPose robotPose, MvrPose encoderPose,
+  MVREXPORT void newData(int range, MvrPose robotPose, MvrPose encoderPose,
 			ArTransform trans, unsigned int counter, 
 			ArTime timeTaken, bool ignoreThisReading = false,
 			int extraInt = 0);
@@ -212,7 +212,7 @@ coordinate system.
   /**
     @copydoc newData(int, MvrPose, MvrPose, MvrTransform, unsigned int, MvrTime, bool, int)
   */
-  AREXPORT void newData(int sx, int sy, MvrPose robotPose,
+  MVREXPORT void newData(int sx, int sy, MvrPose robotPose,
 			ArPose encoderPose,
 			ArTransform trans, 
 			unsigned int counter,
@@ -221,32 +221,32 @@ coordinate system.
 			int extraInt = 0);
 
   /// Resets the sensors idea of its physical location on the robot
-  AREXPORT void resetSensorPosition(double xPos, double yPos, double thPos,
+  MVREXPORT void resetSensorPosition(double xPos, double yPos, double thPos,
 				    bool forceComputation = false);
 
   /// Sets that we should ignore this reading
-  AREXPORT void setIgnoreThisReading(bool ignoreThisReading) 
+  MVREXPORT void setIgnoreThisReading(bool ignoreThisReading) 
     { myIgnoreThisReading = ignoreThisReading; }
 
   /// Sets the extra int
-  AREXPORT void setExtraInt(int extraInt) 
+  MVREXPORT void setExtraInt(int extraInt) 
     { myExtraInt = extraInt; }
 
 
   /// Applies a transform to the reading position, and where it was taken
   /// @internal
-  AREXPORT void applyTransform(MvrTransform trans);
+  MVREXPORT void applyTransform(MvrTransform trans);
   /// Applies a transform to the encoder pose taken
   /// @internal
-  AREXPORT void applyEncoderTransform(MvrTransform trans);
+  MVREXPORT void applyEncoderTransform(MvrTransform trans);
   /// Whether a transform to this reading's position was applied (An adjustment
   /// transform due to robot position and motion, etc. is normally initiated
   /// automatically by the range device class which is providing this sensor
   /// reading.)
-  AREXPORT bool getAdjusted(void) { return myAdjusted; }
+  MVREXPORT bool getAdjusted(void) { return myAdjusted; }
   /// Applies a transform to the reading position, and where it was taken
   /// @internal
-  AREXPORT void setAdjusted(bool adjusted) { myAdjusted = adjusted; }
+  MVREXPORT void setAdjusted(bool adjusted) { myAdjusted = adjusted; }
 protected:
   unsigned int myCounterTaken;
   MvrPose myReading;

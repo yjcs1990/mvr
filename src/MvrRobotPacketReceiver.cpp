@@ -43,7 +43,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param sync2 second byte of the header this receiver will receive, this 
    should be left as the default in nearly all cases, ie don't mess with it
 */
-AREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(bool allocatePackets,
+MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(bool allocatePackets,
 						      unsigned char sync1,
 						      unsigned char sync2) : 
   myPacket(sync1, sync2)
@@ -68,7 +68,7 @@ AREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(bool allocatePackets,
    @param sync2 second byte of the header this receiver will receive, this 
    should be left as the default in nearly all cases, ie don't mess with it
 */
-AREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
+MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
 	ArDeviceConnection *deviceConnection, bool allocatePackets,
 	unsigned char sync1, unsigned char sync2) :
   myPacket(sync1, sync2)
@@ -95,7 +95,7 @@ AREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
    @param tracking if true write log messages for packets received
    @param trackingLogName name to include for packets with tracking log messages
 */
-AREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
+MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
 	ArDeviceConnection *deviceConnection, bool allocatePackets,
 	unsigned char sync1, unsigned char sync2, bool tracking,
 	const char *trackingLogName) :
@@ -110,18 +110,18 @@ AREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
   myPacketReceivedCallback = NULL;
 }
 
-AREXPORT ArRobotPacketReceiver::~ArRobotPacketReceiver() 
+MVREXPORT ArRobotPacketReceiver::~MvrRobotPacketReceiver() 
 {
   
 }
 
-AREXPORT void ArRobotPacketReceiver::setDeviceConnection(
+MVREXPORT void ArRobotPacketReceiver::setDeviceConnection(
 	ArDeviceConnection *deviceConnection)
 {
   myDeviceConn = deviceConnection;
 }
 
-AREXPORT ArDeviceConnection *ArRobotPacketReceiver::getDeviceConnection(void)
+MVREXPORT ArDeviceConnection *ArRobotPacketReceiver::getDeviceConnection(void)
 {
   return myDeviceConn;
 }
@@ -133,7 +133,7 @@ AREXPORT ArDeviceConnection *ArRobotPacketReceiver::getDeviceConnection(void)
     must delete the packet. If allocatePackets is false then the packet object
     will be reused in the next call; the caller must not store or use that packet object.
  */
-AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait)
+MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait)
 {
   ArRobotPacket *packet;
   unsigned char c;
@@ -394,7 +394,7 @@ AREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait
 
 }
 
-AREXPORT void ArRobotPacketReceiver::setPacketReceivedCallback(
+MVREXPORT void ArRobotPacketReceiver::setPacketReceivedCallback(
 	ArFunctor1<ArRobotPacket *> *functor)
 {
   myPacketReceivedCallback = functor;

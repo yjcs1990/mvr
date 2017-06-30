@@ -89,7 +89,7 @@ void MvrGPS_printBuf(FILE *fp, const char *data, int size){  for(int i = 0; i < 
 
 
 
-AREXPORT MvrGPS::ArGPS() :
+MVREXPORT MvrGPS::ArGPS() :
 
 
   // objects
@@ -130,7 +130,7 @@ AREXPORT MvrGPS::ArGPS() :
 
 
 
-AREXPORT MvrGPS::Data::Data() :
+MVREXPORT MvrGPS::Data::Data() :
   latitude(0.0),
   longitude(0.0),
   havePosition(false),
@@ -179,7 +179,7 @@ AREXPORT MvrGPS::Data::Data() :
 
 
 
-AREXPORT bool MvrGPS::connect(unsigned long connectTimeout)
+MVREXPORT bool MvrGPS::connect(unsigned long connectTimeout)
 {
   if (!myDevice)
   {
@@ -204,7 +204,7 @@ AREXPORT bool MvrGPS::connect(unsigned long connectTimeout)
   return true;
 }
 
-AREXPORT bool MvrGPS::waitForData(unsigned long timeout)
+MVREXPORT bool MvrGPS::waitForData(unsigned long timeout)
 {
   MvrTime start;
   start.setToNow();
@@ -219,7 +219,7 @@ AREXPORT bool MvrGPS::waitForData(unsigned long timeout)
 
 
 
-AREXPORT int MvrGPS::read(unsigned long maxTime)
+MVREXPORT int MvrGPS::read(unsigned long maxTime)
 {
   if (!myDevice) return ReadError;
   MvrTime startTime;
@@ -407,12 +407,12 @@ fprintf(stderr, "MvrGPS: XXX GPGSA received\n");
   myData.haveVDOP = readFloatFromStringVec(message, 17, &myData.VDOP);
 }
 
-AREXPORT const char* MvrGPS::getFixTypeName() const 
+MVREXPORT const char* MvrGPS::getFixTypeName() const 
 {
   return getFixTypeName(getFixType());
 }
 
-AREXPORT const char* MvrGPS::getFixTypeName(FixType type) 
+MVREXPORT const char* MvrGPS::getFixTypeName(FixType type) 
 {
   switch (type)
   {
@@ -430,7 +430,7 @@ AREXPORT const char* MvrGPS::getFixTypeName(FixType type)
   }
 }
 
-AREXPORT void MvrGPS::logData() const
+MVREXPORT void MvrGPS::logData() const
 {
   MvrLog::log(MvrLog::Normal, "GPS Fix=%s Num. Satellites=%d Mean SNR=%.4f", getFixTypeName(), getNumSatellitesTracked(), getMeanSNR());
   
@@ -478,12 +478,12 @@ AREXPORT void MvrGPS::logData() const
 
 }
 
-AREXPORT void MvrGPS::printDataLabelsHeader() const 
+MVREXPORT void MvrGPS::printDataLabelsHeader() const 
 {
     printf("Latitude Longitude Speed Altitude CompassHeadingMag/True NumSatellites AvgSNR Lat.Err Lon.Err Alt.Err HDOP VDOP PDOP Fix GPSTimeSec:MSec\n");
 }
 
-AREXPORT void MvrGPS::printData(bool labels) const
+MVREXPORT void MvrGPS::printData(bool labels) const
 {
   if(labels) printf("GPS: ");
   if (!havePosition())
@@ -744,7 +744,7 @@ void MvrGPS::handleGPGST(MvrNMEAParser::Message msg)
   myData.haveAltitudeError = readFloatFromStringVec(message, 8, &(myData.altitudeError));
 }
   
-AREXPORT MvrSimulatedGPS::ArSimulatedGPS(MvrRobot *robot) :
+MVREXPORT MvrSimulatedGPS::ArSimulatedGPS(MvrRobot *robot) :
     MvrGPS(), myHaveDummyPosition(false), mySimStatHandlerCB(this, &ArSimulatedGPS::handleSimStatPacket),
     myRobot(robot)
   {
@@ -752,7 +752,7 @@ AREXPORT MvrSimulatedGPS::ArSimulatedGPS(MvrRobot *robot) :
     myData.fixType = NoFix;   // need to set a position with setDummyPosition() or get data from MobileSim to get a (simulated) fix
   }
 
-AREXPORT void MvrSimulatedGPS::setDummyPosition(MvrArgumentBuilder *args)
+MVREXPORT void MvrSimulatedGPS::setDummyPosition(MvrArgumentBuilder *args)
 {
   double lat = 0;
   double lon = 0;
@@ -831,7 +831,7 @@ bool MvrSimulatedGPS::handleSimStatPacket(MvrRobotPacket *pkt)
   return true;
 }
 
-AREXPORT MvrSimulatedGPS::~ArSimulatedGPS()
+MVREXPORT MvrSimulatedGPS::~MvrSimulatedGPS()
 {
   if(myRobot)
     myRobot->remPacketHandler(&mySimStatHandlerCB);

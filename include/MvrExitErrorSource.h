@@ -43,7 +43,7 @@ public:
   MvrExitErrorSource() {}
 
   /// Destructor
-  virtual ~ArExitErrorSource() {}
+  virtual ~MvrExitErrorSource() {}
 
   /// Returns a textual description of the error source.
   /**

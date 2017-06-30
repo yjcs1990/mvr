@@ -40,7 +40,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 ArStrMap MvrCondition::ourStrMap;
 
 
-AREXPORT MvrCondition::ArCondition() :
+MVREXPORT MvrCondition::ArCondition() :
   myFailedInit(false),
   myCond(),
   myMutex(false)
@@ -66,18 +66,18 @@ AREXPORT MvrCondition::ArCondition() :
   ourStrMap[STATUS_MUTEX_FAILED]="The underlying mutex failed in some fashion";
 }
 
-AREXPORT MvrCondition::~ArCondition()
+MVREXPORT MvrCondition::~MvrCondition()
 {
   int ret;
 
   ret=pthread_cond_destroy(&myCond);
   if (ret == EBUSY)
-    MvrLog::log(MvrLog::Terse, "MvrCondition::~ArCondition: Trying to destroy a condition that another thread is waiting on.");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::~MvrCondition: Trying to destroy a condition that another thread is waiting on.");
   else if (ret != 0)
-    MvrLog::log(MvrLog::Terse, "MvrCondition::~ArCondition: Unknown error while trying to destroy the condition.");
+    MvrLog::log(MvrLog::Terse, "MvrCondition::~MvrCondition: Unknown error while trying to destroy the condition.");
 }
 
-AREXPORT int MvrCondition::signal()
+MVREXPORT int MvrCondition::signal()
 {
   if (myFailedInit)
   {
@@ -94,7 +94,7 @@ AREXPORT int MvrCondition::signal()
   return(0);
 }
 
-AREXPORT int MvrCondition::broadcast()
+MVREXPORT int MvrCondition::broadcast()
 {
   if (myFailedInit)
   {
@@ -111,7 +111,7 @@ AREXPORT int MvrCondition::broadcast()
   return(0);
 }
 
-AREXPORT int MvrCondition::wait()
+MVREXPORT int MvrCondition::wait()
 {
   int ret;
 
@@ -154,7 +154,7 @@ AREXPORT int MvrCondition::wait()
   return(0);
 }
 
-AREXPORT int MvrCondition::timedWait(unsigned int msecs)
+MVREXPORT int MvrCondition::timedWait(unsigned int msecs)
 {
   int ret;
   int retUnlock;
@@ -247,7 +247,7 @@ AREXPORT int MvrCondition::timedWait(unsigned int msecs)
   return(0);
 }
 
-AREXPORT const char * MvrCondition::getError(int messageNumber) const
+MVREXPORT const char * MvrCondition::getError(int messageNumber) const
 {
   MvrStrMap::const_iterator it;
   if ((it = ourStrMap.find(messageNumber)) != ourStrMap.end())

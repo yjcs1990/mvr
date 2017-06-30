@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     if false we'll follow the joystick input no matter what
 **/
 
-AREXPORT MvrActionRobotJoydrive::ArActionRobotJoydrive(
+MVREXPORT MvrActionRobotJoydrive::ArActionRobotJoydrive(
 	const char *name, bool requireDeadmanPushed) :
   MvrAction(name, "This action reads the joystick on the robot and sets the translational and rotational velocities based on this."),
   myHandleJoystickPacketCB(this, &ArActionRobotJoydrive::handleJoystickPacket),
@@ -49,12 +49,12 @@ AREXPORT MvrActionRobotJoydrive::ArActionRobotJoydrive(
   myHandleJoystickPacketCB.setName("MvrActionRobotJoydrive");
 }
 
-AREXPORT MvrActionRobotJoydrive::~ArActionRobotJoydrive()
+MVREXPORT MvrActionRobotJoydrive::~MvrActionRobotJoydrive()
 {
 
 }
 
-AREXPORT void MvrActionRobotJoydrive::setRobot(MvrRobot *robot)
+MVREXPORT void MvrActionRobotJoydrive::setRobot(MvrRobot *robot)
 {
   MvrAction::setRobot(robot);
   if (myRobot != NULL)
@@ -66,12 +66,12 @@ AREXPORT void MvrActionRobotJoydrive::setRobot(MvrRobot *robot)
   }
 }
 
-AREXPORT void MvrActionRobotJoydrive::connectCallback(void)
+MVREXPORT void MvrActionRobotJoydrive::connectCallback(void)
 {
   myRobot->comInt(MvrCommands::JOYINFO, 2);
 }
 
-AREXPORT bool MvrActionRobotJoydrive::handleJoystickPacket(
+MVREXPORT bool MvrActionRobotJoydrive::handleJoystickPacket(
 	ArRobotPacket *packet)
 {
   if (packet->getID() != 0xF8)
@@ -89,7 +89,7 @@ AREXPORT bool MvrActionRobotJoydrive::handleJoystickPacket(
   return true;
 }
 
-AREXPORT MvrActionDesired *ArActionRobotJoydrive::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *ArActionRobotJoydrive::fire(MvrActionDesired currentDesired)
 {
   bool printing = false;
   myDesired.reset();

@@ -37,7 +37,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param maxSecondsToKeepCurrent How long to keep readings in the current buffer
 */
 
-AREXPORT MvrIRs::ArIRs(size_t currentBufferSize, size_t cumulativeBufferSize, 
+MVREXPORT MvrIRs::ArIRs(size_t currentBufferSize, size_t cumulativeBufferSize, 
 		      const char *name, int maxSecondsToKeepCurrent) :
   MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000, maxSecondsToKeepCurrent), 
   myProcessCB(this, &ArIRs::processReadings)
@@ -48,7 +48,7 @@ AREXPORT MvrIRs::ArIRs(size_t currentBufferSize, size_t cumulativeBufferSize,
 			true);
 }
 
-AREXPORT MvrIRs::~ArIRs()
+MVREXPORT MvrIRs::~MvrIRs()
 {
   if (myRobot != NULL)
     {
@@ -57,7 +57,7 @@ AREXPORT MvrIRs::~ArIRs()
     }
 }
 
-AREXPORT void MvrIRs::setRobot(MvrRobot *robot)
+MVREXPORT void MvrIRs::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
@@ -75,7 +75,7 @@ AREXPORT void MvrIRs::setRobot(MvrRobot *robot)
 /**
    This function is called every 100 milliseconds.
 */
-AREXPORT void MvrIRs::processReadings(void)
+MVREXPORT void MvrIRs::processReadings(void)
 {
   MvrUtil::BITS bit;
   if(myParams.haveTableSensingIR())

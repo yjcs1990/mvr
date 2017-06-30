@@ -38,7 +38,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 @param buf buffer packet uses, if NULL, instance will allocate memory
 @param footerLength length of the footer following the data
 */
-AREXPORT MvrBasePacket::ArBasePacket(MvrTypes::UByte2 bufferSize, 
+MVREXPORT MvrBasePacket::ArBasePacket(MvrTypes::UByte2 bufferSize, 
                                     MvrTypes::UByte2 headerLength,
                                     char * buf,
                                     MvrTypes::UByte2 footerLength) 
@@ -63,7 +63,7 @@ AREXPORT MvrBasePacket::ArBasePacket(MvrTypes::UByte2 bufferSize,
 }
 
 
-AREXPORT MvrBasePacket::ArBasePacket(const MvrBasePacket &other) :
+MVREXPORT MvrBasePacket::ArBasePacket(const MvrBasePacket &other) :
   myHeaderLength(other.myHeaderLength),
   myFooterLength(other.myFooterLength),
   myMaxLength(other.myLength),
@@ -78,7 +78,7 @@ AREXPORT MvrBasePacket::ArBasePacket(const MvrBasePacket &other) :
   }
 }
 
-AREXPORT MvrBasePacket &ArBasePacket::operator=(const MvrBasePacket &other)
+MVREXPORT MvrBasePacket &ArBasePacket::operator=(const MvrBasePacket &other)
 {
   if (this != &other) {
 
@@ -109,14 +109,14 @@ AREXPORT MvrBasePacket &ArBasePacket::operator=(const MvrBasePacket &other)
 
 
 
-AREXPORT MvrBasePacket::~ArBasePacket()
+MVREXPORT MvrBasePacket::~MvrBasePacket()
 {
   if (myOwnMyBuf && myBuf != NULL)
     delete[] myBuf;
 }
 
 
-AREXPORT void MvrBasePacket::setBuf(char *buf, MvrTypes::UByte2 bufferSize)
+MVREXPORT void MvrBasePacket::setBuf(char *buf, MvrTypes::UByte2 bufferSize)
 {
   if (myOwnMyBuf) 
   {
@@ -127,7 +127,7 @@ AREXPORT void MvrBasePacket::setBuf(char *buf, MvrTypes::UByte2 bufferSize)
   myMaxLength = bufferSize;
 }
 
-AREXPORT void MvrBasePacket::setMaxLength(MvrTypes::UByte2 bufferSize)
+MVREXPORT void MvrBasePacket::setMaxLength(MvrTypes::UByte2 bufferSize)
 {
   if (myMaxLength >= bufferSize)
     return;
@@ -143,7 +143,7 @@ AREXPORT void MvrBasePacket::setMaxLength(MvrTypes::UByte2 bufferSize)
   myOwnMyBuf = true;
 }
 
-AREXPORT bool MvrBasePacket::setLength(MvrTypes::UByte2 length)
+MVREXPORT bool MvrBasePacket::setLength(MvrTypes::UByte2 length)
 {
   if (myOwnMyBuf && length > myMaxLength)
     return false;
@@ -152,12 +152,12 @@ AREXPORT bool MvrBasePacket::setLength(MvrTypes::UByte2 length)
   return true;
 }
 
-AREXPORT void MvrBasePacket::setReadLength(MvrTypes::UByte2 readLength)
+MVREXPORT void MvrBasePacket::setReadLength(MvrTypes::UByte2 readLength)
 {
   myReadLength = readLength;
 }
 
-AREXPORT bool MvrBasePacket::setHeaderLength(MvrTypes::UByte2 length)
+MVREXPORT bool MvrBasePacket::setHeaderLength(MvrTypes::UByte2 length)
 {
   if (myOwnMyBuf && length > myMaxLength)
     return false;
@@ -171,7 +171,7 @@ Sets the length read back to the header length so the packet can be
 reread using the other methods
 */
 
-AREXPORT void MvrBasePacket::resetRead(void)
+MVREXPORT void MvrBasePacket::resetRead(void)
 {
   myReadLength = myHeaderLength;
   resetValid();
@@ -201,13 +201,13 @@ ArTypes::UByte2 MvrBasePacket::getDataLength(void) const {
 Sets the packet length back to be the packets header length again
 */
 
-AREXPORT void MvrBasePacket::empty(void)
+MVREXPORT void MvrBasePacket::empty(void)
 {
   myLength = myHeaderLength;
   resetValid();
 }
 
-AREXPORT bool MvrBasePacket::isNextGood(int bytes)
+MVREXPORT bool MvrBasePacket::isNextGood(int bytes)
 {
   if (bytes <= 0)
     return false;
@@ -222,7 +222,7 @@ AREXPORT bool MvrBasePacket::isNextGood(int bytes)
 }
 
 
-AREXPORT bool MvrBasePacket::hasWriteCapacity(int bytes)
+MVREXPORT bool MvrBasePacket::hasWriteCapacity(int bytes)
 {
   if (bytes < 0) {
     MvrLog::log(MvrLog::Normal, "MvrBasePacket::hasWriteCapacity(%d) cannot write negative amount",
@@ -247,7 +247,7 @@ AREXPORT bool MvrBasePacket::hasWriteCapacity(int bytes)
  * data into the packet, or to read too much data from the packet.  Calls to
  * empty() and resetRead() will restore the valid state.
 **/
-AREXPORT bool MvrBasePacket::isValid(void)
+MVREXPORT bool MvrBasePacket::isValid(void)
 {
   return myIsValid;
 
@@ -260,22 +260,22 @@ AREXPORT bool MvrBasePacket::isValid(void)
  * fails (and isValid() returns false), then a smaller string may be written
  * instead.
 **/
-AREXPORT void MvrBasePacket::resetValid()
+MVREXPORT void MvrBasePacket::resetValid()
 {
   myIsValid = true;
 }
 
-AREXPORT const char *ArBasePacket::getBuf(void) const
+MVREXPORT const char *ArBasePacket::getBuf(void) const
 {
   return myBuf;
 }
 
-AREXPORT char *ArBasePacket::getBuf(void) 
+MVREXPORT char *ArBasePacket::getBuf(void) 
 {
   return myBuf;
 }
 
-AREXPORT void MvrBasePacket::byteToBuf(MvrTypes::Byte val)
+MVREXPORT void MvrBasePacket::byteToBuf(MvrTypes::Byte val)
 {
   if (!hasWriteCapacity(1)) {
     return;
@@ -285,7 +285,7 @@ AREXPORT void MvrBasePacket::byteToBuf(MvrTypes::Byte val)
   myLength += 1;
 }
 
-AREXPORT void MvrBasePacket::byte2ToBuf(MvrTypes::Byte2 val)
+MVREXPORT void MvrBasePacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if (!hasWriteCapacity(2)) {
     return;
@@ -299,7 +299,7 @@ AREXPORT void MvrBasePacket::byte2ToBuf(MvrTypes::Byte2 val)
   myLength += 2;
 }
 
-AREXPORT void MvrBasePacket::byte4ToBuf(MvrTypes::Byte4 val)
+MVREXPORT void MvrBasePacket::byte4ToBuf(MvrTypes::Byte4 val)
 {
   if (!hasWriteCapacity(4)) {
     return;
@@ -318,7 +318,7 @@ AREXPORT void MvrBasePacket::byte4ToBuf(MvrTypes::Byte4 val)
 
 }
 
-AREXPORT void MvrBasePacket::byte8ToBuf(MvrTypes::Byte8 val)
+MVREXPORT void MvrBasePacket::byte8ToBuf(MvrTypes::Byte8 val)
 {
   if (!hasWriteCapacity(8)) {
     return;
@@ -346,7 +346,7 @@ AREXPORT void MvrBasePacket::byte8ToBuf(MvrTypes::Byte8 val)
 
 }
 
-AREXPORT void MvrBasePacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void MvrBasePacket::uByteToBuf(MvrTypes::UByte val)
 {
   if (!hasWriteCapacity(1)) {
     return;
@@ -355,7 +355,7 @@ AREXPORT void MvrBasePacket::uByteToBuf(MvrTypes::UByte val)
   myLength += 1;
 }
 
-AREXPORT void MvrBasePacket::uByte2ToBuf(MvrTypes::UByte2 val)
+MVREXPORT void MvrBasePacket::uByte2ToBuf(MvrTypes::UByte2 val)
 {
   if (!hasWriteCapacity(2)) {
     return;
@@ -369,7 +369,7 @@ AREXPORT void MvrBasePacket::uByte2ToBuf(MvrTypes::UByte2 val)
   myLength += 2;
 }
 
-AREXPORT void MvrBasePacket::uByte4ToBuf(MvrTypes::UByte4 val)
+MVREXPORT void MvrBasePacket::uByte4ToBuf(MvrTypes::UByte4 val)
 {
   if (!hasWriteCapacity(4)) {
     return;
@@ -397,7 +397,7 @@ AREXPORT void MvrBasePacket::uByte4ToBuf(MvrTypes::UByte4 val)
   myLength += 4;
 }
 
-AREXPORT void MvrBasePacket::uByte8ToBuf(MvrTypes::UByte8 val)
+MVREXPORT void MvrBasePacket::uByte8ToBuf(MvrTypes::UByte8 val)
 {
   if (!hasWriteCapacity(8)) {
     return;
@@ -434,7 +434,7 @@ AREXPORT void MvrBasePacket::uByte8ToBuf(MvrTypes::UByte8 val)
 /**
 @param str string to copy into buffer
 */
-AREXPORT void MvrBasePacket::strToBuf(const char *str)
+MVREXPORT void MvrBasePacket::strToBuf(const char *str)
 {
   if (str == NULL) {
     str = "";
@@ -456,7 +456,7 @@ AREXPORT void MvrBasePacket::strToBuf(const char *str)
 @param str character array to copy into the packet buffer
 @param length how many characters to copy from str into the packet buffer
 */
-AREXPORT void MvrBasePacket::strNToBuf(const char *str, int length)
+MVREXPORT void MvrBasePacket::strNToBuf(const char *str, int length)
 {
   // Do not perform bounds checking because it breaks existing code.
 
@@ -472,7 +472,7 @@ If string ends before length it pads the string with NUL ('\\0') characters.
 @param str character array to copy into buffer
 @param length how many bytes to copy from the str into packet
 */
-AREXPORT void MvrBasePacket::strToBufPadded(const char *str, int length)
+MVREXPORT void MvrBasePacket::strToBufPadded(const char *str, int length)
 {
   if (str == NULL) {
     str = "";
@@ -501,7 +501,7 @@ AREXPORT void MvrBasePacket::strToBufPadded(const char *str, int length)
 @param data chacter array to copy into buffer
 @param length how many bytes to copy from data into packet
 */
-AREXPORT void MvrBasePacket::dataToBuf(const char *data, int length)
+MVREXPORT void MvrBasePacket::dataToBuf(const char *data, int length)
 {
   if (data == NULL) {
     MvrLog::log(MvrLog::Normal, "MvrBasePacket::dataToBuf(NULL, %d) cannot add from null address",
@@ -523,7 +523,7 @@ AREXPORT void MvrBasePacket::dataToBuf(const char *data, int length)
 @param data chacter array to copy into buffer
 @param length how many bytes to copy from data into packet
 */
-AREXPORT void MvrBasePacket::dataToBuf(const unsigned char *data, int length)
+MVREXPORT void MvrBasePacket::dataToBuf(const unsigned char *data, int length)
 {
   if (data == NULL) {
     MvrLog::log(MvrLog::Normal, "MvrBasePacket::dataToBuf(NULL, %d) cannot add from null address",
@@ -541,7 +541,7 @@ AREXPORT void MvrBasePacket::dataToBuf(const unsigned char *data, int length)
 }
 
 
-AREXPORT MvrTypes::Byte MvrBasePacket::bufToByte(void)
+MVREXPORT MvrTypes::Byte MvrBasePacket::bufToByte(void)
 {
   MvrTypes::Byte ret=0;
 
@@ -554,7 +554,7 @@ AREXPORT MvrTypes::Byte MvrBasePacket::bufToByte(void)
   return(ret);
 }
 
-AREXPORT MvrTypes::Byte2 MvrBasePacket::bufToByte2(void)
+MVREXPORT MvrTypes::Byte2 MvrBasePacket::bufToByte2(void)
 {
   MvrTypes::Byte2 ret=0;
   unsigned char c1, c2;
@@ -570,7 +570,7 @@ AREXPORT MvrTypes::Byte2 MvrBasePacket::bufToByte2(void)
   return ret;
 }
 
-AREXPORT MvrTypes::Byte4 MvrBasePacket::bufToByte4(void)
+MVREXPORT MvrTypes::Byte4 MvrBasePacket::bufToByte4(void)
 {
   MvrTypes::Byte4 ret=0;
   unsigned char c1, c2, c3, c4;
@@ -588,7 +588,7 @@ AREXPORT MvrTypes::Byte4 MvrBasePacket::bufToByte4(void)
   return ret;
 }
 
-AREXPORT MvrTypes::Byte8 MvrBasePacket::bufToByte8(void)
+MVREXPORT MvrTypes::Byte8 MvrBasePacket::bufToByte8(void)
 {
   MvrTypes::Byte8 ret=0;
   unsigned char c1, c2, c3, c4, c5, c6, c7, c8;
@@ -610,7 +610,7 @@ AREXPORT MvrTypes::Byte8 MvrBasePacket::bufToByte8(void)
   return ret;
 }
 
-AREXPORT MvrTypes::UByte MvrBasePacket::bufToUByte(void)
+MVREXPORT MvrTypes::UByte MvrBasePacket::bufToUByte(void)
 {
   MvrTypes::UByte ret=0;
 
@@ -623,7 +623,7 @@ AREXPORT MvrTypes::UByte MvrBasePacket::bufToUByte(void)
   return(ret);
 }
 
-AREXPORT MvrTypes::UByte2 MvrBasePacket::bufToUByte2(void)
+MVREXPORT MvrTypes::UByte2 MvrBasePacket::bufToUByte2(void)
 {
   MvrTypes::UByte2 ret=0;
   unsigned char c1, c2;
@@ -639,7 +639,7 @@ AREXPORT MvrTypes::UByte2 MvrBasePacket::bufToUByte2(void)
   return ret;
 }
 
-AREXPORT MvrTypes::UByte4 MvrBasePacket::bufToUByte4(void)
+MVREXPORT MvrTypes::UByte4 MvrBasePacket::bufToUByte4(void)
 {
   /// MPL 2013_10_23 this was Byte4 not UByte4
   //ArTypes::Byte4 ret=0;
@@ -659,7 +659,7 @@ AREXPORT MvrTypes::UByte4 MvrBasePacket::bufToUByte4(void)
   return ret;
 }
 
-AREXPORT MvrTypes::UByte8 MvrBasePacket::bufToUByte8(void)
+MVREXPORT MvrTypes::UByte8 MvrBasePacket::bufToUByte8(void)
 {
   MvrTypes::UByte8 ret=0;
   unsigned char c1, c2, c3, c4, c5, c6, c7, c8;
@@ -692,7 +692,7 @@ if @a len bytes are copied).
 @param buf Destination buffer
 @param len Maximum number of characters to copy into the destination buffer
 */
-AREXPORT void MvrBasePacket::bufToStr(char *buf, int len)
+MVREXPORT void MvrBasePacket::bufToStr(char *buf, int len)
 {
    if (buf == NULL) {
     MvrLog::log(MvrLog::Normal, "MvrBasePacket::bufToStr(NULL, %d) cannot write to null address",
@@ -745,7 +745,7 @@ AREXPORT void MvrBasePacket::bufToStr(char *buf, int len)
 }
 
 /// Note the string obtained from the packet can have at most 512 characters.
-AREXPORT std::string MvrBasePacket::bufToString()
+MVREXPORT std::string MvrBasePacket::bufToString()
 {
   char buf[512];
   bufToStr(buf, 512);
@@ -758,7 +758,7 @@ from packet
 @param data character array to copy the data into
 @param length number of bytes to copy into data
 */
-AREXPORT void MvrBasePacket::bufToData(char *data, int length)
+MVREXPORT void MvrBasePacket::bufToData(char *data, int length)
 {
   if (data == NULL) {
     MvrLog::log(MvrLog::Normal, "MvrBasePacket::bufToData(NULL, %d) cannot write to null address",
@@ -781,7 +781,7 @@ from packet
 @param data character array to copy the data into
 @param length number of bytes to copy into data
 */
-AREXPORT void MvrBasePacket::bufToData(unsigned char *data, int length)
+MVREXPORT void MvrBasePacket::bufToData(unsigned char *data, int length)
 {
   if (data == NULL) {
     MvrLog::log(MvrLog::Normal, "MvrBasePacket::bufToData(NULL, %d) cannot write to null address",
@@ -801,7 +801,7 @@ Copies the given packets buffer into the buffer of this packet, also
 sets this length and readlength to what the given packet has
 @param packet the packet to duplicate
 */
-AREXPORT void MvrBasePacket::duplicatePacket(MvrBasePacket *packet)
+MVREXPORT void MvrBasePacket::duplicatePacket(MvrBasePacket *packet)
 {
   myLength = packet->getLength();
   myReadLength = packet->getReadLength();
@@ -816,7 +816,7 @@ AREXPORT void MvrBasePacket::duplicatePacket(MvrBasePacket *packet)
   memcpy(myBuf, packet->getBuf(), myLength);
 }
 
-AREXPORT void MvrBasePacket::log(void)
+MVREXPORT void MvrBasePacket::log(void)
 {
   int i;
   MvrLog::log(MvrLog::Terse, "Packet: (length = %i)", myLength);
@@ -826,7 +826,7 @@ AREXPORT void MvrBasePacket::log(void)
   MvrLog::log(MvrLog::Terse, "\n");
 }
 
-AREXPORT void MvrBasePacket::printHex(void)
+MVREXPORT void MvrBasePacket::printHex(void)
 {
   int i;
   MvrLog::log(MvrLog::Terse, "Packet: (length = %i)", myLength);

@@ -41,13 +41,13 @@ class MvrRVisionPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrRVisionPacket(MvrTypes::UByte2 bufferSize = 15);
-  AREXPORT virtual ~ArRVisionPacket();
+  MVREXPORT MvrRVisionPacket(MvrTypes::UByte2 bufferSize = 15);
+  MVREXPORT virtual ~MvrRVisionPacket();
   
-  AREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
-  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
+  MVREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
+  MVREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
   /// This is a new function, read the details before you try to use it
-  AREXPORT void byte2ToBufAtPos(MvrTypes::Byte2 val, MvrTypes::UByte2 pose);
+  MVREXPORT void byte2ToBufAtPos(MvrTypes::Byte2 val, MvrTypes::UByte2 pose);
 };
 
 //class MvrRobot;
@@ -64,11 +64,11 @@ public:
 class MvrRVisionPTZ : public MvrPTZ
 {
 public:
-  AREXPORT MvrRVisionPTZ(MvrRobot *robot);
-  AREXPORT virtual ~ArRVisionPTZ();
+  MVREXPORT MvrRVisionPTZ(MvrRobot *robot);
+  MVREXPORT virtual ~MvrRVisionPTZ();
   
-  AREXPORT virtual bool init(void);
-  AREXPORT virtual const char *getTypeName() { return "rvision"; }
+  MVREXPORT virtual bool init(void);
+  MVREXPORT virtual const char *getTypeName() { return "rvision"; }
   /// Set serial port
   /// @since 2.7.6
   void setPort(const char *port)
@@ -76,39 +76,39 @@ public:
 	  mySerialPort = port;
   }
 protected:
-  AREXPORT virtual bool pan_i(double degrees);
-  AREXPORT virtual bool panRel_i(double degrees);
-  AREXPORT virtual bool tilt_i(double degrees);
-  AREXPORT virtual bool tiltRel_i(double degrees);
-  AREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt);
-  AREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt);
+  MVREXPORT virtual bool pan_i(double degrees);
+  MVREXPORT virtual bool panRel_i(double degrees);
+  MVREXPORT virtual bool tilt_i(double degrees);
+  MVREXPORT virtual bool tiltRel_i(double degrees);
+  MVREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt);
+  MVREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt);
 public:
-  AREXPORT virtual bool canZoom(void) const { return true; }
-  AREXPORT virtual bool zoom(int zoomValue);
-  AREXPORT virtual bool zoomRel(int zoomValue);
+  MVREXPORT virtual bool canZoom(void) const { return true; }
+  MVREXPORT virtual bool zoom(int zoomValue);
+  MVREXPORT virtual bool zoomRel(int zoomValue);
 protected:
-  AREXPORT virtual double getPan_i(void) const { return myPan; }
-  AREXPORT virtual double getTilt_i(void) const { return myTilt; }
+  MVREXPORT virtual double getPan_i(void) const { return myPan; }
+  MVREXPORT virtual double getTilt_i(void) const { return myTilt; }
 public:
-  AREXPORT virtual int getZoom(void) const { return myZoom; }
-  //AREXPORT void getRealPanTilt(void);
-  //AREXPORT void getRealZoomPos(void);
+  MVREXPORT virtual int getZoom(void) const { return myZoom; }
+  //MVREXPORT void getRealPanTilt(void);
+  //MVREXPORT void getRealZoomPos(void);
   /*
-  AREXPORT virtual double getMaxPosPan(void) const { return MAX_PAN; }
-  AREXPORT virtual double getMaxNegPan(void) const { return MIN_PAN; }
-  AREXPORT virtual double getMaxPosTilt(void) const { return MAX_TILT; }
-  AREXPORT virtual double getMaxNegTilt(void) const { return MIN_TILT; }
-  AREXPORT virtual int getMaxZoom(void) const { return MAX_ZOOM; }
-  AREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
+  MVREXPORT virtual double getMaxPosPan(void) const { return MAX_PAN; }
+  MVREXPORT virtual double getMaxNegPan(void) const { return MIN_PAN; }
+  MVREXPORT virtual double getMaxPosTilt(void) const { return MAX_TILT; }
+  MVREXPORT virtual double getMaxNegTilt(void) const { return MIN_TILT; }
+  MVREXPORT virtual int getMaxZoom(void) const { return MAX_ZOOM; }
+  MVREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
   */
 
-  AREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
-  AREXPORT virtual bool canGetRealZoom(void) const { return false; }
-  AREXPORT virtual bool canGetFOV(void) { return true; }
+  MVREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
+  MVREXPORT virtual bool canGetRealZoom(void) const { return false; }
+  MVREXPORT virtual bool canGetFOV(void) { return true; }
   /// Gets the field of view at maximum zoom
-  AREXPORT virtual double getFOVAtMaxZoom(void) { return 4.4; }
+  MVREXPORT virtual double getFOVAtMaxZoom(void) { return 4.4; }
   /// Gets the field of view at minimum zoom
-  AREXPORT virtual double getFOVAtMinZoom(void) { return 48.8; }
+  MVREXPORT virtual double getFOVAtMinZoom(void) { return 48.8; }
 
   virtual MvrBasePacket* readPacket(void);
   enum {

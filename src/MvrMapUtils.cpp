@@ -46,7 +46,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 // ArMapId
 // -----------------------------------------------------------------------------
 
-AREXPORT ArMapId::ArMapId() :
+MVREXPORT ArMapId::ArMapId() :
   mySourceName(),
   myFileName(),
   myChecksum(NULL),
@@ -58,7 +58,7 @@ AREXPORT ArMapId::ArMapId() :
 {
 }
 
-AREXPORT ArMapId::ArMapId(const char *sourceName,
+MVREXPORT ArMapId::ArMapId(const char *sourceName,
 						              const char *fileName,
 						              const unsigned char *checksum,
                           size_t checksumLength,
@@ -79,7 +79,7 @@ AREXPORT ArMapId::ArMapId(const char *sourceName,
   }
 }
 
-AREXPORT ArMapId::ArMapId(const ArMapId &other) :
+MVREXPORT ArMapId::ArMapId(const ArMapId &other) :
   mySourceName(other.mySourceName),
   myFileName(other.myFileName),
   myChecksum(NULL),
@@ -95,7 +95,7 @@ AREXPORT ArMapId::ArMapId(const ArMapId &other) :
   }
 }
 
-AREXPORT ArMapId &ArMapId::operator=(const ArMapId &other)
+MVREXPORT ArMapId &ArMapId::operator=(const ArMapId &other)
 {
   if (&other != this) {
 
@@ -122,7 +122,7 @@ AREXPORT ArMapId &ArMapId::operator=(const ArMapId &other)
   return *this;
 }
 
-AREXPORT ArMapId::~ArMapId()
+MVREXPORT ArMapId::~MvrMapId()
 {
   delete [] myChecksum;
   myChecksum = NULL;
@@ -133,7 +133,7 @@ AREXPORT ArMapId::~ArMapId()
   myDisplayChecksumLength = 0;
 }
 
-AREXPORT bool ArMapId::isNull() const
+MVREXPORT bool ArMapId::isNull() const
 {
   // TODO Any need to check others?
   bool b = (MvrUtil::isStrEmpty(mySourceName.c_str()) &&
@@ -142,7 +142,7 @@ AREXPORT bool ArMapId::isNull() const
   return b; 
 }
   
-AREXPORT void ArMapId::clear()
+MVREXPORT void ArMapId::clear()
 {
   mySourceName = "";
   myFileName = "";
@@ -161,27 +161,27 @@ AREXPORT void ArMapId::clear()
 } // end method clear
 
 
-AREXPORT const char *ArMapId::getSourceName() const
+MVREXPORT const char *ArMapId::getSourceName() const
 {
   return mySourceName.c_str();
 }
 
-AREXPORT const char *ArMapId::getFileName() const
+MVREXPORT const char *ArMapId::getFileName() const
 {
   return myFileName.c_str();
 }
 
-AREXPORT const unsigned char *ArMapId::getChecksum() const
+MVREXPORT const unsigned char *ArMapId::getChecksum() const
 {
   return myChecksum;
 }
   
-AREXPORT size_t ArMapId::getChecksumLength() const
+MVREXPORT size_t ArMapId::getChecksumLength() const
 {
   return myChecksumLength;
 } 
   
-AREXPORT const char *ArMapId::getDisplayChecksum() const
+MVREXPORT const char *ArMapId::getDisplayChecksum() const
 {
   if ((myDisplayChecksum == NULL) && (myChecksumLength > 0)) {
 
@@ -198,17 +198,17 @@ AREXPORT const char *ArMapId::getDisplayChecksum() const
   return myDisplayChecksum;
 } 
 
-AREXPORT long int ArMapId::getSize() const
+MVREXPORT long int ArMapId::getSize() const
 {
   return mySize;
 }
 
-AREXPORT time_t ArMapId::getTimestamp() const
+MVREXPORT time_t ArMapId::getTimestamp() const
 {
   return myTimestamp;
 }
     
-AREXPORT bool ArMapId::isSameFile(const ArMapId &other) const
+MVREXPORT bool ArMapId::isSameFile(const ArMapId &other) const
 {
   if (MvrUtil::strcasecmp(myFileName, other.myFileName) != 0) {
     return false;
@@ -240,7 +240,7 @@ AREXPORT bool ArMapId::isSameFile(const ArMapId &other) const
 }
 
 
-AREXPORT bool ArMapId::isVersionOfSameFile(const ArMapId &other) const
+MVREXPORT bool ArMapId::isVersionOfSameFile(const ArMapId &other) const
 {
   if ((MvrUtil::strcasecmp(mySourceName, other.mySourceName) == 0) && 
       (MvrUtil::strcasecmp(myFileName, other.myFileName) == 0)) {
@@ -250,7 +250,7 @@ AREXPORT bool ArMapId::isVersionOfSameFile(const ArMapId &other) const
 
 } // end method isVersionOfSameFile
   
-AREXPORT bool ArMapId::isValidTimestamp() const
+MVREXPORT bool ArMapId::isValidTimestamp() const
 {
   bool b = ((myTimestamp != -1) &&
             (myTimestamp != 0));
@@ -258,7 +258,7 @@ AREXPORT bool ArMapId::isValidTimestamp() const
 }
 
 
-AREXPORT void ArMapId::setSourceName(const char *sourceName)
+MVREXPORT void ArMapId::setSourceName(const char *sourceName)
 {
   if (sourceName != NULL) {
     mySourceName = sourceName;
@@ -268,7 +268,7 @@ AREXPORT void ArMapId::setSourceName(const char *sourceName)
   }
 }
 
-AREXPORT void ArMapId::setFileName(const char *fileName)
+MVREXPORT void ArMapId::setFileName(const char *fileName)
 {
   if (fileName != NULL) {
     myFileName = fileName;
@@ -278,7 +278,7 @@ AREXPORT void ArMapId::setFileName(const char *fileName)
   }
 }
 
-AREXPORT void ArMapId::setChecksum(const unsigned char *checksum,
+MVREXPORT void ArMapId::setChecksum(const unsigned char *checksum,
                                    size_t checksumLen)
 {
   if (checksumLen < 0) {
@@ -303,12 +303,12 @@ AREXPORT void ArMapId::setChecksum(const unsigned char *checksum,
 
 }
 
-AREXPORT void ArMapId::setSize(long int size)
+MVREXPORT void ArMapId::setSize(long int size)
 {
   mySize = size;
 }
 
-AREXPORT void ArMapId::setTimestamp(const time_t &timestamp)
+MVREXPORT void ArMapId::setTimestamp(const time_t &timestamp)
 {
   IFDEBUG(MvrLog::log(MvrLog::Normal,
                      "MvrMapId::setTimestamp() time = %i", 
@@ -318,7 +318,7 @@ AREXPORT void ArMapId::setTimestamp(const time_t &timestamp)
 }
 
 /// Determines whether two IDs are equal.
-AREXPORT bool operator==(const ArMapId & id1, const ArMapId & id2)
+MVREXPORT bool operator==(const ArMapId & id1, const ArMapId & id2)
 {  
   // The mirror opposite of operator!=
 
@@ -359,7 +359,7 @@ AREXPORT bool operator==(const ArMapId & id1, const ArMapId & id2)
 } // end method operator==
 
 /// Determines whether two IDs are not equal.
-AREXPORT bool operator!=(const ArMapId & id1, const ArMapId & id2)
+MVREXPORT bool operator!=(const ArMapId & id1, const ArMapId & id2)
 {
   // The mirror opposite of operator==
   
@@ -400,7 +400,7 @@ AREXPORT bool operator!=(const ArMapId & id1, const ArMapId & id2)
 } // end method operator!=
   
 
-AREXPORT void ArMapId::log(const char *prefix) const
+MVREXPORT void ArMapId::log(const char *prefix) const
 {
   time_t idTime = getTimestamp();
 
@@ -432,7 +432,7 @@ AREXPORT void ArMapId::log(const char *prefix) const
   
 }
   
-AREXPORT bool ArMapId::fromPacket(MvrBasePacket *packetIn,
+MVREXPORT bool ArMapId::fromPacket(MvrBasePacket *packetIn,
                                   ArMapId *mapIdOut)
 {
   if ((packetIn == NULL) || (mapIdOut == NULL)) {
@@ -478,7 +478,7 @@ AREXPORT bool ArMapId::fromPacket(MvrBasePacket *packetIn,
 } // end method fromPacket
 
 
-AREXPORT bool ArMapId::toPacket(const ArMapId &mapId,
+MVREXPORT bool ArMapId::toPacket(const ArMapId &mapId,
                                 ArBasePacket *packetOut)
 {
   
@@ -519,7 +519,7 @@ AREXPORT bool ArMapId::toPacket(const ArMapId &mapId,
   
   
   
-AREXPORT bool ArMapId::create(const char *mapFileName,
+MVREXPORT bool ArMapId::create(const char *mapFileName,
                               ArMapId *mapIdOut)
 {
   if (mapIdOut == NULL) {
@@ -595,7 +595,7 @@ void ArMapFileLineGroup::log()
 
 
 
-AREXPORT void ArMapFileLineSet::log(const char *prefix)
+MVREXPORT void ArMapFileLineSet::log(const char *prefix)
 {
   if (prefix != NULL) {
     ArLog::log(MvrLog::Normal,
@@ -621,7 +621,7 @@ AREXPORT void ArMapFileLineSet::log(const char *prefix)
 } // end method log
 
 
-AREXPORT ArMapFileLineSet::iterator ArMapFileLineSet::find(const ArMapFileLine &groupParent) {
+MVREXPORT ArMapFileLineSet::iterator ArMapFileLineSet::find(const ArMapFileLine &groupParent) {
   for (iterator iter = begin(); iter != end(); iter++) {
     ArMapFileLineGroup &group = *iter;
     if ((group.getParentLine()->getLineNum() == groupParent.getLineNum()) &&
@@ -652,7 +652,7 @@ AREXPORT ArMapFileLineSet::iterator ArMapFileLineSet::find(const ArMapFileLine &
   return end();
 }
 
-AREXPORT bool ArMapFileLineSet::calculateChanges(MvrMapFileLineSet &origLines,
+MVREXPORT bool ArMapFileLineSet::calculateChanges(MvrMapFileLineSet &origLines,
                                      ArMapFileLineSet &newLines,
                                      ArMapFileLineSet *deletedLinesOut,
                                      ArMapFileLineSet *addedLinesOut,
@@ -788,13 +788,13 @@ ArMapChangeDetails::ArMapScanChangeDetails::ArMapScanChangeDetails() :
 {
 } // end constructor
 
-ArMapChangeDetails::ArMapScanChangeDetails::~ArMapScanChangeDetails()
+ArMapChangeDetails::ArMapScanChangeDetails::~MvrMapScanChangeDetails()
 {
   // TODO
 
 } // end destructor
 
-AREXPORT ArMapChangeDetails::ArMapChangeDetails() :
+MVREXPORT ArMapChangeDetails::ArMapChangeDetails() :
   myMutex(),
   myOrigMapId(),
   myNewMapId(),
@@ -812,7 +812,7 @@ AREXPORT ArMapChangeDetails::ArMapChangeDetails() :
 
 } // end ctor
 
-AREXPORT ArMapChangeDetails::ArMapChangeDetails
+MVREXPORT ArMapChangeDetails::ArMapChangeDetails
                                 (const ArMapChangeDetails &other) :
   myMutex(),
   myOrigMapId(other.myOrigMapId),
@@ -848,7 +848,7 @@ AREXPORT ArMapChangeDetails::ArMapChangeDetails
   
 } // end copy ctor
 
-AREXPORT ArMapChangeDetails &ArMapChangeDetails::operator=
+MVREXPORT ArMapChangeDetails &ArMapChangeDetails::operator=
                                   (const ArMapChangeDetails &other)
 {
   if (this != &other) {
@@ -884,14 +884,14 @@ AREXPORT ArMapChangeDetails &ArMapChangeDetails::operator=
 } // end operator=
 
 
-AREXPORT ArMapChangeDetails::~ArMapChangeDetails()
+MVREXPORT ArMapChangeDetails::~MvrMapChangeDetails()
 {
   ArUtil::deleteSetPairs(myScanTypeToChangesMap.begin(),
                          myScanTypeToChangesMap.end());
 }
 
 
-AREXPORT bool ArMapChangeDetails::getOrigMapId(MvrMapId *mapIdOut)
+MVREXPORT bool ArMapChangeDetails::getOrigMapId(MvrMapId *mapIdOut)
 {
   if (mapIdOut == NULL) {
     return false;
@@ -900,7 +900,7 @@ AREXPORT bool ArMapChangeDetails::getOrigMapId(MvrMapId *mapIdOut)
   return true;
 }
 
-AREXPORT bool ArMapChangeDetails::getNewMapId(MvrMapId *mapIdOut)
+MVREXPORT bool ArMapChangeDetails::getNewMapId(MvrMapId *mapIdOut)
 {
   if (mapIdOut == NULL) {
     return false;
@@ -909,25 +909,25 @@ AREXPORT bool ArMapChangeDetails::getNewMapId(MvrMapId *mapIdOut)
   return true;
 }
 
-AREXPORT void ArMapChangeDetails::setOrigMapId(const ArMapId &mapId)
+MVREXPORT void ArMapChangeDetails::setOrigMapId(const ArMapId &mapId)
 {
   myOrigMapId = mapId;
   myOrigMapId.log("MvrMapChangeDetails::setOrigMapId");
 }
 
-AREXPORT void ArMapChangeDetails::setNewMapId(const ArMapId &mapId)
+MVREXPORT void ArMapChangeDetails::setNewMapId(const ArMapId &mapId)
 {
   myNewMapId = mapId;
   myNewMapId.log("MvrMapChangeDetails::setNewMapId");
 }
 
 
-AREXPORT std::list<std::string> *ArMapChangeDetails::getScanTypes() 
+MVREXPORT std::list<std::string> *ArMapChangeDetails::getScanTypes() 
 {
   return &myScanTypeList;
 }
 
-AREXPORT std::vector<ArPose> *ArMapChangeDetails::getChangedPoints
+MVREXPORT std::vector<ArPose> *ArMapChangeDetails::getChangedPoints
                                                     (MapLineChangeType change,
                                                      const char *scanType) 
 {
@@ -936,7 +936,7 @@ AREXPORT std::vector<ArPose> *ArMapChangeDetails::getChangedPoints
   //return &myChangedPoints[change];
 }
 
-AREXPORT std::vector<ArLineSegment> *ArMapChangeDetails::getChangedLineSegments
+MVREXPORT std::vector<ArLineSegment> *ArMapChangeDetails::getChangedLineSegments
                                                            (MapLineChangeType change,
                                                             const char *scanType) 
 {
@@ -945,7 +945,7 @@ AREXPORT std::vector<ArLineSegment> *ArMapChangeDetails::getChangedLineSegments
   //return &myChangedLineSegments[change];
 }
 
-AREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedSummaryLines
+MVREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedSummaryLines
                                                (MapLineChangeType change,
                                                 const char *scanType) 
 {
@@ -954,19 +954,19 @@ AREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedSummaryLines
   //return &myChangedSummaryLines[change];
 }
 
-AREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedSupplementLines
+MVREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedSupplementLines
                                               (MapLineChangeType change) 
 {
   return &myChangedSupplementLines[change];
 }
 
-AREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedObjectLines
+MVREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedObjectLines
                                               (MapLineChangeType change) 
 {
   return &myChangedObjectLines[change];
 }
 
-AREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedInfoLines
+MVREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedInfoLines
                                                 (const char *infoName,
                                                  MapLineChangeType change) 
 {
@@ -985,7 +985,7 @@ AREXPORT ArMapFileLineSet *ArMapChangeDetails::getChangedInfoLines
 
 
 
-AREXPORT bool ArMapChangeDetails::isChildArg(const char *infoName,
+MVREXPORT bool ArMapChangeDetails::isChildArg(const char *infoName,
                                              ArArgumentBuilder *arg) const 
 {
   if ((arg == NULL) || 
@@ -998,7 +998,7 @@ AREXPORT bool ArMapChangeDetails::isChildArg(const char *infoName,
 }
 
 
-AREXPORT bool ArMapChangeDetails::isChildArg(const char *infoName,
+MVREXPORT bool ArMapChangeDetails::isChildArg(const char *infoName,
                                              const char *argText) const
 {
   if (MvrUtil::isStrEmpty(infoName) || ArUtil::isStrEmpty(argText)) {
@@ -1059,7 +1059,7 @@ ArMapChangeDetails::ArMapScanChangeDetails *ArMapChangeDetails::getScanChangeDet
 } // end method getScanChangeDetails
 
 
-AREXPORT std::list<std::string> ArMapChangeDetails::findChangedInfoNames() const 
+MVREXPORT std::list<std::string> ArMapChangeDetails::findChangedInfoNames() const 
 {
   std::list<std::string> changedInfoNames;
   std::map<std::string, bool> infoNameToBoolMap;
@@ -1086,7 +1086,7 @@ AREXPORT std::list<std::string> ArMapChangeDetails::findChangedInfoNames() const
 } // end method getChangedInfoTypes
 
 
-AREXPORT void ArMapChangeDetails::log()
+MVREXPORT void ArMapChangeDetails::log()
 {
 
   ArLog::log(MvrLog::Normal,
@@ -1159,12 +1159,12 @@ AREXPORT void ArMapChangeDetails::log()
   } // end for each change type 
 } // end method log
 
-AREXPORT void ArMapChangeDetails::lock()
+MVREXPORT void ArMapChangeDetails::lock()
 {
   myMutex.lock();
 }
 
-AREXPORT void ArMapChangeDetails::unlock()
+MVREXPORT void ArMapChangeDetails::unlock()
 {
   myMutex.unlock();
 }
@@ -1173,7 +1173,7 @@ AREXPORT void ArMapChangeDetails::unlock()
 // ArMapChangedHelper
 // ------------------------------------------------------------------------------
 
-AREXPORT ArMapChangedHelper::ArMapChangedHelper() :
+MVREXPORT ArMapChangedHelper::ArMapChangedHelper() :
   myMapChangedLogLevel(MvrLog::Verbose),
   myMapChangedCBList(),
   myPreMapChangedCBList()
@@ -1182,11 +1182,11 @@ AREXPORT ArMapChangedHelper::ArMapChangedHelper() :
   myPreMapChangedCBList.setName("PreMapChangedHelper");
 }
 
-AREXPORT ArMapChangedHelper::~ArMapChangedHelper()
+MVREXPORT ArMapChangedHelper::~MvrMapChangedHelper()
 {
 }
 
-AREXPORT void ArMapChangedHelper::invokeMapChangedCallbacks(void)
+MVREXPORT void ArMapChangedHelper::invokeMapChangedCallbacks(void)
 {
   ArLog::LogLevel level = myMapChangedLogLevel;
 
@@ -1199,41 +1199,41 @@ AREXPORT void ArMapChangedHelper::invokeMapChangedCallbacks(void)
 } // end method invokeMapChangedCallbacks
 
 
-AREXPORT void ArMapChangedHelper::addMapChangedCB(MvrFunctor *functor, 
+MVREXPORT void ArMapChangedHelper::addMapChangedCB(MvrFunctor *functor, 
 						  int position)
 {
   myMapChangedCBList.addCallback(functor, position);
 } // end method addMapChangedCB
 
-AREXPORT void ArMapChangedHelper::remMapChangedCB(MvrFunctor *functor)
+MVREXPORT void ArMapChangedHelper::remMapChangedCB(MvrFunctor *functor)
 {
   myMapChangedCBList.remCallback(functor);
 
 } // end method remMapChangedCB
 
 
-AREXPORT void ArMapChangedHelper::addPreMapChangedCB(MvrFunctor *functor,
+MVREXPORT void ArMapChangedHelper::addPreMapChangedCB(MvrFunctor *functor,
                                                      int position)
 {
   myPreMapChangedCBList.addCallback(functor, position);
 } // end method addPreMapChangedCB
 
 
-AREXPORT void ArMapChangedHelper::remPreMapChangedCB(MvrFunctor *functor)
+MVREXPORT void ArMapChangedHelper::remPreMapChangedCB(MvrFunctor *functor)
 {
   myPreMapChangedCBList.remCallback(functor);
 
 } // end method remPreMapChangedCB
 
 
-AREXPORT void ArMapChangedHelper::setMapChangedLogLevel(MvrLog::LogLevel level)
+MVREXPORT void ArMapChangedHelper::setMapChangedLogLevel(MvrLog::LogLevel level)
 {
   myMapChangedLogLevel = level;
 
 } // end method setMapChangedLogLevel
 
 
-AREXPORT ArLog::LogLevel ArMapChangedHelper::getMapChangedLogLevel(void)
+MVREXPORT ArLog::LogLevel ArMapChangedHelper::getMapChangedLogLevel(void)
 {
   return myMapChangedLogLevel;
 

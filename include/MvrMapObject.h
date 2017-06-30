@@ -77,7 +77,7 @@ public:
    * @return MvrMapObject * the newly created map object, or NULL if an error 
    * occurred
   **/
-  AREXPORT static MvrMapObject *createMapObject(MvrArgumentBuilder *arg);
+  MVREXPORT static MvrMapObject *createMapObject(MvrArgumentBuilder *arg);
   
 
   /// MvrArgumentBuilder indices for the various map object attributes
@@ -124,7 +124,7 @@ public:
    * @param toPose the MvrPose that defines the end point of the region object;
    * applicable only when hasFromTo is true
   **/
-  AREXPORT MvrMapObject(const char *type, 
+  MVREXPORT MvrMapObject(const char *type, 
                        MvrPose pose, 
                        const char *description,
  		                   const char *iconName, 
@@ -134,20 +134,20 @@ public:
                        MvrPose toPose);
 
   /// Copy constructor
-  AREXPORT MvrMapObject(const MvrMapObject &mapObject);
+  MVREXPORT MvrMapObject(const MvrMapObject &mapObject);
 
   /// Assignment operator
-  AREXPORT MvrMapObject &operator=(const MvrMapObject &mapObject);
+  MVREXPORT MvrMapObject &operator=(const MvrMapObject &mapObject);
 
   /// Destructor
-  AREXPORT virtual ~ArMapObject();
+  MVREXPORT virtual ~MvrMapObject();
 
   // --------------------------------------------------------------------------
   // Text Attributes:
   // --------------------------------------------------------------------------
 
   /// Returns the type of the map object
-  AREXPORT const char *getType(void) const;
+  MVREXPORT const char *getType(void) const;
 
   /// Returns the "base" (or root) type of the map object
   /**
@@ -158,13 +158,13 @@ public:
    * If the map object type does not end with "WithHeading", then the base 
    * is the same as the type.
   **/
-  AREXPORT const char *getBaseType(void) const;
+  MVREXPORT const char *getBaseType(void) const;
 
   /// Returns the name of the map object (if any)
-  AREXPORT const char *getName(void) const;
+  MVREXPORT const char *getName(void) const;
 
   /// Returns the optional description of the map object
-  AREXPORT const char *getDescription() const ;
+  MVREXPORT const char *getDescription() const ;
 
   /// Returns the icon string of the object 
   /**
@@ -172,13 +172,13 @@ public:
    * either the string "ICON" or "ID=<n>".  The ID is used only when auto-numbering
    * has been turned on in the MapInfo.
   **/
-  AREXPORT const char *getIconName(void) const;
+  MVREXPORT const char *getIconName(void) const;
 
   /// Returns the numerical identifier of the object, when auto-numbering is on.
   /**
    * This method returns 0 when auto-numbering is off.
   **/
-  AREXPORT int getId() const;
+  MVREXPORT int getId() const;
 
   /// Sets the description of the map object
   /**
@@ -186,7 +186,7 @@ public:
    * is created, and before it is added to the map.  (Since the map object
    * isn't intended to be mutable.)  It exists for backwards compatibility.
   **/
-  AREXPORT void setDescription(const char *description);
+  MVREXPORT void setDescription(const char *description);
 
 
   // --------------------------------------------------------------------------
@@ -198,18 +198,18 @@ public:
    * For points, this is the map object's location; for rectangles, this 
    * specifies the rotation of the rectangle (in getPose().getTh())
   **/
-  AREXPORT MvrPose getPose(void) const;
+  MVREXPORT MvrPose getPose(void) const;
 
   /// Returns true if the map object has valid "from/to" poses (i.e. is a line or rectangle)
-  AREXPORT bool hasFromTo(void) const;
+  MVREXPORT bool hasFromTo(void) const;
 
   /// Returns the "from" pose for lines and rectangles; valid only if hasFromTo() 
-  AREXPORT MvrPose getFromPose(void) const;
+  MVREXPORT MvrPose getFromPose(void) const;
   /// Returns the "to" pose for lines and rectangles; valid only if hasFromTo() 
-  AREXPORT MvrPose getToPose(void) const;
+  MVREXPORT MvrPose getToPose(void) const;
 
   void setPose(MvrPose p) { myPose = p; }
-  AREXPORT void setFromTo(MvrPose from, MvrPose to);
+  MVREXPORT void setFromTo(MvrPose from, MvrPose to);
 
   /// Returns the optional rotation of a rectangle; or 0 if none
   /**
@@ -218,7 +218,7 @@ public:
    * on a ForbiddenArea but not a ForbiddenLine.)
    *
   **/
-  AREXPORT double getFromToRotation(void) const;
+  MVREXPORT double getFromToRotation(void) const;
 
   /// Gets a list of fromTo line segments that have been rotated
   /**
@@ -232,7 +232,7 @@ public:
    * changes).  It may not make much difference on a modern processor
    * though (its set up this way for safety).
   **/
-  AREXPORT std::list<ArLineSegment> getFromToSegments(void);
+  MVREXPORT std::list<ArLineSegment> getFromToSegments(void);
 
   /// Gets a line segment that goes from the from to the to
   /**
@@ -245,7 +245,7 @@ public:
    * the copy if the map changes).  It may not make much difference on
    * a modern processor though (its set up this way for safety).
   **/
-  AREXPORT MvrLineSegment getFromToSegment(void);
+  MVREXPORT MvrLineSegment getFromToSegment(void);
 
   /// Computes the center pose of the map object.
   /**
@@ -253,7 +253,7 @@ public:
    * "to" pose (i.e. lines and rectangles).  For map objects that are poses, 
    * this method simply returns the pose.
   **/
-  AREXPORT MvrPose findCenter(void) const;
+  MVREXPORT MvrPose findCenter(void) const;
 
   /** Return true if the given point is inside the region of this object,
    * assuming that this object is a region or sector.  False if not.
@@ -274,7 +274,7 @@ public:
    * an empty std::vector is returned.  The "Theta" components of the vertex
    * MvrPose objects is not set or used.
    */
-  AREXPORT std::vector<ArPose> getRegionVertices() const;
+  MVREXPORT std::vector<ArPose> getRegionVertices() const;
 
   // --------------------------------------------------------------------------
   // I/O Methods
@@ -285,7 +285,7 @@ public:
    * The returned string is suitable for writing to the MvrMap file.  Note that
    * the string does NOT include the map object's optional parameters.
   **/
-  AREXPORT const char *toString() const;
+  MVREXPORT const char *toString() const;
 
   /// Returns the text representation of the map object 
   /**
@@ -299,7 +299,7 @@ public:
   /**
    * @param intro an optional string that should appear before the object
   **/
-  AREXPORT void log(const char *intro = NULL) const;
+  MVREXPORT void log(const char *intro = NULL) const;
 
 
   // --------------------------------------------------------------------------
@@ -307,7 +307,7 @@ public:
   // --------------------------------------------------------------------------
 
   /// Less than operator (for sets), orders by position
-  AREXPORT bool operator<(const MvrMapObject& other) const;
+  MVREXPORT bool operator<(const MvrMapObject& other) const;
 
 
   /// Gets the fileName of the object (probably never used for maps)
@@ -318,7 +318,7 @@ public:
   * description attribute).
   * @deprecated 
   **/
-  AREXPORT const char *getFileName(void) const;
+  MVREXPORT const char *getFileName(void) const;
 
 private:
 

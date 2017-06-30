@@ -41,7 +41,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param addLatVelIfAvailable If true, include the LatVel parameters in the
    MvrConfig if the robot supports lateral motion.
  **/
-AREXPORT MvrActionMovementParameters::ArActionMovementParameters(
+MVREXPORT MvrActionMovementParameters::ArActionMovementParameters(
 	const char *name,
 	bool overrideFaster,
 	bool addLatVelIfAvailable) : 
@@ -54,12 +54,12 @@ AREXPORT MvrActionMovementParameters::ArActionMovementParameters(
   setParameters();
 }
 
-AREXPORT MvrActionMovementParameters::~ArActionMovementParameters()
+MVREXPORT MvrActionMovementParameters::~MvrActionMovementParameters()
 {
 
 }
 
-AREXPORT void MvrActionMovementParameters::setParameters(double maxVel, 
+MVREXPORT void MvrActionMovementParameters::setParameters(double maxVel, 
 							double maxNegVel,
 							double transAccel,
 							double transDecel,
@@ -82,7 +82,7 @@ AREXPORT void MvrActionMovementParameters::setParameters(double maxVel,
   myLatDecel = latDecel;
 }
 
-AREXPORT void MvrActionMovementParameters::addToConfig(MvrConfig *config, 
+MVREXPORT void MvrActionMovementParameters::addToConfig(MvrConfig *config, 
 						      const char *section, 
 						      const char *prefix)
 {
@@ -185,7 +185,7 @@ AREXPORT void MvrActionMovementParameters::addToConfig(MvrConfig *config,
 
 }
 
-AREXPORT MvrActionDesired *ArActionMovementParameters::fire(
+MVREXPORT MvrActionDesired *ArActionMovementParameters::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

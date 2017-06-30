@@ -35,7 +35,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param sync2 second byte of the header of this packet, this should be left
    as the default in nearly all cases, ie don't mess with it
  */
-AREXPORT ArRobotPacket::ArRobotPacket(unsigned char sync1,
+MVREXPORT ArRobotPacket::ArRobotPacket(unsigned char sync1,
 				      unsigned char sync2) :
     ArBasePacket(265, 4, NULL, 2)
 {
@@ -43,11 +43,11 @@ AREXPORT ArRobotPacket::ArRobotPacket(unsigned char sync1,
   mySync2 = sync2;
 }
 
-AREXPORT ArRobotPacket::~ArRobotPacket()
+MVREXPORT ArRobotPacket::~MvrRobotPacket()
 {
 }
 
-AREXPORT ArRobotPacket &ArRobotPacket::operator=(const ArRobotPacket &other)
+MVREXPORT ArRobotPacket &ArRobotPacket::operator=(const ArRobotPacket &other)
 {
   if (this != &other) {
 
@@ -79,7 +79,7 @@ AREXPORT ArRobotPacket &ArRobotPacket::operator=(const ArRobotPacket &other)
   return *this;
 }
 
-AREXPORT ArTypes::UByte ArRobotPacket::getID(void)
+MVREXPORT ArTypes::UByte ArRobotPacket::getID(void)
 {
   if (myLength >= 4)
     return myBuf[3];
@@ -87,12 +87,12 @@ AREXPORT ArTypes::UByte ArRobotPacket::getID(void)
     return 0;
 }
 
-AREXPORT void ArRobotPacket::setID(MvrTypes::UByte id)
+MVREXPORT void ArRobotPacket::setID(MvrTypes::UByte id)
 {
   myBuf[3] = id;
 }
 
-AREXPORT void ArRobotPacket::finalizePacket(void)
+MVREXPORT void ArRobotPacket::finalizePacket(void)
 {
   int len = myLength;
   int chkSum;
@@ -114,7 +114,7 @@ AREXPORT void ArRobotPacket::finalizePacket(void)
   //printf("Output %d\n", getID());
 }
 
-AREXPORT ArTypes::Byte2 ArRobotPacket::calcCheckSum(void)
+MVREXPORT ArTypes::Byte2 ArRobotPacket::calcCheckSum(void)
 {
   int i;
   unsigned char n;
@@ -133,7 +133,7 @@ AREXPORT ArTypes::Byte2 ArRobotPacket::calcCheckSum(void)
   return c;
 }
 
-AREXPORT bool ArRobotPacket::verifyCheckSum(void) 
+MVREXPORT bool ArRobotPacket::verifyCheckSum(void) 
 {
   ArTypes::Byte2 chksum;
   unsigned char c1, c2;
@@ -153,17 +153,17 @@ AREXPORT bool ArRobotPacket::verifyCheckSum(void)
   
 }
 
-AREXPORT ArTime ArRobotPacket::getTimeReceived(void)
+MVREXPORT ArTime ArRobotPacket::getTimeReceived(void)
 {
   return myTimeReceived;
 }
 
-AREXPORT void ArRobotPacket::setTimeReceived(MvrTime timeReceived)
+MVREXPORT void ArRobotPacket::setTimeReceived(MvrTime timeReceived)
 {
   myTimeReceived = timeReceived;
 }
 
-AREXPORT void ArRobotPacket::log()
+MVREXPORT void ArRobotPacket::log()
 {
   int i;
   ArLog::log(MvrLog::Normal, "Robot Packet: (length = %i)", myLength);

@@ -39,39 +39,39 @@ class MvrTcpConnection: public MvrDeviceConnection
 {
  public:
   /// Constructor
-  AREXPORT MvrTcpConnection();
+  MVREXPORT MvrTcpConnection();
   /// Destructor also closes connection
-  AREXPORT virtual ~ArTcpConnection();
+  MVREXPORT virtual ~MvrTcpConnection();
 
   /// Opens a connection to the given host and port
-  AREXPORT int open(const char * host = NULL, int port = 8101);
+  MVREXPORT int open(const char * host = NULL, int port = 8101);
 
-  AREXPORT void setPort(const char *host = NULL, int port = 8101);
-  AREXPORT virtual bool openSimple(void);  
-  AREXPORT virtual int getStatus(void);
-  AREXPORT virtual bool close(void);
-  AREXPORT virtual int read(const char *data, unsigned int size, 
+  MVREXPORT void setPort(const char *host = NULL, int port = 8101);
+  MVREXPORT virtual bool openSimple(void);  
+  MVREXPORT virtual int getStatus(void);
+  MVREXPORT virtual bool close(void);
+  MVREXPORT virtual int read(const char *data, unsigned int size, 
 			    unsigned int msWait = 0);
-  AREXPORT virtual int write(const char *data, unsigned int size);
-  AREXPORT virtual const char * getOpenMessage(int messageNumber);
-  AREXPORT virtual MvrTime getTimeRead(int index);
-  AREXPORT virtual bool isTimeStamping(void);
+  MVREXPORT virtual int write(const char *data, unsigned int size);
+  MVREXPORT virtual const char * getOpenMessage(int messageNumber);
+  MVREXPORT virtual MvrTime getTimeRead(int index);
+  MVREXPORT virtual bool isTimeStamping(void);
 
   /// Gets the name of the host connected to
-  AREXPORT std::string getHost(void);
+  MVREXPORT std::string getHost(void);
   /// Gets the number of the port connected to
-  AREXPORT int getPort(void);
+  MVREXPORT int getPort(void);
 
   /// Internal function used by open and openSimple
-  AREXPORT int internalOpen(void);
+  MVREXPORT int internalOpen(void);
 
   /// Sets the tcp connection to use this socket instead of its own
-  AREXPORT void setSocket(MvrSocket *socket);
+  MVREXPORT void setSocket(MvrSocket *socket);
   /// Gets the socket this tcp connection is using
-  AREXPORT MvrSocket *getSocket(void);
+  MVREXPORT MvrSocket *getSocket(void);
   /// Sets the status of the device, ONLY use this if you're playing
   /// with setSocket and know what you're doing
-  AREXPORT void setStatus(int status);
+  MVREXPORT void setStatus(int status);
 
   enum Open { 
       OPEN_NET_FAIL = 1, ///< Some critical part of the network isn't working

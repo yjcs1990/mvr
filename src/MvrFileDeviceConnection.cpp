@@ -42,13 +42,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <string.h>
 #include <errno.h>
 
-AREXPORT MvrFileDeviceConnection::ArFileDeviceConnection() :
+MVREXPORT MvrFileDeviceConnection::ArFileDeviceConnection() :
   myInFD(-1), myOutFD(-1), myStatus(STATUS_NEVER_OPENED),
   myForceReadBufferSize(0), myReadByteDelay(0.0)
 {
 }
 
-AREXPORT MvrFileDeviceConnection::~ArFileDeviceConnection()
+MVREXPORT MvrFileDeviceConnection::~MvrFileDeviceConnection()
 {
   close();
 }
@@ -61,7 +61,7 @@ AREXPORT MvrFileDeviceConnection::~ArFileDeviceConnection()
  * the output file in addition to O_WRONLY. For example, pass O_APPEND to append rather than rewrite the
  * file.
  */
-AREXPORT int MvrFileDeviceConnection::open(const char *infilename, const char *outfilename, int outflags)
+MVREXPORT int MvrFileDeviceConnection::open(const char *infilename, const char *outfilename, int outflags)
 {
   myStatus = STATUS_OPEN_FAILED;
 
@@ -108,7 +108,7 @@ AREXPORT int MvrFileDeviceConnection::open(const char *infilename, const char *o
   return 0;
 }
 
-AREXPORT bool MvrFileDeviceConnection::close(void)
+MVREXPORT bool MvrFileDeviceConnection::close(void)
 {
   MvrUtil::close(myInFD);
   MvrUtil::close(myOutFD);
@@ -116,7 +116,7 @@ AREXPORT bool MvrFileDeviceConnection::close(void)
   return true;
 }
 
-AREXPORT int MvrFileDeviceConnection::read(const char *data, unsigned int size, unsigned int msWait)
+MVREXPORT int MvrFileDeviceConnection::read(const char *data, unsigned int size, unsigned int msWait)
 {
   unsigned int s = myForceReadBufferSize > 0 ? MvrUtil::findMinU(size, myForceReadBufferSize) : size;
 #ifdef WIN32
@@ -131,7 +131,7 @@ AREXPORT int MvrFileDeviceConnection::read(const char *data, unsigned int size, 
   return r;
 }
 
-AREXPORT int MvrFileDeviceConnection::write(const char *data, unsigned int size)
+MVREXPORT int MvrFileDeviceConnection::write(const char *data, unsigned int size)
 {
 #ifdef WIN32
   return (int) _write(myOutFD, (void*)data, (size_t)size);
@@ -141,19 +141,19 @@ AREXPORT int MvrFileDeviceConnection::write(const char *data, unsigned int size)
 }
 
 
-AREXPORT bool MvrFileDeviceConnection::isTimeStamping(void)
+MVREXPORT bool MvrFileDeviceConnection::isTimeStamping(void)
 {
   return false;
 }
 
-AREXPORT MvrTime MvrFileDeviceConnection::getTimeRead(int index)
+MVREXPORT MvrTime MvrFileDeviceConnection::getTimeRead(int index)
 {
   MvrTime now;
   now.setToNow();
   return now;
 }
 
-AREXPORT const char * MvrFileDeviceConnection::getOpenMessage(int err)
+MVREXPORT const char * MvrFileDeviceConnection::getOpenMessage(int err)
 {
   return strerror(err);
 }

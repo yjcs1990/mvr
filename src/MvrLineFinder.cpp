@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrLineFinder.h"
 #include "MvrConfig.h"
 
-AREXPORT MvrLineFinder::ArLineFinder(MvrRangeDevice *rangeDevice) 
+MVREXPORT MvrLineFinder::ArLineFinder(MvrRangeDevice *rangeDevice) 
 {
   myRangeDevice = rangeDevice;
   myPrinting = false;
@@ -48,12 +48,12 @@ AREXPORT MvrLineFinder::ArLineFinder(MvrRangeDevice *rangeDevice)
   setMaxDistBetweenPoints();
 }
 
-AREXPORT MvrLineFinder::~ArLineFinder()
+MVREXPORT MvrLineFinder::~MvrLineFinder()
 {
 
 }
 
-AREXPORT std::map<int, MvrLineFinderSegment *> *ArLineFinder::getLines(void)
+MVREXPORT std::map<int, MvrLineFinderSegment *> *ArLineFinder::getLines(void)
 {
   // fill the laser readings into myPoints
   fillPointsFromLaser();
@@ -69,7 +69,7 @@ AREXPORT std::map<int, MvrLineFinderSegment *> *ArLineFinder::getLines(void)
   return myLines;
 }
 
-AREXPORT std::map<int, MvrPose> *ArLineFinder::getNonLinePoints(void)
+MVREXPORT std::map<int, MvrPose> *ArLineFinder::getNonLinePoints(void)
 {
   std::map<int, MvrLineFinderSegment *>::iterator lineIt;
   MvrLineFinderSegment *segment;
@@ -99,7 +99,7 @@ AREXPORT std::map<int, MvrPose> *ArLineFinder::getNonLinePoints(void)
 }
 
 
-AREXPORT void MvrLineFinder::fillPointsFromLaser(void)
+MVREXPORT void MvrLineFinder::fillPointsFromLaser(void)
 {
   const std::list<ArSensorReading *> *readings;
   std::list<ArSensorReading *>::const_iterator it;
@@ -173,7 +173,7 @@ AREXPORT void MvrLineFinder::fillPointsFromLaser(void)
   myRangeDevice->unlockDevice();
 }
 
-AREXPORT void MvrLineFinder::findLines(void)
+MVREXPORT void MvrLineFinder::findLines(void)
 {
   int start = 0;
   int pointsLen = myPoints->size();
@@ -282,7 +282,7 @@ AREXPORT void MvrLineFinder::findLines(void)
     fclose(lineFile);
 }
 
-AREXPORT bool MvrLineFinder::combineLines(void)
+MVREXPORT bool MvrLineFinder::combineLines(void)
 {
   int start = 0;
   int len = myLines->size();
@@ -364,7 +364,7 @@ AREXPORT bool MvrLineFinder::combineLines(void)
   return combineLines();
 }
 
-AREXPORT MvrLineFinderSegment *ArLineFinder::averageSegments(
+MVREXPORT MvrLineFinderSegment *ArLineFinder::averageSegments(
 	ArLineFinderSegment *line1,
 	ArLineFinderSegment *line2)
 {
@@ -543,7 +543,7 @@ AREXPORT MvrLineFinderSegment *ArLineFinder::averageSegments(
   return NULL; 
 }
 
-AREXPORT void MvrLineFinder::filterLines(void)
+MVREXPORT void MvrLineFinder::filterLines(void)
 {
   int start = 0;
   int len = myLines->size();
@@ -603,7 +603,7 @@ AREXPORT void MvrLineFinder::filterLines(void)
    current directory and saves the "lines" file with the final lines
    in the current directory.
 **/
-AREXPORT void MvrLineFinder::saveLast(void)
+MVREXPORT void MvrLineFinder::saveLast(void)
 {
   int len = myPoints->size();
   int i;
@@ -642,13 +642,13 @@ AREXPORT void MvrLineFinder::saveLast(void)
   MvrLog::log(MvrLog::Normal, "Saved points and lines");
 }
 
-AREXPORT void MvrLineFinder::getLinesAndSaveThem(void)
+MVREXPORT void MvrLineFinder::getLinesAndSaveThem(void)
 {
   getLines();
   saveLast();
 }
 
-AREXPORT void MvrLineFinder::addToConfig(MvrConfig *config,
+MVREXPORT void MvrLineFinder::addToConfig(MvrConfig *config,
 					const char *section)
 {
   
@@ -707,7 +707,7 @@ AREXPORT void MvrLineFinder::addToConfig(MvrConfig *config,
 
 }
 
-AREXPORT std::set<ArLineFinderSegment*> MvrLineFinder::getLinesAsSet()
+MVREXPORT std::set<ArLineFinderSegment*> MvrLineFinder::getLinesAsSet()
 {
   std::map<int, MvrLineFinderSegment*> *lines = getLines();
   std::set<ArLineFinderSegment*> lineSegPtrs;
@@ -718,7 +718,7 @@ AREXPORT std::set<ArLineFinderSegment*> MvrLineFinder::getLinesAsSet()
   return lineSegPtrs;
 }
 
-AREXPORT std::set<ArPose> MvrLineFinder::getNonLinePointsAsSet()
+MVREXPORT std::set<ArPose> MvrLineFinder::getNonLinePointsAsSet()
 {
   std::map<int, MvrPose> *pointsPtr = getNonLinePoints();
   std::set<ArPose> points;

@@ -53,35 +53,35 @@ class MvrSonarDevice : public MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT MvrSonarDevice(size_t currentBufferSize = 24, 
+  MVREXPORT MvrSonarDevice(size_t currentBufferSize = 24, 
 			 size_t cumulativeBufferSize = 64, 
 			 const char * name = "sonar");
   /// Destructor
-  AREXPORT virtual ~ArSonarDevice();
+  MVREXPORT virtual ~MvrSonarDevice();
   /// Grabs the new readings from the robot and adds them to the buffers
   /// (Primarily for internal use.)
-  AREXPORT void processReadings(void);
+  MVREXPORT void processReadings(void);
 
   /// Sets the robot pointer, also attaches its process function to the
   /// robot as a Sensor Interpretation task.
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
 
   /// Adds sonar readings to the current and cumulative buffers
   /// Overrides the MvrRangeDevice default action.
   /// (This method is primarily for internal use.)
-  AREXPORT virtual void addReading(double x, double y);
+  MVREXPORT virtual void addReading(double x, double y);
 
   /// Sets a callback which if it returns true will ignore the reading
-  AREXPORT void setIgnoreReadingCB(MvrRetFunctor1<bool, MvrPose> *ignoreReadingCB);
+  MVREXPORT void setIgnoreReadingCB(MvrRetFunctor1<bool, MvrPose> *ignoreReadingCB);
  
   /// Gets the callback which if it returns true will ignore the reading
-  AREXPORT MvrRetFunctor1<bool, MvrPose> *getIgnoreReadingCB(void)
+  MVREXPORT MvrRetFunctor1<bool, MvrPose> *getIgnoreReadingCB(void)
     { return myIgnoreReadingCB; }
 
   /** @deprecated
    *  @sa MvrRangeDevice::setMaxDistToKeepCumulative()
    */
-  AREXPORT void setCumulativeMaxRange(double range) 
+  MVREXPORT void setCumulativeMaxRange(double range) 
     { setMaxDistToKeepCumulative(range); }
 protected:
   MvrFunctorC<ArSonarDevice> myProcessCB;

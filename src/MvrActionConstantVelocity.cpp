@@ -6,7 +6,7 @@
    @param name name of the action
    @param velocity velocity to travel at (mm/sec)
 */
-AREXPORT MvrActionConstantVelocity::MvrActionConstantVelocity(const char *name,
+MVREXPORT MvrActionConstantVelocity::MvrActionConstantVelocity(const char *name,
 						   double velocity) :
   MvrAction(name, "Sets the robot to travel straight at a constant velocity.")
 {
@@ -15,12 +15,12 @@ AREXPORT MvrActionConstantVelocity::MvrActionConstantVelocity(const char *name,
   myVelocity = velocity;  
 }
 
-AREXPORT MvrActionConstantVelocity::~MvrActionConstantVelocity()
+MVREXPORT MvrActionConstantVelocity::~MvrActionConstantVelocity()
 {
 
 }
 
-AREXPORT MvrActionDesired *MvrActionConstantVelocity::fire(
+MVREXPORT MvrActionDesired *MvrActionConstantVelocity::fire(
 	MvrActionDesired currentDesired)
 {
   myDesired.reset();

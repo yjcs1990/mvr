@@ -39,40 +39,40 @@ class MvrActionKeydrive : public MvrAction
 {
 public:
   /// Constructor
- AREXPORT MvrActionKeydrive(const char *name = "keydrive",
+ MVREXPORT MvrActionKeydrive(const char *name = "keydrive",
 			   double transVelMax = 400,
 			   double turnAmountMax = 24,
 			   double velIncrement = 25,
 			   double turnIncrement = 8);
   /// Destructor
-  AREXPORT virtual ~ArActionKeydrive();
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual ~MvrActionKeydrive();
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
   /// For setting the maximum speeds
-  AREXPORT void setSpeeds(double transVelMax, double turnAmountMax);
+  MVREXPORT void setSpeeds(double transVelMax, double turnAmountMax);
   /// For setting the increment amounts
-  AREXPORT void setIncrements(double velIncrement, double turnIncrement);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT void setIncrements(double velIncrement, double turnIncrement);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  AREXPORT virtual void setRobot(MvrRobot *robot);
-  AREXPORT virtual void activate(void);
-  AREXPORT virtual void deactivate(void);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void activate(void);
+  MVREXPORT virtual void deactivate(void);
   /// Takes the keys this action wants to use to drive
-  AREXPORT void takeKeys(void);
+  MVREXPORT void takeKeys(void);
   /// Gives up the keys this action wants to use to drive
-  AREXPORT void giveUpKeys(void);
+  MVREXPORT void giveUpKeys(void);
   /// Internal, callback for up arrow
-  AREXPORT void up(void);
+  MVREXPORT void up(void);
   /// Internal, callback for down arrow
-  AREXPORT void down(void);
+  MVREXPORT void down(void);
   /// Internal, callback for left arrow
-  AREXPORT void left(void);
+  MVREXPORT void left(void);
   /// Internal, callback for right arrow
-  AREXPORT void right(void);
+  MVREXPORT void right(void);
   /// Internal, callback for space key
-  AREXPORT void space(void);
+  MVREXPORT void space(void);
 
 protected:
   MvrFunctorC<ArActionKeydrive> myUpCB;

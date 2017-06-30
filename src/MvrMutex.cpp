@@ -39,7 +39,7 @@ unsigned int ArMutex::ourUnlockWarningMS = 0;
 ArFunctor *ArMutex::ourNonRecursiveDeadlockFunctor = NULL;
 
 
-AREXPORT void ArMutex::setLogNameVar(const char *logName, ...)
+MVREXPORT void ArMutex::setLogNameVar(const char *logName, ...)
 {
   char arg[2048];
   va_list ptr;

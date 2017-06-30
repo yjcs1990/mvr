@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaOSDef.h"
 #include "MvrRangeDeviceThreaded.h"
 
-AREXPORT ArRangeDeviceThreaded::ArRangeDeviceThreaded(
+MVREXPORT ArRangeDeviceThreaded::ArRangeDeviceThreaded(
 	size_t currentBufferSize, size_t cumulativeBufferSize,
 	const char *name, unsigned int maxRange,
 	int maxSecondsToKeepCurrent, int maxSecondsToKeepCumulative,
@@ -42,6 +42,6 @@ AREXPORT ArRangeDeviceThreaded::ArRangeDeviceThreaded(
   myTask.setThreadName(name);
 }
 
-AREXPORT ArRangeDeviceThreaded::~ArRangeDeviceThreaded()
+MVREXPORT ArRangeDeviceThreaded::~MvrRangeDeviceThreaded()
 {
 }

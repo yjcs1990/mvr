@@ -50,28 +50,28 @@ class MvrLaserFilter : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT MvrLaserFilter(MvrLaser *laser, const char *name = NULL);
+  MVREXPORT MvrLaserFilter(MvrLaser *laser, const char *name = NULL);
   /// Destructor
-  AREXPORT ~ArLaserFilter();
+  MVREXPORT ~MvrLaserFilter();
   /// Set robot
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
   /// Add to the config
-  AREXPORT void addToConfig(MvrConfig *config, const char *sectionName,
+  MVREXPORT void addToConfig(MvrConfig *config, const char *sectionName,
 			    const char *prefix = "");
 
-  AREXPORT virtual bool blockingConnect(void) 
+  MVREXPORT virtual bool blockingConnect(void) 
     { return myLaser->blockingConnect(); }
-  AREXPORT virtual bool asyncConnect(void)
+  MVREXPORT virtual bool asyncConnect(void)
     { return myLaser->asyncConnect(); }
-  AREXPORT virtual bool disconnect(void)
+  MVREXPORT virtual bool disconnect(void)
     { return myLaser->disconnect(); }
-  AREXPORT virtual bool isConnected(void)
+  MVREXPORT virtual bool isConnected(void)
     { return myLaser->isConnected(); }
-  AREXPORT virtual bool isTryingToConnect(void)
+  MVREXPORT virtual bool isTryingToConnect(void)
     { return myLaser->isTryingToConnect(); }
 
-  AREXPORT virtual void *runThread(void *arg) { return NULL; } 
-  AREXPORT virtual bool laserCheckParams(void) 
+  MVREXPORT virtual void *runThread(void *arg) { return NULL; } 
+  MVREXPORT virtual bool laserCheckParams(void) 
     { 
       if (!myLaser->laserCheckParams())
 	return false;
@@ -83,9 +83,9 @@ public:
   /// Gets the base laser this is filtering
   MvrLaser *getBaseLaser(void) { return myLaser; }
 protected:
-  AREXPORT int selfLockDevice(void);
-  AREXPORT int selfTryLockDevice(void);
-  AREXPORT int selfUnlockDevice(void);
+  MVREXPORT int selfLockDevice(void);
+  MVREXPORT int selfTryLockDevice(void);
+  MVREXPORT int selfUnlockDevice(void);
 
   MvrLaser *myLaser;
 

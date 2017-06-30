@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrDeviceConnection.h"
 
 
-AREXPORT ArNovatelGPS::ArNovatelGPS() :
+MVREXPORT ArNovatelGPS::ArNovatelGPS() :
   ArGPS(),
   myNovatelGPGGAHandler(this, &ArNovatelGPS::handleNovatelGPGGA)
 {
@@ -39,7 +39,7 @@ AREXPORT ArNovatelGPS::ArNovatelGPS() :
   addNMEAHandler("GGA", &myNovatelGPGGAHandler);
 }
 
-AREXPORT bool ArNovatelGPS::initDevice()
+MVREXPORT bool ArNovatelGPS::initDevice()
 {
   if (!ArGPS::initDevice()) return false;
 
@@ -69,7 +69,7 @@ AREXPORT bool ArNovatelGPS::initDevice()
 }
 
 
-AREXPORT ArNovatelGPS::~ArNovatelGPS() {
+MVREXPORT ArNovatelGPS::~MvrNovatelGPS() {
   if(!myDevice) return;
   myDevice->write("unlogall\r\n", strlen("unlogall\r\n")); // don't worry about errors
 }
@@ -100,7 +100,7 @@ void ArNovatelGPS::handleNovatelGPGGA(MvrNMEAParser::Message msg)
   }
 }
 
-AREXPORT ArNovatelSPAN::ArNovatelSPAN() : 
+MVREXPORT ArNovatelSPAN::ArNovatelSPAN() : 
   ArNovatelGPS(), 
   myGPRMCHandler(this, &ArNovatelSPAN::handleGPRMC),
   myINGLLHandler(this, &ArNovatelSPAN::handleINGLL),
@@ -115,7 +115,7 @@ AREXPORT ArNovatelSPAN::ArNovatelSPAN() :
   addNMEAHandler("GLL", &myINGLLHandler);
 }
 
-AREXPORT ArNovatelSPAN::~ArNovatelSPAN()
+MVREXPORT ArNovatelSPAN::~MvrNovatelSPAN()
 {
 }
 
@@ -147,7 +147,7 @@ void ArNovatelSPAN::handleINGLL(MvrNMEAParser::Message msg)
   myData.qualityFlag = ((*mv)[6] != "V" && (*mv)[6] != "N");
 }
 
-AREXPORT bool ArNovatelSPAN::initDevice()
+MVREXPORT bool ArNovatelSPAN::initDevice()
 {
   if(!ArNovatelGPS::initDevice()) return false;
   ArLog::log(MvrLog::Normal, "MvrNovatelSPAN: will request INS-corrected latitude and longitude to use as GPS position.");

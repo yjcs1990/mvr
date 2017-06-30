@@ -42,7 +42,7 @@ class MvrActionColorFollow : public MvrAction
   
 public:
   // Constructor
-  AREXPORT MvrActionColorFollow(const char *name, 
+  MVREXPORT MvrActionColorFollow(const char *name, 
 			       MvrACTS_1_2 *acts,
 			       MvrPTZ *camera,
 			       double speed = 200, 
@@ -50,39 +50,39 @@ public:
 			       int height = 120);
   
   // Destructor
-  AREXPORT virtual ~ArActionColorFollow(void);
+  MVREXPORT virtual ~MvrActionColorFollow(void);
   
   // The action
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
 
   // Set the ACTS channel that we want to get blob info out of
-  AREXPORT bool setChannel(int channel);
+  MVREXPORT bool setChannel(int channel);
 
   // Set the camera that we will be controlling
-  AREXPORT void setCamera(MvrPTZ *camera);
+  MVREXPORT void setCamera(MvrPTZ *camera);
 
   // Toggle whether we should try to acquire a blob
   // if one cannot be seen
-  AREXPORT void setAcquire(bool acquire);
+  MVREXPORT void setAcquire(bool acquire);
 
   // Stop moving alltogether
-  AREXPORT void stopMovement(void);
+  MVREXPORT void stopMovement(void);
   
   // Start moving
-  AREXPORT void startMovement(void);
+  MVREXPORT void startMovement(void);
 
   // Return the channel that we are looking for blobs on
-  AREXPORT int getChannel();
+  MVREXPORT int getChannel();
   
   // Return whether or not we are trying to acquire a blob
   // if we cannot see one
-  AREXPORT bool getAcquire();
+  MVREXPORT bool getAcquire();
   
   // Return whether or not we are moving
-  AREXPORT bool getMovement();
+  MVREXPORT bool getMovement();
 
   // Return whether or not we can see a target
-  AREXPORT bool getBlob();
+  MVREXPORT bool getBlob();
 
   // The state of the action
   enum TargetState 
@@ -106,9 +106,9 @@ public:
     RIGHT,          // The blob is on the right side of the screen
     CENTER          // The blob is relatively close to the center
   };
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

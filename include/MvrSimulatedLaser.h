@@ -57,16 +57,16 @@ class MvrSimulatedLaser : public MvrLaser
 {
 public:
   /// Constructor
-  AREXPORT MvrSimulatedLaser(MvrLaser *laser);
+  MVREXPORT MvrSimulatedLaser(MvrLaser *laser);
   /// Destructor
-  AREXPORT virtual ~ArSimulatedLaser();
+  MVREXPORT virtual ~MvrSimulatedLaser();
 
-  AREXPORT virtual bool blockingConnect(void);
-  AREXPORT virtual bool asyncConnect(void);
-  AREXPORT virtual bool disconnect(void);
-  AREXPORT virtual bool isConnected(void)
+  MVREXPORT virtual bool blockingConnect(void);
+  MVREXPORT virtual bool asyncConnect(void);
+  MVREXPORT virtual bool disconnect(void);
+  MVREXPORT virtual bool isConnected(void)
     { return myIsConnected; }
-  AREXPORT virtual bool isTryingToConnect(void)
+  MVREXPORT virtual bool isTryingToConnect(void)
     { 
       if (myStartConnect)
 	return true;
@@ -77,10 +77,10 @@ public:
     }  
 
 protected:
-  AREXPORT virtual void * runThread(void *arg);
-  AREXPORT virtual bool laserCheckParams(void);
-  AREXPORT bool finishParams(void);
-  AREXPORT bool simPacketHandler(MvrRobotPacket *packet);
+  MVREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual bool laserCheckParams(void);
+  MVREXPORT bool finishParams(void);
+  MVREXPORT bool simPacketHandler(MvrRobotPacket *packet);
   MvrLaser *myLaser;
 
   double mySimBegin;

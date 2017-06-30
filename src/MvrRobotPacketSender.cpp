@@ -38,7 +38,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    should be left as the default in nearly all cases, or it won't work with any
    production robot. ie don't mess with it
 */
-AREXPORT ArRobotPacketSender::ArRobotPacketSender(unsigned char sync1,
+MVREXPORT ArRobotPacketSender::ArRobotPacketSender(unsigned char sync1,
 						  unsigned char sync2) :
   myPacket(sync1, sync2)
 {
@@ -58,7 +58,7 @@ AREXPORT ArRobotPacketSender::ArRobotPacketSender(unsigned char sync1,
    should be left as the default in nearly all cases, or it won't work with any
    production robot. ie don't mess with it
 */
-AREXPORT ArRobotPacketSender::ArRobotPacketSender(
+MVREXPORT ArRobotPacketSender::ArRobotPacketSender(
 	ArDeviceConnection *deviceConnection, 
     unsigned char sync1,
 	unsigned char sync2) :
@@ -83,7 +83,7 @@ AREXPORT ArRobotPacketSender::ArRobotPacketSender(
    @param trackingLogName name (packet type) to include in packet-tracking log messages 
 
 */
-AREXPORT ArRobotPacketSender::ArRobotPacketSender(
+MVREXPORT ArRobotPacketSender::ArRobotPacketSender(
 	ArDeviceConnection *deviceConnection, 
     unsigned char sync1,
 	unsigned char sync2,
@@ -98,18 +98,18 @@ AREXPORT ArRobotPacketSender::ArRobotPacketSender(
   myPacketSentCallback = NULL;
 }
 
-AREXPORT ArRobotPacketSender::~ArRobotPacketSender()
+MVREXPORT ArRobotPacketSender::~MvrRobotPacketSender()
 {
 
 }
 
-AREXPORT void ArRobotPacketSender::setDeviceConnection(
+MVREXPORT void ArRobotPacketSender::setDeviceConnection(
 	ArDeviceConnection *deviceConnection)
 {
   myDeviceConn = deviceConnection;
 }
 
-AREXPORT ArDeviceConnection *ArRobotPacketSender::getDeviceConnection(void)
+MVREXPORT ArDeviceConnection *ArRobotPacketSender::getDeviceConnection(void)
 {
   return myDeviceConn;
 }
@@ -124,7 +124,7 @@ bool ArRobotPacketSender::connValid(void)
    @param command the command number to send
    @return whether the command could be sent or not
 */
-AREXPORT bool ArRobotPacketSender::com(unsigned char command)
+MVREXPORT bool ArRobotPacketSender::com(unsigned char command)
 {
   if (!connValid())
     return false;
@@ -158,7 +158,7 @@ AREXPORT bool ArRobotPacketSender::com(unsigned char command)
    @param argument the integer argument to send with the command
    @return whether the command could be sent or not
 */
-AREXPORT bool ArRobotPacketSender::comInt(unsigned char command, 
+MVREXPORT bool ArRobotPacketSender::comInt(unsigned char command, 
 					  short int argument)
 {
 
@@ -203,7 +203,7 @@ AREXPORT bool ArRobotPacketSender::comInt(unsigned char command,
    @param low the low byte to send with the command
    @return whether the command could be sent or not
 */
-AREXPORT bool ArRobotPacketSender::com2Bytes(unsigned char command, char high,
+MVREXPORT bool ArRobotPacketSender::com2Bytes(unsigned char command, char high,
 					     char low)
 {
   return comInt(command, ((high & 0xff)<<8) + (low & 0xff));
@@ -215,7 +215,7 @@ AREXPORT bool ArRobotPacketSender::com2Bytes(unsigned char command, char high,
    @param argument NULL-terminated string to send with the command
    @return whether the command could be sent or not
 */
-AREXPORT bool ArRobotPacketSender::comStr(unsigned char command, 
+MVREXPORT bool ArRobotPacketSender::comStr(unsigned char command, 
 					  const char *argument)
 {
   size_t size;
@@ -259,7 +259,7 @@ AREXPORT bool ArRobotPacketSender::comStr(unsigned char command,
    @param size number of bytes from the array to send; prefix the string with a byte containing this value as well. this size must be less than the maximum packet size of 200
    @return whether the command could be sent or not
 */
-AREXPORT bool ArRobotPacketSender::comStrN(unsigned char command, 
+MVREXPORT bool ArRobotPacketSender::comStrN(unsigned char command, 
 					   const char *str, int size)
 {
   if (!connValid())
@@ -301,7 +301,7 @@ AREXPORT bool ArRobotPacketSender::comStrN(unsigned char command,
    @param packet ArRobotPacket
    @return whether the command could be sent or not
 */
-AREXPORT bool ArRobotPacketSender::sendPacket(MvrRobotPacket *packet)
+MVREXPORT bool ArRobotPacketSender::sendPacket(MvrRobotPacket *packet)
 {
   if (!connValid())
     return false;
@@ -346,7 +346,7 @@ AREXPORT bool ArRobotPacketSender::sendPacket(MvrRobotPacket *packet)
   
 }
 
-AREXPORT bool ArRobotPacketSender::comDataN(unsigned char command, const char* data, int size)
+MVREXPORT bool ArRobotPacketSender::comDataN(unsigned char command, const char* data, int size)
 {
   if(!connValid()) return false;
   if(size > 200) return false;
@@ -374,7 +374,7 @@ AREXPORT bool ArRobotPacketSender::comDataN(unsigned char command, const char* d
   return ret;
 }
 
-AREXPORT void ArRobotPacketSender::setPacketSentCallback(
+MVREXPORT void ArRobotPacketSender::setPacketSentCallback(
 	ArFunctor1<ArRobotPacket *> *functor)
 {
   myPacketSentCallback = functor;

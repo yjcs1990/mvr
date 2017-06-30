@@ -31,47 +31,47 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
    @param name name of the action
 */
-AREXPORT MvrActionInput::ArActionInput(const char *name) :
+MVREXPORT MvrActionInput::ArActionInput(const char *name) :
     MvrAction(name, "Inputs vel and heading")
 {
   clear();
 }
 
-AREXPORT MvrActionInput::~ArActionInput()
+MVREXPORT MvrActionInput::~MvrActionInput()
 {
 }
 
-AREXPORT void MvrActionInput::setVel(double vel)
+MVREXPORT void MvrActionInput::setVel(double vel)
 {
   myUsingVel = true;
   myVelSet = vel;
 }
 
-AREXPORT void MvrActionInput::setRotVel(double rotVel)
+MVREXPORT void MvrActionInput::setRotVel(double rotVel)
 {
   myRotRegime = ROTVEL;
   myRotVal = rotVel;
 }
 
-AREXPORT void MvrActionInput::deltaHeadingFromCurrent(double delta)
+MVREXPORT void MvrActionInput::deltaHeadingFromCurrent(double delta)
 {
   myRotRegime = DELTAHEADING;
   myRotVal = delta;
 }
 
-AREXPORT void MvrActionInput::setHeading(double heading)
+MVREXPORT void MvrActionInput::setHeading(double heading)
 {
   myRotRegime = SETHEADING;
   myRotVal = heading;
 }
 
-AREXPORT void MvrActionInput::clear(void)
+MVREXPORT void MvrActionInput::clear(void)
 {
   myUsingVel = false;
   myRotRegime = NONE;
 }
 
-AREXPORT MvrActionDesired *ArActionInput::fire(
+MVREXPORT MvrActionDesired *ArActionInput::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

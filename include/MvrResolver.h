@@ -49,7 +49,7 @@ public:
   MvrResolver(const char *name, const char * description = "")
     { myName = name; myDescription = description; }
   /// Desturctor
-  virtual ~ArResolver() {};
+  virtual ~MvrResolver() {};
   /// Figure out a single MvrActionDesired from a list of MvrAction s
   virtual MvrActionDesired *resolve(ActionMap *actions, MvrRobot *robot,
 				   bool logActions = false) = 0;

@@ -82,36 +82,36 @@ class MvrRobotConnector
 {
 public:
   /// Constructor that takes argument parser
-  AREXPORT MvrRobotConnector(MvrArgumentParser *parser, MvrRobot *robot, 
+  MVREXPORT MvrRobotConnector(MvrArgumentParser *parser, MvrRobot *robot, 
 			    bool autoParseArgs = true, bool connectAllComponents = true);
   /// Destructor
-  AREXPORT ~ArRobotConnector(void);
+  MVREXPORT ~MvrRobotConnector(void);
   /// Sets up the given robot to be connected
-  AREXPORT bool setupRobot(void);
+  MVREXPORT bool setupRobot(void);
   /// Sets up an arbitrary robot to be connected
-  AREXPORT bool setupRobot(MvrRobot *robot);
+  MVREXPORT bool setupRobot(MvrRobot *robot);
   /// Sets up the robot then connects it
-  AREXPORT bool connectRobot(void);
+  MVREXPORT bool connectRobot(void);
   /// Sets up the robot then connects it
-  AREXPORT bool connectRobot(MvrRobot *robot);
+  MVREXPORT bool connectRobot(MvrRobot *robot);
   /// Function to parse the arguments given in the constructor
-  AREXPORT bool parseArgs(void);
+  MVREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(MvrArgumentParser *parser);
+  MVREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
-  AREXPORT void logOptions(void) const;
+  MVREXPORT void logOptions(void) const;
   /// Gets the remote host, if one was used, or NULL if it wasn't
-  AREXPORT const char *getRemoteHost(void) const;
+  MVREXPORT const char *getRemoteHost(void) const;
   /// Gets if the remote connection is a sim
-  AREXPORT bool getRemoteIsSim(void) const;
+  MVREXPORT bool getRemoteIsSim(void) const;
   /// Call for forcing the remote to be a sim (mostly for internal use)
-  AREXPORT void setRemoteIsSim(bool remoteIsSim);
+  MVREXPORT void setRemoteIsSim(bool remoteIsSim);
   /// Gets the robot this connector is using (mostly for backwards compatibility stuff)
-  AREXPORT MvrRobot *getRobot(void);
+  MVREXPORT MvrRobot *getRobot(void);
   /// Disconnect from any robot components connected to. If connectAllComponents
   /// was not set to false in constructor, then connections to all robot components, and the
   /// robot itself, are disconnected.
-  AREXPORT bool disconnectAll();
+  MVREXPORT bool disconnectAll();
 protected:
   // the robot we've set up (so we can find its params)
   MvrRobot *myRobot; 

@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaOSDef.h"
 #include "MvrJoyHandler.h"
 
-AREXPORT bool MvrJoyHandler::init(void)
+MVREXPORT bool MvrJoyHandler::init(void)
 {
 
   myPhysMax = 1;

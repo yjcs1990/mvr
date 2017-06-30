@@ -61,38 +61,38 @@ class MvrLCDMTX : public MvrASyncTask
 {
 public:
 	/// Constructor
-	AREXPORT MvrLCDMTX(
+	MVREXPORT MvrLCDMTX(
 		int lcdBoardNum = 0,
 		const char * name = "MTXLCD",
 		ArDeviceConnection *conn = NULL,
 		ArRobot *robot = NULL);
 	/// Destructor
-	AREXPORT virtual ~ArLCDMTX();
+	MVREXPORT virtual ~MvrLCDMTX();
 
 	// Grabs the new readings from the robot and adds them to the buffers
 	// (Primarily for internal use.)
-	//AREXPORT void processReadings(void);
+	//MVREXPORT void processReadings(void);
 
-	AREXPORT int getBoardNum(void)
+	MVREXPORT int getBoardNum(void)
 	{
 		return myBoardNum;
 	}
 
 	/// Sets the robot pointer, also attaches its process function to the
 	/// robot as a Sensor Interpretation task.
-	AREXPORT virtual void setRobot(MvrRobot *robot);
+	MVREXPORT virtual void setRobot(MvrRobot *robot);
 
 	/// Sets the device this instance receives packets from
-	AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+	MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
 	/// Gets the device this instance receives packets from
-	AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+	MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
-	AREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking,
+	MVREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking,
 		int lcdNumber, MvrFunctor1<int> *onCallback,
 		ArFunctor1<int> *offCallback);
-	AREXPORT virtual bool disconnect(void);
-	AREXPORT virtual bool isConnected(void) { return myIsConnected; }
-	AREXPORT virtual bool isTryingToConnect(void)
+	MVREXPORT virtual bool disconnect(void);
+	MVREXPORT virtual bool isConnected(void) { return myIsConnected; }
+	MVREXPORT virtual bool isTryingToConnect(void)
 	{
 		if (myStartConnect)
 			return true;
@@ -104,15 +104,15 @@ public:
 
 
 	/// Lock this device
-	AREXPORT virtual int lockDevice() { return(myDeviceMutex.lock()); }
+	MVREXPORT virtual int lockDevice() { return(myDeviceMutex.lock()); }
 	/// Try to lock this device
-	AREXPORT virtual int tryLockDevice() { return(myDeviceMutex.tryLock()); }
+	MVREXPORT virtual int tryLockDevice() { return(myDeviceMutex.tryLock()); }
 	/// Unlock this device
-	AREXPORT virtual int unlockDevice() { return(myDeviceMutex.unlock()); }
+	MVREXPORT virtual int unlockDevice() { return(myDeviceMutex.unlock()); }
 
-	AREXPORT virtual const char *getName(void) const;
+	MVREXPORT virtual const char *getName(void) const;
 
-	AREXPORT void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
+	MVREXPORT void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
 	{
 		myInfoLogLevel = infoLogLevel;
 	}
@@ -126,11 +126,11 @@ public:
 	/**
 	@param dir If provided, gives a custom directory to check for firmware file
 	*/
-	AREXPORT bool verifyFwVersion();
+	MVREXPORT bool verifyFwVersion();
 
 
 	/// Sets the numter of seconds without a response until connection assumed lost
-	AREXPORT virtual void setConnectionTimeoutSeconds(double seconds)
+	MVREXPORT virtual void setConnectionTimeoutSeconds(double seconds)
 	{
 		ArLog::log(MvrLog::Normal,
 			"%s::setConnectionTimeoutSeconds: Setting timeout to %g secs",
@@ -138,18 +138,18 @@ public:
 		myTimeoutSeconds = seconds;
 	}
 	/// Gets the number of seconds without a response until connection assumed lost
-	AREXPORT virtual double getConnectionTimeoutSeconds(void)
+	MVREXPORT virtual double getConnectionTimeoutSeconds(void)
 	{
 		return myTimeoutSeconds;
 	}
 	/// check for lost connections
-	AREXPORT bool checkLostConnection(void);
+	MVREXPORT bool checkLostConnection(void);
 	/// disconnect 
-	AREXPORT void disconnectOnError(void);
+	MVREXPORT void disconnectOnError(void);
 	/// Gets the time data was last receieved
 	ArTime getLastReadingTime(void) { return myLastReading; }
 	/// Gets the number of lcd readings received in the last second
-	AREXPORT int getReadingCount(void);
+	MVREXPORT int getReadingCount(void);
 	// Function called in sensorInterp to indicate that a
 	// reading was received
 
@@ -176,10 +176,10 @@ public:
 	/// size is limited to 247 characters... supports new lines (it
 	/// can show up to 6 lines, with roughly 22-26 chars per line)
 
-	AREXPORT bool setMTXLCDMainScreenText(const char *status);
+	MVREXPORT bool setMTXLCDMainScreenText(const char *status);
 	// we just have one text on the status now
-	//AREXPORT bool setMTXLCDMainScreenMode(const char *status);
-	AREXPORT bool setMTXLCDBootScreenText(const char *status);
+	//MVREXPORT bool setMTXLCDMainScreenMode(const char *status);
+	MVREXPORT bool setMTXLCDBootScreenText(const char *status);
 
 	// get routines
 	enum Screens {
@@ -188,19 +188,19 @@ public:
 	};
 
 	// only 2 valid screen numbers 
-	AREXPORT bool setMTXLCDScreenNumber(unsigned char screenNumber);
+	MVREXPORT bool setMTXLCDScreenNumber(unsigned char screenNumber);
 
 	// sets backlight on/off
-	AREXPORT bool setMTXLCDBackLight(bool backLight);
+	MVREXPORT bool setMTXLCDBackLight(bool backLight);
 
-	AREXPORT void setIdentifier(const char *identifier);
+	MVREXPORT void setIdentifier(const char *identifier);
 
 	/// internal call (don't use it) that updates from the calling thread instead of the correct thread
-	AREXPORT bool internalMTXLCDOverrideMainScreenText(const char *status);
+	MVREXPORT bool internalMTXLCDOverrideMainScreenText(const char *status);
 	/// internal call (don't use it) that updates from the calling thread instead of the correct thread
-	AREXPORT bool internalMTXLCDOverrideBootScreenText(const char *status);
+	MVREXPORT bool internalMTXLCDOverrideBootScreenText(const char *status);
 	/// internal call (don't use it) that updates from the calling thread instead of the correct thread
-	AREXPORT bool internalMTXLCDOverrideBackLight(bool backlight);
+	MVREXPORT bool internalMTXLCDOverrideBackLight(bool backlight);
 
 	/// Change what directory to look in for updated LCD firmware, other than default. Must be called before connecting to any LCDs.
 	static void setFirmwareDir(const char *dir) {
@@ -209,46 +209,46 @@ public:
 protected:
 
 	/// Logs the information about the sensor
-	AREXPORT void log(void);
+	MVREXPORT void log(void);
 
-	AREXPORT void writeToLCD();
+	MVREXPORT void writeToLCD();
 
-	AREXPORT bool setMainStatus(const char *status);
-	AREXPORT bool setTextStatus(const char *status);
-	AREXPORT bool setRobotIdStatus(const char *status);
-	AREXPORT bool setRobotIPStatus(const char *status);
-	AREXPORT bool setBootStatus(const char *status);
-	AREXPORT bool getMainStatus(const char *status);
-	AREXPORT bool getTextStatus(const char *status);
-	AREXPORT bool getBootStatus(const char *status);
+	MVREXPORT bool setMainStatus(const char *status);
+	MVREXPORT bool setTextStatus(const char *status);
+	MVREXPORT bool setRobotIdStatus(const char *status);
+	MVREXPORT bool setRobotIPStatus(const char *status);
+	MVREXPORT bool setBootStatus(const char *status);
+	MVREXPORT bool getMainStatus(const char *status);
+	MVREXPORT bool getTextStatus(const char *status);
+	MVREXPORT bool getBootStatus(const char *status);
 
 
-	AREXPORT bool sendKeepAlive();
-	AREXPORT bool sendVersion();
-	AREXPORT bool sendSystemInfo(unsigned char command);
-	AREXPORT bool sendReboot();
+	MVREXPORT bool sendKeepAlive();
+	MVREXPORT bool sendVersion();
+	MVREXPORT bool sendSystemInfo(unsigned char command);
+	MVREXPORT bool sendReboot();
 
-	AREXPORT bool getScreenNumber(unsigned char *currentScreenNumber);
+	MVREXPORT bool getScreenNumber(unsigned char *currentScreenNumber);
 
-	AREXPORT bool getTextField(unsigned char textNumber, char *text);
-	AREXPORT bool getBacklight(unsigned char *backlight);
-	AREXPORT bool getSystemMeters(unsigned char *battery, unsigned char *wifi);
+	MVREXPORT bool getTextField(unsigned char textNumber, char *text);
+	MVREXPORT bool getBacklight(unsigned char *backlight);
+	MVREXPORT bool getSystemMeters(unsigned char *battery, unsigned char *wifi);
 
 
 	// set routines
-	AREXPORT bool setTextField(unsigned char textNumber, const char *text);
-	AREXPORT bool setBacklight(bool backlight);
-	AREXPORT bool setSystemMeters(unsigned char battery, unsigned char wifi);
-	AREXPORT bool setScreenNumber(unsigned char screenNumber);
+	MVREXPORT bool setTextField(unsigned char textNumber, const char *text);
+	MVREXPORT bool setBacklight(bool backlight);
+	MVREXPORT bool setSystemMeters(unsigned char battery, unsigned char wifi);
+	MVREXPORT bool setScreenNumber(unsigned char screenNumber);
 
-	AREXPORT unsigned char getBatteryPercentage();
-	AREXPORT unsigned char getWifiPercentage();
+	MVREXPORT unsigned char getBatteryPercentage();
+	MVREXPORT unsigned char getWifiPercentage();
 
-	AREXPORT void getIpAddress();
+	MVREXPORT void getIpAddress();
 
-	AREXPORT bool hasIpAddressChanged();
+	MVREXPORT bool hasIpAddressChanged();
 
-	AREXPORT virtual void internalGotReading(void);
+	MVREXPORT virtual void internalGotReading(void);
 
 	ArDeviceConnection *myConn;
 	std::string myName;
@@ -271,14 +271,14 @@ protected:
 	ArRobot *myRobot;
 	ArFunctorC<ArLCDMTX> myProcessCB;
 
-	AREXPORT virtual void lcdSetName(const char *name);
-	AREXPORT virtual void * runThread(void *arg);
+	MVREXPORT virtual void lcdSetName(const char *name);
+	MVREXPORT virtual void * runThread(void *arg);
 
 	/**
 	@param dir If provided, gives a custom directory to check for firmware file
 	*/
-	AREXPORT bool downloadFirmware();
-	AREXPORT std::string searchForFile(
+	MVREXPORT bool downloadFirmware();
+	MVREXPORT std::string searchForFile(
 		const char *dirToLookIn, const char *prefix, const char *suffix);
 
 

@@ -32,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 // PS 7/11/11 - nothing is done different for windows for 422
-AREXPORT ArSerialConnection::ArSerialConnection(bool is422)
+MVREXPORT ArSerialConnection::ArSerialConnection(bool is422)
 {
   myPort = INVALID_HANDLE_VALUE;
   myBaudRate = 9600;
@@ -45,7 +45,7 @@ AREXPORT ArSerialConnection::ArSerialConnection(bool is422)
     setPortType("serial");
 }
 
-AREXPORT ArSerialConnection::~ArSerialConnection()
+MVREXPORT ArSerialConnection::~MvrSerialConnection()
 {
   if (myPort != INVALID_HANDLE_VALUE)
     close();
@@ -60,12 +60,12 @@ void ArSerialConnection::buildStrMap(void)
   myStrMap[OPEN_ALREADY_OPEN] = "Serial port already open.";
 }
 
-AREXPORT const char * ArSerialConnection::getOpenMessage(int messageNumber)
+MVREXPORT const char * ArSerialConnection::getOpenMessage(int messageNumber)
 {
   return myStrMap[messageNumber].c_str();
 }
 
-AREXPORT bool ArSerialConnection::openSimple(void)
+MVREXPORT bool ArSerialConnection::openSimple(void)
 {
   if (internalOpen() == 0)
     return true;
@@ -79,7 +79,7 @@ AREXPORT bool ArSerialConnection::openSimple(void)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-AREXPORT void ArSerialConnection::setPort(const char *port)
+MVREXPORT void ArSerialConnection::setPort(const char *port)
 {
   if (port == NULL)
     myPortName = "COM1";
@@ -91,7 +91,7 @@ AREXPORT void ArSerialConnection::setPort(const char *port)
 /**
    @return The seiral port to connect to
 **/
-AREXPORT const char * ArSerialConnection::getPort(void)
+MVREXPORT const char * ArSerialConnection::getPort(void)
 {
   return myPortName.c_str();
 }
@@ -102,7 +102,7 @@ AREXPORT const char * ArSerialConnection::getPort(void)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-AREXPORT int ArSerialConnection::open(const char *port)
+MVREXPORT int ArSerialConnection::open(const char *port)
 {
   setPort(port);
   return internalOpen();
@@ -110,7 +110,7 @@ AREXPORT int ArSerialConnection::open(const char *port)
 
 
 
-AREXPORT int ArSerialConnection::internalOpen(void)
+MVREXPORT int ArSerialConnection::internalOpen(void)
 {
   DCB dcb;
 
@@ -214,7 +214,7 @@ AREXPORT int ArSerialConnection::internalOpen(void)
 
 
 
-AREXPORT bool ArSerialConnection::close(void)
+MVREXPORT bool ArSerialConnection::close(void)
 {
   bool ret;
 
@@ -241,12 +241,12 @@ AREXPORT bool ArSerialConnection::close(void)
   return ret;
 }
 
-AREXPORT int ArSerialConnection::getBaud(void)
+MVREXPORT int ArSerialConnection::getBaud(void)
 {
    return myBaudRate;
 }
 
-AREXPORT bool ArSerialConnection::setBaud(int baud)
+MVREXPORT bool ArSerialConnection::setBaud(int baud)
 {
   DCB dcb;
   
@@ -276,12 +276,12 @@ AREXPORT bool ArSerialConnection::setBaud(int baud)
   return true;
 }
 
-AREXPORT bool ArSerialConnection::getHardwareControl(void)
+MVREXPORT bool ArSerialConnection::getHardwareControl(void)
 {
   return myHardwareControl;
 }
 
-AREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
+MVREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
 {
   DCB dcb;
 
@@ -317,7 +317,7 @@ AREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
   return true;
 }
 
-AREXPORT int ArSerialConnection::write(const char *data, unsigned int size) 
+MVREXPORT int ArSerialConnection::write(const char *data, unsigned int size) 
 {
   unsigned long ret;
 
@@ -334,7 +334,7 @@ AREXPORT int ArSerialConnection::write(const char *data, unsigned int size)
   return -1;
 }
 
-AREXPORT int ArSerialConnection::read(const char *data, unsigned int size, 
+MVREXPORT int ArSerialConnection::read(const char *data, unsigned int size, 
 				      unsigned int msWait) 
 {
   COMSTAT stat;
@@ -385,24 +385,24 @@ AREXPORT int ArSerialConnection::read(const char *data, unsigned int size,
 }
 
 
-AREXPORT int ArSerialConnection::getStatus(void)
+MVREXPORT int ArSerialConnection::getStatus(void)
 {
   return myStatus;
 }
 
-AREXPORT bool ArSerialConnection::isTimeStamping(void)
+MVREXPORT bool ArSerialConnection::isTimeStamping(void)
 {
   return false;
 }
 
-AREXPORT ArTime ArSerialConnection::getTimeRead(int index)
+MVREXPORT ArTime ArSerialConnection::getTimeRead(int index)
 {
   ArTime now;
   now.setToNow();
   return now;
 }
 
-AREXPORT bool ArSerialConnection::getCTS(void)
+MVREXPORT bool ArSerialConnection::getCTS(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))
@@ -416,7 +416,7 @@ AREXPORT bool ArSerialConnection::getCTS(void)
   }
 } 
 
-AREXPORT bool ArSerialConnection::getDSR(void)
+MVREXPORT bool ArSerialConnection::getDSR(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))
@@ -430,7 +430,7 @@ AREXPORT bool ArSerialConnection::getDSR(void)
   }
 } 
 
-AREXPORT bool ArSerialConnection::getDCD(void)
+MVREXPORT bool ArSerialConnection::getDCD(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))
@@ -444,7 +444,7 @@ AREXPORT bool ArSerialConnection::getDCD(void)
   }
 }
 
-AREXPORT bool ArSerialConnection::getRing(void)
+MVREXPORT bool ArSerialConnection::getRing(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))

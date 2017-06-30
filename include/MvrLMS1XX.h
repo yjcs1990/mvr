@@ -42,45 +42,45 @@ class MvrLMS1XXPacket : public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrLMS1XXPacket();
+  MVREXPORT MvrLMS1XXPacket();
   /// Destructor
-  AREXPORT virtual ~ArLMS1XXPacket();
+  MVREXPORT virtual ~MvrLMS1XXPacket();
 
   /// Gets the command type 
-  AREXPORT const char *getCommandType(void);
+  MVREXPORT const char *getCommandType(void);
   /// Gets the command name
-  AREXPORT const char *getCommandName(void);
+  MVREXPORT const char *getCommandName(void);
   
   // only call finalizePacket before a send
-  AREXPORT virtual void finalizePacket(void);
-  AREXPORT virtual void resetRead(void);
+  MVREXPORT virtual void finalizePacket(void);
+  MVREXPORT virtual void resetRead(void);
   
   /// Gets the time the packet was received at
-  AREXPORT MvrTime getTimeReceived(void);
+  MVREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(MvrTime timeReceived);
+  MVREXPORT void setTimeReceived(MvrTime timeReceived);
 
-  AREXPORT virtual void duplicatePacket(MvrLMS1XXPacket *packet);
-  AREXPORT virtual void empty(void);
+  MVREXPORT virtual void duplicatePacket(MvrLMS1XXPacket *packet);
+  MVREXPORT virtual void empty(void);
   
-  AREXPORT virtual void byteToBuf(MvrTypes::Byte val);
-  AREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
-  AREXPORT virtual void byte4ToBuf(MvrTypes::Byte4 val);
-  AREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
-  AREXPORT virtual void uByte2ToBuf(MvrTypes::UByte2 val);
-  AREXPORT virtual void uByte4ToBuf(MvrTypes::UByte4 val);
-  AREXPORT virtual void strToBuf(const char *str);
+  MVREXPORT virtual void byteToBuf(MvrTypes::Byte val);
+  MVREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
+  MVREXPORT virtual void byte4ToBuf(MvrTypes::Byte4 val);
+  MVREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
+  MVREXPORT virtual void uByte2ToBuf(MvrTypes::UByte2 val);
+  MVREXPORT virtual void uByte4ToBuf(MvrTypes::UByte4 val);
+  MVREXPORT virtual void strToBuf(const char *str);
 
-  AREXPORT virtual MvrTypes::Byte bufToByte(void);
-  AREXPORT virtual MvrTypes::Byte2 bufToByte2(void);
-  AREXPORT virtual MvrTypes::Byte4 bufToByte4(void);
-  AREXPORT virtual MvrTypes::UByte bufToUByte(void);
-  AREXPORT virtual MvrTypes::UByte2 bufToUByte2(void);
-  AREXPORT virtual MvrTypes::UByte4 bufToUByte4(void);
-  AREXPORT virtual void bufToStr(char *buf, int len);
+  MVREXPORT virtual MvrTypes::Byte bufToByte(void);
+  MVREXPORT virtual MvrTypes::Byte2 bufToByte2(void);
+  MVREXPORT virtual MvrTypes::Byte4 bufToByte4(void);
+  MVREXPORT virtual MvrTypes::UByte bufToUByte(void);
+  MVREXPORT virtual MvrTypes::UByte2 bufToUByte2(void);
+  MVREXPORT virtual MvrTypes::UByte4 bufToUByte4(void);
+  MVREXPORT virtual void bufToStr(char *buf, int len);
 
   // adds a raw char to the buf
-  AREXPORT virtual void rawCharToBuf(unsigned char c);
+  MVREXPORT virtual void rawCharToBuf(unsigned char c);
 protected:
   int deascii(char c);
 
@@ -98,35 +98,35 @@ class MvrLMS1XXPacketReceiver
 {
 public:
   /// Constructor with assignment of a device connection
-  AREXPORT MvrLMS1XXPacketReceiver();
+  MVREXPORT MvrLMS1XXPacketReceiver();
   /// Destructor
-  AREXPORT virtual ~ArLMS1XXPacketReceiver();
+  MVREXPORT virtual ~MvrLMS1XXPacketReceiver();
   
   /// Receives a packet from the robot if there is one available
-  AREXPORT MvrLMS1XXPacket *receivePacket(unsigned int msWait = 0,
+  MVREXPORT MvrLMS1XXPacket *receivePacket(unsigned int msWait = 0,
 					 bool shortcut = false, 
 					 bool ignoreRemainders = false);
 
-  AREXPORT MvrLMS1XXPacket *receiveTiMPacket(unsigned int msWait = 0,
+  MVREXPORT MvrLMS1XXPacket *receiveTiMPacket(unsigned int msWait = 0,
 					 bool shortcut = false, 
 					 bool ignoreRemainders = false);
 
   /// Sets the device this instance receives packets from
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
 
   // PS - added to pass info to this class
-  AREXPORT void	setmyInfoLogLevel(MvrLog::LogLevel infoLogLevel)
+  MVREXPORT void	setmyInfoLogLevel(MvrLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
-  AREXPORT void setLaserModel(int laserModel)
+  MVREXPORT void setLaserModel(int laserModel)
   { myLaserModel = laserModel; }
-  AREXPORT void setmyName(const char *name )
+  MVREXPORT void setmyName(const char *name )
   { 
     strncpy(myName, name, sizeof(myName)); 
     myName[sizeof(myName)-1] = '\0';
   }
-  AREXPORT void setReadTimeout(int timeout )
+  MVREXPORT void setReadTimeout(int timeout )
   { myReadTimeout = timeout; }
 
 
@@ -177,23 +177,23 @@ public:
 	};
 
   /// Constructor
-	  AREXPORT MvrLMS1XX(int laserNumber,
+	  MVREXPORT MvrLMS1XX(int laserNumber,
 			    const char *name,
 					LaserModel laserModel);
 
   /// Destructor
-  AREXPORT ~ArLMS1XX();
-  AREXPORT virtual bool blockingConnect(void);
+  MVREXPORT ~MvrLMS1XX();
+  MVREXPORT virtual bool blockingConnect(void);
 
 	// specific init routine per laser
-  AREXPORT virtual bool lms5xxConnect(void);
-  AREXPORT virtual bool lms1xxConnect(void);
-  AREXPORT virtual bool timConnect(void);
+  MVREXPORT virtual bool lms5xxConnect(void);
+  MVREXPORT virtual bool lms1xxConnect(void);
+  MVREXPORT virtual bool timConnect(void);
 
-  AREXPORT virtual bool asyncConnect(void);
-  AREXPORT virtual bool disconnect(void);
-  AREXPORT virtual bool isConnected(void) { return myIsConnected; }
-  AREXPORT virtual bool isTryingToConnect(void) 
+  MVREXPORT virtual bool asyncConnect(void);
+  MVREXPORT virtual bool disconnect(void);
+  MVREXPORT virtual bool isConnected(void) { return myIsConnected; }
+  MVREXPORT virtual bool isTryingToConnect(void) 
     { 
       if (myStartConnect)
 	return true;
@@ -204,14 +204,14 @@ public:
     }  
 
   /// Logs the information about the sensor
-  AREXPORT void log(void);
+  MVREXPORT void log(void);
 
 
 protected:
-  AREXPORT virtual void laserSetName(const char *name);
-  AREXPORT virtual void * runThread(void *arg);
-  AREXPORT virtual void setRobot(MvrRobot *robot);
-  AREXPORT MvrLMS1XXPacket *sendAndRecv(
+  MVREXPORT virtual void laserSetName(const char *name);
+  MVREXPORT virtual void * runThread(void *arg);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT MvrLMS1XXPacket *sendAndRecv(
 	  MvrTime timeout, MvrLMS1XXPacket *sendPacket, const char *recvName);
   void sensorInterp(void);
   void failedToConnect(void);

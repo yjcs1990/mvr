@@ -43,35 +43,35 @@ class MvrRobotPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrRobotPacket(unsigned char sync1 = 0xfa, 
+  MVREXPORT MvrRobotPacket(unsigned char sync1 = 0xfa, 
 			 unsigned char sync2 = 0xfb);
   /// Destructor
-  AREXPORT virtual ~ArRobotPacket();
+  MVREXPORT virtual ~MvrRobotPacket();
 
   /// Assignment operator
-  AREXPORT MvrRobotPacket &operator=(const MvrRobotPacket &other);
+  MVREXPORT MvrRobotPacket &operator=(const MvrRobotPacket &other);
 
   /// returns true if the checksum matches what it should be
-  AREXPORT bool verifyCheckSum(void);
+  MVREXPORT bool verifyCheckSum(void);
 
   /// returns the ID of the packet 
-  AREXPORT MvrTypes::UByte getID(void);
+  MVREXPORT MvrTypes::UByte getID(void);
 
   /// Sets the ID of the packet 
-  AREXPORT void setID(MvrTypes::UByte id);
+  MVREXPORT void setID(MvrTypes::UByte id);
 
   /// returns the checksum, probably used only internally
-  AREXPORT MvrTypes::Byte2 calcCheckSum(void);
+  MVREXPORT MvrTypes::Byte2 calcCheckSum(void);
   
   // only call finalizePacket before a send
-  AREXPORT virtual void finalizePacket(void);
+  MVREXPORT virtual void finalizePacket(void);
   
   /// Gets the time the packet was received at
-  AREXPORT MvrTime getTimeReceived(void);
+  MVREXPORT MvrTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  AREXPORT void setTimeReceived(MvrTime timeReceived);
+  MVREXPORT void setTimeReceived(MvrTime timeReceived);
 
-  AREXPORT virtual void log();
+  MVREXPORT virtual void log();
 
 protected:
   unsigned char mySync1;

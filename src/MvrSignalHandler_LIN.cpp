@@ -57,7 +57,7 @@ void ArSignalHandler::signalCB(int sig)
    a threaded program.
    @see createHandlerThreaded
 */
-AREXPORT void ArSignalHandler::createHandlerNonThreaded()
+MVREXPORT void ArSignalHandler::createHandlerNonThreaded()
 {
   int i;
   initSigMap();
@@ -83,7 +83,7 @@ AREXPORT void ArSignalHandler::createHandlerNonThreaded()
    their timing loops.  
    @see createHandlerNonThreaded 
 **/
-AREXPORT void ArSignalHandler::createHandlerThreaded()
+MVREXPORT void ArSignalHandler::createHandlerThreaded()
 {
   signal(SigSEGV, &signalCB);
   signal(SigFPE, &signalCB);
@@ -96,7 +96,7 @@ AREXPORT void ArSignalHandler::createHandlerThreaded()
    SIGPIPE. Call this before calling createHandlerNonThreaded or
    createHandlerThreaded.  
 **/
-AREXPORT void ArSignalHandler::blockCommon()
+MVREXPORT void ArSignalHandler::blockCommon()
 {
   unblockAll();
   block(SigHUP);
@@ -110,7 +110,7 @@ AREXPORT void ArSignalHandler::blockCommon()
    Unblock all the signals. Call this before calling createHandlerNonThreaded
    or createHandlerThreaded.
 */
-AREXPORT void ArSignalHandler::unblockAll()
+MVREXPORT void ArSignalHandler::unblockAll()
 {
   sigemptyset(&ourBlockSigSet);
 }
@@ -120,7 +120,7 @@ AREXPORT void ArSignalHandler::unblockAll()
    or createHandlerThreaded.
    @param sig the number of the signal
 */
-AREXPORT void ArSignalHandler::block(Signal sig)
+MVREXPORT void ArSignalHandler::block(Signal sig)
 {
   sigaddset(&ourBlockSigSet, sig);
 }
@@ -130,7 +130,7 @@ AREXPORT void ArSignalHandler::block(Signal sig)
    or createHandlerThreaded.
    @param sig the number of the signal
 */
-AREXPORT void ArSignalHandler::unblock(Signal sig)
+MVREXPORT void ArSignalHandler::unblock(Signal sig)
 {
   sigdelset(&ourBlockSigSet, sig);
 }
@@ -141,7 +141,7 @@ AREXPORT void ArSignalHandler::unblock(Signal sig)
    createHandlerNonThreaded or createHandlerThreaded.
    @param sig the number of the signal
 */
-AREXPORT void ArSignalHandler::handle(Signal sig)
+MVREXPORT void ArSignalHandler::handle(Signal sig)
 {
   unblock(sig);
   sigaddset(&ourHandleSigSet, sig);
@@ -152,7 +152,7 @@ AREXPORT void ArSignalHandler::handle(Signal sig)
    createHandlerNonThreaded or createHandlerThreaded.
    @param sig the number of the signal
 */
-AREXPORT void ArSignalHandler::unhandle(Signal sig)
+MVREXPORT void ArSignalHandler::unhandle(Signal sig)
 {
   sigdelset(&ourHandleSigSet, sig);
 }
@@ -165,7 +165,7 @@ AREXPORT void ArSignalHandler::unhandle(Signal sig)
    function to call.
    @param position whether to place the functor first or last
 */
-AREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
+MVREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
 					    ArListPos::Pos position)
 {
 
@@ -183,7 +183,7 @@ AREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
    @param func functor created from ArFunctorC1<int> which refers to the 
    function to call.
 */
-AREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
+MVREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 {
   ourHandlerList.remove(func);
 }
@@ -191,7 +191,7 @@ AREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 /**
    Removes all of the signal handler callback from the list of callbacks. 
 **/
-AREXPORT void ArSignalHandler::delAllHandlerCBs(void)
+MVREXPORT void ArSignalHandler::delAllHandlerCBs(void)
 {
   ourHandlerList.clear();
 }
@@ -204,7 +204,7 @@ AREXPORT void ArSignalHandler::delAllHandlerCBs(void)
    should be created.
    @return returns a pointer to the instance of the signal handler
 */
-AREXPORT ArSignalHandler * ArSignalHandler::getHandler()
+MVREXPORT ArSignalHandler * ArSignalHandler::getHandler()
 {
   if (!ourSignalHandler)
     ourSignalHandler=new ArSignalHandler;
@@ -217,7 +217,7 @@ AREXPORT ArSignalHandler * ArSignalHandler::getHandler()
    will never receive the common signals which are SIGHUP, SIGINT, SIGQUIT,
    and SIGTERM. This function can be called at any time.
 */
-AREXPORT void ArSignalHandler::blockCommonThisThread()
+MVREXPORT void ArSignalHandler::blockCommonThisThread()
 {
   sigset_t commonSet;
   sigemptyset(&commonSet);
@@ -230,7 +230,7 @@ AREXPORT void ArSignalHandler::blockCommonThisThread()
   pthread_sigmask(SIG_SETMASK, &commonSet, 0);
 }
 
-AREXPORT void ArSignalHandler::blockAllThisThread()
+MVREXPORT void ArSignalHandler::blockAllThisThread()
 {
   sigset_t fullSet;
   sigfillset(&fullSet);
@@ -245,11 +245,11 @@ ArSignalHandler::ArSignalHandler() :
   initSigMap();
 }
 
-ArSignalHandler::~ArSignalHandler()
+ArSignalHandler::~MvrSignalHandler()
 {
 }
 
-AREXPORT void * ArSignalHandler::runThread(void *arg)
+MVREXPORT void * ArSignalHandler::runThread(void *arg)
 {
   setThreadName("MvrSignalHandler");
   threadStarted();
@@ -290,7 +290,7 @@ AREXPORT void * ArSignalHandler::runThread(void *arg)
   return(0);
 }
 
-AREXPORT void ArSignalHandler::initSigMap()
+MVREXPORT void ArSignalHandler::initSigMap()
 {
   ourSigMap[SIGHUP]="SIGHUP";
   ourSigMap[SIGINT]="SIGINT";
@@ -329,12 +329,12 @@ AREXPORT void ArSignalHandler::initSigMap()
 #endif
 }
 
-AREXPORT const char *ArSignalHandler::nameSignal(int sig)
+MVREXPORT const char *ArSignalHandler::nameSignal(int sig)
 {
   return(ourSigMap[sig].c_str());
 }
 
-AREXPORT void ArSignalHandler::logThread(void)
+MVREXPORT void ArSignalHandler::logThread(void)
 {
   if (ourSignalHandler != NULL)
     ourSignalHandler->logThreadInfo();

@@ -36,13 +36,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 #ifndef SWIG
-#if !defined(ARIA_STATIC) && !defined(AREXPORT) && !defined(MINGW)
-#define AREXPORT _declspec(dllimport)
-#elif !defined(AREXPORT) // ARIA_STATIC
-#define AREXPORT
+#if !defined(ARIA_STATIC) && !defined(MVREXPORT) && !defined(MINGW)
+#define MVREXPORT _declspec(dllimport)
+#elif !defined(MVREXPORT) // ARIA_STATIC
+#define MVREXPORT
 #endif // ARIA_STATIC
 #else
-#define AREXPORT
+#define MVREXPORT
 #endif
 
 #include <winsock2.h>
@@ -53,7 +53,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #ifndef WIN32
 
-#define AREXPORT
+#define MVREXPORT
 ////
 //// Linux
 ////

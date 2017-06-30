@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobot.h"
 
 
-AREXPORT ArSimulatedLaser::ArSimulatedLaser(MvrLaser *laser) :
+MVREXPORT ArSimulatedLaser::ArSimulatedLaser(MvrLaser *laser) :
   ArLaser(laser->getLaserNumber(),
 	  laser->getName(),
 	  laser->getAbsoluteMaxRange(),
@@ -128,12 +128,12 @@ AREXPORT ArSimulatedLaser::ArSimulatedLaser(MvrLaser *laser) :
   myReceivedData = false;
 }
 
-AREXPORT ArSimulatedLaser::~ArSimulatedLaser()
+MVREXPORT ArSimulatedLaser::~MvrSimulatedLaser()
 {
 
 }
 
-AREXPORT bool ArSimulatedLaser::blockingConnect(void)
+MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
 {
   if (myLaserNumber != 1)
   {
@@ -269,7 +269,7 @@ AREXPORT bool ArSimulatedLaser::blockingConnect(void)
   }
 }
 
-AREXPORT bool ArSimulatedLaser::asyncConnect(void)
+MVREXPORT bool ArSimulatedLaser::asyncConnect(void)
 {
   if (myLaserNumber != 1)
   {
@@ -284,13 +284,13 @@ AREXPORT bool ArSimulatedLaser::asyncConnect(void)
   return true;
 }
 
-AREXPORT bool ArSimulatedLaser::disconnect(void)
+MVREXPORT bool ArSimulatedLaser::disconnect(void)
 {
   laserDisconnectNormally();  
   return true;
 }
 
-AREXPORT bool ArSimulatedLaser::finishParams(void)
+MVREXPORT bool ArSimulatedLaser::finishParams(void)
 {
   if (!getRunning())
     runAsync();
@@ -305,7 +305,7 @@ AREXPORT bool ArSimulatedLaser::finishParams(void)
   return laserCheckParams();
 }
 
-AREXPORT bool ArSimulatedLaser::laserCheckParams(void)
+MVREXPORT bool ArSimulatedLaser::laserCheckParams(void)
 {
   if (canSetDegrees() && (!myLaser->setStartDegrees(getStartDegrees()) || 
 			  !myLaser->setEndDegrees(getEndDegrees())))
@@ -347,7 +347,7 @@ AREXPORT bool ArSimulatedLaser::laserCheckParams(void)
   return true;
 }
 
-AREXPORT void *ArSimulatedLaser::runThread(void *arg)
+MVREXPORT void *ArSimulatedLaser::runThread(void *arg)
 {
 
   while (getRunning())
@@ -395,7 +395,7 @@ AREXPORT void *ArSimulatedLaser::runThread(void *arg)
 }
 
 /** @internal */
-AREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
+MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
 {
   std::list<ArFunctor *>::iterator it;
 

@@ -46,8 +46,8 @@ class MvrTCMCompassRobot : public virtual MvrTCM2
 {
 public:
 
-  AREXPORT MvrTCMCompassRobot(MvrRobot *robot);
-  AREXPORT virtual ~ArTCMCompassRobot();
+  MVREXPORT MvrTCMCompassRobot(MvrRobot *robot);
+  MVREXPORT virtual ~MvrTCMCompassRobot();
 
   virtual void commandOff(void) { myRobot->comInt(MvrCommands::TCM2, 0); }
   virtual void commandJustCompass(void) { myRobot->comInt(MvrCommands::TCM2, 1); }

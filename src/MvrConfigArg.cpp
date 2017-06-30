@@ -45,18 +45,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 //
 int MvrConfigArg::ourIndentSpaceCount = 3;
 
-AREXPORT const char *ArConfigArg::LIST_BEGIN_TAG  = "_beginList";
-AREXPORT const char *ArConfigArg::LIST_END_TAG    = "_endList";
+MVREXPORT const char *ArConfigArg::LIST_BEGIN_TAG  = "_beginList";
+MVREXPORT const char *ArConfigArg::LIST_END_TAG    = "_endList";
 
-AREXPORT const char *ArConfigArg::NULL_TAG = "NULL";
-AREXPORT const char *ArConfigArg::NEW_RESOURCE_TAG = "xltrNew";
+MVREXPORT const char *ArConfigArg::NULL_TAG = "NULL";
+MVREXPORT const char *ArConfigArg::NEW_RESOURCE_TAG = "xltrNew";
 
 
 std::map<std::string, MvrConfigArg::Type, MvrStrCaseCmpOp> *ArConfigArg::ourTextToTypeMap = NULL;
 std::map<std::string, MvrConfigArg::RestartLevel, MvrStrCaseCmpOp> *ArConfigArg::ourTextToRestartLevelMap = NULL;
 
 
-AREXPORT const char *ArConfigArg::toString(Type t)
+MVREXPORT const char *ArConfigArg::toString(Type t)
 {
    switch (t) {
    case INVALID:
@@ -142,7 +142,7 @@ ArConfigArg::Type MvrConfigArg::typeFromString(const char *text)
 } // end method typeFromString
 
 
-AREXPORT MvrConfigArg::RestartLevel MvrConfigArg::restartLevelFromString(const char *text)
+MVREXPORT MvrConfigArg::RestartLevel MvrConfigArg::restartLevelFromString(const char *text)
 {
   if (MvrUtil::isStrEmpty(text)) {
     return NO_RESTART;
@@ -166,13 +166,13 @@ AREXPORT MvrConfigArg::RestartLevel MvrConfigArg::restartLevelFromString(const c
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-AREXPORT MvrConfigArg::ArConfigArg()
+MVREXPORT MvrConfigArg::ArConfigArg()
 {
   clear(true);
 }
 
 /** @swigomit */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, int *pointer, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, int *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_INT);
@@ -185,7 +185,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, int *pointer,
 }
 
 /** @swigomit */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, short *pointer, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, short *pointer, 
 		      const char * description, int minInt, int maxInt) 
 
 { 
@@ -199,7 +199,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, short *pointer,
 }
 
 /** @swigomit */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned short *pointer, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned short *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_UNSIGNED_SHORT);
@@ -212,7 +212,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned short *pointer,
 }
 
 /** @swigomit */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned char *pointer, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned char *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_UNSIGNED_CHAR);
@@ -225,7 +225,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned char *pointer,
 }
 
 /** @swigomit */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, double *pointer,
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, double *pointer,
 		                              const char * description, 
                                   double minDouble, 
 		                              double maxDouble,
@@ -241,7 +241,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, double *pointer,
 }
 
 /** @swigomit */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, bool *pointer, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, bool *pointer, 
 		      const char * description) 
 
 { 
@@ -253,7 +253,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, bool *pointer,
 
 
 /** @swigomit Use MvrConfigArg_Int subclass instead. */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, int val, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, int val, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_INT);
@@ -269,7 +269,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, int val,
 }
 
 /** @swigomit Use MvrConfigArg_Double subclass instead. */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, 
                                   double val,
 		                              const char * description, 
                                   double minDouble, 
@@ -289,7 +289,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name,
 }
 
 /** @swigomit Use MvrConfigArg_Bool subclass instead. */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, bool val, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, bool val, 
 		      const char * description) 
 { 
   clear(true, BOOL);
@@ -314,7 +314,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, bool val,
  *
  *  @swigomit Use MvrConfigArg_String subclass instead (which has no maxStrLen parameter in its constructor)
 */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, char *str, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, char *str, 
 		      const char * description, size_t maxStrLen) 
 { 
   clear(true, STRING);
@@ -347,7 +347,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, char *str,
  *
  *  @swigomit Use MvrConfigArg_String subclass instead (which has no maxStrLen parameter in its constructor)
 */
-AREXPORT MvrConfigArg::ArConfigArg(const char * name, const char *str, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char * name, const char *str, 
 				  const char * description) 
 { 
   clear(true, STRING);
@@ -361,7 +361,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * name, const char *str,
 }
 
 /** @swigomit */
-AREXPORT MvrConfigArg::ArConfigArg(const char *name, std::string *strptr, const char *description)
+MVREXPORT MvrConfigArg::ArConfigArg(const char *name, std::string *strptr, const char *description)
 {
   clear(true, CPPSTRING);
   set(CPPSTRING, name, description);
@@ -393,7 +393,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char *name, std::string *strptr, const 
     special meaning when saved and loaded from a config file, such as '#', ';',
     tab, or newline.  
 **/
-AREXPORT MvrConfigArg::ArConfigArg(const char *name, 
+MVREXPORT MvrConfigArg::ArConfigArg(const char *name, 
 		      MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
 	      MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
 		      const char *description)
@@ -405,7 +405,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char *name,
   myData.myFunctorData.myGetFunctor = getFunctor;
 }
 
-AREXPORT MvrConfigArg::ArConfigArg(const char * str, Type type)
+MVREXPORT MvrConfigArg::ArConfigArg(const char * str, Type type)
 { 
   clear(true, type);
   if (type == DESCRIPTION_HOLDER)
@@ -423,7 +423,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char * str, Type type)
  * This constructor is used for creating composite (LIST or LIST_HOLDER type)
  * parameters.
 **/
-AREXPORT MvrConfigArg::ArConfigArg(Type type,
+MVREXPORT MvrConfigArg::ArConfigArg(Type type,
                                   const char *name, 
 		                              const char *description)
 {
@@ -440,7 +440,7 @@ AREXPORT MvrConfigArg::ArConfigArg(Type type,
  * This constructor is useful for creating separators within a config
  * section.
 **/
-AREXPORT MvrConfigArg::ArConfigArg(Type type)
+MVREXPORT MvrConfigArg::ArConfigArg(Type type)
 {
   clear(true, type);
   set(type, "", "");
@@ -451,7 +451,7 @@ AREXPORT MvrConfigArg::ArConfigArg(Type type)
     special meaning when saved and loaded from a config file, such as '#', ';',
     tab, or newline.  
 */
-AREXPORT MvrConfigArg::ArConfigArg(const char *name, const char *str)
+MVREXPORT MvrConfigArg::ArConfigArg(const char *name, const char *str)
 {
   /* MPL Taking this out
   MvrLog::log(MvrLog::Normal,
@@ -473,7 +473,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char *name, const char *str)
 }
 
 
-AREXPORT MvrConfigArg::ArConfigArg(const char *argName,
+MVREXPORT MvrConfigArg::ArConfigArg(const char *argName,
                                   const MvrConfigArg & arg)
 {
   clear(true, 
@@ -487,7 +487,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const char *argName,
 } // end ctor
 
 
-AREXPORT MvrConfigArg::ArConfigArg(const MvrConfigArg & arg) 
+MVREXPORT MvrConfigArg::ArConfigArg(const MvrConfigArg & arg) 
 {
   clear(true, 
         arg.myType, 
@@ -496,7 +496,7 @@ AREXPORT MvrConfigArg::ArConfigArg(const MvrConfigArg & arg)
   copy(arg, false);
 }
 
-AREXPORT MvrConfigArg &ArConfigArg::operator=(const MvrConfigArg & arg) 
+MVREXPORT MvrConfigArg &ArConfigArg::operator=(const MvrConfigArg & arg) 
 {
   if (this != &arg) 
   {
@@ -505,7 +505,7 @@ AREXPORT MvrConfigArg &ArConfigArg::operator=(const MvrConfigArg & arg)
   return *this;
 }
 
-AREXPORT void MvrConfigArg::copyAndDetach(const MvrConfigArg &arg)
+MVREXPORT void MvrConfigArg::copyAndDetach(const MvrConfigArg &arg)
 {
    copy(arg, true);
 
@@ -775,7 +775,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg,
  * The translation data currently consists of the description and the
  * extra explanation.
 **/
-AREXPORT bool MvrConfigArg::copyTranslation(const MvrConfigArg &arg)
+MVREXPORT bool MvrConfigArg::copyTranslation(const MvrConfigArg &arg)
 {
   if (MvrUtil::strcasecmp(getName(), arg.getName()) != 0) {
     MvrLog::log(MvrLog::Normal,
@@ -819,7 +819,7 @@ AREXPORT bool MvrConfigArg::copyTranslation(const MvrConfigArg &arg)
 } // end method copyTranslation
   
 
-AREXPORT bool MvrConfigArg::promoteList(const MvrConfigArg &arg)
+MVREXPORT bool MvrConfigArg::promoteList(const MvrConfigArg &arg)
 {
   if ((getType() != LIST_HOLDER) || (arg.getType() != LIST)) {
     MvrLog::log(MvrLog::Normal,
@@ -851,7 +851,7 @@ AREXPORT bool MvrConfigArg::promoteList(const MvrConfigArg &arg)
 }
 
 
-AREXPORT MvrConfigArg::~ArConfigArg()
+MVREXPORT MvrConfigArg::~MvrConfigArg()
 {
   clear(false, 
         myType, 
@@ -1041,7 +1041,7 @@ void MvrConfigArg::clear(bool initial,
 
 
 
-AREXPORT void MvrConfigArg::replaceSpacesInName(void)
+MVREXPORT void MvrConfigArg::replaceSpacesInName(void)
 {
   size_t i;
   size_t len = myName.size();
@@ -1083,7 +1083,7 @@ void MvrConfigArg::setParent(MvrConfigArg *parentArg)
  * @return Type the type of this arg, used to determine which 
  * other attributes are valid
 */
-AREXPORT MvrConfigArg::Type MvrConfigArg::getType(void) const
+MVREXPORT MvrConfigArg::Type MvrConfigArg::getType(void) const
 {
   return myType;
 }
@@ -1091,7 +1091,7 @@ AREXPORT MvrConfigArg::Type MvrConfigArg::getType(void) const
 /**
  * @return char *, the name of this arg or "" if none
 **/
-AREXPORT const char *ArConfigArg::getName(void) const
+MVREXPORT const char *ArConfigArg::getName(void) const
 {
   return myName.c_str();
 }
@@ -1099,14 +1099,14 @@ AREXPORT const char *ArConfigArg::getName(void) const
 /**
  * @return char *, the description of this arg or "" if none
 **/
-AREXPORT const char *ArConfigArg::getDescription(void) const
+MVREXPORT const char *ArConfigArg::getDescription(void) const
 {
   return myDescription.c_str();
 }
 
 
 
-AREXPORT void MvrConfigArg::setExtraExplanation(const char *extraExplanation)
+MVREXPORT void MvrConfigArg::setExtraExplanation(const char *extraExplanation)
 {
   myExtraExplanation = ((extraExplanation != NULL) ? extraExplanation
                                                    : "");
@@ -1114,7 +1114,7 @@ AREXPORT void MvrConfigArg::setExtraExplanation(const char *extraExplanation)
 } // end method setExtraExplanation
 
   
-AREXPORT const char *ArConfigArg::getExtraExplanation() const
+MVREXPORT const char *ArConfigArg::getExtraExplanation() const
 {
   return myExtraExplanation.c_str();
 }
@@ -1125,7 +1125,7 @@ AREXPORT const char *ArConfigArg::getExtraExplanation() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-AREXPORT int MvrConfigArg::getInt(bool *ok) const
+MVREXPORT int MvrConfigArg::getInt(bool *ok) const
 { 
   if (ok != NULL) {
     *ok = (myType == INT);
@@ -1170,7 +1170,7 @@ AREXPORT int MvrConfigArg::getInt(bool *ok) const
  * @return int the minimum value of this arg, or INT_MIN if 
  * none
 **/
-AREXPORT int MvrConfigArg::getMinInt(bool *ok) const
+MVREXPORT int MvrConfigArg::getMinInt(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == INT);
@@ -1189,7 +1189,7 @@ AREXPORT int MvrConfigArg::getMinInt(bool *ok) const
  * @return int the maximum value of this arg, or INT_MAX if 
  * none
 **/
-AREXPORT int MvrConfigArg::getMaxInt(bool *ok) const
+MVREXPORT int MvrConfigArg::getMaxInt(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == INT);
@@ -1201,7 +1201,7 @@ AREXPORT int MvrConfigArg::getMaxInt(bool *ok) const
   return INT_MAX;
 }
 
-AREXPORT bool MvrConfigArg::setInt(int val, char *errorBuffer, 
+MVREXPORT bool MvrConfigArg::setInt(int val, char *errorBuffer, 
 				                          size_t errorBufferLen, bool doNotSet)
 {
   if (myType != INT) {
@@ -1278,7 +1278,7 @@ AREXPORT bool MvrConfigArg::setInt(int val, char *errorBuffer,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-AREXPORT double MvrConfigArg::getDouble(bool *ok) const 
+MVREXPORT double MvrConfigArg::getDouble(bool *ok) const 
 {
   if (ok != NULL) {
     *ok = (myType == DOUBLE);
@@ -1299,7 +1299,7 @@ AREXPORT double MvrConfigArg::getDouble(bool *ok) const
  * @return double the maximum value of this arg, or -HUGE_VAL if 
  * none
 **/
-AREXPORT double MvrConfigArg::getMinDouble(bool *ok) const
+MVREXPORT double MvrConfigArg::getMinDouble(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == DOUBLE);
@@ -1317,7 +1317,7 @@ AREXPORT double MvrConfigArg::getMinDouble(bool *ok) const
  * @return double the maximum value of this arg, or HUGE_VAL if 
  * none
 **/
-AREXPORT double MvrConfigArg::getMaxDouble(bool *ok) const
+MVREXPORT double MvrConfigArg::getMaxDouble(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == DOUBLE);
@@ -1328,7 +1328,7 @@ AREXPORT double MvrConfigArg::getMaxDouble(bool *ok) const
   return HUGE_VAL;
 }
 
-AREXPORT int MvrConfigArg::getDoublePrecision(bool *ok) const
+MVREXPORT int MvrConfigArg::getDoublePrecision(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == DOUBLE);
@@ -1341,7 +1341,7 @@ AREXPORT int MvrConfigArg::getDoublePrecision(bool *ok) const
 } // end method getDoublePrecision
 
 
-AREXPORT bool MvrConfigArg::setDouble(double val, char *errorBuffer,
+MVREXPORT bool MvrConfigArg::setDouble(double val, char *errorBuffer,
 				                            size_t errorBufferLen, bool doNotSet)
 { 
   if (myType != DOUBLE) {
@@ -1386,7 +1386,7 @@ AREXPORT bool MvrConfigArg::setDouble(double val, char *errorBuffer,
 // Methods for BOOL Type 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-AREXPORT bool MvrConfigArg::getBool(bool *ok) const
+MVREXPORT bool MvrConfigArg::getBool(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == BOOL);
@@ -1398,7 +1398,7 @@ AREXPORT bool MvrConfigArg::getBool(bool *ok) const
   return false;
 }
 
-AREXPORT bool MvrConfigArg::setBool(bool val, char *errorBuffer,
+MVREXPORT bool MvrConfigArg::setBool(bool val, char *errorBuffer,
 				   size_t errorBufferLen, bool doNotSet)
 {
   if (myType != BOOL) {
@@ -1427,7 +1427,7 @@ AREXPORT bool MvrConfigArg::setBool(bool val, char *errorBuffer,
 // Methods for STRING and STRING_HOLDER Type 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-AREXPORT const char *ArConfigArg::getString(bool *ok) const
+MVREXPORT const char *ArConfigArg::getString(bool *ok) const
 {
   if (ok != NULL) {
     *ok = ((myType == STRING) || 
@@ -1461,7 +1461,7 @@ AREXPORT const char *ArConfigArg::getString(bool *ok) const
     special meaning when saved and loaded from a config file, such as '#', ';',
     tab, or newline.  
 */
-AREXPORT bool MvrConfigArg::setString(const char *str, char *errorBuffer,
+MVREXPORT bool MvrConfigArg::setString(const char *str, char *errorBuffer,
 				                             size_t errorBufferLen, bool doNotSet)
 {
 
@@ -1511,7 +1511,7 @@ AREXPORT bool MvrConfigArg::setString(const char *str, char *errorBuffer,
 
 /// Get a copy of the value of the target std::string. (If there is a NULL
 /// target, return "" and set @a ok to false if @a ok is not NULL.)
-AREXPORT std::string MvrConfigArg::getCppString(bool *ok) const
+MVREXPORT std::string MvrConfigArg::getCppString(bool *ok) const
 {
   if(myData.myCppStringData.myCppStringPtr == NULL)
   {
@@ -1527,7 +1527,7 @@ AREXPORT std::string MvrConfigArg::getCppString(bool *ok) const
 
 /// Get the internal pointer to the target std::string. Do not modify. (If there is a NULL
 /// target, return NULL and set @a ok to false if @a ok is not NULL.)
-AREXPORT const std::string* MvrConfigArg::getCppStringPtr(bool *ok) const
+MVREXPORT const std::string* MvrConfigArg::getCppStringPtr(bool *ok) const
 {
   if(myData.myCppStringData.myCppStringPtr == NULL)
   {
@@ -1541,7 +1541,7 @@ AREXPORT const std::string* MvrConfigArg::getCppStringPtr(bool *ok) const
   return myData.myCppStringData.myCppStringPtr;
 }
 
-AREXPORT bool MvrConfigArg::setCppString(const std::string& str, char *errorBuffer, size_t errorBufferLen, bool doNotSet)
+MVREXPORT bool MvrConfigArg::setCppString(const std::string& str, char *errorBuffer, size_t errorBufferLen, bool doNotSet)
 {
   if(myType != CPPSTRING)
   {
@@ -1589,7 +1589,7 @@ AREXPORT bool MvrConfigArg::setCppString(const std::string& str, char *errorBuff
  * @return bool true if the child arg was successfully added; false if an 
  * error occurred
 **/
-AREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
+MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
 {
   // Children can only be added to LIST or LIST_HOLDER type parameters
   if (!isListType()) {
@@ -1728,7 +1728,7 @@ AREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
 } // end method addArg
   
 
-AREXPORT bool MvrConfigArg::removeArg(const MvrConfigArg  &arg)
+MVREXPORT bool MvrConfigArg::removeArg(const MvrConfigArg  &arg)
 {
   // Children can only be added to LIST or LIST_HOLDER type parameters
   if (!isListType()) {
@@ -1766,7 +1766,7 @@ AREXPORT bool MvrConfigArg::removeArg(const MvrConfigArg  &arg)
 /**
  * @return bool set to true if this is a list arg that contains child args; false, otherwise
  **/
-AREXPORT bool MvrConfigArg::hasArgs() const
+MVREXPORT bool MvrConfigArg::hasArgs() const
 {
   // Children can only be added to LIST or LIST_HOLDER type parameters
   if ((!isListType()) ||
@@ -1779,7 +1779,7 @@ AREXPORT bool MvrConfigArg::hasArgs() const
 /**
  * @return int the number of child args in this list arg; or 0 if none.
 **/
-AREXPORT size_t MvrConfigArg::getArgCount() const          
+MVREXPORT size_t MvrConfigArg::getArgCount() const          
 {
   // Children can only be added to LIST or LIST_HOLDER type parameters
   if ((!isListType()) ||
@@ -1791,7 +1791,7 @@ AREXPORT size_t MvrConfigArg::getArgCount() const
 } // end method getArgCount
 
 
-AREXPORT size_t MvrConfigArg::getDescendantArgCount() const
+MVREXPORT size_t MvrConfigArg::getDescendantArgCount() const
 {
   // Children can only be added to LIST type parameters
   if ((myType != LIST) ||
@@ -1817,7 +1817,7 @@ AREXPORT size_t MvrConfigArg::getDescendantArgCount() const
  * @return std::list<ArConfigArg> a list of all of the child arg (copies) 
  * in this arg.
 **/
-AREXPORT std::list<ArConfigArg> MvrConfigArg::getArgs(bool *ok) const
+MVREXPORT std::list<ArConfigArg> MvrConfigArg::getArgs(bool *ok) const
 {
   std::list<ArConfigArg> retList;
  
@@ -1837,7 +1837,7 @@ AREXPORT std::list<ArConfigArg> MvrConfigArg::getArgs(bool *ok) const
  * @return std::list<ArConfigArg> a list of all of the child arg (copies) 
  * in this arg.
 **/
-AREXPORT const MvrConfigArg *ArConfigArg::getArg(size_t index) const
+MVREXPORT const MvrConfigArg *ArConfigArg::getArg(size_t index) const
 {
   MvrConfigArg *arg = NULL;
   if ((isListType()) &&
@@ -1857,7 +1857,7 @@ AREXPORT const MvrConfigArg *ArConfigArg::getArg(size_t index) const
 
 } // end method getArg
 
-AREXPORT MvrConfigArg *ArConfigArg::getArg(size_t index) 
+MVREXPORT MvrConfigArg *ArConfigArg::getArg(size_t index) 
 {
   MvrConfigArg *arg = NULL;
   if ((isListType()) &&
@@ -1886,7 +1886,7 @@ AREXPORT MvrConfigArg *ArConfigArg::getArg(size_t index)
  * @return MvrConfigArg * a pointer to the requested child arg; or NULL if not 
  * found.
 **/
-AREXPORT const MvrConfigArg *ArConfigArg::findArg(const char *childParamName)  const
+MVREXPORT const MvrConfigArg *ArConfigArg::findArg(const char *childParamName)  const
 {
   // Cannot look up empty name 
   if (MvrUtil::isStrEmpty(childParamName)) {
@@ -1936,7 +1936,7 @@ AREXPORT const MvrConfigArg *ArConfigArg::findArg(const char *childParamName)  c
  * @return MvrConfigArg * a pointer to the requested child arg; or NULL if not 
  * found.
 **/
-AREXPORT MvrConfigArg *ArConfigArg::findArg(const char *childParamName)
+MVREXPORT MvrConfigArg *ArConfigArg::findArg(const char *childParamName)
 {
   // Cannot look up empty name 
   if (MvrUtil::isStrEmpty(childParamName)) {
@@ -1979,7 +1979,7 @@ AREXPORT MvrConfigArg *ArConfigArg::findArg(const char *childParamName)
 } // end method findArg
 
 
-AREXPORT bool MvrConfigArg::getAncestorList
+MVREXPORT bool MvrConfigArg::getAncestorList
                             (std::list<ArConfigArg*> *ancestorListOut) 
 {
  
@@ -2004,7 +2004,7 @@ AREXPORT bool MvrConfigArg::getAncestorList
 } // end method getAncestorArgs
 
 
-AREXPORT const MvrConfigArg *ArConfigArg::getTopLevelArg() const
+MVREXPORT const MvrConfigArg *ArConfigArg::getTopLevelArg() const
 {
   MvrConfigArg *parentArg = getParentArg();
   if (parentArg == NULL) {
@@ -2022,7 +2022,7 @@ AREXPORT const MvrConfigArg *ArConfigArg::getTopLevelArg() const
 // Methods for FUNCTOR Type 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-AREXPORT const std::list<ArArgumentBuilder *> *ArConfigArg::getArgsWithFunctor(bool *ok) const
+MVREXPORT const std::list<ArArgumentBuilder *> *ArConfigArg::getArgsWithFunctor(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == FUNCTOR);
@@ -2034,7 +2034,7 @@ AREXPORT const std::list<ArArgumentBuilder *> *ArConfigArg::getArgsWithFunctor(b
   return NULL;
 }
 
-AREXPORT bool MvrConfigArg::setArgWithFunctor(MvrArgumentBuilder *argument, 
+MVREXPORT bool MvrConfigArg::setArgWithFunctor(MvrArgumentBuilder *argument, 
 					     char *errorBuffer,
 					     size_t errorBufferLen, 
 					     bool doNotSet)
@@ -2069,7 +2069,7 @@ AREXPORT bool MvrConfigArg::setArgWithFunctor(MvrArgumentBuilder *argument,
  * @return MvrConfigArg * the parent arg, if this is a child in a list arg; 
  * otherwise, NULL
 **/
-AREXPORT MvrConfigArg *ArConfigArg::getParentArg() const
+MVREXPORT MvrConfigArg *ArConfigArg::getParentArg() const
 {
   return myParentArg;
 
@@ -2091,7 +2091,7 @@ std::string MvrConfigArg::getParentPathName(char separator) const
   return parentPath;
 }
 
-AREXPORT std::list<std::string> MvrConfigArg::splitParentPathName(const char *parentPathName,
+MVREXPORT std::list<std::string> MvrConfigArg::splitParentPathName(const char *parentPathName,
                                                                  char separator)
 {
   std::list<std::string> pathList;
@@ -2134,7 +2134,7 @@ AREXPORT std::list<std::string> MvrConfigArg::splitParentPathName(const char *pa
  * if an error occurred
  * 
 **/
-AREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
+MVREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
                                            MvrRetFunctor3C<bool, 
                                                           MvrConfig, 
                                                           MvrArgumentBuilder *, 
@@ -2192,7 +2192,7 @@ AREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
  * @return bool true if the arg was successfully parsed; false if an 
  * error occurred
 **/
-AREXPORT bool MvrConfigArg::parseArgument(
+MVREXPORT bool MvrConfigArg::parseArgument(
 	ArArgumentBuilder *arg, 
 	char *errorBuffer,
 	size_t errorBufferLen,
@@ -2540,7 +2540,7 @@ AREXPORT bool MvrConfigArg::parseArgument(
  * @return bool true if the arguments were successfully written; false if an 
  * error occurred
 **/
-AREXPORT bool MvrConfigArg::writeArguments(FILE *file,
+MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
                                           char *lineBuf,
                                           int lineBufSize,
                                           int startCommentColumn,
@@ -2886,7 +2886,7 @@ bool MvrConfigArg::isNone(const char *argText)
 
 } // end method isNone
 
-AREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
+MVREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
                                        char *errorBuffer,
                                        size_t errorBufferLen)
 {
@@ -3262,7 +3262,7 @@ AREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
 } // end method parseSocket
 
 
-AREXPORT bool MvrConfigArg::writeValue(MvrSocket *socket,
+MVREXPORT bool MvrConfigArg::writeValue(MvrSocket *socket,
                                       const char *intro) const
 {
   char value[10000];
@@ -3340,7 +3340,7 @@ AREXPORT bool MvrConfigArg::writeValue(MvrSocket *socket,
 } // end method writeValue
 
 
-AREXPORT bool MvrConfigArg::writeInfo(MvrSocket *socket,
+MVREXPORT bool MvrConfigArg::writeInfo(MvrSocket *socket,
                                      const char *intro) const
 {
   // Don't write nameless parameters
@@ -3485,7 +3485,7 @@ AREXPORT bool MvrConfigArg::writeInfo(MvrSocket *socket,
 // Resource/Translator Files
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-AREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg, 
+MVREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg, 
 				                                 char *errorBuffer,
 				                                 size_t errorBufferLen,
                                          const char *logPrefix,
@@ -3562,7 +3562,7 @@ AREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg,
 } // end method parseResource
 
 
-AREXPORT std::string MvrConfigArg::parseResourceSectionName(MvrArgumentBuilder *arg, 
+MVREXPORT std::string MvrConfigArg::parseResourceSectionName(MvrArgumentBuilder *arg, 
                                                            const char *logPrefix)
 {
   std::string sectionName;
@@ -3587,7 +3587,7 @@ AREXPORT std::string MvrConfigArg::parseResourceSectionName(MvrArgumentBuilder *
 
 } // end method parseResourceSectionName
 
-AREXPORT std::string MvrConfigArg::parseResourceArgName(MvrArgumentBuilder *arg, 
+MVREXPORT std::string MvrConfigArg::parseResourceArgName(MvrArgumentBuilder *arg, 
                                                            const char *logPrefix)
 {
   std::string argName;
@@ -3614,7 +3614,7 @@ AREXPORT std::string MvrConfigArg::parseResourceArgName(MvrArgumentBuilder *arg,
 } // end method parseResourceArgName
 
 
-AREXPORT MvrConfigArg::Type MvrConfigArg::parseResourceType(MvrArgumentBuilder *arg, 
+MVREXPORT MvrConfigArg::Type MvrConfigArg::parseResourceType(MvrArgumentBuilder *arg, 
                                                           const char *logPrefix)
 {
   Type t = INVALID;
@@ -3639,7 +3639,7 @@ AREXPORT MvrConfigArg::Type MvrConfigArg::parseResourceType(MvrArgumentBuilder *
 
 } // end method parseResourceType
 
-AREXPORT  bool MvrConfigArg::isResourceTopLevel(MvrArgumentBuilder *arg, 
+MVREXPORT  bool MvrConfigArg::isResourceTopLevel(MvrArgumentBuilder *arg, 
                                                const char *logPrefix)
 {
   bool b = true;
@@ -3665,7 +3665,7 @@ AREXPORT  bool MvrConfigArg::isResourceTopLevel(MvrArgumentBuilder *arg,
 } // end method isResourceTopLevel
 
 
-AREXPORT std::list<std::string> MvrConfigArg::parseResourceParentPath(MvrArgumentBuilder *arg, 
+MVREXPORT std::list<std::string> MvrConfigArg::parseResourceParentPath(MvrArgumentBuilder *arg, 
                                                                      char separator,
                                                                      const char *logPrefix)
 {
@@ -3692,7 +3692,7 @@ AREXPORT std::list<std::string> MvrConfigArg::parseResourceParentPath(MvrArgumen
 
 } // end method parseResourceParentPath
 
-AREXPORT std::string MvrConfigArg::parseResourceDescription(MvrArgumentBuilder *arg, 
+MVREXPORT std::string MvrConfigArg::parseResourceDescription(MvrArgumentBuilder *arg, 
                                                            const char *logPrefix)
 {
   std::string desc;
@@ -3718,7 +3718,7 @@ AREXPORT std::string MvrConfigArg::parseResourceDescription(MvrArgumentBuilder *
 
 } // end method parseResourceDescription
 
-AREXPORT std::string MvrConfigArg::parseResourceExtra(MvrArgumentBuilder *arg, 
+MVREXPORT std::string MvrConfigArg::parseResourceExtra(MvrArgumentBuilder *arg, 
                                                      const char *logPrefix)
 {
   std::string desc;
@@ -3744,7 +3744,7 @@ AREXPORT std::string MvrConfigArg::parseResourceExtra(MvrArgumentBuilder *arg,
 
 } // end method parseResourceExtra
 
-AREXPORT  bool MvrConfigArg::parseResourceArgText(const char *argText,
+MVREXPORT  bool MvrConfigArg::parseResourceArgText(const char *argText,
                                                  char *bufOut,
                                                  size_t bufLen)
 {
@@ -3800,7 +3800,7 @@ AREXPORT  bool MvrConfigArg::parseResourceArgText(const char *argText,
 } // end method parseResourceArgText
 
  
-AREXPORT bool MvrConfigArg::writeResource(FILE *file,
+MVREXPORT bool MvrConfigArg::writeResource(FILE *file,
                                          char *lineBuf,
                                          int lineBufSize,
                                          char separatorChar,
@@ -3864,7 +3864,7 @@ AREXPORT bool MvrConfigArg::writeResource(FILE *file,
 } // end method writeResource
 
  
-AREXPORT int MvrConfigArg::writeResourceHeader(FILE *file,
+MVREXPORT int MvrConfigArg::writeResourceHeader(FILE *file,
                                          char *lineBuf,
                                          int lineBufSize,
                                          char separatorChar,
@@ -3944,7 +3944,7 @@ AREXPORT int MvrConfigArg::writeResourceHeader(FILE *file,
 
 } // end method writeResourceHeader
 
-AREXPORT int MvrConfigArg::writeResourceSectionHeader(FILE *file,
+MVREXPORT int MvrConfigArg::writeResourceSectionHeader(FILE *file,
                                                      char *lineBuf,
                                                      int lineBufSize,
                                                      char separatorChar,
@@ -4002,7 +4002,7 @@ AREXPORT int MvrConfigArg::writeResourceSectionHeader(FILE *file,
  * @return bool true if the name was successfully written; false if an 
  * error occurred
 **/
-AREXPORT bool MvrConfigArg::writeName(char *lineBuf,
+MVREXPORT bool MvrConfigArg::writeName(char *lineBuf,
                                      int lineBufSize,
                                      int indentLevel) const
 {
@@ -4041,7 +4041,7 @@ AREXPORT bool MvrConfigArg::writeName(char *lineBuf,
  * @return bool true if the comment was successfully written; false if an 
  * error occurred
 **/
-AREXPORT bool MvrConfigArg::writeMultiLineComment(const char *comment,
+MVREXPORT bool MvrConfigArg::writeMultiLineComment(const char *comment,
                                                  FILE *file,
                                                  char *lineBuf,
                                                  int lineBufSize,
@@ -4108,7 +4108,7 @@ AREXPORT bool MvrConfigArg::writeMultiLineComment(const char *comment,
  * @return bool true if the values were successfully written; false if an 
  * error occurred
 **/
-AREXPORT bool MvrConfigArg::writeBounds(char *line,
+MVREXPORT bool MvrConfigArg::writeBounds(char *line,
                                        size_t lineLen,
                                        const char *logPrefix) const
 {
@@ -4199,7 +4199,7 @@ AREXPORT bool MvrConfigArg::writeBounds(char *line,
 } // end method writeBounds
 
 
-AREXPORT void MvrConfigArg::log(bool verbose, 
+MVREXPORT void MvrConfigArg::log(bool verbose, 
                                int indentCount,
                                const char *logPrefix) const
 {
@@ -4385,7 +4385,7 @@ AREXPORT void MvrConfigArg::log(bool verbose,
 /**
    The priority of this argument when used in MvrConfig.
  **/
-AREXPORT MvrPriority::Priority MvrConfigArg::getConfigPriority(void) const
+MVREXPORT MvrPriority::Priority MvrConfigArg::getConfigPriority(void) const
 {
   return myConfigPriority;
 }
@@ -4394,13 +4394,13 @@ AREXPORT MvrPriority::Priority MvrConfigArg::getConfigPriority(void) const
    The priority of this argument when used in MvrConfig.
  **/
 
-AREXPORT void MvrConfigArg::setConfigPriority(MvrPriority::Priority priority)
+MVREXPORT void MvrConfigArg::setConfigPriority(MvrPriority::Priority priority)
 {
   myConfigPriority = priority;
 }
 
 
-AREXPORT const char *ArConfigArg::getDisplayHint() const
+MVREXPORT const char *ArConfigArg::getDisplayHint() const
 {
   if (myDisplayHint.length() > 0) {
     return myDisplayHint.c_str();
@@ -4580,7 +4580,7 @@ AREXPORT const char *ArConfigArg::getDisplayHint() const
  * </ul>
  *
 **/
-AREXPORT void MvrConfigArg::setDisplayHint(const char *hintText)
+MVREXPORT void MvrConfigArg::setDisplayHint(const char *hintText)
 {
   if (hintText != NULL) {
     myDisplayHint = hintText;
@@ -4591,39 +4591,39 @@ AREXPORT void MvrConfigArg::setDisplayHint(const char *hintText)
 } // end method setDisplayHint
 
   
-AREXPORT MvrConfigArg::RestartLevel MvrConfigArg::getRestartLevel() const
+MVREXPORT MvrConfigArg::RestartLevel MvrConfigArg::getRestartLevel() const
 {
   return myRestartLevel;
 }
   
-AREXPORT void MvrConfigArg::setRestartLevel(RestartLevel level)
+MVREXPORT void MvrConfigArg::setRestartLevel(RestartLevel level)
 {
   myRestartLevel = level;
 }
 
 
-AREXPORT bool MvrConfigArg::getSuppressChanges() const
+MVREXPORT bool MvrConfigArg::getSuppressChanges() const
 {
   return mySuppressChanges;
 }
   
-AREXPORT void MvrConfigArg::setSuppressChanges(bool suppressChanges)
+MVREXPORT void MvrConfigArg::setSuppressChanges(bool suppressChanges)
 {
   mySuppressChanges = suppressChanges;
 }
 
 
-AREXPORT bool MvrConfigArg::isSerializable() const
+MVREXPORT bool MvrConfigArg::isSerializable() const
 {
   return myIsSerializable;
 }
 
-AREXPORT void MvrConfigArg::setSerializable(bool isSerializable)
+MVREXPORT void MvrConfigArg::setSerializable(bool isSerializable)
 {
   myIsSerializable = isSerializable;
 }
   
-AREXPORT bool MvrConfigArg::hasMinBound() const
+MVREXPORT bool MvrConfigArg::hasMinBound() const
 {
   bool isMinValid = false;
 
@@ -4662,7 +4662,7 @@ AREXPORT bool MvrConfigArg::hasMinBound() const
 } // end method hasMinBound
 
   
-AREXPORT bool MvrConfigArg::hasMaxBound() const
+MVREXPORT bool MvrConfigArg::hasMaxBound() const
 {
   bool isMaxValid = false;
 
@@ -4702,12 +4702,12 @@ AREXPORT bool MvrConfigArg::hasMaxBound() const
    This is for debugging and will prevent the bounds checking from
    happening, you shouldn't normally use it
  **/
-AREXPORT void MvrConfigArg::setIgnoreBounds(bool ignoreBounds)
+MVREXPORT void MvrConfigArg::setIgnoreBounds(bool ignoreBounds)
 {
   myIgnoreBounds = ignoreBounds;
 }
 
-AREXPORT bool MvrConfigArg::hasExternalDataReference() const
+MVREXPORT bool MvrConfigArg::hasExternalDataReference() const
 {
   bool b = false;
 
@@ -4739,7 +4739,7 @@ AREXPORT bool MvrConfigArg::hasExternalDataReference() const
 } // end method hasExternalDataReference
 
   
-AREXPORT bool MvrConfigArg::isPlaceholder() const
+MVREXPORT bool MvrConfigArg::isPlaceholder() const
 {
   switch (getType()) {
   case STRING_HOLDER:
@@ -4753,7 +4753,7 @@ AREXPORT bool MvrConfigArg::isPlaceholder() const
 }
 
 
-AREXPORT bool MvrConfigArg::isValueEqual(const MvrConfigArg &other) const
+MVREXPORT bool MvrConfigArg::isValueEqual(const MvrConfigArg &other) const
 {
   if (strcmp(getName(), other.getName()) != 0) {
     return false;
@@ -4850,7 +4850,7 @@ AREXPORT bool MvrConfigArg::isValueEqual(const MvrConfigArg &other) const
 } // end method isValueEqual
 
 
-AREXPORT bool MvrConfigArg::setValue(const MvrConfigArg &source,
+MVREXPORT bool MvrConfigArg::setValue(const MvrConfigArg &source,
                                     bool isVerifyArgNames)
 {
   Type t = getType();
@@ -4957,26 +4957,26 @@ AREXPORT bool MvrConfigArg::setValue(const MvrConfigArg &source,
 } // end method setValue
 
   
-AREXPORT bool MvrConfigArg::isTranslated() const
+MVREXPORT bool MvrConfigArg::isTranslated() const
 {
   return myIsTranslated;
 
 } // end method isTranslated
 
   
-AREXPORT void MvrConfigArg::setTranslated(bool b) 
+MVREXPORT void MvrConfigArg::setTranslated(bool b) 
 {
   myIsTranslated = b;
 
 } // end method setTranslated
 
 
-AREXPORT void MvrConfigArg::setDescription(const char *description)
+MVREXPORT void MvrConfigArg::setDescription(const char *description)
 {
   myDescription = description; 
 }
 
-AREXPORT bool MvrConfigArg::isListType() const
+MVREXPORT bool MvrConfigArg::isListType() const
 {
   return ((myType == LIST) || (myType == LIST_HOLDER));
 }

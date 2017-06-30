@@ -101,18 +101,18 @@ public:
     CHARGING_BALANCE = 4
   };
   /// Constructor
-  AREXPORT MvrRobot(const char * name = NULL, bool ignored = true,
+  MVREXPORT MvrRobot(const char * name = NULL, bool ignored = true,
 		   bool doSigHandle=true, 
 		   bool normalInit = true, bool addAriaExitCallback = true);
 		   
   /// Destructor
-  AREXPORT ~ArRobot();
+  MVREXPORT ~MvrRobot();
 
   /// Starts the instance to do processing in this thread
-  AREXPORT void run(bool stopRunIfNotConnected, 
+  MVREXPORT void run(bool stopRunIfNotConnected, 
 		    bool runNonThreaded = false);
   /// Starts the instance to do processing in its own new thread
-  AREXPORT void runAsync(bool stopRunIfNotConnected, 
+  MVREXPORT void runAsync(bool stopRunIfNotConnected, 
 			 bool runNonThreadedPacketReader = false);
 
   /// @copydoc run(bool, bool)
@@ -125,16 +125,16 @@ public:
 
   /// Returns whether the robot is currently running or not
   /// @ingroup easy
-  AREXPORT bool isRunning(void) const;
+  MVREXPORT bool isRunning(void) const;
 
   /// Stops the robot from doing any more processing
   /// @ingroup easy
-  AREXPORT void stopRunning(bool doDisconnect=true); 
+  MVREXPORT void stopRunning(bool doDisconnect=true); 
 
   /// Sets the connection this instance uses
-  AREXPORT void setDeviceConnection(MvrDeviceConnection *connection);
+  MVREXPORT void setDeviceConnection(MvrDeviceConnection *connection);
   /// Gets the connection this instance uses
-  AREXPORT MvrDeviceConnection *getDeviceConnection(void) const;
+  MVREXPORT MvrDeviceConnection *getDeviceConnection(void) const;
   
   /// Questions whether the robot is connected or not
   /** 
@@ -143,70 +143,70 @@ public:
   */
   bool isConnected(void) const { return myIsConnected; }
   /// Connects to a robot, not returning until connection made or failed
-  AREXPORT bool blockingConnect(void);
+  MVREXPORT bool blockingConnect(void);
   /// Connects to a robot, from the robots own thread
-  AREXPORT bool asyncConnect(void);
+  MVREXPORT bool asyncConnect(void);
   /// Disconnects from a robot
-  AREXPORT bool disconnect(void);
+  MVREXPORT bool disconnect(void);
 
   /// Clears what direct motion commands have been given, so actions work
-  AREXPORT void clearDirectMotion(void);
+  MVREXPORT void clearDirectMotion(void);
   /// Returns true if direct motion commands are blocking actions
-  AREXPORT bool isDirectMotion(void) const;
+  MVREXPORT bool isDirectMotion(void) const;
 
   /// Sets the state reflection to be inactive (until motion or clearDirectMotion)
   /// @see clearDirectMotion
-  AREXPORT void stopStateReflection(void);
+  MVREXPORT void stopStateReflection(void);
   
 
   /// Enables the motors on the robot
   /// @ingroup easy
-  AREXPORT void enableMotors();
+  MVREXPORT void enableMotors();
   /// Disables the motors on the robot
   /// @ingroup easy
-  AREXPORT void disableMotors();
+  MVREXPORT void disableMotors();
 
   /// Enables the sonar on the robot
   /// @ingroup easy
-  AREXPORT void enableSonar();
+  MVREXPORT void enableSonar();
   /// Enables some of the sonar on the robot (the ones for autonomous driving)
-  AREXPORT void enableAutonomousDrivingSonar();
+  MVREXPORT void enableAutonomousDrivingSonar();
   /// Disables the sonar on the robot
   /// @ingroup easy
-  AREXPORT void disableSonar();
+  MVREXPORT void disableSonar();
 
   /// Stops the robot
   /// @see clearDirectMotion
   /// @ingroup easy
-  AREXPORT void stop(void);
+  MVREXPORT void stop(void);
   /// Sets the velocity
   /// @see clearDirectMotion
   /// @ingroup easy
-  AREXPORT void setVel(double velocity);
+  MVREXPORT void setVel(double velocity);
   /// Sets differential movement if implemented by robot
-  AREXPORT void setVel2(double leftVelocity, double rightVelocity);
+  MVREXPORT void setVel2(double leftVelocity, double rightVelocity);
   /// Move the given distance forward/backwards
   /// @ingroup easy
-  AREXPORT void move(double distance);
+  MVREXPORT void move(double distance);
   /// Sees if the robot is done moving the previously given move
   /// @ingroup easy
-  AREXPORT bool isMoveDone(double delta = 0.0);
+  MVREXPORT bool isMoveDone(double delta = 0.0);
   /// Sets the difference required for being done with a move
   void setMoveDoneDist(double dist) { myMoveDoneDist = dist; }
   /// Gets the difference required for being done with a move
   double getMoveDoneDist(void) { return myMoveDoneDist; }
   /// Sets the heading
   /// @ingroup easy
-  AREXPORT void setHeading(double heading);
+  MVREXPORT void setHeading(double heading);
   /// Sets the rotational velocity
   /// @ingroup easy
-  AREXPORT void setRotVel(double velocity);
+  MVREXPORT void setRotVel(double velocity);
   /// Sets the delta heading
   /// @ingroup easy
-  AREXPORT void setDeltaHeading(double deltaHeading);
+  MVREXPORT void setDeltaHeading(double deltaHeading);
   /// Sees if the robot is done changing to the previously given setHeading
   /// @ingroup easy
-  AREXPORT bool isHeadingDone(double delta = 0.0) const;
+  MVREXPORT bool isHeadingDone(double delta = 0.0) const;
   /// sets the difference required for being done with a heading change (e.g. used in isHeadingDone())
   void setHeadingDoneDiff(double degrees) 
     { myHeadingDoneDiff = degrees; }
@@ -214,38 +214,38 @@ public:
   double getHeadingDoneDiff(void) const { return myHeadingDoneDiff; }
   /// Sets the lateral velocity
   /// @see clearDirectMotion
-  AREXPORT void setLatVel(double latVelocity);
+  MVREXPORT void setLatVel(double latVelocity);
 
 
   /// sees if we're stopped
   /// @ingroup easy
-  AREXPORT bool isStopped(double stoppedVel = 0.0, double stoppedRotVel = 0.0,
+  MVREXPORT bool isStopped(double stoppedVel = 0.0, double stoppedRotVel = 0.0,
 			  double stoppedLatVel = 0.0);
 
   /// Sets the vels required to be stopped
-  AREXPORT void setStoppedVels(double stoppedVel, double stoppedRotVel,
+  MVREXPORT void setStoppedVels(double stoppedVel, double stoppedRotVel,
 			       double stoppedLatVel);
 
   /// Sets the length of time a direct motion command will take precedence 
   /// over actions, in milliseconds
-  AREXPORT void setDirectMotionPrecedenceTime(int mSec);
+  MVREXPORT void setDirectMotionPrecedenceTime(int mSec);
 
   /// Gets the length of time a direct motion command will take precedence 
   /// over actions, in milliseconds
-  AREXPORT unsigned int getDirectMotionPrecedenceTime(void) const;
+  MVREXPORT unsigned int getDirectMotionPrecedenceTime(void) const;
 
   /// Sends a command to the robot with no arguments
-  AREXPORT bool com(unsigned char command);
+  MVREXPORT bool com(unsigned char command);
   /// Sends a command to the robot with an int for argument
-  AREXPORT bool comInt(unsigned char command, short int argument);
+  MVREXPORT bool comInt(unsigned char command, short int argument);
   /// Sends a command to the robot with two bytes for argument
-  AREXPORT bool com2Bytes(unsigned char command, char high, char low);
+  MVREXPORT bool com2Bytes(unsigned char command, char high, char low);
   /// Sends a command to the robot with a length-prefixed string for argument
-  AREXPORT bool comStr(unsigned char command, const char *argument);
+  MVREXPORT bool comStr(unsigned char command, const char *argument);
   /// Sends a command to the robot with a length-prefixed string for argument
-  AREXPORT bool comStrN(unsigned char command, const char *str, int size);
+  MVREXPORT bool comStrN(unsigned char command, const char *str, int size);
   /// Sends a command containing exactly the data in the given buffer as argument
-  AREXPORT bool comDataN(unsigned char command, const char *data, int size);
+  MVREXPORT bool comDataN(unsigned char command, const char *data, int size);
 
   /// Returns the robot's name that is set in its onboard firmware configuration
   const char * getRobotName(void) const { return myRobotName.c_str();}
@@ -259,61 +259,61 @@ public:
   double getAbsoluteMaxTransVel(void) const 
     { return myAbsoluteMaxTransVel; }
   /// Sets the robot's absolute maximum translational velocity
-  AREXPORT bool setAbsoluteMaxTransVel(double maxVel);
+  MVREXPORT bool setAbsoluteMaxTransVel(double maxVel);
 
   /// Gets the robot's absolute maximum translational velocity
   double getAbsoluteMaxTransNegVel(void) const 
     { return myAbsoluteMaxTransNegVel; }
   /// Sets the robot's absolute maximum translational velocity
-  AREXPORT bool setAbsoluteMaxTransNegVel(double maxVel);
+  MVREXPORT bool setAbsoluteMaxTransNegVel(double maxVel);
 
   /// Gets the robot's absolute maximum translational acceleration
   double getAbsoluteMaxTransAccel(void) const 
     { return myAbsoluteMaxTransAccel; }
   /// Sets the robot's absolute maximum translational acceleration
-  AREXPORT bool setAbsoluteMaxTransAccel(double maxAccel);
+  MVREXPORT bool setAbsoluteMaxTransAccel(double maxAccel);
 
   /// Gets the robot's absolute maximum translational deceleration
   double getAbsoluteMaxTransDecel(void) const 
     { return myAbsoluteMaxTransDecel; }
   /// Sets the robot's absolute maximum translational deceleration
-  AREXPORT bool setAbsoluteMaxTransDecel(double maxDecel);
+  MVREXPORT bool setAbsoluteMaxTransDecel(double maxDecel);
 
   /// Gets the robot's absolute maximum rotational velocity
   double getAbsoluteMaxRotVel(void) const 
     { return myAbsoluteMaxRotVel; }
   /// Sets the robot's absolute maximum rotational velocity
-  AREXPORT bool setAbsoluteMaxRotVel(double maxVel);
+  MVREXPORT bool setAbsoluteMaxRotVel(double maxVel);
   
   /// Gets the robot's absolute maximum rotational acceleration
   double getAbsoluteMaxRotAccel(void) const 
     { return myAbsoluteMaxRotAccel; }
   /// Sets the robot's absolute maximum rotational acceleration
-  AREXPORT bool setAbsoluteMaxRotAccel(double maxAccel);
+  MVREXPORT bool setAbsoluteMaxRotAccel(double maxAccel);
 
   /// Gets the robot's absolute maximum rotational deceleration
   double getAbsoluteMaxRotDecel(void) const 
     { return myAbsoluteMaxRotDecel; }
   /// Sets the robot's absolute maximum rotational deceleration
-  AREXPORT bool setAbsoluteMaxRotDecel(double maxDecel);
+  MVREXPORT bool setAbsoluteMaxRotDecel(double maxDecel);
 
   /// Gets the robot's absolute maximum lateral velocity
   double getAbsoluteMaxLatVel(void) const 
     { return myAbsoluteMaxLatVel; }
   /// Sets the robot's absolute maximum lateral velocity
-  AREXPORT bool setAbsoluteMaxLatVel(double maxVel);
+  MVREXPORT bool setAbsoluteMaxLatVel(double maxVel);
 
   /// Gets the robot's absolute maximum lateral acceleration
   double getAbsoluteMaxLatAccel(void) const 
     { return myAbsoluteMaxLatAccel; }
   /// Sets the robot's absolute maximum lateral acceleration
-  AREXPORT bool setAbsoluteMaxLatAccel(double maxAccel);
+  MVREXPORT bool setAbsoluteMaxLatAccel(double maxAccel);
 
   /// Gets the robot's absolute maximum lateral deceleration
   double getAbsoluteMaxLatDecel(void) const 
     { return myAbsoluteMaxLatDecel; }
   /// Sets the robot's absolute maximum lateral deceleration
-  AREXPORT bool setAbsoluteMaxLatDecel(double maxDecel);
+  MVREXPORT bool setAbsoluteMaxLatDecel(double maxDecel);
 
 
   // Accessors
@@ -490,10 +490,10 @@ public:
     { return ((myStallValue & 0xff00) >> 8) & MvrUtil::BIT0; }
   /// Returns true if the front bumper is triggered.   @sa MvrBumpers
   bool isFrontBumperTriggered(void) const
-  { return hasFrontBumpers() && ((((myStallValue & 0xff00) >> 8) & ~ArUtil::BIT0) != 0); }
+  { return hasFrontBumpers() && ((((myStallValue & 0xff00) >> 8) & ~MvrUtil::BIT0) != 0); }
   /// Returns true if the rear bumper is triggered. @sa MvrBumpers
   bool isRearBumperTriggered(void) const
-  { return hasRearBumpers() && (((myStallValue & 0xff) & ~ArUtil::BIT0) !=0 ); }
+  { return hasRearBumpers() && (((myStallValue & 0xff) & ~MvrUtil::BIT0) !=0 ); }
 
   /// Gets the legacy control heading
   /**
@@ -550,7 +550,7 @@ public:
   /// Gets the byte representing digital output status
   unsigned char getDigOut(void) const { return myDigOut; }
   /// Gets the charge state of the robot (see long docs)
-  AREXPORT ChargeState getChargeState(void) const;
+  MVREXPORT ChargeState getChargeState(void) const;
   /// Gets the name of the charge state
   const char *getChargeStateName() const
   {
@@ -573,7 +573,7 @@ public:
     return "unknown";
   }
   /// Gets if the robot is on a charger
-  AREXPORT bool isChargerPowerGood(void) const;
+  MVREXPORT bool isChargerPowerGood(void) const;
 
   /// Gets the number of bytes in the analog IO buffer
   int getIOAnalogSize(void) const { return myIOAnalogSize; }
@@ -583,24 +583,24 @@ public:
   int getIODigOutSize(void) const { return myIODigOutSize; }
 
   /// Gets the n'th byte from the analog input data from the IO packet
-  AREXPORT int getIOAnalog(int num) const;
+  MVREXPORT int getIOAnalog(int num) const;
   /// Gets the n'th byte from the analog input data from the IO packet
-  AREXPORT double getIOAnalogVoltage(int num) const;
+  MVREXPORT double getIOAnalogVoltage(int num) const;
   /// Gets the n'th byte from the digital input data from the IO packet
-  AREXPORT unsigned char getIODigIn(int num) const;
+  MVREXPORT unsigned char getIODigIn(int num) const;
   /// Gets the n'th byte from the digital output data from the IO packet
-  AREXPORT unsigned char getIODigOut(int num) const;
+  MVREXPORT unsigned char getIODigOut(int num) const;
 
   /// Gets whether the robot has table sensing IR or not (see params in docs)
   bool hasTableSensingIR(void) const { return myParams->haveTableSensingIR(); }
   /// Returns true if the left table sensing IR is triggered
-  AREXPORT bool isLeftTableSensingIRTriggered(void) const;
+  MVREXPORT bool isLeftTableSensingIRTriggered(void) const;
   /// Returns true if the right table sensing IR is triggered
-  AREXPORT bool isRightTableSensingIRTriggered(void) const;
+  MVREXPORT bool isRightTableSensingIRTriggered(void) const;
   /// Returns true if the left break beam IR is triggered
-  AREXPORT bool isLeftBreakBeamTriggered(void) const;
+  MVREXPORT bool isLeftBreakBeamTriggered(void) const;
   /// Returns true if the right break beam IR is triggered
-  AREXPORT bool isRightBreakBeamTriggered(void) const;
+  MVREXPORT bool isRightBreakBeamTriggered(void) const;
   /// Returns the time received of the last IO packet
   MvrTime getIOPacketTime(void) const { return myLastIOPacketReceivedTime; }
 
@@ -665,39 +665,39 @@ public:
   
 
   /// Gets the number of motor packets received in the last second
-  AREXPORT int getMotorPacCount(void) const;
+  MVREXPORT int getMotorPacCount(void) const;
   /// Gets the number of sonar returns received in the last second
-  AREXPORT int getSonarPacCount(void) const;
+  MVREXPORT int getSonarPacCount(void) const;
 
   /// Gets the range of the last sonar reading for the given sonar
   /// @ingroup easy
-  AREXPORT int getSonarRange(int num) const;
+  MVREXPORT int getSonarRange(int num) const;
   /// Find out if the given sonar reading was newly refreshed by the last incoming SIP received.
-  AREXPORT bool isSonarNew(int num) const;
+  MVREXPORT bool isSonarNew(int num) const;
   /// Find the number of sonar sensors (that the robot has yet returned values for)
   /// @ingroup easy
   int getNumSonar(void) const { return myNumSonar; }
   /// Returns the sonar reading for the given sonar
   /// @ingroup easy
-  AREXPORT MvrSensorReading *getSonarReading(int num) const;
+  MVREXPORT MvrSensorReading *getSonarReading(int num) const;
   /// Returns the closest of the current sonar reading in the given range
   /// @ingroup easy
-  AREXPORT int getClosestSonarRange(double startAngle, double endAngle) const;
+  MVREXPORT int getClosestSonarRange(double startAngle, double endAngle) const;
   /// Returns the number of the sonar that has the closest current reading in the given range
   /// @ingroup easy
-  AREXPORT int getClosestSonarNumber(double startAngle, double endAngle) const;
+  MVREXPORT int getClosestSonarNumber(double startAngle, double endAngle) const;
 
   /// Gets the robots name in ARIAs list
-  AREXPORT const char *getName(void) const;
+  MVREXPORT const char *getName(void) const;
   /// Sets the robots name in ARIAs list
-  AREXPORT void setName(const char *name);
+  MVREXPORT void setName(const char *name);
 
   /// Change stored pose (i.e. the value returned by getPose())
-  AREXPORT void moveTo(MvrPose pose, bool doCumulative = true);
+  MVREXPORT void moveTo(MvrPose pose, bool doCumulative = true);
   /// Change stored pose (i.e. the value returned by getPose()) 
-  AREXPORT void moveTo(MvrPose to, MvrPose from, bool doCumulative = true);
+  MVREXPORT void moveTo(MvrPose to, MvrPose from, bool doCumulative = true);
   /// Manually sets the current percentage that the robot is charged (argument is percentage, as a number between 0 and 100)
-  AREXPORT void setStateOfCharge(double stateOfCharge);
+  MVREXPORT void setStateOfCharge(double stateOfCharge);
   /// Sets the state of charge (percentage) that is considered to be low
   void setStateOfChargeLow(double stateOfChargeLow) 
     { myStateOfChargeLow = stateOfChargeLow; }
@@ -705,16 +705,16 @@ public:
   void setStateOfChargeShutdown(double stateOfChargeShutdown) 
     { myStateOfChargeShutdown = stateOfChargeShutdown; }
   /// Sets the charge state (for use with setting the state of charge)
-  AREXPORT void setChargeState(MvrRobot::ChargeState chargeState);
+  MVREXPORT void setChargeState(MvrRobot::ChargeState chargeState);
   /// Sets if we're on the charger (for use with setting the state of charge)
-  AREXPORT void setIsChargerPowerGood(bool onCharger);
+  MVREXPORT void setIsChargerPowerGood(bool onCharger);
 
   /// Sets things so that the battery info from the microcontroller
   /// will be ignored
-  AREXPORT void setIgnoreMicroControllerBatteryInfo(
+  MVREXPORT void setIgnoreMicroControllerBatteryInfo(
 	  bool ignoreMicroControllerBatteryInfo);
   /// Sets the battery info
-  AREXPORT void setBatteryInfo(double realBatteryVoltage, 
+  MVREXPORT void setBatteryInfo(double realBatteryVoltage, 
 			       double normalizedBatteryVoltage,
 			       bool haveStateOfCharge,
 			       double stateOfCharge);
@@ -743,38 +743,38 @@ public:
   int getTemperature(void) const { return myTemperature; }
 
   /// Starts a continuous stream of encoder packets
-  AREXPORT void requestEncoderPackets(void);
+  MVREXPORT void requestEncoderPackets(void);
 
   /// Starts a continuous stream of IO packets
-  AREXPORT void requestIOPackets(void);
+  MVREXPORT void requestIOPackets(void);
 
   /// Stops a continuous stream of encoder packets
-  AREXPORT void stopEncoderPackets(void);
+  MVREXPORT void stopEncoderPackets(void);
 
   /// Stops a continuous stream of IO packets
-  AREXPORT void stopIOPackets(void);
+  MVREXPORT void stopIOPackets(void);
 
   /// Sees if we've explicitly requested encoder packets
-  AREXPORT bool haveRequestedEncoderPackets(void);
+  MVREXPORT bool haveRequestedEncoderPackets(void);
 
   /// Sees if we've explicitly requested IO packets
-  AREXPORT bool haveRequestedIOPackets(void);
+  MVREXPORT bool haveRequestedIOPackets(void);
 
   /// Gets packet data from the left encoder
-  AREXPORT long int getLeftEncoder(void);
+  MVREXPORT long int getLeftEncoder(void);
 
   /// Gets packet data from the right encoder
-  AREXPORT long int getRightEncoder(void);
+  MVREXPORT long int getRightEncoder(void);
 
   /// Changes the transform
-  AREXPORT void setEncoderTransform(MvrPose deadReconPos,
+  MVREXPORT void setEncoderTransform(MvrPose deadReconPos,
 				    MvrPose globalPos);
 
   /// Changes the transform directly
-  AREXPORT void setEncoderTransform(MvrPose transformPos);
+  MVREXPORT void setEncoderTransform(MvrPose transformPos);
 
   /// Changes the transform directly
-  AREXPORT void setEncoderTransform(MvrTransform transform);
+  MVREXPORT void setEncoderTransform(MvrTransform transform);
 
   /// Sets the encoder pose, for internal use
   void setEncoderPose(MvrPose encoderPose) 
@@ -798,19 +798,19 @@ public:
     { myMTXTimeUSecCB = functor; }
 
   /// Gets the encoder transform
-  AREXPORT MvrTransform getEncoderTransform(void) const;
+  MVREXPORT MvrTransform getEncoderTransform(void) const;
 
   /// This gets the transform from local coords to global coords
-  AREXPORT MvrTransform getToGlobalTransform(void) const;
+  MVREXPORT MvrTransform getToGlobalTransform(void) const;
 
   /// This gets the transform for going from global coords to local coords
-  AREXPORT MvrTransform getToLocalTransform(void) const;
+  MVREXPORT MvrTransform getToLocalTransform(void) const;
 
   /// This applies a transform to all the robot range devices and to the sonar
-  AREXPORT void applyTransform(MvrTransform trans, bool doCumulative = true);
+  MVREXPORT void applyTransform(MvrTransform trans, bool doCumulative = true);
 
   /// Sets the dead recon position of the robot
-  AREXPORT void setDeadReconPose(MvrPose pose);
+  MVREXPORT void setDeadReconPose(MvrPose pose);
 
   /// This gets the distance the robot has travelled since the last time resetTripOdometer() was called (mm)
   /// This is a virtual odometer that measures the total linear distance the
@@ -821,7 +821,7 @@ public:
   /// robot's actual odometry sensor or wheel encoders. For position based on that
   /// plus possible additional correction, see getPose(). For raw encoder count
   /// data, see requestEncoderPackets() instead. 
-  AREXPORT double getTripOdometerDistance(void) 
+  MVREXPORT double getTripOdometerDistance(void) 
     { return myTripOdometerDistance; }
 
   /// This gets the number of degrees the robot has turned since the last time resetTripOdometer() was called (deg)
@@ -844,7 +844,7 @@ public:
 
   /// Resets the "Trip Odometer"
   /// @see getTripOdometerDistance()
-  AREXPORT void resetTripOdometer(void);
+  MVREXPORT void resetTripOdometer(void);
 
   /// This gets the total cumulative distance the robot has travelled (mm)
   /// This is a virtual odometer (by analogy with a car odometer) that measures the total linear distance the
@@ -882,75 +882,75 @@ public:
 
   /// Adds a rangeDevice to the robot's list of them, and set the MvrRangeDevice
   /// object's robot pointer to this MvrRobot object.
-  AREXPORT void addRangeDevice(MvrRangeDevice *device);
+  MVREXPORT void addRangeDevice(MvrRangeDevice *device);
   /// Remove a range device from the robot's list, by name
-  AREXPORT void remRangeDevice(const char *name);
+  MVREXPORT void remRangeDevice(const char *name);
   /// Remove a range device from the robot's list, by instance
-  AREXPORT void remRangeDevice(MvrRangeDevice *device);
+  MVREXPORT void remRangeDevice(MvrRangeDevice *device);
 
   /// Finds a rangeDevice in the robot's list
-  AREXPORT const MvrRangeDevice *findRangeDevice(const char *name, 
+  MVREXPORT const MvrRangeDevice *findRangeDevice(const char *name, 
 						bool ignoreCase = false) const;
 
   /// Finds a rangeDevice in the robot's list
-  AREXPORT MvrRangeDevice *findRangeDevice(const char *name, 
+  MVREXPORT MvrRangeDevice *findRangeDevice(const char *name, 
 					  bool ignoreCase = false);
 
   /// Gets the range device list
-  AREXPORT std::list<ArRangeDevice *> *getRangeDeviceList(void);
+  MVREXPORT std::list<ArRangeDevice *> *getRangeDeviceList(void);
 
   /// Finds whether a particular range device is attached to this robot or not
-  AREXPORT bool hasRangeDevice(MvrRangeDevice *device) const;
+  MVREXPORT bool hasRangeDevice(MvrRangeDevice *device) const;
 
   /// Goes through all the range devices and checks them
-  AREXPORT double checkRangeDevicesCurrentPolar(
+  MVREXPORT double checkRangeDevicesCurrentPolar(
 	  double startAngle, double endAngle, double *angle = NULL,
 	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
   /// Goes through all the range devices and checks them
-  AREXPORT double checkRangeDevicesCumulativePolar(
+  MVREXPORT double checkRangeDevicesCumulativePolar(
 	  double startAngle, double endAngle, double *angle = NULL,
 	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
 
   // Goes through all the range devices and checks them
-  AREXPORT double checkRangeDevicesCurrentBox(
+  MVREXPORT double checkRangeDevicesCurrentBox(
 	  double x1, double y1, double x2, double y2,
 	  MvrPose *readingPos = NULL,
 	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
   // Goes through all the range devices and checks them
-  AREXPORT double checkRangeDevicesCumulativeBox(
+  MVREXPORT double checkRangeDevicesCumulativeBox(
 	  double x1, double y1, double x2, double y2,
 	  MvrPose *readingPos = NULL, 
 	  const MvrRangeDevice **rangeDevice = NULL,
 	  bool useLocationDependentDevices = true) const;
 
   /// Adds a laser to the robot's map of them
-  AREXPORT bool addLaser(MvrLaser *laser, int laserNumber, 
+  MVREXPORT bool addLaser(MvrLaser *laser, int laserNumber, 
 			 bool addAsRangeDevice = true);
   /// Remove a range device from the robot's list, by instance
-  AREXPORT bool remLaser(MvrLaser *laser, bool removeAsRangeDevice = true);
+  MVREXPORT bool remLaser(MvrLaser *laser, bool removeAsRangeDevice = true);
   /// Remove a range device from the robot's list, by number
-  AREXPORT bool remLaser(int laserNumber, bool removeAsRangeDevice = true);
+  MVREXPORT bool remLaser(int laserNumber, bool removeAsRangeDevice = true);
 
   /// Finds a laser in the robot's list (@a laserNumber indices start at 1)
-  AREXPORT const MvrLaser *findLaser(int laserNumber) const;
+  MVREXPORT const MvrLaser *findLaser(int laserNumber) const;
 
   /// Finds a laser in the robot's list (@a laserNumber indices start at 1)
-  AREXPORT MvrLaser *findLaser(int laserNumber);
+  MVREXPORT MvrLaser *findLaser(int laserNumber);
 
   /// Gets the range device list
-  AREXPORT const std::map<int, MvrLaser *> *getLaserMap(void) const;
+  MVREXPORT const std::map<int, MvrLaser *> *getLaserMap(void) const;
 
   /// Gets the range device list
-  AREXPORT std::map<int, MvrLaser *> *getLaserMap(void);
+  MVREXPORT std::map<int, MvrLaser *> *getLaserMap(void);
 
   /// Finds whether a particular range device is attached to this robot or not
-  AREXPORT bool hasLaser(MvrLaser *device) const;
+  MVREXPORT bool hasLaser(MvrLaser *device) const;
 
   size_t getNumLasers() { return myLaserMap.size(); }
 
@@ -959,102 +959,102 @@ public:
   /// @internal
   /// (MvrBatteryConnector/ArRobotConnector will automatically add MvrBatteryMTX
   /// object(s) if connected.)
-  AREXPORT bool addBattery(MvrBatteryMTX *battery, int batteryNumber);
+  MVREXPORT bool addBattery(MvrBatteryMTX *battery, int batteryNumber);
   /// Remove a battery from the robot's list, by instance
   /// (MTX robots only)
   /// Primarily for ARIA internal use only.
-  AREXPORT bool remBattery(MvrBatteryMTX *battery);
+  MVREXPORT bool remBattery(MvrBatteryMTX *battery);
   /// Remove a battery from the robot's list, by number
   /// (MTX robots only)
   /// Primarily for ARIA internal use only.
-  AREXPORT bool remBattery(int batteryNumber);
+  MVREXPORT bool remBattery(int batteryNumber);
 
   /// Finds a battery in the robot's list (@a batteryNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT const MvrBatteryMTX *findBattery(int batteryNumber) const;
+  MVREXPORT const MvrBatteryMTX *findBattery(int batteryNumber) const;
 
   /// Finds a battery in the robot's list (@a batteryNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT MvrBatteryMTX *findBattery(int batteryNumber);
+  MVREXPORT MvrBatteryMTX *findBattery(int batteryNumber);
 
   /// Gets the battery list
-  AREXPORT const std::map<int, MvrBatteryMTX *> *getBatteryMap(void) const;
+  MVREXPORT const std::map<int, MvrBatteryMTX *> *getBatteryMap(void) const;
 
   /// Gets the battery list
-  AREXPORT std::map<int, MvrBatteryMTX *> *getBatteryMap(void);
+  MVREXPORT std::map<int, MvrBatteryMTX *> *getBatteryMap(void);
 
   /// Finds whether a particular battery is attached to this robot or not
-  AREXPORT bool hasBattery(MvrBatteryMTX *device) const;
+  MVREXPORT bool hasBattery(MvrBatteryMTX *device) const;
 
 
   /// Adds a lcd to the robot's map of them
   /// @internal
   /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
   /// connected.)
-  AREXPORT bool addLCD(MvrLCDMTX *lcd, int lcdNumber);
+  MVREXPORT bool addLCD(MvrLCDMTX *lcd, int lcdNumber);
   /// Remove a lcd from the robot's list, by instance
   /// @internal
   /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
   /// connected.)
-  AREXPORT bool remLCD(MvrLCDMTX *lcd);
+  MVREXPORT bool remLCD(MvrLCDMTX *lcd);
   /// Remove a lcd from the robot's list, by number
   /// @internal
   /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
   /// connected.)
-  AREXPORT bool remLCD(int lcdNumber);
+  MVREXPORT bool remLCD(int lcdNumber);
 
   /// Finds a lcd in the robot's list (@a lcdNumber indices start at 1)
   /// (MTX robots only) 
-  AREXPORT const MvrLCDMTX *findLCD(int lcdNumber = 1) const;
+  MVREXPORT const MvrLCDMTX *findLCD(int lcdNumber = 1) const;
 
   /// Finds a lcd in the robot's list (@a lcdNumber indices start at 1)
   /// (MTX robots only) 
-  AREXPORT MvrLCDMTX *findLCD(int lcdNumber = 1);
+  MVREXPORT MvrLCDMTX *findLCD(int lcdNumber = 1);
 
   /// Gets the lcd list
   /// (MTX robots only) 
-  AREXPORT const std::map<int, MvrLCDMTX *> *getLCDMap(void) const;
+  MVREXPORT const std::map<int, MvrLCDMTX *> *getLCDMap(void) const;
 
   /// Gets the lcd list
   /// (MTX robots only) 
-  AREXPORT std::map<int, MvrLCDMTX *> *getLCDMap(void);
+  MVREXPORT std::map<int, MvrLCDMTX *> *getLCDMap(void);
 
   /// Finds whether a particular lcd is attached to this robot or not
   /// (MTX robots only) 
-  AREXPORT bool hasLCD(MvrLCDMTX *device) const;
+  MVREXPORT bool hasLCD(MvrLCDMTX *device) const;
 
 
 
   /// Adds a sonar to the robot's map of them
   /// @internal (MvrSonarConnector/ArRobotConnector will automatically and MTX
   /// sonar interfaces upon connection)
-  AREXPORT bool addSonar(MvrSonarMTX *sonar, int sonarNumber);
+  MVREXPORT bool addSonar(MvrSonarMTX *sonar, int sonarNumber);
   /// Remove a sonar from the robot's list, by instance
   /// @internal
-  AREXPORT bool remSonar(MvrSonarMTX *sonar);
+  MVREXPORT bool remSonar(MvrSonarMTX *sonar);
   /// Remove a sonar from the robot's list, by number
   /// @internal
-  AREXPORT bool remSonar(int sonarNumber);
+  MVREXPORT bool remSonar(int sonarNumber);
 
   /// Finds a sonar in the robot's list (@a sonarNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT const MvrSonarMTX *findSonar(int sonarNumber) const;
+  MVREXPORT const MvrSonarMTX *findSonar(int sonarNumber) const;
 
   /// Finds a sonar in the robot's list (@a sonarNumber indices start at 1)
   /// (MTX robots only)
-  AREXPORT MvrSonarMTX *findSonar(int sonarNumber);
+  MVREXPORT MvrSonarMTX *findSonar(int sonarNumber);
 
   /// Gets the sonar list
   /// (MTX robots only)
-  AREXPORT const std::map<int, MvrSonarMTX *> *getSonarMap(void) const;
+  MVREXPORT const std::map<int, MvrSonarMTX *> *getSonarMap(void) const;
 
   /// Gets the sonar list
   /// (MTX robots only)
-  AREXPORT std::map<int, MvrSonarMTX *> *getSonarMap(void);
+  MVREXPORT std::map<int, MvrSonarMTX *> *getSonarMap(void);
 
   /// Finds whether a particular sonar is attached to this robot or not
   /// (MTX robots only)
-  AREXPORT bool hasSonar(MvrSonarMTX *device) const;
+  MVREXPORT bool hasSonar(MvrSonarMTX *device) const;
 
   /// Associates an MvrPTZ object with this robot (see getPTZ())
   void setPTZ(MvrPTZ *ptz) { myPtz = ptz; }
@@ -1063,140 +1063,140 @@ public:
 
   /// Sets the number of milliseconds between state reflection refreshes
   /// if the state has not changed 
-  AREXPORT void setStateReflectionRefreshTime(int msec);
+  MVREXPORT void setStateReflectionRefreshTime(int msec);
 
   /// Gets the number of milliseconds between state reflection refreshes
   /// if the state has not changed 
-  AREXPORT int getStateReflectionRefreshTime(void) const;
+  MVREXPORT int getStateReflectionRefreshTime(void) const;
 
   /// Adds a packet handler to the list of packet handlers
-  AREXPORT void addPacketHandler(
+  MVREXPORT void addPacketHandler(
 	  MvrRetFunctor1<bool, MvrRobotPacket *> *functor, 
 	  MvrListPos::Pos position = MvrListPos::LAST);
   
   /// Removes a packet handler from the list of packet handlers
-  AREXPORT void remPacketHandler(
+  MVREXPORT void remPacketHandler(
 	  MvrRetFunctor1<bool, MvrRobotPacket *> *functor);
 
   /// Adds a connect callback
-  AREXPORT void addConnectCB(MvrFunctor *functor, 
+  MVREXPORT void addConnectCB(MvrFunctor *functor, 
 			     MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a connect callback
-  AREXPORT void remConnectCB(MvrFunctor *functor);
+  MVREXPORT void remConnectCB(MvrFunctor *functor);
 
   /// Adds a callback for when a connection to the robot is failed
-  AREXPORT void addFailedConnectCB(MvrFunctor *functor, 
+  MVREXPORT void addFailedConnectCB(MvrFunctor *functor, 
 				   MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when a connection to the robot is failed
-  AREXPORT void remFailedConnectCB(MvrFunctor *functor);
+  MVREXPORT void remFailedConnectCB(MvrFunctor *functor);
 
   /// Adds a callback for when disconnect is called while connected
-  AREXPORT void addDisconnectNormallyCB(MvrFunctor *functor, 
+  MVREXPORT void addDisconnectNormallyCB(MvrFunctor *functor, 
 				ArListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when disconnect is called while connected
-  AREXPORT void remDisconnectNormallyCB(MvrFunctor *functor);
+  MVREXPORT void remDisconnectNormallyCB(MvrFunctor *functor);
   
   /// Adds a callback for when disconnection happens because of an error
-  AREXPORT void addDisconnectOnErrorCB(MvrFunctor *functor, 
+  MVREXPORT void addDisconnectOnErrorCB(MvrFunctor *functor, 
 				   MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when disconnection happens because of an error
-  AREXPORT void remDisconnectOnErrorCB(MvrFunctor *functor);
+  MVREXPORT void remDisconnectOnErrorCB(MvrFunctor *functor);
 
   /// Adds a callback for when the run loop exits for what ever reason
-  AREXPORT void addRunExitCB(MvrFunctor *functor, 
+  MVREXPORT void addRunExitCB(MvrFunctor *functor, 
 			     MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when the run loop exits for what ever reason
-  AREXPORT void remRunExitCB(MvrFunctor *functor);
+  MVREXPORT void remRunExitCB(MvrFunctor *functor);
 
   /// Suspend calling thread until the MvrRobot is connected
   /// @ingroup easy
-  AREXPORT WaitState waitForConnect(unsigned int msecs=0);
+  MVREXPORT WaitState waitForConnect(unsigned int msecs=0);
   /// Suspend calling thread until the MvrRobot is connected or fails to connect
-  AREXPORT WaitState waitForConnectOrConnFail(unsigned int msecs=0);
+  MVREXPORT WaitState waitForConnectOrConnFail(unsigned int msecs=0);
   /// Suspend calling thread until the MvrRobot run loop has exited
   /// @ingroup easy
-  AREXPORT WaitState waitForRunExit(unsigned int msecs=0);
+  MVREXPORT WaitState waitForRunExit(unsigned int msecs=0);
 
   /// Wake up all threads waiting on this robot
-  AREXPORT void wakeAllWaitingThreads();
+  MVREXPORT void wakeAllWaitingThreads();
   /// Wake up all threads waiting for connection
-  AREXPORT void wakeAllConnWaitingThreads();
+  MVREXPORT void wakeAllConnWaitingThreads();
   /// Wake up all threads waiting for connection or connection failure
-  AREXPORT void wakeAllConnOrFailWaitingThreads();
+  MVREXPORT void wakeAllConnOrFailWaitingThreads();
   /// Wake up all threads waiting for the run loop to exit
-  AREXPORT void wakeAllRunExitWaitingThreads();
+  MVREXPORT void wakeAllRunExitWaitingThreads();
 
   /// Adds a user task to the list of synchronous taskes
-  AREXPORT bool addUserTask(const char *name, int position, 
+  MVREXPORT bool addUserTask(const char *name, int position, 
 			       MvrFunctor *functor,
 			       MvrTaskState::State *state = NULL);
 
 
   /// Removes a user task from the list of synchronous taskes by name
-  AREXPORT void remUserTask(const char *name);
+  MVREXPORT void remUserTask(const char *name);
   /// Removes a user task from the list of synchronous taskes by functor
-  AREXPORT void remUserTask(MvrFunctor *functor);
+  MVREXPORT void remUserTask(MvrFunctor *functor);
 
   /// Finds a user task by name
-  AREXPORT MvrSyncTask *findUserTask(const char *name);
+  MVREXPORT MvrSyncTask *findUserTask(const char *name);
   /// Finds a user task by functor
-  AREXPORT MvrSyncTask *findUserTask(MvrFunctor *functor);
+  MVREXPORT MvrSyncTask *findUserTask(MvrFunctor *functor);
   
   /// Logs the list of user tasks, strictly for your viewing pleasure
-  AREXPORT void logUserTasks(void) const;
+  MVREXPORT void logUserTasks(void) const;
   /// Logs the list of all tasks, strictly for your viewing pleasure
-  AREXPORT void logAllTasks(void) const;
+  MVREXPORT void logAllTasks(void) const;
 
   /// Adds a sensor interpretation task. These are called during the MvrRobot
   /// task synchronous cycle after robot data has been received (from the SIP
   /// and other robot packets).
-  AREXPORT bool addSensorInterpTask(const char *name, int position, 
+  MVREXPORT bool addSensorInterpTask(const char *name, int position, 
 				       MvrFunctor *functor,
 	       			       MvrTaskState::State *state = NULL);
 
 
   /// Removes a sensor interp tasks by name
-  AREXPORT void remSensorInterpTask(const char *name);
+  MVREXPORT void remSensorInterpTask(const char *name);
   /// Removes a sensor interp tasks by functor
-  AREXPORT void remSensorInterpTask(MvrFunctor *functor);
+  MVREXPORT void remSensorInterpTask(MvrFunctor *functor);
 
   /// Finds a task by name
-  AREXPORT MvrSyncTask *findTask(const char *name);
+  MVREXPORT MvrSyncTask *findTask(const char *name);
   /// Finds a task by functor
-  AREXPORT MvrSyncTask *findTask(MvrFunctor *functor);
+  MVREXPORT MvrSyncTask *findTask(MvrFunctor *functor);
 
   /// Adds an action to the list with the given priority 
   /// @ingroup easy
-  AREXPORT bool addAction(MvrAction *action, int priority);
+  MVREXPORT bool addAction(MvrAction *action, int priority);
   /// Removes an action from the list, by pointer
   /// @ingroup easy
-  AREXPORT bool remAction(MvrAction *action);
+  MVREXPORT bool remAction(MvrAction *action);
   /// Removes an action from the list, by name
   /// @ingroup easy
-  AREXPORT bool remAction(const char *actionName);
+  MVREXPORT bool remAction(const char *actionName);
   /// Returns the first (highest priority) action with the given name (or NULL)
-  AREXPORT MvrAction *findAction(const char *actionName);
+  MVREXPORT MvrAction *findAction(const char *actionName);
   /// Returns the map of actions... don't do this unless you really
   /// know what you're doing
-  AREXPORT MvrResolver::ActionMap *getActionMap(void);
+  MVREXPORT MvrResolver::ActionMap *getActionMap(void);
   /// Deactivates all the actions
-  AREXPORT void deactivateActions(void);
+  MVREXPORT void deactivateActions(void);
 
   /// Logs out the actions and their priorities
   /// @ingroup easy
-  AREXPORT void logActions(bool logDeactivated = false) const;
+  MVREXPORT void logActions(bool logDeactivated = false) const;
 
   /// Gets the resolver the robot is using
-  AREXPORT MvrResolver *getResolver(void);
+  MVREXPORT MvrResolver *getResolver(void);
 
   /// Sets the resolver the robot is using
-  AREXPORT void setResolver(MvrResolver *resolver);
+  MVREXPORT void setResolver(MvrResolver *resolver);
 
   /// Sets the encoderCorrectionCallback
-  AREXPORT void setEncoderCorrectionCallback(
+  MVREXPORT void setEncoderCorrectionCallback(
 	  MvrRetFunctor1<double, MvrPoseWithTime> *functor);
   /// Gets the encoderCorrectionCallback
-  AREXPORT MvrRetFunctor1<double, MvrPoseWithTime> *
+  MVREXPORT MvrRetFunctor1<double, MvrPoseWithTime> *
           getEncoderCorrectionCallback(void) const;
   
   /// Gets the time the connection to the robot was made
@@ -1205,32 +1205,32 @@ public:
 
   // set up some of the internals of how the MvrRobot class works
   /// Sets the number of ms between cycles
-  AREXPORT void setCycleTime(unsigned int ms);
+  MVREXPORT void setCycleTime(unsigned int ms);
   /// Gets the number of ms between cycles
-  AREXPORT unsigned int getCycleTime(void) const;
+  MVREXPORT unsigned int getCycleTime(void) const;
   /// Sets the number of ms between cycles to warn over
-  AREXPORT void setCycleWarningTime(unsigned int ms);
+  MVREXPORT void setCycleWarningTime(unsigned int ms);
   /// Gets the number of ms between cycles to warn over
-  AREXPORT unsigned int getCycleWarningTime(void) const;
+  MVREXPORT unsigned int getCycleWarningTime(void) const;
   /// Gets the number of ms between cycles to warn over
-  AREXPORT unsigned int getCycleWarningTime(void);
+  MVREXPORT unsigned int getCycleWarningTime(void);
   /// Sets the multiplier for how many cycles MvrRobot waits when connecting
-  AREXPORT void setConnectionCycleMultiplier(unsigned int multiplier);
+  MVREXPORT void setConnectionCycleMultiplier(unsigned int multiplier);
   /// Gets the multiplier for how many cycles MvrRobot waits when connecting
-  AREXPORT unsigned int getConnectionCycleMultiplier(void) const;
+  MVREXPORT unsigned int getConnectionCycleMultiplier(void) const;
   
   /// Sets whether to chain the robot cycle to when we get in SIP packets
   void setCycleChained(bool cycleChained) { myCycleChained = cycleChained; }
   /// Gets whether we chain the robot cycle to when we get in SIP packets
   bool isCycleChained(void) const { return myCycleChained; }
   /// Sets the time without a response until connection assumed lost (threadsafe)
-  AREXPORT void setConnectionTimeoutTime(int mSecs);
+  MVREXPORT void setConnectionTimeoutTime(int mSecs);
   /// Gets the time without a response until connection assumed lost (threadsafe)
-  AREXPORT int getConnectionTimeoutTime(void);
+  MVREXPORT int getConnectionTimeoutTime(void);
   /// Gets the time the last packet was received (threadsafe)
-  AREXPORT MvrTime getLastPacketTime(void);
+  MVREXPORT MvrTime getLastPacketTime(void);
   /// Gets the time the last odometry was received (threadsafe)
-  AREXPORT MvrTime getLastOdometryTime(void);
+  MVREXPORT MvrTime getLastOdometryTime(void);
 
   /// Sets the number of packets back in time the MvrInterpolation goes
   void setPoseInterpNumReadings(size_t numReadings) 
@@ -1285,14 +1285,14 @@ public:
   }
 
   /// Applies the encoder motion from the passed in MvrPoseWithTime to the passed in MvrTime
-  AREXPORT int applyEncoderOffset(MvrPoseWithTime from, MvrTime to, 
+  MVREXPORT int applyEncoderOffset(MvrPoseWithTime from, MvrTime to, 
 				  MvrPose *result);
 
   /// Gets the Counter for the time through the loop
   unsigned int getCounter(void) const { return myCounter; }
 
   /// Gets the parameters the robot is using
-  AREXPORT const MvrRobotParams *getRobotParams(void) const;
+  MVREXPORT const MvrRobotParams *getRobotParams(void) const;
 
   /// Sets if a config packet is requried or not... 
   /** By default it is not required, since some ancient robots have no
@@ -1305,72 +1305,72 @@ public:
     { myRequireConfigPacket = requireConfigPacket; }
 
   /// Gets the original robot config packet information
-  AREXPORT const MvrRobotConfigPacketReader *getOrigRobotConfig(void) const;
+  MVREXPORT const MvrRobotConfigPacketReader *getOrigRobotConfig(void) const;
 
   /// Gets the battery packet reader
   MvrRobotBatteryPacketReader *getBatteryPacketReader(void) 
     { return myBatteryPacketReader; }
 
   /// Sets the maximum translational velocity
-  AREXPORT void setTransVelMax(double vel);
+  MVREXPORT void setTransVelMax(double vel);
   /// Sets the maximum translational velocity
-  AREXPORT void setTransNegVelMax(double negVel);
+  MVREXPORT void setTransNegVelMax(double negVel);
   /// Sets the translational acceleration
-  AREXPORT void setTransAccel(double acc);
+  MVREXPORT void setTransAccel(double acc);
   /// Sets the translational acceleration
-  AREXPORT void setTransDecel(double decel);
+  MVREXPORT void setTransDecel(double decel);
   /// Sets the maximum rotational velocity
-  AREXPORT void setRotVelMax(double vel);
+  MVREXPORT void setRotVelMax(double vel);
   /// Sets the rotational acceleration
-  AREXPORT void setRotAccel(double acc);
+  MVREXPORT void setRotAccel(double acc);
   /// Sets the rotational acceleration
-  AREXPORT void setRotDecel(double decel);
+  MVREXPORT void setRotDecel(double decel);
   /// Sets the maximum lateral velocity
-  AREXPORT void setLatVelMax(double vel);
+  MVREXPORT void setLatVelMax(double vel);
   /// Sets the lateral acceleration
-  AREXPORT void setLatAccel(double acc);
+  MVREXPORT void setLatAccel(double acc);
   /// Sets the lateral acceleration
-  AREXPORT void setLatDecel(double decel);
+  MVREXPORT void setLatDecel(double decel);
 
   /// If the robot has settable maximum velocities
   bool hasSettableVelMaxes(void) const 
     { return myParams->hasSettableVelMaxes(); }
   /// Gets the maximum translational velocity
-  AREXPORT double getTransVelMax(void) const;
+  MVREXPORT double getTransVelMax(void) const;
   /// Gets the maximum translational velocity
-  AREXPORT double getTransNegVelMax(void) const;
+  MVREXPORT double getTransNegVelMax(void) const;
   /// Gets the maximum rotational velocity
-  AREXPORT double getRotVelMax(void) const;
+  MVREXPORT double getRotVelMax(void) const;
   /// If the robot has settable accels and decels
   bool hasSettableAccsDecs(void)
       const { return myParams->hasSettableAccsDecs(); }
   /// Gets the translational acceleration
-  AREXPORT double getTransAccel(void) const;
+  MVREXPORT double getTransAccel(void) const;
   /// Gets the translational acceleration
-  AREXPORT double getTransDecel(void) const;
+  MVREXPORT double getTransDecel(void) const;
   /// Gets the rotational acceleration
-  AREXPORT double getRotAccel(void) const;
+  MVREXPORT double getRotAccel(void) const;
   /// Gets the rotational acceleration
-  AREXPORT double getRotDecel(void) const;
+  MVREXPORT double getRotDecel(void) const;
 
   /// Gets the maximum lateral velocity
-  AREXPORT double getLatVelMax(void) const;
+  MVREXPORT double getLatVelMax(void) const;
   /// Gets the lateral acceleration
-  AREXPORT double getLatAccel(void) const;
+  MVREXPORT double getLatAccel(void) const;
   /// Gets the lateral acceleration
-  AREXPORT double getLatDecel(void) const;
+  MVREXPORT double getLatDecel(void) const;
 
   /// Loads a parameter file (replacing all other params)
-  AREXPORT bool loadParamFile(const char *file);
+  MVREXPORT bool loadParamFile(const char *file);
   /// Sets the robot to use a passed in set of params (passes ownership)
-  AREXPORT void setRobotParams(MvrRobotParams *params);
+  MVREXPORT void setRobotParams(MvrRobotParams *params);
 
   /// Attachs a key handler
-  AREXPORT void attachKeyHandler(MvrKeyHandler *keyHandler,
+  MVREXPORT void attachKeyHandler(MvrKeyHandler *keyHandler,
 				 bool exitOnEscape = true,
 				 bool useExitNotShutdown = true);
   /// Gets the key handler attached to this robot
-  AREXPORT MvrKeyHandler *getKeyHandler(void) const;
+  MVREXPORT MvrKeyHandler *getKeyHandler(void) const;
 
   /// Lock the robot instance
   int lock() {return(myMutex.lock());}
@@ -1389,24 +1389,24 @@ public:
   bool isStabilizing(void) { return myIsStabilizing; }
 
   /// How long we should stabilize for in ms (0 disables stabilizing)
-  AREXPORT void setStabilizingTime(int mSecs);
+  MVREXPORT void setStabilizingTime(int mSecs);
 
   /// How long we stabilize for in ms (0 means no stabilizng)
-  AREXPORT int getStabilizingTime(void) const;
+  MVREXPORT int getStabilizingTime(void) const;
 
 
   /// Adds a callback called when the robot starts stabilizing before declaring connection
-  AREXPORT void addStabilizingCB(MvrFunctor *functor, 
+  MVREXPORT void addStabilizingCB(MvrFunctor *functor, 
 			     MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes stabilizing callback
-  AREXPORT void remStabilizingCB(MvrFunctor *functor);
+  MVREXPORT void remStabilizingCB(MvrFunctor *functor);
   
   /// This gets the root of the syncronous task tree, only serious 
   /// developers should use it
-  AREXPORT MvrSyncTask *getSyncTaskRoot(void);
+  MVREXPORT MvrSyncTask *getSyncTaskRoot(void);
 
   /// This function loops once...  only serious developers should use it
-  AREXPORT void loopOnce(void);
+  MVREXPORT void loopOnce(void);
 
   /// Sets the delay in the odometry readings
   /**
@@ -1447,7 +1447,7 @@ public:
   bool getPacketsReceivedTracking(void)
     { return myPacketsReceivedTracking; }
   /// Sets if we're logging all the packets received (just times and types)
-  AREXPORT void setPacketsReceivedTracking(bool packetsReceivedTracking);
+  MVREXPORT void setPacketsReceivedTracking(bool packetsReceivedTracking);
 
   /// Gets if we're logging the contents of the standard SIP (motors packet)
   bool getLogSIPContents() { return myLogSIPContents; }
@@ -1486,58 +1486,58 @@ public:
 
   /// Packet Handler, internal (calls old or new as appropriate)
   /// @internal
-  AREXPORT void packetHandler(void);
+  MVREXPORT void packetHandler(void);
   /// Action Handler, internal
   /// @internal
-  AREXPORT void actionHandler(void);
+  MVREXPORT void actionHandler(void);
   /// State Reflector, internal
   /// @internal
-  AREXPORT void stateReflector(void);
+  MVREXPORT void stateReflector(void);
   /// Robot locker, internal
   /// @internal
-  AREXPORT void robotLocker(void);
+  MVREXPORT void robotLocker(void);
   /// Robot unlocker, internal
   /// @internal
-  AREXPORT void robotUnlocker(void);
+  MVREXPORT void robotUnlocker(void);
 
   /// Packet handler, internal, for use in the syncloop when there's no threading
   /// @internal
-  AREXPORT void packetHandlerNonThreaded(void);
+  MVREXPORT void packetHandlerNonThreaded(void);
   /// Packet handler, internal, for use in the syncloop to handle the
   /// actual packets
   /// @internal
-  AREXPORT void packetHandlerThreadedProcessor(void);
+  MVREXPORT void packetHandlerThreadedProcessor(void);
   /// Packet handler, internal, for using from a thread to actually
   /// read all the packets
   /// @internal
-  AREXPORT void packetHandlerThreadedReader(void);
+  MVREXPORT void packetHandlerThreadedReader(void);
 
   /// For the key handler, escape calls this to exit, internal
-  AREXPORT void keyHandlerExit(void);
+  MVREXPORT void keyHandlerExit(void);
 
   /// Processes a motor packet, internal 
   /// @internal 
-  AREXPORT bool processMotorPacket(MvrRobotPacket *packet);
+  MVREXPORT bool processMotorPacket(MvrRobotPacket *packet);
   /// Processes a new sonar reading, internal
   /// @internal
-  AREXPORT void processNewSonar(char number, int range, MvrTime timeReceived);
+  MVREXPORT void processNewSonar(char number, int range, MvrTime timeReceived);
   /// Processes a new encoder packet, internal
   /// @internal
-  AREXPORT bool processEncoderPacket(MvrRobotPacket *packet);
+  MVREXPORT bool processEncoderPacket(MvrRobotPacket *packet);
   /// Processes a new IO packet, internal
   /// @internal
-  AREXPORT bool processIOPacket(MvrRobotPacket *packet);
+  MVREXPORT bool processIOPacket(MvrRobotPacket *packet);
   
   /// Internal function, shouldn't be used
   /// @internal
-  AREXPORT void init(void);
+  MVREXPORT void init(void);
 
   /// Internal function, shouldn't be used, sets up the default sync list
   /// @internal
-  AREXPORT void setUpSyncList(void);
+  MVREXPORT void setUpSyncList(void);
   /// Internal function, shouldn't be used, sets up the default packet handlers
   /// @internal
-  AREXPORT void setUpPacketHandlers(void);
+  MVREXPORT void setUpPacketHandlers(void);
 
   MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myMotorPacketCB;
   MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myEncoderPacketCB;
@@ -1554,11 +1554,11 @@ public:
   // with them, so they aren't documented... these process the cblists
   // and such
   // Internal function, shouldn't be used, does a single run of connecting
-  AREXPORT int asyncConnectHandler(bool tryHarderToConnect);
+  MVREXPORT int asyncConnectHandler(bool tryHarderToConnect);
 
   /// Internal function, shouldn't be used, drops the conn because of error
   /// @internal
-  AREXPORT void dropConnection(const char *technicalReason = "Lost connection to the microcontroller because of undefined error.",
+  MVREXPORT void dropConnection(const char *technicalReason = "Lost connection to the microcontroller because of undefined error.",
 			       const char *userReason = NULL);
   /// Internal function that gets the reason the connection dropped
   /// @internal
@@ -1568,28 +1568,28 @@ public:
   const char *getDropConnectionUserReason(void) { return myDropConnectionUserReason.c_str(); }
   /// Internal function, shouldn't be used, denotes the conn failed
   /// @internal
-  AREXPORT void failedConnect(void);
+  MVREXPORT void failedConnect(void);
   /// Internal function, shouldn't be used, does the initial conn stuff
   /// @internal
-  AREXPORT bool madeConnection(bool resetConnectionTime = true);
+  MVREXPORT bool madeConnection(bool resetConnectionTime = true);
   /// Internal function, shouldn't be used, calls the preconnected stuff
   /// @internal
-  AREXPORT void startStabilization(void);
+  MVREXPORT void startStabilization(void);
   /// Internal function, shouldn't be used, does the after conn stuff
   /// @internal
-  AREXPORT void finishedConnection(void);
+  MVREXPORT void finishedConnection(void);
   /// Internal function, shouldn't be used, cancels the connection quietly
   /// @internal
-  AREXPORT void cancelConnection(void);
+  MVREXPORT void cancelConnection(void);
 
   /// Internal function, takes a packet and passes it to the packet handlers,
   /// returns true if handled, false otherwise
   /// @internal
-  AREXPORT bool handlePacket(MvrRobotPacket *packet);
+  MVREXPORT bool handlePacket(MvrRobotPacket *packet);
 
-  AREXPORT std::list<ArFunctor *> * getRunExitListCopy();
+  MVREXPORT std::list<ArFunctor *> * getRunExitListCopy();
   // Internal function, processes a parameter file
-  AREXPORT void processParamFile(void);
+  MVREXPORT void processParamFile(void);
 
   /** @brief Get the position of the robot according to the last robot SIP only,
    *  with no correction by the gyro, other devices or software proceses.
@@ -1612,7 +1612,7 @@ public:
   MvrRetFunctorC<bool, MvrRobot> myGetNoTimeWarningThisCycleCB;
   /// internal function called when Mvria::exit is called
   /// @internal
-  AREXPORT void ariaExitCallback(void);
+  MVREXPORT void ariaExitCallback(void);
   // internal call that will let the robot connect even if it can't find params
   void setConnectWithNoParams(bool connectWithNoParams) 
     { myConnectWithNoParams = connectWithNoParams; }
@@ -1630,13 +1630,13 @@ public:
     { return &myReceiver; }
 
   // Gets a pointer to the robot parameters in an internal way so they can be modified (only for internal use)
-  AREXPORT MvrRobotParams *getRobotParamsInternal(void);
+  MVREXPORT MvrRobotParams *getRobotParamsInternal(void);
 
   // Sets if we've received the first encoder pose for very internal usage
   void internalSetFakeFirstEncoderPose(bool fakeFirstEncoderPose)
     { myFakeFirstEncoderPose = fakeFirstEncoderPose; }
   // Sets a flag to ignore the next packet handled, for very internal usage
-  AREXPORT void internalIgnoreNextPacket(void);
+  MVREXPORT void internalIgnoreNextPacket(void);
 protected:
   enum RotDesired { 
     ROT_NONE,

@@ -44,7 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define TIOGETTIMESTAMP         0x5480
 #define TIOSTARTTIMESTAMP       0x5481
 
-AREXPORT ArSerialConnection::ArSerialConnection(bool is422)
+MVREXPORT ArSerialConnection::ArSerialConnection(bool is422)
 {
   myPort = -1;
   myPortName = "none";
@@ -60,7 +60,7 @@ AREXPORT ArSerialConnection::ArSerialConnection(bool is422)
   buildStrMap();
 }
 
-AREXPORT ArSerialConnection::~ArSerialConnection()
+MVREXPORT ArSerialConnection::~MvrSerialConnection()
 {
   if (myPort != -1)
     close();
@@ -75,12 +75,12 @@ void ArSerialConnection::buildStrMap(void)
   myStrMap[OPEN_ALREADY_OPEN] = "Serial port already open.";
 }
 
-AREXPORT const char * ArSerialConnection::getOpenMessage(int messageNumber)
+MVREXPORT const char * ArSerialConnection::getOpenMessage(int messageNumber)
 {
   return myStrMap[messageNumber].c_str();
 }
 
-AREXPORT int ArSerialConnection::internalOpen(void)
+MVREXPORT int ArSerialConnection::internalOpen(void)
 {
   struct termios tio;
 
@@ -234,7 +234,7 @@ AREXPORT int ArSerialConnection::internalOpen(void)
   return 0;
 }
 
-AREXPORT bool ArSerialConnection::openSimple(void)
+MVREXPORT bool ArSerialConnection::openSimple(void)
 {
   if (internalOpen() == 0)
     return true;
@@ -247,7 +247,7 @@ AREXPORT bool ArSerialConnection::openSimple(void)
    COM1 for windows and /dev/ttyS0 for linux
    @see getOpenMessage
 */
-AREXPORT void ArSerialConnection::setPort(const char *port)
+MVREXPORT void ArSerialConnection::setPort(const char *port)
 {
   if (port == NULL)
     myPortName = "/dev/ttyS0";
@@ -259,7 +259,7 @@ AREXPORT void ArSerialConnection::setPort(const char *port)
 /**
    @return The serial port to connect to
 **/
-AREXPORT const char * ArSerialConnection::getPort(void)
+MVREXPORT const char * ArSerialConnection::getPort(void)
 {
   return myPortName.c_str();
 }
@@ -270,13 +270,13 @@ AREXPORT const char * ArSerialConnection::getPort(void)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-AREXPORT int ArSerialConnection::open(const char *port)
+MVREXPORT int ArSerialConnection::open(const char *port)
 {
   setPort(port);
   return internalOpen();
 }
 
-AREXPORT bool ArSerialConnection::close(void)
+MVREXPORT bool ArSerialConnection::close(void)
 {
   int ret;
 
@@ -301,7 +301,7 @@ AREXPORT bool ArSerialConnection::close(void)
     return false;
 }
 
-AREXPORT bool ArSerialConnection::setBaud(int rate)
+MVREXPORT bool ArSerialConnection::setBaud(int rate)
 {
   struct termios tio;  
   int baud;
@@ -346,7 +346,7 @@ AREXPORT bool ArSerialConnection::setBaud(int rate)
   return true;
 }
 
-AREXPORT void ArSerialConnection::startTimeStamping(void)
+MVREXPORT void ArSerialConnection::startTimeStamping(void)
 {
   long baud;
   baud = myBaudRate;
@@ -360,7 +360,7 @@ AREXPORT void ArSerialConnection::startTimeStamping(void)
    @return the current baud rate of the connection
 */
 
-AREXPORT int ArSerialConnection::getBaud(void)
+MVREXPORT int ArSerialConnection::getBaud(void)
 {
   return myBaudRate;
 }
@@ -413,7 +413,7 @@ int ArSerialConnection::baudToRate(int baud)
    @return true if the set succeeded
 */
 
-AREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
+MVREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
 {
   struct termios tio;
 
@@ -448,12 +448,12 @@ AREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
 /**
    @return true if hardware control of lines is enabled, false otherwise
 */
-AREXPORT bool ArSerialConnection::getHardwareControl(void)
+MVREXPORT bool ArSerialConnection::getHardwareControl(void)
 {
   return myHardwareControl;
 }
 
-AREXPORT int ArSerialConnection::write(const char *data, unsigned int size) 
+MVREXPORT int ArSerialConnection::write(const char *data, unsigned int size) 
 {
   int n;
   /*
@@ -493,7 +493,7 @@ AREXPORT int ArSerialConnection::write(const char *data, unsigned int size)
   return -1;
 }
 
-AREXPORT int ArSerialConnection::read(const char *data, unsigned int size,
+MVREXPORT int ArSerialConnection::read(const char *data, unsigned int size,
 				      unsigned int msWait) 
 {
   struct timeval tp;		/* time interval structure for timeout */
@@ -545,12 +545,12 @@ AREXPORT int ArSerialConnection::read(const char *data, unsigned int size,
   return -1;
 }
 
-AREXPORT int ArSerialConnection::getStatus(void)
+MVREXPORT int ArSerialConnection::getStatus(void)
 {
   return myStatus;
 }
 
-AREXPORT ArTime ArSerialConnection::getTimeRead(int index)
+MVREXPORT ArTime ArSerialConnection::getTimeRead(int index)
 {
   ArTime ret;
   struct timeval timeStamp;
@@ -577,13 +577,13 @@ AREXPORT ArTime ArSerialConnection::getTimeRead(int index)
   return ret;
 }
 
-AREXPORT bool ArSerialConnection::isTimeStamping(void)
+MVREXPORT bool ArSerialConnection::isTimeStamping(void)
 {
   return myTakingTimeStamps;
 }
 
 
-AREXPORT bool ArSerialConnection::getCTS(void)
+MVREXPORT bool ArSerialConnection::getCTS(void)
 {
   unsigned int value;
   if (ioctl(myPort, TIOCMGET, &value) == 0)
@@ -597,7 +597,7 @@ AREXPORT bool ArSerialConnection::getCTS(void)
   }
 }
 
-AREXPORT bool ArSerialConnection::getDSR(void)
+MVREXPORT bool ArSerialConnection::getDSR(void)
 {
   unsigned int value;
   if (ioctl(myPort, TIOCMGET, &value) == 0)
@@ -611,7 +611,7 @@ AREXPORT bool ArSerialConnection::getDSR(void)
   }
 }
 
-AREXPORT bool ArSerialConnection::getDCD(void)
+MVREXPORT bool ArSerialConnection::getDCD(void)
 {
   unsigned int value;
   if (ioctl(myPort, TIOCMGET, &value) == 0)
@@ -625,7 +625,7 @@ AREXPORT bool ArSerialConnection::getDCD(void)
   }
 }
 
-AREXPORT bool ArSerialConnection::getRing(void)
+MVREXPORT bool ArSerialConnection::getRing(void)
 {
   unsigned int value;
   if (ioctl(myPort, TIOCMGET, &value) == 0)

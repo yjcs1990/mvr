@@ -53,7 +53,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 std::string MvrLCDMTX::ourFirmwareBaseDir("/usr/local/apps/marcDownload/");
 
-AREXPORT MvrLCDMTX::ArLCDMTX(int lcdBoardNum, const char *name,
+MVREXPORT MvrLCDMTX::ArLCDMTX(int lcdBoardNum, const char *name,
 	ArDeviceConnection *conn,
 	ArRobot *robot) :
 	mySensorInterpTask(this, &ArLCDMTX::sensorInterp),
@@ -92,7 +92,7 @@ AREXPORT MvrLCDMTX::ArLCDMTX(int lcdBoardNum, const char *name,
 }
 
 
-AREXPORT MvrLCDMTX::~ArLCDMTX()
+MVREXPORT MvrLCDMTX::~MvrLCDMTX()
 {
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask(&myProcessCB);
@@ -100,20 +100,20 @@ AREXPORT MvrLCDMTX::~ArLCDMTX()
 }
 
 
-AREXPORT void MvrLCDMTX::setDeviceConnection(
+MVREXPORT void MvrLCDMTX::setDeviceConnection(
 	ArDeviceConnection *conn)
 {
 	myConn = conn;
 	myConn->setDeviceName(getName());
 }
 
-AREXPORT MvrDeviceConnection *ArLCDMTX::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *ArLCDMTX::getDeviceConnection(void)
 {
 	return myConn;
 }
 
 
-AREXPORT void MvrLCDMTX::setRobot(MvrRobot *robot)
+MVREXPORT void MvrLCDMTX::setRobot(MvrRobot *robot)
 {
 	myRobot = robot;
 
@@ -137,7 +137,7 @@ void MvrLCDMTX::clear(void)
 	myStartConnect = false;
 }
 
-AREXPORT void MvrLCDMTX::lcdSetName(const char *name)
+MVREXPORT void MvrLCDMTX::lcdSetName(const char *name)
 {
 	myName = name;
 	myDeviceMutex.setLogNameVar("%s::myDeviceMutex", getName());
@@ -149,7 +149,7 @@ AREXPORT void MvrLCDMTX::lcdSetName(const char *name)
 
 }
 
-AREXPORT bool MvrLCDMTX::disconnect(void)
+MVREXPORT bool MvrLCDMTX::disconnect(void)
 {
 	if (!isConnected())
 		return true;
@@ -157,7 +157,7 @@ AREXPORT bool MvrLCDMTX::disconnect(void)
 	return true;
 }
 
-AREXPORT int MvrLCDMTX::getReadingCount()
+MVREXPORT int MvrLCDMTX::getReadingCount()
 {
 	if (myTimeLastReading == time(NULL))
 		return myReadingCount;
@@ -166,7 +166,7 @@ AREXPORT int MvrLCDMTX::getReadingCount()
 	return 0;
 }
 
-AREXPORT void MvrLCDMTX::internalGotReading(void)
+MVREXPORT void MvrLCDMTX::internalGotReading(void)
 {
 	if (myTimeLastReading != time(NULL))
 	{
@@ -243,7 +243,7 @@ void MvrLCDMTX::sensorInterp(void)
 }
 
 
-AREXPORT bool MvrLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
+MVREXPORT bool MvrLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 	int lcdNumber, MvrFunctor1<int> *onCallback,
 	ArFunctor1<int> *offCallback)
 {
@@ -464,12 +464,12 @@ AREXPORT bool MvrLCDMTX::blockingConnect(bool sendTracking, bool recvTracking,
 
 } // end blockingConnect
 
-AREXPORT const char * MvrLCDMTX::getName(void) const
+MVREXPORT const char * MvrLCDMTX::getName(void) const
 {
 	return myName.c_str();
 }
 
-AREXPORT void * MvrLCDMTX::runThread(void *arg)
+MVREXPORT void * MvrLCDMTX::runThread(void *arg)
 {
 
 
@@ -618,7 +618,7 @@ AREXPORT void * MvrLCDMTX::runThread(void *arg)
 
 
 #if 0 // debug runthread code
-AREXPORT void * MvrLCDMTX::runThread(void *arg)
+MVREXPORT void * MvrLCDMTX::runThread(void *arg)
 {
 	//ArLCDMTXPacket *packet;
 	ArRobotPacket *packet;
@@ -930,7 +930,7 @@ robot it is a straightforward check of last reading time against
 getConnectionTimeoutSeconds.  If there is a robot then it will not
 start the check until the lcd is running and connected.
 **/
-AREXPORT bool MvrLCDMTX::checkLostConnection(void)
+MVREXPORT bool MvrLCDMTX::checkLostConnection(void)
 {
 
 	if ((myRobot == NULL || myRobotRunningAndConnected) &&
@@ -948,13 +948,13 @@ AREXPORT bool MvrLCDMTX::checkLostConnection(void)
 	return false;
 }
 
-AREXPORT void MvrLCDMTX::disconnectOnError(void)
+MVREXPORT void MvrLCDMTX::disconnectOnError(void)
 {
 	ArLog::log(MvrLog::Normal, "%s: Disconnected because of error", getName());
 	myDisconnectOnErrorCBList.invoke();
 }
 
-AREXPORT bool MvrLCDMTX::sendKeepAlive()
+MVREXPORT bool MvrLCDMTX::sendKeepAlive()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -978,7 +978,7 @@ AREXPORT bool MvrLCDMTX::sendKeepAlive()
 
 }
 
-AREXPORT bool MvrLCDMTX::sendVersion()
+MVREXPORT bool MvrLCDMTX::sendVersion()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1002,7 +1002,7 @@ AREXPORT bool MvrLCDMTX::sendVersion()
 
 }
 
-AREXPORT bool MvrLCDMTX::sendSystemInfo(unsigned char command)
+MVREXPORT bool MvrLCDMTX::sendSystemInfo(unsigned char command)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1027,7 +1027,7 @@ AREXPORT bool MvrLCDMTX::sendSystemInfo(unsigned char command)
 
 }
 
-AREXPORT bool MvrLCDMTX::sendReboot()
+MVREXPORT bool MvrLCDMTX::sendReboot()
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1052,7 +1052,7 @@ AREXPORT bool MvrLCDMTX::sendReboot()
 }
 
 
-AREXPORT bool MvrLCDMTX::getTextField(unsigned char textNumber, char *text)
+MVREXPORT bool MvrLCDMTX::getTextField(unsigned char textNumber, char *text)
 {
 
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1114,7 +1114,7 @@ AREXPORT bool MvrLCDMTX::getTextField(unsigned char textNumber, char *text)
 
 
 
-AREXPORT bool MvrLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
+MVREXPORT bool MvrLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
 
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1168,7 +1168,7 @@ AREXPORT bool MvrLCDMTX::getScreenNumber(unsigned char *currentScreenNumber)
 
 }
 
-AREXPORT bool MvrLCDMTX::getBacklight(unsigned char *backlight)
+MVREXPORT bool MvrLCDMTX::getBacklight(unsigned char *backlight)
 
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1222,7 +1222,7 @@ AREXPORT bool MvrLCDMTX::getBacklight(unsigned char *backlight)
 
 }
 
-AREXPORT bool MvrLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *wifi)
+MVREXPORT bool MvrLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *wifi)
 
 {
 	ArRobotPacket sendPacket(HEADER1, HEADER2);
@@ -1277,7 +1277,7 @@ AREXPORT bool MvrLCDMTX::getSystemMeters(unsigned char *battery, unsigned char *
 
 }
 
-AREXPORT bool MvrLCDMTX::setScreenNumber(unsigned char screenNumber)
+MVREXPORT bool MvrLCDMTX::setScreenNumber(unsigned char screenNumber)
 {
 	if ((screenNumber == BOOT_SCREEN) || (screenNumber == STATUS_SCREEN)) {
 
@@ -1308,7 +1308,7 @@ AREXPORT bool MvrLCDMTX::setScreenNumber(unsigned char screenNumber)
 	}
 }
 
-AREXPORT bool MvrLCDMTX::setTextField(unsigned char textNumber, const char *text)
+MVREXPORT bool MvrLCDMTX::setTextField(unsigned char textNumber, const char *text)
 {
 
 
@@ -1347,7 +1347,7 @@ AREXPORT bool MvrLCDMTX::setTextField(unsigned char textNumber, const char *text
 	}
 }
 
-AREXPORT bool MvrLCDMTX::setBacklight(bool backlight)
+MVREXPORT bool MvrLCDMTX::setBacklight(bool backlight)
 {
 
 
@@ -1378,7 +1378,7 @@ AREXPORT bool MvrLCDMTX::setBacklight(bool backlight)
 }
 
 
-AREXPORT bool MvrLCDMTX::setSystemMeters(unsigned char battery, unsigned char wifi)
+MVREXPORT bool MvrLCDMTX::setSystemMeters(unsigned char battery, unsigned char wifi)
 {
 
 
@@ -1409,7 +1409,7 @@ AREXPORT bool MvrLCDMTX::setSystemMeters(unsigned char battery, unsigned char wi
 }
 
 
-AREXPORT void MvrLCDMTX::writeToLCD()
+MVREXPORT void MvrLCDMTX::writeToLCD()
 {
 
 
@@ -1430,7 +1430,7 @@ AREXPORT void MvrLCDMTX::writeToLCD()
 #endif
 }
 
-AREXPORT unsigned char MvrLCDMTX::getBatteryPercentage()
+MVREXPORT unsigned char MvrLCDMTX::getBatteryPercentage()
 {
 	if (myRobot->haveStateOfCharge())
 		return myRobot->getStateOfCharge();
@@ -1445,7 +1445,7 @@ AREXPORT unsigned char MvrLCDMTX::getBatteryPercentage()
 	}
 }
 
-AREXPORT unsigned char MvrLCDMTX::getWifiPercentage()
+MVREXPORT unsigned char MvrLCDMTX::getWifiPercentage()
 {
 
 	// if the link signal exists - then grab the wifi%
@@ -1456,7 +1456,7 @@ AREXPORT unsigned char MvrLCDMTX::getWifiPercentage()
 		return 0;
 }
 
-AREXPORT void MvrLCDMTX::getIpAddress()
+MVREXPORT void MvrLCDMTX::getIpAddress()
 {
 
 	char ip[1000];
@@ -1470,7 +1470,7 @@ AREXPORT void MvrLCDMTX::getIpAddress()
 
 }
 
-AREXPORT bool MvrLCDMTX::hasIpAddressChanged()
+MVREXPORT bool MvrLCDMTX::hasIpAddressChanged()
 {
 
 	char ip[1000];
@@ -1491,7 +1491,7 @@ AREXPORT bool MvrLCDMTX::hasIpAddressChanged()
 
 }
 
-AREXPORT bool MvrLCDMTX::setMainStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::setMainStatus(const char *status)
 {
 #if 0
 	if (!setScreenNumber(STATUS_SCREEN)) {
@@ -1518,7 +1518,7 @@ AREXPORT bool MvrLCDMTX::setMainStatus(const char *status)
 
 }
 
-AREXPORT bool MvrLCDMTX::setTextStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::setTextStatus(const char *status)
 {
 
 #if 0
@@ -1545,7 +1545,7 @@ AREXPORT bool MvrLCDMTX::setTextStatus(const char *status)
 }
 
 
-AREXPORT bool MvrLCDMTX::setRobotIdStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::setRobotIdStatus(const char *status)
 {
 
 #if 0
@@ -1571,7 +1571,7 @@ AREXPORT bool MvrLCDMTX::setRobotIdStatus(const char *status)
 
 }
 
-AREXPORT bool MvrLCDMTX::setRobotIPStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::setRobotIPStatus(const char *status)
 {
 
 #if 0
@@ -1598,7 +1598,7 @@ AREXPORT bool MvrLCDMTX::setRobotIPStatus(const char *status)
 }
 
 
-AREXPORT bool MvrLCDMTX::setBootStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::setBootStatus(const char *status)
 {
 
 #if 0
@@ -1629,7 +1629,7 @@ AREXPORT bool MvrLCDMTX::setBootStatus(const char *status)
 }
 
 
-AREXPORT bool MvrLCDMTX::getMainStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::getMainStatus(const char *status)
 {
 
 #if 0
@@ -1656,7 +1656,7 @@ AREXPORT bool MvrLCDMTX::getMainStatus(const char *status)
 
 
 }
-AREXPORT bool MvrLCDMTX::getTextStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::getTextStatus(const char *status)
 {
 
 #if 0
@@ -1684,7 +1684,7 @@ AREXPORT bool MvrLCDMTX::getTextStatus(const char *status)
 
 }
 
-AREXPORT bool MvrLCDMTX::getBootStatus(const char *status)
+MVREXPORT bool MvrLCDMTX::getBootStatus(const char *status)
 {
 
 #if 0
@@ -1711,7 +1711,7 @@ AREXPORT bool MvrLCDMTX::getBootStatus(const char *status)
 }
 
 
-AREXPORT bool MvrLCDMTX::verifyFwVersion()
+MVREXPORT bool MvrLCDMTX::verifyFwVersion()
 {
 
 	// now make sure we have a file
@@ -1761,7 +1761,7 @@ AREXPORT bool MvrLCDMTX::verifyFwVersion()
 }
 
 
-AREXPORT bool MvrLCDMTX::downloadFirmware()
+MVREXPORT bool MvrLCDMTX::downloadFirmware()
 {
 
 
@@ -2015,7 +2015,7 @@ AREXPORT bool MvrLCDMTX::downloadFirmware()
 }
 
 
-AREXPORT std::string MvrLCDMTX::searchForFile(
+MVREXPORT std::string MvrLCDMTX::searchForFile(
 	const char *dirToLookIn, const char *prefix, const char *suffix)
 {
 
@@ -2085,7 +2085,7 @@ AREXPORT std::string MvrLCDMTX::searchForFile(
 	return "";
 }
 
-AREXPORT bool MvrLCDMTX::setMTXLCDMainScreenText(const char *status)
+MVREXPORT bool MvrLCDMTX::setMTXLCDMainScreenText(const char *status)
 {
 
 	if (strlen(status) < 248) {
@@ -2103,7 +2103,7 @@ AREXPORT bool MvrLCDMTX::setMTXLCDMainScreenText(const char *status)
 }
 
 /*
-AREXPORT bool MvrLCDMTX::setMTXLCDMainScreenMode(const char *status)
+MVREXPORT bool MvrLCDMTX::setMTXLCDMainScreenMode(const char *status)
 {
 
 if (strlen(status) < 248) {
@@ -2120,7 +2120,7 @@ return false;
 }
 */
 
-AREXPORT bool MvrLCDMTX::setMTXLCDBootScreenText(const char *status)
+MVREXPORT bool MvrLCDMTX::setMTXLCDBootScreenText(const char *status)
 
 {
 
@@ -2138,7 +2138,7 @@ AREXPORT bool MvrLCDMTX::setMTXLCDBootScreenText(const char *status)
 
 }
 
-AREXPORT bool MvrLCDMTX::setMTXLCDScreenNumber(unsigned char screenNumber)
+MVREXPORT bool MvrLCDMTX::setMTXLCDScreenNumber(unsigned char screenNumber)
 {
 
 	if ((screenNumber == BOOT_SCREEN) || (screenNumber == STATUS_SCREEN)) {
@@ -2155,7 +2155,7 @@ AREXPORT bool MvrLCDMTX::setMTXLCDScreenNumber(unsigned char screenNumber)
 
 }
 
-AREXPORT bool MvrLCDMTX::setMTXLCDBackLight(bool backLight)
+MVREXPORT bool MvrLCDMTX::setMTXLCDBackLight(bool backLight)
 {
 
 	myBackLightChanged = true;
@@ -2164,26 +2164,26 @@ AREXPORT bool MvrLCDMTX::setMTXLCDBackLight(bool backLight)
 
 }
 
-AREXPORT void MvrLCDMTX::setIdentifier(const char *identifier)
+MVREXPORT void MvrLCDMTX::setIdentifier(const char *identifier)
 {
 	myRobotIdentifierChanged = true;
 	myRobotIdentifier = identifier;
 
 }
 
-AREXPORT bool MvrLCDMTX::internalMTXLCDOverrideMainScreenText(const char *status)
+MVREXPORT bool MvrLCDMTX::internalMTXLCDOverrideMainScreenText(const char *status)
 {
 	myMainScreenStatusChanged = false;
 	return setMainStatus(status);
 }
 
-AREXPORT bool MvrLCDMTX::internalMTXLCDOverrideBootScreenText(const char *status)
+MVREXPORT bool MvrLCDMTX::internalMTXLCDOverrideBootScreenText(const char *status)
 {
 	myBootTextChanged = false;
 	return setBootStatus(status);
 }
 
-AREXPORT bool MvrLCDMTX::internalMTXLCDOverrideBackLight(bool backlight)
+MVREXPORT bool MvrLCDMTX::internalMTXLCDOverrideBackLight(bool backlight)
 {
 	myChangedBackLight = false;
 	return setBacklight(backlight);

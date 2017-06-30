@@ -128,13 +128,13 @@ class MvrDPPTUPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  AREXPORT MvrDPPTUPacket(MvrTypes::UByte2 bufferSize = 30);
+  MVREXPORT MvrDPPTUPacket(MvrTypes::UByte2 bufferSize = 30);
   /// Destructor
-  AREXPORT virtual ~ArDPPTUPacket();
+  MVREXPORT virtual ~MvrDPPTUPacket();
 
-  AREXPORT virtual void byte2ToBuf(int val);
+  MVREXPORT virtual void byte2ToBuf(int val);
 
-  AREXPORT virtual void finalizePacket(void);
+  MVREXPORT virtual void finalizePacket(void);
 
 protected:
 };
@@ -155,44 +155,44 @@ public:
   };
 
   /// Constructor
-  AREXPORT MvrDPPTU(MvrRobot *robot, DeviceType deviceType = PANTILT_DEFAULT, int deviceIndex = -1);
+  MVREXPORT MvrDPPTU(MvrRobot *robot, DeviceType deviceType = PANTILT_DEFAULT, int deviceIndex = -1);
   /// Destructor
-  AREXPORT virtual ~ArDPPTU();
+  MVREXPORT virtual ~MvrDPPTU();
 
-  AREXPORT bool init(void);
-  AREXPORT virtual const char *getTypeName() { return "dpptu"; }
+  MVREXPORT bool init(void);
+  MVREXPORT virtual const char *getTypeName() { return "dpptu"; }
 
   virtual bool canZoom(void) const { return false; }
   virtual bool canGetRealPanTilt() const { return myCanGetRealPanTilt; }
 
   /// Sends a delimiter only
-  AREXPORT bool blank(void);
+  MVREXPORT bool blank(void);
 
   /// Perform reset calibration (PTU will move to the limits of pan and tilt axes in turn and return to 0,0)
-  AREXPORT bool resetCalib(void);
+  MVREXPORT bool resetCalib(void);
 
 /// Change stored configuration options
 /// @{
   /// Configure DPPTU to disable future power-on resets
-  AREXPORT bool disableReset(void);
+  MVREXPORT bool disableReset(void);
   /// Configure DPPTU to only reset tilt on future power-up
-  AREXPORT bool resetTilt(void);
+  MVREXPORT bool resetTilt(void);
   /// Configure DPPTU to only reset pan on future power up
-  AREXPORT bool resetPan(void);
+  MVREXPORT bool resetPan(void);
 
   ///  Configure DPPTU to reset both pan and tilt on future power on
-  AREXPORT bool resetAll(void);
+  MVREXPORT bool resetAll(void);
 
   /// Enables monitor mode at power up
-  AREXPORT bool enMon(void);
+  MVREXPORT bool enMon(void);
   /// Disables monitor mode at power up
-  AREXPORT bool disMon(void);
+  MVREXPORT bool disMon(void);
   /// Save current settings as defaults
-  AREXPORT bool saveSet(void);
+  MVREXPORT bool saveSet(void);
   /// Restore stored defaults
-  AREXPORT bool restoreSet(void);
+  MVREXPORT bool restoreSet(void);
   /// Restore factory defaults
-  AREXPORT bool factorySet(void);
+  MVREXPORT bool factorySet(void);
 ///@}
 
 
@@ -204,14 +204,14 @@ protected:
     return pan(pdeg) && tilt(tdeg); 
   }
 
-  AREXPORT virtual bool pan_i(double deg);
+  MVREXPORT virtual bool pan_i(double deg);
 
   virtual bool panRel_i(double deg) 
   { 
     return panTilt(myPan+deg, myTilt); 
   }
 
-  AREXPORT virtual bool tilt_i(double deg);
+  MVREXPORT virtual bool tilt_i(double deg);
 
   virtual bool tiltRel_i(double deg) 
   { 
@@ -225,28 +225,28 @@ protected:
 //@}
 public:
   /// Instructs unit to await completion of the last issued command
-  AREXPORT bool awaitExec(void);
+  MVREXPORT bool awaitExec(void);
   /// Halts all pan-tilt movement
-  AREXPORT bool haltAll(void);
+  MVREXPORT bool haltAll(void);
   /// Halts pan axis movement
-  AREXPORT bool haltPan(void);
+  MVREXPORT bool haltPan(void);
   /// Halts tilt axis movement
-  AREXPORT bool haltTilt(void);
+  MVREXPORT bool haltTilt(void);
 
   /// Sets monitor mode - pan pos1/pos2, tilt pos1/pos2
-  AREXPORT bool initMon(double deg1, double deg2, double deg3, double deg4);
+  MVREXPORT bool initMon(double deg1, double deg2, double deg3, double deg4);
 
 ///@}
 
   /// Enables or disables the position limit enforcement
-  AREXPORT bool limitEnforce(bool val);
+  MVREXPORT bool limitEnforce(bool val);
 
 ///Set execution modes
 ///@{
   /// Sets unit to immediate-execution mode for positional commands. Commands will be executed by PTU as soon as they are received. 
-  AREXPORT bool immedExec(void);
+  MVREXPORT bool immedExec(void);
   /// Sets unit to slaved-execution mode for positional commands. Commands will not be executed by PTU until awaitExec() is used. 
-  AREXPORT bool slaveExec(void);
+  MVREXPORT bool slaveExec(void);
 ///@}
 
 
@@ -273,12 +273,12 @@ public:
   /// Configure power mode for an axis when in motion.
   /// init() sets initial moving power mode to Low, call this method to choose a different mode.
   /// The recomended modes are either Low or Normal.
-  AREXPORT bool setMovePower(Axis axis, PowerMode mode);
+  MVREXPORT bool setMovePower(Axis axis, PowerMode mode);
 
   /// Configure power mode for an axis when stationary.
   /// init() sets the initial halted power to Off. Call this method to choose a different mode.
   /// The recommended modes are Off or Low.
-  AREXPORT bool setHoldPower(Axis axis, PowerMode mode); 
+  MVREXPORT bool setHoldPower(Axis axis, PowerMode mode); 
 
   /// @deprecated
   bool offStatPower(void) {
@@ -312,40 +312,40 @@ public:
 ///@}
 
   /// Sets acceleration for pan axis
-  AREXPORT bool panAccel(double deg);
+  MVREXPORT bool panAccel(double deg);
   /// Sets acceleration for tilt axis
-  AREXPORT bool tiltAccel(double deg);
+  MVREXPORT bool tiltAccel(double deg);
 
   /// Sets the start-up pan slew
-  AREXPORT bool basePanSlew(double deg);
+  MVREXPORT bool basePanSlew(double deg);
   /// Sets the start-up tilt slew
-  AREXPORT bool baseTiltSlew(double deg);
+  MVREXPORT bool baseTiltSlew(double deg);
 
   /// Sets the upper pan slew
-  AREXPORT bool upperPanSlew(double deg);
+  MVREXPORT bool upperPanSlew(double deg);
   /// Sets the lower pan slew
-  AREXPORT bool lowerPanSlew(double deg);
+  MVREXPORT bool lowerPanSlew(double deg);
   /// Sets the upper tilt slew
-  AREXPORT bool upperTiltSlew(double deg);
+  MVREXPORT bool upperTiltSlew(double deg);
   /// Sets the lower pan slew
-  AREXPORT bool lowerTiltSlew(double deg);
+  MVREXPORT bool lowerTiltSlew(double deg);
 
   /// Sets motion to indenpendent control mode
-  AREXPORT bool indepMove(void);
+  MVREXPORT bool indepMove(void);
   /// Sets motion to pure velocity control mode
-  AREXPORT bool velMove(void);
+  MVREXPORT bool velMove(void);
 
   /// Sets the rate that the unit pans at
-  AREXPORT bool panSlew(double deg);
+  MVREXPORT bool panSlew(double deg);
   /// Sets the rate the unit tilts at 
-  AREXPORT bool tiltSlew(double deg);
+  MVREXPORT bool tiltSlew(double deg);
   bool canPanTiltSlew() { return true; }
   
 
   /// Sets the rate that the unit pans at, relative to current slew
-  AREXPORT bool panSlewRel(double deg) { return panSlew(myPanSlew+deg); }
+  MVREXPORT bool panSlewRel(double deg) { return panSlew(myPanSlew+deg); }
   /// Sets the rate the unit tilts at, relative to current slew
-  AREXPORT bool tiltSlewRel(double deg) { return tiltSlew(myTiltSlew+deg); }
+  MVREXPORT bool tiltSlewRel(double deg) { return tiltSlew(myTiltSlew+deg); }
 
   /// called automatically by Mvria::init()
   ///@since 2.7.6
@@ -390,7 +390,7 @@ public:
   /// Gets the current tilt acceleration rate
   double getTiltAccel(void) { return myTiltAccel; }
 
-  AREXPORT void query(); // called from robot sensor interpretation task, or can be done seperately
+  MVREXPORT void query(); // called from robot sensor interpretation task, or can be done seperately
 
 protected:
   MvrRobot *myRobot;
@@ -431,8 +431,8 @@ protected:
   bool myCanGetRealPanTilt;
 
   bool myInit;
-  //AREXPORT virtual bool packetHandler(MvrBasePacket *pkt);
-  AREXPORT virtual MvrBasePacket *readPacket();
+  //MVREXPORT virtual bool packetHandler(MvrBasePacket *pkt);
+  MVREXPORT virtual MvrBasePacket *readPacket();
   MvrFunctorC<ArDPPTU> myQueryCB;
   char *myDataBuf;
   

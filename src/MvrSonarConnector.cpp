@@ -44,7 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  sonars and such, this is also passed to all the sonars created as
  their infoLogLevel too
  */
-AREXPORT ArSonarConnector::ArSonarConnector (
+MVREXPORT ArSonarConnector::ArSonarConnector (
   ArArgumentParser *parser, ArRobot *robot,
   ArRobotConnector *robotConnector, bool autoParseArgs,
   ArLog::LogLevel infoLogLevel,
@@ -71,7 +71,7 @@ AREXPORT ArSonarConnector::ArSonarConnector (
 	myLogOptionsCB.setName ("MvrSonarConnector");
 	Aria::addLogOptionsCB (&myLogOptionsCB, 80);
 }
-AREXPORT ArSonarConnector::~ArSonarConnector (void)
+MVREXPORT ArSonarConnector::~MvrSonarConnector (void)
 {
 //  Aria::remParseArgsCB(&myParseArgsCB);
 //  Aria::remLogOptionsCB(&myLogOptionsCB);
@@ -83,7 +83,7 @@ AREXPORT ArSonarConnector::~ArSonarConnector (void)
  *
   @return true if the arguments were parsed successfully false if not
  **/
-AREXPORT bool ArSonarConnector::parseArgs (void)
+MVREXPORT bool ArSonarConnector::parseArgs (void)
 {
 	return parseArgs (myParser);
 }
@@ -105,7 +105,7 @@ AREXPORT bool ArSonarConnector::parseArgs (void)
     <dt>-dncs</dt>
   </dl>
  **/
-AREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
+MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 {
 
 	if (myParsedArgs)
@@ -232,7 +232,7 @@ AREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 
 } // end parseArgs
 
-AREXPORT bool ArSonarConnector::parseSonarArgs (MvrArgumentParser *parser,
+MVREXPORT bool ArSonarConnector::parseSonarArgs (MvrArgumentParser *parser,
     SonarData *sonarData)
 {
 	char buf[512];
@@ -444,7 +444,7 @@ bool ArSonarConnector::internalConfigureSonar (
 
 	return true;
 }
-AREXPORT void ArSonarConnector::logOptions (void) const
+MVREXPORT void ArSonarConnector::logOptions (void) const
 {
 	ArLog::log (MvrLog::Terse, "Options for ArSonarConnector:");
   ArLog::log(MvrLog::Terse, "-sonarLogPacketsReceived");
@@ -462,7 +462,7 @@ AREXPORT void ArSonarConnector::logOptions (void) const
 		logSonarOptions (sonarData);
 	}
 }
-AREXPORT void ArSonarConnector::logSonarOptions (
+MVREXPORT void ArSonarConnector::logSonarOptions (
   SonarData *sonarData, bool header, bool metaOpts) const
 {
 	char buf[512];
@@ -508,7 +508,7 @@ AREXPORT void ArSonarConnector::logSonarOptions (
    use the new functionality which is just ArSonarConnector::connectSonars.()
    @internal
 **/
-AREXPORT bool ArSonarConnector::addSonar (
+MVREXPORT bool ArSonarConnector::addSonar (
   ArSonarMTX *sonar, int sonarNumber)
 {
 	std::map<int, SonarData *>::iterator it;
@@ -530,7 +530,7 @@ AREXPORT bool ArSonarConnector::addSonar (
 	mySonars[sonarNumber] = new SonarData (sonarNumber, sonar);
 	return true;
 }
-AREXPORT ArSonarMTX *ArSonarConnector::getSonar (int sonarNumber)
+MVREXPORT ArSonarMTX *ArSonarConnector::getSonar (int sonarNumber)
 {
 	std::map<int, SonarData *>::iterator it;
 	SonarData *sonarData = NULL;
@@ -542,7 +542,7 @@ AREXPORT ArSonarMTX *ArSonarConnector::getSonar (int sonarNumber)
 	// otherwise, return the sonar
 	return sonarData->mySonar;
 }
-AREXPORT bool ArSonarConnector::replaceSonar (
+MVREXPORT bool ArSonarConnector::replaceSonar (
   ArSonarMTX *sonar, int sonarNumber)
 {
 	std::map<int, SonarData *>::iterator it;
@@ -569,7 +569,7 @@ AREXPORT bool ArSonarConnector::replaceSonar (
    use the new functionality which is just ArSonarConnector::connectSonars().
    @internal
 **/
-AREXPORT bool ArSonarConnector::setupSonar (MvrSonarMTX *sonar,
+MVREXPORT bool ArSonarConnector::setupSonar (MvrSonarMTX *sonar,
     int sonarNumber)
 {
 	if (myRobot == NULL && myRobotConnector != NULL)
@@ -629,7 +629,7 @@ AREXPORT bool ArSonarConnector::setupSonar (MvrSonarMTX *sonar,
    use the new functionality which is just ArSonarConnector::connectSonars().
    @internal
 **/
-AREXPORT bool ArSonarConnector::connectSonar (MvrSonarMTX *sonar,
+MVREXPORT bool ArSonarConnector::connectSonar (MvrSonarMTX *sonar,
     int sonarNumber,
     bool forceConnection)
 {
@@ -656,7 +656,7 @@ AREXPORT bool ArSonarConnector::connectSonar (MvrSonarMTX *sonar,
 }
 
 
-AREXPORT bool ArSonarConnector::connectSonars (
+MVREXPORT bool ArSonarConnector::connectSonars (
   bool continueOnFailedConnect, bool addConnectedSonarsToRobot,
   bool addAllSonarsToRobot, bool turnOnSonars,
   bool powerCycleSonarOnFailedConnect)
@@ -768,7 +768,7 @@ AREXPORT bool ArSonarConnector::connectSonars (
 	return true;
 }
 
-AREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
+MVREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
 
 {
   /// MPL the new way
@@ -813,7 +813,7 @@ AREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
   return true;
 }
 
-AREXPORT bool ArSonarConnector::connectReplaySonars(
+MVREXPORT bool ArSonarConnector::connectReplaySonars(
   bool continueOnFailedConnect, bool addConnectedSonarsToRobot,
   bool addAllSonarsToRobot, bool turnOnSonars,
   bool powerCycleSonarOnFailedConnect)
@@ -872,7 +872,7 @@ AREXPORT bool ArSonarConnector::connectReplaySonars(
   return true;
 }
 
-AREXPORT bool ArSonarConnector::disconnectSonars()
+MVREXPORT bool ArSonarConnector::disconnectSonars()
 {
   
 	for(std::map<int, SonarData *>::iterator it = mySonars.begin();

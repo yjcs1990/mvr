@@ -56,16 +56,16 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 class MvrActionDriveDistance : public MvrAction
 {
 public:
-  AREXPORT MvrActionDriveDistance(const char *name = "driveDistance", 
+  MVREXPORT MvrActionDriveDistance(const char *name = "driveDistance", 
 				double speed = 400, double deceleration = 200);
-  AREXPORT virtual ~ArActionDriveDistance();
+  MVREXPORT virtual ~MvrActionDriveDistance();
 
   /// Sees if the goal has been achieved
-  AREXPORT bool haveAchievedDistance(void);
+  MVREXPORT bool haveAchievedDistance(void);
   /// Cancels the goal the robot has
-  AREXPORT void cancelDistance(void);
+  MVREXPORT void cancelDistance(void);
   /// Sets a new goal and sets the action to go there
-  AREXPORT void setDistance(double distance, bool useEncoders = true);
+  MVREXPORT void setDistance(double distance, bool useEncoders = true);
   /// Gets whether we're using the encoder position or the normal position
   bool usingEncoders(void) { return myUseEncoders; }
   /// Sets the speed the action will travel at (mm/sec)
@@ -79,10 +79,10 @@ public:
   double getDeceleration(void) { return myDeceleration; }
   /// Sets if we're printing or not
   void setPrinting(bool printing) { myPrinting = printing; }
-  AREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  AREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  AREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:

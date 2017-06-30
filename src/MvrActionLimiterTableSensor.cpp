@@ -30,18 +30,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrActionLimiterTableSensor.h"
 #include "MvrRobot.h"
 
-AREXPORT MvrActionLimiterTableSensor::ArActionLimiterTableSensor(
+MVREXPORT MvrActionLimiterTableSensor::ArActionLimiterTableSensor(
 	const char *name) :
   MvrAction(name, "Limits speed to 0 if a table is seen")
 {
 
 }
 
-AREXPORT MvrActionLimiterTableSensor::~ArActionLimiterTableSensor()
+MVREXPORT MvrActionLimiterTableSensor::~MvrActionLimiterTableSensor()
 {
 }
 
-AREXPORT MvrActionDesired *ArActionLimiterTableSensor::fire(
+MVREXPORT MvrActionDesired *ArActionLimiterTableSensor::fire(
 	ArActionDesired currentDesired)
 {
   myDesired.reset();

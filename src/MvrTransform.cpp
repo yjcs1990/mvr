@@ -28,7 +28,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "ariaOSDef.h"
 #include "MvrTransform.h"
 
-AREXPORT void ArTransform::doTransform(std::list<ArPose *> *poseList)
+MVREXPORT void ArTransform::doTransform(std::list<ArPose *> *poseList)
 {
   std::list<ArPose *>::iterator it;
   ArPose *pose;
@@ -41,7 +41,7 @@ AREXPORT void ArTransform::doTransform(std::list<ArPose *> *poseList)
 
 }
 
-AREXPORT void ArTransform::doTransform(std::list<ArPoseWithTime *> *poseList)
+MVREXPORT void ArTransform::doTransform(std::list<ArPoseWithTime *> *poseList)
 {
   std::list<ArPoseWithTime *>::iterator it;
   ArPoseWithTime *pose;
@@ -57,7 +57,7 @@ AREXPORT void ArTransform::doTransform(std::list<ArPoseWithTime *> *poseList)
 /**
    @param pose the coord system from which we transform to abs world coords
 */
-AREXPORT void ArTransform::setTransform(MvrPose pose) 
+MVREXPORT void ArTransform::setTransform(MvrPose pose) 
 { 
   myTh = pose.getTh();
   myCos = ArMath::cos(-myTh);
@@ -70,7 +70,7 @@ AREXPORT void ArTransform::setTransform(MvrPose pose)
    @param pose1 transform this into pose2
    @param pose2 transform pose1 into this
 */
-AREXPORT void ArTransform::setTransform(MvrPose pose1, ArPose pose2)
+MVREXPORT void ArTransform::setTransform(MvrPose pose1, ArPose pose2)
 {
   myTh = ArMath::subAngle(pose2.getTh(), pose1.getTh());
   myCos = ArMath::cos(-myTh);
@@ -79,7 +79,7 @@ AREXPORT void ArTransform::setTransform(MvrPose pose1, ArPose pose2)
   myY = pose2.getY() - (myCos * pose1.getY() - mySin * pose1.getX());
 }
 
-AREXPORT void ArTransform::setTransformLowLevel(double x, double y, double th)
+MVREXPORT void ArTransform::setTransformLowLevel(double x, double y, double th)
 {
   myTh = th;
   myCos = ArMath::cos(-myTh);

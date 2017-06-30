@@ -89,11 +89,11 @@ public:
   } Status;
 
   /// Constructor
-  AREXPORT MvrMutex(bool recursive = true);
+  MVREXPORT MvrMutex(bool recursive = true);
   /// Destructor
-  AREXPORT virtual ~ArMutex();
+  MVREXPORT virtual ~MvrMutex();
   /// Copy constructor
-  AREXPORT MvrMutex(const MvrMutex &mutex);
+  MVREXPORT MvrMutex(const MvrMutex &mutex);
 
   /** Lock the mutex
    *
@@ -117,7 +117,7 @@ public:
    *  @return MvrMutex::STATUS_FAILED_INIT if the platform threading is not 
    *    enabled, initialized, etc.
    */
-  AREXPORT virtual int lock();
+  MVREXPORT virtual int lock();
 
   /** Try to lock the mutex, but do not block
    *
@@ -143,13 +143,13 @@ public:
    *  @return MvrMutex::STATUS_FAILED_INIT if the platform threading is not 
    *    enabled, initialized, etc.
    */
-  AREXPORT virtual int tryLock();
+  MVREXPORT virtual int tryLock();
 
   /// Unlock the mutex, allowing another thread to obtain the lock
-  AREXPORT virtual int unlock();
+  MVREXPORT virtual int unlock();
 
   /// Get a human readable error message from an error code
-  AREXPORT virtual const char * getError(int messageNumber) const;
+  MVREXPORT virtual const char * getError(int messageNumber) const;
   /** Sets a flag that will log out when we lock and unlock. Use setLogName() to
     set a descriptive name for this mutex, and MvrThread::setThreadName() to set a
     descriptive name for a thread.
@@ -160,10 +160,10 @@ public:
 #ifndef SWIG
   /// Sets a name we'll use to log with formatting
   /** @swigomit use setLogName() */
-  AREXPORT void setLogNameVar(const char *logName, ...);
+  MVREXPORT void setLogNameVar(const char *logName, ...);
 #endif
   /// Get a reference to the underlying OS-specific mutex variable
-  AREXPORT virtual MutexType & getMutex() {return(myMutex);}
+  MVREXPORT virtual MutexType & getMutex() {return(myMutex);}
   /** Sets the lock warning time (sec). If it takes more than @a lockWarningSeconds to perform the mutex lock in lock(), log a warning.
       @linuxonly
   */
@@ -201,8 +201,8 @@ protected:
 
   bool myFirstLock;
   MvrTime *myLockTime;
-  AREXPORT static unsigned int ourLockWarningMS;
-  AREXPORT static unsigned int ourUnlockWarningMS;
+  MVREXPORT static unsigned int ourLockWarningMS;
+  MVREXPORT static unsigned int ourUnlockWarningMS;
   MvrTime *myLockStarted;
   // Intialize lock timing state. Call in MvrMutex constructor.
   void initLockTiming();
@@ -257,7 +257,7 @@ public:
 	ArScopedLock(MvrMutex& m) : mtx(m) {
 		mtx.lock();
 	}
-	~ArScopedLock() {
+	~MvrScopedLock() {
 		mtx.unlock();
 	}
   void lock() { mtx.lock(); }

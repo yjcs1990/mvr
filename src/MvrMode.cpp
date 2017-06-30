@@ -45,7 +45,7 @@ std::list<ArMode *> ArMode::ourModes;
    @param key2 an alternative key to switch to this mode on... it can be
    '\\0' if you don't want a second alternative key
 **/
-AREXPORT ArMode::ArMode(MvrRobot *robot, const char *name, char key, 
+MVREXPORT ArMode::ArMode(MvrRobot *robot, const char *name, char key, 
 			char key2) :
   myActivateCB(this, &ArMode::activate),
   myDeactivateCB(this, &ArMode::deactivate),
@@ -93,7 +93,7 @@ AREXPORT ArMode::ArMode(MvrRobot *robot, const char *name, char key,
   ourModes.push_front(this);
 }
 
-AREXPORT ArMode::~ArMode()
+MVREXPORT ArMode::~MvrMode()
 {
   ArKeyHandler *keyHandler;
   if ((keyHandler = Aria::getKeyHandler()) != NULL)
@@ -113,7 +113,7 @@ AREXPORT ArMode::~ArMode()
    inheriting class must return, as it means that his mode is already
    active
 **/
-AREXPORT bool ArMode::baseActivate(void)
+MVREXPORT bool ArMode::baseActivate(void)
 {
   if (ourActiveMode == this)
     return false;
@@ -139,7 +139,7 @@ AREXPORT bool ArMode::baseActivate(void)
    This gets called when the mode is deactivated, it removes the user
    task from the robot
 **/
-AREXPORT bool ArMode::baseDeactivate(void)
+MVREXPORT bool ArMode::baseDeactivate(void)
 {
   if (myRobot != NULL)
     myRobot->remUserTask(&myUserTaskCB);
@@ -151,22 +151,22 @@ AREXPORT bool ArMode::baseDeactivate(void)
   return false;
 }
 
-AREXPORT const char *ArMode::getName(void)
+MVREXPORT const char *ArMode::getName(void)
 {
   return myName.c_str();
 }
 
-AREXPORT char ArMode::getKey(void)
+MVREXPORT char ArMode::getKey(void)
 {
   return myKey;
 }
 
-AREXPORT char ArMode::getKey2(void)
+MVREXPORT char ArMode::getKey2(void)
 {
   return myKey2;
 }
 
-AREXPORT void ArMode::baseHelp(void)
+MVREXPORT void ArMode::baseHelp(void)
 {
   std::list<ArMode *>::iterator it;
   ArLog::log(MvrLog::Terse, "\n\nYou can do these actions with these keys:\n");
@@ -188,7 +188,7 @@ AREXPORT void ArMode::baseHelp(void)
   }
 }
 
-AREXPORT void ArMode::addKeyHandler(int keyToHandle, ArFunctor *functor)
+MVREXPORT void ArMode::addKeyHandler(int keyToHandle, ArFunctor *functor)
 {
   ArKeyHandler *keyHandler;
   std::string charStr;
@@ -259,7 +259,7 @@ AREXPORT void ArMode::addKeyHandler(int keyToHandle, ArFunctor *functor)
   
 }
 
-AREXPORT void ArMode::remKeyHandler(MvrFunctor *functor)
+MVREXPORT void ArMode::remKeyHandler(MvrFunctor *functor)
 {
   ArKeyHandler *keyHandler;
   std::string charStr;

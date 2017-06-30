@@ -81,7 +81,7 @@ class MvrRangeDevice
 {
 public:
   /// Constructor
-  AREXPORT MvrRangeDevice(size_t currentBufferSize, 
+  MVREXPORT MvrRangeDevice(size_t currentBufferSize, 
 			 size_t cumulativeBufferSize,
 			 const char *name, unsigned int maxRange,
 			 int maxSecondsToKeepCurrent = 0,
@@ -89,39 +89,39 @@ public:
 			 double maxDistToKeepCumulative = 0,
 			 bool locationDependent = false);
   /// Destructor
-  AREXPORT virtual ~ArRangeDevice();
+  MVREXPORT virtual ~MvrRangeDevice();
   /// Gets the name of the device
-  AREXPORT virtual const char *getName(void) const;
+  MVREXPORT virtual const char *getName(void) const;
   /// Sets the robot this device is attached to
-  AREXPORT virtual void setRobot(MvrRobot *robot);
+  MVREXPORT virtual void setRobot(MvrRobot *robot);
   /// Gets the robot this device is attached to
-  AREXPORT virtual MvrRobot *getRobot(void);
+  MVREXPORT virtual MvrRobot *getRobot(void);
   /// Sets the maximum size of the buffer for current readings
-  AREXPORT virtual void setCurrentBufferSize(size_t size);
+  MVREXPORT virtual void setCurrentBufferSize(size_t size);
   /// Gets the maximum size of the buffer for current readings
-  AREXPORT virtual size_t getCurrentBufferSize(void) const;
+  MVREXPORT virtual size_t getCurrentBufferSize(void) const;
   /// Sets the maximum size of the buffer for cumulative readings
-  AREXPORT virtual void setCumulativeBufferSize(size_t size);
+  MVREXPORT virtual void setCumulativeBufferSize(size_t size);
   /// Sets the maximum size of the buffer for cumulative readings
-  AREXPORT virtual size_t getCumulativeBufferSize(void) const;
+  MVREXPORT virtual size_t getCumulativeBufferSize(void) const;
   /// Adds a reading to the buffer
-  AREXPORT virtual void addReading(double x, double y, bool *wasAdded = NULL);
+  MVREXPORT virtual void addReading(double x, double y, bool *wasAdded = NULL);
   /// Gets if this device is location dependent or not
   bool isLocationDependent(void) { return myIsLocationDependent; }
   /// Gets the closest current reading in the given polar region
-  AREXPORT virtual double currentReadingPolar(double startAngle, 
+  MVREXPORT virtual double currentReadingPolar(double startAngle, 
 					      double endAngle,
 					      double *angle = NULL) const;
   /// Gets the closest cumulative reading in the given polar region
-  AREXPORT virtual double cumulativeReadingPolar(double startAngle, 
+  MVREXPORT virtual double cumulativeReadingPolar(double startAngle, 
 						 double endAngle,
 						 double *angle = NULL) const;
   /// Gets the closest current reading from the given box region
-  AREXPORT virtual double currentReadingBox(double x1, double y1, double x2,
+  MVREXPORT virtual double currentReadingBox(double x1, double y1, double x2,
 					    double y2, 
 					    MvrPose *readingPos = NULL) const;
   /// Gets the closest current reading from the given box region
-  AREXPORT virtual double cumulativeReadingBox(double x1, double y1, double x2,
+  MVREXPORT virtual double cumulativeReadingBox(double x1, double y1, double x2,
 					       double y2, 
 					       MvrPose *readingPos = NULL) const;
 #ifndef SWIG
@@ -190,7 +190,7 @@ laser-like subclassses of MvrRangeDevice and MvrRangeDeviceThreaded
     { return myRawReadings; }
 
   ///  Gets the raw unfiltered readings from the device into a vector 
-  AREXPORT virtual std::vector<ArSensorReading> *getRawReadingsAsVector(void);
+  MVREXPORT virtual std::vector<ArSensorReading> *getRawReadingsAsVector(void);
 
   /// Gets the raw unfiltered readings from the device (but pose takens are corrected)
   /** The raw readings are the full set of unfiltered readings from
@@ -210,7 +210,7 @@ laser-like subclassses of MvrRangeDevice and MvrRangeDeviceThreaded
     { return myAdjustedRawReadings; }
 
   ///  Gets the raw adjusted readings from the device into a vector 
-  AREXPORT virtual std::vector<ArSensorReading> *getAdjustedRawReadingsAsVector(void);
+  MVREXPORT virtual std::vector<ArSensorReading> *getAdjustedRawReadingsAsVector(void);
 
 
   /// Sets the maximum seconds to keep current readings around
@@ -364,7 +364,7 @@ laser-like subclassses of MvrRangeDevice and MvrRangeDeviceThreaded
 
 
   /// Applies a transform to the buffers
-  AREXPORT virtual void applyTransform(MvrTransform trans, 
+  MVREXPORT virtual void applyTransform(MvrTransform trans, 
 				       bool doCumulative = true);
 
   /// Gets data used for visualizing the current buffer (see MvrNetworking)
@@ -374,24 +374,24 @@ laser-like subclassses of MvrRangeDevice and MvrRangeDeviceThreaded
   virtual MvrDrawingData *getCumulativeDrawingData(void) 
     { return myCumulativeDrawingData; }
   /// Sets data for visualizing the current buffer (and if we own it)
-  AREXPORT virtual void setCurrentDrawingData(MvrDrawingData *data, 
+  MVREXPORT virtual void setCurrentDrawingData(MvrDrawingData *data, 
 					      bool takeOwnershipOfData);
   /// Sets data for visualizing the cumulative buffer (and if we own it)
-  AREXPORT virtual void setCumulativeDrawingData(MvrDrawingData *data, 
+  MVREXPORT virtual void setCumulativeDrawingData(MvrDrawingData *data, 
 						 bool takeOwnershipOfData);
 
   
 
   /// Lock this device
-  AREXPORT virtual int lockDevice() { return(myDeviceMutex.lock());}
+  MVREXPORT virtual int lockDevice() { return(myDeviceMutex.lock());}
   /// Try to lock this device
-  AREXPORT virtual int tryLockDevice() {return(myDeviceMutex.tryLock());}
+  MVREXPORT virtual int tryLockDevice() {return(myDeviceMutex.tryLock());}
   /// Unlock this device
-  AREXPORT virtual int unlockDevice() {return(myDeviceMutex.unlock());}
+  MVREXPORT virtual int unlockDevice() {return(myDeviceMutex.unlock());}
 
   /// Internal function to filter the readings based on age and distance
   /// @internal
-  AREXPORT void filterCallback(void);
+  MVREXPORT void filterCallback(void);
 
 protected:
   /**
@@ -404,7 +404,7 @@ protected:
     at the same point, so if that isn't true with your device then you
     can't use this mechanism.
   **/
-  AREXPORT void adjustRawReadings(bool interlaced);
+  MVREXPORT void adjustRawReadings(bool interlaced);
   std::vector<ArSensorReading> myRawReadingsVector;
   std::vector<ArSensorReading> myAdjustedRawReadingsVector;
   std::string myName;

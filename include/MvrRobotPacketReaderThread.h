@@ -39,15 +39,15 @@ class MvrRobotPacketReaderThread : public MvrASyncTask
 {
 public:
 
-  AREXPORT MvrRobotPacketReaderThread();
-  AREXPORT virtual ~ArRobotPacketReaderThread();
+  MVREXPORT MvrRobotPacketReaderThread();
+  MVREXPORT virtual ~MvrRobotPacketReaderThread();
 
-  AREXPORT void setRobot(MvrRobot *robot);
+  MVREXPORT void setRobot(MvrRobot *robot);
 
-  AREXPORT void stopRunIfNotConnected(bool stopRun);
-  AREXPORT virtual void * runThread(void *arg);
+  MVREXPORT void stopRunIfNotConnected(bool stopRun);
+  MVREXPORT virtual void * runThread(void *arg);
 
-  AREXPORT virtual const char *getThreadActivity(void);
+  MVREXPORT virtual const char *getThreadActivity(void);
 
 
 protected:

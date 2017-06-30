@@ -51,9 +51,9 @@ class MvrSonarAutoDisabler
 {
 public:
   /// Constructor
-  AREXPORT MvrSonarAutoDisabler(MvrRobot *robot);
+  MVREXPORT MvrSonarAutoDisabler(MvrRobot *robot);
   /// Destructor
-  AREXPORT virtual ~ArSonarAutoDisabler();
+  MVREXPORT virtual ~MvrSonarAutoDisabler();
   /// Supresses this disabler (which turns off the sonar)
   void supress(void) 
     { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::supress:"); 
@@ -83,7 +83,7 @@ public:
     { return &myClearAutonomousDrivingCB; }
 protected:
   /// our user task
-  AREXPORT void userTask(void);
+  MVREXPORT void userTask(void);
   MvrRobot *myRobot;
   MvrTime myLastMoved;
   MvrTime myLastSupressed;

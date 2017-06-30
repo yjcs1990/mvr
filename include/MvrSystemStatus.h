@@ -64,14 +64,14 @@ public:
    *  accessing the data occasionally, you do not need to start the update
    *  thread, it will be updated each time you read a value.
    */
-  AREXPORT static void startPeriodicUpdate(int refreshFrequency = 5000, MvrLog::LogLevel logLevel = MvrLog::Verbose);
+  MVREXPORT static void startPeriodicUpdate(int refreshFrequency = 5000, MvrLog::LogLevel logLevel = MvrLog::Verbose);
 
   /** Stop periodic update thread. Henceforth any access of data will
    *  cause it to be re-read and recalculated. */
-  AREXPORT static void stopPeriodicUpdate();
+  MVREXPORT static void stopPeriodicUpdate();
 
   /** @deprecated use startPeriodicUpdate() which has a better name. */
-  AREXPORT static void runRefreshThread(int refreshFrequency = 5000) {
+  MVREXPORT static void runRefreshThread(int refreshFrequency = 5000) {
     startPeriodicUpdate(refreshFrequency);
   }
 
@@ -83,7 +83,7 @@ public:
    *  previous calculation.
    *  @return CPU usage value, or -1 if unable to determine
    */
-  AREXPORT static double getCPU();
+  MVREXPORT static double getCPU();
 
   /** Get CPU usage as percentage since last refresh. This is a value ranging from
    *  (0..100) X (Num. CPUs). (Therefore if you have two CPUs, the maximum value
@@ -91,90 +91,90 @@ public:
    *  @sa getCPU()
    *  @return CPU usage as percentage, or -1 if not able to determine
    */
-  AREXPORT static double getCPUPercent();
+  MVREXPORT static double getCPUPercent();
 
   /// Get CPU percentage in a string
-  AREXPORT static std::string getCPUPercentAsString();
+  MVREXPORT static std::string getCPUPercentAsString();
 
   /// Get total system uptime (seconds)
-  AREXPORT static unsigned long getUptime();
+  MVREXPORT static unsigned long getUptime();
 
   /// Get program's uptime (seconds)
-  AREXPORT static unsigned long getProgramUptime();
+  MVREXPORT static unsigned long getProgramUptime();
 
   /// Get total system uptime (hours)
-  AREXPORT static double getUptimeHours();
+  MVREXPORT static double getUptimeHours();
 
   /// Get total system uptime in a string (hours)
-  AREXPORT static std::string getUptimeHoursAsString();
+  MVREXPORT static std::string getUptimeHoursAsString();
 
   /** @return Pointer to a functor which can be used to retrieve the current CPU percentage */
-  AREXPORT static MvrRetFunctor<double>* getCPUPercentFunctor();
+  MVREXPORT static MvrRetFunctor<double>* getCPUPercentFunctor();
 
   /** @return Pointer to a functor which can be used to retrieve the current uptime (hours) */
-  AREXPORT static MvrRetFunctor<double>* getUptimeHoursFunctor();
+  MVREXPORT static MvrRetFunctor<double>* getUptimeHoursFunctor();
 
   /** @return Pointer to a functor which can be used to retrieve the current uptime (hours) */
-  AREXPORT static MvrRetFunctor<unsigned long>* getUptimeFunctor();
+  MVREXPORT static MvrRetFunctor<unsigned long>* getUptimeFunctor();
 
   /** @return Pointer to a functor which can be used to retrieve the current uptime (hours) */
-  AREXPORT static MvrRetFunctor<unsigned long>* getProgramUptimeFunctor();
+  MVREXPORT static MvrRetFunctor<unsigned long>* getProgramUptimeFunctor();
 
 
 
   /** Get wireless network general link quality heuristic (for first configured
    * wireless device). */
-  AREXPORT static int getWirelessLinkQuality();
+  MVREXPORT static int getWirelessLinkQuality();
 
   /** Get wireless netork signal level (for first configured
    * wireless device). */
-  AREXPORT static int getWirelessLinkSignal();
+  MVREXPORT static int getWirelessLinkSignal();
 
   /** Get wireless network noise level (for first configured
    * wireless device). */
-  AREXPORT static int getWirelessLinkNoise();
+  MVREXPORT static int getWirelessLinkNoise();
 
   /** Get wireless network total discarded packets (for first configured
    * wireless device). */
-  AREXPORT static int getWirelessDiscardedPackets();
+  MVREXPORT static int getWirelessDiscardedPackets();
 
   /** Get wireless network packets discarded because of a conflict with another
    * network (for first configured
    * wireless device). */
-  AREXPORT static int getWirelessDiscardedPacketsBecauseNetConflict();
+  MVREXPORT static int getWirelessDiscardedPacketsBecauseNetConflict();
 
   /** Get if the wireless has a link */
-  AREXPORT static int getMTXWirelessLink();
+  MVREXPORT static int getMTXWirelessLink();
 
   /** Get wireless network quality (for first configured
    * wireless device). */
-  AREXPORT static int getMTXWirelessQuality();
+  MVREXPORT static int getMTXWirelessQuality();
 
   /** Get wireless network ip address (for first configured
    * wireless device). */
-  AREXPORT static int getMTXWirelessIpAddress1();
-  AREXPORT static int getMTXWirelessIpAddress2();
-  AREXPORT static int getMTXWirelessIpAddress3();
-  AREXPORT static int getMTXWirelessIpAddress4();
+  MVREXPORT static int getMTXWirelessIpAddress1();
+  MVREXPORT static int getMTXWirelessIpAddress2();
+  MVREXPORT static int getMTXWirelessIpAddress3();
+  MVREXPORT static int getMTXWirelessIpAddress4();
 
   /// Gets the wireless IP address as a string
-  AREXPORT static const char *getMTXWirelessIpAddressString();
+  MVREXPORT static const char *getMTXWirelessIpAddressString();
 
 
 
-  AREXPORT static MvrRetFunctor<int>* getWirelessLinkQualityFunctor();
-  AREXPORT static MvrRetFunctor<int>* getWirelessLinkNoiseFunctor();
-  AREXPORT static MvrRetFunctor<int>* getWirelessLinkSignalFunctor();
+  MVREXPORT static MvrRetFunctor<int>* getWirelessLinkQualityFunctor();
+  MVREXPORT static MvrRetFunctor<int>* getWirelessLinkNoiseFunctor();
+  MVREXPORT static MvrRetFunctor<int>* getWirelessLinkSignalFunctor();
 
-  AREXPORT static MvrRetFunctor<int>* getMTXWirelessLinkFunctor();
-  AREXPORT static MvrRetFunctor<int>* getMTXWirelessQualityFunctor();
+  MVREXPORT static MvrRetFunctor<int>* getMTXWirelessLinkFunctor();
+  MVREXPORT static MvrRetFunctor<int>* getMTXWirelessQualityFunctor();
 
 
   /** @internal */
-  AREXPORT static void invalidate();
+  MVREXPORT static void invalidate();
 
   /** @deprecated Calling this function is no longer neccesary. */
-  AREXPORT static void refresh() { } 
+  MVREXPORT static void refresh() { } 
 private:
   
 

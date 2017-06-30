@@ -107,7 +107,7 @@ ArMutex ArMTXIO::ourMutex;
 
  Check isEnabled() to see if the device was properly opened during construction.
 */
-AREXPORT ArMTXIO::ArMTXIO(const char * dev) :
+MVREXPORT ArMTXIO::ArMTXIO(const char * dev) :
   myDisconnectCB(this, &ArMTXIO::closeIO),
   myLPCTimeUSecCB(this, &ArMTXIO::getLPCTimeUSec)
 {
@@ -173,7 +173,7 @@ AREXPORT ArMTXIO::ArMTXIO(const char * dev) :
 
 /** Destructor.  Attempt to close the device if it was opened
  **/
-AREXPORT ArMTXIO::~ArMTXIO(void)
+MVREXPORT ArMTXIO::~MvrMTXIO(void)
 {
   if (myEnabled)
     closeIO();
@@ -182,18 +182,18 @@ AREXPORT ArMTXIO::~ArMTXIO(void)
 
 /** Close the device when Aria exits
  **/
-AREXPORT bool ArMTXIO::closeIO(void)
+MVREXPORT bool ArMTXIO::closeIO(void)
 {
   myEnabled = false;
 
   if (close(myFD) == -1)
   {
-    ArLog::log(MvrLog::Normal, "MvrMTXIO::~ArMTXIO: close failed on file descriptor!");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::~MvrMTXIO: close failed on file descriptor!");
     return false;
   }
   else
   {
-    ArLog::log(MvrLog::Normal, "MvrMTXIO::~ArMTXIO: closed device");
+    ArLog::log(MvrLog::Normal, "MvrMTXIO::~MvrMTXIO: closed device");
     myFD = -1;
     return true;
   }
@@ -204,7 +204,7 @@ AREXPORT bool ArMTXIO::closeIO(void)
  @param val the byte to write the values into
  @return true if the request was satisfied, false otherwise
  **/
-AREXPORT bool ArMTXIO::getDigitalBankOutputs(int bank, unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalBankOutputs(int bank, unsigned char *val)
 {
   if (!myEnabled)
     return false;
@@ -233,7 +233,7 @@ AREXPORT bool ArMTXIO::getDigitalBankOutputs(int bank, unsigned char *val)
   @param bank the bank number to use for mtx only 2 & 3 are outputs
   @param val the status of the 8-bits in a single byte.  
  **/
-AREXPORT bool ArMTXIO::setDigitalBankOutputs(int bank, unsigned char val)
+MVREXPORT bool ArMTXIO::setDigitalBankOutputs(int bank, unsigned char val)
 {
   if (!myEnabled)
     return false;
@@ -265,7 +265,7 @@ AREXPORT bool ArMTXIO::setDigitalBankOutputs(int bank, unsigned char val)
  
   @return true if the ioctl call was succcessfull, false otherwise
   **/
-AREXPORT bool ArMTXIO::getDigitalBankInputs(int bank, unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalBankInputs(int bank, unsigned char *val)
 {
   if (!myEnabled)
     return false;
@@ -290,7 +290,7 @@ AREXPORT bool ArMTXIO::getDigitalBankInputs(int bank, unsigned char *val)
 }
 
 
-AREXPORT ArMTXIO::Direction ArMTXIO::getDigitalBankDirection(int bank)
+MVREXPORT ArMTXIO::Direction ArMTXIO::getDigitalBankDirection(int bank)
 {
   if (bank == 0 || bank == 1)
     return DIGITAL_INPUT;
@@ -308,7 +308,7 @@ AREXPORT ArMTXIO::Direction ArMTXIO::getDigitalBankDirection(int bank)
  @param val the address of the integer to store the reading in
  @return true if a reading was acquired.  false otherwise
  **/
-AREXPORT bool ArMTXIO::getAnalogValueRaw(int port, int *val)
+MVREXPORT bool ArMTXIO::getAnalogValueRaw(int port, int *val)
 {
   if (!myEnabled || !myAnalogEnabled)
     return false;
@@ -339,7 +339,7 @@ AREXPORT bool ArMTXIO::getAnalogValueRaw(int port, int *val)
  @param val the address of the double to store the reading in
  @return true if a reading was acquired.  false otherwise
  **/
-AREXPORT bool ArMTXIO::getAnalogValue(int port, double *val)
+MVREXPORT bool ArMTXIO::getAnalogValue(int port, double *val)
 {
   int tmp;
 
@@ -356,7 +356,7 @@ AREXPORT bool ArMTXIO::getAnalogValue(int port, double *val)
 #endif
 
 
-AREXPORT bool ArMTXIO::getLightPole(unsigned char *val)
+MVREXPORT bool ArMTXIO::getLightPole(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -376,7 +376,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setLightPole(unsigned char *val)
+MVREXPORT bool ArMTXIO::setLightPole(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -401,7 +401,7 @@ MTX_IOREQ req;
  
   @return true if the ioctl call was succcessfull, false otherwise
   **/
-AREXPORT bool ArMTXIO::getDigitalIOInputMon1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalIOInputMon1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -430,7 +430,7 @@ MTX_IOREQ req;
  
   @return true if the ioctl call was succcessfull, false otherwise
   **/
-AREXPORT bool ArMTXIO::getDigitalIOInputMon2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalIOInputMon2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -456,7 +456,7 @@ MTX_IOREQ req;
 }
 
 
-AREXPORT bool ArMTXIO::getDigitalIOOutputMon1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalIOOutputMon1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -477,7 +477,7 @@ MTX_IOREQ req;
 }
 
 
-AREXPORT bool ArMTXIO::getDigitalIOOutputMon2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalIOOutputMon2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -497,7 +497,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getLPCTimer0(unsigned char *val)
+MVREXPORT bool ArMTXIO::getLPCTimer0(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -517,7 +517,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getLPCTimer1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getLPCTimer1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -537,7 +537,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getLPCTimer2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getLPCTimer2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -557,7 +557,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getLPCTimer3(unsigned char *val)
+MVREXPORT bool ArMTXIO::getLPCTimer3(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -577,7 +577,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getLPCTimeUSec(MvrTypes::UByte4 *timeUSec)
+MVREXPORT bool ArMTXIO::getLPCTimeUSec(MvrTypes::UByte4 *timeUSec)
 {
   MTX_IOREQ req;
 
@@ -609,7 +609,7 @@ AREXPORT bool ArMTXIO::getLPCTimeUSec(MvrTypes::UByte4 *timeUSec)
   return true;
 }
 
-AREXPORT bool ArMTXIO::getSemaphore1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getSemaphore1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -629,7 +629,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setSemaphore1(unsigned char *val)
+MVREXPORT bool ArMTXIO::setSemaphore1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -650,7 +650,7 @@ MTX_IOREQ req;
 
 }
 
-AREXPORT bool ArMTXIO::getSemaphore2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getSemaphore2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -670,7 +670,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setSemaphore2(unsigned char *val)
+MVREXPORT bool ArMTXIO::setSemaphore2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -691,7 +691,7 @@ MTX_IOREQ req;
 
 }
 
-AREXPORT bool ArMTXIO::getSemaphore3(unsigned char *val)
+MVREXPORT bool ArMTXIO::getSemaphore3(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -711,7 +711,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setSemaphore3(unsigned char *val)
+MVREXPORT bool ArMTXIO::setSemaphore3(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -732,7 +732,7 @@ MTX_IOREQ req;
 
 }
 
-AREXPORT bool ArMTXIO::getSemaphore4(unsigned char *val)
+MVREXPORT bool ArMTXIO::getSemaphore4(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -752,7 +752,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setSemaphore4(unsigned char *val)
+MVREXPORT bool ArMTXIO::setSemaphore4(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -773,7 +773,7 @@ MTX_IOREQ req;
 
 }
 
-AREXPORT bool ArMTXIO::getBumperInput(unsigned char *val)
+MVREXPORT bool ArMTXIO::getBumperInput(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -793,7 +793,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getPowerStatus1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getPowerStatus1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -813,7 +813,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getPowerStatus2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getPowerStatus2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -833,7 +833,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getLIDARSafety(unsigned char *val)
+MVREXPORT bool ArMTXIO::getLIDARSafety(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -853,7 +853,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getESTOPStatus1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getESTOPStatus1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -873,7 +873,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getESTOPStatus2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getESTOPStatus2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -893,7 +893,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getESTOPStatus3(unsigned char *val)
+MVREXPORT bool ArMTXIO::getESTOPStatus3(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -913,7 +913,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::getESTOPStatus4(unsigned char *val)
+MVREXPORT bool ArMTXIO::getESTOPStatus4(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -933,7 +933,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::compareESTOPStatus4HighNibbleAgainst(int val)
+MVREXPORT bool ArMTXIO::compareESTOPStatus4HighNibbleAgainst(int val)
 {
   unsigned char rawVal;
   
@@ -947,7 +947,7 @@ AREXPORT bool ArMTXIO::compareESTOPStatus4HighNibbleAgainst(int val)
     return false;
 }
 
-AREXPORT bool ArMTXIO::getDigitalOutputControl1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalOutputControl1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -971,7 +971,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setDigitalOutputControl1(unsigned char *val)
+MVREXPORT bool ArMTXIO::setDigitalOutputControl1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -998,7 +998,7 @@ MTX_IOREQ req;
 }
 
 
-AREXPORT bool ArMTXIO::getDigitalOutputControl2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getDigitalOutputControl2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1022,7 +1022,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setDigitalOutputControl2(unsigned char *val)
+MVREXPORT bool ArMTXIO::setDigitalOutputControl2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1048,7 +1048,7 @@ MTX_IOREQ req;
 }
 
 
-AREXPORT bool ArMTXIO::getPeripheralPower1(unsigned char *val)
+MVREXPORT bool ArMTXIO::getPeripheralPower1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1068,7 +1068,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setPeripheralPower1(unsigned char *val)
+MVREXPORT bool ArMTXIO::setPeripheralPower1(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1090,7 +1090,7 @@ MTX_IOREQ req;
 }
 
 
-AREXPORT bool ArMTXIO::getPeripheralPower2(unsigned char *val)
+MVREXPORT bool ArMTXIO::getPeripheralPower2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1110,7 +1110,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setPeripheralPower2(unsigned char *val)
+MVREXPORT bool ArMTXIO::setPeripheralPower2(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1131,7 +1131,7 @@ MTX_IOREQ req;
 
 }
 
-AREXPORT bool ArMTXIO::getPeripheralPower3(unsigned char *val)
+MVREXPORT bool ArMTXIO::getPeripheralPower3(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1151,7 +1151,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setPeripheralPower3(unsigned char *val)
+MVREXPORT bool ArMTXIO::setPeripheralPower3(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1172,7 +1172,7 @@ MTX_IOREQ req;
 
 }
 
-AREXPORT bool ArMTXIO::getMotionPowerStatus(unsigned char *val)
+MVREXPORT bool ArMTXIO::getMotionPowerStatus(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1192,7 +1192,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setPeripheralPowerBankOutputs(int bank, unsigned char val)
+MVREXPORT bool ArMTXIO::setPeripheralPowerBankOutputs(int bank, unsigned char val)
 {
   if(!myEnabled)
     return false;
@@ -1211,7 +1211,7 @@ AREXPORT bool ArMTXIO::setPeripheralPowerBankOutputs(int bank, unsigned char val
 }
 
 
-AREXPORT bool ArMTXIO::getPeripheralPowerBankOutputs(int bank, unsigned char *val)
+MVREXPORT bool ArMTXIO::getPeripheralPowerBankOutputs(int bank, unsigned char *val)
 {
   if(!myEnabled)
     return false;
@@ -1229,7 +1229,7 @@ AREXPORT bool ArMTXIO::getPeripheralPowerBankOutputs(int bank, unsigned char *va
   return false;
 }
 
-AREXPORT bool ArMTXIO::getLIDARControl(unsigned char *val)
+MVREXPORT bool ArMTXIO::getLIDARControl(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1249,7 +1249,7 @@ MTX_IOREQ req;
   return true;
 }
 
-AREXPORT bool ArMTXIO::setLIDARControl(unsigned char *val)
+MVREXPORT bool ArMTXIO::setLIDARControl(unsigned char *val)
 {
 MTX_IOREQ req;
 
@@ -1270,7 +1270,7 @@ MTX_IOREQ req;
 
 }
 
-AREXPORT bool ArMTXIO::getAnalogIOBlock1(int analog, unsigned short *val)
+MVREXPORT bool ArMTXIO::getAnalogIOBlock1(int analog, unsigned short *val)
 {	
 MTX_IOREQ req;
 
@@ -1331,7 +1331,7 @@ MTX_IOREQ req;
 }
 
 
-AREXPORT bool ArMTXIO::getAnalogIOBlock2(int analog, unsigned short *val)
+MVREXPORT bool ArMTXIO::getAnalogIOBlock2(int analog, unsigned short *val)
 {	
 MTX_IOREQ req;
 
@@ -1393,7 +1393,7 @@ MTX_IOREQ req;
 }
 
 
-AREXPORT bool ArMTXIO::setAnalogIOBlock2(int analog, unsigned short *val)
+MVREXPORT bool ArMTXIO::setAnalogIOBlock2(int analog, unsigned short *val)
 {	
 MTX_IOREQ req;
 
@@ -1453,7 +1453,7 @@ MTX_IOREQ req;
   return noErr;
 }
 
-AREXPORT bool ArMTXIO::getAnalogValueRaw(int *val)
+MVREXPORT bool ArMTXIO::getAnalogValueRaw(int *val)
 {
 MTX_IOREQ req;
 
@@ -1480,7 +1480,7 @@ MTX_IOREQ req;
  @param val the address of the double to store the reading in
  @return true if a reading was acquired.  false otherwise
  **/
-AREXPORT bool ArMTXIO::getAnalogValue(double *val)
+MVREXPORT bool ArMTXIO::getAnalogValue(double *val)
 {
   int tmp;
 

@@ -35,7 +35,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
    @param robot The robot this camera is attached to, can be NULL
 **/
-AREXPORT ArPTZ::ArPTZ(MvrRobot *robot) :
+MVREXPORT ArPTZ::ArPTZ(MvrRobot *robot) :
   myRobot(robot),
   myConn(NULL),
   myConnectCB(this, &ArPTZ::connectHandler),
@@ -60,7 +60,7 @@ AREXPORT ArPTZ::ArPTZ(MvrRobot *robot) :
   }
 }
 
-AREXPORT ArPTZ::~ArPTZ()
+MVREXPORT ArPTZ::~MvrPTZ()
 {
   if (myRobot != NULL)
   {
@@ -76,7 +76,7 @@ AREXPORT ArPTZ::~ArPTZ()
    @return true if the packet could be sent, false otherwise
 **/
    
-AREXPORT bool ArPTZ::sendPacket(MvrBasePacket *packet)
+MVREXPORT bool ArPTZ::sendPacket(MvrBasePacket *packet)
 {
   packet->finalizePacket();
   if (myConn != NULL)
@@ -88,7 +88,7 @@ AREXPORT bool ArPTZ::sendPacket(MvrBasePacket *packet)
     return false;
 }
 
-AREXPORT bool ArPTZ::robotPacketHandler(MvrRobotPacket *packet)
+MVREXPORT bool ArPTZ::robotPacketHandler(MvrRobotPacket *packet)
 {
   //printf("%x\n", packet->getID());
   if ((packet->getID() == 0xb0 && myAuxPort == 1) ||
@@ -100,12 +100,12 @@ AREXPORT bool ArPTZ::robotPacketHandler(MvrRobotPacket *packet)
     return false;
 }
 
-AREXPORT void ArPTZ::connectHandler(void)
+MVREXPORT void ArPTZ::connectHandler(void)
 {
   init();
 }
 
-AREXPORT void ArPTZ::sensorInterpHandler(void)
+MVREXPORT void ArPTZ::sensorInterpHandler(void)
 {
   ArBasePacket *packet;
   while ((packet = readPacket()) != NULL)
@@ -123,7 +123,7 @@ AREXPORT void ArPTZ::sensorInterpHandler(void)
    @return true if the serial port is opened or can be opened, false
    otherwise
 **/
-AREXPORT bool ArPTZ::setDeviceConnection(MvrDeviceConnection *connection,
+MVREXPORT bool ArPTZ::setDeviceConnection(MvrDeviceConnection *connection,
 					 bool driveFromRobotLoop)
 {
   if (myRobot != NULL)
@@ -140,7 +140,7 @@ AREXPORT bool ArPTZ::setDeviceConnection(MvrDeviceConnection *connection,
     return true;
 }
 
-AREXPORT ArDeviceConnection *ArPTZ::getDeviceConnection(void)
+MVREXPORT ArDeviceConnection *ArPTZ::getDeviceConnection(void)
 {
   return myConn;
 }
@@ -153,7 +153,7 @@ AREXPORT ArDeviceConnection *ArPTZ::getDeviceConnection(void)
  @return true if @a auxPort was valid (1, 2 or 3).  False otherwise. If @a auxPort was an invalid number, the previous setting will be retained.
 
 **/
-AREXPORT bool ArPTZ::setAuxPort(int auxPort)
+MVREXPORT bool ArPTZ::setAuxPort(int auxPort)
 {
   if (auxPort == 1)
   {

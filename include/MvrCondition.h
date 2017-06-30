@@ -60,20 +60,20 @@ public:
 #endif
 
   /// Constructor
-  AREXPORT MvrCondition();
+  MVREXPORT MvrCondition();
   /// Desctructor
-  AREXPORT virtual ~ArCondition();
+  MVREXPORT virtual ~MvrCondition();
 
   /// Signal the thread waiting
-  AREXPORT int signal();
+  MVREXPORT int signal();
   /// Broadcast a signal to all threads waiting
-  AREXPORT int broadcast();
+  MVREXPORT int broadcast();
   /** @brief Wait for a signal */
-  AREXPORT int wait();
+  MVREXPORT int wait();
   /// Wait for a signal for a period of time in milliseconds
-  AREXPORT int timedWait(unsigned int msecs);
+  MVREXPORT int timedWait(unsigned int msecs);
   /// Translate error into string
-  AREXPORT const char *getError(int messageNumber) const;
+  MVREXPORT const char *getError(int messageNumber) const;
 
   // Set a name to be included in log messages
   void setLogName(const char *logName) {myLogName = logName;}

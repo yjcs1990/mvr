@@ -63,7 +63,7 @@ ArMutex ArVersalogicIO::myMutex;
 
  Check isEnabled() to see if the device was properly opened during construction.
 */
-AREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
+MVREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
   myDisconnectCB(this, &ArVersalogicIO::closeIO)
 {
   myMutex.setLogName("MvrVersalogicIO::myMutex");
@@ -113,7 +113,7 @@ AREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
 
 /** Destructor.  Attempt to close the device if it was opened
  **/
-AREXPORT ArVersalogicIO::~ArVersalogicIO(void)
+MVREXPORT ArVersalogicIO::~MvrVersalogicIO(void)
 {
   if (myEnabled)
     closeIO();
@@ -121,18 +121,18 @@ AREXPORT ArVersalogicIO::~ArVersalogicIO(void)
 
 /** Close the device when Aria exits
  **/
-AREXPORT bool ArVersalogicIO::closeIO(void)
+MVREXPORT bool ArVersalogicIO::closeIO(void)
 {
   myEnabled = false;
 
   if (close(myFD) == -1)
   {
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~ArVersalogicIO: close failed on file descriptor!");
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~MvrVersalogicIO: close failed on file descriptor!");
     return false;
   }
   else
   {
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~ArVersalogicIO: closed device");
+    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~MvrVersalogicIO: closed device");
     return true;
   }
 }
@@ -143,7 +143,7 @@ AREXPORT bool ArVersalogicIO::closeIO(void)
  @param val the address of the integer to store the reading in
  @return true if a reading was acquired.  false otherwise
  **/
-AREXPORT bool ArVersalogicIO::getAnalogValueRaw(int port, int *val)
+MVREXPORT bool ArVersalogicIO::getAnalogValueRaw(int port, int *val)
 {
   if (!myEnabled || !myAnalogEnabled)
     return false;
@@ -174,7 +174,7 @@ AREXPORT bool ArVersalogicIO::getAnalogValueRaw(int port, int *val)
  @param val the address of the double to store the reading in
  @return true if a reading was acquired.  false otherwise
  **/
-AREXPORT bool ArVersalogicIO::getAnalogValue(int port, double *val)
+MVREXPORT bool ArVersalogicIO::getAnalogValue(int port, double *val)
 {
   int tmp;
 
@@ -189,12 +189,12 @@ AREXPORT bool ArVersalogicIO::getAnalogValue(int port, double *val)
 }
 
 // this doesn't work, yet
-AREXPORT ArVersalogicIO::Direction ArVersalogicIO::getDigitalBankDirection(int bank)
+MVREXPORT ArVersalogicIO::Direction ArVersalogicIO::getDigitalBankDirection(int bank)
 {
   return DIGITAL_OUTPUT;
 }
 
-AREXPORT bool ArVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
+MVREXPORT bool ArVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
 {
   if (!myEnabled)
     return false;
@@ -223,7 +223,7 @@ AREXPORT bool ArVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
  
   @return true if the ioctl call was succcessfull, false otherwise
   **/
-AREXPORT bool ArVersalogicIO::getDigitalBankInputs(int bank, unsigned char *val)
+MVREXPORT bool ArVersalogicIO::getDigitalBankInputs(int bank, unsigned char *val)
 {
   if (!myEnabled)
     return false;
@@ -267,7 +267,7 @@ AREXPORT bool ArVersalogicIO::getDigitalBankInputs(int bank, unsigned char *val)
  @param val the byte to write the values into
  @return true if the request was satisfied, false otherwise
  **/
-AREXPORT bool ArVersalogicIO::getDigitalBankOutputs(int bank, unsigned char *val)
+MVREXPORT bool ArVersalogicIO::getDigitalBankOutputs(int bank, unsigned char *val)
 {
   if (!myEnabled)
     return false;
@@ -303,7 +303,7 @@ AREXPORT bool ArVersalogicIO::getDigitalBankOutputs(int bank, unsigned char *val
   @param bank the bank number to use.  0 is the lowest bank
   @param val the status of the 8-bits in a single byte.  
  **/
-AREXPORT bool ArVersalogicIO::setDigitalBankOutputs(int bank, unsigned char val)
+MVREXPORT bool ArVersalogicIO::setDigitalBankOutputs(int bank, unsigned char val)
 {
   if (!myEnabled)
     return false;
@@ -347,7 +347,7 @@ AREXPORT bool ArVersalogicIO::setDigitalBankOutputs(int bank, unsigned char val)
   as set in the BIOS
 
  **/
-AREXPORT bool ArVersalogicIO::getSpecialControlRegister(unsigned char *val)
+MVREXPORT bool ArVersalogicIO::getSpecialControlRegister(unsigned char *val)
 {
   if (!myEnabled)
     return false;

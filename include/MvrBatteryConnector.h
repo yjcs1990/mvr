@@ -82,40 +82,40 @@ class MvrBatteryConnector
 {
 public:
   /// Constructor that takes argument parser
-  AREXPORT MvrBatteryConnector(MvrArgumentParser *parser, 
+  MVREXPORT MvrBatteryConnector(MvrArgumentParser *parser, 
 			    MvrRobot *robot, MvrRobotConnector *robotConnector,
 			    bool autoParseArgs = true,
 			    MvrLog::LogLevel infoLogLevel = MvrLog::Verbose);
   /// Destructor
-  AREXPORT ~ArBatteryConnector(void);
+  MVREXPORT ~MvrBatteryConnector(void);
   /// Connects all the batteries the robot has that should be auto connected
-  AREXPORT bool connectBatteries(bool continueOnFailedConnect = false,
+  MVREXPORT bool connectBatteries(bool continueOnFailedConnect = false,
 			      bool addConnectedBatteriesToRobot = true,
 			      bool addAllBatteriesToRobot = false,
 			      bool turnOnBatteries = true,
 			      bool powerCycleBatteryOnFailedConnect = true);
-  AREXPORT bool disconnectBatteries();
+  MVREXPORT bool disconnectBatteries();
   /// Sets up a battery to be connected
-  AREXPORT bool setupBattery(MvrBatteryMTX *battery, 
+  MVREXPORT bool setupBattery(MvrBatteryMTX *battery, 
 			   int batteryNumber = 1);
   /// Connects the battery synchronously (will take up to a minute)
-  AREXPORT bool connectBattery(MvrBatteryMTX *battery,
+  MVREXPORT bool connectBattery(MvrBatteryMTX *battery,
 			     int batteryNumber = 1,
 			     bool forceConnection = true);
   /// Adds a battery so parsing will get it
-  AREXPORT bool addBattery(MvrBatteryMTX *battery,
+  MVREXPORT bool addBattery(MvrBatteryMTX *battery,
 			 int batteryNumber = 1);
   /// Function to parse the arguments given in the constructor
-  AREXPORT bool parseArgs(void);
+  MVREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  AREXPORT bool parseArgs(MvrArgumentParser *parser);
+  MVREXPORT bool parseArgs(MvrArgumentParser *parser);
   /// Log the options the simple connector has
-  AREXPORT void logOptions(void) const;
+  MVREXPORT void logOptions(void) const;
   /// Internal function to get the battery (only useful between parseArgs and connectBatteries)
-  AREXPORT MvrBatteryMTX *getBattery(int batteryNumber);
+  MVREXPORT MvrBatteryMTX *getBattery(int batteryNumber);
 
   /// Internal function to replace the battery (only useful between parseArgs and connectBatteries) but not the battery data
-  AREXPORT bool replaceBattery(MvrBatteryMTX *battery, int batteryNumber);
+  MVREXPORT bool replaceBattery(MvrBatteryMTX *battery, int batteryNumber);
   
 protected:
 /// Class that holds information about the battery data
@@ -163,10 +163,10 @@ class BatteryData
   std::map<int, BatteryData *> myBatteries;
   
   /// Parses the battery arguments
-  AREXPORT bool parseBatteryArgs(MvrArgumentParser *parser, 
+  MVREXPORT bool parseBatteryArgs(MvrArgumentParser *parser, 
 			       BatteryData *batteryData);
   /// Logs the battery command line option help text. 
-  AREXPORT void logBatteryOptions(BatteryData *batterydata, bool header = true, bool metaOpts = true) const;
+  MVREXPORT void logBatteryOptions(BatteryData *batterydata, bool header = true, bool metaOpts = true) const;
   // Sets the battery parameters
   bool internalConfigureBattery(BatteryData *batteryData);
 

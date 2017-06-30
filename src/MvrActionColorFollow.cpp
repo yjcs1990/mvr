@@ -6,7 +6,7 @@
 #include "MvrRobot.h"
 
 // Constructor: Initialize the color follow action
-AREXPORT MvrActionColorFollow::MvrActionColorFollow(const char *name, MvrACTS_1_2 *acts, 
+MVREXPORT MvrActionColorFollow::MvrActionColorFollow(const char *name, MvrACTS_1_2 *acts, 
 						  MvrPTZ *camera, double speed, 
 						  int width, int height) :
     MvrAction(name, "Follows the largest blob of color.")
@@ -27,11 +27,11 @@ AREXPORT MvrActionColorFollow::MvrActionColorFollow(const char *name, MvrACTS_1_
 }
 
 // Destructor
-AREXPORT MvrActionColorFollow::~MvrActionColorFollow(void) {}
+MVREXPORT MvrActionColorFollow::~MvrActionColorFollow(void) {}
 
 
 // The color follow action
-AREXPORT MvrActionDesired *MvrActionColorFollow::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *MvrActionColorFollow::fire(MvrActionDesired currentDesired)
 {
   MvrACTSBlob blob;
   MvrACTSBlob largestBlob;
@@ -195,7 +195,7 @@ AREXPORT MvrActionDesired *MvrActionColorFollow::fire(MvrActionDesired currentDe
 }
 
 // Set the channel that the blob info will be obtained from
-AREXPORT bool MvrActionColorFollow::setChannel(int channel)
+MVREXPORT bool MvrActionColorFollow::setChannel(int channel)
 {
   // Make sure that the requested channel is in range
   if (channel >= 1 && channel <= MvrACTS_1_2::NUM_CHANNELS)
@@ -208,51 +208,51 @@ AREXPORT bool MvrActionColorFollow::setChannel(int channel)
 }
 
 // Set the camera that we are controlling
-AREXPORT void MvrActionColorFollow::setCamera(MvrPTZ *camera)
+MVREXPORT void MvrActionColorFollow::setCamera(MvrPTZ *camera)
 {
   myCamera = camera;
 }
 
 // Toggle whether or not we should attempt to acquire a
 // target or just stay still
-AREXPORT void MvrActionColorFollow::setAcquire(bool acquire)
+MVREXPORT void MvrActionColorFollow::setAcquire(bool acquire)
 {
   myAcquire = acquire;
 }
 
 // Kill movement
-AREXPORT void MvrActionColorFollow::stopMovement(void)
+MVREXPORT void MvrActionColorFollow::stopMovement(void)
 {
   killMovement = true;
 }
 
 // Start moving
-AREXPORT void MvrActionColorFollow::startMovement(void)
+MVREXPORT void MvrActionColorFollow::startMovement(void)
 {
   killMovement = false;
 }
 
 // Return the channel that we are looking on
-AREXPORT int MvrActionColorFollow::getChannel(void)
+MVREXPORT int MvrActionColorFollow::getChannel(void)
 {
   return myChannel;
 }
 
 // Return if we are actively trying to find a blob
 // if one cannot be seen
-AREXPORT bool MvrActionColorFollow::getAcquire(void)
+MVREXPORT bool MvrActionColorFollow::getAcquire(void)
 {
   return myAcquire;
 }
 
 // Return whether we are supposed to be moving or not
-AREXPORT bool MvrActionColorFollow::getMovement(void)
+MVREXPORT bool MvrActionColorFollow::getMovement(void)
 {
   return !killMovement;
 }
 
 // Return whether we can see a target or not
-AREXPORT bool MvrActionColorFollow::getBlob(void)
+MVREXPORT bool MvrActionColorFollow::getBlob(void)
 {
   if(myState == TARGET) return true;
   else return false;

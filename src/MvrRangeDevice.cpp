@@ -68,7 +68,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    avoid
    
 **/
-AREXPORT ArRangeDevice::ArRangeDevice(size_t currentBufferSize,
+MVREXPORT ArRangeDevice::ArRangeDevice(size_t currentBufferSize,
 				      size_t cumulativeBufferSize, 
 				      const char *name, 
 				      unsigned int maxRange,
@@ -113,7 +113,7 @@ AREXPORT ArRangeDevice::ArRangeDevice(size_t currentBufferSize,
   //setMinDistBetweenCumulative();
 }
 
-AREXPORT ArRangeDevice::~ArRangeDevice()
+MVREXPORT ArRangeDevice::~MvrRangeDevice()
 {
   if (myRobot != NULL)
     myRobot->remSensorInterpTask(&myFilterCB);
@@ -133,12 +133,12 @@ AREXPORT ArRangeDevice::~ArRangeDevice()
 }
 
 
-AREXPORT const char * ArRangeDevice::getName(void) const
+MVREXPORT const char * ArRangeDevice::getName(void) const
 { 
   return myName.c_str(); 
 }
 
-AREXPORT void ArRangeDevice::setRobot(MvrRobot *robot) 
+MVREXPORT void ArRangeDevice::setRobot(MvrRobot *robot) 
 { 
   char buf[512];
   sprintf(buf, "filter %s", getName());
@@ -152,12 +152,12 @@ AREXPORT void ArRangeDevice::setRobot(MvrRobot *robot)
     myRobot->addSensorInterpTask(buf, 100, &myFilterCB);
 }
 
-AREXPORT ArRobot *ArRangeDevice::getRobot(void) 
+MVREXPORT ArRobot *ArRangeDevice::getRobot(void) 
 {
   return myRobot; 
 }
 
-AREXPORT void ArRangeDevice::filterCallback(void)
+MVREXPORT void ArRangeDevice::filterCallback(void)
 {
   std::list<ArPoseWithTime *>::iterator it;
   lockDevice();
@@ -228,12 +228,12 @@ AREXPORT void ArRangeDevice::filterCallback(void)
    are added.
    @param size number of readings to set the buffer's maximum size to
 */
-AREXPORT void ArRangeDevice::setCurrentBufferSize(size_t size)
+MVREXPORT void ArRangeDevice::setCurrentBufferSize(size_t size)
 {
   myCurrentBuffer.setSize(size);
 }
 
-AREXPORT size_t ArRangeDevice::getCurrentBufferSize(void) const
+MVREXPORT size_t ArRangeDevice::getCurrentBufferSize(void) const
 {
   return myCurrentBuffer.getSize();
 }
@@ -246,18 +246,18 @@ AREXPORT size_t ArRangeDevice::getCurrentBufferSize(void) const
    are added.
    @param size number of readings to set the buffer to
 */
-AREXPORT void ArRangeDevice::setCumulativeBufferSize(size_t size)
+MVREXPORT void ArRangeDevice::setCumulativeBufferSize(size_t size)
 {
   myCumulativeBuffer.setSize(size);
 }
 
 
-AREXPORT size_t ArRangeDevice::getCumulativeBufferSize(void) const
+MVREXPORT size_t ArRangeDevice::getCumulativeBufferSize(void) const
 {
   return myCumulativeBuffer.getSize();
 }
 
-AREXPORT void ArRangeDevice::addReading(double x, double y, bool *wasAdded)
+MVREXPORT void ArRangeDevice::addReading(double x, double y, bool *wasAdded)
 {
   myCurrentBuffer.addReadingConditional(x, y, 
 					myMinDistBetweenCurrentSquared,
@@ -304,7 +304,7 @@ AREXPORT void ArRangeDevice::addReading(double x, double y, bool *wasAdded)
   Example:
    @image html ArRangeDevice_currentReadingPolar.png This figure illustrates an example range device and the meanings of arguments and return value.
 */
-AREXPORT double ArRangeDevice::currentReadingPolar(double startAngle,
+MVREXPORT double ArRangeDevice::currentReadingPolar(double startAngle,
 						   double endAngle,
 						   double *angle) const
 {
@@ -345,7 +345,7 @@ AREXPORT double ArRangeDevice::currentReadingPolar(double startAngle,
   Example:
    @image html ArRangeDevice_currentReadingPolar.png This figure illustrates an example range device and the meanings of arguments and return value.
 */
-AREXPORT double ArRangeDevice::cumulativeReadingPolar(double startAngle,
+MVREXPORT double ArRangeDevice::cumulativeReadingPolar(double startAngle,
 						      double endAngle,
 						      double *angle) const
 {
@@ -375,7 +375,7 @@ AREXPORT double ArRangeDevice::cumulativeReadingPolar(double startAngle,
    @return The range to the reading from the device, or a value >= maxRange if
    no reading was found in the box.
 */
-AREXPORT double ArRangeDevice::currentReadingBox(double x1, double y1, 
+MVREXPORT double ArRangeDevice::currentReadingBox(double x1, double y1, 
 						 double x2, double y2,
 						 ArPose *pose) const
 {
@@ -404,7 +404,7 @@ AREXPORT double ArRangeDevice::currentReadingBox(double x1, double y1,
    @return The range to the reading from the device, or a value >= maxRange if
    no reading was found in the box.
 */
-AREXPORT double ArRangeDevice::cumulativeReadingBox(double x1, double y1, 
+MVREXPORT double ArRangeDevice::cumulativeReadingBox(double x1, double y1, 
 						 double x2, double y2,
 						 ArPose *pose) const
 {
@@ -428,7 +428,7 @@ AREXPORT double ArRangeDevice::cumulativeReadingBox(double x1, double y1,
     @param trans the transform to apply to the data
     @param doCumulative whether to transform the cumulative buffer or not
 */    
-AREXPORT void ArRangeDevice::applyTransform(MvrTransform trans, 
+MVREXPORT void ArRangeDevice::applyTransform(MvrTransform trans, 
 					    bool doCumulative)
 {
   myCurrentBuffer.applyTransform(trans);
@@ -440,7 +440,7 @@ AREXPORT void ArRangeDevice::applyTransform(MvrTransform trans,
  *  @swignote The return type will be named ArSensorReadingVector instead
  *    of the std::vector template type.
  */
-AREXPORT std::vector<ArSensorReading> *ArRangeDevice::getRawReadingsAsVector(void)
+MVREXPORT std::vector<ArSensorReading> *ArRangeDevice::getRawReadingsAsVector(void)
 {
   
   std::list<ArSensorReading *>::const_iterator it;
@@ -458,7 +458,7 @@ AREXPORT std::vector<ArSensorReading> *ArRangeDevice::getRawReadingsAsVector(voi
  *  @swignote The return type will be named ArSensorReadingVector instead
  *    of the std::vector template type.
  */
-AREXPORT std::vector<ArSensorReading> *ArRangeDevice::getAdjustedRawReadingsAsVector(void)
+MVREXPORT std::vector<ArSensorReading> *ArRangeDevice::getAdjustedRawReadingsAsVector(void)
 {
   
   std::list<ArSensorReading *>::const_iterator it;
@@ -476,7 +476,7 @@ AREXPORT std::vector<ArSensorReading> *ArRangeDevice::getAdjustedRawReadingsAsVe
 }
 
 
-AREXPORT void ArRangeDevice::setCurrentDrawingData(MvrDrawingData *data, 
+MVREXPORT void ArRangeDevice::setCurrentDrawingData(MvrDrawingData *data, 
 						   bool takeOwnershipOfData)
 {
   if (myCurrentDrawingData != NULL && myOwnCurrentDrawingData)
@@ -489,7 +489,7 @@ AREXPORT void ArRangeDevice::setCurrentDrawingData(MvrDrawingData *data,
   myOwnCurrentDrawingData = takeOwnershipOfData; 
 }
 
-AREXPORT  void ArRangeDevice::setCumulativeDrawingData(
+MVREXPORT  void ArRangeDevice::setCumulativeDrawingData(
 	ArDrawingData *data, 
 	bool takeOwnershipOfData)
 {
@@ -503,7 +503,7 @@ AREXPORT  void ArRangeDevice::setCumulativeDrawingData(
   myOwnCumulativeDrawingData = takeOwnershipOfData; 
 }
 
-AREXPORT void ArRangeDevice::adjustRawReadings(bool interlaced)
+MVREXPORT void ArRangeDevice::adjustRawReadings(bool interlaced)
 {
   std::list<ArSensorReading *>::iterator rawIt;
 
