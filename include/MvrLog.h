@@ -1,28 +1,45 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrLog.h
- > Description  : Classes for robot log
- > Author       : Yu Jie
- > Create Time  : 2017年04月10日
- > Modify Time  : 2017年05月10日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRLOG_H
-#define MVRLOG_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARLOG_H
+#define ARLOG_H
 
 #ifndef WIN32
 #include <stdio.h>
-#endif  // WIN32
+#endif
 #include <string>
-#include "mvriaTypedefs.h"
-#include "MvrMutex.h"
-#include "MvrFunctor.h"
+#include "ariaTypedefs.h"
+#include "ArMutex.h"
+#include "ArFunctor.h"
 
-class MvrConfig;
+class ArConfig;
 
 /// Logging utility class
 /**
-   MvrLog is a utility class to log all messages from Mvria to a choosen
+   ArLog is a utility class to log all messages from Aria to a choosen
    destintation. Messages can be logged to stdout, stderr, a file, and
    turned off completely. Logging by default is set to stdout. The level
    of logging can be changed as well. Allowed levels are Terse, Normal,
@@ -31,9 +48,10 @@ class MvrConfig;
    @ingroup ImportantClasses
    @ingroup easy
 */
-class MvrLog
+class ArLog
 {
 public:
+
   typedef enum {
     StdOut, ///< Use stdout for logging
     StdErr, ///< Use stderr for logging
@@ -54,91 +72,95 @@ public:
    *    for constructing a formatted string, e.g. the % and + string
    *    operators in Python, and the methods of the Java String class.
    */
-  MVREXPORT static void log(LogLevel level, const char *str, ...);
+  AREXPORT static void log(LogLevel level, const char *str, ...);
 #endif
   /// Log a message containing just a plain string
-  MVREXPORT static void logPlain(LogLevel level, const char *str);
+  AREXPORT static void logPlain(LogLevel level, const char *str);
   /// Initialize the logging utility with options
-  MVREXPORT static bool init(LogType type, LogLevel level, const char *fileName="",
-			      bool logTime = false, bool alsoPrint = false, bool printThisCall = true);
+  AREXPORT static bool init(LogType type, LogLevel level,
+			    const char *fileName="",
+			    bool logTime = false, bool alsoPrint = false, 
+			    bool printThisCall = true);
   /// Close the logging utility
-  MVREXPORT static void close();
+  AREXPORT static void close();
 
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message
-  MVREXPORT static void logErrorFromOS(LogLevel level, const char *str, ...);
+  AREXPORT static void logErrorFromOS(LogLevel level, const char *str, ...);
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message
-  MVREXPORT static void logErrorFromOSPlain(LogLevel level, const char *str);
+  AREXPORT static void logErrorFromOSPlain(LogLevel level, const char *str);
 #ifndef SWIG // these is internal we don't need to wrap it
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message... internal version, don't use it
-  MVREXPORT static void logErrorFromOSNoLock(LogLevel level, const char *str, ...);
+  AREXPORT static void logErrorFromOSNoLock(LogLevel level, const char *str, ...);
   /// Logs an error, adding the error and string the error mean at the
   /// end of this message... internal version, dont' use it
-  MVREXPORT static void logErrorFromOSPlainNoLock(LogLevel level, const char *str);
+  AREXPORT static void logErrorFromOSPlainNoLock(LogLevel level, const char *str);
   // Do not use this unless you know what you are doing...
   /** @internal
    * @swigomit */
-  MVREXPORT static void logNoLock(LogLevel level, const char *str, ...);
+  AREXPORT static void logNoLock(LogLevel level, const char *str, ...);
 #endif 
   /// Log function call backtrace for debugging 
   /// @linuxonly
-  MVREXPORT static void logBacktrace(LogLevel level);
+  AREXPORT static void logBacktrace(LogLevel level);
   /// Read the contents of @fileName and print a log message for each line. File should be plain text.
-  MVREXPORT static bool logFileContents(LogLevel level, const char *fileName);
+  AREXPORT static bool logFileContents(LogLevel level, const char *fileName);
 
   // We use this to print to a Colbert stream, if available
   /// @deprecated
-  MVREXPORT static void (* colbertPrint)(int i, const char *str);
+  AREXPORT static void (* colbertPrint)(int i, const char *str);
 
-  /// Use an MvrConfig object to control MvrLog's options
-  MVREXPORT static void addToConfig(MvrConfig *config);
+  /// Use an ArConfig object to control ArLog's options
+  AREXPORT static void addToConfig(ArConfig *config);
 
   /// Set log level
-  MVREXPORT static void setLogLevel(LogLevel level);
+  AREXPORT static void setLogLevel(LogLevel level);
 
-#ifndef MVRINTERFACE
+#ifndef ARINTERFACE
   // Init for aram behavior
   /// @internal
-  MVREXPORT static void aramInit(const char *prefix, MvrLog::LogLevel defaultLevel = MvrLog::Normal, 
-				    double defaultSize = 10, bool daemonized = false);
+  AREXPORT static void aramInit(const char *prefix, 
+				ArLog::LogLevel defaultLevel = ArLog::Normal, 
+				double defaultSize = 10, 
+				bool daemonized = false);
 #endif
   
   /// Set a functor to be called when a log message is made 
   /// Call clearFunctor() to unset.
-  MVREXPORT static void setFunctor(MvrFunctor1<const char *> *functor);
+  AREXPORT static void setFunctor(ArFunctor1<const char *> *functor);
   /// Clear functor set by setFunctor().
-  MVREXPORT static void clearFunctor();
+  AREXPORT static void clearFunctor();
   /// Internal function to force a lockup, only for debugging
   /// @internal
-  MVREXPORT static void internalForceLockup(void);
+  AREXPORT static void internalForceLockup(void);
 
   /// Convenience function to log a message at Terse log level with "Warning: " prepended
-  MVREXPORT static void warning(const char *str, ...);
+  AREXPORT static void warning(const char *str, ...);
   /// Convenience function to log a message at Terse log level with "Error: " prepended
-  MVREXPORT static void error(const char *str, ...);
+  AREXPORT static void error(const char *str, ...);
   /// Convenience function to log a message at Normal log level 
-  MVREXPORT static void info(const char *str, ...);
+  AREXPORT static void info(const char *str, ...);
   /// Convenience function to log a message at Verbose log level 
-  MVREXPORT static void debug(const char *str, ...);
+  AREXPORT static void debug(const char *str, ...);
 
 #ifndef SWIG
   /// @internal
-  MVREXPORT static void log_v(LogLevel level, const char *prefix, const char *format, va_list vaptr);
+  AREXPORT static void log_v(LogLevel level, const char *prefix, const char *format, va_list vaptr);
 #endif
 
 protected:
-  MVREXPORT static bool processFile(void);
-#ifndef MVRINTERFACE
-  MVREXPORT static bool aramProcessFile(void);
-  MVREXPORT static void filledAramLog(void);
+  AREXPORT static bool processFile(void);
+#ifndef ARINTERFACE
+  AREXPORT static bool aramProcessFile(void);
+  AREXPORT static void filledAramLog(void);
 #endif
-  MVREXPORT static void invokeFunctor(const char *message);
-  MVREXPORT static void checkFileSize(void);
+  AREXPORT static void invokeFunctor(const char *message);
+  AREXPORT static void checkFileSize(void);
 
-  static MvrLog *ourLog;
-  static MvrMutex ourMutex;
+  static ArLog *ourLog;
+  static ArMutex ourMutex;
   static LogType ourType;
   static LogLevel ourLevel;
   static bool ourLoggingTime;
@@ -153,12 +175,12 @@ protected:
   static char ourConfigFileName[1024];
   static bool ourConfigLogTime;
   static bool ourConfigAlsoPrint;
-  static MvrGlobalRetFunctor<bool> ourConfigProcessFileCB;
+  static ArGlobalRetFunctor<bool> ourConfigProcessFileCB;
 
-#ifndef MVRINTERFACE
+#ifndef ARINTERFACE
   static char ourAramConfigLogLevel[1024];
   static double ourAramConfigLogSize;
-  static MvrGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
+  static ArGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
   static bool ourUseAramBehavior;
   static double ourAramLogSize;
   static std::string ourAramPrefix;
@@ -166,7 +188,9 @@ protected:
 
   static bool ourAramDaemonized;
   
-  static MvrFunctor1<const char *> *ourFunctor;
+  static ArFunctor1<const char *> *ourFunctor;
+
 };
 
-#endif  //MVRLOG_H
+
+#endif

@@ -1,67 +1,103 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionJoydrive.h
- > Description  : This action will use the joystick for input to drive the robot
- > Author       : Yu Jie
- > Create Time  : 2017年04月24日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONJOYDRIVE_H
-#define MVRACTIONJOYDRIVE_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrAction.h"
-#include "MvrJoyHandler.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrActionJoydrive : public MvrAction
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONJOYDRIVE_H
+#define ARACTIONJOYDRIVE_H
+
+#include "ariaTypedefs.h"
+#include "ArAction.h"
+#include "ArJoyHandler.h"
+
+/// This action will use the joystick for input to drive the robot
+/**
+   This class creates its own ArJoyHandler to get input from the
+   joystick.  Then it will scale the speed between 0 and the given max
+   for velocity and turning, up and down on the joystick go
+   forwards/backwards while right and left go right and left.  You
+   must press in one of the two joystick buttons for the class to pay
+   attention to the joystick.
+   
+   @note The joystick does not save calibration information, so you
+   must calibrate the joystick before each time you use it.  To do
+   this, press the button for at least a half a second while the
+   joystick is in the middle.  Then let go of the button and hold the
+   joystick in the upper left for at least a half second and then in
+   the lower right corner for at least a half second.
+
+   @ingroup ActionClasses
+**/
+class ArActionJoydrive : public ArAction
 {
 public:
   /// Constructor
-  MVREXPORT MvrActionJoydrive(const char * name = "joydrive", 
+  AREXPORT ArActionJoydrive(const char * name = "joydrive", 
 			    double transVelMax = 400, 
 			    double turnAmountMax = 15, 
 			    bool stopIfNoButtonPressed = true,
 			    bool useOSCalForJoystick = true);
   /// Destructor
-  MVREXPORT virtual ~MvrActionJoydrive();
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  /// Whether the joystick is initialized or not
-  MVREXPORT bool joystickInited(void);
+  AREXPORT virtual ~ArActionJoydrive();
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  /// Whether the joystick is initalized or not
+  AREXPORT bool joystickInited(void);
   /// Set Speeds
-  MVREXPORT void setSpeeds(double transVelMax, double turnAmountMax);
+  AREXPORT void setSpeeds(double transVelMax, double turnAmountMax);
   /// Set if we'll stop if no button is pressed, otherwise just do nothing
-  MVREXPORT void setStopIfNoButtonPressed(bool stopIfNoButtonPressed);
+  AREXPORT void setStopIfNoButtonPressed(bool stopIfNoButtonPressed);
   /// Get if we'll stop if no button is pressed, otherwise just do nothing
-  MVREXPORT bool getStopIfNoButtonPressed(void);
+  AREXPORT bool getStopIfNoButtonPressed(void);
   /// Sets the params on the throttle (throttle unused unless you call this)
-  MVREXPORT void setThrottleParams(double lowSpeed, double highSpeed);
+  AREXPORT void setThrottleParams(double lowSpeed, double highSpeed);
   /// Sets whether to use OSCalibration the joystick or not
-  MVREXPORT void setUseOSCal(bool useOSCal);
+  AREXPORT void setUseOSCal(bool useOSCal);
   /// Gets whether OSCalibration is being used for the joystick or not
-  MVREXPORT bool getUseOSCal(void);
+  AREXPORT bool getUseOSCal(void);
   /// Gets the joyHandler
-  MVREXPORT MvrJoyHandler *getJoyHandler(void) { return myJoyHandler; }
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT ArJoyHandler *getJoyHandler(void) { return myJoyHandler; }
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const { return &myDesired; }
+  AREXPORT virtual const ArActionDesired *getDesired(void) const { return &myDesired; }
 #endif
 protected:
   bool myUseThrottle;
   double myLowThrottle;
   double myHighThrottle;
   // action desired
-  MvrActionDesired myDesired;
+  ArActionDesired myDesired;
   // joystick handler
-  MvrJoyHandler *myJoyHandler;
-  // full speed
+  ArJoyHandler *myJoyHandler;
+  // full spped
   double myTransVelMax;
   // full amount to turn
   double myTurnAmountMax;
-  // if we want to stop when no button is pressed
+  // if we want to stop when no button is presesd
   bool myStopIfNoButtonPressed;
   // if we're using os cal for the joystick
   bool myUseOSCal;
   bool myPreviousUseOSCal;
 };
 
-#endif  // MVRACTIONJOYDRIVE_H
+#endif //ARACTIONJOYDRIVE_H

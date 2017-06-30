@@ -1,35 +1,82 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionRatioInput.h
- > Description  : Action that requests motion based on abstract ratios provided by different input sources
- > Author       : Yu Jie
- > Create Time  : 2017年05月14日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONRATIOINPUT_H
-#define MVRACTIONRATIOINPUT_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrAction.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrActionRatioInput : public MvrAction
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONRATIOINPUT_H
+#define ARACTIONRATIOINPUT_H
+
+#include "ariaTypedefs.h"
+#include "ArAction.h"
+
+/// Action that requests motion based on abstract ratios provided by diferent input sources 
+/**
+   This action interprets input drive commands as three abstract ratios, 
+   translation, rotation, and throttle. (In this way it mimics many joysticks.)
+   The translation speed input ranges from -100 to 100, where -100 requests maximum
+   backwards speed, and 100 requests maximum forward speed, 0 requests no
+   translational speed, and values in between request a linear percentage of the maximum.
+   Similarly, rotation speed input ranges from -100 to 100,
+   where -100 indicates maximum rightwards or clockwise rotation, 100 indicates
+   maximum leftwards or counter-clockwise rotation, 0 requests no rotation, and
+   values in between request a linear percentage of the maximum.  The throttle
+   input scales the other speed, and ranges from 0 (no motion) to 100 (maximum motion).
+   
+   Seperate objects (e.g. ArRatioInputKeydrive, ArRatioInputJoydrive, ArRAtionInputRobotJoydrive) 
+   are used to provide input.
+
+   When this action is activated it resets all its input ratios to 0
+   (including throttle).
+
+   Configuration parameters are used to map the maximum ratios to actual robot speeds.
+   These are set be default to the robot's maximum configured velocities at startup but you can
+   override them with ArConfig parameters (and call addToConfig()) or setParameters().
+
+   @ingroup ActionClasses
+   
+   @see ArRatioInputKeydrive
+   @see ArRatioInputJoydrive
+   @see ArRatioInputRobotJoydrive
+ **/
+class ArActionRatioInput : public ArAction
 {
 public:
   /// Constructor
-  MVREXPORT MvrActionRatioInput(const char *name = "RatioInput");
+  AREXPORT ArActionRatioInput(const char *name = "RatioInput");
   /// Destructor
-  MVREXPORT virtual ~MvrActionRatioInput();
+  AREXPORT virtual ~ArActionRatioInput();
   /// Set ratios
-  MVREXPORT void setRatios(double transRatio, double rotRatio, 
-			      double throttleRatio, double latRatio = 0);
+  AREXPORT void setRatios(double transRatio, double rotRatio, 
+			  double throttleRatio, double latRatio = 0);
   /// Sets the trans ratio (from -100 (full backwards) to 100 (full forwards)
-  MVREXPORT void setTransRatio(double transRatio);
+  AREXPORT void setTransRatio(double transRatio);
   /// Sets the rot ratio (from -100 (full right) to 100 (full left)
-  MVREXPORT void setRotRatio(double rotRatio);
+  AREXPORT void setRotRatio(double rotRatio);
   /// Sets the lat ratio (from -100 (one way) to 100 (the other))
-  MVREXPORT void setLatRatio(double latRatio);
+  AREXPORT void setLatRatio(double latRatio);
   /// Sets the throttle ratio (from 0 (stopped) to 100 (full throttle)
-  MVREXPORT void setThrottleRatio(double throttleRatio);
+  AREXPORT void setThrottleRatio(double throttleRatio);
   /// Gets the trans ratio (from -100 (full backwards) to 100 (full forwards)
   double getTransRatio(void) { return myTransRatio; }
   /// Gets the rot ratio (from -100 (full right) to 100 (full left)
@@ -37,42 +84,42 @@ public:
   /// Gets the throttle ratio (from 0 (stopped) to 100 (full throttle)
   double getThrottleRatio(void) { return myThrottleRatio; }
   /// Adds a callback that is called from this actions fire call
-  MVREXPORT void addFireCallback(int priority, MvrFunctor *functor);
+  AREXPORT void addFireCallback(int priority, ArFunctor *functor);
   /// Removes a callback that was called from this actions fire callback
-  MVREXPORT void remFireCallback(MvrFunctor *functor);
+  AREXPORT void remFireCallback(ArFunctor *functor);
   /// Adds a callback that is called when this action is activated
-  MVREXPORT void addActivateCallback(MvrFunctor *functor, 
-				    MvrListPos::Pos position = MvrListPos::LAST);
+  AREXPORT void addActivateCallback(ArFunctor *functor, 
+				    ArListPos::Pos position = ArListPos::LAST);
   /// Removes a callback that was called when this action is activated
-  MVREXPORT void remActivateCallback(MvrFunctor *functor);
+  AREXPORT void remActivateCallback(ArFunctor *functor);
   /// Adds a callback that is called when this action is deactivated
-  MVREXPORT void addDeactivateCallback(MvrFunctor *functor, 
-			      MvrListPos::Pos position = MvrListPos::LAST);
+  AREXPORT void addDeactivateCallback(ArFunctor *functor, 
+			      ArListPos::Pos position = ArListPos::LAST);
   /// Removes a callback that was called when this action is deactivated
-  MVREXPORT void remDeactivateCallback(MvrFunctor *functor);
+  AREXPORT void remDeactivateCallback(ArFunctor *functor);
   /// Sets the parameters
-  MVREXPORT void setParameters(double fullThrottleForwards, 
-                               double fullThrottleBackwards, 
-                               double rotAtFullForwards,
-                               double rotAtFullBackwards,
-                               double rotAtStopped,
-                               double latAtFullForwards = 0, 
-                               double latAtFullBackwards = 0,
-                               double latAtStopped = 0);
+  AREXPORT void setParameters(double fullThrottleForwards, 
+			      double fullThrottleBackwards, 
+			      double rotAtFullForwards,
+			      double rotAtFullBackwards,
+			      double rotAtStopped,
+			      double latAtFullForwards = 0, 
+			      double latAtFullBackwards = 0,
+			      double latAtStopped = 0);
   /// Adds to a section in a config
-  MVREXPORT void addToConfig(MvrConfig *config, const char *section);
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT void addToConfig(ArConfig *config, const char *section);
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
-  { return &myDesired; }
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+                                                        { return &myDesired; }
 #endif
-  MVREXPORT virtual void activate(void);
-  MVREXPORT virtual void deactivate(void);
+  AREXPORT virtual void activate(void);
+  AREXPORT virtual void deactivate(void);
 protected:
-  std::multimap<int, MvrFunctor *> myFireCallbacks;
-  std::list<MvrFunctor *> myActivateCallbacks;
-  std::list<MvrFunctor *> myDeactivateCallbacks;
+  std::multimap<int, ArFunctor *> myFireCallbacks;
+  std::list<ArFunctor *> myActivateCallbacks;
+  std::list<ArFunctor *> myDeactivateCallbacks;
   // if we're printing extra information or not
   bool myPrinting;
   double myTransDeadZone;
@@ -90,7 +137,7 @@ protected:
   double myRotRatio;
   double myThrottleRatio;
   double myLatRatio;
-  MvrActionDesired myDesired;
+  ArActionDesired myDesired;
 };
 
-#endif  // MVRACTIONRATIOINPUT_H
+#endif // ARACTIONSTOP_H

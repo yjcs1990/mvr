@@ -1,63 +1,82 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotPacket.h
- > Description  : Represents the packets sent to the robot as well as those received from it
- > Author       : Yu Jie
- > Create Time  : 2017年05月18日
- > Modify Time  : 2017年05月18日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRROBOTPACKET_H
-#define MVRROBOTPACKET_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-#include "mvriaTypedefs.h"
-#include "MvrBasePacket.h"
-#include "mvriaUtil.h"
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARROBOTPACKET_H
+#define ARROBOTPACKET_H
+
+#include "ariaTypedefs.h"
+#include "ArBasePacket.h"
+#include "ariaUtil.h"
 
 /// Represents the packets sent to the robot as well as those received from it
 /**
    This class reimplements some of the buf operations since the robot is 
    opposeite endian from intel.  Also has the getID for convenience.  
    
-   You can just look at the documentation for the MvrBasePacket except for
+   You can just look at the documentation for the ArBasePacket except for
    the 4 new functions here, verifyCheckSum, getID, print, and calcCheckSum.
  */
-class MvrRobotPacket: public MvrBasePacket
+class ArRobotPacket: public ArBasePacket
 {
 public:
   /// Constructor
-  MVREXPORT MvrRobotPacket(unsigned char sync1 = 0xfa,unsigned char sync2 = 0xfb);
+  AREXPORT ArRobotPacket(unsigned char sync1 = 0xfa, 
+			 unsigned char sync2 = 0xfb);
   /// Destructor
-  MVREXPORT virtual ~MvrRobotPacket();
+  AREXPORT virtual ~ArRobotPacket();
 
   /// Assignment operator
-  MVREXPORT MvrRobotPacket &operator=(const MvrRobotPacket &other);
+  AREXPORT ArRobotPacket &operator=(const ArRobotPacket &other);
 
   /// returns true if the checksum matches what it should be
-  MVREXPORT bool verifyCheckSum(void);
+  AREXPORT bool verifyCheckSum(void);
 
   /// returns the ID of the packet 
-  MVREXPORT MvrTypes::UByte getID(void);
+  AREXPORT ArTypes::UByte getID(void);
 
   /// Sets the ID of the packet 
-  MVREXPORT void setID(MvrTypes::UByte id);
+  AREXPORT void setID(ArTypes::UByte id);
 
   /// returns the checksum, probably used only internally
-  MVREXPORT MvrTypes::Byte2 calcCheckSum(void);
+  AREXPORT ArTypes::Byte2 calcCheckSum(void);
   
   // only call finalizePacket before a send
-  MVREXPORT virtual void finalizePacket(void);
+  AREXPORT virtual void finalizePacket(void);
   
   /// Gets the time the packet was received at
-  MVREXPORT MvrTime getTimeReceived(void);
+  AREXPORT ArTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  MVREXPORT void setTimeReceived(MvrTime timeReceived);
+  AREXPORT void setTimeReceived(ArTime timeReceived);
 
-  MVREXPORT virtual void log();
+  AREXPORT virtual void log();
 
 protected:
   unsigned char mySync1;
   unsigned char mySync2;
-  MvrTime myTimeReceived;
+  ArTime myTimeReceived;
 };
-#endif  // MVRROBOTPACKET_H
+
+#endif // ARROBOTPACKET_H

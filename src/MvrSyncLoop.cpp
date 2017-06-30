@@ -1,91 +1,110 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrSyncLoop.cpp
- > Description  : 
- > Author       : Yu Jie
- > Create Time  : 2017年05月18日
- > Modify Time  : 2017年06月19日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "mvriaUtil.h"
-#include "MvrLog.h"
-#include "MvrRobot.h"
-#include "MvrSyncLoop.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-MVREXPORT MvrSyncLoop::MvrSyncLoop() :
-          MvrASyncTask(),
-          myStopRunIfNotConnected(false),
-          myRobot(0)
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArSyncLoop.h"
+#include "ArLog.h"
+#include "ariaUtil.h"
+#include "ArRobot.h"
+
+
+AREXPORT ArSyncLoop::ArSyncLoop() :
+  ArASyncTask(),
+  myStopRunIfNotConnected(false),
+  myRobot(0)
 {
-  setThreadName("MvrRobotSyncLoop");
+  setThreadName("ArRobotSyncLoop");
   myInRun = false;
-}          
-
-MVREXPORT MvrSyncLoop::~MvrSyncLoop()
-{
-
 }
 
-MVREXPORT void MvrSyncLoop::setRobot(MvrRobot *robot)
+AREXPORT ArSyncLoop::~ArSyncLoop()
 {
-  myRobot = robot;
 }
 
-MVREXPORT void MvrSyncLoop::stopRunIfNotConnected(bool stopRun)
+AREXPORT void ArSyncLoop::setRobot(ArRobot *robot)
+{
+  myRobot=robot;
+}
+
+AREXPORT void ArSyncLoop::stopRunIfNotConnected(bool stopRun)
 {
   myStopRunIfNotConnected = stopRun;
 }
 
-MVREXPORT void *MvrSyncLoop::runThread(void *arg)
+AREXPORT void * ArSyncLoop::runThread(void *arg)
 {
   threadStarted();
 
   long timeToSleep;
-  MvrTime loopEndTime;
-  std::list<MvrFunctor *> *runList;
-  std::list<MvrFunctor *>::iterator iter;
-  MvrTime lastLoop;
+  ArTime loopEndTime;
+  std::list<ArFunctor *> *runList;
+  std::list<ArFunctor *>::iterator iter;
+  ArTime lastLoop;
   bool firstLoop = true;
   bool warned = false;
 
   if (!myRobot)
   {
-    MvrLog::log(MvrLog::Terse,
-                "MvrSyncLoop::runThread: Trying to run the syncchronous loop without a robot.");
-    return 0;
-  }
-  if (!myRobot->getSyncTaskRoot())
-  {
-    MvrLog::log(MvrLog::Terse,
-                "MvrSyncLoop::runThread: Cannot run the syncchronous loop without a task tree.");
-    return 0;    
+    ArLog::log(ArLog::Terse, "ArSyncLoop::runThread: Trying to run the synchronous loop without a robot.");
+    return(0);
   }
 
-  while(myRunning)
+  if (!myRobot->getSyncTaskRoot())
   {
+    ArLog::log(ArLog::Terse, "ArSyncLoop::runThread: Can not run the synchronous loop without a task tree");
+    return(0);
+  }
+
+  while (myRunning)
+  {
+
     myRobot->lock();
     if (!firstLoop && !warned && !myRobot->getNoTimeWarningThisCycle() && 
-        myRobot->getCycleWarningTime() != 0 && myRobot->getCycleWarningTime > 0 &&
-        lastLoop.mSecSince() > (signed int)myRobot->getCycleWarningTime())
+	myRobot->getCycleWarningTime() != 0 && 
+	myRobot->getCycleWarningTime() > 0 && 
+	lastLoop.mSecSince() > (signed int) myRobot->getCycleWarningTime())
     {
-      MvrLog::log(MvrLog::Normal,
-                  "Warning: MvrRobot cycle took too long because the loop was waiting for lock.");
-      MvrLog::log(MvrLog::Normal,
-                  "\tThe cycle took %u ms, (%u ms normal %u ms warning)",
-                  lastLoop.mSecSince(), myRobot->getCycleTime(),
-                  myRobot->getCycleWarningTime());
+      ArLog::log(ArLog::Normal, 
+ "Warning: ArRobot cycle took too long because the loop was waiting for lock.");
+      ArLog::log(ArLog::Normal,
+		 "\tThe cycle took %u ms, (%u ms normal %u ms warning)", 
+		 lastLoop.mSecSince(), myRobot->getCycleTime(), 
+		 myRobot->getCycleWarningTime());
     }
     myRobot->setNoTimeWarningThisCycle(false);
     firstLoop = false;
-    warned    = false;
+    warned = false;
     lastLoop.setToNow();
 
     loopEndTime.setToNow();
-    if (!loopEndTime.addMSec(myRobot->getCycleTime())){
-      MvrLog::log(MvrLog::Normal,
-                  "MvrSyncLoop::runThread() error adding msces (%i)",
-                  myRobot->getCycleTime());
+    if (!loopEndTime.addMSec(myRobot->getCycleTime())) {
+      ArLog::log(ArLog::Normal,
+                 "ArSyncLoop::runThread() error adding msecs (%i)",
+                 myRobot->getCycleTime());
     }
     myRobot->incCounter();
     myRobot->unlock();
@@ -98,49 +117,52 @@ MVREXPORT void *MvrSyncLoop::runThread(void *arg)
     if (myStopRunIfNotConnected && !myRobot->isConnected())
     {
       if (myRunning)
-        MvrLog::log(MvrLog::Normal, "Exiting robot run because of lost connection.");
+	ArLog::log(ArLog::Normal, "Exiting robot run because of lost connection.");
       break;
     }
     timeToSleep = loopEndTime.mSecTo();
-
+    // if the cycles chained and we're connected the packet handler will be 
+    // doing the timing for us
     if (myRobot->isCycleChained() && myRobot->isConnected())
       timeToSleep = 0;
-    
-    if (!myRobot->getNoTimeWarningThisCycle() &&
-        myRobot->getCycleWarningTime() != 0 && 
-        myRobot->getCycleWarningTime() > 0 && 
-        lastLoop.mSecSince() > (signed int) myRobot->getCycleWarningTime())   
+
+    if (!myRobot->getNoTimeWarningThisCycle() && 
+	myRobot->getCycleWarningTime() != 0 && 
+	myRobot->getCycleWarningTime() > 0 && 
+	lastLoop.mSecSince() > (signed int) myRobot->getCycleWarningTime())
     {
-      MvrLog::log(MvrLog::Normal,
-                  "Warning: MvrRobot sync tasks too long at %u ms, (%u ms normal %u ms warning)",
-                  lastLoop.mSecSince(), myRobot->getCycleTime(),
-                  myRobot->getCycleWarningTime());
+      ArLog::log(ArLog::Normal, 
+	"Warning: ArRobot sync tasks too long at %u ms, (%u ms normal %u ms warning)", 
+		 lastLoop.mSecSince(), myRobot->getCycleTime(), 
+		 myRobot->getCycleWarningTime());
       warned = true;
-    } 
+    }
+    
 
     if (timeToSleep > 0)
-      MvrUtil::sleep(timeToSleep);
-  }
+      ArUtil::sleep(timeToSleep);
+  }   
   myRobot->lock();
   myRobot->wakeAllRunExitWaitingThreads();
   myRobot->unlock();
 
   myRobot->lock();
-  runList = myRobot->getRunExitListCopy();
+  runList=myRobot->getRunExitListCopy();
   myRobot->unlock();
-  for (iter = runList->begin(); iter != runList->end(); ++iter)
+  for (iter=runList->begin();
+       iter != runList->end(); ++iter)
     (*iter)->invoke();
   delete runList;
 
   threadFinished();
-  return 0;        
+  return(0);
 }
 
-MVREXPORT const char *MvrSyncLoop::getThreadActivity(void)
+AREXPORT const char *ArSyncLoop::getThreadActivity(void)
 {
   if (myRunning)
   {
-    MvrSyncTask *syncTask;
+    ArSyncTask *syncTask;
     syncTask = myRobot->getSyncTaskRoot()->getRunning();
     if (syncTask != NULL)
       return syncTask->getName().c_str();
@@ -148,5 +170,5 @@ MVREXPORT const char *MvrSyncLoop::getThreadActivity(void)
       return "Unknown running";
   }
   else
-    return "Unknown";
+    return "Unknown"; 
 }

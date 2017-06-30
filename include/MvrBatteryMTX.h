@@ -1,20 +1,38 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrBatteryMTX.h
- > Description  : Keep track of recent LCD readings
- > Author       : Yu Jie
- > Create Time  : 2017年05月17日
- > Modify Time  : 2017年05月17日
-***************************************************************************************************/
-#ifndef MVRBATTERYMTX_H
-#define MVRBATTERYMTX_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrRangeDevice.h"
-#include "MvrFunctor.h"
-#include "MvrRobot.h"
-#include "MvrRobotPacket.h"
-#include "MvrRobotConnector.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARBATTERYMTX_H
+#define ARBATTERYMTX_H
+
+#include "ariaTypedefs.h"
+#include "ArRangeDevice.h"
+#include "ArFunctor.h"
+#include "ArRobot.h"
+#include "ArRobotPacket.h"
+#include "ArRobotConnector.h"
 
 
 
@@ -27,50 +45,60 @@
 //
 
 
-class MvrBatteryMTX : public MvrASyncTask
+/** 
+    @since 2.8.0
+*/
+class ArBatteryMTX : public ArASyncTask
 {
 public:
   /// Constructor
-  MVREXPORT MvrBatteryMTX(int batteryBoardNum = 0,
-                          const char * name = "MTXBattery", 
-                          MvrDeviceConnection *conn = NULL,
-                          MvrRobot *robot = NULL);
+  AREXPORT ArBatteryMTX( 
+			 int batteryBoardNum = 0,
+				const char * name = "MTXBattery", 
+				ArDeviceConnection *conn = NULL,
+				ArRobot *robot = NULL);
   /// Destructor
-  MVREXPORT virtual ~MvrBatteryMTX();
+  AREXPORT virtual ~ArBatteryMTX();
   // Grabs the new readings from the robot and adds them to the buffers
+  // (Primarily for internal use.)
+  //AREXPORT void processReadings(void);
 
-	int getBoardNum(void) { return myBoardNum; }
+	int getBoardNum(void)
+		{ return myBoardNum; }
 
   /// Sets the robot pointer, also attaches its process function to the
   /// robot as a Sensor Interpretation task.
-  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  AREXPORT virtual void setRobot(ArRobot *robot);
 
   /// Very Internal call that gets the packet sender, shouldn't be used
-  MvrRobotPacketSender *getPacketSender(void) { return mySender; }
+  ArRobotPacketSender *getPacketSender(void)
+    { return mySender; }
   /// Very Internal call that gets the packet sender, shouldn't be used
-  MvrRobotPacketReceiver *getPacketReceiver(void) { return myReceiver; }
+  ArRobotPacketReceiver *getPacketReceiver(void)
+    { return myReceiver; }
 
   /// Sets the device this instance receives packets from
-  MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+  AREXPORT void setDeviceConnection(ArDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  AREXPORT ArDeviceConnection *getDeviceConnection(void);
 
-	MVREXPORT int getAsyncConnectState(void);
+	AREXPORT int getAsyncConnectState(void);
 
-	MvrRobotPacket getCellPacket(void) { return myCellPacket; }
+	ArRobotPacket getCellPacket()
+	{ return myCellPacket; }
 
-  MVREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
-  MVREXPORT virtual bool disconnect(void);
+  AREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
+  AREXPORT virtual bool disconnect(void);
   virtual bool isConnected(void) { return myIsConnected; }
   virtual bool isTryingToConnect(void) 
-  { 
+    { 
     if (myStartConnect)
 			return true;
 		else if (myTryingToConnect)
 			return true; 
 		else
 			return false;
-  }  
+    }  
 
   /// Lock this device
   virtual int lockDevice() { return(myDeviceMutex.lock());}
@@ -79,141 +107,165 @@ public:
   /// Unlock this device
   virtual int unlockDevice() {return(myDeviceMutex.unlock());}
 
-  MVREXPORT void logBatteryInfo(MvrLog::LogLevel level = MvrLog::Normal);
-  MVREXPORT void logCellInfo(MvrLog::LogLevel level = MvrLog::Normal);
-  void log(MvrLog::LogLevel level = MvrLog::Normal)
+  AREXPORT void logBatteryInfo(ArLog::LogLevel level = ArLog::Normal);
+  AREXPORT void logCellInfo(ArLog::LogLevel level = ArLog::Normal);
+  void log(ArLog::LogLevel level = ArLog::Normal)
   {
     logBatteryInfo(level);
     logCellInfo(level);
   }
 
-  MVREXPORT bool sendPowerOff();
-  MVREXPORT bool sendPowerOffCancel();
-  MVREXPORT bool sendStopCharging();
-  MVREXPORT bool sendStartCharging();
-  MVREXPORT bool sendSetPowerOffDelay(unsigned int msDelay);
-  MVREXPORT bool sendSetRealTimeClock(unsigned int secSinceEpoch);
-  MVREXPORT bool sendResetCellData();
-  MVREXPORT bool sendSetReserveValue(unsigned short hundredthOfPercent);
-  MVREXPORT bool sendSetBalanceValue(unsigned short hundredthOfPercent);
-  MVREXPORT bool sendEmergencyPowerOff();
-  MVREXPORT bool sendSystemInfo(unsigned char dataValue);
-  MVREXPORT bool sendCellInfo(unsigned char dataValue);
-  MVREXPORT bool sendBasicInfo(unsigned char dataValue);
+  AREXPORT bool sendPowerOff();
+  AREXPORT bool sendPowerOffCancel();
+  AREXPORT bool sendStopCharging();
+  AREXPORT bool sendStartCharging();
+  AREXPORT bool sendSetPowerOffDelay(unsigned int msDelay);
+  AREXPORT bool sendSetRealTimeClock(unsigned int secSinceEpoch);
+  AREXPORT bool sendResetCellData();
+  AREXPORT bool sendSetReserveValue(unsigned short hundredthOfPercent);
+  AREXPORT bool sendSetBalanceValue(unsigned short hundredthOfPercent);
+  AREXPORT bool sendEmergencyPowerOff();
+  AREXPORT bool sendSystemInfo(unsigned char dataValue);
+  AREXPORT bool sendCellInfo(unsigned char dataValue);
+  AREXPORT bool sendBasicInfo(unsigned char dataValue);
 
-  MVREXPORT void updateSystemInfo(unsigned char *buf);
-  MVREXPORT void updateCellInfo(unsigned char *buf);
-  MVREXPORT void updateBasicInfo(unsigned char *buf);
+  AREXPORT void updateSystemInfo(unsigned char *buf);
+  AREXPORT void updateCellInfo(unsigned char *buf);
+  AREXPORT void updateBasicInfo(unsigned char *buf);
 
 	// need to figure out how to pass back the system and cell info 
+	//AREXPORT bool fetchSystemInfo();
+	//AREXPORT bool fetchCellInfo();
+
 	// basic info
   /// Charge estimate (in percentage, 0-100)
-	double getChargeEstimate(void) const { return myChargeEstimate; }
+	double getChargeEstimate(void) const
+		{ return myChargeEstimate; }
   /// Current draw (amps, negative is charging)
-	double getCurrentDraw(void) const	{ return myCurrentDraw; }
+	double getCurrentDraw(void) const
+		{ return myCurrentDraw; }
   /// volts
-	double getPackVoltage(void) const	{ return myPackVoltage; }
-	int getStatusFlags(void) const { return myStatusFlags; }
-	int getErrorFlags(void) const	{ return myErrorFlags; }
+	double getPackVoltage(void) const
+		{ return myPackVoltage; }
+	int getStatusFlags(void) const
+		{ return myStatusFlags; }
+	int getErrorFlags(void) const
+		{ return myErrorFlags; }
 
-  bool onCharger(void) const  { return (myStatusFlags & STATUS_ON_CHARGER); }
-  MvrRobot::ChargeState getChargeState(void) const { return myChargeState; }
-  int getChargeStateAsInt(void) const { return myChargeState; }
+  bool onCharger(void) const 
+    { return (myStatusFlags & STATUS_ON_CHARGER); }
+  ArRobot::ChargeState getChargeState(void) const
+    { return myChargeState; }
+  int getChargeStateAsInt(void) const
+    { return myChargeState; }
 
 	// system info 
-	int getId(void) const { return myId; }
-	int getFirmwareVersion(void) const { return myFirmwareVersion; }
-	int getSerialNumber(void) const { return mySerialNumber; }
+	int getId(void) const
+		{ return myId; }
+	int getFirmwareVersion(void) const
+		{ return myFirmwareVersion; }
+	int getSerialNumber(void) const
+		{ return mySerialNumber; }
 	//int getCurrentTime(void) const
 	//	{ return myCurrentTime; }
-	long long getCurrentTime(void) const { return myCurrentTime; }
-	long long getLastChargeTime(void) const	{ return myLastChargeTime; }
-	int getChargeRemainingEstimate(void) const { return myChargeRemainingEstimate; }
-	int getCapacityEstimate(void) const	{ return myCapacityEstimate; }
-	double getDelay(void) const	{ return myDelay; }
-	int getCycleCount(void) const	{ return myCycleCount; }
-	double getTemperature(void) const	{ return myTemperature; }
-	double getPaddleVolts(void) const	{ return myPaddleVolts; }
-	double getVoltage(void) const	{ return myVoltage; }
-	double getFuseVoltage(void) const	{ return myFuseVoltage; }
-	double getChargeCurrent(void) const	{ return myChargeCurrent; }
-	double getDisChargeCurrent(void) const	{ return myDisChargeCurrent; }
-	double getCellImbalance(void) const	{ return myCellImbalance; }
-	double getImbalanceQuality(void) const	{ return myImbalanceQuality; }
-	double getReserveChargeValue(void) const	{ return myReserveChargeValue; }
+	long long getCurrentTime(void) const
+		{ return myCurrentTime; }
+	long long getLastChargeTime(void) const
+		{ return myLastChargeTime; }
+	int getChargeRemainingEstimate(void) const
+		{ return myChargeRemainingEstimate; }
+	int getCapacityEstimate(void) const
+		{ return myCapacityEstimate; }
+	double getDelay(void) const
+		{ return myDelay; }
+	int getCycleCount(void) const
+		{ return myCycleCount; }
+	double getTemperature(void) const
+		{ return myTemperature; }
+	double getPaddleVolts(void) const
+		{ return myPaddleVolts; }
+	double getVoltage(void) const
+		{ return myVoltage; }
+	double getFuseVoltage(void) const
+		{ return myFuseVoltage; }
+	double getChargeCurrent(void) const
+		{ return myChargeCurrent; }
+	double getDisChargeCurrent(void) const
+		{ return myDisChargeCurrent; }
+	double getCellImbalance(void) const
+		{ return myCellImbalance; }
+	double getImbalanceQuality(void) const
+		{ return myImbalanceQuality; }
+	double getReserveChargeValue(void) const
+		{ return myReserveChargeValue; }
 
 	// cell info
-	int getNumCells(void) const	{ return myNumCells; }
+	int getNumCells(void) const
+		{ return myNumCells; }
 
 
 	int getCellFlag(int cellNum) const
-  {
-		std::map<int, CellInfo *>::const_iterator iter = myCellNumToInfoMap.find(cellNum);
+		{
+		std::map<int, CellInfo *>::const_iterator iter = 
+				myCellNumToInfoMap.find(cellNum);
 		if (iter == myCellNumToInfoMap.end()) 
 			return -1;
-		else 
-    {
+		else {
 			CellInfo *info = iter->second;
 			return(info->myCellFlags);
-		} 
-  }
+		} }
 
 	int getCellCapacity(int cellNum) const
-	{
+		{
 		std::map<int, CellInfo *>::const_iterator iter = 
 				myCellNumToInfoMap.find(cellNum);
 		if (iter == myCellNumToInfoMap.end()) 
 			return -1;
-		else
-    {
+		else {
 			CellInfo *info = iter->second;
 			return(info->myCellCapacity);
-		}
-  }
+		} }
 
 	int getCellCharge(int cellNum) const
-	{
+		{
 		std::map<int, CellInfo *>::const_iterator iter = 
 				myCellNumToInfoMap.find(cellNum);
 		if (iter == myCellNumToInfoMap.end()) 
 			return -1;
-		else 
-    {
+		else {
 			CellInfo *info = iter->second;
 			return(info->myCellCharge);
-		} 
-  }
+		} }
 
 	double getCellVoltage(int cellNum) const
-	{
+		{
 		std::map<int, CellInfo *>::const_iterator iter = 
 				myCellNumToInfoMap.find(cellNum);
 		if (iter == myCellNumToInfoMap.end()) 
 			return -1;
-		else 
-    {
+		else {
 			CellInfo *info = iter->second;
 			return(info->myCellVoltage);
-		}
-  }
+		} }
 
-  /// Request a continuous stream of packets
-  MVREXPORT void requestContinuousSysInfoPackets(void);
+  /// Request a continous stream of packets
+  AREXPORT void requestContinuousSysInfoPackets(void);
   /// Stop the stream of packets
-  MVREXPORT void stopSysInfoPackets(void);
+  AREXPORT void stopSysInfoPackets(void);
   /// See if we've requested packets
-  MVREXPORT bool haveRequestedSysInfoPackets(void);
+  AREXPORT bool haveRequestedSysInfoPackets(void);
 
-  /// Request a continuous stream of packets
-  MVREXPORT void requestContinuousCellInfoPackets(void);
+  /// Request a continous stream of packets
+  AREXPORT void requestContinuousCellInfoPackets(void);
   /// Stop the stream of packets
-  MVREXPORT void stopCellInfoPackets(void);
+  AREXPORT void stopCellInfoPackets(void);
   /// See if we've requested packets
-  MVREXPORT bool haveRequestedCellInfoPackets(void);
+  AREXPORT bool haveRequestedCellInfoPackets(void);
 
-  MVREXPORT virtual const char *getName(void) const;
+  AREXPORT virtual const char *getName(void) const;
 
-  void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel) { myInfoLogLevel = infoLogLevel; }
+  void	setInfoLogLevel(ArLog::LogLevel infoLogLevel)
+  { myInfoLogLevel = infoLogLevel; }
 	
   /// Gets the default port type for the battery
   const char *getDefaultPortType(void) { return myDefaultPortType.c_str(); }
@@ -221,51 +273,54 @@ public:
   /// Gets the default port type for the battery
   const char *getDefaultTcpPort(void) { return myDefaultTcpPort.c_str(); }
 
-  /// Sets the number of seconds without a response until connection assumed lost
+  /// Sets the numter of seconds without a response until connection assumed lost
   virtual void setConnectionTimeoutSeconds(double seconds)
-	{ 
-    MvrLog::log(MvrLog::Normal, 
+	{ ArLog::log(ArLog::Normal, 
 		     "%s::setConnectionTimeoutSeconds: Setting timeout to %g secs", 
 		     getName(), seconds);
 	  myTimeoutSeconds = seconds; }
   /// Gets the number of seconds without a response until connection assumed lost
-  virtual double getConnectionTimeoutSeconds(void) {return myTimeoutSeconds; }
+  virtual double getConnectionTimeoutSeconds(void)
+	{return myTimeoutSeconds; }
 	/// check for lost connections
-	MVREXPORT bool checkLostConnection(void);
+	AREXPORT bool checkLostConnection(void);
 	/// disconnect 
-	MVREXPORT void disconnectOnError(void);
-  /// Gets the time data was last received
-  MvrTime getLastReadingTime(void) { return myLastReading; }
+	AREXPORT void disconnectOnError(void);
+  /// Gets the time data was last receieved
+  ArTime getLastReadingTime(void) { return myLastReading; }
   /// Gets the number of battery readings received in the last second
-  MVREXPORT int getReadingCount(void);
+  AREXPORT int getReadingCount(void);
   // Function called in sensorInterp to indicate that a
   // reading was received
-  MVREXPORT virtual void internalGotReading(void);
+  AREXPORT virtual void internalGotReading(void);
 
   /// Adds a callback for when disconnection happens because of an error
-  void addDisconnectOnErrorCB(MvrFunctor *functor, int position = 51) 
-  { myDisconnectOnErrorCBList.addCallback(functor, position); }
+  void addDisconnectOnErrorCB(ArFunctor *functor, 
+			     int position = 51) 
+    { myDisconnectOnErrorCBList.addCallback(functor, position); }
 
   /// Removes a callback for when disconnection happens because of an error
-  void remDisconnectOnErrorCB(MvrFunctor *functor)
-  { myDisconnectOnErrorCBList.remCallback(functor); }
+  void remDisconnectOnErrorCB(ArFunctor *functor)
+    { myDisconnectOnErrorCBList.remCallback(functor); }
 
 
   /// Adds a callback for when the battery is powering off
-  void addBatteryPoweringOffCB(MvrFunctor *functor, int position = 51) 
-  { myBatteryPoweringOffCBList.addCallback(functor, position); }
+  void addBatteryPoweringOffCB(ArFunctor *functor, 
+			     int position = 51) 
+    { myBatteryPoweringOffCBList.addCallback(functor, position); }
 
   /// Removes a callback for when the battery is powering off
-  void remBatteryPoweringOffCB(MvrFunctor *functor)
-  { myBatteryPoweringOffCBList.remCallback(functor); }
+  void remBatteryPoweringOffCB(ArFunctor *functor)
+    { myBatteryPoweringOffCBList.remCallback(functor); }
 
   /// Adds a callback for when the battery is powering off
-  void addBatteryPoweringOffCancelledCB(MvrFunctor *functor, int position = 51) 
-  { myBatteryPoweringOffCancelledCBList.addCallback(functor, position); }
+  void addBatteryPoweringOffCancelledCB(ArFunctor *functor, 
+			     int position = 51) 
+    { myBatteryPoweringOffCancelledCBList.addCallback(functor, position); }
 
   /// Removes a callback for when the battery is powering off
-  void remBatteryPoweringOffCancelledCB(MvrFunctor *functor)
-  { myBatteryPoweringOffCancelledCBList.remCallback(functor); }
+  void remBatteryPoweringOffCancelledCB(ArFunctor *functor)
+    { myBatteryPoweringOffCancelledCBList.remCallback(functor); }
 
   // myStatusFlags 
   enum StatusFlags {
@@ -304,7 +359,7 @@ enum Headers {
 
 
 protected:
-  MvrDeviceConnection *myConn;
+  ArDeviceConnection *myConn;
 	int myAsyncConnectState;
   std::string myName;
 	std::string myDefaultPortType;
@@ -313,34 +368,34 @@ protected:
   double myTimeoutSeconds;
   bool myRobotRunningAndConnected;
 
-  MvrTime myLastReading;
+  ArTime myLastReading;
 
   // packet count
   time_t myTimeLastReading;
   int myReadingCurrentCount;
   int myReadingCount;
 
-  MvrCallbackList myDisconnectOnErrorCBList;
-  MvrCallbackList myBatteryPoweringOffCBList;
-  MvrCallbackList myBatteryPoweringOffCancelledCBList;
+  ArCallbackList myDisconnectOnErrorCBList;
+  ArCallbackList myBatteryPoweringOffCBList;
+  ArCallbackList myBatteryPoweringOffCancelledCBList;
 
-	MvrRobot *myRobot;
-  MvrFunctorC<MvrBatteryMTX> myProcessCB;
+	ArRobot *myRobot;
+  ArFunctorC<ArBatteryMTX> myProcessCB;
 
-  MVREXPORT virtual void batterySetName(const char *name);
-  MVREXPORT virtual void * runThread(void *arg);
+  AREXPORT virtual void batterySetName(const char *name);
+  AREXPORT virtual void * runThread(void *arg);
 		
 
-	MVREXPORT bool getSystemInfo();
-	MVREXPORT bool getCellInfo();
-	MVREXPORT bool getBasicInfo();
+	AREXPORT bool getSystemInfo();
+	AREXPORT bool getCellInfo();
+	AREXPORT bool getBasicInfo();
 
   void interpBasicInfo(void);
   void interpErrors(void);
   void checkAndSetCurrentErrors(ErrorFlags errorFlag, const char *errorString);
 
 	// PS - need this because of debug log - battery won't send continuous cell
-  MvrRobotPacket myCellPacket;
+  ArRobotPacket myCellPacket;
 
   void sensorInterp(void);
   void failedToConnect(void);
@@ -349,27 +404,29 @@ protected:
   bool myTryingToConnect;
   bool myStartConnect;
 
-  MvrRobot::ChargeState myChargeState;
+  ArRobot::ChargeState myChargeState;
 
 	int myBoardNum;
 	unsigned char myVersion;
 
-  MvrLog::LogLevel myLogLevel;
+  ArLog::LogLevel myLogLevel;
 
-  //MvrBatteryMTXPacketReceiver myReceiver;
-	MvrRobotPacketReceiver *myReceiver;
-  MvrRobotPacketSender *mySender;
+  //ArBatteryMTXPacketReceiver myReceiver;
 
-  MvrMutex myPacketsMutex;
-  MvrMutex myDataMutex;
-	MvrMutex myDeviceMutex;
+
+	ArRobotPacketReceiver *myReceiver;
+  ArRobotPacketSender *mySender;
+
+  ArMutex myPacketsMutex;
+  ArMutex myDataMutex;
+	ArMutex myDeviceMutex;
 	
-  MvrLog::LogLevel myInfoLogLevel;
+  ArLog::LogLevel myInfoLogLevel;
 	
-  //std::list<MvrBatteryMTXPacket *> myPackets;
-  std::list<MvrRobotPacket *> myPackets;
+  //std::list<ArBatteryMTXPacket *> myPackets;
+  std::list<ArRobotPacket *> myPackets;
   
-  MvrTime myPrevBatteryIntTime;
+  ArTime myPrevBatteryIntTime;
 
   bool myRequestedSysInfoBatteryPackets;
   bool myRequestedCellInfoBatteryPackets;
@@ -378,6 +435,8 @@ protected:
 	bool myRecvTracking;
 
 // Protocol Commands
+
+
 enum Commands {
 	BASIC_INFO=0x00,
 	SYSTEM_INFO=0x01,
@@ -487,13 +546,16 @@ enum Sizes {
   int myErrorCount;
   std::string myLastErrorString;
   int myLastErrorCount;
+
+  
+
 	// end basic info
 	
-  MvrFunctorC<MvrBatteryMTX> mySensorInterpTask;
-  MvrRetFunctorC<bool, MvrBatteryMTX> myMvriaExitCB;
+  ArFunctorC<ArBatteryMTX> mySensorInterpTask;
+  ArRetFunctorC<bool, ArBatteryMTX> myAriaExitCB;
 
 };
 
 
 
-#endif // MVRBATTERYMTX_H
+#endif // ARBATTERYMTX_H

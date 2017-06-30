@@ -1,43 +1,84 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRecurrentTask.h
- > Description  : Recurrent task (runs in its own thread)
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRRECURRENTTASK_H
-#define MVRRECURRENTTASK_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrFunctor.h"
-#include "MvrThread.h"
-#include "MvrASyncTask.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrRecurrentTask : public MvrASyncTask
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+// ArRecurrentTask.h -- Recurrent async task interface class
+#ifndef ARRECURASYNCTASK_H
+#define ARRECURASYNCTASK_H
+
+
+#include "ariaTypedefs.h"
+#include "ArFunctor.h"
+#include "ArThread.h"
+#include "ArASyncTask.h"
+
+/// Recurrent task (runs in its own thread)
+/**
+   The ArRecurrentTask is a task that runs in its own thread.  Recurrent
+   tasks are asynchronous tasks that complete in a finite amount of time,
+   and need to be reinvoked recurrently.  A typical example is Saphira's
+   localization task: it runs for a few hundred milliseconds, localizes the
+   robot, and returns.  Then the cycle starts over.
+   The user simply needs to derive their own class
+   from ArRecurrentTask and define the task() function.  This is the user
+   code that will be called to execute the task body.
+   Then, create an object of the class, and call the go() function to 
+   start the task.  The status of the task can be checked with the
+   done() function, which returns 0 if running, 1 if completed, and 2 if
+   killed.  
+   go() can be called whenever the task is done to restart it.  To stop the
+   task in midstream, call reset().  
+   kill() kills off the thread, shouldn't be used unless exiting the 
+   async task permanently
+
+   @ingroup UtilityClasses
+*/
+class ArRecurrentTask : public ArASyncTask
 {
 public:
   /// Constructor
-  MVREXPORT MvrRecurrentTask();
+  AREXPORT ArRecurrentTask();
   /// Descructor
-  MVREXPORT ~MvrRecurrentTask();	
+  AREXPORT ~ArRecurrentTask();	
   /// The main run loop
   /**
      Override this function and put your task here. 
   */
   virtual void task() = 0;
   /// Starts up on cycle of the recurrent task
-  MVREXPORT void go();		
+  AREXPORT void go();		
   /// Check if the task is running or not
   /**
      0 = running, 1 = finished normally, 2 = canceled
   */
-  MVREXPORT int  done();	
+  AREXPORT int  done();	
   /// Cancel the task and reset for the next cycle
-  MVREXPORT void reset();	// stops the current thread and restarts it
-  MVREXPORT void kill();	        // kills the current thread
+  AREXPORT void reset();	// stops the current thread and restarts it
+  AREXPORT void kill();	        // kills the current thread
 
-  MVREXPORT void *runThread(void *ptr); // main task loop
+  AREXPORT void *runThread(void *ptr); // main task loop
 
 private:
   bool running;			// true if currently running
@@ -45,4 +86,5 @@ private:
   bool killed;			// did we get killed by request?
 };
 
-#endif  // MVRRECURRENTTASK_H
+
+#endif // ARRECURASYNCTASK_H

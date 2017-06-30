@@ -1,40 +1,62 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrMapUtils.h
- > Description  : Contains utility classes for the MvrMap class.
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
 /*
- * This file contains miscellaneous helper classes for the MvrMap class.  
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+/* 
+ * Contains utility classes for the ArMap class.
+ *
+ * \author K. Cunningham
+ * 
+ * This file contains miscellaneous helper classes for the ArMap class.  
  * These are primarily related to tracking changes to the map and include
  * the following:
  *
- *  - MvrMapId : The unique identifier for an Mvria map.
+ *  - ArMapId : The unique identifier for an Aria map.
  *
- *  - MvrMapFileLine : The data regarding a text line in a map file; this  
+ *  - ArMapFileLine : The data regarding a text line in a map file; this  
  *    includes the line number and text.  
  *
- *  - MvrMapFileLineGroup : A semantic parent / child relationship between 
+ *  - ArMapFileLineGroup : A semantic parent / child relationship between 
  *    text lines in a map file. 
  *
- *  - MvrMapFileLineSet : A list of map file line groups to be compared.  
+ *  - ArMapFileLineSet : A list of map file line groups to be compared.  
  *    Contains helper methods to determines lines that have been added or 
  *    deleted.
  *
- *  - MvrMapChangeDetails : A collection of MvrMapFileLineSets that describes 
- *    all of the changes that were made to an Mvria map.
+ *  - ArMapChangeDetails : A collection of ArMapFileLineSets that describes 
+ *    all of the changes that were made to an Aria map.
  *
- *  - MvrMapFileLineSetWriter : An output functor that is used to populate an
- *    MvrMapFileLineSet.
+ *  - ArMapFileLineSetWriter : An output functor that is used to populate an
+ *    ArMapFileLineSet.
  *
- *  - MvrMapChangedHelper : A collection of callbacks and methods to invoke 
- *    them after the Mvria map has been changed.
+ *  - ArMapChangedHelper : A collection of callbacks and methods to invoke 
+ *    them after the Aria map has been changed.
  */
 
-#ifndef MVRMAPUTILS_H
-#define MVRMAPUTILS_H
+#ifndef ARMAPUTILS_H
+#define ARMAPUTILS_H
 
 #include <algorithm>
 #include <functional>
@@ -43,33 +65,33 @@
 #include <string>
 #include <vector>
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
 
 
-class MvrArgumentBuilder;
-class MvrBasePacket;
+class ArArgumentBuilder;
+class ArBasePacket;
 
 // ============================================================================
-// MvrMapId
+// ArMapId
 // ============================================================================
 
-/// Enapsulates the data used to uniquely identify an Mvria map
+/// Enapsulates the data used to uniquely identify an Aria map
 /**
- * MvrMapId is a small helper class that contains all of the information 
- * needed to uniquely identify an Mvria map.  In addition to the standard
- * file attributes (such as fileName, size, and timestamps), it 
+ * ArMapId is a small helper class that contains all of the information 
+ * needed to uniquely identify an Aria map.  In addition to the standard
+ * file attributes (such as filename, size, and timestamps), it 
  * contains the name of the originating source robot or server.  It 
  * also contains the checksum of the file contents.  This checksum is
- * currently calculated by the MvrMD5Calculator class.  All of the 
+ * currently calculated by the ArMD5Calculator class.  All of the 
  * data should allow one to determine whether two map files are the same 
  * with a reasonable degree of certainty.
  * <p>
- * The MvrMapId class is not thread-safe.
+ * The ArMapId class is not thread-safe.
  *
- * @see MvrMD5Calculator
+ * @see ArMD5Calculator
 **/
-class MvrMapId {
+class ArMapId {
 
 public:
   // --------------------------------------------------------------------------
@@ -85,12 +107,13 @@ public:
    * @return bool true if the file was found and the map ID created; false, 
    * otherwise.
   **/
-  MVREXPORT static bool create(const char *fileName,
-                               MvrMapId *mapIdOut);
+  AREXPORT static bool create(const char *fileName,
+                              ArMapId *mapIdOut);
 
   /// Inserts the given map ID into a network packet
   /**
    * The format of the map ID in the network packet is as follows:
+   * <pre>
    *   string:  source robot or server name
    *   string:  map file name
    *   uByte4:  number of bytes in the checksum
@@ -98,29 +121,30 @@ public:
    *            is greater than 0
    *   uByte4:  file size
    *   byte4 :  file last modified time
-   * @param mapId the MvrMapId to be inserted into the packet
-   * @param packetOut the MvrBasePacket * to be modified
+   * </pre>
+   * @param mapId the ArMapId to be inserted into the packet
+   * @param packetOut the ArBasePacket * to be modified
   **/
-  MVREXPORT static bool toPacket(const MvrMapId &mapId,
-                                 MvrBasePacket *packetOut);
+  AREXPORT static bool toPacket(const ArMapId &mapId,
+                                ArBasePacket *packetOut);
                                 
   /// Extracts a map ID from the given network packet
   /**
-   * @param packetIn the MvrBasePacket from which to read the map ID
-   * @param mapIdOut a pointer to the MvrMapId to be filled in with the results
+   * @param packetIn the ArBasePacket from which to read the map ID
+   * @param mapIdOut a pointer to the ArMapId to be filled in with the results
    * @return bool true if the map ID was successfully read from the given
    * packet, false otherwise.
    * @see toPacket for a description of the packet format
   **/
-  MVREXPORT static bool fromPacket(MvrBasePacket *packetIn,
-                                  MvrMapId *mapIdOut);
+  AREXPORT static bool fromPacket(ArBasePacket *packetIn,
+                                  ArMapId *mapIdOut);
 
   // --------------------------------------------------------------------------
   // Instance Methods
   // --------------------------------------------------------------------------
   
   /// Default contructor creates a null map ID.
-	MVREXPORT MvrMapId();
+	AREXPORT ArMapId();
 	
 	/// Creates a map ID with the given attributes.
 	/**
@@ -132,23 +156,23 @@ public:
 	 * @param checksumLength the size_t length of the checksum buffer
 	 * @param size the long int number of bytes in the map file
 	 * @param timestamp the time_t last modified time of the map file
-	 * @see MvrMD5Calculator
+	 * @see ArMD5Calculator
 	**/
-	MVREXPORT MvrMapId(const char *sourceName,
-                     const char *fileName,
-						         const unsigned char *checksum,
-                     size_t checksumLength,
-						         long int size,
-						         const time_t timestamp);
+	AREXPORT ArMapId(const char *sourceName,
+                   const char *fileName,
+						       const unsigned char *checksum,
+                   size_t checksumLength,
+						       long int size,
+						       const time_t timestamp);
  
   /// Copy constructor
-	MVREXPORT MvrMapId(const MvrMapId &other); 
+	AREXPORT ArMapId(const ArMapId &other); 
 	
 	/// Assignment operator
-	MVREXPORT MvrMapId &operator=(const MvrMapId &other);
+	AREXPORT ArMapId &operator=(const ArMapId &other);
 	
 	/// Destructor
-	MVREXPORT ~MvrMapId();
+	AREXPORT ~ArMapId();
 
 
   // --------------------------------------------------------------------------
@@ -156,29 +180,29 @@ public:
   // --------------------------------------------------------------------------
   
   /// Returns whether this map ID is null 
-  MVREXPORT bool isNull() const;
+  AREXPORT bool isNull() const;
 
   /// Returns the string name of the originating robot or server
-	MVREXPORT const char *getSourceName() const;
+	AREXPORT const char *getSourceName() const;
 	
 	/// Returns the string name of the file 
 	/**
 	 * TODO: Does this include path name??
 	**/
-	MVREXPORT const char *getFileName() const;
+	AREXPORT const char *getFileName() const;
 	
 	/// Returns a pointer to the buffer that contains the checksum
-	MVREXPORT const unsigned char *getChecksum() const;
+	AREXPORT const unsigned char *getChecksum() const;
 	/// Returns the length of the checksum
-  MVREXPORT size_t getChecksumLength() const;
+  AREXPORT size_t getChecksumLength() const;
 	
 	/// Returns the checksum in a human readable string format
-  MVREXPORT const char *getDisplayChecksum() const;
+  AREXPORT const char *getDisplayChecksum() const;
 	
 	/// Returns the number of bytes in the map file
-  MVREXPORT long int getSize() const;
+  AREXPORT long int getSize() const;
   /// Returns the last modified time of the file
-	MVREXPORT time_t getTimestamp() const;
+	AREXPORT time_t getTimestamp() const;
 
  
   // --------------------------------------------------------------------------
@@ -186,51 +210,52 @@ public:
   // --------------------------------------------------------------------------
   
   /// Clears this map ID, i.e. sets it to null
-  MVREXPORT void clear();
+  AREXPORT void clear();
    
   /// Sets the name of the source robot or server that originated the map file
-	MVREXPORT void setSourceName(const char *sourceName);
+	AREXPORT void setSourceName(const char *sourceName);
 	/// Sets the map file name
-	MVREXPORT void setFileName(const char *fileName);
+	AREXPORT void setFileName(const char *fileName);
 	/// Sets the checksum of the map file
-	MVREXPORT void setChecksum(const unsigned char *checksum,
-													   size_t checksumLen);
+	AREXPORT void setChecksum(const unsigned char *checksum,
+													  size_t checksumLen);
   /// Sets the number of bytes in the map file
-	MVREXPORT void setSize(long int size);
+	AREXPORT void setSize(long int size);
 	/// Sets the last modified time of the map file
-	MVREXPORT void setTimestamp(const time_t &timestamp);
+	AREXPORT void setTimestamp(const time_t &timestamp);
 
   // --------------------------------------------------------------------------
   // Other Methods
   // --------------------------------------------------------------------------
  
   /// TODO Think that this is the same as operator==
-  MVREXPORT bool isSameFile(const MvrMapId &other) const;
+  AREXPORT bool isSameFile(const ArMapId &other) const;
   
   /// Returns whether the source and file names are identical
-  MVREXPORT bool isVersionOfSameFile(const MvrMapId &other) const;
+  AREXPORT bool isVersionOfSameFile(const ArMapId &other) const;
   
   /// Returns true if the timestamp is valid; false if it's a special 'not-set' indicator 
-  MVREXPORT bool isValidTimestamp() const;
+  AREXPORT bool isValidTimestamp() const;
   
   /// Returns whether the two map IDs are equivalent
   /**
    * Note that if either map ID specifies a NULL timestamp, then the timestamp
    * will not be used for comparison purposes.
   **/
-	MVREXPORT friend bool operator==(const MvrMapId & id1, const MvrMapId & id2);
+	AREXPORT friend bool operator==(const ArMapId & id1, const ArMapId & id2);
 	
   /// Returns whether the two map IDs are not equal
   /**
    * Note that if either map ID specifies a NULL timestamp, then the timestamp
    * will not be used for comparison purposes.
   **/
-	MVREXPORT friend bool operator!=(const MvrMapId & id1, const MvrMapId & id2);
+	AREXPORT friend bool operator!=(const ArMapId & id1, const ArMapId & id2);
 
   /// Writes the map ID to the output log file, with the specified prefix /header.
-  MVREXPORT void log(const char *prefix) const;
+  AREXPORT void log(const char *prefix) const;
 
 protected:
+
   /// Name of the source robot or server from which the map file originated
 	std::string mySourceName;
 	/// Name of the map file
@@ -250,40 +275,48 @@ protected:
   /// Last modified time of the map file
   time_t myTimestamp;
 
-}; // end class MvrMapId
+}; // end class ArMapId
 
 
 #ifndef SWIG
 
 
 // ============================================================================
-// MvrMapFileLine, etc
+// ArMapFileLine, etc
 // ============================================================================
 
 /// Encapsulates the data regarding a text line in a map file.
 /**
- * MvrMapFileLine is the building block for map change comparisons.  It is 
+ * ArMapFileLine is the building block for map change comparisons.  It is 
  * simply the line number and associated text.
  * @internal
  * @swigomit
 **/
-class MvrMapFileLine {
+class ArMapFileLine {
 
 public:
 
   /// Default constructor
-  MvrMapFileLine() : myLineNum(0), myLineText() {}
+  ArMapFileLine() :
+    myLineNum(0),
+    myLineText()
+  {}
 
   /// Constructor which sets the line number and text 
-  MvrMapFileLine(int lineNum, const char *lineText) : myLineNum(lineNum), myLineText((lineText != NULL) ? lineText : "")
+  ArMapFileLine(int lineNum,
+                const char *lineText) :
+    myLineNum(lineNum),
+    myLineText((lineText != NULL) ? lineText : "")
   {}
 
   /// Copy constructor
-  MvrMapFileLine(const MvrMapFileLine &other) : myLineNum(other.myLineNum), myLineText(other.myLineText)
+  ArMapFileLine(const ArMapFileLine &other) :
+    myLineNum(other.myLineNum),
+    myLineText(other.myLineText)
   {}
 
   /// Assignment operator
-  MvrMapFileLine &operator=(const MvrMapFileLine &other) 
+  ArMapFileLine &operator=(const ArMapFileLine &other) 
   {
     if (this != &other) {
       myLineNum  = other.myLineNum;
@@ -293,29 +326,38 @@ public:
   }
 
   /// Destructor
-  ~MvrMapFileLine() {}
+  ~ArMapFileLine() 
+  {}
 
   /// Returns the line number of the map file line  
-  int getLineNum() const { return myLineNum; }
+  int getLineNum() const {
+    return myLineNum;
+  }
   /// Returns the text of the map file line
-  const char *getLineText() const { return myLineText.c_str(); }
-	friend inline bool operator< ( const MvrMapFileLine & line1, const MvrMapFileLine & line2 );
-  friend struct MvrMapFileLineCompare;
+  const char *getLineText() const {
+    return myLineText.c_str();
+  }
+
+	friend inline bool operator< ( const ArMapFileLine & line1, const ArMapFileLine & line2 );
+  friend struct ArMapFileLineCompare;
 
 protected:
+
   int myLineNum;          ///< Line number
   std::string myLineText; ///< Line text
 
-}; // end class MvrMapFileLine
+}; // end class ArMapFileLine
 
 
-/// Determines whether the first MvrMapFileLine is less than the second
+/// Determines whether the first ArMapFileLine is less than the second
 /**
  * Line1 is less than Line2 if its line number is less than that of Line2.
  * If the two line nubmers are equal, then Line1 is less than Line2 if its
  * text is less.
+ * @internal
+ * @swigomit
 **/
-inline bool operator<(const MvrMapFileLine & line1, const MvrMapFileLine & line2 )
+inline bool operator<(const ArMapFileLine & line1, const ArMapFileLine & line2 )
 {
     bool b = (line1.myLineNum < line2.myLineNum);
     if (!b) {
@@ -326,12 +368,16 @@ inline bool operator<(const MvrMapFileLine & line1, const MvrMapFileLine & line2
     return b;
 }
 
-/// Comparator used to sort MvrMapFileLine objects.
-struct MvrMapFileLineCompare : public std::binary_function<const MvrMapFileLine &, const MvrMapFileLine &, bool> 
+/// Comparator used to sort ArMapFileLine objects.
+/**
+ * @internal
+ * @swigomit
+ */
+struct ArMapFileLineCompare : public std::binary_function<const ArMapFileLine &, const ArMapFileLine &, bool> 
 {
   /// Returns true if line1 is less than line2; false, otherwise.
-  bool operator()(const MvrMapFileLine &line1,
-                  const MvrMapFileLine &line2) 
+  bool operator()(const ArMapFileLine &line1,
+                  const ArMapFileLine &line2) 
   { 
     bool b = (line1.myLineNum < line2.myLineNum);
     if (!b) {
@@ -344,7 +390,7 @@ struct MvrMapFileLineCompare : public std::binary_function<const MvrMapFileLine 
 }; // end struct MapFileLineCompare
 
 // ============================================================================
-// MvrMapFileLineGroup
+// ArMapFileLineGroup
 // ============================================================================
 
 /// A group of map file lines which have a logical parent / child relationship.
@@ -354,45 +400,51 @@ struct MvrMapFileLineCompare : public std::binary_function<const MvrMapFileLine 
  * lines that describe the contents of the route.  This class is used to 
  * express this relationship.  Note that there is currently no concept of 
  * a grandparent relationship in the map file lines.
+ * @internal
+ * @swigomit
 **/
-class MvrMapFileLineGroup {
+class ArMapFileLineGroup {
 
 public:
 
   /// Contructs a new group with the specified parent.
-  MvrMapFileLineGroup(const MvrMapFileLine &parentLine) :
+  ArMapFileLineGroup(const ArMapFileLine &parentLine) :
     myParentLine(parentLine),
     myChildLines()
   {}
 
   /// Destructor
-  ~MvrMapFileLineGroup() {}
+  ~ArMapFileLineGroup() {}
 
   /// Returns a pointer to the parent map file line.
-  MvrMapFileLine *getParentLine() { return &myParentLine; }
+  ArMapFileLine *getParentLine() {
+    return &myParentLine;
+  }
   /// Returns a pointer to the list of child map file lines.
-  std::vector<MvrMapFileLine> *getChildLines() { return &myChildLines; }
+  std::vector<ArMapFileLine> *getChildLines() {
+    return &myChildLines;
+  }
 
-	friend inline bool operator<(const MvrMapFileLineGroup & line1, 
-                               const MvrMapFileLineGroup & line2);
-  friend struct MvrMapFileLineGroupCompare;
+	friend inline bool operator<(const ArMapFileLineGroup & line1, 
+                               const ArMapFileLineGroup & line2);
+  friend struct ArMapFileLineGroupCompare;
 
-  /// Writes the group to the Mvria log.
+  /// Writes the group to the Aria log.
   void log();
 
 public: // users may access class members directly
 
-  MvrMapFileLine myParentLine; ///< The map file line that is the parent of the group
-  std::vector<MvrMapFileLine> myChildLines; ///< A list of child map file lines
+  ArMapFileLine myParentLine; ///< The map file line that is the parent of the group
+  std::vector<ArMapFileLine> myChildLines; ///< A list of child map file lines
 
-}; // end class MvrFileLineGroup
+}; // end class ArFileLineGroup
 
 /// Determines whether group1's parent text is less than group2's parent text.
 /** @internal  
  *  @swigomit
  */
-inline bool operator<(const MvrMapFileLineGroup & group1, 
-                      const MvrMapFileLineGroup & group2)
+inline bool operator<(const ArMapFileLineGroup & group1, 
+                      const ArMapFileLineGroup & group2)
 {
   bool b = (strcmp(group1.myParentLine.getLineText(), 
                    group2.myParentLine.getLineText()) < 0);
@@ -401,65 +453,70 @@ inline bool operator<(const MvrMapFileLineGroup & group1,
 
 
 /// Comparator used to sort groups in order of ascending parent text.
-
-struct MvrMapFileLineGroupCompare : public std::binary_function<const MvrMapFileLineGroup &, 
-                                                                const MvrMapFileLineGroup &, 
-                                                                bool> 
-{
-  bool operator()(const MvrMapFileLineGroup &group1,
-                  const MvrMapFileLineGroup &group2) 
+/** @internal  
+ *  @swigomit
+ */
+struct ArMapFileLineGroupCompare : public std::binary_function<const ArMapFileLineGroup &, 
+                                                               const ArMapFileLineGroup &, 
+                                                               bool> {
+  bool operator()(const ArMapFileLineGroup &group1,
+                  const ArMapFileLineGroup &group2) 
   { 
     bool b = (strcmp(group1.myParentLine.getLineText(), 
                      group2.myParentLine.getLineText()) < 0);
     return b;
   }
-}; // end struct MvrMapFileLineGroupCompare
+}; // end struct ArMapFileLineGroupCompare
 
 
 /// Comparator used to sort groups in order of ascending parent line number.
-
-struct MvrMapFileLineGroupLineNumCompare : 
-                  public std::binary_function<const MvrMapFileLineGroup &, 
-                                              const MvrMapFileLineGroup &, 
+/** @internal  
+ *  @swigomit
+ */
+struct ArMapFileLineGroupLineNumCompare : 
+                  public std::binary_function<const ArMapFileLineGroup &, 
+                                              const ArMapFileLineGroup &, 
                                               bool> {
-  bool operator()(const MvrMapFileLineGroup &group1,
-                  const MvrMapFileLineGroup &group2) 
+  bool operator()(const ArMapFileLineGroup &group1,
+                  const ArMapFileLineGroup &group2) 
   { 
     bool b = (group1.myParentLine.getLineNum() < 
               group2.myParentLine.getLineNum());
     return b;
   }
-}; // end struct MvrMapFileLineGroupLineNumCompare
+}; // end struct ArMapFileLineGroupLineNumCompare
 
 
 // ============================================================================
-// MvrMapFileLineSet
+// ArMapFileLineSet
 // ============================================================================
 
 /// A set of map file line groups.
 /**
- * MvrMapFileLineSet is a container of MvrMapFileLineGroup objects -- i.e. a 
- * set of parent/child text lines in an Mvria map.  The class has been 
+ * ArMapFileLineSet is a container of ArMapFileLineGroup objects -- i.e. a 
+ * set of parent/child text lines in an Aria map.  The class has been 
  * defined to enable comparisons of map file versions.  Each section of 
- * an Mvria map is written to an MvrMapFileLineSet and then the standard
+ * an Aria map is written to an ArMapFileLineSet and then the standard
  * algorithm set_difference can be used to determine changes within a 
- * section.  The static method MvrMapFileLineSet::calculateChanges()
+ * section.  The static method ArMapFileLineSet::calculateChanges()
  * performs this comparison.
+ * @swigomit
+ * @internal
 **/
-class MvrMapFileLineSet : public std::vector<MvrMapFileLineGroup>
+class ArMapFileLineSet : public std::vector<ArMapFileLineGroup>
 {
 public:
 
   // ---------------------------------------------------------------------------
-  /// Determines the changes that have been made to a set of MvrMapFileLines
+  /// Determines the changes that have been made to a set of ArMapFileLines
   /**
-   * @param origLines the MvrMapFileLineSet that contains the original map file
+   * @param origLines the ArMapFileLineSet that contains the original map file
    * lines
-   * @param newLines the MvrMapFileLineSet that contains the new map file lines
-   * @param deletedLinesOut a pointer to the MvrMapFileLineSet that is populated
+   * @param newLines the ArMapFileLineSet that contains the new map file lines
+   * @param deletedLinesOut a pointer to the ArMapFileLineSet that is populated
    * with lines that have been deleted, i.e. that are contained in origLines 
    * but not in newLines
-   * @param addedLinesOut a pointer to the MvrMapFileLineSet that is populated
+   * @param addedLinesOut a pointer to the ArMapFileLineSet that is populated
    * with lines that have been added, i.e. that are contained in newLines but
    * not in origLines
    * @param isCheckChildren a bool set to true if child lines should also be 
@@ -467,50 +524,51 @@ public:
    * @return bool true if the changes were successfully determined; false if
    * an error occurred
   **/
-  MVREXPORT static bool calculateChanges(MvrMapFileLineSet &origLines,
-                                         MvrMapFileLineSet &newLines,
-                                         MvrMapFileLineSet *deletedLinesOut,
-                                         MvrMapFileLineSet *addedLinesOut,
-                                         bool isCheckChildren = true);
+  AREXPORT static bool calculateChanges(ArMapFileLineSet &origLines,
+                               ArMapFileLineSet &newLines,
+                               ArMapFileLineSet *deletedLinesOut,
+                               ArMapFileLineSet *addedLinesOut,
+                               bool isCheckChildren = true);
 
   // ---------------------------------------------------------------------------
 
   /// Constructor 
-  MvrMapFileLineSet() {}
+  ArMapFileLineSet() {}
 
   /// Copy constructor
-  MvrMapFileLineSet(const MvrMapFileLineSet &other) : std::vector<MvrMapFileLineGroup>(other)
+  ArMapFileLineSet(const ArMapFileLineSet &other) :
+    std::vector<ArMapFileLineGroup>(other)
   {}
 
   /// Assignment operator
-  MvrMapFileLineSet &operator=(const MvrMapFileLineSet &other) 
+  ArMapFileLineSet &operator=(const ArMapFileLineSet &other) 
   {
     if (this != &other) {
-      std::vector<MvrMapFileLineGroup>::operator =(other);
+      std::vector<ArMapFileLineGroup>::operator =(other);
     }
     return *this;
   }
 
   /// Destructor
-  ~MvrMapFileLineSet() {}
+  ~ArMapFileLineSet() {}
 
   /// Searches the set for the given parent line.
-  MVREXPORT iterator find(const MvrMapFileLine &groupParent);
+  AREXPORT iterator find(const ArMapFileLine &groupParent);
 
-  /// Writes the set to the Mvria output log.
-  MVREXPORT void log(const char *prefix);
+  /// Writes the set to the Aria output log.
+  AREXPORT void log(const char *prefix);
 
-}; // end class MvrMapFileLineSet
+}; // end class ArMapFileLineSet
 
 
 // ============================================================================
-// MvrMapChangeDetails
+// ArMapChangeDetails
 // ============================================================================
 
-/// Helper class used to track changes to an Mvria map.
+/// Helper class used to track changes to an Aria map.
 /**
- * MvrMapChangeDetails is a simple helper class that is used to track changes
- * to an Mvria map.  These changes are determined based on set comparisons 
+ * ArMapChangeDetails is a simple helper class that is used to track changes
+ * to an Aria map.  These changes are determined based on set comparisons 
  * (and thus everything in the map must be ordered in a repeatable manner).
  *
  * The class itself provides very little functionality.  It is basically 
@@ -518,17 +576,17 @@ public:
  * application. The methods return pointers to the internal data members 
  * which may be directly manipulated.  There is no error checking, 
  * thread-safety, etc.  The class's use and scope is expected to be very 
- * limited (to the Mvria map and related classes).
+ * limited (to the Aria map and related classes).
  * @swigomit
  * @internal
 **/
-class MvrMapChangeDetails
+class ArMapChangeDetails
 {
 public:
 
 	enum MapLineChangeType {
-		DELETIONS,  ///< Lines that have been deleted from the Mvria map
-		ADDITIONS,  ///< Lines that have been added to the Mvria map 
+		DELETIONS,  ///< Lines that have been deleted from the Aria map
+		ADDITIONS,  ///< Lines that have been added to the Aria map 
     LAST_CHANGE_TYPE = ADDITIONS  ///< Last value in the enumeration
 	};
 
@@ -537,16 +595,16 @@ public:
   };
 
   /// Constructor
-  MVREXPORT MvrMapChangeDetails();
+  AREXPORT ArMapChangeDetails();
 
   /// Copy constructor
-  MVREXPORT MvrMapChangeDetails(const MvrMapChangeDetails &other);
+  AREXPORT ArMapChangeDetails(const ArMapChangeDetails &other);
 
   /// Assignment operator
-  MVREXPORT MvrMapChangeDetails &operator=(const MvrMapChangeDetails &other);
+  AREXPORT ArMapChangeDetails &operator=(const ArMapChangeDetails &other);
 
   /// Destructor
-  MVREXPORT ~MvrMapChangeDetails();
+  AREXPORT ~ArMapChangeDetails();
 
   // ---------------------------------------------------------------------------
   // Map ID Methods
@@ -554,31 +612,31 @@ public:
 
   /// Returns the original pre-change map ID
   /**
-   * @param mapIdOut a pointer to the MvrMapId to be returned 
+   * @param mapIdOut a pointer to the ArMapId to be returned 
    * @return bool true if the map ID was successfully retrieved; false if an 
    * error occurred
   **/
-  MVREXPORT bool getOrigMapId(MvrMapId *mapIdOut);
+  AREXPORT bool getOrigMapId(ArMapId *mapIdOut);
 
   /// Sets the original pre-change map ID
   /**
-   * @param mapId the MvrMapId of the map before it was changed
+   * @param mapId the ArMapId of the map before it was changed
   **/
-  MVREXPORT void setOrigMapId(const MvrMapId &mapId);
+  AREXPORT void setOrigMapId(const ArMapId &mapId);
 
   /// Returns the new post-change map ID
   /**
-   * @param mapIdOut a pointer to the MvrMapId to be returned 
+   * @param mapIdOut a pointer to the ArMapId to be returned 
    * @return bool true if the map ID was successfully retrieved; false if an 
    * error occurred
   **/
-  MVREXPORT bool getNewMapId(MvrMapId *mapIdOut);
+  AREXPORT bool getNewMapId(ArMapId *mapIdOut);
 
   /// Sets the new post-change map ID
   /**
-   * @param mapId the MvrMapId of the map after it was changed
+   * @param mapId the ArMapId of the map after it was changed
   **/
-  MVREXPORT void setNewMapId(const MvrMapId &mapId);
+  AREXPORT void setNewMapId(const ArMapId &mapId);
 
   // ---------------------------------------------------------------------------
   // Change Info
@@ -592,7 +650,7 @@ public:
    * A pointer to the actual internal attribute is returned.
    * @return a pointer to the list of scan type identifier strings
   **/
-  MVREXPORT std::list<std::string> *getScanTypes();
+  AREXPORT std::list<std::string> *getScanTypes();
 
   /// Returns a pointer to the data points that have been changed for the specified scan type
   /**
@@ -600,9 +658,9 @@ public:
    * points are to be returned
    * @param scanType the const char * identifier of the scan for which the points
    * are to be returned; must be non-NULL
-   * @return a non-NULL pointer to the vector of MvrPose's that have been changed
+   * @return a non-NULL pointer to the vector of ArPose's that have been changed
   **/
-  MVREXPORT std::vector<MvrPose> *getChangedPoints(MapLineChangeType change,
+  AREXPORT std::vector<ArPose> *getChangedPoints(MapLineChangeType change,
                                                  const char *scanType);
 
   /// Returns a pointer to the data line segments that have been changed for the specified scan type
@@ -611,10 +669,11 @@ public:
    * line segments are to be returned
    * @param scanType the const char * identifier of the scan for which the line
    * segments are to be returned; must be non-NULL
-   * @return a non-NULL pointer to the vector of MvrLineSegment's that have been changed
+   * @return a non-NULL pointer to the vector of ArLineSegment's that have been changed
   **/
-  MVREXPORT std::vector<MvrLineSegment> *getChangedLineSegments
-            (MapLineChangeType change, const char *scanType);
+  AREXPORT std::vector<ArLineSegment> *getChangedLineSegments
+                                                (MapLineChangeType change,
+                                                 const char *scanType);
 
   /// Returns a pointer to the header lines that have been changed for the specified scan type
   /**
@@ -622,34 +681,36 @@ public:
    * scan header lines are to be returned
    * @param scanType the const char * identifier of the scan for which the changes
    * are to be returned; must be non-NULL
-   * @return a non-NULL pointer to the MvrMapFileLineSet that describes the changes
+   * @return a non-NULL pointer to the ArMapFileLineSet that describes the changes
   **/
-  MVREXPORT MvrMapFileLineSet *getChangedSummaryLines(MapLineChangeType change, const char *scanType);
+  AREXPORT ArMapFileLineSet *getChangedSummaryLines(MapLineChangeType change,
+                                                 const char *scanType);
 
   /// Returns a pointer to the map supplement lines that have been changed 
   /**
    * @param change the MapLineChangeType that indicates whether added or removed
    * supplement lines are to be returned
-   * @return a non-NULL pointer to the MvrMapFileLineSet that describes the changes
+   * @return a non-NULL pointer to the ArMapFileLineSet that describes the changes
   **/
-  MVREXPORT MvrMapFileLineSet *getChangedSupplementLines(MapLineChangeType change);
+  AREXPORT ArMapFileLineSet *getChangedSupplementLines(MapLineChangeType change);
 
   /// Returns a pointer to the map object (i.e. Cairn) lines that have been changed 
   /**
    * @param change the MapLineChangeType that indicates whether added or removed
    * map object lines are to be returned
-   * @return a non-NULL pointer to the MvrMapFileLineSet that describes the changes
+   * @return a non-NULL pointer to the ArMapFileLineSet that describes the changes
   **/
-  MVREXPORT MvrMapFileLineSet *getChangedObjectLines(MapLineChangeType change);
+  AREXPORT ArMapFileLineSet *getChangedObjectLines(MapLineChangeType change);
 
   /// Returns a pointer to the specified info lines that have been changed
   /**
    * @param infoName the int identifier of the info type to be returned
    * @param change the MapLineChangeType that indicates whether added or removed
    * map info lines are to be returned
-   * @return a non-NULL pointer to the MvrMapFileLineSet that describes the changes
+   * @return a non-NULL pointer to the ArMapFileLineSet that describes the changes
   **/
-  MVREXPORT MvrMapFileLineSet *getChangedInfoLines(const char *infoName, MapLineChangeType change);
+  AREXPORT ArMapFileLineSet *getChangedInfoLines(const char *infoName, 
+                                                 MapLineChangeType change);
 
 
   // ---------------------------------------------------------------------------
@@ -662,7 +723,7 @@ public:
    * types that have non-empty change information.
    * @return list of the string info names that have non-empty changes
   **/
-  MVREXPORT std::list<std::string> findChangedInfoNames() const;
+  AREXPORT std::list<std::string> findChangedInfoNames() const;
 
   /// Determines whether the given argument for the specified info type is a "child".
   /**
@@ -672,48 +733,50 @@ public:
    * must be included in the change details.  Note that currently only one
    * level of parent-ness is supported (i.e. there are no grandparents).
   **/
-  MVREXPORT bool isChildArg(const char *infoName, MvrArgumentBuilder *arg) const;
+  AREXPORT bool isChildArg(const char *infoName,
+                           ArArgumentBuilder *arg) const;
 
   /// Determines whether the given arg 0 for the info type is a "child".
-  MVREXPORT bool isChildArg(const char *infoName, const char *arg0Text) const;
+  AREXPORT bool isChildArg(const char *infoName,
+                           const char *arg0Text) const;
 
   /// Creates a map of args that are considered to be a "child" of another arg.
-  MVREXPORT void createChildArgMap();
+  AREXPORT void createChildArgMap();
 
-  /// Writes the change details to the Mvria log.
-  MVREXPORT void log();
+  /// Writes the change details to the Aria log.
+  AREXPORT void log();
 
   /// Locks the change details for multithreaded access.
-  MVREXPORT void lock();
+  AREXPORT void lock();
   //// Unlocks the change details for multithreaded access.
-  MVREXPORT void unlock();
+  AREXPORT void unlock();
 
 protected:
 
   /// Summary of changes for a specific map scan type.
-  struct MvrMapScanChangeDetails {
+  struct ArMapScanChangeDetails {
 
-    std::vector<MvrPose> myChangedPoints[CHANGE_TYPE_COUNT];
-    std::vector<MvrLineSegment> myChangedLineSegments[CHANGE_TYPE_COUNT];
+    std::vector<ArPose> myChangedPoints[CHANGE_TYPE_COUNT];
+    std::vector<ArLineSegment> myChangedLineSegments[CHANGE_TYPE_COUNT];
 
-    MvrMapFileLineSet myChangedSummaryLines[CHANGE_TYPE_COUNT];
+    ArMapFileLineSet myChangedSummaryLines[CHANGE_TYPE_COUNT];
 
-    MvrMapScanChangeDetails();
-    ~MvrMapScanChangeDetails();
+    ArMapScanChangeDetails();
+    ~ArMapScanChangeDetails();
 
-  }; // end struct MvrMapScanChangeDetails
+  }; // end struct ArMapScanChangeDetails
 
-  MvrMapScanChangeDetails *getScanChangeDetails(const char *scanType);
+  ArMapScanChangeDetails *getScanChangeDetails(const char *scanType);
 
 protected:
 
   /// Mutex to protect multithreaded access.
-  MvrMutex myMutex;
+  ArMutex myMutex;
 
   /// Identifier of the map before the changes were made.
-  MvrMapId myOrigMapId;
+  ArMapId myOrigMapId;
   /// Identifier of the map after the changes were made.
-  MvrMapId myNewMapId;
+  ArMapId myNewMapId;
 
   /// Map of info type identifiers to argument types, and whether each argument type is a child.
   std::map<std::string, std::map<std::string, bool> > myInfoNameToMapOfChildArgsMap;
@@ -721,34 +784,36 @@ protected:
   /// List of scan types included in the change details.
   std::list<std::string> myScanTypeList;
   /// Map of scan types to the changes for the scan.
-  std::map<std::string, MvrMapScanChangeDetails*> myScanTypeToChangesMap;
+  std::map<std::string, ArMapScanChangeDetails*> myScanTypeToChangesMap;
   /// Value returned when no scan data was changed.
-  MvrMapScanChangeDetails myNullScanTypeChanges;
+  ArMapScanChangeDetails myNullScanTypeChanges;
 
   /// Change details for the map's supplemental data.
-  MvrMapFileLineSet myChangedSupplementLines[CHANGE_TYPE_COUNT];
+  ArMapFileLineSet myChangedSupplementLines[CHANGE_TYPE_COUNT];
   /// Change details for the map's object list.
-  MvrMapFileLineSet myChangedObjectLines[CHANGE_TYPE_COUNT];
+  ArMapFileLineSet myChangedObjectLines[CHANGE_TYPE_COUNT];
   /// Change details for the map's info data.
-  std::map<std::string, MvrMapFileLineSet> myInfoToChangeMaps[CHANGE_TYPE_COUNT];
+  std::map<std::string, ArMapFileLineSet> myInfoToChangeMaps[CHANGE_TYPE_COUNT];
 
-}; // end class MvrMapChangeDetails
+}; // end class ArMapChangeDetails
 
 // ============================================================================
-// MvrMapFileLineSetWriter
+// ArMapFileLineSetWriter
 // ============================================================================
 
-/// Functor that populates a specified MvrMapFileLineSet.
+/// Functor that populates a specified ArMapFileLineSet.
 /**
- * MvrMapFileLineSetWriter is used to create an MvrMapFileLineSet, using the 
- * normal Mvria map writeToFunctor mechanism.
+ * ArMapFileLineSetWriter is used to create an ArMapFileLineSet, using the 
+ * normal Aria map writeToFunctor mechanism.
+ * @swigomit
+ * @internal
 **/
-class MvrMapFileLineSetWriter : public MvrFunctor1<const char *>
+class ArMapFileLineSetWriter : public ArFunctor1<const char *>
 {
 public:
 
   /// Constructs a new writer for the given map file line set.
-  MvrMapFileLineSetWriter(MvrMapFileLineSet *multiSet) :
+  ArMapFileLineSetWriter(ArMapFileLineSet *multiSet) :
     myLineNum(0),
     myChildLineNum(0),
 	  myMultiSet(multiSet),
@@ -756,7 +821,7 @@ public:
   {}
   
   /// Destructor
-  ~MvrMapFileLineSetWriter()
+  ~ArMapFileLineSetWriter()
   {}
   
   /// Returns whether children are currently being added to the map file line set.
@@ -769,7 +834,7 @@ public:
   /**
    * When a child line is detected by the map file parser, setAddingChildren(true) 
    * must be called.  The new children will be added to the most recently 
-   * created MvrMapFileLineSet.  Likewise, when the child list is complete, 
+   * created ArMapFileLineSet.  Likewise, when the child list is complete, 
    * setAddingChildren(false) must be called.
   **/
   void setAddingChildren(bool isAddingChildren) {
@@ -799,12 +864,12 @@ public:
         // Being verbose on the parameters here in order to make it more clear.
         // Create a new map file line for the parent, create a new group for 
         // that parent, and add it to the set.
-	      myMultiSet->push_back(MvrMapFileLineGroup(MvrMapFileLine(myLineNum, p1)));
+	      myMultiSet->push_back(ArMapFileLineGroup(ArMapFileLine(myLineNum, p1)));
       }
       else if (!myMultiSet->empty()) {
         myChildLineNum++;
-        MvrMapFileLineGroup &curParent = myMultiSet->back();
-        curParent.getChildLines()->push_back(MvrMapFileLine(myChildLineNum, p1));
+        ArMapFileLineGroup &curParent = myMultiSet->back();
+        curParent.getChildLines()->push_back(ArMapFileLine(myChildLineNum, p1));
       }
 	  }
   } // end method invoke
@@ -812,9 +877,9 @@ public:
 private:
 
   /// Disabled copy constructor
-  MvrMapFileLineSetWriter(const MvrMapFileLineSetWriter &other);
+  ArMapFileLineSetWriter(const ArMapFileLineSetWriter &other);
   /// Disabled assignment operator
-  MvrMapFileLineSetWriter &operator=(const MvrMapFileLineSetWriter &other);
+  ArMapFileLineSetWriter &operator=(const ArMapFileLineSetWriter &other);
 
 protected:
 
@@ -824,39 +889,39 @@ protected:
   int myChildLineNum;
 
   /// Map file line set that is being populated
-  MvrMapFileLineSet *myMultiSet; 
+  ArMapFileLineSet *myMultiSet; 
   /// Whether a child is currently being added
   bool myIsAddingChildren;
 
-}; // end class MvrMapFileLineSetWriter
+}; // end class ArMapFileLineSetWriter
 
 
 // ============================================================================
-// MvrMapChangedHelper
+// ArMapChangedHelper
 // ============================================================================
 
 /// Helper class that stores and invokes the map changed callbacks.
 /** @swigomit
  * @internal 
  */
-class MvrMapChangedHelper
+class ArMapChangedHelper
  {
  public:
  
    ///  Constructor 
-   MVREXPORT MvrMapChangedHelper();
+   AREXPORT ArMapChangedHelper();
    /// Destructor
-   MVREXPORT virtual ~MvrMapChangedHelper();
+   AREXPORT virtual ~ArMapChangedHelper();
    
    /// Function that invokes the map changed callbacks
-   MVREXPORT virtual void invokeMapChangedCallbacks(void);
+   AREXPORT virtual void invokeMapChangedCallbacks(void);
  
 
    /// Adds a callback to be invoked when the map is changed
-   MVREXPORT virtual void addMapChangedCB(MvrFunctor *functor, 
+   AREXPORT virtual void addMapChangedCB(ArFunctor *functor, 
 					 int position = 50);
    /// Removes a callback invoked when the map is changed
-   MVREXPORT virtual void remMapChangedCB(MvrFunctor *functor);
+   AREXPORT virtual void remMapChangedCB(ArFunctor *functor);
  
 
    /// Adds a callback called before the map changed callbacks are called
@@ -864,33 +929,33 @@ class MvrMapChangedHelper
     * Note that these callbacks are simply invoked before the "normal" map changed
     * callbacks.  They are not 
    **/
-   MVREXPORT virtual void addPreMapChangedCB(MvrFunctor *functor,
+   AREXPORT virtual void addPreMapChangedCB(ArFunctor *functor,
                                             int position = 50);
    /// Removes a callback called before the map changed callbacks are called
-   MVREXPORT virtual void remPreMapChangedCB(MvrFunctor *functor);
+   AREXPORT virtual void remPreMapChangedCB(ArFunctor *functor);
  
    /// Sets the level we log our map changed callback at
-   MVREXPORT virtual void setMapChangedLogLevel(MvrLog::LogLevel level);
+   AREXPORT virtual void setMapChangedLogLevel(ArLog::LogLevel level);
    /// Gets the level we log our map changed callback at
-   MVREXPORT virtual MvrLog::LogLevel getMapChangedLogLevel(void);
+   AREXPORT virtual ArLog::LogLevel getMapChangedLogLevel(void);
    
  private:
  
    /// Disabled copy constructor
-   MVREXPORT MvrMapChangedHelper(const MvrMapChangedHelper &other);
+   AREXPORT ArMapChangedHelper(const ArMapChangedHelper &other);
    ///  Disabled assignment operaotr
-   MVREXPORT MvrMapChangedHelper &operator=(const MvrMapChangedHelper &other);
+   AREXPORT ArMapChangedHelper &operator=(const ArMapChangedHelper &other);
  
  protected:
  
-   MvrLog::LogLevel myMapChangedLogLevel;
+   ArLog::LogLevel myMapChangedLogLevel;
  
-   MvrCallbackList myMapChangedCBList;
-   MvrCallbackList myPreMapChangedCBList;
+   ArCallbackList myMapChangedCBList;
+   ArCallbackList myPreMapChangedCBList;
  
- }; // end class MvrMapChangedHelper
+ }; // end class ArMapChangedHelper
  
 #endif // ifndef SWIG
 
-#endif // MVRMAPUTILS_H
+#endif // ARMAPUTILS_H
 

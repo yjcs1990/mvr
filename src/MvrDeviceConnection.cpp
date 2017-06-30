@@ -1,20 +1,37 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrDeviceConnection.h
- > Description  : Base class for device connections
- > Author       : Yu Jie
- > Create Time  : 2017年05月10日
- > Modify Time  : 2017年06月07日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "MvrDeviceConnection.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-bool MvrDeviceConnection::ourStrMapInited = false;
-MvrStrMap MvrDeviceConnection::ourStrMap;
-bool MvrDeviceConnection::ourDCDebugShouldLog = false;
-MvrTime MvrDeviceConnection::ourDCDebugFirstTime;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArDeviceConnection.h"
+
+bool ArDeviceConnection::ourStrMapInited = false;
+ArStrMap ArDeviceConnection::ourStrMap;
+bool ArDeviceConnection::ourDCDebugShouldLog = false;
+ArTime ArDeviceConnection::ourDCDebugFirstTime;
 
 /**
    Subclasses of this connection type should call setDCPortType in
@@ -35,10 +52,10 @@ MvrTime MvrDeviceConnection::ourDCDebugFirstTime;
    read can return), preferably with a gap between the values, so that
    if more debugging is needed there are values in between the ones
    already there.  Generally this information isn't used or computed,
-   unless the global member MvrDeviceConnection::debugShouldLog is
+   unless the global member ArDeviceConnection::debugShouldLog is
    called to turn it on.
 **/
-MVREXPORT MvrDeviceConnection::MvrDeviceConnection()
+AREXPORT ArDeviceConnection::ArDeviceConnection()
 {
   if (!ourStrMapInited)
   {
@@ -46,41 +63,42 @@ MVREXPORT MvrDeviceConnection::MvrDeviceConnection()
     buildStrMap();
   }
 
-  myDCPortName   = "Unknown port name";
-  myDCPortType   = "Unknown port type";
+  myDCPortName = "Unknown port name";
+  myDCPortType = "Unknown port type";
   myDCDeviceName = "Unknown device type";
 
   myDCDebugPacketStarted = false;
-  myDCDebugBytesRead     = 0;
-  myDCDebugTimesRead     = 0;
-  myDCDebugNumGoodPackets= 0;
+  myDCDebugBytesRead = 0;
+  myDCDebugTimesRead = 0;
+  myDCDebugNumGoodPackets = 0;
   myDCDebugNumBadPackets = 0;
 }
 
-MVREXPORT MvrDeviceConnection::~MvrDeviceConnection()
+AREXPORT ArDeviceConnection::~ArDeviceConnection()
 {
   close();
 }
 
-void MvrDeviceConnection::buildStrMap(void)
+
+void ArDeviceConnection::buildStrMap(void)
 {
-  ourStrMap[STATUS_NEVER_OPENED]   = "never opened";
-  ourStrMap[STATUS_OPEN]           = "open";
-  ourStrMap[STATUS_OPEN_FAILED]    = "open failed";
-  ourStrMap[STATUS_CLOSED_NORMALLY]= "closed";
-  ourStrMap[STATUS_CLOSED_ERROR]   = "closed on error";
+  ourStrMap[STATUS_NEVER_OPENED] = "never opened";
+  ourStrMap[STATUS_OPEN] = "open";
+  ourStrMap[STATUS_OPEN_FAILED] = "open failed";
+  ourStrMap[STATUS_CLOSED_NORMALLY] = "closed";
+  ourStrMap[STATUS_CLOSED_ERROR] = "closed on error";
 }
 
-MVREXPORT const char *MvrDeviceConnection::getStatusMessage(int messageNumber) const
+AREXPORT const char * ArDeviceConnection::getStatusMessage(int messageNumber) const
 {
-  MvrStrMap::const_iterator it;
-  if ((it=ourStrMap.find(messageNumber)) != ourStrMap.end())
+  ArStrMap::const_iterator it;
+  if ((it = ourStrMap.find(messageNumber)) != ourStrMap.end())
     return (*it).second.c_str();
   else
     return NULL;
 }
 
-MVREXPORT void MvrDeviceConnection::setPortName(const char *portName)
+AREXPORT void ArDeviceConnection::setPortName(const char *portName)
 {
   if (portName != NULL)
     myDCPortName = portName;
@@ -88,12 +106,12 @@ MVREXPORT void MvrDeviceConnection::setPortName(const char *portName)
     myDCPortName = "Unknown port name";
 }
 
-MVREXPORT const char *MvrDeviceConnection::getPortName(void) const
+AREXPORT const char *ArDeviceConnection::getPortName(void) const
 {
   return myDCPortName.c_str();
 }
 
-MVREXPORT void MvrDeviceConnection::setPortType(const char *portType)
+AREXPORT void ArDeviceConnection::setPortType(const char *portType)
 {
   if (portType != NULL)
     myDCPortType = portType;
@@ -101,12 +119,12 @@ MVREXPORT void MvrDeviceConnection::setPortType(const char *portType)
     myDCPortType = "Unknown port type";
 }
 
-MVREXPORT const char *MvrDeviceConnection::getPortType(void) const
+AREXPORT const char *ArDeviceConnection::getPortType(void) const
 {
   return myDCPortType.c_str();
 }
 
-MVREXPORT void MvrDeviceConnection::setDeviceName(const char *deviceName)
+AREXPORT void ArDeviceConnection::setDeviceName(const char *deviceName)
 {
   if (deviceName != NULL)
     myDCDeviceName = deviceName;
@@ -114,65 +132,70 @@ MVREXPORT void MvrDeviceConnection::setDeviceName(const char *deviceName)
     myDCDeviceName = "Unknown device name";
 }
 
-MVREXPORT const char *MvrDeviceConnection::getDeviceName(void) const
+AREXPORT const char *ArDeviceConnection::getDeviceName(void) const
 {
   return myDCDeviceName.c_str();
 }
 
-MVREXPORT void MvrDeviceConnection::debugStartPacket(void)
+AREXPORT void ArDeviceConnection::debugStartPacket(void)
 {
   if (!ourDCDebugShouldLog)
     return;
+
   myDCDebugStartTime.setToNow();
   myDCDebugPacketStarted = true;
-  myDCDebugBytesRead     = 0;
-  myDCDebugTimesRead     = 0;
+  myDCDebugBytesRead = 0;
+  myDCDebugTimesRead = 0;
 }
 
-MVREXPORT void MvrDeviceConnection::debugBytesRead(int bytesRead)
+AREXPORT void ArDeviceConnection::debugBytesRead(int bytesRead)
 {
   if (!ourDCDebugShouldLog || !myDCDebugPacketStarted)
     return;
+
   if (bytesRead > 0)
   {
-    if (myDCDebugTimesRead == 0)
+    if (myDCDebugBytesRead == 0)
       myDCDebugFirstByteTime.setToNow();
     myDCDebugLastByteTime.setToNow();
     myDCDebugBytesRead += bytesRead;
   }
+
   myDCDebugTimesRead++;
 }
 
-MVREXPORT void MvrDeviceConnection::debugEndPacket(bool goodPacket, int type)
+AREXPORT void ArDeviceConnection::debugEndPacket(bool goodPacket, int type)
 {
   if (!ourDCDebugShouldLog || !myDCDebugPacketStarted)
     return;
+
   if (myDCDebugBytesRead == 0)
   {
     myDCDebugFirstByteTime.setToNow();
     myDCDebugLastByteTime.setToNow();
   }
-
+  
   if (goodPacket)
     myDCDebugNumGoodPackets++;
   else
     myDCDebugNumBadPackets++;
-  
+
   long long firstSince = ourDCDebugFirstTime.mSecSinceLL(myDCDebugStartTime);
 
-  MvrLog::log(MvrLog::Normal,
-              "DevCon %s %s %s started %lld.%03lld firstByte %lld lastByte %lld bytesRead %d timesRead %d good %d numGood %lld numBad %lld type %d 0x%x",
-              myDCPortType.c_str(), myDCPortName.c_str(), myDCDeviceName.c_str(),
-              firstSince / 1000, firstSince % 1000,
-              myDCDebugStartTime.mSecSinceLL(myDCDebugFirstByteTime),
-              myDCDebugStartTime.mSecSinceLL(myDCDebugLastByteTime),
-              myDCDebugBytesRead, myDCDebugTimesRead, goodPacket,
-              myDCDebugNumGoodPackets, myDCDebugNumBadPackets, 
-              type, type);
+  ArLog::log(ArLog::Normal, 
+	     "DevCon %s %s %s started %lld.%03lld firstByte %lld lastByte %lld bytesRead %d timesRead %d good %d numGood %lld numBad %lld type %d 0x%x",
+	     myDCPortType.c_str(), myDCPortName.c_str(), myDCDeviceName.c_str(),
+	     firstSince / 1000, firstSince % 1000,
+	     myDCDebugStartTime.mSecSinceLL(myDCDebugFirstByteTime),
+	     myDCDebugStartTime.mSecSinceLL(myDCDebugLastByteTime),
+	     myDCDebugBytesRead, myDCDebugTimesRead, goodPacket,
+	     myDCDebugNumGoodPackets, myDCDebugNumBadPackets, 
+	     type, type);
+  
   myDCDebugPacketStarted = false;
 }
 
-MVREXPORT bool MvrDeviceConnection::debugShouldLog(bool shouldLog)
+AREXPORT bool ArDeviceConnection::debugShouldLog(bool shouldLog)
 {
   ourDCDebugShouldLog = shouldLog;
   return true;

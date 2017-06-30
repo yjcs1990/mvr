@@ -35,4 +35,57 @@ INCLUDE_DIRECTORIES(
         ${PROJECT_SOURCE_DIR}/include
 )
 
-ADD_EXECUTABLE(MVRTest test/test.cpp)
+ADD_LIBRARY(Mvria SHARED
+	src/MvrAction.cpp 
+	src/MvrArg.cpp 
+	src/MvrArgumentBuilder.cpp 
+	src/MvrArgumentParser.cpp 
+	src/MvrASyncTask.cpp 
+	src/MvrBasePacket.cpp
+	src/MvrCondition.cpp 
+	src/MvrConfig.cpp
+	src/MvrConfigArg.cpp
+	src/MvrConfigGroup.cpp
+	src/MvrDataLogger.cpp
+	src/MvrDeviceConnection.cpp
+    src/MvrFileDeviceConnection.cpp
+	src/MvrFileParser.cpp
+	src/MvrFunctorASyncTask.cpp
+	src/MvrInterpolation.cpp
+	src/MvrJoyHandler.cpp
+	src/MvrKeyHandler.cpp
+	src/MvrLog.cpp
+	src/MvrLogFileConnection.cpp
+	src/MvrMode.cpp
+	src/MvrModes.cpp
+	src/MvrModule.cpp
+	src/MvrModuleLoader.cpp
+	src/MvrMutex.cpp
+	src/MvrRobot.cpp
+	src/MvrRobotBatteryPacketReader.cpp
+	src/MvrRobotConfig.cpp
+	src/MvrRobotConfigPacketReader.cpp
+	src/MvrRobotConnector.cpp
+	src/MvrRobotJoyHandler.cpp
+	src/MvrRobotPacket.cpp
+	src/MvrRobotPacketReceiver.cpp
+	src/MvrRobotPacketReaderThread.cpp
+	src/MvrRobotPacketSender.cpp
+	src/MvrRobotParams.cpp
+	src/MvrRobotTypes.cpp
+	src/MvrSimpleConnector.cpp
+	src/MvrSocket.cpp
+	src/MvrStringInfoGroup.cpp
+	src/MvrSyncLoop.cpp
+	src/MvrSyncTask.cpp
+	src/MvrSystemStatus.cpp
+	src/MvrThread.cpp
+	src/MvrTransform.cpp
+	src/Mvria.cpp
+	src/mvriaUtil.cpp
+	src/md5.cpp
+    )
+
+# ADD_EXECUTABLE(MVRTest tests/test.cpp)
+ADD_EXECUTABLE(timeTest tests/timeTest.cpp)
+target_link_libraries(timeTest ${LIBRARY_OUTPUT_PATH}/libMvria.so)

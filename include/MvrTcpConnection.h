@@ -1,58 +1,77 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrTcpConnection.h
- > Description  : For connecting to a device through a TCP network socket
- > Author       : Yu Jie
- > Create Time  : 2017年05月18日
- > Modify Time  : 2017年05月18日
-***************************************************************************************************/
-#ifndef MVRTCPCONNECTION_H
-#define MVRTCPCONNECTION_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "MvrDeviceConnection.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARTCPCONNECTION_H
+#define ARTCPCONNECTION_H
+
+#include "ArDeviceConnection.h"
 #include <string>
 
-#include "mvriaTypedefs.h"
-#include "MvrSocket.h"
+#include "ariaTypedefs.h"
+#include "ArSocket.h"
 
 /// For connecting to a device through a TCP network socket
 /// @ingroup UtilityClasses
-class MvrTcpConnection: public MvrDeviceConnection
+class ArTcpConnection: public ArDeviceConnection
 {
  public:
   /// Constructor
-  MVREXPORT MvrTcpConnection();
+  AREXPORT ArTcpConnection();
   /// Destructor also closes connection
-  MVREXPORT virtual ~MvrTcpConnection();
+  AREXPORT virtual ~ArTcpConnection();
 
   /// Opens a connection to the given host and port
-  MVREXPORT int open(const char * host = NULL, int port = 8101);
+  AREXPORT int open(const char * host = NULL, int port = 8101);
 
-  MVREXPORT void setPort(const char *host = NULL, int port = 8101);
-  MVREXPORT virtual bool openSimple(void);  
-  MVREXPORT virtual int getStatus(void);
-  MVREXPORT virtual bool close(void);
-  MVREXPORT virtual int read(const char *data, unsigned int size, unsigned int msWait = 0);
-  MVREXPORT virtual int write(const char *data, unsigned int size);
-  MVREXPORT virtual const char * getOpenMessage(int messageNumber);
-  MVREXPORT virtual MvrTime getTimeRead(int index);
-  MVREXPORT virtual bool isTimeStamping(void);
+  AREXPORT void setPort(const char *host = NULL, int port = 8101);
+  AREXPORT virtual bool openSimple(void);  
+  AREXPORT virtual int getStatus(void);
+  AREXPORT virtual bool close(void);
+  AREXPORT virtual int read(const char *data, unsigned int size, 
+			    unsigned int msWait = 0);
+  AREXPORT virtual int write(const char *data, unsigned int size);
+  AREXPORT virtual const char * getOpenMessage(int messageNumber);
+  AREXPORT virtual ArTime getTimeRead(int index);
+  AREXPORT virtual bool isTimeStamping(void);
 
   /// Gets the name of the host connected to
-  MVREXPORT std::string getHost(void);
+  AREXPORT std::string getHost(void);
   /// Gets the number of the port connected to
-  MVREXPORT int getPort(void);
+  AREXPORT int getPort(void);
 
   /// Internal function used by open and openSimple
-  MVREXPORT int internalOpen(void);
+  AREXPORT int internalOpen(void);
 
   /// Sets the tcp connection to use this socket instead of its own
-  MVREXPORT void setSocket(MvrSocket *socket);
+  AREXPORT void setSocket(ArSocket *socket);
   /// Gets the socket this tcp connection is using
-  MVREXPORT MvrSocket *getSocket(void);
+  AREXPORT ArSocket *getSocket(void);
   /// Sets the status of the device, ONLY use this if you're playing
   /// with setSocket and know what you're doing
-  MVREXPORT void setStatus(int status);
+  AREXPORT void setStatus(int status);
 
   enum Open { 
       OPEN_NET_FAIL = 1, ///< Some critical part of the network isn't working
@@ -66,12 +85,13 @@ class MvrTcpConnection: public MvrDeviceConnection
 protected:
   void buildStrMap(void);
   
-  MvrStrMap myStrMap;
+  ArStrMap myStrMap;
   bool myOwnSocket;
-  MvrSocket *mySocket;
+  ArSocket *mySocket;
   int myStatus;
+  
   std::string myHostName;
   int myPortNum;
 };
 
-#endif  //MVRTCPCONNECTION_H
+#endif //ARTCPCONNECTION_H

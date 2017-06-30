@@ -1,15 +1,34 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : mvriaUtil.cpp
- > Description  : Some Utility classes and functions
- > Author       : Yu Jie
- > Create Time  : 2017年05月10日
- > Modify Time  : 2017年06月04日
-***************************************************************************************************/
-#define _GNU_SOURCE 1
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
+#define _GNU_SOURCE 1 // for isnormal() and other newer (non-ansi) C functions
+
+#include "ArExport.h"
+#include "ariaOSDef.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -19,7 +38,7 @@
 
 #ifdef WIN32
 #include <windows.h>  // for timeGetTime() and mmsystem.h
-#include <mmsystem.h> // for teimGetTime()
+#include <mmsystem.h> // for timeGetTime()
 #else
 #include <sys/time.h>
 #include <stdarg.h>
@@ -30,124 +49,148 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#endif
 
-#include "mvriaInternal.h"
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
 
-#ifndef MVRINTERFACE
-#include "MvrSick.h"
-#include "MvrUrg.h"
-#include "MvrLMS1XX.h"
-#include "MvrS3Series.h"
-#include "MvrUrg_2_0.h"
-#include "MvrSZSeries.h"
-#include "MvrSonarMTX.h"
-#include "MvrBatteryMTX.h"
-#include "MvrLCDMTX.h"
-#endif // MVRINTERFACE
+#include "ariaInternal.h"
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
 
-#include "MvrSerialConnection.h"
-#include "MvrTcpConnection.h"
-#endif // WIN32
+#ifndef ARINTERFACE
+#include "ArSick.h"
+#include "ArUrg.h"
+#include "ArLMS1XX.h"
+#include "ArS3Series.h"
+#include "ArUrg_2_0.h"
+#include "ArSZSeries.h"
+#include "ArSonarMTX.h"
+#include "ArBatteryMTX.h"
+#include "ArLCDMTX.h"
+#endif // ARINTERFACE
+
+#include "ArSerialConnection.h"
+#include "ArTcpConnection.h"
 
 #ifdef WIN32
 #include <io.h>
-MVREXPORT const char *MvrUtil::COM1  = "COM1";
-MVREXPORT const char *MvrUtil::COM2  = "COM2";
-MVREXPORT const char *MvrUtil::COM3  = "COM3";
-MVREXPORT const char *MvrUtil::COM4  = "COM4";
-MVREXPORT const char *MvrUtil::COM5  = "COM5";
-MVREXPORT const char *MvrUtil::COM6  = "COM6";
-MVREXPORT const char *MvrUtil::COM7  = "COM7";
-MVREXPORT const char *MvrUtil::COM8  = "COM8";
-MVREXPORT const char *MvrUtil::COM9  = "COM9";
-MVREXPORT const char *MvrUtil::COM10 = "\\\\.\\COM10";
-MVREXPORT const char *MvrUtil::COM11 = "\\\\.\\COM11";
-MVREXPORT const char *MvrUtil::COM12 = "\\\\.\\COM12";
-MVREXPORT const char *MvrUtil::COM13 = "\\\\.\\COM13";
-MVREXPORT const char *MvrUtil::COM14 = "\\\\.\\COM14";
-MVREXPORT const char *MvrUtil::COM15 = "\\\\.\\COM15";
-MVREXPORT const char *MvrUtil::COM16 = "\\\\.\\COM16";
+AREXPORT const char *ArUtil::COM1 = "COM1";
+AREXPORT const char *ArUtil::COM2 = "COM2";
+AREXPORT const char *ArUtil::COM3 = "COM3";
+AREXPORT const char *ArUtil::COM4 = "COM4";
+AREXPORT const char *ArUtil::COM5 = "COM5";
+AREXPORT const char *ArUtil::COM6 = "COM6";
+AREXPORT const char *ArUtil::COM7 = "COM7";
+AREXPORT const char *ArUtil::COM8 = "COM8";
+AREXPORT const char *ArUtil::COM9 = "COM9";
+AREXPORT const char *ArUtil::COM10 = "\\\\.\\COM10";
+AREXPORT const char *ArUtil::COM11 = "\\\\.\\COM11";
+AREXPORT const char *ArUtil::COM12 = "\\\\.\\COM12";
+AREXPORT const char *ArUtil::COM13 = "\\\\.\\COM13";
+AREXPORT const char *ArUtil::COM14 = "\\\\.\\COM14";
+AREXPORT const char *ArUtil::COM15 = "\\\\.\\COM15";
+AREXPORT const char *ArUtil::COM16 = "\\\\.\\COM16";
+// See http://support.microsoft.com/kb/115831 for explanation of port names for
+// COM10 and up.
 #else // ifndef WIN32
-MVREXPORT const char *MvrUtil::COM1  = "/dev/ttyS0";
-MVREXPORT const char *MvrUtil::COM2  = "/dev/ttyS1";
-MVREXPORT const char *MvrUtil::COM3  = "/dev/ttyS2";
-MVREXPORT const char *MvrUtil::COM4  = "/dev/ttyS3";
-MVREXPORT const char *MvrUtil::COM5  = "/dev/ttyS4";
-MVREXPORT const char *MvrUtil::COM6  = "/dev/ttyS5";
-MVREXPORT const char *MvrUtil::COM7  = "/dev/ttyS6";
-MVREXPORT const char *MvrUtil::COM8  = "/dev/ttyS7";
-MVREXPORT const char *MvrUtil::COM9  = "/dev/ttyS8";
-MVREXPORT const char *MvrUtil::COM10 = "/dev/ttyS9";
-MVREXPORT const char *MvrUtil::COM11 = "/dev/ttyS10";
-MVREXPORT const char *MvrUtil::COM12 = "/dev/ttyS11";
-MVREXPORT const char *MvrUtil::COM13 = "/dev/ttyS12";
-MVREXPORT const char *MvrUtil::COM14 = "/dev/ttyS13";
-MVREXPORT const char *MvrUtil::COM15 = "/dev/ttyS14";
-MVREXPORT const char *MvrUtil::COM16 = "/dev/ttyS15";
+AREXPORT const char *ArUtil::COM1 = "/dev/ttyS0";
+AREXPORT const char *ArUtil::COM2 = "/dev/ttyS1";
+AREXPORT const char *ArUtil::COM3 = "/dev/ttyS2";
+AREXPORT const char *ArUtil::COM4 = "/dev/ttyS3";
+AREXPORT const char *ArUtil::COM5 = "/dev/ttyS4";
+AREXPORT const char *ArUtil::COM6 = "/dev/ttyS5";
+AREXPORT const char *ArUtil::COM7 = "/dev/ttyS6";
+AREXPORT const char *ArUtil::COM8 = "/dev/ttyS7";
+AREXPORT const char *ArUtil::COM9 = "/dev/ttyS8";
+AREXPORT const char *ArUtil::COM10 = "/dev/ttyS9";
+AREXPORT const char *ArUtil::COM11 = "/dev/ttyS10";
+AREXPORT const char *ArUtil::COM12 = "/dev/ttyS11";
+AREXPORT const char *ArUtil::COM13 = "/dev/ttyS12";
+AREXPORT const char *ArUtil::COM14 = "/dev/ttyS13";
+AREXPORT const char *ArUtil::COM15 = "/dev/ttyS14";
+AREXPORT const char *ArUtil::COM16 = "/dev/ttyS15";
 #endif  // WIN32
 
-MVREXPORT const char *MvrUtil::TRUESTRING = "true";
-MVREXPORT const char *MvrUtil::FALSESTRING = "false";
+AREXPORT const char *ArUtil::TRUESTRING = "true";
+AREXPORT const char *ArUtil::FALSESTRING = "false";
 
-// const double eps = std::numeric_limits<double>::epsilon();
-const double MvrMat::ourEpsilon = 0.00000001; 
+// const double eps = std::numeric_limits<double>::epsilon();  
+const double ArMath::ourEpsilon = 0.00000001; 
 
 #ifdef WIN32
 // max returned by rand()
-const long MvrMath::ourRandMax = RAND_MAX;
+const long ArMath::ourRandMax = RAND_MAX;
 #else
 // max returned by lrand48()
-const long MvrMath::ourRandMax = 2147483648;// 2^31, per lrand48 man page
-#endif // WIN32
+const long ArMath::ourRandMax = 2147483648;// 2^31, per lrand48 man page
+#endif
 
 #ifdef WIN32
-const char  MvrUtil::SEPARATOR_CHAR = '\\';
-const char *MvrUtil::SEPARATOR_STRING = "\\";
-const char  MvrUtil::OTHER_SEPARATOR_CHAR = '/';
+const char  ArUtil::SEPARATOR_CHAR = '\\';
+const char *ArUtil::SEPARATOR_STRING = "\\";
+const char  ArUtil::OTHER_SEPARATOR_CHAR = '/';
 #else
-const char  MvrUtil::SEPARATOR_CHAR = '/';
-const char *MvrUtil::SEPARATOR_STRING = "/";
-const char  MvrUtil::OTHER_SEPARATOR_CHAR = '\\';
+const char  ArUtil::SEPARATOR_CHAR = '/';
+const char *ArUtil::SEPARATOR_STRING = "/";
+const char  ArUtil::OTHER_SEPARATOR_CHAR = '\\';
 #endif
 
 #ifdef WIN32
-MvrMutex MvrUtil::ourLocaltimeMutex;
+ArMutex ArUtil::ourLocaltimeMutex;
 #endif
+
 
 /**
   Sleep (do nothing, without continuing the program) for @arg ms miliseconds.
   Use this to add idle time to threads, or in situations such as waiting for
-  hardware with a known response time.  To perform actions at specific intervals,
-  however, use the MvrTime timer utility instead, or the MvrUtil::getTime() method
-  to check time.
-  @param ms the number of milliseconds to sleep for
+hardware with a known response time.  To perform actions at specific intervals,
+however, use the ArTime timer utility instead, or the ArUtil::getTime() method
+to check time.
+  @note in Linux, it actually calls the system usleep() function with 10 ms less
+than the desired sleep time, since usleep() can sleep for about 10 ms. more than
+requested (for small sleep times especially, it sleeps for the next highest
+multiple of 10.)
+   @param ms the number of milliseconds to sleep for
 */
-MVREXPORT void MvrUtil::sleep(unsigned int ms)
+AREXPORT void ArUtil::sleep(unsigned int ms)
 {
 #ifdef WIN32
   Sleep(ms);
-#else
+#else // ifndef win32
   if (ms > 10)
     ms -= 10;
   usleep(ms * 1000);
-#endif // WIN32
+#endif // linux
+
 }
 
-MVREXPORT unsigned int MvrUtil::getTime(void)
+/**
+   Get the time in milliseconds, counting from some arbitrary point.
+   This time is only valid within this run of the program, it does not represent
+"time of day". In other words, values returned by getTime() may be compared to
+each other within the same run time of a program.
+   If ARIA was compiled on Linux with POSIX monotonic clock functions
+available, and the current running Linux kernel supports the monotonic clock,
+then the clock_gettime() function is used with the CLOCK_MONOTONIC option 
+(this is an accurate clock that is robust against e.g. changes to the
+system time, etc.). Otherwise, gettimeofday() is used instead. Programs using ARIA
+on Linux must therefore link to the librt library (with -lrt) as well as libAria.  On Windows, the
+timeGetTime() function is used from the winmm library -- this means programs
+using ARIA on Windows must be linked to the winmm.lib library as well as ARIA.
+   @return millisecond time
+*/
+AREXPORT unsigned int ArUtil::getTime(void)
 {
-// the unix way
+// the good unix way
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
   struct timespec tp;
   if (clock_gettime(CLOCK_MONOTONIC, &tp) == 0)
-    return tp.tv_nsec / 1000000 + (tp.tv_sec % 1000000) * 1000;
-// the old unix way
-#endif
+    return tp.tv_nsec / 1000000 + (tp.tv_sec % 1000000)*1000;
+// the old unix way as a fallback
+#endif // if it isn't the good way
 #if !defined(WIN32)
   struct timeval tv;
-  if (gettimeofday(&tv, NULL) == 0)
-    return tv.tv_usec/1000 + (tv.tv_sec % 1000000) * 1000;
+  if (gettimeofday(&tv,NULL) == 0)
+    return tv.tv_usec/1000 + (tv.tv_sec % 1000000)*1000;
   else
     return 0;
 #elif defined(WIN32)
@@ -155,295 +198,437 @@ MVREXPORT unsigned int MvrUtil::getTime(void)
 #endif
 }
 
+/*
+   Takes a string and splits it into a list of words. It appends the words
+   to the outList. If there is nothing found, it will not touch the outList.
+   @param inString the input string to split
+   @param outList the list in which to store the words that are found
+*/
+/*
+AREXPORT void ArUtil::splitString(std::string inString,
+				  std::list<std::string> &outList)
+{
+  const char *start, *end;
+
+  // Strip off leading white space
+  for (end=inString.c_str(); *end && isspace(*end); ++end)
+    ;
+  while (*end)
+  {
+    // Mark start of the word then find end
+    for (start=end; *end && !isspace(*end); ++end)
+      ;
+    // Store the word
+    if (*start && ((*end && isspace(*end)) || !*end))
+      outList.push_back(std::string(start, (int)(end-start)));
+    for (; *end && isspace(*end); ++end)
+      ;
+  }
+}
+*/
+
+
+
 #ifdef WIN32
 
-/*
- * @param fileName name of the file to size
- * @return size in byte, -1 on error
- */
-MVREXPORT long MvrUtil::sizeFile(std::string fileName)
+/**
+   @return size in bytes. -1 on error.
+   @param fileName name of the file to size
+*/
+AREXPORT long ArUtil::sizeFile(std::string fileName)
 {
   struct _stat buf;
+
   if (_stat(fileName.c_str(), &buf) < 0)
-    return -1;
+    return(-1);
+
   if (!(buf.st_mode | _S_IFREG))
-    return -1;
-  return (buf.st_size);  
+    return(-1);
+
+  return(buf.st_size);
 }
 
-/*
- * @param fileName of the file to size
- * @return size in byte, -1 on error
- */
-MVREXPORT long MvrUtil::sizeFile(const char *fileName)
+/**
+   @return size in bytes. -1 on error.
+   @param fileName name of the file to size
+*/
+AREXPORT long ArUtil::sizeFile(const char * fileName)
 {
   struct _stat buf;
+
   if (_stat(fileName, &buf) < 0)
-    return -1;
+    return(-1);
+
   if (!(buf.st_mode | _S_IFREG))
-    return -1;
-  return (buf.st_size);  
+    return(-1);
+
+  return(buf.st_size);
 }
 
-#else
-/*
- * @param fileName of the file to size
- * @return size in byte, -1 on error
- */
-MVREXPORT long MvrUtil::sizeFile(std::string fileName)
+#else // !WIN32
+
+AREXPORT long ArUtil::sizeFile(std::string fileName)
 {
   struct stat buf;
 
   if (stat(fileName.c_str(), &buf) < 0)
   {
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrUtil::sizeFile: stat failed");
-    return -1;
+    ArLog::logErrorFromOS(ArLog::Normal, "ArUtil::sizeFile: stat failed");
+    return(-1);
   }
 
   if (!S_ISREG(buf.st_mode))
-    return -1;
-  return buf.st_size;
+    return(-1);
+
+  return(buf.st_size);
 }
-/*
- * @param fileName of the file to size
- * @return size in byte, -1 on error
- */
-MVREXPORT long MvrUtil::sizeFile(const char * fileName)
+
+
+/**
+   @return size in bytes. -1 on error.
+   @param fileName name of the file to size
+*/
+AREXPORT long ArUtil::sizeFile(const char * fileName)
 {
   struct stat buf;
 
   if (stat(fileName, &buf) < 0)
   {
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrUtil::sizeFile: stat failed");
-    return -1;
+    ArLog::logErrorFromOS(ArLog::Normal, "ArUtil::sizeFile: stat failed");
+    return(-1);
   }
 
   if (!S_ISREG(buf.st_mode))
-    return -1;
-  return buf.st_size;
-}
-#endif // WIN32
+    return(-1);
 
-/*
- * @param fileName name of the file to size
- * @return  true if file is found
- */
-MVREXPORT bool MvrUtil::findFile(const char * fileName)
+  return(buf.st_size);
+}
+
+#endif // else !WIN32
+
+/**
+   @return true if file is found
+   @param fileName name of the file to size
+*/
+AREXPORT bool ArUtil::findFile(const char *fileName)
 {
   FILE *fp;
-  if ((fp=MvrUtil::fopen(fileName, "r")))
+
+  if ((fp=ArUtil::fopen(fileName, "r")))
   {
     fclose(fp);
-    return true;
+    return(true);
   }
   else
-    return false;
+    return(false);
 }
 
-MVREXPORT bool MvrUtil::stripQuotes(char *dest, const char *src, size_t destLen)
+
+
+
+/*
+   Works for \ and /. Returns true if something was actualy done. Sets
+   fileOut to be what ever the answer is.
+   @return true if the path contains a file
+   @param fileIn input path/fileName
+   @param fileOut output fileName
+*/
+/*AREXPORT bool ArUtil::stripDir(std::string fileIn, std::string &fileOut)
+{
+  const char *ptr;
+
+  for (ptr=fileIn.c_str(); *ptr; ++ptr)
+    ;
+  for (--ptr; (ptr > fileIn.c_str()) && (*ptr != '/') && (*ptr != '\\'); --ptr)
+    ;
+  if ((*ptr == '/') || (*ptr == '\\'))
+  {
+    fileOut=ptr+1;
+    return(true);
+  }
+  else
+  {
+    fileOut=fileIn;
+    return(false);
+  }
+}
+*/
+/*
+   Works for \ and /. Returns true if something was actualy done. Sets
+   fileOut to be what ever the answer is.
+   @return true if the file contains a path
+   @param fileIn input path/fileName
+   @param fileOut output path
+*/
+/*
+AREXPORT bool ArUtil::stripFile(std::string fileIn, std::string &fileOut)
+{
+  const char *start, *end;
+
+  for (start=end=fileIn.c_str(); *end; ++end)
+  {
+    if ((*end == '/') || (*end == '\\'))
+    {
+      start=end;
+      for (; *end && ((*end == '/') || (*end == '\\')); ++end)
+        ;
+    }
+  }
+
+  if (start < end)
+  {
+    fileOut.assign(fileIn, 0, start-fileIn.c_str());
+    return(true);
+  }
+
+  fileOut=fileIn;
+  return(false);
+}
+*/
+AREXPORT bool ArUtil::stripQuotes(char *dest, const char *src, size_t destLen)
 {
   size_t srcLen = strlen(src);
-  if (destLen < srcLen+1)
+  if (destLen < srcLen + 1)
   {
-    MvrLog::log(MvrLog::Normal, "MvrUtil::stripQuotes: destLen isn't long enough to fit copy its should be %d", destLen, srcLen + 1);
+    ArLog::log(ArLog::Normal, "ArUtil::stripQuotes: destLen isn't long enough to fit copy its %d should be %d", destLen, srcLen + 1);
     return false;
   }
-  // if there are no quotes to strip jsut copy and return 
-  if (srcLen < 2 || (src[0] != '"' || src[srcLen-1] != '"'))
+  // if there are no quotes to strip just copy and return
+  if (srcLen < 2 || 
+      (src[0] != '"' || src[srcLen - 1] != '"'))
   {
     strcpy(dest, src);
     return true;
   }
   // we have quotes so chop of the first and last char
-  strncpy(dest, &src[1], srcLen-1);
-  dest[srcLen-2] = '\0';
+  strncpy(dest, &src[1], srcLen - 1);
+  dest[srcLen - 2] = '\0';
   return true;
 }
 
+
 /**
  * This method behaves similarly to the char[] version, except that it modifies
- * the given std::string. 
+ * the given std::string.  If the first and last characters of the string are 
+ * quotation marks ("), then they are removed from the string.  Multiple nested
+ * quotation marks are not handled.
  * @param strToStrip a pointer to the std::string to be read/modified; must be 
  * non-NULL
  * @return bool true if the string was successfully processed; false otherwise 
 **/  
-MVREXPORT bool MvrUtil::stripQuotes(std::string *strToStrip)
+AREXPORT bool ArUtil::stripQuotes(std::string *strToStrip)
 {
-  if (strToStrip == NULL){
-    MvrLog::log(MvrLog::Normal, "MvrUtil::stripQuotes() NULL string");
+  if (strToStrip == NULL) {
+    ArLog::log(ArLog::Normal,
+               "ArUtil::stripQuotes() NULL string");
     return false;
   }
-  // if there are no matching quotes to strip, just return
-  if ((strToStrip->size() < 2 )|| 
-      (strToStrip->at(0) != '"') ||
-      (strToStrip->at(strToStrip->size()-1) != '"'))
+  
+  // If there are no matching quotes to strip, just return
+  if ((strToStrip->size() < 2) || 
+      (strToStrip->at(0) != '"') || 
+      (strToStrip->at(strToStrip->size() - 1) != '"'))
   {
     return true;
   }
-
+  
   // Matching quotes found so chop of the first and last char
   strToStrip->erase(strToStrip->begin());
-  strToStrip->erase(strToStrip->size() - 1);
+  strToStrip->resize(strToStrip->size() - 1);
 
-  return true; 
-}
+  return true;
+               
+} // end method stripQuotes
 
-/*
+/**
  * This method strips out bad characters
- */
-
-MVREXPORT bool MvrUtil::fixBadCharacters(std::string *strToFix, bool removeSpaces, bool fixOtherWhiteSpace)
+**/  
+AREXPORT bool ArUtil::fixBadCharacters(
+	std::string *strToStrip, bool removeSpaces, bool fixOtherWhiteSpace)
 {
-  if (strToFix == NULL){
-    MvrLog::log(MvrLog::Normal, "MvrUtil::fixBadCharacters() NULL string");
+  if (strToStrip == NULL) {
+    ArLog::log(ArLog::Normal,
+               "ArUtil::fixBadCharacters() NULL string");
     return false;
   }
-
-  for (size_t i=0; i<(*strToFix).length(); i++)
+  
+  // The .length() isn't guaranteed to be O(1) (it could be O(n)) but
+  // it's not usually O(1).... and hopefully this isn't called that
+  // often (the original place was the identifer, which is once at
+  // startup)... most of the other solutions I've seen are way more
+  // complicated
+  for (size_t i = 0; i < (*strToStrip).length(); i++)
   {
-    if (!removeSpaces && (*strToFix)[i] == ' ')
+    if (!removeSpaces && (*strToStrip)[i] == ' ')
       continue;
-    else if (!removeSpaces && fixOtherWhiteSpace && isspace((*strToFix)[i]))
-      (*strToFix)[i] = ' ';
-    else if ((*strToFix)[i] == '(' || (*strToFix)[i] == '{' )
-      (*strToFix)[i] = '[';
-    else if ((*strToFix)[i] == ')' || (*strToFix)[i] == '}' )
-      (*strToFix)[i] = ']';
-    else if (isalpha((*strToFix)[i]) || isdigit((*strToFix)[i]) ||
-             (*strToFix)[i] == '.' || (*strToFix)[i] == '_' ||
-             (*strToFix)[i] == '-' || (*strToFix)[i] == '+' ||
-             (*strToFix)[i] == '[' || (*strToFix)[i] == ']' )
+    else if (!removeSpaces && fixOtherWhiteSpace && isspace((*strToStrip)[i]))
+      (*strToStrip)[i] = ' ';
+    else if ((*strToStrip)[i] == '(' || (*strToStrip)[i] == '{')
+      (*strToStrip)[i] = '[';
+    else if ((*strToStrip)[i] == ')' || (*strToStrip)[i] == '}')
+      (*strToStrip)[i] = ']';
+    else if (isalpha((*strToStrip)[i]) || isdigit((*strToStrip)[i]) || 
+	     (*strToStrip)[i] == '.' || (*strToStrip)[i] == '_' || 
+	     (*strToStrip)[i] == '-' || (*strToStrip)[i] == '+' || 
+	     (*strToStrip)[i] == '[' || (*strToStrip)[i] == ']')
       continue;
     else
-      (*strToFix)[i] = '-';
+      (*strToStrip)[i] = '-';
   }
+
   return true;
-}
+               
+} // end method stripQuotes
 
 /** Append a directory separator character to the given path string, depending on the
- * platform. 
- * @param path the path string to append a slash to
- * @param pathLength maximum length allocated for path string
- */
-MVREXPORT void MvrUtil::appendSlash(char *path, size_t pathLength)
+ * platform.  On Windows, a backslash ('\\') is added. On other platforms, a 
+ * forward slash ('/') is appended. If there is no more allocated space in the
+ * path string (as given by the @arg pathLength parameter), no character will be appended.
+   @param path the path string to append a slash to
+   @param pathLength maximum length allocated for path string
+*/
+AREXPORT void ArUtil::appendSlash(char *path, size_t pathLength)
 {
   // first check boundary
   size_t len;
   len = strlen(path);
-  if (len > pathLength-2)
+  if (len > pathLength - 2)
     return;
 
-  if (len == 0 || (path[len-1] != '\\' && path[len-1] != '/'))
+  if (len == 0 || (path[len - 1] != '\\' && path[len - 1] != '/'))
   {
 #ifdef WIN32
     path[len] = '\\';
 #else
-    path[len] = '/'
+    path[len] = '/';
 #endif
-    path[len+1] = '\0';
+    path[len + 1] = '\0';
   }
 }
 
-/// Append the appropriate directory separator for this platform
-MVREXPORT void MvrUtil::appendSlash(std::string &path)
+/** Append the appropriate directory separator for this platform (a forward
+ * slash "/" on Linux, or a backslash "\" on Windows) to @arg path.
+ */
+AREXPORT void ArUtil::appendSlash(std::string &path)
 {
+  // first check boundary
   size_t len = path.length();
-  if ((len == 0) || (path[len-1] != SEPARATOR_CHAR && path[len-1] != OTHER_SEPARATOR_CHAR)){
+  if ((len == 0) || 
+      (path[len - 1] != SEPARATOR_CHAR && path[len - 1] != OTHER_SEPARATOR_CHAR)) {
     path += SEPARATOR_STRING;
   }
-}
+
+} // end method appendSlash
 
 /**
    Replace in @a path all incorrect directory separators for this platform with
-   the correct directory separator character.
+the correct directory separator character (forward slash '/' on Linux, backslash
+'\' on Windows).
    @param path the path in which to fix the orientation of the slashes
    @param pathLength the maximum length of path
 */
-MVREXPORT void MvrUtil::fixSlashes(char *path, size_t pathLength)
+AREXPORT void ArUtil::fixSlashes(char *path, size_t pathLength)
 {
 #ifdef WIN32
-    fixSlashesBackward(path, pathLength);
+  fixSlashesBackward(path, pathLength);
 #else
-    fixSlashesForward(path, pathLength);
-#endif 
+  fixSlashesForward(path, pathLength);
+#endif
 }
 
 /** Replace any forward slash charactars ('/') in @a path with backslashes ('\').
    @param path the path in which to fix the orientation of the slashes
    @param pathLength size of @a path
 */
-MVREXPORT void MvrUtil::fixSlashesBackward(char *path, size_t pathLength)
+AREXPORT void ArUtil::fixSlashesBackward(char *path, size_t pathLength)
 {
-  for (size_t i=0; path[i] != '\0' && i<pathLength; i++){
+  for (size_t i=0; path[i] != '\0' && i < pathLength; i++)
+  {
     if (path[i] == '/')
-      path[i] = '\\';
+      path[i]='\\';
   }
 }
 
-MVREXPORT void MvrUtil::fixSlashesForward(char *path, size_t pathLength)
+/** Replace any forward slash charactars ('/') in @a path with backslashes ('\').
+   @param path the path in which to fix the orientation of the slashes
+   @param pathLength size of @a path
+*/
+AREXPORT void ArUtil::fixSlashesForward(char *path, size_t pathLength)
 {
-  for (size_t i=0; path[i] != '\0' && i<pathLength; i++){
+
+  for (size_t i=0; path[i] != '\0' && i < pathLength; i++)
+  {
     if (path[i] == '\\')
-      path[i] = '/';
+      path[i]='/';
   }
 }
 
 /**
    Replace in @a path all incorrect directory separators for this platform with
-   the correct directory separator character 
+the correct directory separator character (forward slash '/' on Linux, backslash
+'\' on Windows).
    @param path the path in which to fix the orientation of the slashes
 */
-MVREXPORT void MvrUtil::fixSlashes(std::string &path)
+AREXPORT void ArUtil::fixSlashes(std::string &path) 
 {
-  for (size_t i=0; i<path.length(); i++)
+  for (size_t i = 0; i < path.length(); i++)
   {
     if (path[i] == OTHER_SEPARATOR_CHAR)
-      path[i] = SEPARATOR_CHAR;
+      path[i]= SEPARATOR_CHAR;
   }
 }
-
-MVREXPORT char MvrUtil::getSlash(void)
+  
+/** What is the appropriate directory path separator character for this
+ * platform? */
+AREXPORT char ArUtil::getSlash()
 {
   return SEPARATOR_CHAR;
 }
 
-/*
+/**
    This function will take the @a baseDir and add @a insideDir after
    it, separated by appropriate directory path separators for this platform,
    with a final directory separator retained or added after @a inside dir.
-   
+   For example on Linux, this results in 'baseDir/insideDir/', whereas
+   backslashes are used on Windows instead. The resulting string is 
+   placed in the @a dest buffer (the path string will be truncated if
+   there is not enough space in @a dest according to @a destLength)
+
    @param dest the place to put the result
    @param destLength the length available in @a dest
    @param baseDir the directory to start with
    @param insideDir the directory to place after the baseDir 
- */
-MVREXPORT void MvrUtil::addDirectories(char *dest, size_t destLength,
-                                       const char *baseDir,
-                                       const char *insideDir)
+**/
+AREXPORT void ArUtil::addDirectories(char *dest, size_t destLength, 
+				     const char *baseDir,
+				     const char *insideDir)
 {
   // start it off
-  strncpy(dest, baseDir, destLength-1);
-  // make sure we have null term
-  dest[destLength-1] = '\0';
+  strncpy(dest, baseDir, destLength - 1);
+  // make sure we have a null term
+  dest[destLength - 1] = '\0';
+  // toss on that slash
   appendSlash(dest, destLength);
-
-  strncat(dest, insideDir, destLength-strlen(dest) -1);
-
+  // put on the inside dir
+  strncat(dest, insideDir, destLength - strlen(dest) - 1);
+  // now toss on that slash
   appendSlash(dest, destLength);
+  // and now fix up all the slashes
   fixSlashes(dest, destLength);
-}                                       
+}
 
 /** 
     This compares two strings, it returns an integer less than, equal to, 
     or greater than zero  if @a str  is  found, respectively, to be less than, to
     match, or be greater than @a str2. 
-
+    (This is a version of the standard C strcmp() function
+    for use with std::string strings instead.)
     @param str the string to compare
     @param str2 the second string to compare
     @return an integer less than, equal to, or greater than zero if str is 
-            found, respectively, to be less than, to match, or be greater than str2.
+    found, respectively, to be less than, to match, or be greater than str2.
 */
-MVREXPORT int MvrUtil::strcmp(const std::string &str, const std::string &str2)
+AREXPORT int ArUtil::strcmp(const std::string &str, const std::string &str2)
 {
   return ::strcmp(str.c_str(), str2.c_str());
 }
@@ -452,13 +637,14 @@ MVREXPORT int MvrUtil::strcmp(const std::string &str, const std::string &str2)
     This compares two strings, it returns an integer less than, equal to, 
     or greater than zero  if  str  is  found, respectively, to be less than, to
     match, or be greater than str2.
-
+    (This is a version of the standard C strcmp() function
+    for use with std::string strings instead.)
     @param str the string to compare
     @param str2 the second string to compare
     @return an integer less than, equal to, or greater than zero if str is 
-            found, respectively, to be less than, to match, or be greater than str2.
+    found, respectively, to be less than, to match, or be greater than str2.
 */
-MVREXPORT int MvrUtil::strcmp(const std::string &str, const char *str2)
+AREXPORT int ArUtil::strcmp(const std::string &str, const char *str2)
 {
   if (str2 != NULL) {
     return ::strcmp(str.c_str(), str2);
@@ -468,7 +654,18 @@ MVREXPORT int MvrUtil::strcmp(const std::string &str, const char *str2)
   }
 }
 
-MVREXPORT int MvrUtil::strcmp(const char *str, const std::string &str2)
+/** 
+    This compares two strings, it returns an integer less than, equal to, 
+    or greater than zero  if  str  is  found, respectively, to be less than, to
+    match, or be greater than str2.
+    (This is a version of the standard C strcmp() function
+    for use with std::string strings instead.)
+    @param str the string to compare
+    @param str2 the second string to compare
+    @return an integer less than, equal to, or greater than zero if str is 
+    found, respectively, to be less than, to match, or be greater than str2.
+*/
+AREXPORT int ArUtil::strcmp(const char *str, const std::string &str2)
 {
   if (str != NULL) {
     return ::strcmp(str, str2.c_str());
@@ -478,7 +675,16 @@ MVREXPORT int MvrUtil::strcmp(const char *str, const std::string &str2)
   }
 }
 
-MVREXPORT int MvrUtil::strcmp(const char *str, const char *str2)
+/** 
+    This compares two strings, it returns an integer less than, equal to, 
+    or greater than zero  if  str  is  found, respectively, to be less than, to
+    match, or be greater than str2.
+    @param str the string to compare
+    @param str2 the second string to compare
+    @return an integer less than, equal to, or greater than zero if str is 
+    found, respectively, to be less than, to match, or be greater than str2.
+*/
+AREXPORT int ArUtil::strcmp(const char *str, const char *str2)
 {
   if ((str != NULL) && (str2 != NULL)) {
     return ::strcmp(str, str2);
@@ -494,12 +700,30 @@ MVREXPORT int MvrUtil::strcmp(const char *str, const char *str2)
   }
 }
 
-MVREXPORT int MvrUtil::strcasecmp(const std::string &str, const std::string &str2)
+
+/** 
+    This compares two strings ignoring case, it returns an integer
+    less than, equal to, or greater than zero if str is found,
+    respectively, to be less than, to match, or be greater than str2.
+    @param str the string to compare @param str2 the second string to
+    compare @return an integer less than, equal to, or greater than
+    zero if str is found, respectively, to be less than, to match, or
+    be greater than str2.  */
+AREXPORT int ArUtil::strcasecmp(const std::string &str, 
+                                const std::string &str2)
 {
   return ::strcasecmp(str.c_str(), str2.c_str());
 }
 
-MVREXPORT int MvrUtil::strcasecmp(const std::string &str, const char *str2)
+/** 
+    This compares two strings ignoring case, it returns an integer
+    less than, equal to, or greater than zero if str is found,
+    respectively, to be less than, to match, or be greater than str2.
+    @param str the string to compare @param str2 the second string to
+    compare @return an integer less than, equal to, or greater than
+    zero if str is found, respectively, to be less than, to match, or
+    be greater than str2.  */
+AREXPORT int ArUtil::strcasecmp(const std::string &str, const char *str2)
 {
   if (str2 != NULL) {
     return ::strcasecmp(str.c_str(), str2);
@@ -509,7 +733,15 @@ MVREXPORT int MvrUtil::strcasecmp(const std::string &str, const char *str2)
   }
 }
 
-MVREXPORT int MvrUtil::strcasecmp(const char *str, const std::string &str2)
+/** 
+    This compares two strings ignoring case, it returns an integer
+    less than, equal to, or greater than zero if str is found,
+    respectively, to be less than, to match, or be greater than str2.
+    @param str the string to compare @param str2 the second string to
+    compare @return an integer less than, equal to, or greater than
+    zero if str is found, respectively, to be less than, to match, or
+    be greater than str2.  */
+AREXPORT int ArUtil::strcasecmp(const char *str, const std::string &str2)
 {
   if (str != NULL) {
     return ::strcasecmp(str, str2.c_str());
@@ -519,7 +751,15 @@ MVREXPORT int MvrUtil::strcasecmp(const char *str, const std::string &str2)
   }
 }
 
-MVREXPORT int MvrUtil::strcasecmp(const char *str, const char *str2)
+/** 
+    This compares two strings ignoring case, it returns an integer
+    less than, equal to, or greater than zero if str is found,
+    respectively, to be less than, to match, or be greater than str2.
+    @param str the string to compare @param str2 the second string to
+    compare @return an integer less than, equal to, or greater than
+    zero if str is found, respectively, to be less than, to match, or
+    be greater than str2.  */
+AREXPORT int ArUtil::strcasecmp(const char *str, const char *str2)
 {
   if ((str != NULL) && (str2 != NULL)) {
     return ::strcasecmp(str, str2);
@@ -535,7 +775,8 @@ MVREXPORT int MvrUtil::strcasecmp(const char *str, const char *str2)
   }
 }
 
-MVREXPORT bool MvrUtil::strSuffixCmp(const char *str, const char *suffix)
+
+AREXPORT bool ArUtil::strSuffixCmp(const char *str, const char *suffix)
 {
   if (str != NULL && str[0] != '\0' && 
       suffix != NULL && suffix[0] != '\0' &&
@@ -545,9 +786,10 @@ MVREXPORT bool MvrUtil::strSuffixCmp(const char *str, const char *suffix)
     return true;
   else
     return false;
+ 
 }
 
-MVREXPORT bool MvrUtil::strSuffixCaseCmp(const char *str, const char *suffix)
+AREXPORT bool ArUtil::strSuffixCaseCmp(const char *str, const char *suffix)
 {
   if (str != NULL && str[0] != '\0' && 
       suffix != NULL && suffix[0] != '\0' &&
@@ -559,23 +801,25 @@ MVREXPORT bool MvrUtil::strSuffixCaseCmp(const char *str, const char *suffix)
     return false;
 }
 
-MVREXPORT int MvrUtil::strcasequotecmp(const std::string &inStr1, const std::string &inStr2)
+
+AREXPORT int ArUtil::strcasequotecmp(const std::string &inStr1, 
+                                     const std::string &inStr2)
 {
-  std::string str1 = inStr1;
-  std::string str2 = inStr2;
+std::string str1 = inStr1;
+std::string str2 = inStr2;
 
 	int x = 0;
 	while (x < str1.length()) {
 		if (isalpha(str1[x]) && isupper(str1[x]))
 			str1[x] = tolower(str1[x]);
-	  x++;
+	x++;
 	}
 
 	x = 0;
 	while (x < str2.length()) {
 		if (isalpha(str2[x]) && isupper(str2[x]))
 			str2[x] = tolower(str2[x]);
-	  x++;
+	x++;
 	}
   
   int len1 = str1.length();
@@ -589,16 +833,31 @@ MVREXPORT int MvrUtil::strcasequotecmp(const std::string &inStr1, const std::str
     pos2 = 1;
   }
 
+  /* Unfortunately gcc2 does't support the 5 argument version of std::string::compare()... 
+   * (Furthermore, note that it's 3-argument compare has the arguments in the wrong order.)
+   */
 #if defined(__GNUC__) && (__GNUC__ <= 2) && (__GNUC_MINOR__ <= 96)
 #warning Using GCC 2.96 or less so must use nonstandard std::string::compare method.
   int cmp = str1.compare(str2.substr(pos2, len2 - 2 * pos2), pos1, len1 - 2 * pos1);
 #else
-  int cmp = str1.compare(pos1, len1 - 2 * pos1, str2, pos2, len2 - 2 * pos2);
+  int cmp = str1.compare(pos1, 
+	 	  	 len1 - 2 * pos1,
+                         str2,
+                         pos2, 
+			 len2 - 2 * pos2);
 #endif
+
   return cmp;
+
 } // end method strcasequotecmp
 
-MVREXPORT void MvrUtil::escapeSpaces(char *dest, const char *src, size_t maxLen)
+/**
+   This copies src into dest but puts a \ before any spaces in src,
+   escaping them... its mostly for use with ArArgumentBuilder... 
+   make sure you have at least maxLen spaces in the arrays that you're passing 
+   as dest... this allocates no memory
+**/
+AREXPORT void ArUtil::escapeSpaces(char *dest, const char *src, size_t maxLen)
 {
   size_t i, adj, len;
 
@@ -623,81 +882,87 @@ MVREXPORT void MvrUtil::escapeSpaces(char *dest, const char *src, size_t maxLen)
    have at least maxLen arrays that you're passing as dest... this
    allocates no memory
 **/
-MVREXPORT void MvrUtil::lower(char *dest, const char *src, size_t maxLen)
+AREXPORT void ArUtil::lower(char *dest, const char *src, size_t maxLen)
 {
   size_t i;
   size_t len;
-
+  
   len = strlen(src);
-  for (i=0; i<len && i<maxLen; i++)
-  {
+  for (i = 0; i < len && i < maxLen; i++)
     dest[i] = tolower(src[i]);
-  }
   dest[i] = '\0';
+
 }
 
-MVREXPORT bool MvrUtil::isOnlyAlphaNumeric(const char *str)
+
+AREXPORT bool ArUtil::isOnlyAlphaNumeric(const char *str)
 {
   unsigned int ui;
   unsigned int len;
   if (str == NULL)
     return true;
-  for (ui=0, len=strlen(str); ui<len; ui++)
+  for (ui = 0, len = strlen(str); ui < len; ui++)
   {
-    if (!isalpha(str[ui]) && !isdigit(str[ui]) && str[ui] != '\0' &&
-        str[ui] != '+' && str[ui] != '-')
-        return false;
-  }
-  return true;
-}
-
-MVREXPORT bool MvrUtil::isOnlyNumeric(const char *str)
-{
-  if (str == NULL)
-    return true;
-  for (unsigned i=0, len=strlen(str); i<len; i++)
-  {
-    if (!isdigit(str[i]) && str[i] != '\0' && str[i] !='+' && str[i] != '-')
+    if (!isalpha(str[ui]) && !isdigit(str[ui]) && str[ui] != '\0' && 
+	str[ui] != '+' && str[ui] != '-')
       return false;
   }
   return true;
 }
 
-MVREXPORT bool MvrUtil::isStrEmpty(const char *str)
-{
-  if (str == NULL){
-    return true;
-  }
-  if (str[0] == '\0')
-    return true;
-  return false;
-}
-
-MVREXPORT bool MvrUtil::isStrInList(const char *str,
-                                    const std::list<std::string> &list,
-                                    bool isIgnoreCase)
+AREXPORT bool ArUtil::isOnlyNumeric(const char *str)
 {
   if (str == NULL)
+    return true;
+  for (unsigned i = 0, len = strlen(str); i < len; i++)
+  {
+    if (!isdigit(str[i]) && str[i] != '\0' && str[i] != '+' && str[i] != '-')
+      return false;
+  }
+  return true;
+}
+
+AREXPORT bool ArUtil::isStrEmpty(const char *str)
+{
+	if (str == NULL) {
+		return true;
+	}
+	if (str[0] == '\0') {
+		return true;
+	}
+	return false;
+
+} // end method isStrEmpty
+
+  
+AREXPORT bool ArUtil::isStrInList(const char *str,
+                                  const std::list<std::string> &list,
+                                  bool isIgnoreCase)
+{
+  if (str == NULL) {
     return false;
+  }
   for (std::list<std::string>::const_iterator aIter = list.begin();
        aIter != list.end();
-       aIter++)
-  {
-    if (!isIgnoreCase){
-      if (strcmp((*aIter).c_str(), str) == 0){
+       aIter++) {
+    if (!isIgnoreCase) {
+      if (strcmp((*aIter).c_str(), str) == 0) {
         return true;
       }
     }
-    else{
-      if (strcasecmp((*aIter).c_str(), str) == 0){
+    else { // ignore case
+      if (strcasecmp((*aIter).c_str(), str) == 0) {
         return true;
       }
-    }
-  }
-  return false;
-}                                    
+    } // end else ignore case
+  } // end for each string
 
-MVREXPORt const char *MvrUtil::convertBool(int val)
+  return false;
+
+} // end method isStrInList
+
+
+AREXPORT const char *ArUtil::convertBool(int val)
 {
   if (val)
     return TRUESTRING;
@@ -705,70 +970,82 @@ MVREXPORt const char *MvrUtil::convertBool(int val)
     return FALSESTRING;
 }
 
-MVREXPORT double MvrUtil::atof(const char *nptr)
+AREXPORT double ArUtil::atof(const char *nptr)
 {
   if (strcasecmp(nptr, "inf") == 0)
     return HUGE_VAL;
   else if (strcasecmp(nptr, "-inf") == 0)
-    return -HUGE_VAL;    
+    return -HUGE_VAL;
   else
-    return ::atof(nptr);
+	return ::atof(nptr);
 }
 
-MVREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor, const char *str, ...)
+
+AREXPORT void ArUtil::functorPrintf(ArFunctor1<const char *> *functor,
+				    const char *str, ...)
 {
   char buf[10000];
   va_list ptr;
   va_start(ptr, str);
-  vsnprintf(buf, sizeof(buf)-1, str, ptr);
-  buf[sizeof(buf)-1] = '\0';
+  //vsprintf(buf, str, ptr);
+  vsnprintf(buf, sizeof(buf) - 1, str, ptr);
+  buf[sizeof(buf) - 1] = '\0';
   functor->invoke(buf);
   va_end(ptr);
 }
 
-// preserving this old version that takes char* as format str instead of const char*
+// preserving this old version that takes char* as format str instead of const char* 
 // to maximize compatibility
-MVREXPORT void MvrUtil::functorPrintf(MvrFunctor1<const char *> *functor, char *str, ...)
+AREXPORT void ArUtil::functorPrintf(ArFunctor1<const char *> *functor,
+				    char *str, ...)
 {
   char buf[10000];
   va_list ptr;
   va_start(ptr, str);
-
-  vsnprintf(buf, sizeof(buf)-1, (const char*)str, ptr);
-  buf[sizeof(buf)-1] = '\0';
+  //vsprintf(buf, str, ptr);
+  vsnprintf(buf, sizeof(buf) - 1, (const char*)str, ptr);
+  buf[sizeof(buf) - 1] = '\0';
   functor->invoke(buf);
   va_end(ptr);
 }
 
-MVREXPORT void MvrUtil::writeToFIle(const char *str, FILE *file)
+
+AREXPORT void ArUtil::writeToFile(const char *str, FILE *file)
 {
   fputs(str, file);
 }
 
-/* 
+
+/** 
    This function reads a string from a file.
-   The file can contain spaces or tabs.
+   The file can contain spaces or tabs, but a '\\r'
+   or '\\n' will be treated as the end of the string, and the string
+   cannot have more characters than the value given by strLen.  This is mostly for internal use
+   with Linux to determine the Aria directory from a file in /etc, but
+   will work with Linux or Windows. 
+
    @param fileName name of the file in which to look
    @param str the string to copy the file contents into
    @param strLen the maximum allocated length of str
- */
-MVREXPORT bool MvrUtil::getStringFromFIle(const char *fileName, char *str, size_t strLen)
+**/
+AREXPORT bool ArUtil::getStringFromFile(const char *fileName, 
+					char *str, size_t strLen)
 {
   FILE *strFile;
   unsigned int i;
-
+  
   str[0] = '\0';
-
-  if ((strFile = MvrUtil::fopen(fileName, "r")) != NULL)
+  
+  if ((strFile = ArUtil::fopen(fileName, "r")) != NULL)
   {
     fgets(str, strLen, strFile);
-    for (i=0; i<strLen; i++)
+    for (i = 0; i < strLen; i++)
     {
       if (str[i] == '\r' || str[i] == '\n' || str[i] == '\0')
       {
-        str[i] = '\0';
-        fclose(strFile);
-        break;
+	str[i] = '\0';
+	fclose(strFile);
+	break;
       }
     }
   }
@@ -783,23 +1060,31 @@ MVREXPORT bool MvrUtil::getStringFromFIle(const char *fileName, char *str, size_
 /**
  * Look up the given value under the given key, within the given registry root
  * key.
+
    @param root the root key to use, one of the REGKEY enum values
+
    @param key the name of the key to find
+
    @param value the value name in which to find the string
+
    @param str where to put the string found, or if it could not be
-          found, an empty (length() == 0) string
+   found, an empty (length() == 0) string
+
    @param len the length of the allocated memory in str
+
    @return true if the string was found, false if it was not found or if there was a problem such as the string not being long enough 
  **/
-MVREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root, 
-                                              const char *key,
-                                              const char *value,
-                                              char *str,
-                                              int len)
+
+AREXPORT bool ArUtil::getStringFromRegistry(REGKEY root,
+						   const char *key,
+						   const char *value,
+						   char *str,
+						   int len)
 {
 #ifndef WIN32
   return false;
-#else  // WIN32
+#else // WIN32
+
   HKEY hkey;
   int err;
   unsigned long numKeys;
@@ -813,6 +1098,8 @@ MVREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root,
   char *data;
   unsigned long dataLength;
   HKEY rootKey;
+
+
   switch (root)
   {
   case REGKEY_CLASSES_ROOT:
@@ -831,8 +1118,8 @@ MVREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root,
     rootKey=HKEY_USERS;
     break;
   default:
-    MvrLog::log(MvrLog::Terse, 
-	       "MvrLog::getStringFromRegistry: Bad root key given.");
+    ArLog::log(ArLog::Terse, 
+	       "ArUtil::getStringFromRegistry: Bad root key given.");
     return false;
   }
 
@@ -843,90 +1130,118 @@ MVREXPORT bool MvrUtil::getStringFromRegistry(REGKEY root,
     if (RegQueryInfoKey(hkey, NULL, NULL, NULL, &numKeys, &longestKey, NULL, 
 			&numValues, &longestValue, &longestDataLength, NULL, NULL) == ERROR_SUCCESS)
     {
+	/*
+      printf("Have %d keys longest is %d, have %d values longest name is %d, longest data is %d\n",
+	     numKeys, longestKey, numValues, longestValue, longestDataLength);
+	*/	 
       data = new char[longestDataLength+2];
       valueName = new char[longestValue+2];
       for (unsigned long i = 0; i < numValues; ++i)
       {
-        dataLength = longestDataLength+1;
-        valueLength = longestValue+1;
-        if ((err = RegEnumValue(hkey, i, valueName, &valueLength, NULL, 
-              &type, (unsigned char *)data, &dataLength)) == ERROR_SUCCESS)
-        {
-          //printf("Enumed value %d, name is %s, value is %s\n", i, valueName, data);
-          if (strcmp(value, valueName) == 0)
-          {
-            if (len < dataLength)
-            {
-              MvrLog::log(MvrLog::Terse,"MvrUtil::getStringFromRegistry: str passed in not long enough for data.");
-              delete data;
-              delete valueName;
-              return false;
-            }
-            strncpy(str, data, len);
-            delete data;
-            delete valueName;
-            return true;
-          }
-        }
+	dataLength = longestDataLength+1;
+	valueLength = longestValue+1;
+	if ((err = RegEnumValue(hkey, i, valueName, &valueLength, NULL, 
+				&type, (unsigned char *)data, &dataLength)) == ERROR_SUCCESS)
+	{
+		//printf("Enumed value %d, name is %s, value is %s\n", i, valueName, data);
+	  if (strcmp(value, valueName) == 0)
+	  {
+	    if (len < dataLength)
+	    {
+	      ArLog::log(ArLog::Terse,"ArUtil::getStringFromRegistry: str passed in not long enough for data.");
+	      delete data;
+	      delete valueName;
+	      return false;
+	    }
+	    strncpy(str, data, len);
+	    delete data;
+	    delete valueName;
+	    return true;
+	  }
+	}
+	/*
+	else
+		printf("Couldn't enum value %d cause %d\n",i,  err);
+		*/
 	    }
       delete data;
       delete valueName;
     }
+	/*
+    else
+      printf("QueryInfoKey failed\n");
+	  */
   }
+  /*
+  else
+    printf("No key %d\n", err);
+  */
   return false;
 #endif
 }
   
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
-bool MvrTime::ourMonotonicClock = true;
+bool ArTime::ourMonotonicClock = true;
 #endif 
-                                           
-MVREXPORT void MvrTime::setToNow(void)
+
+AREXPORT void ArTime::setToNow(void)
 {
-  // if we have the best way of finding time use that
+// if we have the best way of finding time use that
 #if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
   if (ourMonotonicClock)
   {
     struct timespec timeNow;
     if (clock_gettime(CLOCK_MONOTONIC, &timeNow) == 0)
     {
-      // start a million seconds into the future so we have some
-      // room to go backwards
-      mySec  = timeNow.tv_sec + 1000000;
+      // start a million seconds into the future so we have some room
+      // to go backwards
+      mySec = timeNow.tv_sec + 1000000;
       myMSec = timeNow.tv_nsec / 1000000;
       return;
     }
     else
     {
       ourMonotonicClock = false;
-      MvrLog::logNoLock(MvrLog::Terse, "MvrTime::setNow: invalid return from clock_gettime");
+      ArLog::logNoLock(ArLog::Terse, "ArTime::setToNow: invalid return from clock_gettime.");
     }
   }
 #endif
-// if our good way didn't work use the old way
+// if our good way didn't work use the old ways
 #ifndef WIN32
   struct timeval timeNow;
   
   if (gettimeofday(&timeNow, NULL) == 0)
   {
-    // start a million seconds into the future so we have some
-    // room to go backwards
-    mySec  = timeNow.tv_sec + 1000000;
+    // start a million seconds into the future so we have some room
+    // to go backwards
+    mySec = timeNow.tv_sec + 1000000;
     myMSec = timeNow.tv_usec / 1000;
   }
   else
-    MvrLog::logNoLock(MvrLog::Terse, "MvrTime::setToNow: invalid return from gettimeofday.");
+    ArLog::logNoLock(ArLog::Terse, "ArTime::setToNow: invalid return from gettimeofday.");
+// thats probably not available in windows, so this is the one we've been using
 #else
+      /* this should be the better way, but it doesn't really work...
+	 this would be seconds from 1970, but it is based on the
+	 hardware timer or something and so winds up not being updated
+	 all the time and winds up being some number of ms < 20 ms off
+      struct _timeb startTime;
+      _ftime(&startTime);
+      mySec = startTime.time;
+      myMSec = startTime.millitm;*/
+      // so we're going with just their normal function, msec since boot
   long timeNow;
   timeNow = timeGetTime();
-  // start a million seconds into the future so we have some
-  // room to go backwards
-  mySec  = timeNow / 1000 + 1000000;
+  // start a million seconds into the future so we have some room
+  // to go backwards 
+  mySec = timeNow / 1000 + 1000000;
   myMSec = timeNow % 1000;
+// but if the good way isn't available use the old way...
 #endif
-}                                          
+      
+}
 
-MVREXPORT MvrRunningAverage::MvrRunningAverage(size_t numToAverage)
+AREXPORT ArRunningAverage::ArRunningAverage(size_t numToAverage)
 {
   myNumToAverage = numToAverage;
   myTotal = 0;
@@ -934,27 +1249,28 @@ MVREXPORT MvrRunningAverage::MvrRunningAverage(size_t numToAverage)
   myUseRootMeanSquare = false;
 }
 
-MVREXPORT MvrRunningAverage::~MvrRunningAverage()
+AREXPORT ArRunningAverage::~ArRunningAverage()
 {
 
 }
 
-MVREXPORT double MvrRunningAverage::getAverage(void) const
+AREXPORT double ArRunningAverage::getAverage(void) const
 {
   if (myNum == 0)
     return 0.0;
+
   if (myUseRootMeanSquare)
     return sqrt(myTotal / myNum);
   else
     return myTotal / myNum;
 }
 
-MVREXPORT void MvrRunningAverage::add(double val)
+AREXPORT void ArRunningAverage::add(double val)
 {
   if (myUseRootMeanSquare)
     myTotal += (val * val);
   else
-    myTotal += vale;
+    myTotal += val;
   myNum++;
   myVals.push_front(val);
   if (myVals.size() > myNumToAverage || myNum > myNumToAverage)
@@ -963,12 +1279,12 @@ MVREXPORT void MvrRunningAverage::add(double val)
       myTotal -= (myVals.back() * myVals.back());
     else
       myTotal -= myVals.back();
-    myNum --;
+    myNum--;
     myVals.pop_back();
   }
 }
 
-MVREXPORT void MvrRunningAverage::clear(void)
+AREXPORT void ArRunningAverage::clear(void)
 {
   while (myVals.size() > 0)
     myVals.pop_back();
@@ -976,12 +1292,12 @@ MVREXPORT void MvrRunningAverage::clear(void)
   myTotal = 0;
 }
 
-MVREXPORT size_t MvrRunningAverage::getNumToAverage(void) const
+AREXPORT size_t ArRunningAverage::getNumToAverage(void) const
 {
   return myNumToAverage;
 }
 
-MVREXPORT void MvrRunningAverage::setNumToAverage(size_t numToAverage)
+AREXPORT void ArRunningAverage::setNumToAverage(size_t numToAverage)
 {
   myNumToAverage = numToAverage;
   while (myVals.size() > myNumToAverage)
@@ -995,153 +1311,165 @@ MVREXPORT void MvrRunningAverage::setNumToAverage(size_t numToAverage)
   }
 }
 
-MVREXPORT size_t MvrRunningAverage::getCurrentNumAveraged(void)
+AREXPORT size_t ArRunningAverage::getCurrentNumAveraged(void)
 {
   return myNum;
 }
 
-MVREXPORT void MvrRunningAverage::setUseRootMeanSquare(bool useRootMeanSquare)
+AREXPORT void ArRunningAverage::setUseRootMeanSquare(bool useRootMeanSquare)
 {
   if (myUseRootMeanSquare != useRootMeanSquare)
   {
     myTotal = 0;
     std::list<double>::iterator it;
-    for (it=myVal.begin(); it != myVals.end(); it++)
+    for (it = myVals.begin(); it != myVals.end(); it++)
     {
       if (useRootMeanSquare)
-        myTotal += ((*it) * (*it));
+	myTotal += ((*it) * (*it));
       else
-        myTotal += (*it);
+	myTotal += (*it);
     }
   }
+
   myUseRootMeanSquare = useRootMeanSquare;
 }
 
-MVREXPORT bool MvrRunningAverage::getUseRootMeanSquare(void)
+AREXPORT bool ArRunningAverage::getUseRootMeanSquare(void)
 {
   return myUseRootMeanSquare;
 }
 
-MVREXPORT MvrRootMeanSquareCalculator::MvrRootMeanSquareCalculator()
+AREXPORT ArRootMeanSquareCalculator::ArRootMeanSquareCalculator()
 {
   clear();
-  myName = "MvrRootMeanSquareCalculator";
+  myName = "ArRootMeanSquareCalculator";
 }
 
-MVREXPORT MvrRootMeanSquareCalculator::~MvrRootMeanSquareCalculator()
+AREXPORT ArRootMeanSquareCalculator::~ArRootMeanSquareCalculator()
 {
 
 }
 
-MVREXPORT double MvrRootMeanSquareCalculator::getRootMeanSquare(void) const
+AREXPORT double ArRootMeanSquareCalculator::getRootMeanSquare (void) const
 {
   if (myNum == 0)
-    return 0.0;
+    return 0;
   else
-    return sqrt((double) myTotal / (double) myNum);
+    return sqrt((double) myTotal / (double)myNum);
 }
 
-MVREXPORT void MvrRootMeanSquareCalculator::add(int val)
+AREXPORT void ArRootMeanSquareCalculator::add(int val)
 {
   myTotal += val * val;
-  myNum ++;
+  myNum++;
   if (myTotal < 0)
   {
-    MvrLog::log(MvrLog::Normal, "%s: total wrapped, resetting", myName.c_str());
-    clear()
+    ArLog::log(ArLog::Normal, "%s: total wrapped, resetting", myName.c_str());
+    clear();
+    // this isn't a clean fix, but won't let it infinitely loop on a bad value
+    //add(val);
   }
 }
 
-MVREXPORT void MvrRootMeanSquareCalculator::clear(void)
+AREXPORT void ArRootMeanSquareCalculator::clear(void)
 {
   myTotal = 0;
-  myNum   = 0;
+  myNum = 0;
 }
 
-MVREXPORT size_t MvrRootMeanSquareCalculator::getCurrentNumAveraged(void)
+AREXPORT size_t ArRootMeanSquareCalculator::getCurrentNumAveraged(void)
 {
   return myNum;
 }
 
-MVREXPORT void MvrRootMeanSquareCalculator::setName(const char *name)
+AREXPORT void ArRootMeanSquareCalculator::setName(const char *name)
 {
   if (name != NULL)
     myName = name;
   else
-    myName = "MvrRootMeanSquareCalculator";
+    myName = "ArRootMeanSquareCalculator";
+}
+
+AREXPORT const char *ArRootMeanSquareCalculator::getName(void)
+{
+  return myName.c_str();
 }
 
 #ifndef WIN32
-MVREXPORT MvrDaemonizer::MvrDaemonizer(int *argc, char **argv,
-                                       bool closeStdErrAndStdOut) :
-          myParser(argc, argv),
-          myLogOptionsCB(this, &MvrDaemonizer::logOptions),
+
+AREXPORT ArDaemonizer::ArDaemonizer(int *argc, char **argv, 
+				    bool closeStdErrAndStdOut) :
+  myParser(argc, argv),
+  myLogOptionsCB(this, &ArDaemonizer::logOptions)
 {
   myIsDaemonized = false;
   myCloseStdErrAndStdOut = closeStdErrAndStdOut;
-  Mvria::addLogOptionsCB(&myLogOptionsCB);
-}          
+  Aria::addLogOptionsCB(&myLogOptionsCB);
+}
 
-MVREXPORT MvrDaemonizer::~MvrDaemonizer()
+AREXPORT ArDaemonizer::~ArDaemonizer()
 {
 
 }
 
-MVREXPORT bool MvrDaemonizer::daemonize(void)
+AREXPORT bool ArDaemonizer::daemonize(void)
 {
-  if (myParser.checkArgument("~daemonize") || myParser.checkArgument("-d"))
+  if (myParser.checkArgument("-daemonize") ||
+      myParser.checkArgument("-d"))
   {
     return forceDaemonize();
   }
   else
     return true;
+
 }
 
-/*
- * This returns true if daemonizing worked, returns false if it 
- * didn't... the parent process exits here if forking worked
- */
-
-MVREXPORT bool MvrDaemonizer::forceDaemonize(void)
+/**
+   This returns true if daemonizing worked, returns false if it
+   didn't... the parent process exits here if forking worked.
+ **/
+AREXPORT bool ArDaemonizer::forceDaemonize(void)
 {
-  switch(fork())
-  {
-    case 0:     // child process just return
+    switch (fork())
+    {
+    case 0: // child process just return
       myIsDaemonized = true;
       if (myCloseStdErrAndStdOut)
       {
-        fclose(stdout);
-        fclose(stderr);
+	fclose(stdout);
+	fclose(stderr);
       }
       return true;
-    case -1:  // error ...fail
+    case -1: // error.... fail
       printf("Can't fork");
-      MvrLog::log(MvrLog::Tersem, "MvrDaemonizer: Can't fork");
+      ArLog::log(ArLog::Terse, "ArDaemonizer: Can't fork");
       return false;
-    default:
-      printf("Deamon start\n");
+    default: // parent process
+      printf("Daemon started\n");
       exit(0);
-  }
+    }
 }
 
-MVREXPORT void MvrDaemonizer::logOptions(void) const
+AREXPORT void ArDaemonizer::logOptions(void) const
 {
-  MvrLog::log(MvrLog::Terse, "Options for Daemonizing: ");
-  MvrLog::log(MvrLog::Terse, "~daemonize");
-  MvrLog::log(MvrLog::Terse, "-d");
-  MvrLog::log(MvrLog::Terse, "");
+  ArLog::log(ArLog::Terse, "Options for Daemonizing:");
+  ArLog::log(ArLog::Terse, "-daemonize");
+  ArLog::log(ArLog::Terse, "-d");
+  ArLog::log(ArLog::Terse, "");
 }
 
-#endif  // WIN32
+#endif // WIN32
 
-std::map<MvrPriority::Priority, std::string> MvrPriority::ourPriorityNames;
-std::map<std::string, MvrPriority::Priority, MvrStrCaseCmpOp> MvrPriority::ourNameToPriorityMap;
 
-str::string MvrPriority::ourUnknownPriorityName;
-bool MvrPriority::ourStringsInited = false;
+std::map<ArPriority::Priority, std::string> ArPriority::ourPriorityNames;
+std::map<std::string, ArPriority::Priority, ArStrCaseCmpOp> ArPriority::ourNameToPriorityMap;
 
-MVREXPORT const char *MvrPriority::getPriorityName(Priority priority)
+std::string ArPriority::ourUnknownPriorityName;
+bool ArPriority::ourStringsInited = false;
+
+AREXPORT const char *ArPriority::getPriorityName(Priority priority) 
 {
+
   if (!ourStringsInited)
   {
     ourPriorityNames[IMPORTANT]     = "Basic";
@@ -1149,102 +1477,117 @@ MVREXPORT const char *MvrPriority::getPriorityName(Priority priority)
     ourPriorityNames[TRIVIAL]       = "Advanced";
     ourPriorityNames[DETAILED]      = "Advanced";
 
-    ourPriorityNames[EXPERT]        = "Export";
+    ourPriorityNames[EXPERT]        = "Expert";
     ourPriorityNames[FACTORY]       = "Factory";
     ourPriorityNames[CALIBRATION]   = "Calibration";
-
-    for (std::map<MvrPriority::priority, std::string>::iterator iter = ourPriorityNames.begin();
+    
+    for (std::map<ArPriority::Priority, std::string>::iterator iter = ourPriorityNames.begin();
          iter != ourPriorityNames.end();
-         iter++){
+         iter++) {
       ourNameToPriorityMap[iter->second] = iter->first;
     }
 
-    ourUnknownPriorityName = "Unknown";
-    ourStringsInited       = true;
+    ourUnknownPriorityName  = "Unknown";
+    ourStringsInited        = true;
   }
 
-  std::map<MvrPriority::Priority, std::string>::iterator iter = ourPriorityNames.find(priority);
-
-  if (iter != ourPriorityNames.end()){
+  std::map<ArPriority::Priority, std::string>::iterator iter = 
+                                                  ourPriorityNames.find(priority);
+  if (iter != ourPriorityNames.end()) {
     return iter->second.c_str();
   }
-  else{
+  else {
     return ourUnknownPriorityName.c_str();
   }
 }
 
-MVREXPORT MvrPriority::Priority MvrPriority::getPriorityFromName(const char *test, bool *ok)
+AREXPORT ArPriority::Priority ArPriority::getPriorityFromName(const char *text, 
+                                                              bool *ok)
 {
-  if (!ourStringsInited){
-    getPriorityName(IMPORTANT);
+  // This is merely called to initialize the map
+  if (!ourStringsInited) {
+     getPriorityName(IMPORTANT);
   }
-  if (ok != NULL){
+   
+  // Assume failure (until successful) 
+  if (ok != NULL) {
     *ok = false;
   }
 
-  if (MvrUtil::isStrEmpty(text)){
-    MvrLog::log(MvrLog::Normal,
-                "MvrPriority::getPriorityFromName() error finding priority from empty text");
+  if (ArUtil::isStrEmpty(text)) {
+    ArLog::log(ArLog::Normal,
+               "ArPriority::getPriorityFromName() error finding priority for empty text");
     return LAST_PRIORITY;
   }
 
-  MvrLog::log(MvrLog::Normal,
-              "MvrPriority::getPriorityFromName() error finding priority for %s",
-              text);
-  return LAST_PRIORITY;
-}
+  std::map<std::string, ArPriority::Priority, ArStrCaseCmpOp>::iterator iter = 
+                                                  ourNameToPriorityMap.find(text);
+  if (iter != ourNameToPriorityMap.end()) {
+    if (ok != NULL) {
+      *ok = true;
+    }
+    return iter->second;
+  }
+  
+  ArLog::log(ArLog::Normal,
+             "ArPriority::getPriorityFromName() error finding priority for %s",
+             text);
 
-MVREXPORT void MvrUtil::putCurrentYearInString(char *s, size_t len)
+  return LAST_PRIORITY;
+  
+} // end method getPriorityFromName
+
+
+AREXPORT void ArUtil::putCurrentYearInString(char* s, size_t len)
 {
   struct tm t;
-  MvrUtil::localtime(&t);
+  ArUtil::localtime(&t);
   snprintf(s, len, "%4d", 1900 + t.tm_year);
   s[len-1] = '\0';
 }
 
-MVREXPORT void MvrUtil::putCurrentMonthInString(char *s, size_t len)
+AREXPORT void ArUtil::putCurrentMonthInString(char* s, size_t len)
 {
 
   struct tm t;
-  MvrUtil::localtime(&t);
+  ArUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_mon + 1);
   s[len-1] = '\0';
 }
-
-MVREXPORT void MvrUtil::putCurrentDayInString(char* s, size_t len)
+AREXPORT void ArUtil::putCurrentDayInString(char* s, size_t len)
 {
   struct tm t;
-  MvrUtil::localtime(&t);
+  ArUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_mday);
   s[len-1] = '\0';
 }
-
-MVREXPORT void MvrUtil::putCurrentHourInString(char* s, size_t len)
+AREXPORT void ArUtil::putCurrentHourInString(char* s, size_t len)
 {
   struct tm t;
-  MvrUtil::localtime(&t);
+  ArUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_hour);
   s[len-1] = '\0';
 }
-
-MVREXPORT void MvrUtil::putCurrentMinuteInString(char* s, size_t len)
+AREXPORT void ArUtil::putCurrentMinuteInString(char* s, size_t len)
 {
   struct tm t; 
-  MvrUtil::localtime(&t);
+  ArUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_min);
   s[len-1] = '\0';
 }
-
-MVREXPORT void MvrUtil::putCurrentSecondInString(char* s, size_t len)
+AREXPORT void ArUtil::putCurrentSecondInString(char* s, size_t len)
 {
   struct tm t;
-  MvrUtil::localtime(&t);
+  ArUtil::localtime(&t);
   snprintf(s, len, "%02d", t.tm_sec);
   s[len-1] = '\0';
 }
 
-MVREXPORT time_t MvrUtil::parseTime(const char *str, bool *ok, bool toToday)
+
+
+AREXPORT time_t ArUtil::parseTime(const char *str, bool *ok, bool toToday)
 {
+
   struct tm tmOut;
   if (toToday)
   {
@@ -1259,25 +1602,32 @@ MVREXPORT time_t MvrUtil::parseTime(const char *str, bool *ok, bool toToday)
   else
   {
     memset(&tmOut, 0, sizeof(tmOut));
-
-    tmOut.tm_mday  = 1;
-
-    tmOut.tm_year  = 70;
-    tmOut.tm_isdst = -1;
+    // The day-of-the-month starts at 1 (not 0)...
+    tmOut.tm_mday = 1;
+    // Setting the year to 70 because if it is left at 0 or 1, then
+    // the call to mktime() returns an apparently bogus value.  Think
+    // that 70 makes sense since times are generally measured from
+    // 1/1/1970 (but still, it's all a little strange).
+    tmOut.tm_year = 70;
+    tmOut.tm_isdst = -1; // Negative value means unknown
   }
 
   bool isValid = true;
-  int hrs      = -1;
-  int min      = -1;
-  int sec      = -1;
+  int hrs = -1;
+  int min = -1;
+  int sec = 0;
 
-  MvrArgumentBuilder separator(512, ':');
+  ArArgumentBuilder separator(512, ':');
   separator.add(str);
-
-  if ((separator.getArgc() != 2 && separator.getArgc() != 3) ||
-      !separator.isArgInt(0) || !separator.isArgInt(1) || 
-      (!separator.isArgInt(2) || !separator.isArgInt(3)))
+  
+  // if there's the wrong number of args, or any of the args aren't
+  // integers then it's invalid and we won't parse it
+  if ((separator.getArgc() != 2 && separator.getArgc() != 3) || 
+      !separator.isArgInt(0) || !separator.isArgInt(1) ||
+      (separator.getArgc() == 3 && !separator.isArgInt(2)))
   {
+    //printf("Invalid... %d\n", separator.getArgc());
+    //separator.log();
     isValid = false;
   }
   else
@@ -1285,73 +1635,110 @@ MVREXPORT time_t MvrUtil::parseTime(const char *str, bool *ok, bool toToday)
     hrs = separator.getArgInt(0);
     min = separator.getArgInt(1);
     if (separator.getArgc() == 3)
-      sec = separator.getArgc(2);
+      sec = separator.getArgInt(2);
+    //printf("Was %02d:%02d:%02d", hrs, min, sec);
   }
 
-  if (!((hrs >= 0) && (hrs < 24) && (min >= 0) && (min < 60) &&
-      (sec >= 0) && (sec < 60)))
+  /*
+  char *tempBuf = new char[strlen(str) + 1];
+  strncpy(tempBuf, str, sizeof(tempBuf));
+  
+  // Attempted to use strptime, but it doesn't seem to be universally
+  // available.
+  char *pch = strtok(tempBuf, ":");
+  if (pch != NULL) {
+    hrs = atoi(pch);
+  }
+  
+  pch = strtok(NULL, ":");
+  if (pch != NULL) {
+    min = atoi(pch);
+  }
+  */
+
+  // make sure the actual numbers are valid
+  if (!((hrs  >= 0) && (hrs < 24) && (min >= 0) && (min < 60) && 
+	(sec >= 0) && (sec < 60)))
     isValid = false;
-  if (isValid)
+  
+  if (isValid) 
   {
-    timOut.tm_hour = hrs;
-    tmOut.tm_min   = min;
-    tmOut.tm_sec   = sec;
+    tmOut.tm_hour = hrs;
+    tmOut.tm_min  = min;
+    tmOut.tm_sec  = sec;
   }
-
+  
   time_t newTime = mktime(&tmOut);
-
-  if (ok != NULL)
+  
+  if (ok != NULL) 
   {
     *ok = (isValid && (newTime != -1));
   }
+  
+  //delete [] tempBuf;
+  
   return newTime;
-}
 
-MVREXPORT bool MvrUtil::localtime(const time_t *timep, struct tm *result)
+} // end method parseTime
+
+
+
+AREXPORT bool ArUtil::localtime(const time_t *timep, struct tm *result) 
 {
 #ifdef WIN32
   ourLocaltimeMutex.lock();
   struct tm *r = ::localtime(timep);
-  if (r == NULL){
+  if(r == NULL) { 
     ourLocaltimeMutex.unlock();
     return false;
   }
   *result = *r; // copy the 'struct tm' object before unlocking.
   ourLocaltimeMutex.unlock();
-  return false;
+  return true;
 #else
-  return (::localtime_r(tiemp, result) != NULL);
+  return (::localtime_r(timep, result) != NULL);
 #endif
 }
 
-/*
- * @return fasle on error, otherwise true
- */
-MVREXPORT bool MvrUtil::localtime(struct tm *result)
-{
+/** Call ArUtil::localtime() with the current time obtained by calling
+* time(NULL).
+*  @return false on error (e.g. invalid input), otherwise true.
+*/
+AREXPORT bool ArUtil::localtime(struct tm *result) 
+{ 
   time_t now = time(NULL);
-  return MvrUtil::localtime(&now, result);
+  return ArUtil::localtime(&now, result); 
 }
+
 
 #ifndef WIN32
 /**
    @param baseDir the base directory to work from
    @param fileName the fileName to squash the case from
+   
    @param result where to put the result
    @param resultLen length of the result
+
    @return true if it could find the file, the result is in result,
    false if it couldn't find the file
 **/
-MVREXPORT bool MvrUtil::matchCase(const char *baseDir,
-                                  const char *fileName,
-                                  char *result,
-                                  size_t resultLen)
+AREXPORT bool ArUtil::matchCase(const char *baseDir, 
+					   const char *fileName,
+					   char *result,
+					   size_t resultLen)
 {
+
+  /***
+  ArLog::log(ArLog::Normal, 
+             "ArUtil::matchCase() baseDir = \"%s\" fileName = \"%s\"",
+             baseDir,
+             fileName);
+  ***/
+
   DIR *dir;
   struct dirent *ent;
 
-  char separator;
-
+  char separator;  
 #ifndef WIN32
   separator = '/';
 #else
@@ -1364,11 +1751,24 @@ MVREXPORT bool MvrUtil::matchCase(const char *baseDir,
   std::list<std::string>::iterator it = split.begin();
   std::string finding = (*it);
 
+  /*
+  for (it = split.begin(); it != split.end(); it++)
+  {
+    printf("@@@@@@@@ %s\n", (*it).c_str());
+  }
+  */
+  
+  // how this works is we start at the base dir then read through
+  // until we find what the next name we need, if entry is a directory
+  // and we're not at the end of our string list then we change into
+  // that dir and the while loop keeps going, if the entry isn't a
+  // directory and matchs and its the last in our string list we've
+  // found what we want
   if ((dir = opendir(baseDir)) == NULL)
   {
-    MvrLog::log(MvrLog::Normal,
-                "MvrUtil: No such directory '%s' for base",
-                baseDir);
+    ArLog::log(ArLog::Normal, 
+	       "ArUtil: No such directory '%s' for base", 
+	       baseDir);
     return false;
   }
 
@@ -1381,151 +1781,149 @@ MVREXPORT bool MvrUtil::matchCase(const char *baseDir,
     }
     else
     {
-      MvrLog::log(MvrLog::Normal, 
-		             "MvrUtil: No file or directory given (base = %s file = %s)", 
+      ArLog::log(ArLog::Normal, 
+		             "ArUtil: No file or directory given (base = %s file = %s)", 
 		             baseDir,
                  fileName);
       closedir(dir);
 
+      // KMC NEED TO DETERMINE WHICH IS CORRECT.
+      // The following change appears to be necessary for maps, but is still
+      // undergoing testing....
+      //   Just return the given ".". (This is necessary to find maps in the local 
+      //   directory under some circumstances.)
+      //   snprintf(result, resultLen, finding.c_str());
+      //   return true;  
+
       return false;
+
+      
     }
   }
+
   while ((ent = readdir(dir)) != NULL)
   {
-    if (ent->d_name[0] == ".")
+    // ignore some of these
+    if (ent->d_name[0] == '.')
     {
+      //printf("Ignoring %s\n", ent->d_name[0]);
       continue;
     }
-    if (MvrUtil::strcasecmp(ent->d_name, finding) == 0)
+    //printf("NAME %s finding %s\n", ent->d_name, finding.c_str());
+    
+    // we've found what we were looking for
+    if (ArUtil::strcasecmp(ent->d_name, finding) == 0)
     {
       size_t lenOfResult;
       lenOfResult = strlen(result);
 
-      if (strlen(ent->d_name) > resultLen - lenOfResult -2)
+      // make sure we can put the filename in
+      if (strlen(ent->d_name) > resultLen - lenOfResult - 2)
       {
-        MvrLog::log(MvrLog::Normal,
-                    "MvrUtil::matchCase: result not long enough");
-        closedir(dir)
-        return false;
+	ArLog::log(ArLog::Normal, 
+		   "ArUtil::matchCase: result not long enough");
+	closedir(dir);
+	return false;
       }
-
+      //printf("Before %s", result);
       if (lenOfResult != 0)
       {
-        result[lenOfResult] = separator;
-        result[lenOfResult+1] = '\0';
+	result[lenOfResult] = separator;
+	result[lenOfResult+1] = '\0';
       }
+      // put the filename in
       strcpy(&result[strlen(result)], ent->d_name);
-
-      it ++;
+      //printf("after %s\n", result);
+      // see if we're at the end
+      it++;
       if (it != split.end())
       {
-        finding = (*it);
-        std::string wholeDir;
-        wholeDir = baseDir;
-        wholeDir += result;
-        closedir(dir);
-
-        if ((dir = opendir(wholeDir.c_str())) == NULL)
-        {
-          MvrLog::log(MvrLog::Normal,
-                      "MvrUtil::matchCase: Error going into %s",
-                      result);
-          return false;
-        }
+	//printf("Um.........\n");
+	finding = (*it);
+	std::string wholeDir;
+	wholeDir = baseDir;
+	wholeDir += result;
+	closedir(dir);
+	//printf("'%s' '%s' '%s'\n", baseDir, result, wholeDir.c_str());
+	if ((dir = opendir(wholeDir.c_str())) == NULL)
+	{
+	  ArLog::log(ArLog::Normal, 
+		     "ArUtil::matchCase: Error going into %s", 
+		     result);
+	  return false;
+	}
       }
       else
       {
-        closedir(dir);
-        return true;
+	//printf("\n########## Got it %s\n", result);
+	closedir(dir);
+	return true;
       }
     }
   }
-  MvrLog::log(MvrLog::Normal,
-              "MvrUtil::matchCase: %s doesn't exist in %s", fileName,
-              baseDir);
+  ArLog::log(ArLog::Normal, 
+	     "ArUtil::matchCase: %s doesn't exist in %s", fileName, 
+	     baseDir);
+  //printf("!!!!!!!! %s", finding.c_str());
   closedir(dir);
   return false;
-}                                                                    
-#endif  // WIN32
+} 
 
-MVREXPORT bool MvrUtil::getDirectory(const char *fileName,
-                                     char *result, size_t resultLen)
+#endif // !WIN32
+
+
+AREXPORT bool ArUtil::getDirectory(const char *fileName, 
+					     char *result, size_t resultLen)
 {
-  char separator;
+  char separator;  
 #ifndef WIN32
   separator = '/';
 #else
   separator = '\\';
 #endif
-
+  
   if (fileName == NULL || fileName[0] == '\0' || resultLen == 0)
   {
-    MvrLog::log(MvrLog::Normal, "MvrUtil: getDirectory, bad setup");
+    ArLog::log(ArLog::Normal, "ArUtil: getDirectory, bad setup");
     return false;
   }
-  strcpy(result, fileName, resultLen -1);
-
-  result[resultLen -1] = '\0';
-
+  
+  // just play in the result buffer
+  strncpy(result, fileName, resultLen - 1);
+  // make sure its nulled
+  result[resultLen - 1] = '\0';
   char *toPos;
-  MvrUtil::fixSlashes(result, resultLen);
-
+  ArUtil::fixSlashes(result, resultLen);
+  // see where the last directory is
   toPos = strrchr(result, separator);
-
+  // if there's no divider it must just be a file name
   if (toPos == NULL)
   {
     result[0] = '\0';
     return true;
   }
+  // otherwise just toss a null into the last separator and we're done
   else
-  {
-    *toPose = '\0';
+  {    
+    *toPos = '\0';
     return true;
   }
 }
 
-MVRexport bool MvrUtil::getFileName(const char *fileName, 
-                                    char *result, size_t resultLen)
+AREXPORT bool ArUtil::getFileName(const char *fileName, 
+					 char *result, size_t resultLen)
 {
-  char separator;
+  char separator;  
 #ifndef WIN32
   separator = '/';
 #else
   separator = '\\';
 #endif
-
+  
   if (fileName == NULL || fileName[0] == '\0' || resultLen == 0)
   {
-    MvrLog::log(MvrLog::Normal, "MvrUtil: getDirectory, bad setup");
+    ArLog::log(ArLog::Normal, "ArUtil: getFileName, bad setup");
     return false;
-  }
-  char *str;
-  size_t fileNameLen = strlen(fileName);
-  str = new char[fileNameLen + 1];
-
-  strncpy(str, fileName, fileNameLen);
-
-  str[fileNameLen] = '\0';
-
-  char *toPos;
-  MvrUtil::fixSlashes(str, fileNameLen + 1);
-
-  toPos = strrchr(str, separator);
-
-  if (toPos == NULL)
-  {
-    strncpy(result, str, resultLen - 1);
-    result[resultLen - 1] = '\0';
-    delete[] str;
-    return true;
-  }
-  else
-  {
-    strncpy(result, &str[toPos - str + 1], resultLen - 2);
-    result[resultLen - 1] = '\0';
-
-    delete[] str;
-    return true;
   }
 
   char *str;
@@ -1539,7 +1937,7 @@ MVRexport bool MvrUtil::getFileName(const char *fileName,
   //printf("1 %s\n", str);
 
   char *toPos;
-  MvrUtil::fixSlashes(str, fileNameLen + 1);
+  ArUtil::fixSlashes(str, fileNameLen + 1);
   //printf("2 %s\n", str);
   // see where the last directory is
   toPos = strrchr(str, separator);
@@ -1564,45 +1962,50 @@ MVRexport bool MvrUtil::getFileName(const char *fileName,
   }
 }
 
-#ifndef WIN32                                                              
-/*
- * This function assumes the slashes are all heading the right way already
- */
-std::list<std::string> MvrUtil::splitFileName(const char *fileName)
+#ifndef WIN32
+/**
+   This function assumes the slashes are all heading the right way already.
+**/
+std::list<std::string> ArUtil::splitFileName(const char *fileName)
 {
   std::list<std::string> split;
   if (fileName == NULL)
     return split;
 
-  char separator;
+  char separator;  
 #ifndef WIN32
   separator = '/';
 #else
   separator = '\\';
 #endif
+
   size_t len;
   size_t i;
   size_t last;
   bool justSepped;
   char entry[2048];
-  for (i=0, justSepped=false, last=0, len=strlen(fileName); ; i++)
+  for (i = 0, justSepped = false, last = 0, len = strlen(fileName); 
+       ; 
+       i++)
   {
-    if ((fileName[i] == separator && !justSepped) || fileName[i] == '\0' || i >= len)
+    
+    if ((fileName[i] == separator && !justSepped) 
+	|| fileName[i] == '\0' || i >= len)
     {
       if (i - last > 2047)
       {
-	      MvrLog::log(MvrLog::Normal, "MvrUtil::splitFileName: some directory or file too long");
+	ArLog::log(ArLog::Normal, "ArUtil::splitFileName: some directory or file too long");
       }
       if (!justSepped)
       {
-        strncpy(entry, &fileName[last], i-last);
-        entry[i-last] = '\0';
-        split.push_back(entry);
+	strncpy(entry, &fileName[last], i - last);
+	entry[i-last] = '\0';
+	split.push_back(entry);
 
-        justSepped = true;
+	justSepped = true;
       }
-      if (fileName[i] == '\0' || i>=len)
-        return split;
+      if (fileName[i] == '\0' || i >= len)
+	return split;
     }
     else if (fileName[i] == separator && justSepped)
     {
@@ -1615,32 +2018,40 @@ std::list<std::string> MvrUtil::splitFileName(const char *fileName)
       last = i;
     }
   }
-
-  MvrLog::log(MvrLog::Normal, "MvrUtil::splitFileName: file str ('%s‘) happend weird", fileName);
+  ArLog::log(ArLog::Normal, "ArUtil::splitFileName: file str ('%s') happened weird", fileName);
   return split;
 }
+
+
+
 #endif // !WIN32
 
-MVREXPORT bool MvrUtil::changeFileTimestamp(const char *fileName, 
-                                            time_t timestamp) 
+
+AREXPORT bool ArUtil::changeFileTimestamp(const char *fileName, 
+                                          time_t timestamp) 
 {
-  if (MvrUtil::isStrEmpty(fileName)) 
-  {
-    MvrLog::log(MvrLog::Normal, "Cannot change date on file with empty name");
+  if (ArUtil::isStrEmpty(fileName)) {
+    ArLog::log(ArLog::Normal,
+               "Cannot change date on file with empty name");
     return false;
   }
 #ifdef WIN32
+
   FILETIME fileTime;
+
   HANDLE hFile = CreateFile(fileName,
                             GENERIC_READ | GENERIC_WRITE,
-                            0,NULL,
-                            OPEN_EXISTING,
-                            0,NULL);
+                             0,NULL,
+                             OPEN_EXISTING,
+                             0,NULL);
 
   if (hFile == NULL) {
     return false;
   }
 
+
+  // The following is extracted from the MSDN article "Converting a time_t Value
+  // to a File Time".
   LONGLONG temp = Int32x32To64(timestamp, 10000000) + 116444736000000000;
   fileTime.dwLowDateTime = (DWORD) temp;
   fileTime.dwHighDateTime = temp >> 32;
@@ -1656,21 +2067,27 @@ MVREXPORT bool MvrUtil::changeFileTimestamp(const char *fileName,
         
   char timeBuf[500];
   strftime(timeBuf, sizeof(timeBuf), "%c", ::localtime(&timestamp));
-  MvrLog::log(MvrLog::Normal,
-              "Changing file %s modified time to %s",
-              fileName,
-              timeBuf);
+  ArLog::log(ArLog::Normal,
+             "Changing file %s modified time to %s",
+             fileName,
+             timeBuf);
 
+
+  // time_t newTime = mktime(&timestamp);
   struct utimbuf fileTime;
   fileTime.actime  = timestamp;
   fileTime.modtime = timestamp;
   utime(fileName, &fileTime);
 
 #endif // else unix
-  return true;
-}
 
-MVREXPORT void MvrUtil::setFileCloseOnExec(int fd, bool closeOnExec)
+  return true;
+
+} // end method changeFileTimestamp
+
+
+
+AREXPORT void ArUtil::setFileCloseOnExec(int fd, bool closeOnExec)
 {
 #ifndef WIN32
   if (fd <= 0)
@@ -1680,7 +2097,7 @@ MVREXPORT void MvrUtil::setFileCloseOnExec(int fd, bool closeOnExec)
 
   if ((flags = fcntl(fd, F_GETFD)) < 0)
   {
-    MvrLog::log(MvrLog::Normal, "MvrUtil::setFileCloseOnExec: Cannot use F_GETFD in fnctl on fd %d", fd);
+    ArLog::log(ArLog::Normal, "ArUtil::setFileCloseOnExec: Cannot use F_GETFD in fnctl on fd %d", fd);
     return;
   }
 
@@ -1691,20 +2108,20 @@ MVREXPORT void MvrUtil::setFileCloseOnExec(int fd, bool closeOnExec)
 
   if (fcntl(fd, F_SETFD, flags) < 0)
   {
-    MvrLog::log(MvrLog::Normal, "MvrUtil::setFileCloseOnExec: Cannot use F_GETFD in fnctl on fd %d", fd);
+    ArLog::log(ArLog::Normal, "ArUtil::setFileCloseOnExec: Cannot use F_GETFD in fnctl on fd %d", fd);
     return;
   }
 #endif
 }
 
-MVREXPORT void MvrUtil::setFileCloseOnExec(FILE *file, bool closeOnExec)
+AREXPORT void ArUtil::setFileCloseOnExec(FILE *file, bool closeOnExec)
 {
   if (file != NULL)
     setFileCloseOnExec(fileno(file));
 }
 
-MVREXPORT FILE *MvrUtil::fopen(const char *path, const char *mode, 
-			                         bool closeOnExec)
+AREXPORT FILE *ArUtil::fopen(const char *path, const char *mode, 
+			     bool closeOnExec)
 {
   FILE *file;
   file = ::fopen(path, mode);
@@ -1712,8 +2129,8 @@ MVREXPORT FILE *MvrUtil::fopen(const char *path, const char *mode,
   return file;
 }
 
-MVREXPORT int MvrUtil::open(const char *pathname, int flags, 
-			                      bool closeOnExec)
+AREXPORT int ArUtil::open(const char *pathname, int flags, 
+			  bool closeOnExec)
 {
   int fd;
   fd = ::open(pathname, flags);
@@ -1721,8 +2138,8 @@ MVREXPORT int MvrUtil::open(const char *pathname, int flags,
   return fd;
 }
 
-MVREXPORT int MvrUtil::open(const char *pathname, int flags, mode_t mode, 
-			                      bool closeOnExec)
+AREXPORT int ArUtil::open(const char *pathname, int flags, mode_t mode, 
+			  bool closeOnExec)
 {
   int fd;
   fd = ::open(pathname, flags, mode);
@@ -1730,13 +2147,13 @@ MVREXPORT int MvrUtil::open(const char *pathname, int flags, mode_t mode,
   return fd;
 }
 
-MVREXPORT int MvrUtil::close(int fd)
+AREXPORT int ArUtil::close(int fd)
 {
 	return ::close(fd);
 }
 
-MVREXPORT int MvrUtil::creat(const char *pathname, mode_t mode, 
-			                       bool closeOnExec)
+AREXPORT int ArUtil::creat(const char *pathname, mode_t mode, 
+			   bool closeOnExec)
 {
   int fd;
   fd = ::creat(pathname, mode);
@@ -1744,8 +2161,8 @@ MVREXPORT int MvrUtil::creat(const char *pathname, mode_t mode,
   return fd;
 }
 
-MVREXPORT FILE *MvrUtil::popen(const char *command, const char *type, 
-			                         bool closeOnExec)
+AREXPORT FILE *ArUtil::popen(const char *command, const char *type, 
+			     bool closeOnExec)
 {
   FILE *file;
 #ifndef WIN32
@@ -1758,7 +2175,7 @@ MVREXPORT FILE *MvrUtil::popen(const char *command, const char *type,
 }
 
 
-MVREXPORT bool MvrUtil::floatIsNormal(double f)
+AREXPORT bool ArUtil::floatIsNormal(double f)
 {
 #ifdef WIN32
 	  return (!::_isnan(f) && ::_finite(f));
@@ -1767,7 +2184,7 @@ MVREXPORT bool MvrUtil::floatIsNormal(double f)
 #endif
 }
 
-MVREXPORT int MvrUtil::atoi(const char *str, bool *ok, bool forceHex) 
+AREXPORT int ArUtil::atoi(const char *str, bool *ok, bool forceHex) 
 {
   bool isSuccess = false;
   int ret = 0;
@@ -1804,233 +2221,236 @@ MVREXPORT int MvrUtil::atoi(const char *str, bool *ok, bool forceHex)
 } // end method atoi
 
 
-MVREXPORT long MvrMath::randomInRange(long m, long n)
+AREXPORT long ArMath::randomInRange(long m, long n)
 {
+    // simple method
     return m + random() / (ourRandMax / (n - m + 1) + 1);
+    // alternate method is to use drand48, multiply and round (does Windows have
+    // drand48?), or keep trying numbers until we get one in range.
 }
 
-MVREXPORT double MvrMath::epsilon() { return ourEpsilon; }
-MVREXPORT long MvrMath::getRandMax() { return ourRandMax; }
+AREXPORT double ArMath::epsilon() { return ourEpsilon; }
+AREXPORT long ArMath::getRandMax() { return ourRandMax; }
 
-#ifndef MVRINTERFACE
+#ifndef ARINTERFACE
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
-MvrLaserCreatorHelper::ourLMS2xxCB(&MvrLaserCreatorHelper::createLMS2xx);
+ArGlobalRetFunctor2<ArLaser *, int, const char *> 
+ArLaserCreatorHelper::ourLMS2xxCB(&ArLaserCreatorHelper::createLMS2xx);
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
-MvrLaserCreatorHelper::ourUrgCB(&MvrLaserCreatorHelper::createUrg);
+ArGlobalRetFunctor2<ArLaser *, int, const char *> 
+ArLaserCreatorHelper::ourUrgCB(&ArLaserCreatorHelper::createUrg);
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
-MvrLaserCreatorHelper::ourLMS1XXCB(&MvrLaserCreatorHelper::createLMS1XX);
+ArGlobalRetFunctor2<ArLaser *, int, const char *> 
+ArLaserCreatorHelper::ourLMS1XXCB(&ArLaserCreatorHelper::createLMS1XX);
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
-MvrLaserCreatorHelper::ourS3SeriesCB(&MvrLaserCreatorHelper::createS3Series);
+ArGlobalRetFunctor2<ArLaser *, int, const char *> 
+ArLaserCreatorHelper::ourS3SeriesCB(&ArLaserCreatorHelper::createS3Series);
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
-MvrLaserCreatorHelper::ourUrg_2_0CB(&MvrLaserCreatorHelper::createUrg_2_0);
+ArGlobalRetFunctor2<ArLaser *, int, const char *>
+ArLaserCreatorHelper::ourUrg_2_0CB(&ArLaserCreatorHelper::createUrg_2_0);
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
-MvrLaserCreatorHelper::ourLMS5XXCB(&MvrLaserCreatorHelper::createLMS5XX);
+ArGlobalRetFunctor2<ArLaser *, int, const char *>
+ArLaserCreatorHelper::ourLMS5XXCB(&ArLaserCreatorHelper::createLMS5XX);
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
-MvrLaserCreatorHelper::ourTiM3XXCB(&MvrLaserCreatorHelper::createTiM3XX);
+ArGlobalRetFunctor2<ArLaser *, int, const char *>
+ArLaserCreatorHelper::ourTiM3XXCB(&ArLaserCreatorHelper::createTiM3XX);
 
-MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
-MvrLaserCreatorHelper::ourSZSeriesCB(&MvrLaserCreatorHelper::createSZSeries);
+ArGlobalRetFunctor2<ArLaser *, int, const char *>
+ArLaserCreatorHelper::ourSZSeriesCB(&ArLaserCreatorHelper::createSZSeries);
 
-MvrLaser *createAnyLMS1xx(int laserNumber, const char *logPrefix, const char *name, MvrLMS1XX::LaserModel model)
+ArLaser *createAnyLMS1xx(int laserNumber, const char *logPrefix, const char *name, ArLMS1XX::LaserModel model)
 {
-	return new MvrLMS1XX(laserNumber, name, model);
+	return new ArLMS1XX(laserNumber, name, model);
 }
 
-MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
-TiM551CB(&createAnyLMS1xx, -1, "", "tim551", MvrLMS1XX::TiM551);
+ArGlobalRetFunctor4<ArLaser*, int, const char*, const char *, ArLMS1XX::LaserModel>
+TiM551CB(&createAnyLMS1xx, -1, "", "tim551", ArLMS1XX::TiM551);
 
-MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
-TiM561CB(&createAnyLMS1xx, -1, "", "tim561", MvrLMS1XX::TiM561); 
+ArGlobalRetFunctor4<ArLaser*, int, const char*, const char *, ArLMS1XX::LaserModel>
+TiM561CB(&createAnyLMS1xx, -1, "", "tim561", ArLMS1XX::TiM561); 
 
-MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
-TiM571CB(&createAnyLMS1xx, -1, "", "tim571", MvrLMS1XX::TiM571);
+ArGlobalRetFunctor4<ArLaser*, int, const char*, const char *, ArLMS1XX::LaserModel>
+TiM571CB(&createAnyLMS1xx, -1, "", "tim571", ArLMS1XX::TiM571);
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *
-MvrLaserCreatorHelper::getCreateTiM551CB(void) {
+ArRetFunctor2<ArLaser *, int, const char *> *
+ArLaserCreatorHelper::getCreateTiM551CB(void) {
   return &TiM551CB;
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *
-MvrLaserCreatorHelper::getCreateTiM561CB(void) {
+ArRetFunctor2<ArLaser *, int, const char *> *
+ArLaserCreatorHelper::getCreateTiM561CB(void) {
   return &TiM561CB;
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *
-MvrLaserCreatorHelper::getCreateTiM571CB(void) {
+ArRetFunctor2<ArLaser *, int, const char *> *
+ArLaserCreatorHelper::getCreateTiM571CB(void) {
   return &TiM571CB;
 }
 
 
-MvrGlobalRetFunctor2<MvrBatteryMTX *, int, const char *>
-MvrBatteryMTXCreatorHelper::ourBatteryMTXCB(&MvrBatteryMTXCreatorHelper::createBatteryMTX);
+ArGlobalRetFunctor2<ArBatteryMTX *, int, const char *>
+ArBatteryMTXCreatorHelper::ourBatteryMTXCB(&ArBatteryMTXCreatorHelper::createBatteryMTX);
 
-MvrGlobalRetFunctor2<MvrLCDMTX *, int, const char *>
-MvrLCDMTXCreatorHelper::ourLCDMTXCB(&MvrLCDMTXCreatorHelper::createLCDMTX);
+ArGlobalRetFunctor2<ArLCDMTX *, int, const char *>
+ArLCDMTXCreatorHelper::ourLCDMTXCB(&ArLCDMTXCreatorHelper::createLCDMTX);
 
-MvrGlobalRetFunctor2<MvrSonarMTX *, int, const char *>
-MvrSonarMTXCreatorHelper::ourSonarMTXCB(&MvrSonarMTXCreatorHelper::createSonarMTX);
+ArGlobalRetFunctor2<ArSonarMTX *, int, const char *>
+ArSonarMTXCreatorHelper::ourSonarMTXCB(&ArSonarMTXCreatorHelper::createSonarMTX);
 
 
-MvrLaser *MvrLaserCreatorHelper::createLMS2xx(int laserNumber, 
+ArLaser *ArLaserCreatorHelper::createLMS2xx(int laserNumber, 
 					    const char *logPrefix)
 {
-  return new MvrLMS2xx(laserNumber);
+  return new ArLMS2xx(laserNumber);
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS2xxCB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateLMS2xxCB(void)
 {
   return &ourLMS2xxCB;
 }
 
-MvrLaser *MvrLaserCreatorHelper::createUrg(int laserNumber, const char *logPrefix)
+ArLaser *ArLaserCreatorHelper::createUrg(int laserNumber, const char *logPrefix)
 {
-  return new MvrUrg(laserNumber);
+  return new ArUrg(laserNumber);
 }
 
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateUrgCB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateUrgCB(void)
 {
   return &ourUrgCB;
 }
 
-MvrLaser *MvrLaserCreatorHelper::createLMS1XX(int laserNumber, const char *logPrefix)
+ArLaser *ArLaserCreatorHelper::createLMS1XX(int laserNumber, const char *logPrefix)
 {
-	return new MvrLMS1XX(laserNumber, "lms1xx", MvrLMS1XX::LMS1XX);
+	return new ArLMS1XX(laserNumber, "lms1xx", ArLMS1XX::LMS1XX);
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS1XXCB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateLMS1XXCB(void)
 {
   return &ourLMS1XXCB;
 }
 
-MvrLaser *MvrLaserCreatorHelper::createS3Series(int laserNumber, 
+ArLaser *ArLaserCreatorHelper::createS3Series(int laserNumber, 
 					    const char *logPrefix)
 {
-  return new MvrS3Series(laserNumber);
+  return new ArS3Series(laserNumber);
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateS3SeriesCB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateS3SeriesCB(void)
 {
   return &ourS3SeriesCB;
 }
 
 
-MvrLaser *MvrLaserCreatorHelper::createUrg_2_0(int laserNumber, 
+ArLaser *ArLaserCreatorHelper::createUrg_2_0(int laserNumber, 
 					     const char *logPrefix)
 {
-  return new MvrUrg_2_0(laserNumber);
+  return new ArUrg_2_0(laserNumber);
 }
 
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateUrg_2_0CB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateUrg_2_0CB(void)
 {
   return &ourUrg_2_0CB;
 }
 
-MvrLaser *MvrLaserCreatorHelper::createLMS5XX(int laserNumber,
+ArLaser *ArLaserCreatorHelper::createLMS5XX(int laserNumber,
 		const char *logPrefix)
 {
 
-
-	return new MvrLMS1XX(laserNumber, "lms5XX", MvrLMS1XX::LMS5XX);
+	// PS 8/22/11 - added "lms5xx" and flag specifying laser is an lms5xx
+	return new ArLMS1XX(laserNumber, "lms5XX", ArLMS1XX::LMS5XX);
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS5XXCB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateLMS5XXCB(void)
 {
   return &ourLMS5XXCB;
 }
 
-MvrLaser *MvrLaserCreatorHelper::createTiM3XX(int laserNumber,
+ArLaser *ArLaserCreatorHelper::createTiM3XX(int laserNumber,
 		const char *logPrefix)
 {
 
-
-	return new MvrLMS1XX(laserNumber, "tim3XX", MvrLMS1XX::TiM3XX);
+	// PS 8/22/11 - added "lms5xx" and flag specifying laser is an lms5xx
+	return new ArLMS1XX(laserNumber, "tim3XX", ArLMS1XX::TiM3XX);
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateTiM3XXCB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateTiM3XXCB(void)
 {
   return &ourTiM3XXCB;
 }
 
-MvrLaser *MvrLaserCreatorHelper::createSZSeries(int laserNumber,
+ArLaser *ArLaserCreatorHelper::createSZSeries(int laserNumber,
 					    const char *logPrefix)
 {
-  return new MvrSZSeries(laserNumber);
+  return new ArSZSeries(laserNumber);
 }
 
-MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateSZSeriesCB(void)
+ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateSZSeriesCB(void)
 {
   return &ourSZSeriesCB;
 }
 
-MvrBatteryMTX *MvrBatteryMTXCreatorHelper::createBatteryMTX(int batteryNumber,
+ArBatteryMTX *ArBatteryMTXCreatorHelper::createBatteryMTX(int batteryNumber,
 					    const char *logPrefix)
 {
-  return new MvrBatteryMTX(batteryNumber);
+  return new ArBatteryMTX(batteryNumber);
 }
 
-MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *MvrBatteryMTXCreatorHelper::getCreateBatteryMTXCB(void)
+ArRetFunctor2<ArBatteryMTX *, int, const char *> *ArBatteryMTXCreatorHelper::getCreateBatteryMTXCB(void)
 {
   return &ourBatteryMTXCB;
 }
 
-MvrLCDMTX *MvrLCDMTXCreatorHelper::createLCDMTX(int lcdNumber,
+ArLCDMTX *ArLCDMTXCreatorHelper::createLCDMTX(int lcdNumber,
 					    const char *logPrefix)
 {
-  return new MvrLCDMTX(lcdNumber);
+  return new ArLCDMTX(lcdNumber);
 }
 
-MvrRetFunctor2<MvrLCDMTX *, int, const char *> *MvrLCDMTXCreatorHelper::getCreateLCDMTXCB(void)
+ArRetFunctor2<ArLCDMTX *, int, const char *> *ArLCDMTXCreatorHelper::getCreateLCDMTXCB(void)
 {
   return &ourLCDMTXCB;
 }
 
-MvrSonarMTX *MvrSonarMTXCreatorHelper::createSonarMTX(int sonarNumber,
+ArSonarMTX *ArSonarMTXCreatorHelper::createSonarMTX(int sonarNumber,
 					    const char *logPrefix)
 {
-  return new MvrSonarMTX(sonarNumber);
+  return new ArSonarMTX(sonarNumber);
 }
 
-MvrRetFunctor2<MvrSonarMTX *, int, const char *> *MvrSonarMTXCreatorHelper::getCreateSonarMTXCB(void)
+ArRetFunctor2<ArSonarMTX *, int, const char *> *ArSonarMTXCreatorHelper::getCreateSonarMTXCB(void)
 {
   return &ourSonarMTXCB;
 }
 
-#endif // MVRINTERFACE
+#endif // ARINTERFACE
 
-MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> 
-MvrDeviceConnectionCreatorHelper::ourSerialCB(
-	&MvrDeviceConnectionCreatorHelper::createSerialConnection);
-MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> 
-MvrDeviceConnectionCreatorHelper::ourTcpCB(
-	&MvrDeviceConnectionCreatorHelper::createTcpConnection);
-MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *>
-MvrDeviceConnectionCreatorHelper::ourSerial422CB(
-	&MvrDeviceConnectionCreatorHelper::createSerial422Connection);
-MvrLog::LogLevel MvrDeviceConnectionCreatorHelper::ourSuccessLogLevel = MvrLog::Verbose;
+ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> 
+ArDeviceConnectionCreatorHelper::ourSerialCB(
+	&ArDeviceConnectionCreatorHelper::createSerialConnection);
+ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> 
+ArDeviceConnectionCreatorHelper::ourTcpCB(
+	&ArDeviceConnectionCreatorHelper::createTcpConnection);
+ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *>
+ArDeviceConnectionCreatorHelper::ourSerial422CB(
+	&ArDeviceConnectionCreatorHelper::createSerial422Connection);
+ArLog::LogLevel ArDeviceConnectionCreatorHelper::ourSuccessLogLevel = ArLog::Verbose;
 
-MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createSerialConnection(
+ArDeviceConnection *ArDeviceConnectionCreatorHelper::createSerialConnection(
 	const char *port, const char *defaultInfo, const char *logPrefix)
 {
-	MvrDeviceConnection *devConn;
+	ArDeviceConnection *devConn;
 
 	devConn = internalCreateSerialConnection(port, defaultInfo, logPrefix, false);
 
 	return devConn;
 }
 
-MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createSerial422Connection(
+ArDeviceConnection *ArDeviceConnectionCreatorHelper::createSerial422Connection(
 	const char *port, const char *defaultInfo, const char *logPrefix)
 {
-	MvrDeviceConnection *devConn;
+	ArDeviceConnection *devConn;
 
 	devConn = internalCreateSerialConnection(port, defaultInfo, logPrefix, true);
 
@@ -2038,164 +2458,235 @@ MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createSerial422Connection
 }
 
 
-MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::internalCreateSerialConnection(
+ArDeviceConnection *ArDeviceConnectionCreatorHelper::internalCreateSerialConnection(
 	const char *port, const char *defaultInfo, const char *logPrefix, bool is422)
 {
-  MvrSerialConnection *serConn = new MvrSerialConnection(is422);
+  ArSerialConnection *serConn = new ArSerialConnection(is422);
   
   std::string serPort;
   if (strcasecmp(port, "COM1") == 0)
-    serPort = MvrUtil::COM1;
+    serPort = ArUtil::COM1;
   else if (strcasecmp(port, "COM2") == 0)
-    serPort = MvrUtil::COM2;
+    serPort = ArUtil::COM2;
   else if (strcasecmp(port, "COM3") == 0)
-    serPort = MvrUtil::COM3;
+    serPort = ArUtil::COM3;
   else if (strcasecmp(port, "COM4") == 0)
-    serPort = MvrUtil::COM4;
+    serPort = ArUtil::COM4;
   else if (strcasecmp(port, "COM5") == 0)
-    serPort = MvrUtil::COM5;
+    serPort = ArUtil::COM5;
   else if (strcasecmp(port, "COM6") == 0)
-    serPort = MvrUtil::COM6;
+    serPort = ArUtil::COM6;
   else if (strcasecmp(port, "COM7") == 0)
-    serPort = MvrUtil::COM7;
+    serPort = ArUtil::COM7;
   else if (strcasecmp(port, "COM8") == 0)
-    serPort = MvrUtil::COM8;
+    serPort = ArUtil::COM8;
   else if (strcasecmp(port, "COM9") == 0)
-    serPort = MvrUtil::COM9;
+    serPort = ArUtil::COM9;
   else if (strcasecmp(port, "COM10") == 0)
-    serPort = MvrUtil::COM10;
+    serPort = ArUtil::COM10;
   else if (strcasecmp(port, "COM11") == 0)
-    serPort = MvrUtil::COM11;
+    serPort = ArUtil::COM11;
   else if (strcasecmp(port, "COM12") == 0)
-    serPort = MvrUtil::COM12;
+    serPort = ArUtil::COM12;
   else if (strcasecmp(port, "COM13") == 0)
-    serPort = MvrUtil::COM13;
+    serPort = ArUtil::COM13;
   else if (strcasecmp(port, "COM14") == 0)
-    serPort = MvrUtil::COM14;
+    serPort = ArUtil::COM14;
   else if (strcasecmp(port, "COM15") == 0)
-    serPort = MvrUtil::COM15;
+    serPort = ArUtil::COM15;
   else if (strcasecmp(port, "COM16") == 0)
-    serPort = MvrUtil::COM16;
+    serPort = ArUtil::COM16;
   else if (port != NULL)
     serPort = port;
   
-  MvrLog::log(ourSuccessLogLevel, "%sSet serial port to open %s", 
+  ArLog::log(ourSuccessLogLevel, "%sSet serial port to open %s", 
 	     logPrefix, serPort.c_str());
   serConn->setPort(serPort.c_str());
   return serConn;
+  /*  
+      This code is commented out because it created problems with demo
+      (or any other program that used ArLaserConnector::connectLasers
+      with addAllLasersToRobot as true)
+
+  int ret;
   
-MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
-MvrDeviceConnectionCreatorHelper::getCreateSerialCB(void)
+  if ((ret = serConn->open(serPort.c_str())) == 0)
+  {
+    ArLog::log(ourSuccessLogLevel, "%sOpened serial port %s", 
+	       logPrefix, serPort.c_str());
+    return serConn;
+  }
+  else
+  {
+    ArLog::log(ArLog::Normal, "%sCould not open serial port %s (from %s), because %s", 
+	       logPrefix, serPort.c_str(), port,
+	       serConn->getOpenMessage(ret));
+    delete serConn;
+    return NULL;
+  }
+  */
+}
+
+
+ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *
+ArDeviceConnectionCreatorHelper::getCreateSerialCB(void)
 {
   return &ourSerialCB;
 }
 
-MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
-MvrDeviceConnectionCreatorHelper::getCreateSerial422CB(void)
+ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *
+ArDeviceConnectionCreatorHelper::getCreateSerial422CB(void)
 {
   return &ourSerial422CB;
 }
 
-MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createTcpConnection(
+ArDeviceConnection *ArDeviceConnectionCreatorHelper::createTcpConnection(
 	const char *port, const char *defaultInfo, const char *logPrefix)
 {
-  MvrTcpConnection *tcpConn = new MvrTcpConnection;
+  ArTcpConnection *tcpConn = new ArTcpConnection;
+  //int ret;
 
   tcpConn->setPort(port, atoi(defaultInfo));
-  MvrLog::log(ourSuccessLogLevel, 
+  ArLog::log(ourSuccessLogLevel, 
 	     "%sSet tcp connection to open %s (and port %d)", 
 	     logPrefix, port, atoi(defaultInfo));
   return tcpConn;
+
+  /*
+      This code is commented out because it created problems with demo
+      (or any other program that used ArLaserConnector::connectLasers
+      with addAllLasersToRobot as true)
+  
+  if ((ret = tcpConn->open(port, atoi(defaultInfo))) == 0)
+  {
+    ArLog::log(ourSuccessLogLevel, 
+	       "%sOpened tcp connection from %s (and port %d)", 
+	       logPrefix, port, atoi(defaultInfo));
+    return tcpConn;
+  }
+  else
+  {
+    ArLog::log(ArLog::Normal, "%sCould not open a tcp connection to host '%s' with default port %d (from '%s'), because %s", 
+	       logPrefix, port, atoi(defaultInfo), defaultInfo,
+	       tcpConn->getOpenMessage(ret));
+    delete tcpConn;
+    return NULL;
+  }
+  */
 }
 
-MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
-MvrDeviceConnectionCreatorHelper::getCreateTcpCB(void)
+ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *
+ArDeviceConnectionCreatorHelper::getCreateTcpCB(void)
 {
   return &ourTcpCB;
 }
 
-void MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(MvrLog::LogLevel successLogLevel)
+void ArDeviceConnectionCreatorHelper::setSuccessLogLevel(
+	ArLog::LogLevel successLogLevel)
 {
   ourSuccessLogLevel = successLogLevel;
 }
 
-MvrLog::LogLevel MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(void)
+ArLog::LogLevel ArDeviceConnectionCreatorHelper::setSuccessLogLevel(void)
 {
   return ourSuccessLogLevel;
 }
 
-MVREXPORT std::list<MvrPose> MvrPoseUtil::findCornersFromRobotBounds(
+AREXPORT std::list<ArPose> ArPoseUtil::findCornersFromRobotBounds(
 	double radius, double widthLeft, double widthRight, 
 	double lengthFront, double lengthRear, bool fastButUnsafe)
 {
 
-  std::list<MvrPose> ret;
+  std::list<ArPose> ret;
 
   if (fastButUnsafe)
   {
-    MvrPose frontLeft;   
+    ArPose frontLeft;   
     if (lengthFront >= radius && widthLeft >= radius)
-      frontLeft.setPose(lengthFront,widthLeft);
+      frontLeft.setPose(lengthFront,
+			widthLeft);
     else if (lengthFront >= radius)
-      frontLeft.setPose(lengthFront,0);
+      frontLeft.setPose(lengthFront,
+			0);
     else
-      frontLeft.setPose(lengthFront,sqrt(radius * radius - lengthFront * lengthFront));
+      frontLeft.setPose(lengthFront,
+			sqrt(radius * radius - lengthFront * lengthFront));
     
-    MvrPose leftFront;
+    ArPose leftFront;
     if (widthLeft >= radius && lengthFront >= radius)
-      leftFront.setPose(lengthFront, widthLeft);
+      leftFront.setPose(lengthFront, 
+			widthLeft);
     else if (widthLeft >= radius)
-      leftFront.setPose(0, widthLeft);
+      leftFront.setPose(0, 
+			widthLeft);
     else
-      leftFront.setPose(sqrt(radius * radius - widthLeft * widthLeft),widthLeft);
+      leftFront.setPose(sqrt(radius * radius - widthLeft * widthLeft),
+			widthLeft);
 
-    MvrPose leftRear;
+    ArPose leftRear;
     if (widthLeft >= radius && lengthRear >= radius)
-      leftRear.setPose(-lengthRear, widthLeft);
+      leftRear.setPose(-lengthRear, 
+		       widthLeft);
     else if (widthLeft >= radius)
-      leftRear.setPose(0, widthLeft);
+      leftRear.setPose(0, 
+		       widthLeft);
     else
-      leftRear.setPose(-sqrt(radius * radius - widthLeft * widthLeft),widthLeft);
+      leftRear.setPose(-sqrt(radius * radius - widthLeft * widthLeft),
+		       widthLeft);
 
-    MvrPose rearLeft;
+    ArPose rearLeft;
     if (lengthRear >= radius && widthLeft >= radius)
-      rearLeft.setPose(-lengthRear, widthLeft);
+      rearLeft.setPose(-lengthRear, 
+		       widthLeft);
     else if (lengthRear >= radius)
-      rearLeft.setPose(-lengthRear, 0);
+      rearLeft.setPose(-lengthRear, 
+		       0);
     else
-      rearLeft.setPose(-lengthRear, sqrt(radius * radius - lengthRear * lengthRear ));
+      rearLeft.setPose(-lengthRear,
+		       sqrt(radius * radius - lengthRear * lengthRear ));
 
 
-    MvrPose rearRight;
+    ArPose rearRight;
     if (lengthRear >= radius && widthRight >= radius)
-      rearRight.setPose(-lengthRear, -widthRight);
+      rearRight.setPose(-lengthRear, 
+			-widthRight);
     else if (lengthRear >= radius)
-      rearRight.setPose(-lengthRear, 0);
+      rearRight.setPose(-lengthRear, 
+		       0);
     else
-      rearRight.setPose(-lengthRear,-sqrt(radius * radius - lengthRear * lengthRear));
+      rearRight.setPose(-lengthRear,
+			-sqrt(radius * radius - lengthRear * lengthRear));
 
 
-    MvrPose rightRear;
+    ArPose rightRear;
     if (widthRight >= radius && lengthRear >= radius)      
-      rightRear.setPose(-lengthRear, -widthRight);
+      rightRear.setPose(-lengthRear, 
+			-widthRight);
     else if (widthRight >= radius)
-      rightRear.setPose(0, -widthRight);
+      rightRear.setPose(0, 
+			-widthRight);
     else
-      rightRear.setPose(-sqrt(radius * radius - widthRight * widthRight),	-widthRight);
+      rightRear.setPose(-sqrt(radius * radius - widthRight * widthRight),
+			-widthRight);
 
-    MvrPose rightFront;
+    ArPose rightFront;
     if (widthRight >= radius && lengthFront >= radius)
-      rightFront.setPose(lengthFront, -widthRight);
+      rightFront.setPose(lengthFront, 
+			 -widthRight);
     else if (widthRight >= radius)
-      rightFront.setPose(0, -widthRight);
+      rightFront.setPose(0, 
+			-widthRight);
     else
-      rightFront.setPose(sqrt(radius * radius - widthRight * widthRight), -widthRight);
+      rightFront.setPose(sqrt(radius * radius - widthRight * widthRight),
+			 -widthRight);
 
-    MvrPose frontRight;
+    ArPose frontRight;
     if (lengthFront >= radius && widthRight >= radius)
-      frontRight.setPose(lengthFront, -widthRight);
+      frontRight.setPose(lengthFront,
+			 -widthRight);
     else if (lengthFront >= radius)
-      frontRight.setPose(lengthFront,0);
+      frontRight.setPose(lengthFront,
+			0);
     else
       frontRight.setPose(lengthFront,
 			 -sqrt(radius * radius - lengthFront * lengthFront));
@@ -2223,25 +2714,126 @@ MVREXPORT std::list<MvrPose> MvrPoseUtil::findCornersFromRobotBounds(
     return ret;
   }
 
-  return ret;    
+  return ret;
+
+  /// MPL this code worked, but didn't give us good corners when the width/length got nuts
+#if 0
+  if (fastButUnsafe)
+  {
+
+    ArPose frontLeft;
+    if (lengthFront >= radius)
+      frontLeft.setPose(lengthFront,
+			0);
+    else
+      frontLeft.setPose(lengthFront,
+			sqrt(radius * radius - lengthFront * lengthFront));
+    
+    ArPose leftFront;
+    if (widthLeft >= radius)
+      leftFront.setPose(0, 
+			widthLeft);
+    else
+      leftFront.setPose(sqrt(radius * radius - widthLeft * widthLeft),
+			widthLeft);
+
+    ArPose leftRear(-leftFront.getX(), 
+		    leftFront.getY());
+    /*
+    ArPose leftRear;
+    if (widthLefth >= radius)
+      leftRear.setPose(0, widthLeft);
+    else
+      leftRear.setPose(-sqrt(radius * radius - widthLeft * widthLeft),
+		       widthLeft);
+    */
+
+    ArPose rearLeft;
+    if (lengthRear >= radius)
+      rearLeft.setPose(-lengthRear, 
+		       0);
+    else
+      rearLeft.setPose(-lengthRear,
+		       sqrt(radius * radius - lengthRear * lengthRear ));
+
+    ArPose rearRight(rearLeft.getX(), 
+		     -rearLeft.getY());
+    /*
+    ArPose rearRight;
+    if (lengthRear >= radius)
+      rightRear.setPose(lengthRear, 
+		       0);
+    else
+      rightRear.setPose(lengthRear,
+			-sqrt(radius * radius - lengthRear * lengthRear));
+    */
+
+    ArPose rightRear;
+    if (widthRight >= radius)
+      rightRear.setPose(0, 
+			-widthRight);
+    else
+      rightRear.setPose(-sqrt(radius * radius - widthRight * widthRight),
+			-widthRight);
+
+    ArPose rightFront(-rightRear.getX(),
+		      rightRear.getY());
+    /*
+    ArPose rightFront;
+    if (widthRight >= radius)
+      rightFront.setPose(0, 
+			-widthRight);
+    else
+      rightFront.setPose(sqrt(radius * radius - widthRight * widthRight),
+			 -widthRight);
+    */
+
+    ArPose frontRight(frontLeft.getX(),
+		      -frontLeft.getY());
+    /*
+    ArPose frontRight;
+    if (lengthFront >= radius)
+      rightFront.setPose(lengthFront,
+			0);
+    else
+      rightFront.setPose(lengthFront,
+			 -sqrt(radius * radius - lengthFront * lengthFront));
+    */
+
+    std::list<ArPose> ret;
+    ret.push_back(frontLeft);
+
+    ret.push_back(leftFront);
+    ret.push_back(leftRear);
+
+    ret.push_back(rearLeft);
+    ret.push_back(rearRight);
+
+    ret.push_back(rightRear);
+    ret.push_back(rightFront);
+
+    ret.push_back(frontRight);
+    return ret;
+  }
+#endif	    
 }
 
 
-MVREXPORT std::list<MvrPose> MvrPoseUtil::breakUpDistanceEvenly(
-	MvrPose start, MvrPose end, int resolution)
+AREXPORT std::list<ArPose> ArPoseUtil::breakUpDistanceEvenly(
+	ArPose start, ArPose end, int resolution)
 {
-  std::list<MvrPose> ret;
+  std::list<ArPose> ret;
 
   ret.push_back(start);
 
   double dist = start.findDistanceTo(end);
   double angle = start.findAngleTo(end);
-  double cos = MvrMath::cos(angle);
-  double sin = MvrMath::sin(angle);
+  double cos = ArMath::cos(angle);
+  double sin = ArMath::sin(angle);
 
   if (dist > resolution)
   {
-
+    // we're using integer truncation here
     int steps = dist / resolution + 1;
     double increment = dist / steps;
 
@@ -2253,7 +2845,7 @@ MVREXPORT std::list<MvrPose> MvrPoseUtil::breakUpDistanceEvenly(
     {
       atX += increment * cos;
       atY += increment * sin;
-      ret.push_back(MvrPose(atX, atY));
+      ret.push_back(ArPose(atX, atY));
     }
   }
 
@@ -2261,7 +2853,7 @@ MVREXPORT std::list<MvrPose> MvrPoseUtil::breakUpDistanceEvenly(
   return ret;
 }
 
-MVREXPORT MvrTimeChecker::MvrTimeChecker(const char *name, int defaultMSecs)
+AREXPORT ArTimeChecker::ArTimeChecker(const char *name, int defaultMSecs)
 {
   if (name != NULL)
     myName = name;
@@ -2270,35 +2862,35 @@ MVREXPORT MvrTimeChecker::MvrTimeChecker(const char *name, int defaultMSecs)
   myMSecs = defaultMSecs;
 }
 
-MVREXPORT MvrTimeChecker::~MvrTimeChecker()
+AREXPORT ArTimeChecker::~ArTimeChecker()
 {
 
 }
 
-MVREXPORT void MvrTimeChecker::start(void)
+AREXPORT void ArTimeChecker::start(void)
 {
   myStarted.setToNow();
   myLastCheck.setToNow();
 }
 
-MVREXPORT void MvrTimeChecker::check(const char *subName)
+AREXPORT void ArTimeChecker::check(const char *subName)
 {
   long long took = myLastCheck.mSecSinceLL();
 
   if (took > (long long) myMSecs && subName != NULL)
-    MvrLog::log(MvrLog::Normal, "%s::%s took too long (%lld msecs) in thread %s",
+    ArLog::log(ArLog::Normal, "%s::%s took too long (%lld msecs) in thread %s",
 	       myName.c_str(), subName, took, 
-	       MvrThread::self()->getThreadName());
+	       ArThread::self()->getThreadName());
 
   myLastCheck.setToNow();
 }
 
 
-MVREXPORT void MvrTimeChecker::finish(void)
+AREXPORT void ArTimeChecker::finish(void)
 {
   long long took = myStarted.mSecSinceLL();
 
   if (took > (long long) myMSecs)
-    MvrLog::log(MvrLog::Normal, "%s took too long (%lld msecs) in thread %s",
-	       myName.c_str(), took, MvrThread::self()->getThreadName());
+    ArLog::log(ArLog::Normal, "%s took too long (%lld msecs) in thread %s",
+	       myName.c_str(), took, ArThread::self()->getThreadName());
 }

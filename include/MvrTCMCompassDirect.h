@@ -1,20 +1,40 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrTCMCompassDirect.h
- > Description  : Talk to a compass directly over a computer serial port
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRTCMCOMPASSDIRECT_H
-#define MVRTCMCOMPASSDIRECT_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
+#ifndef ARTCMCOMPASSDIRECT_H
+#define ARTCMCOMPASSDIRECT_H
 
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrDeviceConnection.h"
-#include "MvrTCM2.h"
-#include "MvrNMEAParser.h"
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArDeviceConnection.h"
+#include "ArTCM2.h"
+#include "ArNMEAParser.h"
+
 
 /** @brief Talk to a compass directly over a computer serial port
  *  
@@ -24,48 +44,62 @@
  *  On all Pioneer robots, the TCM compass (as originally installed by
  *  MobileRobots) is connected to the robot microcontroller, so if you 
  *  have a Pioneer with this configuration, you  should instead use the 
- *  MvrTCMCompassRobot class. Only use this class if you
+ *  ArTCMCompassRobot class. Only use this class if you
  *  have connected the compass to the computer serial port.
  *
  *  You can create an instance of this class directly, or using an
- *  MvrCompassConnector object and giving the "-compassType serialtcm" program
+ *  ArCompassConnector object and giving the "-compassType serialtcm" program
  *  argument. 
  *
+ *  If you create your own ArTCMCompassDirect object, you must call the read()
+ *  method periodically (ideally at the same rate the compass sends data,
+ *  approx. 8 hz by default) to read and parse incoming data. You can use an
+ *  ArRobot callback to do this, for example:
+ *  @code
+ *    ArRetFunctor1C<int, ArTCMCompassDirect, unsigned int> compassReadFunc(myCompass, &ArTCMCompassDirect::read, 10);
+ *    myRobot->addSensorInterpTask("ArTCMCompassDirect read", 200, &compassReadFunc);
+ *  @endcode
+ *
+ *  If you use ArCompassConnector, however, it will automatically do this.
+ *
  */
-class MvrTCMCompassDirect : public virtual MvrTCM2  
+class ArTCMCompassDirect : public virtual ArTCM2  
 {
 private:
-  MvrDeviceConnection *myDeviceConnection;
+  ArDeviceConnection *myDeviceConnection;
   bool myCreatedOwnDeviceConnection;
   const char *mySerialPortName;
-  MvrNMEAParser myNMEAParser;
+  ArNMEAParser myNMEAParser;
   bool sendTCMCommand(const char *str, ...);
-  MvrFunctor1C<MvrTCMCompassDirect, MvrNMEAParser::Message>  myHCHDMHandler;
-  void handleHCHDM(MvrNMEAParser::Message);
+  ArFunctor1C<ArTCMCompassDirect, ArNMEAParser::Message>  myHCHDMHandler;
+  void handleHCHDM(ArNMEAParser::Message);
 public:
-  MVREXPORT MvrTCMCompassDirect(MvrDeviceConnection *devCon);
-  MVREXPORT MvrTCMCompassDirect(const char *serialPortName = MVRTCM2_DEFAULT_SERIAL_PORT);
-  MVREXPORT ~MvrTCMCompassDirect();
+  AREXPORT ArTCMCompassDirect(ArDeviceConnection *devCon);
+  AREXPORT ArTCMCompassDirect(const char *serialPortName = ARTCM2_DEFAULT_SERIAL_PORT);
+  AREXPORT ~ArTCMCompassDirect();
 
   /** Open device connection if not yet open  and send commands to configure compass. */
-  MVREXPORT virtual bool connect();
-  MVREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
+  AREXPORT virtual bool connect();
+  AREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
+
 
   /** Send commands to begin calibrating */
-  MVREXPORT virtual void commandAutoCalibration();
-  MVREXPORT virtual void commandUserCalibration();
-  MVREXPORT virtual void commandStopCalibration();
+  AREXPORT virtual void commandAutoCalibration();
+  AREXPORT virtual void commandUserCalibration();
+  AREXPORT virtual void commandStopCalibration();
 
   /** Send commands to start/stop sending data.  */
-  MVREXPORT virtual void commandContinuousPackets();
-  MVREXPORT virtual void commandOnePacket();
-  MVREXPORT virtual void commandOff();
+  //@{
+  AREXPORT virtual void commandContinuousPackets();
+  AREXPORT virtual void commandOnePacket();
+  AREXPORT virtual void commandOff();
+  //@}
 
   /** Not implemented yet. @todo */
-  MVREXPORT virtual void commandSoftReset() { /* TODO */ }
+  AREXPORT virtual void commandSoftReset() { /* TODO */ }
 
   /** Same as commandContinuousPackets() in this implementation. */
-  MVREXPORT virtual void commandJustCompass() { commandContinuousPackets(); }
+  AREXPORT virtual void commandJustCompass() { commandContinuousPackets(); }
 
   /** Read all available data, store, and call callbacks if any were added. 
    *  unsigned int msWait If 0, wait indefinately for new data. Otherwise, wait
@@ -73,12 +107,14 @@ public:
    *  @return A value > 0 if messages were recieved from the compass, 0 if no
    *  data was recieved, and a value < 0 on error reading from the compass.
    * */
-  MVREXPORT int read(unsigned int msWait = 1);
+  AREXPORT int read(unsigned int msWait = 1);
  
-  MVREXPORT void setDeviceConnection(MvrDeviceConnection *devCon) { myDeviceConnection = devCon; }
-  MVREXPORT MvrDeviceConnection *getDeviceConnetion() { return myDeviceConnection; }
+  AREXPORT void setDeviceConnection(ArDeviceConnection *devCon) { myDeviceConnection = devCon; }
+  AREXPORT ArDeviceConnection *getDeviceConnetion() { return myDeviceConnection; }
+
+
 };
 
-#endif  // MVRTCMCOMPASSDIRECT_H
+#endif 
 
 

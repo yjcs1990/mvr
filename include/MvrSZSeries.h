@@ -1,40 +1,58 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrSZSeries.h
- > Description  : #internal use
- > Author       : Yu Jie
- > Create Time  : 2017年05月22日
- > Modify Time  : 2017年05月22日
-***************************************************************************************************/
-#ifndef MVRSZSERIES_H
-#define MVRSZSERIES_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "mvriaOSDef.h"
-#include "MvrRobotPacket.h"
-#include "MvrLaser.h"   
-#include "MvrFunctor.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARSZSERIES_H
+#define ARSZSERIES_H
+
+#include "ariaTypedefs.h"
+#include "ariaOSDef.h"
+#include "ArRobotPacket.h"
+#include "ArLaser.h"   
+#include "ArFunctor.h"
 
 /** @internal */
-class MvrSZSeriesPacket : public MvrBasePacket
+class ArSZSeriesPacket : public ArBasePacket
 {
 public:
   /// Constructor
-  MVREXPORT MvrSZSeriesPacket();
+  AREXPORT ArSZSeriesPacket();
   /// Destructor
-  MVREXPORT virtual ~MvrSZSeriesPacket();
+  AREXPORT virtual ~ArSZSeriesPacket();
   
   /// Gets the time the packet was received at
-  MVREXPORT MvrTime getTimeReceived(void);
+  AREXPORT ArTime getTimeReceived(void);
   /// Sets the time the packet was received at
-  MVREXPORT void setTimeReceived(MvrTime timeReceived);
+  AREXPORT void setTimeReceived(ArTime timeReceived);
 
-  MVREXPORT virtual void duplicatePacket(MvrSZSeriesPacket *packet);
-  MVREXPORT virtual void empty(void);
+  AREXPORT virtual void duplicatePacket(ArSZSeriesPacket *packet);
+  AREXPORT virtual void empty(void);
 
-  MVREXPORT virtual void byteToBuf(MvrTypes::Byte val);
+  AREXPORT virtual void byteToBuf(ArTypes::Byte val);
 
-  MVREXPORT virtual MvrTypes::Byte bufToByte(void);
+  AREXPORT virtual ArTypes::Byte bufToByte(void);
   
   void setDataLength(int x)
   { myDataLength = x; }
@@ -54,6 +72,7 @@ public:
   int getPrevScanFrequency()
   { return myPrevScanFrequency; }
 
+
   unsigned char getCrcByte1()
   { return myCrcByte1; }
   void setCrcByte1(unsigned char c)
@@ -66,7 +85,7 @@ public:
 protected:
   int deascii(char c);
 
-  MvrTime myTimeReceived;
+  ArTime myTimeReceived;
 
   // SZS specific
   int myDataLength;
@@ -77,46 +96,48 @@ protected:
   
   int myPrevScanFrequency;
 
+
 };
 
 
 /// Given a device connection it receives packets from the sick through it
 /// @internal
-class MvrSZSeriesPacketReceiver
+class ArSZSeriesPacketReceiver
 {
 public:
   /// Constructor with assignment of a device connection
-  MVREXPORT MvrSZSeriesPacketReceiver();
+  AREXPORT ArSZSeriesPacketReceiver();
   /// Destructor
-  MVREXPORT virtual ~MvrSZSeriesPacketReceiver();
+  AREXPORT virtual ~ArSZSeriesPacketReceiver();
   
   /// Receives a packet from the robot if there is one available
-  MVREXPORT MvrSZSeriesPacket *receivePacket(unsigned int msWait = 0, bool shortcut = false);
+  AREXPORT ArSZSeriesPacket *receivePacket(unsigned int msWait = 0,
+					 bool shortcut = false);
 
   /// Sets the device this instance receives packets from
-  MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+  AREXPORT void setDeviceConnection(ArDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  AREXPORT ArDeviceConnection *getDeviceConnection(void);
   unsigned short CRC16(unsigned char *, int);
 
   // PS - added to pass info to this class
-  MVREXPORT void	setmyInfoLogLevel(MvrLog::LogLevel infoLogLevel)
+  AREXPORT void	setmyInfoLogLevel(ArLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
-  MVREXPORT void setmyIsSZ00(bool isSZ00)
+  AREXPORT void setmyIsSZ00(bool isSZ00)
   { myIsSZ00 = isSZ00; }
-  MVREXPORT void setmyName(const char *name )
+  AREXPORT void setmyName(const char *name )
   { strcpy(myName, name); }
 
 protected:
-  MvrDeviceConnection *myConn;
-  MvrSZSeriesPacket myPacket;
+  ArDeviceConnection *myConn;
+  ArSZSeriesPacket myPacket;
   
   char myName[1024];
   unsigned int myNameLength;
   unsigned char myReadBuf[100000];
   int myReadCount;
   bool myIsSZ00;
-  MvrLog::LogLevel myInfoLogLevel;
+  ArLog::LogLevel myInfoLogLevel;
 
   unsigned short myPrevCrc;
 
@@ -124,37 +145,38 @@ protected:
 };
 
 /**
-  @see MvrLaserConnector
-  Use MvrLaserConnector to connect to a laser, determining type based on robot and program configuration  parameters.
+  @since Aria 2.7.4
+  @see ArLaserConnector
+  Use ArLaserConnector to connect to a laser, determining type based on robot and program configuration  parameters.
 */
-class MvrSZSeries : public MvrLaser
+class ArSZSeries : public ArLaser
 {
 public:
   /// Constructor
-  MVREXPORT MvrSZSeries(int laserNumber,
+  AREXPORT ArSZSeries(int laserNumber,
 		 const char *name = "SZSeries");
   /// Destructor
-  MVREXPORT ~MvrSZSeries();
-  MVREXPORT virtual bool blockingConnect(void);
-  MVREXPORT virtual bool asyncConnect(void);
-  MVREXPORT virtual bool disconnect(void);
+  AREXPORT ~ArSZSeries();
+  AREXPORT virtual bool blockingConnect(void);
+  AREXPORT virtual bool asyncConnect(void);
+  AREXPORT virtual bool disconnect(void);
   virtual bool isConnected(void) { return myIsConnected; }
   virtual bool isTryingToConnect(void) 
-  { 
-    if (myStartConnect)
-	    return true;
-    else if (myTryingToConnect)
-	    return true; 
-    else
-	    return false;
-  }  
+    { 
+      if (myStartConnect)
+	return true;
+      else if (myTryingToConnect)
+	return true; 
+      else
+	return false;
+    }  
 
   /// Logs the information about the sensor
-  MVREXPORT void log(void);
+  AREXPORT void log(void);
 protected:
-  MVREXPORT virtual void laserSetName(const char *name);
-  MVREXPORT virtual void * runThread(void *arg);
-  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  AREXPORT virtual void laserSetName(const char *name);
+  AREXPORT virtual void * runThread(void *arg);
+  AREXPORT virtual void setRobot(ArRobot *robot);
   void sensorInterp(void);
   void failedToConnect(void);
   void clear(void);
@@ -165,20 +187,19 @@ protected:
   int myNumChans;
 
 
-  MvrLog::LogLevel myLogLevel;
+  ArLog::LogLevel myLogLevel;
 
-  MvrSZSeriesPacketReceiver myReceiver;
+  ArSZSeriesPacketReceiver myReceiver;
 
-  MvrMutex myPacketsMutex;
-  MvrMutex myDataMutex;
+  ArMutex myPacketsMutex;
+  ArMutex myDataMutex;
 
-  std::list<MvrSZSeriesPacket *> myPackets;
+  std::list<ArSZSeriesPacket *> myPackets;
   
-  MvrTime myPrevSensorIntTime;
+  ArTime myPrevSensorIntTime;
 
-  MvrFunctorC<MvrSZSeries> mySensorInterpTask;
-  MvrRetFunctorC<bool, MvrSZSeries> myMvriaExitCB;
+  ArFunctorC<ArSZSeries> mySensorInterpTask;
+  ArRetFunctorC<bool, ArSZSeries> myAriaExitCB;
 };
 
-#endif  // MVRSZSERIES_H
-
+#endif 

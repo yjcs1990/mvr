@@ -1,39 +1,60 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrConfigGroup.h
- > Description  : Container for holding a group of MvrConfigs
- > Author       : Yu Jie
- > Create Time  : 2017年05月20日
- > Modify Time  : 2017年05月20日
-***************************************************************************************************/
-#ifndef MVRCONFIGGROUP_H
-#define MVRCONFIGGROUP_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "MvrConfig.h"
-class MvrConfigGroup
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARCONFIGGROUP_H
+#define ARCONFIGGROUP_H
+
+#include "ArConfig.h"
+
+/// Container for holding a group of ArConfigs
+class ArConfigGroup
 {
 public:
   /// Constructor
-  MVREXPORT MvrConfigGroup(const char *baseDirectory = NULL);
+  AREXPORT ArConfigGroup(const char *baseDirectory = NULL);
   /// Destructor
-  MVREXPORT ~MvrConfigGroup(void);
+  AREXPORT ~ArConfigGroup(void);
   /// Adds a config to the group
-  MVREXPORT void addConfig(MvrConfig *config);
+  AREXPORT void addConfig(ArConfig *config);
   /// Removes a config from the group
-  MVREXPORT void remConfig(MvrConfig *config);
+  AREXPORT void remConfig(ArConfig *config);
   /// Parses the given file (starting from the base directory)
-  MVREXPORT bool parseFile(const char *fileName, bool continueOnError = false);
+  AREXPORT bool parseFile(const char *fileName, bool continueOnError = false);
   /// Reloads the last file parsed
-  MVREXPORT bool reloadFile(bool continueOnError = true);
+  AREXPORT bool reloadFile(bool continueOnError = true);
   /// Writes a file out (overwrites any existing file)
-  MVREXPORT bool writeFile(const char *fileName);
+  AREXPORT bool writeFile(const char *fileName);
   /// Sets the base directory on all configs this contains
-  MVREXPORT void setBaseDirectory(const char *baseDirectory);
-  /// Gets the bases directory of this group (not the configs it contains)
-  MVREXPORT const char *getBaseDirectory(void) const;
+  AREXPORT void setBaseDirectory(const char *baseDirectory);
+  /// Gets the baes directory of this group (not the configs it contains)
+  AREXPORT const char *getBaseDirectory(void) const;
 protected:
   std::string myBaseDirectory;
   std::string myLastFile;
-  std::list<MvrConfig *> myConfigs;
+  std::list<ArConfig *> myConfigs;
 };
-#endif  // MVRCONFIGGROUP_H
+
+#endif // ARCONFIGGROUP

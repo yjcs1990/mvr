@@ -1,36 +1,103 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrPTZ.h
- > Description  : Base class which handles the PTZ cameras
- > Author       : Yu Jie
- > Create Time  : 2017年05月24日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRPTZ_H
-#define MVRPTZ_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrFunctor.h"
-#include "MvrCommands.h"
-#include "MvrPTZConnector.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrRobot;
-class MvrBasePacket;
-class MvrRobotPacket;
-class MvrDeviceConnection;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-class MvrPTZ
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARPTZ_H
+#define ARPTZ_H
+
+#include "ariaTypedefs.h"
+#include "ArFunctor.h"
+#include "ArCommands.h"
+#include "ArPTZConnector.h"
+
+class ArRobot;
+class ArBasePacket;
+class ArRobotPacket;
+class ArDeviceConnection;
+
+
+/// Base class which handles the PTZ cameras
+/** 
+    This class is mainly concerned with making all the cameras look
+    the same for outgoing data, it is also set up to facilitate the
+    acquisition of incoming data but that is described in the
+    following paragraphs.  There are two ways this can be used.  The
+    first is the simplest and default behavior and should be used by
+    those whose cameras are attached to their robot's microcontroller,
+    a ArRobot pointer is passed in to the contructor, this is where
+    the commands will be sent to the robot via the robot's connection
+    which will then send it along over the second serial port.  The
+    second way is to pass an ArDeviceConnection to
+    setDeviceConnection, if this is done commands will be sent along
+    the given serial port, this should ONLY be done if the camera is
+    attached straight to a serial port on the computer this program is
+    running on.
+
+    The next two paragraphs describe how to get data back from the
+    cameras, but this base class is set up so that by default it won't
+    try to get data back and assumes you're not trying to do that.  If
+    you are trying to get data back the important functions are
+    packetHandler, robotPacketHandler and readPacket and you should
+    read the docs on those.
+
+    If the camera is attached to the robot (and you are thus using the
+    first method described in the first paragraph) then the only way
+    to get data back is to send an ArCommands::GETAUX, then set up a
+    robotPacketHandler for the AUX id and have it call the
+    packetHandler you set up in in the class.
+
+    If the camera is attached to the serial port on the computer (and
+    thus the second method described in the first paragraph was used)
+    then its more complicated... the default way is to just pass in an
+    ArDeviceConnection to setDeviceConnection and implement the
+    readPacket method (which MUST not block), and every time through
+    the robot loop readPacket (with the sensorInterpHandler) will be
+    called and any packets will be given to the packetHandler (which
+    you need to implement in your class) to be processed.  The other
+    way to do this method is to pass both an ArDefaultConnection and
+    false to setDeviceConnection, this means the camera will not be
+    read at all by default, and you're on your own for reading the
+    data in (ie like your own thread).
+
+  @ingroup OptionalClasses
+   @ingroup DeviceClasses
+
+  @todo add functions (optional to implement): power on/off, isReady/isInitialized, slew
+**/
+class ArPTZ
 {
 public:
-  MVREXPORT MvrPTZ(MvrRobot *robot);
+  AREXPORT ArPTZ(ArRobot *robot);
   /// Destructor
-  MVREXPORT virtual ~MvrPTZ();
+  AREXPORT virtual ~ArPTZ();
 
   /// Initializes the camera
-  MVREXPORT virtual bool init(void) = 0;
+  AREXPORT virtual bool init(void) = 0;
 
   /// Return name of this PTZ type 
-  MVREXPORT virtual const char *getTypeName() = 0;
+  AREXPORT virtual const char *getTypeName() = 0;
 
   /// Resets the camera
   /**
@@ -38,7 +105,7 @@ public:
      on some cameras that can get out of sync it may need to do more,
      such as call init on it again.
    **/
-  MVREXPORT virtual void reset(void) 
+  AREXPORT virtual void reset(void) 
     { panTilt(0, 0); if (canZoom()) zoom(getMinZoom()); }
 
   /// Pans to the given degrees. 0 is straight ahead, - is to the left, + to the right
@@ -64,12 +131,12 @@ public:
   virtual bool panTiltRel(double degreesPan, double degreesTilt) { if(myInverted) return panTiltRel_i(-degreesPan, -degreesTilt); else return panTiltRel_i(degreesPan,  degreesTilt); }
 
   /// Returns true if camera can zoom and this class can control the zoom amount
-  MVREXPORT virtual bool canZoom(void) const = 0;
+  AREXPORT virtual bool canZoom(void) const = 0;
 
   /// Zooms to the given value
-  MVREXPORT virtual bool zoom(int zoomValue) { return false; }
+  AREXPORT virtual bool zoom(int zoomValue) { return false; }
   /// Zooms relative to the current value, by the given value
-  MVREXPORT virtual bool zoomRel(int zoomValue) { return false; }
+  AREXPORT virtual bool zoomRel(int zoomValue) { return false; }
 
   /** The angle the camera is panned to (or last commanded value sent, if unable to obtain real pan position)
       @sa canGetRealPanTilt()
@@ -86,13 +153,13 @@ public:
     @sa canZoom();
     @sa canGetZoom()
   */
-  MVREXPORT virtual int getZoom(void) const { return 0; }
+  AREXPORT virtual int getZoom(void) const { return 0; }
 
   /// Whether getPan() hand getTilt() return the device's real position, or last commanded position.
-  MVREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
+  AREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
 
   /// Whether getZoom() returns the device's real zoom amount, or last commanded zoom position.
-  MVREXPORT virtual bool canGetRealZoom(void) const { return false; }
+  AREXPORT virtual bool canGetRealZoom(void) const { return false; }
 
 
   /// Gets the highest positive degree the camera can pan to (inverted if camera is inverted)
@@ -150,7 +217,7 @@ public:
 
 protected:
   /// Versions of the pan and tilt limit accessors where inversion is not applied, for use by subclasses to check when given pan/tilt commands.
-  /// @todo limits checking should be done in MvrPTZ pan(), tilt() and panTilt() public interface methods instead of in each implementation
+  /// @todo limits checking should be done in ArPTZ pan(), tilt() and panTilt() public interface methods instead of in each implementation
   //@{
   virtual double getMaxPosPan_i(void) const { return myMaxPosPan; }
   double getMaxPan_i() const { return getMaxPosPan_i(); }
@@ -171,28 +238,28 @@ public:
   /// Whether we can get the FOV (field of view) or not
   virtual bool canGetFOV(void) { return false; }
   /// Gets the field of view at maximum zoom
-  MVREXPORT virtual double getFOVAtMaxZoom(void) { return 0; }
+  AREXPORT virtual double getFOVAtMaxZoom(void) { return 0; }
   /// Gets the field of view at minimum zoom
-  MVREXPORT virtual double getFOVAtMinZoom(void) { return 0; }
+  AREXPORT virtual double getFOVAtMinZoom(void) { return 0; }
 
   /// Set gain on camera, range of 1-100.  Returns false if out of range
   /// or if you can't set the gain on the camera
-  MVREXPORT virtual bool setGain(double gain) const { return false; }
+  AREXPORT virtual bool setGain(double gain) const { return false; }
   /// Get the gain the camera is set to.  0 if not supported
-  MVREXPORT virtual double getGain(double gain) const { return 0; }
+  AREXPORT virtual double getGain(double gain) const { return 0; }
   /// If the driver can set gain on the camera, or not
-  MVREXPORT virtual bool canSetGain(void) const { return false; }
+  AREXPORT virtual bool canSetGain(void) const { return false; }
 
   /// Set focus on camera, range of 1-100.  Returns false if out of range
   /// or if you can't set the focus on the camera
-  MVREXPORT virtual bool setFocus(double focus) const { return false; }
+  AREXPORT virtual bool setFocus(double focus) const { return false; }
   /// Get the focus the camera is set to.  0 if not supported
-  MVREXPORT virtual double getFocus(double focus) const { return 0; }
+  AREXPORT virtual double getFocus(double focus) const { return 0; }
   /// If the driver can set the focus on the camera, or not
-  MVREXPORT virtual bool canSetFocus(void) const { return false; }
+  AREXPORT virtual bool canSetFocus(void) const { return false; }
 
   /// Disable/enable autofocus mode if possible. Return false if can't change autofocus mode.
-  MVREXPORT virtual bool setAutoFocus(bool af = true) { return false; }
+  AREXPORT virtual bool setAutoFocus(bool af = true) { return false; }
 
   /// Set whether the camera is inverted (upside down). If true, pan and tilt axes will be reversed.
   void setInverted(bool inv) { myInverted = inv; }
@@ -203,14 +270,14 @@ public:
   /// Sets the device connection to be used by this PTZ camera, if set
   /// this camera will send commands via this connection, otherwise
   /// its via robot aux. serial port (see setAuxPortt())
-  MVREXPORT virtual bool setDeviceConnection(MvrDeviceConnection *connection,
+  AREXPORT virtual bool setDeviceConnection(ArDeviceConnection *connection,
 					    bool driveFromRobotLoop = true);
   /// Gets the device connection used by this PTZ camera
-  MVREXPORT virtual MvrDeviceConnection *getDeviceConnection(void);
+  AREXPORT virtual ArDeviceConnection *getDeviceConnection(void);
   /// Sets the aux port on the robot to be used to communicate with this device
-  MVREXPORT virtual bool setAuxPort(int auxPort);
+  AREXPORT virtual bool setAuxPort(int auxPort);
   /// Gets the port the device is set to communicate on
-  MVREXPORT virtual int getAuxPort(void) { return myAuxPort; }
+  AREXPORT virtual int getAuxPort(void) { return myAuxPort; }
   /// Reads a packet from the device connection, MUST NOT BLOCK
   /** 
       This should read in a packet from the myConn connection and
@@ -220,10 +287,10 @@ public:
       since that is on the robot loop.      
       @return packet read in, or NULL if there was no packet read
    **/
-  MVREXPORT virtual MvrBasePacket *readPacket(void) { return NULL; }
+  AREXPORT virtual ArBasePacket *readPacket(void) { return NULL; }
   
   /// Sends a given packet to the camera (via robot or serial port, depending)
-  MVREXPORT virtual bool sendPacket(MvrBasePacket *packet);
+  AREXPORT virtual bool sendPacket(ArBasePacket *packet);
   /// Handles a packet that was read from the device
   /**
      This should work for the robot packet handler or for packets read
@@ -235,7 +302,7 @@ public:
      @return true if this packet was handled (ie this knows what it
      is), false otherwise
   **/
-  MVREXPORT virtual bool packetHandler(MvrBasePacket *packet) { return false; }
+  AREXPORT virtual bool packetHandler(ArBasePacket *packet) { return false; }
 
   /// Handles a packet that was read by the robot
   /**
@@ -246,28 +313,28 @@ public:
      @return true if the packet was handled (ie this konws what it is),
      false otherwise
   **/
-  MVREXPORT virtual bool robotPacketHandler(MvrRobotPacket *packet);
+  AREXPORT virtual bool robotPacketHandler(ArRobotPacket *packet);
 
   /// Internal, attached to robot, inits the camera when robot connects
-  MVREXPORT virtual void connectHandler(void);
+  AREXPORT virtual void connectHandler(void);
   /// Internal, for attaching to the robots sensor interp to read serial port
-  MVREXPORT virtual void sensorInterpHandler(void);
+  AREXPORT virtual void sensorInterpHandler(void);
 
-  /// Return MvrRobot object this PTZ is associated with. May be NULL
-  MvrRobot *getRobot() { return myRobot; }
+  /// Return ArRobot object this PTZ is associated with. May be NULL
+  ArRobot *getRobot() { return myRobot; }
 
-  /// Set MvrRobot object this PTZ is associated with. May be NULL
-  void setRobot(MvrRobot* r) { myRobot = r; }
+  /// Set ArRobot object this PTZ is associated with. May be NULL
+  void setRobot(ArRobot* r) { myRobot = r; }
 
 protected:
-  MvrRobot *myRobot;
-  MvrDeviceConnection *myConn;
-  MvrFunctorC<MvrPTZ> myConnectCB;
-  MvrFunctorC<MvrPTZ> mySensorInterpCB;
+  ArRobot *myRobot;
+  ArDeviceConnection *myConn;
+  ArFunctorC<ArPTZ> myConnectCB;
+  ArFunctorC<ArPTZ> mySensorInterpCB;
   int myAuxPort;
-  MvrCommands::Commands myAuxTxCmd;
-  MvrCommands::Commands myAuxRxCmd;
-  MvrRetFunctor1C<bool, MvrPTZ, MvrRobotPacket *> myRobotPacketHandlerCB;
+  ArCommands::Commands myAuxTxCmd;
+  ArCommands::Commands myAuxRxCmd;
+  ArRetFunctor1C<bool, ArPTZ, ArRobotPacket *> myRobotPacketHandlerCB;
   bool myInverted;
   double myMaxPosPan;
   double myMaxNegPan;
@@ -277,6 +344,7 @@ protected:
   int myMinZoom;
 
   /// Subclasses call this to set extents (limits) returned by getMaxPosPan(), getMaxNegPan(), getMaxPosTilt(), getMaxNegTilt(), getMaxZoom(), and getMinZoom().
+  /// @since 2.7.6
   void setLimits(double maxPosPan, double maxNegPan,      double maxPosTilt, double maxNegTilt, int maxZoom = 0, int minZoom = 0)
   {
     myMaxPosPan = maxPosPan;
@@ -292,14 +360,18 @@ protected:
   /// applied and no call should be made to any pan/tilt or max/min limit accessor
   /// method that does not end in _i, or inversion will be applied again,
   /// reversing it.
-  MVREXPORT virtual bool pan_i (double degrees) = 0;
-  MVREXPORT virtual bool panRel_i(double degrees) = 0;
-  MVREXPORT virtual bool tilt_i(double degrees) = 0;
-  MVREXPORT virtual bool tiltRel_i (double degrees) = 0; 
-  MVREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt) = 0;
-  MVREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt) = 0;
-  MVREXPORT virtual double getPan_i(void) const = 0;
-  MVREXPORT virtual double getTilt_i(void) const = 0;
+  /// @since 2.7.6
+  //@{
+  AREXPORT virtual bool pan_i (double degrees) = 0;
+  AREXPORT virtual bool panRel_i(double degrees) = 0;
+  AREXPORT virtual bool tilt_i(double degrees) = 0;
+  AREXPORT virtual bool tiltRel_i (double degrees) = 0; 
+  AREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt) = 0;
+  AREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt) = 0;
+  AREXPORT virtual double getPan_i(void) const = 0;
+  AREXPORT virtual double getTilt_i(void) const = 0;
+  //@}
 
 };
-#endif  // MVRPTZ_H
+
+#endif // ARPTZ_H

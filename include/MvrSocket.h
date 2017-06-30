@@ -1,13 +1,32 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrSocket.h
- > Description  : For connecting to a device through a TCP network socket
- > Author       : Yu Jie
- > Create Time  : 2017年05月18日
- > Modify Time  : 2017年05月18日
-***************************************************************************************************/
-#ifndef MVRSOCKET_H
-#define MVRSOCKET_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARSOCKET_H
+#define ARSOCKET_H
+
 
 #ifndef WIN32
 #include <sys/time.h>
@@ -22,28 +41,30 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdarg.h>
-#endif  // WIN32
+#endif
+
 
 #include <string>
-#include "mvriaTypedefs.h"
-#include "MvrMutex.h"
-#include "mvriaUtil.h"
+#include "ariaTypedefs.h"
+#include "ArMutex.h"
+#include "ariaUtil.h"
 
-class MvrFunctor;
+class ArFunctor;
 
-// socket communication wrapper
+
+/// socket communication wrapper
 /**
-   MvrSocket is a layer which allows you to use the sockets networking
+   ArSocket is a layer which allows you to use the sockets networking
    interface in an operating system independent manner. All of the standard
    commonly used socket functions are implemented such as open(), close(),
-   connect(), accept(), read(), write(), hostToNetOrder(), netToHostOrder().  MvrSocket extends some of these functions to set useful options (see method documentation for details). It also provides additional useful functions like
+   connect(), accept(), read(), write(), hostToNetOrder(), netToHostOrder().  ArSocket extends some of these functions to set useful options (see method documentation for details). It also provides additional useful functions like
    writeString(), readString, setCloseCallback(), and more.
 
    In Windows, the sockets subsystem needs to be initialized and shutdown
-   by the program. So when a program starts it must call Mvria::init() and
-   call Mvria::shutdown() when it exits. (Or, to only initialize the socket
-   system, and not do any other global Mvria initialization, use MvrSocket::init()
-   and MvrSocket::shutdown().)
+   by the program. So when a program starts it must call Aria::init() and
+   call Aria::shutdown() when it exits. (Or, to only initialize the socket
+   system, and not do any other global Aria initialization, use ArSocket::init()
+   and ArSocket::shutdown().)
 
    Some calls set an error code on failure in addition to returning false. This value is available from getError().
    If getError() returns something other than NoErr, a text description of the error may be available from getErrorStr().  
@@ -53,125 +74,129 @@ class MvrFunctor;
 
     @ingroup UtilityClasses
 */
-class MvrSocket
+class ArSocket
 {
 public:
+
   enum Type {UDP, TCP, Unknown};
   enum Error {NoErr, NetFail, ConBadHost, ConNoRoute, ConRefused, NameLookup};
 
   /// Constructor. You must then use either connect() or open().
-  MVREXPORT MvrSocket();
+  AREXPORT ArSocket();
 
   /// Constructor which immediately connects to a server as a client
-  /// @param host Hostname or IP address of remote server
-  /// @param port Port number on server
-  /// @param Which IP protocol to use, type MvrSocket::TCP or MvrSocket::UDP
-  MVREXPORT MvrSocket(const char *host, int port, Type type);
+  /// @a host Hostname or IP address of remote server
+  /// @a port Port number on server
+  /// @a Which IP protocol to use, type ArSocket::TCP or ArSocket::UDP
+  AREXPORT ArSocket(const char *host, int port, Type type);
 
   /// Constructor which immediately opens a port as a server
-  /// @param port Port number to open. Use a value greater than 1024.
-  /// @param doClose Automatically close the port when MvrSocket is destroyed (recommend using true)
-  /// @param type Which IP protocol to use, MvrSocket::TCP or MvrSocket::UDP
-  MVREXPORT MvrSocket(int port, bool doClose, Type type);
+  /// @a port Port number to open. Use a value greater than 1024.
+  /// @a doClose Automatically close the port when ArSocket is destroyed (recommend using true)
+  /// @a type Which IP protocol to use, ArSocket::TCP or ArSocket::UDP
+  AREXPORT ArSocket(int port, bool doClose, Type type);
 
   /// Destructor
-  MVREXPORT ~MvrSocket();
+  AREXPORT ~ArSocket();
 
   /// Initialize the OS sockets system, if neccesary
-  MVREXPORT static bool init();
+  AREXPORT static bool init();
+
   /// Shutdown the OS sockets system, if neccesary
-  MVREXPORT static void shutdown();
+  AREXPORT static void shutdown();
+
   /// Converts the given socket type to a displayable text string (for debugging).
-  MVREXPORT static const char *toString(Type t);
+  AREXPORT static const char *toString(Type t);
 
   /** @internal */
-  MVREXPORT static bool ourInitialized;
+  AREXPORT static bool ourInitialized;
+
   /// Copy internal socket structures
-  MVREXPORT bool copy(int fd, bool doclose);
+  /// @internal
+  AREXPORT bool copy(int fd, bool doclose);
+
   /// Copy socket 
-  MVREXPORT void copy(MvrSocket *s)
-  {
-    myFD=s->myFD; 
-    myDoClose=false; 
-    mySin=s->mySin;
-  }
+  /// @internal
+  AREXPORT void copy(ArSocket *s)
+    {myFD=s->myFD; myDoClose=false; mySin=s->mySin;}
 
   /// Transfer ownership of a socket
   /** transfer() will transfer ownership to this socket. The input socket
       will no longer close the file descriptor when it is destructed.
   */
-  MVREXPORT void transfer(MvrSocket *s)
-  {
-    myFD=s->myFD; 
-    myDoClose=true; 
-    s->myDoClose=false; 
-    mySin=s->mySin;
-    myType=s->myType; 
-    strcpy(myRawIPString, s->myRawIPString); 
-    setIPString(s->getIPString()); 
-  }
+  AREXPORT void transfer(ArSocket *s)
+    {myFD=s->myFD; myDoClose=true; s->myDoClose=false; mySin=s->mySin;
+      myType=s->myType; strcpy(myRawIPString, s->myRawIPString); 
+      setIPString(s->getIPString()); }
 
   /// Connect as a client to a server
-  MVREXPORT bool connect(const char *host, int port, Type type = TCP, const char *openOnIP = NULL);
+  AREXPORT bool connect(const char *host, int port, Type type = TCP,
+			const char *openOnIP = NULL);
 
   /** Open a server port
+
       Opens a server port, that is, a port that is bound to a local port (and optionally, address) 
       and listens for new incoming connections.  Use accept() to wait for a
       new incoming connection from a client.
+
+      In additon, internally this method calls setLinger(0), setReuseAddress(),
+      and setNonBlock() to turn on these options (having these on is 
+      particularly useful for servers).  
+      
       @param port Port number
-      @param type MvrSocket::TCP or MvrSocket::UDP.
+      @param type ArSocket::TCP or ArSocket::UDP.
       @param openOnIP If given, only bind to the interface
-       accociated with this address (Linux only) (by default, all interfaces are used)
+        accociated with this address (Linux only) (by default, all interfaces are used)
   */
-  MVREXPORT bool open(int port, Type type, const char *openOnIP = NULL);
+  AREXPORT bool open(int port, Type type, const char *openOnIP = NULL);
 
   /// Simply create a port.
-  MVREXPORT bool create(Type type);
+  AREXPORT bool create(Type type);
 
-  /** Find the first valid unused port after @param startPort, and bind the socket to it.
+  /** Find the first valid unused port after @a startPort, and bind the socket to it.
       @param startPort first port to try
 	    @param openOnIP If given, only check ports open on the interface accociated with this address (Linux only)
   */
-  MVREXPORT bool findValidPort(int startPort, const char *openOnIP = NULL);
+  AREXPORT bool findValidPort(int startPort, const char *openOnIP = NULL);
 
   /// Connect the socket to the given address
-  MVREXPORT bool connectTo(const char *host, int port);
+  AREXPORT bool connectTo(const char *host, int port);
 
   /// Connect the socket to the given address
-  MVREXPORT bool connectTo(struct sockaddr_in *sin);
+  AREXPORT bool connectTo(struct sockaddr_in *sin);
 
   /// Accept a new connection
-  MVREXPORT bool accept(MvrSocket *sock);
+  AREXPORT bool accept(ArSocket *sock);
 
   /// Close the socket
-  MVREXPORT bool close();
+  AREXPORT bool close();
 
   /// Write data to the socket
-  MVREXPORT int write(const void *buff, size_t len);
+  AREXPORT int write(const void *buff, size_t len);
 
   /// Read data from the socket
-  MVREXPORT int read(void *buff, size_t len, unsigned int msWait = 0);
+  AREXPORT int read(void *buff, size_t len, unsigned int msWait = 0);
 
   /// Send a message (short string) on the socket
-  MVREXPORT int sendTo(const void *msg, int len);
+  AREXPORT int sendTo(const void *msg, int len);
 
   /// Send a message (short string) on the socket
-  MVREXPORT int sendTo(const void *msg, int len, struct sockaddr_in *sin);
+  AREXPORT int sendTo(const void *msg, int len, struct sockaddr_in *sin);
 
   /// Receive a message (short string) from the socket
-  MVREXPORT int recvFrom(void *msg, int len, sockaddr_in *sin);
+  AREXPORT int recvFrom(void *msg, int len, sockaddr_in *sin);
 
   /// Convert a hostname string to an address structure
-  MVREXPORT static bool hostAddr(const char *host, struct in_addr &addr);
+  AREXPORT static bool hostAddr(const char *host, struct in_addr &addr);
 
   /// Convert an address structure to a hostname string
-  MVREXPORT static bool addrHost(struct in_addr &addr, char *host);
+  AREXPORT static bool addrHost(struct in_addr &addr, char *host);
 
   /// Get the localhost address
-  MVREXPORT static std::string getHostName();
+  AREXPORT static std::string getHostName();
 
   /// Get socket information (socket "name"). Aspects of this "name" are accessible with sockAddrIn(), inAddr(), inPort() 
-  MVREXPORT bool getSockName();
+  AREXPORT bool getSockName();
 
   /// Accessor for the sockaddr
   struct sockaddr_in * sockAddrIn() {return(&mySin);}
@@ -182,8 +207,8 @@ public:
   /// Accessor for the port of the sockaddr
   unsigned short int inPort() {return(mySin.sin_port);}
 
-  /// Convert @param addr into string numerical address
-  MVREXPORT static void inToA(struct in_addr *addr, char *buff);
+  /// Convert @a addr into string numerical address
+  AREXPORT static void inToA(struct in_addr *addr, char *buff);
 
   /// Size of the sockaddr
   static size_t sockAddrLen() {return(sizeof(struct sockaddr_in));}
@@ -197,52 +222,53 @@ public:
 #endif
 
   /// Convert an int from host byte order to network byte order
-  MVREXPORT static unsigned int hostToNetOrder(int i);
+  AREXPORT static unsigned int hostToNetOrder(int i);
 
   /// Convert an int from network byte order to host byte order
-  MVREXPORT static unsigned int netToHostOrder(int i);
+  AREXPORT static unsigned int netToHostOrder(int i);
 
   /// Set the linger value
-  MVREXPORT bool setLinger(int time);
+  AREXPORT bool setLinger(int time);
 
   /// Set broadcast value
-  MVREXPORT bool setBroadcast();
+  AREXPORT bool setBroadcast();
 
   /// Set the reuse address value
-  MVREXPORT bool setReuseAddress();
+  AREXPORT bool setReuseAddress();
 
   /// Set socket to nonblocking.  Most importantly, calls to read() will return immediately, even if no data is available.
-  MVREXPORT bool setNonBlock();
+  AREXPORT bool setNonBlock();
 
   /// Change the doClose value
-  MVREXPORT void setDoClose(bool yesno) { myDoClose=yesno; }
+  AREXPORT void setDoClose(bool yesno) {myDoClose=yesno;}
 
   /// Set if we're faking writes or not
-  MVREXPORT void setFakeWrites(bool fakeWrites) { myFakeWrites=fakeWrites; }
+  AREXPORT void setFakeWrites(bool fakeWrites) {myFakeWrites=fakeWrites;}
 
   /// Get the file descriptor
-  MVREXPORT int getFD() const { return(myFD); }
+  AREXPORT int getFD() const {return(myFD);}
 
   /// Get the protocol type
-  MVREXPORT Type getType() const {return(myType);}
+  AREXPORT Type getType() const {return(myType);}
 
   /// Get a string containing a description of the last error. Only valid if getError() does not return NoErr.
-  MVREXPORT const std::string & getErrorStr() const { return(myErrorStr); }
+  AREXPORT const std::string & getErrorStr() const {return(myErrorStr);}
 
   /// Get a code representing the last error
-  MVREXPORT Error getError() const { return(myError); }
+  AREXPORT Error getError() const {return(myError);}
 
   /// Sets whether we're  error tracking or not
-  MVREXPORT void setErrorTracking(bool errorTracking) { myErrorTracking = errorTracking; }
+  AREXPORT void setErrorTracking(bool errorTracking)
+    { myErrorTracking = errorTracking; }
 
   /// Gets whether we're doing error tracking or not
-  MVREXPORT bool getErrorTracking(void) { return myErrorTracking; }
+  AREXPORT bool getErrorTracking(void) { return myErrorTracking; }
 
   /// Gets if we've had a bad write (you have to use error tracking for this)
-  MVREXPORT bool getBadWrite(void) const { return myBadWrite; }
+  AREXPORT bool getBadWrite(void) const { return myBadWrite; }
 
   /// Gets if we've had a bad read (you have to use error tracking for this)
-  MVREXPORT bool getBadRead(void) const { return myBadRead; }
+  AREXPORT bool getBadRead(void) const { return myBadRead; }
 
 
 #ifndef SWIG
@@ -250,44 +276,51 @@ public:
    *  @swigomit
    *  @sa writeStringPlain()
    */
-  MVREXPORT int writeString(const char *str, ...);
+  AREXPORT int writeString(const char *str, ...);
 #endif
 
   /// Same as writeString(), but no varargs 
-  MVREXPORT int writeStringPlain(const char *str) { return writeString(str); }
+  AREXPORT int writeStringPlain(const char *str) { return writeString(str); }
 
   /// Reads a string from the socket
-  MVREXPORT char *readString(unsigned int msWait = 0);
+  AREXPORT char *readString(unsigned int msWait = 0);
   /// Whether to ignore carriage return characters in readString or not
-  MVREXPORT void setReadStringIgnoreReturn(bool ignore) { myStringIgnoreReturn = ignore; }
+  AREXPORT void setReadStringIgnoreReturn(bool ignore)
+    { myStringIgnoreReturn = ignore; }
   /// Clears the partial string read
-  MVREXPORT void clearPartialReadString(void);
+  AREXPORT void clearPartialReadString(void);
   /// Compares a string against what was partially read
-  MVREXPORT int comparePartialReadString(const char *partialString);
+  AREXPORT int comparePartialReadString(const char *partialString);
   /// Gets the time we last successfully read a string from the socket
-  MVREXPORT MvrTime getLastStringReadTime(void) { return myLastStringReadTime; }
+  AREXPORT ArTime getLastStringReadTime(void) { return myLastStringReadTime; }
   /// Sets echoing on the readString calls this socket does
-  MVREXPORT void setEcho(bool echo) { myStringAutoEcho = false; myStringEcho = echo; }
+  AREXPORT void setEcho(bool echo) 
+  { myStringAutoEcho = false; myStringEcho = echo; }
   /// Gets if we are echoing on the readString calls this socket does
-  MVREXPORT bool getEcho(void) { return myStringEcho; }
+  AREXPORT bool getEcho(void) { return myStringEcho; }
   /// Sets whether we log the writeStrings or not
-  MVREXPORT void setLogWriteStrings(bool logWriteStrings) { myLogWriteStrings = logWriteStrings; }
+  AREXPORT void setLogWriteStrings(bool logWriteStrings) 
+    { myLogWriteStrings = logWriteStrings; }
   /// Gets whether we log the writeStrings or not
-  MVREXPORT bool getLogWriteStrings(void) { return myLogWriteStrings; }
+  AREXPORT bool getLogWriteStrings(void) { return myLogWriteStrings; }
   /// Sets whether we use the wrong (legacy) end chars or not
-  MVREXPORT void setStringUseWrongEndChars(bool useWrongEndChars) { myStringWrongEndChars = useWrongEndChars; }
+  AREXPORT void setStringUseWrongEndChars(bool useWrongEndChars) 
+    { myStringWrongEndChars = useWrongEndChars; }
   /// Gets whether we log the writeStrings or not
-  MVREXPORT bool getStringUseWrongEndChars(void) { return myStringWrongEndChars; }
+  AREXPORT bool getStringUseWrongEndChars(void) 
+    { return myStringWrongEndChars; }
   /// Gets the raw ip number as a string
-  MVREXPORT const char *getRawIPString(void) const { return myRawIPString; }
+  AREXPORT const char *getRawIPString(void) const { return myRawIPString; }
   /// Gets the ip number as a string (this can be modified though)
-  MVREXPORT const char *getIPString(void) const { return myIPString.c_str(); }
+  AREXPORT const char *getIPString(void) const { return myIPString.c_str(); }
   /// Sets the ip string
-  MVREXPORT void setIPString(const char *ipString) { if (ipString != NULL) myIPString = ipString; else myIPString = ""; }
+  AREXPORT void setIPString(const char *ipString) 
+    { if (ipString != NULL) myIPString = ipString; else myIPString = ""; }
   /// Sets the callback for when the socket is closed (nicely or harshly)
-  MVREXPORT void setCloseCallback(MvrFunctor *functor) { myCloseFunctor = functor; }
+  AREXPORT void setCloseCallback(ArFunctor *functor) 
+    { myCloseFunctor = functor; }
   /// Sets the callback for when the socket is closed (nicely or harshly)
-  MVREXPORT MvrFunctor *getCloseCallback(void) { return myCloseFunctor; }
+  AREXPORT ArFunctor *getCloseCallback(void) { return myCloseFunctor; }
   /// Gets the number of writes we've done
   long getSends(void) { return mySends; }
   /// Gets the number of bytes we've written
@@ -297,10 +330,11 @@ public:
   /// Gets the number of bytes we've read
   long getBytesRecvd(void) { return myBytesRecvd; }
   /// Resets the tracking information on the socket
-  void resetTracking(void) { mySends = 0; myBytesSent = 0; myRecvs = 0; myBytesRecvd = 0; }
+  void resetTracking(void) 
+    { mySends = 0; myBytesSent = 0; myRecvs = 0; myBytesRecvd = 0; }
   
   /// Sets NODELAY option on TCP socket, which can reduce latency for small packet sizes.
-  MVREXPORT bool setNoDelay(bool flag);
+  AREXPORT bool setNoDelay(bool flag);
   bool isOpen() { return myFD > 0; }
 protected:
   /// Sets the ip string
@@ -313,7 +347,8 @@ protected:
 
   // separates out a host string (possibly host:port) into a host and
   // the port that should be used.
-  void separateHost(const char *rawHost, int rawPort, char *useHost, size_t useHostSize, int *port);
+  void separateHost(const char *rawHost, int rawPort, char *useHost, 
+		    size_t useHostSize, int *port);
 
   Type myType;
   Error myError;
@@ -335,8 +370,8 @@ protected:
 
   bool myFakeWrites;
   bool myLogWriteStrings;
-  MvrMutex myReadStringMutex;
-  MvrMutex myWriteStringMutex;
+  ArMutex myReadStringMutex;
+  ArMutex myWriteStringMutex;
   bool myStringAutoEcho;
   bool myStringEcho;
   bool myStringIgnoreReturn;
@@ -347,7 +382,7 @@ protected:
   size_t myStringPosLast;
   std::string myIPString;
   char myRawIPString[128];
-  MvrTime myLastStringReadTime;
+  ArTime myLastStringReadTime;
   bool myStringGotEscapeChars;
   bool myStringGotComplete;
   bool myStringHaveEchoed;
@@ -362,8 +397,9 @@ protected:
   bool myErrorTracking;
 
   // A functor to call when the socket closes
-  MvrFunctor *myCloseFunctor;
+  ArFunctor *myCloseFunctor;
 };
 
 
-#endif  // MVRSOCKET_H
+#endif // ARSOCKET_H
+  

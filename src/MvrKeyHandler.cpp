@@ -1,59 +1,78 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrKeyHandler.cpp
- > Description  : Perform actions when keyboard keys are pressed
- > Author       : Yu Jie
- > Create Time  : 2017年05月22日
- > Modify Time  : 2017年06月20日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "mvriaInternal.h"
-#include "MvrLog.h"
-#include "MvrKeyHandler.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArKeyHandler.h"
+#include "ArLog.h"
 
 #ifdef WIN32
 #include <conio.h>
-#else
+#else // if not win32
 #include <stdio.h>
 #endif
 
-/*
- * @param blocking whether or not to block waiting on keys, default is
- * false, ie not to wait... you probably only want to block if you are
- * using checkKeys yourself like after you start a robot run or in its
- * own thread or something along those lines
- * @param addMvriaExitCB true to add an aria exit cb to restore the keys 
- * @param stream the FILE * pointer to use, if this is NULL (the default)
- * then use stdin, otherwise use this...
- * @param takeKeysInConstructor whether to take the keys when created or not
- * (default is true)
- */
-MVREXPORT MvrKeyHandler::MvrKeyHandler(bool blocking, bool addMvriaExitCB, 
-                                       FILE *stream, bool takeKeysInConstructor) :
-          myMvriaExitCB(this, &MvrKeyHandler::restore)                                       
+#include "ariaInternal.h"
+
+/**
+   @param blocking whether or not to block waiting on keys, default is
+   false, ie not to wait... you probably only want to block if you are
+   using checkKeys yourself like after you start a robot run or in its
+   own thread or something along those lines
+   @param addAriaExitCB true to add an aria exit cb to restore the keys 
+   @param stream the FILE * pointer to use, if this is NULL (the default)
+   then use stdin, otherwise use this...
+   @param takeKeysInConstructor whether to take the keys when created or not
+   (default is true)
+**/
+AREXPORT ArKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB, 
+				    FILE *stream, 
+				    bool takeKeysInConstructor) :
+  myAriaExitCB(this, &ArKeyHandler::restore)
 {
-  myMvriaExitCB.setName("MvrKeyHandlerExit");
-  if (addMvriaExitCB)
-    Mvria::addExitCallback(&myMvriaExitCB);
-  
-  myStream   = stream;
+  myAriaExitCB.setName("ArKeyHandlerExit");
+  if (addAriaExitCB)
+    Aria::addExitCallback(&myAriaExitCB);
+
+  myStream = stream;
   myTookKeys = false;
 
   if (takeKeysInConstructor)
     takeKeys(blocking);
 }
 
-MVREXPORT MvrKeyHandler::~MvrKeyHandler()
+AREXPORT ArKeyHandler::~ArKeyHandler()
 {
-  Mvria::remExitCallback(&myMvriaExitCB);
+  Aria::remExitCallback(&myAriaExitCB);
   restore();
-}                              
+}
 
-MVREXPORT void MvrKeyHandler::takeKeys(bool blocking)
+AREXPORT void ArKeyHandler::takeKeys(bool blocking)
 {
   myBlocking = blocking;
-
 #ifndef WIN32
   struct termios newTermios;
 
@@ -65,23 +84,25 @@ MVREXPORT void MvrKeyHandler::takeKeys(bool blocking)
   else
   {
     tcgetattr(fileno(myStream), &myOriginalTermios);
-    tcgetattr(fileno(myStream), &newTermios);    
+    tcgetattr(fileno(myStream), &newTermios);
   }
 
   newTermios.c_cc[VTIME] = 0;
   if (myBlocking)
+  {
     newTermios.c_cc[VMIN] = 1;
+  }
   else
   {
-    /*
-      We need 0 here for linux (otherwise the read blocks) but we need 1
-      for mac osx, there's probably better def to check someday.
-    */
+/*
+  We need 0 here for linux (otherwise the read blocks) but we need 1
+  for mac osx, there's probably better def to check someday.
+*/
 #ifdef linux
     newTermios.c_cc[VMIN] = 0;
-#else
+#else 
     newTermios.c_cc[VMIN] = 1;
-#endif    
+#endif 
   }
   newTermios.c_lflag &= (~ECHO & ~ICANON);
 
@@ -89,69 +110,78 @@ MVREXPORT void MvrKeyHandler::takeKeys(bool blocking)
     tcsetattr(fileno(stdin), TCSANOW, &newTermios);
   else
     tcsetattr(fileno(myStream), TCSANOW, &newTermios);
-#endif 
+
+#endif
   myRestored = false;
   myTookKeys = true;
 }
 
-MVREXPORT void MvrKeyHandler::restore(void)
+AREXPORT void ArKeyHandler::restore(void)
 {
   if (!myTookKeys)
     return;
+
 #ifndef WIN32
   if (myStream == NULL)
     tcsetattr(fileno(stdin), TCSANOW, &myOriginalTermios);
   else
     tcsetattr(fileno(myStream), TCSANOW, &myOriginalTermios);
+
 #endif
   myRestored = true;
   myTookKeys = false;
 }
 
-/*
- * @param keyToHandle A character value, such as 'a' or '1'
- *   or '[', or a member of the KEY enum.
- * @param functor Functor to call when @a keyToHandle is received
- * @return true If no previous key handler functor exists for @a keyToHandle and
- * the handler functor was stored, or false if a handler for that key already 
- * exists.
- */
-MVREXPORT bool MvrKeyHandler::addKeyHandler(int keyToHandle, MvrFunctor *functor)
+/**
+   @param keyToHandle A character value, such as 'a' or '1'
+     or '[', or a member of the KEY enum.
+
+   @param functor Functor to call when @a keyToHandle is received
+
+   @return true If no previous key handler functor exists for @a keyToHandle and
+   the handler functor was stored, or false if a handler for that key already 
+   exists.
+   that key
+*/
+AREXPORT bool ArKeyHandler::addKeyHandler(int keyToHandle, ArFunctor *functor)
 {
   if (myMap.find(keyToHandle) != myMap.end())
   {
     if (keyToHandle >= '!' && keyToHandle <= '~')
-      MvrLog::log(MvrLog::Normal, "There is already a key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
+      ArLog::log(ArLog::Normal, "There is already a key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
     else
-      MvrLog::log(MvrLog::Normal, "There is already a key to handle number %d 0x%x", keyToHandle, keyToHandle);
+      ArLog::log(ArLog::Normal, "There is already a key to handle number %d 0x%x", keyToHandle, keyToHandle);
     return false;
   }
-  // MvrLog::log(MvrLog::Verbose, "keyhandler %p added key '%c' number '%d'", this, keyToHandle, keyToHandle);
+  //ArLog::log(ArLog::Verbose, "keyhandler %p added key '%c' number '%d'", 
+  //this, keyToHandle, keyToHandle);
   myMap[keyToHandle] = functor;
 
   return true;
 }
 
-/*
- * @param keyToHandle The character value or code to clear the handler for.
+/**
+   @param keyToHandle The character value or code to clear the handler for.
 
- * @return true if the remKeyHandler succeeded, which means that a
- * key handler for @a keyToHandle was found and rmeoved, or false if no
- * handler for that value was found.
- */
-MVREXPORT bool MvrKeyHandler::remKeyHandler(int keyToHandle)
+    @return true if the remKeyHandler succeeded, which means that a
+     key handler for @a keyToHandle was found and rmeoved, or false if no
+     handler for that value was found.
+ **/
+AREXPORT bool ArKeyHandler::remKeyHandler(int keyToHandle)
 {
   if (myMap.find(keyToHandle) == myMap.end())
   {
-    //MvrLog::log(MvrLog::Normal, "There is no key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
+    //ArLog::log(ArLog::Normal, "There is no key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
     return false;
   }
   if (keyToHandle >= '!' && keyToHandle <= '~')
-    MvrLog::log(MvrLog::Verbose, "keyhandler %p removed key '%c' number '%d'", this, keyToHandle, keyToHandle);
+    ArLog::log(ArLog::Verbose, "keyhandler %p removed key '%c' number '%d'",
+	       this, keyToHandle, keyToHandle);
   else
-    MvrLog::log(MvrLog::Verbose, "keyhandler %p removed key number '%d'", this, keyToHandle);
+    ArLog::log(ArLog::Verbose, "keyhandler %p removed key number '%d'",
+	       this, keyToHandle);
   myMap.erase(keyToHandle);
-  return true;  
+  return true;
 }
 
 /**
@@ -161,11 +191,11 @@ MVREXPORT bool MvrKeyHandler::remKeyHandler(int keyToHandle)
     functor was found and removed from the handlers, or false if no
     handler with the given functor was found.
  **/
-MVREXPORT bool MvrKeyHandler::remKeyHandler(MvrFunctor *functor)
+AREXPORT bool ArKeyHandler::remKeyHandler(ArFunctor *functor)
 {
-  std::map<int, MvrFunctor *>::iterator it;
-  std::list<std::map<int, MvrFunctor *>::iterator> iters;
-  std::list<std::map<int, MvrFunctor *>::iterator>::iterator iterIter;
+  std::map<int, ArFunctor *>::iterator it;
+  std::list<std::map<int, ArFunctor *>::iterator> iters;
+  std::list<std::map<int, ArFunctor *>::iterator>::iterator iterIter;
 
   for (it = myMap.begin(); it != myMap.end(); ++it)
   {
@@ -181,17 +211,17 @@ MVREXPORT bool MvrKeyHandler::remKeyHandler(MvrFunctor *functor)
       myMap.erase((*iterIter));
       iters.pop_front();
     }
-    MvrLog::log(MvrLog::Verbose, "keyhandler %p removed functor %p", this, 
+    ArLog::log(ArLog::Verbose, "keyhandler %p removed functor %p", this, 
 	       functor);
     return true;
   }
   return false;
 }
 
-MVREXPORT void MvrKeyHandler::checkKeys(void)
+AREXPORT void ArKeyHandler::checkKeys(void)
 {
   int key;
-  std::map<int, MvrFunctor *>::iterator it;
+  std::map<int, ArFunctor *>::iterator it;
 
   if (myRestored)
     return;
@@ -202,7 +232,7 @@ MVREXPORT void MvrKeyHandler::checkKeys(void)
     // if there's something to handle it, handle it
     if ((it = myMap.find(key)) != myMap.end())
     {
-      //MvrLog::log(MvrLog::Verbose, "key '%c' num %d pressed\n", key, key);
+      //ArLog::log(ArLog::Verbose, "key '%c' num %d pressed\n", key, key);
       it->second->invoke();
     }
   }
@@ -210,7 +240,7 @@ MVREXPORT void MvrKeyHandler::checkKeys(void)
 
 #ifndef WIN32
 
-MVREXPORT int MvrKeyHandler::getChar(void)
+AREXPORT int ArKeyHandler::getChar(void)
 {
   if (myStream == NULL)
     return getchar();
@@ -218,7 +248,7 @@ MVREXPORT int MvrKeyHandler::getChar(void)
     return getc(myStream);
 }
 
-MVREXPORT int MvrKeyHandler::getKey(void)
+AREXPORT int ArKeyHandler::getKey(void)
 {
  /*
   * What follows is a somewhat poor implementation of getch(), basically, since
@@ -236,14 +266,14 @@ MVREXPORT int MvrKeyHandler::getKey(void)
       return -1;
 
     //case -1: return ESCAPE; //?
-    case ' ' : return SPACE;
+    case ' ': return SPACE;
     case '\t': return TAB;
-    case 10  : return ENTER;
-    case 13  : return ENTER;
-    case 8   : return BACKSPACE;
-    case 127 : return BACKSPACE;
+    case 10: return ENTER;
+    case 13: return ENTER;
+    case 8: return BACKSPACE;
+    case 127: return BACKSPACE;
 
-    case 27  : // Escape key, or Begin special control key sequence
+    case 27: // Escape key, or Begin special control key sequence
       key = getChar();
       switch(key)
       {
@@ -269,7 +299,7 @@ MVREXPORT int MvrKeyHandler::getKey(void)
           for(short i = 0; key != -1 && key != 27 && i < 5; i++) 
           {
             k[i] = key = getChar();
-            //printf("MvrKeyHandler::getKey: read extended key component %d/%d.\n", k[i], key);
+            //printf("ArKeyHandler::getKey: read extended key component %d/%d.\n", k[i], key);
           }
           ungetc(key, stdin); // put last key back. (Esp. important if it was the beginning of a new control sequence (27).
 
@@ -288,10 +318,10 @@ MVREXPORT int MvrKeyHandler::getKey(void)
               switch(k[1])
               {
                 case 126: return INSERT;
-                case 48 :  return F9;
-                case 49 :  return F10;
-                case 51 :  return F11;
-                case 52 :  return F12;
+                case 48:  return F9;
+                case 49:  return F10;
+                case 51:  return F11;
+                case 52:  return F12;
               }
               return k[1];
 
@@ -317,7 +347,7 @@ MVREXPORT int MvrKeyHandler::getKey(void)
 #if 0
 /* This is a previous implementation of getKey(), just for reference or
  * quick reversion: */
-MVREXPORT int MvrKeyHandler::getKey(void)
+AREXPORT int ArKeyHandler::getKey(void)
 {
   char key;
 
@@ -374,7 +404,7 @@ MVREXPORT int MvrKeyHandler::getKey(void)
 
 #else // if it is win32
 
-MVREXPORT int MvrKeyHandler::getKey(void)
+AREXPORT int ArKeyHandler::getKey(void)
 {
   int key;
 
@@ -436,3 +466,5 @@ MVREXPORT int MvrKeyHandler::getKey(void)
 }
 
 #endif // WIN32
+
+

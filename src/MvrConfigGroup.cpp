@@ -1,18 +1,36 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrConfigGroup.cpp
- > Description  : Container for holding a group of MvrConfigs
- > Author       : Yu Jie
- > Create Time  : 2017年05月20日
- > Modify Time  : 2017年06月13日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "MvrArgumentBuilder.h"
-#include "MvrLog.h"
-#include "MvrConfigGroup.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-MVREXPORT MvrConfigGroup::MvrConfigGroup(const char *baseDirectory)
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArConfigGroup.h"
+#include "ArArgumentBuilder.h"
+#include "ArLog.h"
+
+AREXPORT ArConfigGroup::ArConfigGroup(const char *baseDirectory)
 {
   if (baseDirectory != NULL)
     myBaseDirectory = baseDirectory;
@@ -20,32 +38,37 @@ MVREXPORT MvrConfigGroup::MvrConfigGroup(const char *baseDirectory)
     myBaseDirectory = "";
 }
 
-MVREXPORT MvrConfigGroup::~MvrConfigGroup()
+AREXPORT ArConfigGroup::~ArConfigGroup(void)
 {
-
+  
 }
 
-MVREXPORT void MvrConfigGroup::addConfig(MvrConfig *config)
+AREXPORT void ArConfigGroup::addConfig(ArConfig *config)
 {
   myConfigs.push_back(config);
 }
 
-MVREXPORT void MvrConfigGroup::remConfig(MvrConfig *config)
+AREXPORT void ArConfigGroup::remConfig(ArConfig *config)
 {
   myConfigs.remove(config);
 }
 
-MVREXPORT bool MvrConfigGroup::parseFile(const char *fileName, bool continueOnError)
+AREXPORT bool ArConfigGroup::parseFile(const char *fileName, 
+				       bool continueOnError)
 {
-  std::list<MvrConfig *>::iterator it;
+  std::list<ArConfig *>::iterator it;
   bool ret = true;
 
   myLastFile = fileName;
-
+  // go through all the configs and set the base directory (we don't
+  // do it when we're parsing just so that whether it suceeds or fails
+  // its the same behavior in this base directory regard)
   for (it = myConfigs.begin(); it != myConfigs.end(); it++)
   {
     (*it)->setBaseDirectory(myBaseDirectory.c_str());
   }
+  // now we go through and parse files... if we get an error we stop
+  // if we're supposed to
   for (it = myConfigs.begin(); it != myConfigs.end(); it++)
   {
     if (!(*it)->parseFile(fileName, continueOnError))
@@ -55,46 +78,54 @@ MVREXPORT bool MvrConfigGroup::parseFile(const char *fileName, bool continueOnEr
       ret = false;
       // if we aren't continuing on error then just return
       if (!continueOnError)
-	      return false;
+	return false;
     }
   }
   return ret;
 }
 
-MVREXPORT bool MvrConfigGroup::reloadFile(bool continueOnError)
+AREXPORT bool ArConfigGroup::reloadFile(bool continueOnError)
 {
   return parseFile(myLastFile.c_str(), continueOnError);
 }
 
-MVREXPORT bool MvrConfigGroup::writeFile(const char *fileName)
+AREXPORT bool ArConfigGroup::writeFile(const char *fileName)
 {
   std::set<std::string> alreadyWritten;
-  std::list<MvrConfig *>::iterator it;
+  std::list<ArConfig *>::iterator it;
   bool ret = true;
   bool append = false;
-
+  
   // go through all the configs and set the base directory (we don't
   // do it when we're parsing just so that whether it suceeds or fails
   // its the same behavior in this base directory regard)
   for (it = myConfigs.begin(); it != myConfigs.end(); it++)
   {
-    MvrLog::log(MvrLog::Verbose, "Writing config file");
+    (*it)->setBaseDirectory(myBaseDirectory.c_str());
+  }
+  // now we go through and parse files... if we get an error we stop
+  // if we're supposed to
+  for (it = myConfigs.begin(); it != myConfigs.end(); it++)
+  {
+    ArLog::log(ArLog::Verbose, "Writing config file");
     if (!(*it)->writeFile(fileName, append, &alreadyWritten))
     {
+      // if we are continuing on errors we still want to tell them we
+      // had an error
       ret = false;
     }
     append = true;
   }
   return ret;
+  
 }
 
-MVREXPORT void MvrConfigGroup::setBaseDirectory(const char *baseDirectory)
+AREXPORT void ArConfigGroup::setBaseDirectory(const char *baseDirectory)
 {
   myBaseDirectory = baseDirectory;
 }
 
-
-MVREXPORT const char *MvrConfigGroup::getBaseDirectory(void) const
+AREXPORT const char *ArConfigGroup::getBaseDirectory(void) const
 {
   return myBaseDirectory.c_str();
 }

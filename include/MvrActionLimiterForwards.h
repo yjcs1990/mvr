@@ -1,53 +1,78 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionLimiterForwards.h
- > Description  : Action to limit the forwards motion of the robot based on range sensor readings.
- > Author       : Yu Jie
- > Create Time  : 2017年04月24日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONLIMITERFORWARDS_H
-#define MVRACTIONLIMITERFORWARDS_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrAction.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrRangeDevice;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-class MvrActionLimiterForwards : public MvrAction
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONSPEEDLIMITER_H
+#define ARACTIONSPEEDLIMITER_H
+
+#include "ariaTypedefs.h"
+#include "ArAction.h"
+
+class ArRangeDevice;
+
+/// Action to limit the forwards motion of the robot based on range sensor readings.
+/**
+   This action uses the sensors to find a maximum forwared speed to travel at; when the range
+   sensor (e.g. sonar or laser) detects obstacles closer than the given parameters,
+   this action requests that the robot decelerate or stop.
+   @ingroup ActionClasses
+*/
+class ArActionLimiterForwards : public ArAction
 {
 public:
   /// Constructor
-  MVREXPORT MvrActionLimiterForwards(const char *name = "speed limiter", 
+  AREXPORT ArActionLimiterForwards(const char *name = "speed limiter", 
 				   double stopDistance = 250,
 				   double slowDistance = 1000,
 				   double slowSpeed = 200,
 				   double widthRatio = 1);
   /// Destructor
-  MVREXPORT virtual ~MvrActionLimiterForwards();
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual ~ArActionLimiterForwards();
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
-  { return &myDesired; }
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+                                                        { return &myDesired; }
 #endif
-  MVREXPORT void setParameters(double stopDistance = 250,
+  AREXPORT void setParameters(double stopDistance = 250,
 			      double slowDistance = 1000,
 			      double slowSpeed = 200,
 			      double widthRatio = 1);
 
   bool getStopped() const { return myLastStopped; } 
-  MvrPose getLastSensorReadingPos() const { return myLastSensorReadingPos; } 
-  const MvrRangeDevice* getLastSensorReadingDevice() const { return myLastSensorReadingDev; } 
+  ArPose getLastSensorReadingPos() const { return myLastSensorReadingPos; } 
+  const ArRangeDevice* getLastSensorReadingDevice() const { return myLastSensorReadingDev; } 
 protected:
   bool myLastStopped;
   double myStopDist;
   double mySlowDist;
   double mySlowSpeed;
   double myWidthRatio;
-  MvrActionDesired myDesired;
-  MvrPose myLastSensorReadingPos;
-  const MvrRangeDevice *myLastSensorReadingDev;
+  ArActionDesired myDesired;
+  ArPose myLastSensorReadingPos;
+  const ArRangeDevice *myLastSensorReadingDev;
 };
 
-#endif  // MVRACTIONLIMITERFORWARDS_H
+#endif // ARACTIONSPEEDLIMITER_H

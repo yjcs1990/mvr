@@ -1,69 +1,90 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotBatteryPacketReader.h
- > Description  : This class will read a config packet from the robot
- > Author       : Yu Jie
- > Create Time  : 2017年05月19日
- > Modify Time  : 2017年06月28日
-***************************************************************************************************/
-#include "mvriaOSDef.h"
-#include "MvrExport.h"
-#include "MvrRobot.h"
-#include "MvrRobotPacket.h"
-#include "MvrCommands.h"
-#include "MvrRobotBatteryPacketReader.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-MVREXPORT MvrRobotBatteryPacketReader::MvrRobotBatteryPacketReader(MvrRobot *robot) :
-          myPacketHandlerCB(this, &MvrRobotBatteryPacketReader::packetHandler),
-          myConnectCB(this, &MvrRobotBatteryPacketReader::connectCallback)
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ariaOSDef.h"
+#include "ArExport.h"
+#include "ArRobotBatteryPacketReader.h"
+#include "ArRobot.h"
+#include "ArRobotPacket.h"
+#include "ArCommands.h"
+
+AREXPORT ArRobotBatteryPacketReader::ArRobotBatteryPacketReader(
+	ArRobot *robot) : 
+  myPacketHandlerCB(this, &ArRobotBatteryPacketReader::packetHandler),
+  myConnectCB(this, &ArRobotBatteryPacketReader::connectCallback)
 {
   myRobot = robot;
   myPacketArrived = false;
   myNumBatteries = 0;
   myNumBytesPerBattery = 0;
   myRequestedBatteryPackets = false;
-  myPacketHandlerCB.setName("MvrRobotBatteryPacketReader");
-  myConnectCB.setName("MvrRobotBatteryPacketReader");
+  myPacketHandlerCB.setName("ArRobotBatteryPacketReader");
+  myConnectCB.setName("ArRobotBatteryPacketReader");
   myRobot->addPacketHandler(&myPacketHandlerCB);
   myRobot->addConnectCB(&myConnectCB);
-}          
+}
 
-MVREXPORT MvrRobotBatteryPacketReader::~MvrRobotBatteryPacketReader(void)
+AREXPORT ArRobotBatteryPacketReader::~ArRobotBatteryPacketReader(void)
 {
   myRobot->remPacketHandler(&myPacketHandlerCB);
   myRobot->remConnectCB(&myConnectCB);
 }
 
-MVREXPORT void MvrRobotBatteryPacketReader::connectCallback(void)
+AREXPORT void ArRobotBatteryPacketReader::connectCallback(void)
 {
   requestSinglePacket();
 }
 
-MVREXPORT void MvrRobotBatteryPacketReader::requestSinglePacket(void)
+AREXPORT void ArRobotBatteryPacketReader::requestSinglePacket(void)
 {
-  myRobot->comInt(MvrCommands::BATTERYINFO, 1);
+  myRobot->comInt(ArCommands::BATTERYINFO, 1);
   myRequestedBatteryPackets = false;
 }
 
-MVREXPORT void MvrRobotBatteryPacketReader::requestContinuousPackets(void)
+AREXPORT void ArRobotBatteryPacketReader::requestContinuousPackets(void)
 {
-  myRobot->comInt(MvrCommands::BATTERYINFO, 2);
+  myRobot->comInt(ArCommands::BATTERYINFO, 2);
   myRequestedBatteryPackets = true;
 }
 
-MVREXPORT void MvrRobotBatteryPacketReader::stopPackets(void)
+AREXPORT void ArRobotBatteryPacketReader::stopPackets(void)
 {
-  myRobot->comInt(MvrCommands::BATTERYINFO, 0);
+  myRobot->comInt(ArCommands::BATTERYINFO, 0);
   myRequestedBatteryPackets = false;
 }
 
-MVREXPORT bool MvrRobotBatteryPacketReader::haveRequestedPackets(void)
+AREXPORT bool ArRobotBatteryPacketReader::haveRequestedPackets(void)
 {
   return myRequestedBatteryPackets;
 }
 
-MVREXPORT bool MvrRobotBatteryPacketReader::packetHandler(MvrRobotPacket *packet)
+AREXPORT bool ArRobotBatteryPacketReader::packetHandler(ArRobotPacket *packet)
 {
+  //char buf[256];
+
   if (packet->getID() != 0xfa)
     return false;
   
@@ -86,15 +107,15 @@ MVREXPORT bool MvrRobotBatteryPacketReader::packetHandler(MvrRobotPacket *packet
     {
       val = packet->bufToUByte();
       if (byte == 1)
-        myFlags1[battery] = val;
+	myFlags1[battery] = val;
       else if (byte == 2)
-        myFlags2[battery] = val;
+	myFlags2[battery] = val;
       else if (byte == 3)
-        myFlags3[battery] = val;
+	myFlags3[battery] = val;
       else if (byte == 4)
-        myRelSOC[battery] = val;
+	myRelSOC[battery] = val;
       else if (byte == 5)
-        myAbsSOC[battery] = val;
+	myAbsSOC[battery] = val;
     }
   }
   myPacketArrived = true;

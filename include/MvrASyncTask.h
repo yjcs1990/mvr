@@ -1,41 +1,76 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrASyncTask.h
- > Description  : Asynchronous task (runs in its own thread)
- > Author       : Yu Jie
- > Create Time  : 2017年05月22日
- > Modify Time  : 2017年05月22日
-***************************************************************************************************/
-#ifndef MVRASYNCTASK_H
-#define MVRASYNCTASK_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrFunctor.h"
-#include "MvrThread.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-/// @ingroup UtilityClasses
-class MvrASyncTask : public MvrThread
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
+#ifndef ARASYNCTASK_H
+#define ARASYNCTASK_H
+
+
+#include "ariaTypedefs.h"
+#include "ArFunctor.h"
+#include "ArThread.h"
+
+
+/// Asynchronous task (runs in its own thread)
+/**
+   The ArAsynTask is a task that runs in its own thread. This is a
+   rather simple class. The user simply needs to derive their own
+   class from ArAsyncTask and define the runThread() function. They
+   then need to create an instance of their task and call run or
+   runAsync. The standard way to stop a task is to call stopRunning()
+   which sets ArThread::myRunning to false. In their run loop, they
+   should pay attention to the getRunning() or the ArThread::myRunning
+   variable. If this value goes to false, the task should clean up
+   after itself and exit its runThread() function.  
+
+    @ingroup UtilityClasses
+**/
+class ArASyncTask : public ArThread
 {
 public:
+
   /// Constructor
-  MVREXPORT MvrASyncTask();
+  AREXPORT ArASyncTask();
   /// Destructor
-  MVREXPORT virtual ~MvrASyncTask();
+  AREXPORT virtual ~ArASyncTask();
 
   /// The main run loop
-  /*
-     Override this function and put your tasks run loop here. Check the
-     value of getRunning() periodically in your loop. If the value
+  /**
+     Override this function and put your taskes run loop here. Check the
+     value of getRunning() periodicly in your loop. If the value
      is false, the loop should exit and runThread() should return.
      The argument and return value are specific to the platform thread implementation, and 
      can be ignored.
-     @ swignote In the wrapper libraries, this method takes no arguments and has no return value.
+     @swignote In the wrapper libraries, this method takes no arguments and has no return value.
   */
-  MVREXPORT virtual void * runThread(void *arg) = 0;
+  AREXPORT virtual void * runThread(void *arg) = 0;
 
   /// Run without creating a new thread
 /**
-   This will run the the MvrASyncTask without creating a new
+   This will run the the ArASyncTask without creating a new
    thread to run it in. It performs the needed setup then calls runThread() 
    directly instead of letting the system threading system do it in a new thread.
 */
@@ -49,24 +84,27 @@ public:
   virtual void stopRunning(void) {myRunning=false;}
 
   /// Create the task and start it going
-  MVREXPORT virtual int create(bool joinable=true, bool lowerPriority=true);
+  AREXPORT virtual int create(bool joinable=true, bool lowerPriority=true);
 
   /** Internal function used with system threading system to run the new thread.
       In general, use run() or runAsync() instead.
       @internal
   */
-  MVREXPORT virtual void * runInThisThread(void *arg=0);
+  AREXPORT virtual void * runInThisThread(void *arg=0);
 
   /// Gets a string that describes what the thread is doing, or NULL if it
   /// doesn't know. Override this in your subclass to return a status
   /// string. This can be used for debugging or UI display.
   virtual const char *getThreadActivity(void) { return NULL; }
 private:
+
   // Hide regular Thread::Create
-  virtual int create(MvrFunctor * func, bool joinable=true, bool lowerPriority=true) 
-    { return(false); }
-    
-  MvrRetFunctor1C<void*, MvrASyncTask, void*> myFunc;
+  virtual int create(ArFunctor * /*func*/, bool /*joinable=true*/,
+		     bool /*lowerPriority=true*/) {return(false);}
+
+
+  ArRetFunctor1C<void*, ArASyncTask, void*> myFunc;
 };
 
-#endif  // MVRASYNCTASK_H
+
+#endif // ARASYNCTASK_H

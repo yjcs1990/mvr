@@ -1,27 +1,45 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotTypes.h
- > Description  : Include internal Robot parameter class
- > Author       : Yu Jie
- > Create Time  : 2017年05月19日
- > Modify Time  : 2017年06月28日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "MvrRobotTypes.h"
-#include "MvrLog.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArRobotTypes.h"
+#include "ArLog.h"
 
 /** @cond INCLUDE_INTERNAL_ROBOT_PARAM_CLASSES */
 
 // Generic robot class
 
-MVREXPORT MvrRobotGeneric::MvrRobotGeneric(const char *dir)
+AREXPORT ArRobotGeneric::ArRobotGeneric(const char *dir)
 {
 }
 
 // AmigoBot robot class
 
-MVREXPORT MvrRobotAmigo::MvrRobotAmigo(const char *dir)
+AREXPORT ArRobotAmigo::ArRobotAmigo(const char *dir)
 {
   sprintf(mySubClass, "amigo");
   myRobotRadius = 180;
@@ -51,7 +69,7 @@ MVREXPORT MvrRobotAmigo::MvrRobotAmigo(const char *dir)
 
 // AmigoBot robot class
 
-MVREXPORT MvrRobotAmigoSh::MvrRobotAmigoSh(const char *dir)
+AREXPORT ArRobotAmigoSh::ArRobotAmigoSh(const char *dir)
 {
   sprintf(mySubClass, "amigo-sh");
   myRobotRadius = 180;
@@ -79,7 +97,8 @@ MVREXPORT MvrRobotAmigoSh::MvrRobotAmigoSh(const char *dir)
   internalSetSonar(7, -146, 58, 145);
 }
 
-MVREXPORT MvrRobotAmigoShTim5xxWibox::MvrRobotAmigoShTim5xxWibox(const char* dir) : MvrRobotAmigoSh(dir)
+AREXPORT ArRobotAmigoShTim5xxWibox::ArRobotAmigoShTim5xxWibox(const char* dir)
+  : ArRobotAmigoSh(dir)
 {
   sprintf(mySubClass, "amigo-sh-tim3xx");
   if (getLaserData(1) != NULL)
@@ -96,7 +115,7 @@ MVREXPORT MvrRobotAmigoShTim5xxWibox::MvrRobotAmigoShTim5xxWibox(const char* dir
 
 // P2AT robot class
 
-MVREXPORT MvrRobotP2AT::MvrRobotP2AT(const char *dir)
+AREXPORT ArRobotP2AT::ArRobotP2AT(const char *dir)
 {
   sprintf(mySubClass, "p2at");
   myRobotRadius = 500;
@@ -153,7 +172,7 @@ MVREXPORT MvrRobotP2AT::MvrRobotP2AT(const char *dir)
 
 // P2AT8 robot class
 
-MVREXPORT MvrRobotP2AT8::MvrRobotP2AT8(const char *dir)
+AREXPORT ArRobotP2AT8::ArRobotP2AT8(const char *dir)
 {
   sprintf(mySubClass, "p2at8");
   myRobotRadius = 500;
@@ -196,6 +215,9 @@ MVREXPORT MvrRobotP2AT8::MvrRobotP2AT8(const char *dir)
     getLaserData(1)->myLaserY = 7;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -207,9 +229,10 @@ MVREXPORT MvrRobotP2AT8::MvrRobotP2AT8(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
+
 // P2IT robot class
 
-MVREXPORT MvrRobotP2IT::MvrRobotP2IT(const char *dir)
+AREXPORT ArRobotP2IT::ArRobotP2IT(const char *dir)
 {
   sprintf(mySubClass, "p2it");
   myRobotRadius = 500;
@@ -252,6 +275,9 @@ MVREXPORT MvrRobotP2IT::MvrRobotP2IT(const char *dir)
     getLaserData(1)->myLaserY = 7;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -263,9 +289,10 @@ MVREXPORT MvrRobotP2IT::MvrRobotP2IT(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
+
 // P2DX robot class
 
-MVREXPORT MvrRobotP2DX::MvrRobotP2DX(const char *dir)
+AREXPORT ArRobotP2DX::ArRobotP2DX(const char *dir)
 {
   sprintf(mySubClass, "p2dx");
   myRobotRadius = 250;
@@ -308,6 +335,9 @@ MVREXPORT MvrRobotP2DX::MvrRobotP2DX(const char *dir)
     getLaserData(1)->myLaserY = 8;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -321,7 +351,7 @@ MVREXPORT MvrRobotP2DX::MvrRobotP2DX(const char *dir)
 
 // P2DXe robot class
 
-MVREXPORT MvrRobotP2DXe::MvrRobotP2DXe(const char *dir)
+AREXPORT ArRobotP2DXe::ArRobotP2DXe(const char *dir)
 {
   sprintf(mySubClass, "p2de");
   myRobotRadius = 250;
@@ -364,6 +394,9 @@ MVREXPORT MvrRobotP2DXe::MvrRobotP2DXe(const char *dir)
     getLaserData(1)->myLaserY = 8;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -377,7 +410,7 @@ MVREXPORT MvrRobotP2DXe::MvrRobotP2DXe(const char *dir)
 
 // P2DF robot class
 
-MVREXPORT MvrRobotP2DF::MvrRobotP2DF(const char *dir)
+AREXPORT ArRobotP2DF::ArRobotP2DF(const char *dir)
 {
   sprintf(mySubClass, "p2df");
   myRobotRadius = 250;
@@ -420,6 +453,9 @@ MVREXPORT MvrRobotP2DF::MvrRobotP2DF(const char *dir)
     getLaserData(1)->myLaserY = 8;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -433,7 +469,7 @@ MVREXPORT MvrRobotP2DF::MvrRobotP2DF(const char *dir)
 
 // P2D8 robot class
 
-MVREXPORT MvrRobotP2D8::MvrRobotP2D8(const char *dir)
+AREXPORT ArRobotP2D8::ArRobotP2D8(const char *dir)
 {
   sprintf(mySubClass, "p2d8");
   myRobotRadius = 250;
@@ -476,6 +512,9 @@ MVREXPORT MvrRobotP2D8::MvrRobotP2D8(const char *dir)
     getLaserData(1)->myLaserY = 0;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -487,9 +526,11 @@ MVREXPORT MvrRobotP2D8::MvrRobotP2D8(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
+
+
 // P2CE robot class
 
-MVREXPORT MvrRobotP2CE::MvrRobotP2CE(const char *dir)
+AREXPORT ArRobotP2CE::ArRobotP2CE(const char *dir)
 {
   sprintf(mySubClass, "p2ce");
   myRobotRadius = 250;
@@ -523,6 +564,9 @@ MVREXPORT MvrRobotP2CE::MvrRobotP2CE(const char *dir)
   internalSetSonar(14, -203, 119, 130);
   internalSetSonar(15, -157, 136, 90);
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -534,9 +578,10 @@ MVREXPORT MvrRobotP2CE::MvrRobotP2CE(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
+
 // P2PP robot class
 
-MVREXPORT MvrRobotP2PP::MvrRobotP2PP(const char *dir)
+AREXPORT ArRobotP2PP::ArRobotP2PP(const char *dir)
 {
   sprintf(mySubClass, "p2pp");
   myRobotRadius = 300;
@@ -591,6 +636,9 @@ MVREXPORT MvrRobotP2PP::MvrRobotP2PP(const char *dir)
     getLaserData(1)->myLaserY = 1;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -604,7 +652,7 @@ MVREXPORT MvrRobotP2PP::MvrRobotP2PP(const char *dir)
 
 // P2PB robot class
 
-MVREXPORT MvrRobotP2PB::MvrRobotP2PB(const char *dir)
+AREXPORT ArRobotP2PB::ArRobotP2PB(const char *dir)
 {
   sprintf(mySubClass, "p2pb");
   myRobotRadius = 300;
@@ -656,6 +704,9 @@ MVREXPORT MvrRobotP2PB::MvrRobotP2PB(const char *dir)
     getLaserData(1)->myLaserY = 8;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -669,7 +720,7 @@ MVREXPORT MvrRobotP2PB::MvrRobotP2PB(const char *dir)
 
 // PerfPB robot class
 
-MVREXPORT MvrRobotPerfPB::MvrRobotPerfPB(const char *dir)
+AREXPORT ArRobotPerfPB::ArRobotPerfPB(const char *dir)
 {
   sprintf(mySubClass, "perfpb");
   myRobotRadius = 340;
@@ -741,6 +792,9 @@ MVREXPORT MvrRobotPerfPB::MvrRobotPerfPB(const char *dir)
     getLaserData(1)->myLaserY = 0;
   }
 
+
+
+
   myPTZParams[0].setType("sony");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -752,7 +806,9 @@ MVREXPORT MvrRobotPerfPB::MvrRobotPerfPB(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
-MVREXPORT MvrRobotPion1M::MvrRobotPion1M(const char *dir)
+
+
+AREXPORT ArRobotPion1M::ArRobotPion1M(const char *dir)
 {
   sprintf(mySubClass, "pion1m");
   myRobotRadius = 220;
@@ -786,7 +842,7 @@ MVREXPORT MvrRobotPion1M::MvrRobotPion1M(const char *dir)
   mySettableAccsDecs = false;
 }
 
-MVREXPORT MvrRobotPsos1M::MvrRobotPsos1M(const char *dir)
+AREXPORT ArRobotPsos1M::ArRobotPsos1M(const char *dir)
 {
   sprintf(mySubClass, "psos1m");
   myRobotRadius = 220;
@@ -820,7 +876,7 @@ MVREXPORT MvrRobotPsos1M::MvrRobotPsos1M(const char *dir)
   mySettableAccsDecs = false;
 }
 
-MVREXPORT MvrRobotPsos43M::MvrRobotPsos43M(const char *dir)
+AREXPORT ArRobotPsos43M::ArRobotPsos43M(const char *dir)
 {
   sprintf(mySubClass, "psos43m");
   myRobotRadius = 220;
@@ -854,9 +910,10 @@ MVREXPORT MvrRobotPsos43M::MvrRobotPsos43M(const char *dir)
   mySettableAccsDecs = false;
 }
 
+
 // PionAT robot class
 
-MVREXPORT MvrRobotPionAT::MvrRobotPionAT(const char *dir)
+AREXPORT ArRobotPionAT::ArRobotPionAT(const char *dir)
 {
   sprintf(mySubClass, "pionat");
   myRobotRadius = 330;
@@ -890,7 +947,8 @@ MVREXPORT MvrRobotPionAT::MvrRobotPionAT(const char *dir)
   mySettableAccsDecs = false;
 }
 
-MVREXPORT MvrRobotPion1X::MvrRobotPion1X(const char *dir)
+
+AREXPORT ArRobotPion1X::ArRobotPion1X(const char *dir)
 {
   sprintf(mySubClass, "pion1x");
   myRobotRadius = 220;
@@ -924,7 +982,7 @@ MVREXPORT MvrRobotPion1X::MvrRobotPion1X(const char *dir)
   mySettableAccsDecs = false;
 }
 
-MVREXPORT MvrRobotPsos1X::MvrRobotPsos1X(const char *dir)
+AREXPORT ArRobotPsos1X::ArRobotPsos1X(const char *dir)
 {
   sprintf(mySubClass, "psos1x");
   myRobotRadius = 220;
@@ -958,7 +1016,8 @@ MVREXPORT MvrRobotPsos1X::MvrRobotPsos1X(const char *dir)
   mySettableAccsDecs = false;
 }
 
-MVREXPORT MvrRobotMapper::MvrRobotMapper(const char *dir)
+
+AREXPORT ArRobotMapper::ArRobotMapper(const char *dir)
 {
   sprintf(mySubClass, "mappr");
   myRobotRadius = 180;
@@ -997,7 +1056,7 @@ MVREXPORT MvrRobotMapper::MvrRobotMapper(const char *dir)
 
 // PowerBot robot class
 
-MVREXPORT MvrRobotPowerBot::MvrRobotPowerBot(const char *dir)
+AREXPORT ArRobotPowerBot::ArRobotPowerBot(const char *dir)
 {
 
   sprintf(mySubClass, "powerbot");
@@ -1065,6 +1124,9 @@ MVREXPORT MvrRobotPowerBot::MvrRobotPowerBot(const char *dir)
 
   sprintf(myGPSPort, "COM3"); // swap laser and hypothetical gps
 
+
+
+
   myPTZParams[0].setType("vcc4");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -1076,7 +1138,7 @@ MVREXPORT MvrRobotPowerBot::MvrRobotPowerBot(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
-MVREXPORT MvrRobotP2D8Plus::MvrRobotP2D8Plus(const char *dir)
+AREXPORT ArRobotP2D8Plus::ArRobotP2D8Plus(const char *dir)
 {
   sprintf(mySubClass, "p2d8+");
   myRobotRadius = 250;
@@ -1119,6 +1181,9 @@ MVREXPORT MvrRobotP2D8Plus::MvrRobotP2D8Plus(const char *dir)
     getLaserData(1)->myLaserY = 0;
   }
 
+
+
+
   myPTZParams[0].setType("vcc4");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -1130,7 +1195,8 @@ MVREXPORT MvrRobotP2D8Plus::MvrRobotP2D8Plus(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
-MVREXPORT MvrRobotP2AT8Plus::MvrRobotP2AT8Plus(const char *dir)
+
+AREXPORT ArRobotP2AT8Plus::ArRobotP2AT8Plus(const char *dir)
 {
   sprintf(mySubClass, "p2at8+");
   myRobotRadius = 500;
@@ -1173,6 +1239,9 @@ MVREXPORT MvrRobotP2AT8Plus::MvrRobotP2AT8Plus(const char *dir)
     getLaserData(1)->myLaserY = 7;
   }
 
+
+
+
   myPTZParams[0].setType("vcc4");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -1184,7 +1253,7 @@ MVREXPORT MvrRobotP2AT8Plus::MvrRobotP2AT8Plus(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
-MVREXPORT MvrRobotP3AT::MvrRobotP3AT(const char *dir)
+AREXPORT ArRobotP3AT::ArRobotP3AT(const char *dir)
 {
   sprintf(mySubClass, "p3at");
   myRobotRadius = 500;
@@ -1232,6 +1301,9 @@ MVREXPORT MvrRobotP3AT::MvrRobotP3AT(const char *dir)
   myGPSY = 120;
   sprintf(myGPSType, "novatel");
 
+
+
+
   myPTZParams[0].setType("vcc4");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -1243,7 +1315,8 @@ MVREXPORT MvrRobotP3AT::MvrRobotP3AT(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
-MVREXPORT MvrRobotP3DX::MvrRobotP3DX(const char *dir)
+
+AREXPORT ArRobotP3DX::ArRobotP3DX(const char *dir)
 {
   sprintf(mySubClass, "p3dx");
   myRobotRadius = 250;
@@ -1288,6 +1361,7 @@ MVREXPORT MvrRobotP3DX::MvrRobotP3DX(const char *dir)
     getLaserData(1)->myLaserAutoConnect = true;
   }
 
+
   myPTZParams[0].setType("vcc4");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -1300,7 +1374,9 @@ MVREXPORT MvrRobotP3DX::MvrRobotP3DX(const char *dir)
 
 }
 
-MVREXPORT MvrRobotPerfPBPlus::MvrRobotPerfPBPlus(const char *dir)
+
+
+AREXPORT ArRobotPerfPBPlus::ArRobotPerfPBPlus(const char *dir)
 {
   sprintf(mySubClass, "perfpb+");
   myRobotRadius = 340;
@@ -1375,6 +1451,9 @@ MVREXPORT MvrRobotPerfPBPlus::MvrRobotPerfPBPlus(const char *dir)
     getLaserData(1)->myLaserAutoConnect = true;
   }
 
+
+
+
   myPTZParams[0].setType("vcc4");
   myPTZParams[0].setRobotAuxPort(1);
   myPTZParams[0].setConnect(true);
@@ -1387,7 +1466,7 @@ MVREXPORT MvrRobotPerfPBPlus::MvrRobotPerfPBPlus(const char *dir)
 }
 
 
-MVREXPORT MvrRobotP3DXSH::MvrRobotP3DXSH(const char *dir)
+AREXPORT ArRobotP3DXSH::ArRobotP3DXSH(const char *dir)
 {
   sprintf(mySubClass, "p3dx-sh");
   myRobotRadius = 250;
@@ -1435,6 +1514,8 @@ MVREXPORT MvrRobotP3DXSH::MvrRobotP3DXSH(const char *dir)
   myGPSY = 120;
   sprintf(myGPSType, "novatel");
 
+
+
   myPTZParams[0].setType("vapix");
   myPTZParams[0].setConnect(true);
   myVideoParams[0].setType("vapix");   
@@ -1444,7 +1525,7 @@ MVREXPORT MvrRobotP3DXSH::MvrRobotP3DXSH(const char *dir)
 }
 
 
-MVREXPORT MvrRobotP3ATSH::MvrRobotP3ATSH(const char *dir)
+AREXPORT ArRobotP3ATSH::ArRobotP3ATSH(const char *dir)
 {
   sprintf(mySubClass, "p3at-sh");
   myRobotRadius = 500;
@@ -1491,6 +1572,9 @@ MVREXPORT MvrRobotP3ATSH::MvrRobotP3ATSH(const char *dir)
   myGPSY = 120;
   sprintf(myGPSType, "novatel");
 
+
+
+
   myPTZParams[0].setType("vapix");
   myPTZParams[0].setConnect(true);
   myVideoParams[0].setType("vapix");   
@@ -1500,7 +1584,7 @@ MVREXPORT MvrRobotP3ATSH::MvrRobotP3ATSH(const char *dir)
 }
 
 
-MVREXPORT MvrRobotP3ATIWSH::MvrRobotP3ATIWSH(const char *dir)
+AREXPORT ArRobotP3ATIWSH::ArRobotP3ATIWSH(const char *dir)
 {
   sprintf(mySubClass, "p3atiw-sh");
   myRobotRadius = 500;
@@ -1543,9 +1627,13 @@ MVREXPORT MvrRobotP3ATIWSH::MvrRobotP3ATIWSH(const char *dir)
     getLaserData(1)->myLaserY = 0;
     getLaserData(1)->myLaserAutoConnect = true;
   }
+
   myGPSX = -160;
   myGPSY = 120;
   sprintf(myGPSType, "novatel");
+
+
+
 
   myPTZParams[0].setType("vapix");
   myPTZParams[0].setConnect(true);
@@ -1556,7 +1644,7 @@ MVREXPORT MvrRobotP3ATIWSH::MvrRobotP3ATIWSH(const char *dir)
 }
 
 
-MVREXPORT MvrRobotPatrolBotSH::MvrRobotPatrolBotSH(const char *dir)
+AREXPORT ArRobotPatrolBotSH::ArRobotPatrolBotSH(const char *dir)
 {
   sprintf(mySubClass, "patrolbot-sh");
   myRobotRadius = 250;
@@ -1622,7 +1710,11 @@ MVREXPORT MvrRobotPatrolBotSH::MvrRobotPatrolBotSH(const char *dir)
     sprintf(getLaserData(2)->myLaserIncrement, "1.0");
   }
 
+
   myRequestIOPackets = true;
+
+
+
 
   myPTZParams[0].setType("vcc4");
   myPTZParams[0].setConnect(true);
@@ -1634,7 +1726,8 @@ MVREXPORT MvrRobotPatrolBotSH::MvrRobotPatrolBotSH(const char *dir)
   myVideoParams[0].setConnect(true);
 }
 
-MVREXPORT MvrRobotPeopleBotSH::MvrRobotPeopleBotSH(const char *dir)
+
+AREXPORT ArRobotPeopleBotSH::ArRobotPeopleBotSH(const char *dir)
 {
   sprintf(mySubClass, "peoplebot-sh");
   myRobotRadius = 340;
@@ -1707,6 +1800,9 @@ MVREXPORT MvrRobotPeopleBotSH::MvrRobotPeopleBotSH(const char *dir)
     getLaserData(1)->myLaserAutoConnect = true;
   }
 
+
+
+
   myPTZParams[0].setType("vapix");
   myPTZParams[0].setInverted(true);
   myVideoParams[0].setType("vapix");  
@@ -1717,7 +1813,7 @@ MVREXPORT MvrRobotPeopleBotSH::MvrRobotPeopleBotSH(const char *dir)
 }
 
 
-MVREXPORT MvrRobotPowerBotSH::MvrRobotPowerBotSH(const char *dir)
+AREXPORT ArRobotPowerBotSH::ArRobotPowerBotSH(const char *dir)
 {
 
   sprintf(mySubClass, "powerbot-sh");
@@ -1787,6 +1883,9 @@ MVREXPORT MvrRobotPowerBotSH::MvrRobotPowerBotSH(const char *dir)
 
   sprintf(myGPSPort, "COM3"); // swap laser and hypothetical GPS
 
+
+
+
   myPTZParams[0].setType("vapix");
   myPTZParams[0].setConnect(true);
   myVideoParams[0].setType("vapix");   
@@ -1796,7 +1895,7 @@ MVREXPORT MvrRobotPowerBotSH::MvrRobotPowerBotSH(const char *dir)
 }
 
 
-MVREXPORT MvrRobotPowerBotSHuARCS::MvrRobotPowerBotSHuARCS(const char *dir)
+AREXPORT ArRobotPowerBotSHuARCS::ArRobotPowerBotSHuARCS(const char *dir)
 {
 
   sprintf(mySubClass, "powerbot-sh-uarcs");
@@ -1850,7 +1949,7 @@ MVREXPORT MvrRobotPowerBotSHuARCS::MvrRobotPowerBotSHuARCS(const char *dir)
   sprintf(myGPSPort, "COM3"); // swap laser and hypothetical GPS
 }
 
-MVREXPORT MvrRobotWheelchairSH::MvrRobotWheelchairSH(const char *dir)
+AREXPORT ArRobotWheelchairSH::ArRobotWheelchairSH(const char *dir)
 {
   sprintf(mySubClass, "wheelchair-sh");
   myRobotRadius = 550;
@@ -1893,7 +1992,7 @@ MVREXPORT MvrRobotWheelchairSH::MvrRobotWheelchairSH(const char *dir)
   sprintf(myGPSPort, "COM3"); // swap laser and hypothetical GPS
 }
 
-MVREXPORT MvrRobotSeekur::MvrRobotSeekur(const char *dir)
+AREXPORT ArRobotSeekur::ArRobotSeekur(const char *dir)
 {
   sprintf(mySubClass, "seekur");
   myRobotRadius = 833;
@@ -1945,6 +2044,9 @@ MVREXPORT MvrRobotSeekur::MvrRobotSeekur(const char *dir)
   sprintf(myGPSType, "trimble");
   myGPSBaud = 38400;
 
+
+
+
   myPTZParams[0].setType("rvision");
   myPTZParams[0].setConnect(true);
   myPTZParams[0].setSerialPort("COM4");
@@ -1957,7 +2059,7 @@ MVREXPORT MvrRobotSeekur::MvrRobotSeekur(const char *dir)
   myVideoParams[0].setConnect(true); 
 }
 
-MVREXPORT MvrRobotMT400::MvrRobotMT400(const char *dir)
+AREXPORT ArRobotMT400::ArRobotMT400(const char *dir)
 {
   sprintf(mySubClass, "mt400");
   myRobotRadius = 250;
@@ -2026,6 +2128,9 @@ MVREXPORT MvrRobotMT400::MvrRobotMT400(const char *dir)
 
   myRequestIOPackets = true;
 
+
+
+
   myPTZParams[0].setType("vapix");
   myPTZParams[0].setConnect(true);
   myVideoParams[0].setType("vapix");   
@@ -2034,7 +2139,7 @@ MVREXPORT MvrRobotMT400::MvrRobotMT400(const char *dir)
   myVideoParams[0].setAddress("192.168.0.90");
 }
 
-MVREXPORT MvrRobotResearchPB::MvrRobotResearchPB(const char *dir)
+AREXPORT ArRobotResearchPB::ArRobotResearchPB(const char *dir)
 {
   sprintf(mySubClass, "researchPB");
   myRobotRadius = 250;
@@ -2103,6 +2208,9 @@ MVREXPORT MvrRobotResearchPB::MvrRobotResearchPB(const char *dir)
 
   myRequestIOPackets = true;
 
+
+
+
   myPTZParams[0].setType("vapix");
   myPTZParams[0].setConnect(true);
   myVideoParams[0].setType("vapix");   
@@ -2111,7 +2219,7 @@ MVREXPORT MvrRobotResearchPB::MvrRobotResearchPB(const char *dir)
   myVideoParams[0].setAddress("192.168.0.90");
 }
 
-MVREXPORT MvrRobotSeekurJr::MvrRobotSeekurJr(const char *dir)
+AREXPORT ArRobotSeekurJr::ArRobotSeekurJr(const char *dir)
 {
   sprintf(mySubClass, "seekurjr");
   myRobotRadius = 600;
@@ -2185,8 +2293,8 @@ MVREXPORT MvrRobotSeekurJr::MvrRobotSeekurJr(const char *dir)
   myVideoParams[0].setConnect(true); 
 }
 
-MVREXPORT MvrRobotP3DXSH_lms1xx::MvrRobotP3DXSH_lms1xx(const char *dir) :
-  MvrRobotP3DXSH(dir)
+AREXPORT ArRobotP3DXSH_lms1xx::ArRobotP3DXSH_lms1xx(const char *dir) :
+  ArRobotP3DXSH(dir)
 {
   sprintf(mySubClass, "p3dx-sh-lms1xx");
   if(LaserData* ld = getLaserData(1))
@@ -2198,8 +2306,8 @@ MVREXPORT MvrRobotP3DXSH_lms1xx::MvrRobotP3DXSH_lms1xx(const char *dir) :
   }
 }
 
-MVREXPORT MvrRobotP3ATSH_lms1xx::MvrRobotP3ATSH_lms1xx(const char *dir) :
-  MvrRobotP3ATSH(dir)
+AREXPORT ArRobotP3ATSH_lms1xx::ArRobotP3ATSH_lms1xx(const char *dir) :
+  ArRobotP3ATSH(dir)
 {
   sprintf(mySubClass, "p3at-sh-lms1xx");
   if(LaserData* ld = getLaserData(1))
@@ -2211,8 +2319,8 @@ MVREXPORT MvrRobotP3ATSH_lms1xx::MvrRobotP3ATSH_lms1xx(const char *dir) :
   }
 }
 
-MVREXPORT MvrRobotPeopleBotSH_lms1xx::MvrRobotPeopleBotSH_lms1xx(const char *dir) :
-  MvrRobotPeopleBotSH(dir)
+AREXPORT ArRobotPeopleBotSH_lms1xx::ArRobotPeopleBotSH_lms1xx(const char *dir) :
+  ArRobotPeopleBotSH(dir)
 {
   sprintf(mySubClass, "peoplebot-sh-lms1xx");
   if(LaserData* ld = getLaserData(1))
@@ -2224,8 +2332,8 @@ MVREXPORT MvrRobotPeopleBotSH_lms1xx::MvrRobotPeopleBotSH_lms1xx(const char *dir
   }
 }
 
-MVREXPORT MvrRobotP3DXSH_lms500::MvrRobotP3DXSH_lms500(const char *dir) :
-  MvrRobotP3DXSH(dir)
+AREXPORT ArRobotP3DXSH_lms500::ArRobotP3DXSH_lms500(const char *dir) :
+  ArRobotP3DXSH(dir)
 {
   sprintf(mySubClass, "p3dx-sh-lms500");
   if(LaserData* ld = getLaserData(1))
@@ -2238,8 +2346,8 @@ MVREXPORT MvrRobotP3DXSH_lms500::MvrRobotP3DXSH_lms500(const char *dir) :
   }
 }
 
-MVREXPORT MvrRobotP3ATSH_lms500::MvrRobotP3ATSH_lms500(const char *dir) :
-  MvrRobotP3ATSH(dir)
+AREXPORT ArRobotP3ATSH_lms500::ArRobotP3ATSH_lms500(const char *dir) :
+  ArRobotP3ATSH(dir)
 {
   sprintf(mySubClass, "p3at-sh-lms500");
   if(LaserData* ld = getLaserData(1))
@@ -2251,8 +2359,8 @@ MVREXPORT MvrRobotP3ATSH_lms500::MvrRobotP3ATSH_lms500(const char *dir) :
   }
 }
 
-MVREXPORT MvrRobotPeopleBotSH_lms500::MvrRobotPeopleBotSH_lms500(const char *dir) :
-  MvrRobotPeopleBotSH(dir)
+AREXPORT ArRobotPeopleBotSH_lms500::ArRobotPeopleBotSH_lms500(const char *dir) :
+  ArRobotPeopleBotSH(dir)
 {
   sprintf(mySubClass, "peoplebot-sh-lms500");
   if(LaserData* ld = getLaserData(1))
@@ -2264,8 +2372,8 @@ MVREXPORT MvrRobotPeopleBotSH_lms500::MvrRobotPeopleBotSH_lms500(const char *dir
   }
 }
 
-MVREXPORT MvrRobotPowerBotSH_lms500::MvrRobotPowerBotSH_lms500(const char *dir) :
-  MvrRobotPowerBotSH(dir)
+AREXPORT ArRobotPowerBotSH_lms500::ArRobotPowerBotSH_lms500(const char *dir) :
+  ArRobotPowerBotSH(dir)
 {
   sprintf(mySubClass, "powerbot-sh-lms500");
   if(LaserData* ld = getLaserData(1))
@@ -2277,8 +2385,8 @@ MVREXPORT MvrRobotPowerBotSH_lms500::MvrRobotPowerBotSH_lms500(const char *dir) 
   }
 }
 
-MVREXPORT MvrRobotResearchPB_lms500::MvrRobotResearchPB_lms500(const char *dir) :
-  MvrRobotResearchPB(dir)
+AREXPORT ArRobotResearchPB_lms500::ArRobotResearchPB_lms500(const char *dir) :
+  ArRobotResearchPB(dir)
 {
   sprintf(mySubClass, "researchPB-lms500");
   if(LaserData* ld = getLaserData(1))
@@ -2290,7 +2398,7 @@ MVREXPORT MvrRobotResearchPB_lms500::MvrRobotResearchPB_lms500(const char *dir) 
   }
 }
 
-MVREXPORT MvrRobotPioneerLX::MvrRobotPioneerLX(const char *dir)
+AREXPORT ArRobotPioneerLX::ArRobotPioneerLX(const char *dir)
 {
   sprintf(myClass, "MTX");
   sprintf(mySubClass, "pioneer-lx");
@@ -2329,7 +2437,7 @@ MVREXPORT MvrRobotPioneerLX::MvrRobotPioneerLX(const char *dir)
     sprintf(laser->myLaserType, "s3series");
     sprintf(laser->myLaserPortType, "serial422");
 #ifdef WIN32
-	sprintf(laser->myLaserPort, MvrUtil::COM7);
+	sprintf(laser->myLaserPort, ArUtil::COM7);
 #else
 	sprintf(laser->myLaserPort, "/dev/ttyUSB4");
 #endif
@@ -2349,7 +2457,7 @@ MVREXPORT MvrRobotPioneerLX::MvrRobotPioneerLX(const char *dir)
     sprintf(lcd->myLCDMTXBoardType, "mtx");
     sprintf(lcd->myLCDMTXBoardPortType, "serial422");
 #ifdef WIN32
-	sprintf(lcd->myLCDMTXBoardPort, MvrUtil::COM11);
+	sprintf(lcd->myLCDMTXBoardPort, ArUtil::COM11);
 #else
     sprintf(lcd->myLCDMTXBoardPort, "/dev/ttyUSB8");
 #endif
@@ -2362,7 +2470,7 @@ MVREXPORT MvrRobotPioneerLX::MvrRobotPioneerLX(const char *dir)
     sprintf(sonar->mySonarMTXBoardType, "mtx");
     sprintf(sonar->mySonarMTXBoardPortType, "serial422");
 #ifdef WIN32
-	  sprintf(sonar->mySonarMTXBoardPort, MvrUtil::COM5);
+	  sprintf(sonar->mySonarMTXBoardPort, ArUtil::COM5);
 #else
     sprintf(sonar->mySonarMTXBoardPort, "/dev/ttyUSB2");
 #endif
@@ -2375,6 +2483,22 @@ MVREXPORT MvrRobotPioneerLX::MvrRobotPioneerLX(const char *dir)
     sonar->mySonarMaxRange = 4335;
     sprintf(sonar->mySonarMTXBoardPowerOutput, "Sonar_1_Power");
   }
+ 
+  /*
+  if(SonarMTXBoardData *sonar = getSonarMTXBoardData(2))
+  {
+    sprintf(sonar->mySonarMTXBoardType, "mtx");
+    sprintf(sonar->mySonarMTXBoardPortType, "serial422");
+#ifdef WIN32
+    sprintf(sonar->mySonarMTXBoardPort, ArUtil::COM6);
+#else
+    sprintf(sonar->mySonarMTXBoardPort, "/dev/ttyUSB3");
+#endif
+    sonar->mySonarMTXBoardBaud = 115200;
+    sonar->mySonarMTXBoardAutoConn = false; 
+    sonar->myNumSonarTransducers = 8;
+  }
+  */
 
   myNumSonar = 4;
   myNumSonarUnits = 4;
@@ -2391,7 +2515,7 @@ MVREXPORT MvrRobotPioneerLX::MvrRobotPioneerLX(const char *dir)
     sprintf(bat->myBatteryMTXBoardType, "mtx");
     sprintf(bat->myBatteryMTXBoardPortType, "serial");
 #ifdef WIN32
-	sprintf(bat->myBatteryMTXBoardPort, MvrUtil::COM4);
+	sprintf(bat->myBatteryMTXBoardPort, ArUtil::COM4);
 #else
     sprintf(bat->myBatteryMTXBoardPort, "/dev/ttyUSB1");
 #endif

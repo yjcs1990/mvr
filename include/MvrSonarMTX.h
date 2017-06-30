@@ -1,19 +1,37 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrSonarMTX.h
- > Description  : Keep track of recent sonar readings from a robot as an MvrRangeDevice
- > Author       : Yu Jie
- > Create Time  : 2017年05月23日
- > Modify Time  : 2017年05月23日
-***************************************************************************************************/
-#ifndef MVRSONARMTX_H
-#define MVRSONARMTX_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrRangeDevice.h"
-#include "MvrFunctor.h"
-#include "MvrRobot.h"
-#include "MvrRobotPacket.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARSONARMTX_H
+#define ARSONARMTX_H
+
+#include "ariaTypedefs.h"
+#include "ArRangeDevice.h"
+#include "ArFunctor.h"
+#include "ArRobot.h"
+#include "ArRobotPacket.h"
 
 
 
@@ -99,36 +117,45 @@
 //		note: byte 5 is transducer number
 //		note: there is no response - use get thresholds to test
 //
-class MvrSonarMTX : public MvrASyncTask
+
+
+/// Receives sonar data from an MTX robot
+/// Use ArSonarConnector to establish the connection and create and initiate the ArSonarMTX thread.
+/// @since 2.8.0
+class ArSonarMTX : public ArASyncTask
 {
 public:
   /// Constructor
-  MVREXPORT MvrSonarMTX(int sonarBoardNum = 0,
-                        const char * name = "MTXSonar", MvrDeviceConnection *conn = NULL,
-                        MvrRobot *robot = NULL);
+  AREXPORT ArSonarMTX( 
+			  int sonarBoardNum = 0,
+				const char * name = "MTXSonar", ArDeviceConnection *conn = NULL,
+			 ArRobot *robot = NULL);
   /// Destructor
-  MVREXPORT virtual ~MvrSonarMTX();
+  AREXPORT virtual ~ArSonarMTX();
 
   /// Sets the robot pointer, also attaches its process function to the
   /// robot as a Sensor Interpretation task.
-  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  AREXPORT virtual void setRobot(ArRobot *robot);
 
-	int getBoardNum(void) { return myBoardNum; }
+	int getBoardNum(void)
+		{ return myBoardNum; }
 
   /// Sets the device this instance receives packets from
-  MVREXPORT void setDeviceConnection(MvrDeviceConnection *conn);
+  AREXPORT void setDeviceConnection(ArDeviceConnection *conn);
   /// Gets the device this instance receives packets from
-  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  AREXPORT ArDeviceConnection *getDeviceConnection(void);
 
   /// Very Internal call that gets the packet sender, shouldn't be used
-  MvrRobotPacketSender *getPacketSender(void) { return mySender; }
+  ArRobotPacketSender *getPacketSender(void)
+    { return mySender; }
   /// Very Internal call that gets the packet sender, shouldn't be used
-  MvrRobotPacketReceiver *getPacketReceiver(void) { return myReceiver; }
+  ArRobotPacketReceiver *getPacketReceiver(void)
+    { return myReceiver; }
 
-  MVREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
+  AREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
 	/// Connect used for debug replay
-  MVREXPORT virtual bool fakeConnect();
-  MVREXPORT virtual bool disconnect(void);
+  AREXPORT virtual bool fakeConnect();
+  AREXPORT virtual bool disconnect(void);
   virtual bool isConnected(void) { return myIsConnected; }
 	virtual bool isTryingToConnect (void)
 	{
@@ -140,7 +167,7 @@ public:
 			return false;
 	}
   /// Logs the information about the sensor
-  MVREXPORT void log(void);
+  AREXPORT void log(void);
 
   /// Lock this device
   virtual int lockDevice() { return(myDeviceMutex.lock());}
@@ -149,11 +176,11 @@ public:
   /// Unlock this device
   virtual int unlockDevice() {return(myDeviceMutex.unlock());}
 
-  MVREXPORT virtual const char *getName(void) const;
+  AREXPORT virtual const char *getName(void) const;
 
-  MVREXPORT virtual const char *getNameWithBoard(void) const;
+  AREXPORT virtual const char *getNameWithBoard(void) const;
 
-  void	setInfoLogLevel(MvrLog::LogLevel infoLogLevel)
+  void	setInfoLogLevel(ArLog::LogLevel infoLogLevel)
   { myInfoLogLevel = infoLogLevel; }
 
   /// Gets the default port type for the sonar
@@ -164,84 +191,108 @@ public:
 
   /// Sets the numter of seconds without a response until connection assumed lost
   virtual void setConnectionTimeoutSeconds(double seconds)
-  { 
-    MvrLog::log(MvrLog::Normal, 
+    { ArLog::log(ArLog::Normal, 
 		 "%s::setConnectionTimeoutSeconds: Setting timeout to %g secs", 
-		getName(), seconds);
-    myLastReading.setToNow(); myTimeoutSeconds = seconds; }
+		 getName(), seconds);
+      myLastReading.setToNow(); myTimeoutSeconds = seconds; }
   /// Gets the number of seconds without a response until connection assumed lost
-  MVREXPORT virtual double getConnectionTimeoutSeconds(void) {return myTimeoutSeconds; }
+  AREXPORT virtual double getConnectionTimeoutSeconds(void)
+	{return myTimeoutSeconds; }
 	/// check for lost connections
-	MVREXPORT bool checkLostConnection(void);
+	AREXPORT bool checkLostConnection(void);
 	/// disconnect 
-	MVREXPORT void disconnectOnError(void);
+	AREXPORT void disconnectOnError(void);
   /// Gets the time data was last receieved
-  MvrTime getLastReadingTime(void) { return myLastReading; }
+  ArTime getLastReadingTime(void) { return myLastReading; }
   /// Gets the number of sonar readings received in the last second
-  MVREXPORT int getReadingCount(void);
+  AREXPORT int getReadingCount(void);
   // Function called in sensorInterp to indicate that a
   // reading was received
-  MVREXPORT virtual void internalGotReading(void);
+  AREXPORT virtual void internalGotReading(void);
 
 protected:
-  MVREXPORT bool sendAlive();
-  MVREXPORT bool sendReset();
-  MVREXPORT bool sendStart();
-  MVREXPORT bool sendStop();
-  MVREXPORT bool sendGetTransducerCount();
-  MVREXPORT bool sendGetGain(unsigned char transducerNumber);
-  MVREXPORT bool sendSetGain(unsigned char transducerNumber, unsigned char gain);
-  MVREXPORT bool sendGetMaxRange(unsigned char transducerNumber);
-  MVREXPORT bool sendSetMaxRange(unsigned char transducerNumber, int echoSampleSize);
-  MVREXPORT bool sendGetThresholds(unsigned char transducerNumber);
-  MVREXPORT bool sendSetThresholds(unsigned char transducerNumber, int thres);
-	MVREXPORT bool sendGetNumThresholdRanges();
- 
-  MVREXPORT bool sendGetDelay();
-  MVREXPORT bool sendSetDelay(unsigned char delay);
-  MVREXPORT bool sendSetMask(unsigned char maskLsb, unsigned char maskMsb);
-  MVREXPORT bool sendGetMask();
-	MVREXPORT bool validateTransducers();
-	MVREXPORT bool validateGain();
-	MVREXPORT bool validateDelay();
-	MVREXPORT bool validateThresholds();
-	MVREXPORT bool validateMaxRange();
- 
-	MVREXPORT bool validateNumThresholdRanges();
-  MVREXPORT bool requestFirmwareVersion();
-  MVREXPORT bool queryFirmwareVersion();
+  AREXPORT bool sendAlive();
+  AREXPORT bool sendReset();
+  AREXPORT bool sendStart();
+  AREXPORT bool sendStop();
+  AREXPORT bool sendGetTransducerCount();
+  AREXPORT bool sendGetGain(unsigned char transducerNumber);
+  AREXPORT bool sendSetGain(unsigned char transducerNumber, unsigned char gain);
+  AREXPORT bool sendGetMaxRange(unsigned char transducerNumber);
+  AREXPORT bool sendSetMaxRange(unsigned char transducerNumber, int echoSampleSize);
+  AREXPORT bool sendGetThresholds(unsigned char transducerNumber);
+  AREXPORT bool sendSetThresholds(unsigned char transducerNumber, int thres);
+	AREXPORT bool sendGetNumThresholdRanges();
+  /*
+	AREXPORT bool sendGetNoiseDelta(unsigned char transducerNumber);
+  AREXPORT bool sendSetNoiseDelta(unsigned char transducerNumber, int noiseDelta);
+	*/
+  AREXPORT bool sendGetDelay();
+  AREXPORT bool sendSetDelay(unsigned char delay);
+  AREXPORT bool sendSetMask(unsigned char maskLsb, unsigned char maskMsb);
+  AREXPORT bool sendGetMask();
+	AREXPORT bool validateTransducers();
+	AREXPORT bool validateGain();
+	AREXPORT bool validateDelay();
+	AREXPORT bool validateThresholds();
+	AREXPORT bool validateMaxRange();
+	/*
+	AREXPORT bool validateNoiseDelta();
+	*/
+	AREXPORT bool validateNumThresholdRanges();
+  AREXPORT bool requestFirmwareVersion();
+  AREXPORT bool queryFirmwareVersion();
 
 public:
   /// Adds a callback for when disconnection happens because of an error
-  void addDisconnectOnErrorCB(MvrFunctor *functor, int position = 51) 
-  { myDisconnectOnErrorCBList.addCallback(functor, position); }
+  void addDisconnectOnErrorCB(ArFunctor *functor, 
+			     int position = 51) 
+    { myDisconnectOnErrorCBList.addCallback(functor, position); }
 
   /// Removes a callback for when disconnection happens because of an error
-  void remDisconnectOnErrorCB(MvrFunctor *functor)
-  { myDisconnectOnErrorCBList.remCallback(functor); }
+  void remDisconnectOnErrorCB(ArFunctor *functor)
+    { myDisconnectOnErrorCBList.remCallback(functor); }
 
   /// Number of Transducers from board query
-	int getNumTransducers(void) const { return myNumTransducers; }
+	int getNumTransducers(void) const
+		{ return myNumTransducers; }
   /// Number of Configured Transducers
-	int getNumConfiguredTransducers(void) const	{ return myNumConfiguredTransducers; }
+	int getNumConfiguredTransducers(void) const
+		{ return myNumConfiguredTransducers; }
   /// Board Delay
-	int getBoardDelay(void) const { return myBoardDelay; }
-	int getBoardGain(void) const { return myBoardGain; }
+	int getBoardDelay(void) const
+		{ return myBoardDelay; }
+  /// 
+	int getBoardGain(void) const
+		{ return myBoardGain; }
   ///
-	int getBoardDetectionThreshold(void) const { return myBoardDetectionThreshold; }
+	/*
+	int getBoardNoiseDelta(void) const
+    { return myBoardNoiseDelta; }
+	*/
+  /// 
+	int getBoardDetectionThreshold(void) const
+  { 
+    return myBoardDetectionThreshold; 
+  }
 
-	int getBoardMaxRange(void) const { return myBoardMaxRange;}
+	int getBoardMaxRange(void) const
+  { 
+    return myBoardMaxRange; 
+  }
 
-	bool getBoardUseForAutonomousDriving(void) const { return myBoardUseForAutonomousDriving; }
+	bool getBoardUseForAutonomousDriving(void) const
+	{ 
+    return myBoardUseForAutonomousDriving; 
+  }
  
 	int getUnitMapping(int unit) const
-	{
+		{
 		std::map<int, std::map<int, int> >::const_iterator iter = 
 				mySonarMap.find(unit);
 		if (iter == mySonarMap.end()) 
 			return -1;
-		else
-    {
+		else {
 			std::map<int, int>unitMap = iter->second;
 			return unitMap[SONAR_MAPPING];
 		} 
@@ -249,13 +300,12 @@ public:
 
   /// 
 	int getUnitX(int unit) const
-	{
+		{
 		std::map<int, std::map<int, int> >::const_iterator iter = 
 				mySonarMap.find(unit);
 		if (iter == mySonarMap.end()) 
 			return -1;
-		else 
-    {
+		else {
 			std::map<int, int>unitMap = iter->second;
 			return unitMap[SONAR_X];
 		} 
@@ -263,13 +313,12 @@ public:
 
   /// 
 	int getUnitY(int unit) const
-	{
+		{
 		std::map<int, std::map<int, int> >::const_iterator iter = 
 				mySonarMap.find(unit);
 		if (iter == mySonarMap.end()) 
 			return -1;
-		else
-    {
+		else {
 			std::map<int, int>unitMap = iter->second;
 			return unitMap[SONAR_Y];
 		} 
@@ -277,13 +326,12 @@ public:
 
   /// 
 	int getUnitTh(int unit) const
-	{
+		{
 		std::map<int, std::map<int, int> >::const_iterator iter = 
 				mySonarMap.find(unit);
 		if (iter == mySonarMap.end()) 
 			return -1;
-		else 
-    {
+		else {
 			std::map<int, int>unitMap = iter->second;
 			return unitMap[SONAR_TH];
 		} 
@@ -291,13 +339,12 @@ public:
 
   /// 
 	int getUnitGain(int unit) const
-	{
+		{
 		std::map<int, std::map<int, int> >::const_iterator iter = 
 				mySonarMap.find(unit);
 		if (iter == mySonarMap.end()) 
 			return -1;
-		else 
-    {
+		else {
 			std::map<int, int>unitMap = iter->second;
 			return unitMap[SONAR_GAIN];
     } 
@@ -305,7 +352,47 @@ public:
 
   /// 
 	int getUnitDetectionThres(int unit) const
-	{
+		{
+		std::map<int, std::map<int, int> >::const_iterator iter = 
+				mySonarMap.find(unit);
+		if (iter == mySonarMap.end()) 
+			return -1;
+		else {
+			std::map<int, int>unitMap = iter->second;
+			return unitMap[SONAR_DETECTION_THRES];
+		} 
+  }
+
+  /// 
+	/*
+	int getUnitNoiseDelta(int unit) const
+		{
+		std::map<int, std::map<int, int> >::const_iterator iter = 
+				mySonarMap.find(unit);
+		if (iter == mySonarMap.end()) 
+			return -1;
+		else {
+			std::map<int, int>unitMap = iter->second;
+			return unitMap[SONAR_NOISE_DELTA];
+		} }
+	*/
+#if 0
+  /// 
+	int getUnitThresClose(int unit) const
+		{
+		std::map<int, std::map<int, int> >::const_iterator iter = 
+				mySonarMap.find(unit);
+		if (iter == mySonarMap.end()) 
+			return -1;
+		else {
+			std::map<int, int>unitMap = iter->second;
+			return unitMap[SONAR_THRES_CLOSE];
+    } 
+  }
+
+  /// 
+	int getUnitThresMed(int unit) const
+		{
 		std::map<int, std::map<int, int> >::const_iterator iter = 
 				mySonarMap.find(unit);
 		if (iter == mySonarMap.end()) 
@@ -313,10 +400,24 @@ public:
 		else 
     {
 			std::map<int, int>unitMap = iter->second;
-			return unitMap[SONAR_DETECTION_THRES];
+			return unitMap[SONAR_THRES_MED];
 		} 
   }
 
+  /// 
+	int getUnitThresFar(int unit) const
+		{
+		std::map<int, std::map<int, int> >::const_iterator iter = 
+				mySonarMap.find(unit);
+		if (iter == mySonarMap.end()) 
+			return -1;
+		else 
+    {
+			std::map<int, int>unitMap = iter->second;
+			return unitMap[SONAR_THRES_FAR];
+		} 
+  }
+#endif
  
 	int getUnitLastReading(int unit) const
 		{
@@ -331,24 +432,25 @@ public:
 		} 
   }
 
-	int getFirmwareVersion(void) const { return myFirmwareVersion; }
+	int getFirmwareVersion(void) const
+	{ 
+    return myFirmwareVersion; 
+  }
 
-	MVREXPORT bool turnOnTransducers();
+	AREXPORT bool turnOnTransducers();
 
-	MVREXPORT bool turnOffTransducers();
+	AREXPORT bool turnOffTransducers();
 
-	MVREXPORT bool disableForAutonomousDriving();
+	AREXPORT bool disableForAutonomousDriving();
 
-  void setPacketsSentTracking(bool v = true) 
-  {
+  void setPacketsSentTracking(bool v = true) {
     mySendTracking = v;
     mySendTrackingSet = true;
     if (mySender)
       mySender->setTracking(true);
   }
 
-  void setPacketsReceivedTracking(bool v = true) 
-  {
+  void setPacketsReceivedTracking(bool v = true) {
     myRecvTracking = v;
     myRecvTrackingSet = true;
     if (myReceiver) 
@@ -363,7 +465,7 @@ enum Headers {
 
 
 protected:
-  MvrDeviceConnection *myConn;
+  ArDeviceConnection *myConn;
 
   std::string myName;
   char myNameWithBoard[100];
@@ -373,22 +475,22 @@ protected:
   double myTimeoutSeconds;
   bool myRobotRunningAndConnected;
 
-	bool myTransducersMvreOn;
+	bool myTransducersAreOn;
 
-  MvrTime myLastReading;
+  ArTime myLastReading;
 
   // packet count
   time_t myTimeLastReading;
   int myReadingCurrentCount;
   int myReadingCount;
 
-  MvrCallbackList myDisconnectOnErrorCBList;
+  ArCallbackList myDisconnectOnErrorCBList;
 	
-	MvrRobot *myRobot;
-  MvrFunctorC<MvrSonarMTX> myProcessCB;
+	ArRobot *myRobot;
+  ArFunctorC<ArSonarMTX> myProcessCB;
 
-  MVREXPORT virtual void sonarSetName(const char *name);
-  MVREXPORT virtual void * runThread(void *arg);
+  AREXPORT virtual void sonarSetName(const char *name);
+  AREXPORT virtual void * runThread(void *arg);
 	
   void sensorInterp(void);
   void failedToConnect(void);
@@ -431,7 +533,9 @@ protected:
 		SONAR_Y,
 		SONAR_TH,
 		SONAR_GAIN,
-
+		/*
+		SONAR_NOISE_DELTA,
+		*/
 		SONAR_DETECTION_THRES,
 		SONAR_MAX_RANGE,
 		SONAR_USE_FOR_AUTONOMOUS_DRIVING,
@@ -439,30 +543,30 @@ protected:
   };
 
 enum Sizes {
-	  maxTransducers=16
+	maxTransducers=16
 	};
 
 enum Commands {
-    ALIVE=0x00,
-    START_SCAN=0x01,
-    STOP_SCAN=0x02,
-    RESET=0x03,
-    TAKE_SELF_ECHO=0x04,
-    GET_VERSION=0x10,
-    GET_NUM_TRANDUCERS=0x11,
-    GET_TRANSDUCER_MASK=0x12,
-    SET_TRANSDUCER_MASK=0x22,
-    GET_SONAR_DELAY=0x13,
-    SET_SONAR_DELAY=0x23,
-    GET_ECHO_SAMPLE_SIZE=0x14,
-    SET_ECHO_SAMPLE_SIZE=0x24,
-    GET_GAIN=0x17,
-    SET_GAIN=0x27,
-    NUM_THRESHOLD_RANGES=0x18,
-    GET_THRESHOLDS=0x19,
-    SET_THRESHOLDS=0x29,
-    GET_NOISE_DELTA=0x1A,
-    SET_NOISE_DELTA=0x2A
+ ALIVE=0x00,
+ START_SCAN=0x01,
+ STOP_SCAN=0x02,
+ RESET=0x03,
+ TAKE_SELF_ECHO=0x04,
+ GET_VERSION=0x10,
+ GET_NUM_TRANDUCERS=0x11,
+ GET_TRANSDUCER_MASK=0x12,
+ SET_TRANSDUCER_MASK=0x22,
+ GET_SONAR_DELAY=0x13,
+ SET_SONAR_DELAY=0x23,
+ GET_ECHO_SAMPLE_SIZE=0x14,
+ SET_ECHO_SAMPLE_SIZE=0x24,
+ GET_GAIN=0x17,
+ SET_GAIN=0x27,
+ NUM_THRESHOLD_RANGES=0x18,
+ GET_THRESHOLDS=0x19,
+ SET_THRESHOLDS=0x29,
+ GET_NOISE_DELTA=0x1A,
+ SET_NOISE_DELTA=0x2A
 	};
 	
 	bool mySendTracking;
@@ -470,26 +574,26 @@ enum Commands {
   bool mySendTrackingSet;
   bool myRecvTrackingSet;
 
-  MvrRobotPacketReceiver *myReceiver;
-  MvrRobotPacketSender *mySender;
+  ArRobotPacketReceiver *myReceiver;
+  ArRobotPacketSender *mySender;
 
-  MvrMutex myPacketsMutex;
-  MvrMutex myDataMutex;
-	MvrMutex myDeviceMutex;
+  ArMutex myPacketsMutex;
+  ArMutex myDataMutex;
+	ArMutex myDeviceMutex;
 	
-  MvrLog::LogLevel myInfoLogLevel;
+  ArLog::LogLevel myInfoLogLevel;
 
-  std::list<MvrRobotPacket *> myPackets;
+  std::list<ArRobotPacket *> myPackets;
 
 	int myFirmwareVersion;
 
-  MvrTime myPrevSensorIntTime;
+  ArTime myPrevSensorIntTime;
 
-  MvrFunctorC<MvrSonarMTX> mySensorInterpTask;
-  MvrRetFunctorC<bool, MvrSonarMTX> myMvriaExitCB;
+  ArFunctorC<ArSonarMTX> mySensorInterpTask;
+  ArRetFunctorC<bool, ArSonarMTX> myAriaExitCB;
 
 };
 
 
 
-#endif // MVRSONARMTX_H
+#endif // ARSONARDEVICE_H

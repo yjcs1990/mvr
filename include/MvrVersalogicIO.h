@@ -1,21 +1,40 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrVersalogicIO.h
- > Description  : Interface to integrated digital and analog I/O interfaces on Versalogic 
-                  VSBC8 and EBX-12 Cobra computers (digital IO on 2nd * gen.  PatrolBot)
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRVERSALOGICIO_H
-#define MVRVERSALOGICIO_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARVERSALOGICIO_H
+#define ARVERSALOGICIO_H
 
 //#ifndef SWIG
 
-#include "mvriaTypedefs.h"
-#include "MvrRobot.h"
+#include "ariaTypedefs.h"
+#include "ArRobot.h"
 
-/*This class is a basic set of calls to use the Linux device driver, <code>amrio</code>,
+/** @brief Interface to integrated digital and analog I/O interfaces on Versalogic VSBC8 and EBX-12 Cobra computers (digital IO on 2nd * gen.  PatrolBot)
+ 
+  This class is a basic set of calls to use the Linux device driver, <code>amrio</code>,
   which reads and writes data to VersaLogic's Opto22 and analog interfaces.
   The <code>amrio</code> driver must be built into the Linux kernel or its
   module loaded. Contact MobileRobots for information about obtaining this
@@ -32,20 +51,25 @@
   an analog conversion, and if it fails will assume that the chip is not present
   and will disable the analog function.
 
+  See the motherboard manual for information about physical connections and specifications of the analog input and Opto22 digital IO.
+  Computer motherboard manuals are available at http://robots.mobilerobots.com/docs .
+
   The SPECIAL_CONTROL_REGISTER contains a few bits of information, the one of
   importance at the moment is the CPU_OVERTEMPERATURE bit, which will be set
   high if the CPU temp is over the warning temp as set in the BIOS.  Bitwise
   AND the special_control_register output with 0x20 to find the temperature
   bit.
 
-  The destructor closes the device, so just delete the MvrVersalogicIO instance
+  The destructor closes the device, so just delete the ArVersalogicIO instance
   to close the device.
 
   @ingroup OptionalClasses
    @ingroup DeviceClasses
+
+  @notwindows
 */
  
-class MvrVersalogicIO
+class ArVersalogicIO
 {
 public:
 
@@ -56,57 +80,57 @@ public:
   };
 
   /// Constructor
-  MVREXPORT MvrVersalogicIO(const char * dev = "/dev/amrio");
+  AREXPORT ArVersalogicIO(const char * dev = "/dev/amrio");
   /// Destructor
-  MVREXPORT virtual ~MvrVersalogicIO(void);
+  AREXPORT virtual ~ArVersalogicIO(void);
 
   /// tries to close the device.  Returns false if operation failed
-  MVREXPORT bool closeIO(void);
+  AREXPORT bool closeIO(void);
 
   /// returns true if the device is opened and operational
-  MVREXPORT bool isEnabled(void) { return myEnabled; }
+  AREXPORT bool isEnabled(void) { return myEnabled; }
 
   /// returns true if analog values are supported
-  MVREXPORT bool isAnalogSupported(void) { return myAnalogEnabled; }
+  AREXPORT bool isAnalogSupported(void) { return myAnalogEnabled; }
 
   /// Take an analog reading from a port number from 0-7.
   /// This returns a conversion of the bits to a decimal value,
   /// currently assumed to be in the 0-5V range
-  MVREXPORT bool getAnalogValue(int port, double *val);
+  AREXPORT bool getAnalogValue(int port, double *val);
 
   /// Take an analog reading from a port number from 0-7.
   /// This returns the actual reading from the chip, which is 12-bits
-  MVREXPORT bool getAnalogValueRaw(int port, int *val);
+  AREXPORT bool getAnalogValueRaw(int port, int *val);
 
   /// returns the direction (input or output) for the given bank
-  MVREXPORT Direction getDigitalBankDirection(int bank);
+  AREXPORT Direction getDigitalBankDirection(int bank);
 
   /// set direction for a particular digital I/O bank
-  MVREXPORT bool setDigitalBankDirection(int bank, Direction dir);
+  AREXPORT bool setDigitalBankDirection(int bank, Direction dir);
 
   /// get the current value of the digital inputs on a certain bank
-  MVREXPORT bool getDigitalBankInputs(int bank, unsigned char *val);
+  AREXPORT bool getDigitalBankInputs(int bank, unsigned char *val);
 
   /// get the current value of the digital outputs bits on a certain bank
-  MVREXPORT bool getDigitalBankOutputs(int bank, unsigned char *val);
+  AREXPORT bool getDigitalBankOutputs(int bank, unsigned char *val);
 
   /// set the value of the digital outputs bits
-  MVREXPORT bool setDigitalBankOutputs(int bank, unsigned char val);
+  AREXPORT bool setDigitalBankOutputs(int bank, unsigned char val);
 
   /// gets the special register of the motherboard.
-  MVREXPORT bool getSpecialControlRegister(unsigned char *val);
+  AREXPORT bool getSpecialControlRegister(unsigned char *val);
 
   /// lock the amrio device instance
-  MVREXPORT int lock(void){ return(myMutex.lock()); }
+  AREXPORT int lock(void){ return(myMutex.lock()); }
   /// unlock the amrio device instance
-  MVREXPORT int unlock(void){ return(myMutex.unlock()); }
+  AREXPORT int unlock(void){ return(myMutex.unlock()); }
 
   /// Try to lock the device instance without blocking
-  MVREXPORT int tryLock() {return(myMutex.tryLock());}
+  AREXPORT int tryLock() {return(myMutex.tryLock());}
 
 protected:
 
-  static MvrMutex myMutex;
+  static ArMutex myMutex;
   int myFD;
 
   bool myEnabled;
@@ -119,9 +143,9 @@ protected:
   unsigned char myDigitalBank2;
   unsigned char myDigitalBank3;
 
-  MvrRetFunctorC<bool, MvrVersalogicIO> myDisconnectCB;
+  ArRetFunctorC<bool, ArVersalogicIO> myDisconnectCB;
 };
 
 //#endif // SWIG
 
-#endif // MVRVERSALOGICIO_H
+#endif // ARVERSALOGICIO_H

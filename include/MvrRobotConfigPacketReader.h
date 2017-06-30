@@ -1,47 +1,66 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotConfigPacketReader.h
- > Description  : This class will read a config packet from the robot.
- > Author       : Yu Jie
- > Create Time  : 2017年05月19日
- > Modify Time  : 2017年05月19日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRROBOTCONFIGPACKETREADER_H
-#define MVRROBOTCONFIGPACKETREADER_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrFunctor.h"
-#include "MvrRobotPacket.h"
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-class MvrRobot;
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARROBOTCONFIGPACKETREADER_H
+#define ARROBOTCONFIGPACKETREADER_H
+
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArFunctor.h"
+#include "ArRobotPacket.h"
+
+class ArRobot;
+
 
 /// This class will read a config packet from the robot
-class MvrRobotConfigPacketReader
+class ArRobotConfigPacketReader
 {
 public:
   /// Constructor
-  MVREXPORT MvrRobotConfigPacketReader(MvrRobot *robot, 
-				   bool onlyOneRequest = false, MvrFunctor *packetedArrivedCB = NULL);
+  AREXPORT ArRobotConfigPacketReader(ArRobot *robot, 
+				     bool onlyOneRequest = false,
+				     ArFunctor *packetedArrivedCB = NULL);
   /// Destructor
-  MVREXPORT ~MvrRobotConfigPacketReader();
+  AREXPORT ~ArRobotConfigPacketReader();
   /// Request a packet.. true if we could, false if onlyOneRequest already done
-  MVREXPORT bool requestPacket(void);
+  AREXPORT bool requestPacket(void);
   /// See if we've requested a packet yet
   bool hasPacketBeenRequested(void) const { return myPacketRequested; }
   /// See if we've gotten the data
   bool hasPacketArrived(void) const { return myPacketArrived; }
   /// Gets a pointer to the packet that we built the config packet from
-  const MvrRobotPacket *getRobotPacket(void) const { return &myPacket; } 
+  const ArRobotPacket *getRobotPacket(void) const { return &myPacket; } 
   /// Log the config
-  MVREXPORT void log(void) const;
+  AREXPORT void log(void) const;
   /// Log the movement part of the config config
-  MVREXPORT void logMovement(void) const;
+  AREXPORT void logMovement(void) const;
   /// Builds a string of the info
-  MVREXPORT std::string buildString(void) const;
+  AREXPORT std::string buildString(void) const;
   /// Builds a string of the movement info
-  MVREXPORT std::string buildStringMovement(void) const;
+  AREXPORT std::string buildStringMovement(void) const;
   /// Gets the type of robot
   const char *getType(void) const { return myType.c_str(); }
   /// Gets the subtype of robot
@@ -156,28 +175,39 @@ public:
   /// Returns the lateral deceleration
   int getLatDecel(void) const { return myLatDecel; }
   /// Gets the powerbot charge threshold
-  int getPowerbotChargeThreshold(void) const { return myPowerbotChargeThreshold; }
+  int getPowerbotChargeThreshold(void) const 
+    { return myPowerbotChargeThreshold; }
   /// Gets the port the PDB is on
-  unsigned char getPDBPort(void) const { return myPDBPort; }
+  unsigned char getPDBPort(void) const 
+    { return myPDBPort; }
   /// Gets the port the PDB is on
-  int getGyroRateLimit(void) const { return myGyroRateLimit; }
+  int getGyroRateLimit(void) const 
+    { return myGyroRateLimit; }
   /// Gets the high temperature threshold
-  char getHighTemperatureShutdown(void) const { return myHighTemperatureShutdown; }
+  char getHighTemperatureShutdown(void) const 
+    { return myHighTemperatureShutdown; }
   /// Gets the power bits
-  int getPowerBits(void) const { return myPowerBits; }
+  int getPowerBits(void) const
+    { return myPowerBits; }
   /// Gets the battery type 
-  unsigned char getBatteryType(void) const { return myBatteryType; }
+  unsigned char getBatteryType(void) const
+    { return myBatteryType; }
   /// Gets the warning state of charge
-  int getStateOfChargeLow(void) const { return myStateOfChargeLow; }
+  int getStateOfChargeLow(void) const
+    { return myStateOfChargeLow; }
   /// Gets the shutdown state of charge
-  int getStateOfChargeShutdown(void) const { return myStateOfChargeShutdown; }
-  const char *getFirmwareBootloaderVersion(void) const  { return myFirmwareBootloaderVersion.c_str(); }
-  unsigned int getConfigFlags(void) const { return myConfigFlags; }
-  int getGyroFWVersion(void) const { return myGyroFWVersion; }
+  int getStateOfChargeShutdown(void) const
+    { return myStateOfChargeShutdown; }
+  const char *getFirmwareBootloaderVersion(void) const 
+    { return myFirmwareBootloaderVersion.c_str(); }
+  unsigned int getConfigFlags(void) const 
+    { return myConfigFlags; }
+  int getGyroFWVersion(void) const 
+    { return myGyroFWVersion; }
   /// internal, packet handler
-  MVREXPORT bool packetHandler(MvrRobotPacket *packet);
+  AREXPORT bool packetHandler(ArRobotPacket *packet);
   /// internal, connection callback
-  MVREXPORT void connected(void);
+  AREXPORT void connected(void);
 protected:
   // the different parameters from the robot
   std::string myType;
@@ -249,7 +279,7 @@ protected:
   int myGyroFWVersion;
 
   // the robot
-  MvrRobot *myRobot;
+  ArRobot *myRobot;
   // whether only one request can be done or not
   bool myOnlyOneRequest;
   // whether a request has been made or not
@@ -257,17 +287,17 @@ protected:
   // whether our data has been received or not
   bool myPacketArrived;
   // last time we requested a packet (we'll only ask every 200 ms)
-  MvrTime myLastPacketRequest;
+  ArTime myLastPacketRequest;
   // a copy of the packet
-  MvrRobotPacket myPacket;
+  ArRobotPacket myPacket;
   
   // the callback
-  MvrRetFunctor1C<bool, MvrRobotConfigPacketReader, MvrRobotPacket *> myPacketHandlerCB;
+  ArRetFunctor1C<bool, ArRobotConfigPacketReader, ArRobotPacket *> myPacketHandlerCB;
   // callback for connectiosn in case we need to request a config packet
-  MvrFunctorC<MvrRobotConfigPacketReader> myConnectedCB;
+  ArFunctorC<ArRobotConfigPacketReader> myConnectedCB;
   // callback for when we get a packet
-  MvrFunctor *myPacketArrivedCB;
+  ArFunctor *myPacketArrivedCB;
   
 };
 
-#endif  // MVRROBOTCONFIGPACKETREADER_H
+#endif // ARROBOTCONFIGPACKETREADER_H

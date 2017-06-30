@@ -1,80 +1,102 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrMode.cpp
- > Description  : A class for different modes, mostly as related to keyboard input
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年06月13日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "MvrRobot.h"
-#include "mvriaInternal.h"
-#include "MvrMode.h"
-
-MvrMode *MvrMode::ourActiveMode = NULL;
-MvrGlobalFunctor *MvrMode::ourHelpCB = NULL;
-std::list<MvrMode *> MvrMode::ourModes;
-
 /*
- * @param robot the robot we're attaching to
- * @param name the name of this mode
- * @param key the primary key to switch to this mode on... it can be
- * '\\0' if you don't want to use this
- * @param key2 an alternative key to switch to this mode on... it can be
- * '\\0' if you don't want a second alternative key
- */
-MVREXPORT MvrMode::MvrMode(MvrRobot *robot, const char *name, char key, char key2) :
-          myActivateCB(this, &MvrMode::activate),
-          myDeactivateCB(this, &MvrMode::deactivate),
-          myUserTaskCB(this, &MvrMode::userTask)
-{
-    MvrKeyHandler *keyHandler;
-    myName        = name;
-    myRobot       = robot;
-    myKey         = key;
-    myKey2        = key2;
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArMode.h"
+#include "ArRobot.h"
+#include "ariaInternal.h"
+
+ArMode *ArMode::ourActiveMode = NULL;
+ArGlobalFunctor *ArMode::ourHelpCB = NULL;
+std::list<ArMode *> ArMode::ourModes;
+
+/**
+   @param robot the robot we're attaching to
+   
+   @param name the name of this mode
+
+   @param key the primary key to switch to this mode on... it can be
+   '\\0' if you don't want to use this
+
+   @param key2 an alternative key to switch to this mode on... it can be
+   '\\0' if you don't want a second alternative key
+**/
+AREXPORT ArMode::ArMode(ArRobot *robot, const char *name, char key, 
+			char key2) :
+  myActivateCB(this, &ArMode::activate),
+  myDeactivateCB(this, &ArMode::deactivate),
+  myUserTaskCB(this, &ArMode::userTask)
+{
+  ArKeyHandler *keyHandler;
+  myName = name;
+  myRobot = robot;
+  myKey = key;
+  myKey2 = key2;
   // see if there is already a keyhandler, if not make one for ourselves
-  if ((keyHandler = Mvria::getKeyHandler()) == NULL)
+  if ((keyHandler = Aria::getKeyHandler()) == NULL)
   {
-    keyHandler = new MvrKeyHandler;
-    Mvria::setKeyHandler(keyHandler);
+    keyHandler = new ArKeyHandler;
+    Aria::setKeyHandler(keyHandler);
     if (myRobot != NULL)
       myRobot->attachKeyHandler(keyHandler);
     else
-      MvrLog::log(MvrLog::Terse, "MvrMode: No robot to attach a keyHandler to, keyHandling won't work...either make your own keyHandler and drive it yourself, make a keyhandler and attach it to a robot, or give this a robot to attach to.");
-  }
+      ArLog::log(ArLog::Terse, "ArMode: No robot to attach a keyHandler to, keyHandling won't work... either make your own keyHandler and drive it yourself, make a keyhandler and attach it to a robot, or give this a robot to attach to.");
+  }  
   if (ourHelpCB == NULL)
   {
-    ourHelpCB = new MvrGlobalFunctor(&MvrMode::baseHelp);
+    ourHelpCB = new ArGlobalFunctor(&ArMode::baseHelp);
     if (!keyHandler->addKeyHandler('h', ourHelpCB))
-      MvrLog::log(MvrLog::Terse, "The key handler already has a key for 'h', MvrMode will not be invoked on an 'h' keypress.");
+      ArLog::log(ArLog::Terse, "The key handler already has a key for 'h', ArMode will not be invoked on an 'h' keypress.");
     if (!keyHandler->addKeyHandler('H', ourHelpCB))
-      MvrLog::log(MvrLog::Terse, "The key handler already has a key for 'H', MvrMode will not be invoked on an 'H' keypress.");
+      ArLog::log(ArLog::Terse, "The key handler already has a key for 'H', ArMode will not be invoked on an 'H' keypress.");
     if (!keyHandler->addKeyHandler('?', ourHelpCB))
-      MvrLog::log(MvrLog::Terse, "The key handler already has a key for '?', MvrMode will not be invoked on an '?' keypress.");
+      ArLog::log(ArLog::Terse, "The key handler already has a key for '?', ArMode will not be invoked on an '?' keypress.");
     if (!keyHandler->addKeyHandler('/', ourHelpCB))
-      MvrLog::log(MvrLog::Terse, "The key handler already has a key for '/', MvrMode will not be invoked on an '/' keypress.");
+      ArLog::log(ArLog::Terse, "The key handler already has a key for '/', ArMode will not be invoked on an '/' keypress.");
+
   }
 
   // now that we have one, add our keys as callbacks, print out big
   // warning messages if they fail
   if (myKey != '\0')
     if (!keyHandler->addKeyHandler(myKey, &myActivateCB))
-      MvrLog::log(MvrLog::Terse, "The key handler already has a key for '%c', MvrMode will not work correctly.", myKey);
+      ArLog::log(ArLog::Terse, "The key handler already has a key for '%c', ArMode will not work correctly.", myKey);
   if (myKey2 != '\0')
     if (!keyHandler->addKeyHandler(myKey2, &myActivateCB))
-      MvrLog::log(MvrLog::Terse, "The key handler already has a key for '%c', MvrMode will not work correctly.", myKey2);
+      ArLog::log(ArLog::Terse, "The key handler already has a key for '%c', ArMode will not work correctly.", myKey2);
 
   // toss this mode into our list of modes
   ourModes.push_front(this);
 }
 
-MVREXPORT MvrMode::~MvrMode()
+AREXPORT ArMode::~ArMode()
 {
-  MvrKeyHandler *keyHandler;
-  if ((keyHandler = Mvria::getKeyHandler()) != NULL)
+  ArKeyHandler *keyHandler;
+  if ((keyHandler = Aria::getKeyHandler()) != NULL)
   {
     if (myKey != '\0')
       keyHandler->remKeyHandler(myKey);
@@ -85,18 +107,21 @@ MVREXPORT MvrMode::~MvrMode()
     myRobot->remUserTask(&myUserTaskCB);
 }
 
-/* 
- * Inheriting modes must first call this to get their user task called
- * and to deactivate the active mode.... if it returns false then the
- * inheriting class must return, as it means that his mode is already
- * active
- */
- MVREXPORT bool MvrMode::baseActivate(void)
- {
-   if (ourActiveMode == this)
+/** 
+   Inheriting modes must first call this to get their user task called
+   and to deactivate the active mode.... if it returns false then the
+   inheriting class must return, as it means that his mode is already
+   active
+**/
+AREXPORT bool ArMode::baseActivate(void)
+{
+  if (ourActiveMode == this)
     return false;
+  myRobot->deactivateActions();
   if (myRobot != NULL)
+  {
     myRobot->addUserTask(myName.c_str(), 50, &myUserTaskCB);
+  }
   if (ourActiveMode != NULL)
     ourActiveMode->deactivate();
   ourActiveMode = this;
@@ -105,15 +130,16 @@ MVREXPORT MvrMode::~MvrMode()
     myRobot->stop();
     myRobot->clearDirectMotion();
   }
+  
   baseHelp();
   return true;
- }
+}
 
-/*
- * This gets called when the mode is deactivated, it removes the user
- * task from the robot
- */
-MVREXPORT bool MvrMode::baseDeactivate(void)
+/**
+   This gets called when the mode is deactivated, it removes the user
+   task from the robot
+**/
+AREXPORT bool ArMode::baseDeactivate(void)
 {
   if (myRobot != NULL)
     myRobot->remUserTask(&myUserTaskCB);
@@ -124,55 +150,54 @@ MVREXPORT bool MvrMode::baseDeactivate(void)
   }
   return false;
 }
- 
 
-MVREXPORT const char *MvrMode::getName(void)
+AREXPORT const char *ArMode::getName(void)
 {
   return myName.c_str();
 }
 
-MVREXPORT char MvrMode::getKey(void)
+AREXPORT char ArMode::getKey(void)
 {
   return myKey;
 }
 
-MVREXPORT char MvrMode::getKey2(void)
+AREXPORT char ArMode::getKey2(void)
 {
   return myKey2;
 }
 
-MVREXPORT void MvrMode::baseHelp(void)
+AREXPORT void ArMode::baseHelp(void)
 {
-  std::list<MvrMode *>::iterator it;
-  MvrLog::log(MvrLog::Terse, "\n\nYou can do these actions with these keys:\n");
-  MvrLog::log(MvrLog::Terse, "quit: escape");
-  MvrLog::log(MvrLog::Terse, "help: 'h' or 'H' or '?' or '/'");
-  MvrLog::log(MvrLog::Terse, "\nYou can switch to other modes with these keys:");
+  std::list<ArMode *>::iterator it;
+  ArLog::log(ArLog::Terse, "\n\nYou can do these actions with these keys:\n");
+  ArLog::log(ArLog::Terse, "quit: escape");
+  ArLog::log(ArLog::Terse, "help: 'h' or 'H' or '?' or '/'");
+  ArLog::log(ArLog::Terse, "\nYou can switch to other modes with these keys:");
   for (it = ourModes.begin(); it != ourModes.end(); ++it)
   {
-    MvrLog::log(MvrLog::Terse, "%30s mode: '%c' or '%c'", (*it)->getName(), 
+    ArLog::log(ArLog::Terse, "%30s mode: '%c' or '%c'", (*it)->getName(), 
 	       (*it)->getKey(), (*it)->getKey2());
   }
   if (ourActiveMode == NULL)
-    MvrLog::log(MvrLog::Terse, "You are in no mode currently.");
+    ArLog::log(ArLog::Terse, "You are in no mode currently.");
   else
   {
-    MvrLog::log(MvrLog::Terse, "You are in '%s' mode currently.\n",
+    ArLog::log(ArLog::Terse, "You are in '%s' mode currently.\n",
 	       ourActiveMode->getName());
     ourActiveMode->help();
   }
 }
 
-MVREXPORT void MvrMode::addKeyHandler(int keyToHandle, MvrFunctor *functor)
+AREXPORT void ArMode::addKeyHandler(int keyToHandle, ArFunctor *functor)
 {
-  MvrKeyHandler *keyHandler;
+  ArKeyHandler *keyHandler;
   std::string charStr;
 
   // see if there is already a keyhandler, if not something is wrong
   // (since constructor should make one if there isn't one yet
-  if ((keyHandler = Mvria::getKeyHandler()) == NULL)
+  if ((keyHandler = Aria::getKeyHandler()) == NULL)
   {
-    MvrLog::log(MvrLog::Terse,"MvrMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
+    ArLog::log(ArLog::Terse,"ArMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
     return;
   }
 
@@ -180,43 +205,43 @@ MVREXPORT void MvrMode::addKeyHandler(int keyToHandle, MvrFunctor *functor)
   {
     bool specialKey = true;
     switch (keyToHandle) {
-    case MvrKeyHandler::UP:
+    case ArKeyHandler::UP:
       charStr = "Up";
       break;
-    case MvrKeyHandler::DOWN:
+    case ArKeyHandler::DOWN:
       charStr = "Down";
       break;
-    case MvrKeyHandler::LEFT:
+    case ArKeyHandler::LEFT:
       charStr = "Left";
       break;
-    case MvrKeyHandler::RIGHT:
+    case ArKeyHandler::RIGHT:
       charStr = "Right";
       break;
-    case MvrKeyHandler::ESCAPE:
+    case ArKeyHandler::ESCAPE:
       charStr = "Escape";
       break;
-    case MvrKeyHandler::F1:
+    case ArKeyHandler::F1:
       charStr = "F1";
       break;
-    case MvrKeyHandler::F2:
+    case ArKeyHandler::F2:
       charStr = "F2";
       break;
-    case MvrKeyHandler::F3:
+    case ArKeyHandler::F3:
       charStr = "F3";
       break;
-    case MvrKeyHandler::F4:
+    case ArKeyHandler::F4:
       charStr = "F4";
       break;
-    case MvrKeyHandler::SPACE:
+    case ArKeyHandler::SPACE:
       charStr = "Space";
       break;
-    case MvrKeyHandler::TAB:
+    case ArKeyHandler::TAB:
       charStr = "Tab";
       break;
-    case MvrKeyHandler::ENTER:
+    case ArKeyHandler::ENTER:
       charStr = "Enter";
       break;
-    case MvrKeyHandler::BACKSPACE:
+    case ArKeyHandler::BACKSPACE:
       charStr = "Backspace";
       break;
     default:
@@ -225,27 +250,29 @@ MVREXPORT void MvrMode::addKeyHandler(int keyToHandle, MvrFunctor *functor)
       break;
     }
     if (specialKey || (keyToHandle >= '!' && keyToHandle <= '~'))
-      MvrLog::log(MvrLog::Terse,  
-		 "MvrMode '%s': The key handler has a duplicate key for '%s' so the mode may not work right.", getName(), charStr.c_str());
+      ArLog::log(ArLog::Terse,  
+		 "ArMode '%s': The key handler has a duplicate key for '%s' so the mode may not work right.", getName(), charStr.c_str());
     else
-      MvrLog::log(MvrLog::Terse,  
-		 "MvrMode '%s': The key handler has a duplicate key for number %d so the mode may not work right.", getName(), keyToHandle);
+      ArLog::log(ArLog::Terse,  
+		 "ArMode '%s': The key handler has a duplicate key for number %d so the mode may not work right.", getName(), keyToHandle);
   }
+  
 }
 
-MVREXPORT void MvrMode::remKeyHandler(MvrFunctor *functor)
+AREXPORT void ArMode::remKeyHandler(ArFunctor *functor)
 {
-  MvrKeyHandler *keyHandler;
+  ArKeyHandler *keyHandler;
   std::string charStr;
 
   // see if there is already a keyhandler, if not something is wrong
   // (since constructor should make one if there isn't one yet
-  if ((keyHandler = Mvria::getKeyHandler()) == NULL)
+  if ((keyHandler = Aria::getKeyHandler()) == NULL)
   {
-    MvrLog::log(MvrLog::Terse,"MvrMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
+    ArLog::log(ArLog::Terse,"ArMode '%s'::keyHandler: There should already be a key handler, but there isn't... mode won't work right.", getName());
     return;
   }
   if (!keyHandler->remKeyHandler(functor))
-    MvrLog::log(MvrLog::Terse,  
-	       "MvrMode '%s': The key handler already didn't have the given functor so the mode may not be working right.", getName());
+    ArLog::log(ArLog::Terse,  
+	       "ArMode '%s': The key handler already didn't have the given functor so the mode may not be working right.", getName());
 }
+  

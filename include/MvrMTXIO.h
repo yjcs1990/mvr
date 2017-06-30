@@ -1,26 +1,46 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrMTXIO.h
- > Description  : Interface to digital and analog I/O and switched power outputs on MTX core
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRMTXIO_H
-#define MVRMTXIO_H
-
-
-#include "mvriaTypedefs.h"
-#include "MvrRobot.h"
-
 /*
-  On Linux this class uses the mtx driver to interface with the 
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARMTXIO_H
+#define ARMTXIO_H
+
+
+#include "ariaTypedefs.h"
+#include "ArRobot.h"
+
+/** @brief Interface to digital and analog I/O and switched power outputs on MTX
+ * core (used in Pioneer LX and other MTX-based robots).
+ 
+  On Linux this class uses the <code>mtx</code> driver to interface with the 
   MTX digital and analog IO, and control switched power outputs. 
 
-  The mtx driver module must be loaded for this interface to work.
+  The <code>mtx</code> driver module must be loaded for this interface to work.
 
-  The mtx interface (/dev/mtx) is opened automatically
-  in the MvrMTXIO constructor.  If successful, isEnabled() will then return true.
+  The <code>mtx</code> interface (<code>/dev/mtx</code>) is opened automatically
+  in the ArMTXIO constructor.  If successful, isEnabled() will then return true.
 
   The MTX IO is organized as two sets of 8-bit "banks" of inputs, and two 8-bit
   "banks" of outputs.
@@ -32,11 +52,18 @@
   setDigitalOutputControl2(), or setDigitalBankOutputs() with bank index 2 or
   3.
 
-  Multile MvrMTXIO objects may be instatiated; a shared may be
+  Multile ArMTXIO objects may be instatiated; a shared may be
   locked and unlocked by calling lock() and unlock().
+
+   @ingroup OptionalClasses
+   @ingroup DeviceClasses
+   @ingroup MTX
+
+ @linuxonly
+
 */
  
-class MvrMTXIO
+class ArMTXIO
 {
 public:
 
@@ -48,18 +75,18 @@ public:
   };
 
   /// Constructor
-  MVREXPORT MvrMTXIO(const char * dev = "/dev/mtx");
+  AREXPORT ArMTXIO(const char * dev = "/dev/mtx");
   /// Destructor
-  MVREXPORT virtual ~MvrMTXIO(void);
+  AREXPORT virtual ~ArMTXIO(void);
 
   /// tries to close the device.  Returns false if operation failed
-  MVREXPORT bool closeIO(void);
+  AREXPORT bool closeIO(void);
 
   /// returns true if the device is opened and operational
   bool isEnabled(void) { return myEnabled; }
 
   /// returns true if analog values are supported
-  MVREXPORT bool isAnalogSupported(void) { return myAnalogEnabled; }
+  AREXPORT bool isAnalogSupported(void) { return myAnalogEnabled; }
 
   /// @note not yet implemented.
   bool getAnalogValue(int port, double *val) { return true; }
@@ -69,10 +96,10 @@ public:
   /// Get/set value of digital IO banks (see class description above)
   /// Banks are 0-indexed.
   /// @{
-  MVREXPORT Direction getDigitalBankDirection(int bank);
-  MVREXPORT bool setDigitalBankOutputs(int bank, unsigned char val);
-  MVREXPORT bool getDigitalBankInputs(int bank, unsigned char *val);
-  MVREXPORT bool getDigitalBankOutputs(int bank, unsigned char *val);
+  AREXPORT Direction getDigitalBankDirection(int bank);
+  AREXPORT bool setDigitalBankOutputs(int bank, unsigned char val);
+  AREXPORT bool getDigitalBankInputs(int bank, unsigned char *val);
+  AREXPORT bool getDigitalBankOutputs(int bank, unsigned char *val);
   /// @}
 
   /// Set one bit of an output bank. @a bank and @a bit are 0-indexed.
@@ -93,8 +120,8 @@ public:
   /// get/set value of power output controls (see robot manual for information
   /// on what components and user outputs are controlled). Banks are 0-indexed.
   /// @{
-  MVREXPORT bool setPeripheralPowerBankOutputs(int bank, unsigned char val);
-  MVREXPORT bool getPeripheralPowerBankOutputs(int bank, unsigned char *val);
+  AREXPORT bool setPeripheralPowerBankOutputs(int bank, unsigned char val);
+  AREXPORT bool getPeripheralPowerBankOutputs(int bank, unsigned char *val);
   /// @}
 
   /// Set one power output. @a bank and @a bit are 0-indexed.
@@ -108,96 +135,96 @@ public:
       return setPeripheralPowerBankOutputs(bank, val ^ (1 << bit));
   }
 
-  /// Lock global (shared) mutex for all MvrMTXIO instances.
-  /// This allows multiple access to MTX IO (through multiple MvrMTXIO objects).
-  MVREXPORT int lock(void){ return(ourMutex.lock()); }
-  /// Unlock global (shared) mutex for all MvrMTXIO instances.
-  /// This allows multiple access to MTX IO (through multiple MvrMTXIO objects).
-  MVREXPORT int unlock(void){ return(ourMutex.unlock()); }
+  /// Lock global (shared) mutex for all ArMTXIO instances.
+  /// This allows multiple access to MTX IO (through multiple ArMTXIO objects).
+  AREXPORT int lock(void){ return(ourMutex.lock()); }
+  /// Unlock global (shared) mutex for all ArMTXIO instances.
+  /// This allows multiple access to MTX IO (through multiple ArMTXIO objects).
+  AREXPORT int unlock(void){ return(ourMutex.unlock()); }
 
-  /// Try to lock without blocking (see MvrMutex::tryLock())
-  MVREXPORT int tryLock() {return(ourMutex.tryLock());}
+  /// Try to lock without blocking (see ArMutex::tryLock())
+  AREXPORT int tryLock() {return(ourMutex.tryLock());}
 
   /// gets the Firmware Revision 
-  MVREXPORT unsigned char getFirmwareRevision()
+  AREXPORT unsigned char getFirmwareRevision()
 	{ return myFirmwareRevision; }
 
   /// gets the Firmware Version 
-  MVREXPORT unsigned char getFirmwareVersion()
+  AREXPORT unsigned char getFirmwareVersion()
 	{ return myFirmwareVersion; }
 
   /// gets the Compatibility Code 
-  MVREXPORT unsigned char getCompatibilityCode()
+  AREXPORT unsigned char getCompatibilityCode()
 	{ return myCompatibilityCode; }
 
   /// gets the MTX FPGA Type
-  MVREXPORT unsigned char getFPGAType()
+  AREXPORT unsigned char getFPGAType()
 	{ return myFPGAType; }
 
   /// gets the values of digital input/output monitoring registers 1 & 2
   /// @{
-  MVREXPORT bool getDigitalIOInputMon1(unsigned char *val);
-  MVREXPORT bool getDigitalIOInputMon2(unsigned char *val);
-  MVREXPORT bool getDigitalIOOutputMon1(unsigned char *val);
-  MVREXPORT bool getDigitalIOOutputMon2(unsigned char *val);
+  AREXPORT bool getDigitalIOInputMon1(unsigned char *val);
+  AREXPORT bool getDigitalIOInputMon2(unsigned char *val);
+  AREXPORT bool getDigitalIOOutputMon1(unsigned char *val);
+  AREXPORT bool getDigitalIOOutputMon2(unsigned char *val);
   /// @}
 
   /// get the Light Pole IO Output Control Register
-  MVREXPORT bool getLightPole(unsigned char *val);
+  AREXPORT bool getLightPole(unsigned char *val);
   /// sets the Light Pole IO Output Control Register
-  MVREXPORT bool setLightPole(unsigned char *val);
+  AREXPORT bool setLightPole(unsigned char *val);
 
   /// @internal
-  MVREXPORT bool getLPCTimeUSec(MvrTypes::UByte4 *timeUSec);
+  AREXPORT bool getLPCTimeUSec(ArTypes::UByte4 *timeUSec);
 
   /// @internal
-  MVREXPORT MvrRetFunctor1<bool, MvrTypes::UByte4 *> *getLPCTimeUSecCB(void)
+  AREXPORT ArRetFunctor1<bool, ArTypes::UByte4 *> *getLPCTimeUSecCB(void)
     { return &myLPCTimeUSecCB; }
 
   /// gets/sets the Semaphore Registers
   /// @internal
   //@{
-	MVREXPORT bool setSemaphore1(unsigned char *val);
-  MVREXPORT bool getSemaphore1(unsigned char *val);
-	MVREXPORT bool setSemaphore2(unsigned char *val);
-  MVREXPORT bool getSemaphore2(unsigned char *val);
-	MVREXPORT bool setSemaphore3(unsigned char *val);
-  MVREXPORT bool getSemaphore3(unsigned char *val);
-	MVREXPORT bool setSemaphore4(unsigned char *val);
-  MVREXPORT bool getSemaphore4(unsigned char *val);
+	AREXPORT bool setSemaphore1(unsigned char *val);
+  AREXPORT bool getSemaphore1(unsigned char *val);
+	AREXPORT bool setSemaphore2(unsigned char *val);
+  AREXPORT bool getSemaphore2(unsigned char *val);
+	AREXPORT bool setSemaphore3(unsigned char *val);
+  AREXPORT bool getSemaphore3(unsigned char *val);
+	AREXPORT bool setSemaphore4(unsigned char *val);
+  AREXPORT bool getSemaphore4(unsigned char *val);
   //@}
 
   /// gets the bumper Input Monitoring Reg
   /// @internal
-  MVREXPORT bool getBumperInput(unsigned char *val);
+  AREXPORT bool getBumperInput(unsigned char *val);
 
   /// gets the Power Status Register 
   /// @internal
-  MVREXPORT bool getPowerStatus1(unsigned char *val);
+  AREXPORT bool getPowerStatus1(unsigned char *val);
   /// gets the Power Status Register 2
   /// @internal
-  MVREXPORT bool getPowerStatus2(unsigned char *val);
+  AREXPORT bool getPowerStatus2(unsigned char *val);
 
   /// gets the LIDAR Safety Status Register
-  MVREXPORT bool getLIDARSafety(unsigned char *val);
+  AREXPORT bool getLIDARSafety(unsigned char *val);
 
   /// gets the ESTOP status Registers
   /// @internal
   //@{
-  MVREXPORT bool getESTOPStatus1(unsigned char *val);
-  MVREXPORT bool getESTOPStatus2(unsigned char *val);
-  MVREXPORT bool getESTOPStatus3(unsigned char *val);
-  MVREXPORT bool getESTOPStatus4(unsigned char *val);
+  AREXPORT bool getESTOPStatus1(unsigned char *val);
+  AREXPORT bool getESTOPStatus2(unsigned char *val);
+  AREXPORT bool getESTOPStatus3(unsigned char *val);
+  AREXPORT bool getESTOPStatus4(unsigned char *val);
   /// Compares the high nibble of this byte against the passed in val, returns true if it matches
-  MVREXPORT bool compareESTOPStatus4HighNibbleAgainst(int val);
+  AREXPORT bool compareESTOPStatus4HighNibbleAgainst(int val);
   //@}
 
   /// gets/sets Digital IO Output Control Registers 1 &amp; 2
   //@{
-  MVREXPORT bool getDigitalOutputControl1(unsigned char *val);
-  MVREXPORT bool setDigitalOutputControl1(unsigned char *val);
-  MVREXPORT bool getDigitalOutputControl2(unsigned char *val);
-  MVREXPORT bool setDigitalOutputControl2(unsigned char *val);
+  AREXPORT bool getDigitalOutputControl1(unsigned char *val);
+  AREXPORT bool setDigitalOutputControl1(unsigned char *val);
+  AREXPORT bool getDigitalOutputControl2(unsigned char *val);
+  AREXPORT bool setDigitalOutputControl2(unsigned char *val);
   //@}
 
   /// gets/sets the Peripheral Power Control Regs 1 &amp; 2
@@ -205,38 +232,40 @@ public:
   /// power outputs.  Refer to robot manual for information on which components
   /// and outputs are controlled by which bits in the peripheral power bitmasks.
   //@{
-  MVREXPORT bool getPeripheralPower1(unsigned char *val); ///< bank 0
-  MVREXPORT bool setPeripheralPower1(unsigned char *val); ///< bank 0
-  MVREXPORT bool getPeripheralPower2(unsigned char *val); ///< bank 1
-  MVREXPORT bool setPeripheralPower2(unsigned char *val); ///< bank 1
-  MVREXPORT bool getPeripheralPower3(unsigned char *val); ///< bank 2
-  MVREXPORT bool setPeripheralPower3(unsigned char *val); ///< bank 2
+  AREXPORT bool getPeripheralPower1(unsigned char *val); ///< bank 0
+  AREXPORT bool setPeripheralPower1(unsigned char *val); ///< bank 0
+  AREXPORT bool getPeripheralPower2(unsigned char *val); ///< bank 1
+  AREXPORT bool setPeripheralPower2(unsigned char *val); ///< bank 1
+  AREXPORT bool getPeripheralPower3(unsigned char *val); ///< bank 2
+  AREXPORT bool setPeripheralPower3(unsigned char *val); ///< bank 2
   //@}
 
   /// gets the motion power status
-  MVREXPORT bool getMotionPowerStatus(unsigned char *val);
+  AREXPORT bool getMotionPowerStatus(unsigned char *val);
 
   /// gets/sets the LIDAR Control Reg
   /// @internal
   //@{
-  MVREXPORT bool getLIDARControl(unsigned char *val);
-  MVREXPORT bool setLIDARControl(unsigned char *val);
+  AREXPORT bool getLIDARControl(unsigned char *val);
+  AREXPORT bool setLIDARControl(unsigned char *val);
   //@}
 
 
   /// gets analog Block 1 & 2
   //@{
-  MVREXPORT bool getAnalogIOBlock1(int analog, unsigned short *val);
-  MVREXPORT bool getAnalogIOBlock2(int analog, unsigned short *val);
+  AREXPORT bool getAnalogIOBlock1(int analog, unsigned short *val);
+  AREXPORT bool getAnalogIOBlock2(int analog, unsigned short *val);
 
-  MVREXPORT bool setAnalogIOBlock2(int analog, unsigned short *val);
+  AREXPORT bool setAnalogIOBlock2(int analog, unsigned short *val);
   //@}
 
   /// This returns a conversion of the bits to a decimal value,
   /// currently assumed to be in the 0-5V range
-  MVREXPORT bool getAnalogValue(double *val);
+  /// @internal
+  AREXPORT bool getAnalogValue(double *val);
 
-  MVREXPORT bool getAnalogValueRaw(int *val);
+  /// @internal
+  AREXPORT bool getAnalogValueRaw(int *val);
 
 protected:
 
@@ -246,7 +275,7 @@ protected:
   bool getLPCTimer3(unsigned char *val);
 	
 
-  static MvrMutex ourMutex;
+  static ArMutex ourMutex;
   int myFD;
 
   bool myEnabled;
@@ -276,10 +305,10 @@ protected:
   unsigned char myDigitalBank3;
   unsigned char myDigitalBank4;
 
-  MvrRetFunctorC<bool, MvrMTXIO> myDisconnectCB;
-  MvrRetFunctor1C<bool, MvrMTXIO, MvrTypes::UByte4 *> myLPCTimeUSecCB;
+  ArRetFunctorC<bool, ArMTXIO> myDisconnectCB;
+  ArRetFunctor1C<bool, ArMTXIO, ArTypes::UByte4 *> myLPCTimeUSecCB;
 };
 
 //#endif // SWIG
 
-#endif // MVRMTXIO_H
+#endif // ARMTXIO_H

@@ -42,10 +42,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/robot/project/mvr
+CMAKE_SOURCE_DIR = /backup/project/mvr
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/robot/project/mvr/build
+CMAKE_BINARY_DIR = /backup/project/mvr/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,9 +72,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/robot/project/mvr/build/CMakeFiles /home/robot/project/mvr/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles /backup/project/mvr/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/robot/project/mvr/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -102,41 +102,1206 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named MVRTest
+# Target rules for targets named Mvria
 
 # Build rule for target.
-MVRTest: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 MVRTest
-.PHONY : MVRTest
+Mvria: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Mvria
+.PHONY : Mvria
 
 # fast build rule for target.
-MVRTest/fast:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/build
-.PHONY : MVRTest/fast
+Mvria/fast:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/build
+.PHONY : Mvria/fast
 
-test/test.o: test/test.cpp.o
-.PHONY : test/test.o
+#=============================================================================
+# Target rules for targets named timeTest
+
+# Build rule for target.
+timeTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 timeTest
+.PHONY : timeTest
+
+# fast build rule for target.
+timeTest/fast:
+	$(MAKE) -f CMakeFiles/timeTest.dir/build.make CMakeFiles/timeTest.dir/build
+.PHONY : timeTest/fast
+
+src/MvrASyncTask.o: src/MvrASyncTask.cpp.o
+.PHONY : src/MvrASyncTask.o
 
 # target to build an object file
-test/test.cpp.o:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/test/test.cpp.o
-.PHONY : test/test.cpp.o
+src/MvrASyncTask.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrASyncTask.cpp.o
+.PHONY : src/MvrASyncTask.cpp.o
 
-test/test.i: test/test.cpp.i
-.PHONY : test/test.i
+src/MvrASyncTask.i: src/MvrASyncTask.cpp.i
+.PHONY : src/MvrASyncTask.i
 
 # target to preprocess a source file
-test/test.cpp.i:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/test/test.cpp.i
-.PHONY : test/test.cpp.i
+src/MvrASyncTask.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrASyncTask.cpp.i
+.PHONY : src/MvrASyncTask.cpp.i
 
-test/test.s: test/test.cpp.s
-.PHONY : test/test.s
+src/MvrASyncTask.s: src/MvrASyncTask.cpp.s
+.PHONY : src/MvrASyncTask.s
 
 # target to generate assembly for a file
-test/test.cpp.s:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/test/test.cpp.s
-.PHONY : test/test.cpp.s
+src/MvrASyncTask.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrASyncTask.cpp.s
+.PHONY : src/MvrASyncTask.cpp.s
+
+src/MvrAction.o: src/MvrAction.cpp.o
+.PHONY : src/MvrAction.o
+
+# target to build an object file
+src/MvrAction.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrAction.cpp.o
+.PHONY : src/MvrAction.cpp.o
+
+src/MvrAction.i: src/MvrAction.cpp.i
+.PHONY : src/MvrAction.i
+
+# target to preprocess a source file
+src/MvrAction.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrAction.cpp.i
+.PHONY : src/MvrAction.cpp.i
+
+src/MvrAction.s: src/MvrAction.cpp.s
+.PHONY : src/MvrAction.s
+
+# target to generate assembly for a file
+src/MvrAction.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrAction.cpp.s
+.PHONY : src/MvrAction.cpp.s
+
+src/MvrArg.o: src/MvrArg.cpp.o
+.PHONY : src/MvrArg.o
+
+# target to build an object file
+src/MvrArg.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArg.cpp.o
+.PHONY : src/MvrArg.cpp.o
+
+src/MvrArg.i: src/MvrArg.cpp.i
+.PHONY : src/MvrArg.i
+
+# target to preprocess a source file
+src/MvrArg.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArg.cpp.i
+.PHONY : src/MvrArg.cpp.i
+
+src/MvrArg.s: src/MvrArg.cpp.s
+.PHONY : src/MvrArg.s
+
+# target to generate assembly for a file
+src/MvrArg.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArg.cpp.s
+.PHONY : src/MvrArg.cpp.s
+
+src/MvrArgumentBuilder.o: src/MvrArgumentBuilder.cpp.o
+.PHONY : src/MvrArgumentBuilder.o
+
+# target to build an object file
+src/MvrArgumentBuilder.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArgumentBuilder.cpp.o
+.PHONY : src/MvrArgumentBuilder.cpp.o
+
+src/MvrArgumentBuilder.i: src/MvrArgumentBuilder.cpp.i
+.PHONY : src/MvrArgumentBuilder.i
+
+# target to preprocess a source file
+src/MvrArgumentBuilder.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArgumentBuilder.cpp.i
+.PHONY : src/MvrArgumentBuilder.cpp.i
+
+src/MvrArgumentBuilder.s: src/MvrArgumentBuilder.cpp.s
+.PHONY : src/MvrArgumentBuilder.s
+
+# target to generate assembly for a file
+src/MvrArgumentBuilder.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArgumentBuilder.cpp.s
+.PHONY : src/MvrArgumentBuilder.cpp.s
+
+src/MvrArgumentParser.o: src/MvrArgumentParser.cpp.o
+.PHONY : src/MvrArgumentParser.o
+
+# target to build an object file
+src/MvrArgumentParser.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArgumentParser.cpp.o
+.PHONY : src/MvrArgumentParser.cpp.o
+
+src/MvrArgumentParser.i: src/MvrArgumentParser.cpp.i
+.PHONY : src/MvrArgumentParser.i
+
+# target to preprocess a source file
+src/MvrArgumentParser.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArgumentParser.cpp.i
+.PHONY : src/MvrArgumentParser.cpp.i
+
+src/MvrArgumentParser.s: src/MvrArgumentParser.cpp.s
+.PHONY : src/MvrArgumentParser.s
+
+# target to generate assembly for a file
+src/MvrArgumentParser.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrArgumentParser.cpp.s
+.PHONY : src/MvrArgumentParser.cpp.s
+
+src/MvrBasePacket.o: src/MvrBasePacket.cpp.o
+.PHONY : src/MvrBasePacket.o
+
+# target to build an object file
+src/MvrBasePacket.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrBasePacket.cpp.o
+.PHONY : src/MvrBasePacket.cpp.o
+
+src/MvrBasePacket.i: src/MvrBasePacket.cpp.i
+.PHONY : src/MvrBasePacket.i
+
+# target to preprocess a source file
+src/MvrBasePacket.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrBasePacket.cpp.i
+.PHONY : src/MvrBasePacket.cpp.i
+
+src/MvrBasePacket.s: src/MvrBasePacket.cpp.s
+.PHONY : src/MvrBasePacket.s
+
+# target to generate assembly for a file
+src/MvrBasePacket.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrBasePacket.cpp.s
+.PHONY : src/MvrBasePacket.cpp.s
+
+src/MvrCondition.o: src/MvrCondition.cpp.o
+.PHONY : src/MvrCondition.o
+
+# target to build an object file
+src/MvrCondition.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrCondition.cpp.o
+.PHONY : src/MvrCondition.cpp.o
+
+src/MvrCondition.i: src/MvrCondition.cpp.i
+.PHONY : src/MvrCondition.i
+
+# target to preprocess a source file
+src/MvrCondition.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrCondition.cpp.i
+.PHONY : src/MvrCondition.cpp.i
+
+src/MvrCondition.s: src/MvrCondition.cpp.s
+.PHONY : src/MvrCondition.s
+
+# target to generate assembly for a file
+src/MvrCondition.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrCondition.cpp.s
+.PHONY : src/MvrCondition.cpp.s
+
+src/MvrConfig.o: src/MvrConfig.cpp.o
+.PHONY : src/MvrConfig.o
+
+# target to build an object file
+src/MvrConfig.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfig.cpp.o
+.PHONY : src/MvrConfig.cpp.o
+
+src/MvrConfig.i: src/MvrConfig.cpp.i
+.PHONY : src/MvrConfig.i
+
+# target to preprocess a source file
+src/MvrConfig.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfig.cpp.i
+.PHONY : src/MvrConfig.cpp.i
+
+src/MvrConfig.s: src/MvrConfig.cpp.s
+.PHONY : src/MvrConfig.s
+
+# target to generate assembly for a file
+src/MvrConfig.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfig.cpp.s
+.PHONY : src/MvrConfig.cpp.s
+
+src/MvrConfigArg.o: src/MvrConfigArg.cpp.o
+.PHONY : src/MvrConfigArg.o
+
+# target to build an object file
+src/MvrConfigArg.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfigArg.cpp.o
+.PHONY : src/MvrConfigArg.cpp.o
+
+src/MvrConfigArg.i: src/MvrConfigArg.cpp.i
+.PHONY : src/MvrConfigArg.i
+
+# target to preprocess a source file
+src/MvrConfigArg.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfigArg.cpp.i
+.PHONY : src/MvrConfigArg.cpp.i
+
+src/MvrConfigArg.s: src/MvrConfigArg.cpp.s
+.PHONY : src/MvrConfigArg.s
+
+# target to generate assembly for a file
+src/MvrConfigArg.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfigArg.cpp.s
+.PHONY : src/MvrConfigArg.cpp.s
+
+src/MvrConfigGroup.o: src/MvrConfigGroup.cpp.o
+.PHONY : src/MvrConfigGroup.o
+
+# target to build an object file
+src/MvrConfigGroup.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfigGroup.cpp.o
+.PHONY : src/MvrConfigGroup.cpp.o
+
+src/MvrConfigGroup.i: src/MvrConfigGroup.cpp.i
+.PHONY : src/MvrConfigGroup.i
+
+# target to preprocess a source file
+src/MvrConfigGroup.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfigGroup.cpp.i
+.PHONY : src/MvrConfigGroup.cpp.i
+
+src/MvrConfigGroup.s: src/MvrConfigGroup.cpp.s
+.PHONY : src/MvrConfigGroup.s
+
+# target to generate assembly for a file
+src/MvrConfigGroup.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrConfigGroup.cpp.s
+.PHONY : src/MvrConfigGroup.cpp.s
+
+src/MvrDataLogger.o: src/MvrDataLogger.cpp.o
+.PHONY : src/MvrDataLogger.o
+
+# target to build an object file
+src/MvrDataLogger.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrDataLogger.cpp.o
+.PHONY : src/MvrDataLogger.cpp.o
+
+src/MvrDataLogger.i: src/MvrDataLogger.cpp.i
+.PHONY : src/MvrDataLogger.i
+
+# target to preprocess a source file
+src/MvrDataLogger.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrDataLogger.cpp.i
+.PHONY : src/MvrDataLogger.cpp.i
+
+src/MvrDataLogger.s: src/MvrDataLogger.cpp.s
+.PHONY : src/MvrDataLogger.s
+
+# target to generate assembly for a file
+src/MvrDataLogger.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrDataLogger.cpp.s
+.PHONY : src/MvrDataLogger.cpp.s
+
+src/MvrDeviceConnection.o: src/MvrDeviceConnection.cpp.o
+.PHONY : src/MvrDeviceConnection.o
+
+# target to build an object file
+src/MvrDeviceConnection.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrDeviceConnection.cpp.o
+.PHONY : src/MvrDeviceConnection.cpp.o
+
+src/MvrDeviceConnection.i: src/MvrDeviceConnection.cpp.i
+.PHONY : src/MvrDeviceConnection.i
+
+# target to preprocess a source file
+src/MvrDeviceConnection.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrDeviceConnection.cpp.i
+.PHONY : src/MvrDeviceConnection.cpp.i
+
+src/MvrDeviceConnection.s: src/MvrDeviceConnection.cpp.s
+.PHONY : src/MvrDeviceConnection.s
+
+# target to generate assembly for a file
+src/MvrDeviceConnection.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrDeviceConnection.cpp.s
+.PHONY : src/MvrDeviceConnection.cpp.s
+
+src/MvrFileDeviceConnection.o: src/MvrFileDeviceConnection.cpp.o
+.PHONY : src/MvrFileDeviceConnection.o
+
+# target to build an object file
+src/MvrFileDeviceConnection.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFileDeviceConnection.cpp.o
+.PHONY : src/MvrFileDeviceConnection.cpp.o
+
+src/MvrFileDeviceConnection.i: src/MvrFileDeviceConnection.cpp.i
+.PHONY : src/MvrFileDeviceConnection.i
+
+# target to preprocess a source file
+src/MvrFileDeviceConnection.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFileDeviceConnection.cpp.i
+.PHONY : src/MvrFileDeviceConnection.cpp.i
+
+src/MvrFileDeviceConnection.s: src/MvrFileDeviceConnection.cpp.s
+.PHONY : src/MvrFileDeviceConnection.s
+
+# target to generate assembly for a file
+src/MvrFileDeviceConnection.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFileDeviceConnection.cpp.s
+.PHONY : src/MvrFileDeviceConnection.cpp.s
+
+src/MvrFileParser.o: src/MvrFileParser.cpp.o
+.PHONY : src/MvrFileParser.o
+
+# target to build an object file
+src/MvrFileParser.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFileParser.cpp.o
+.PHONY : src/MvrFileParser.cpp.o
+
+src/MvrFileParser.i: src/MvrFileParser.cpp.i
+.PHONY : src/MvrFileParser.i
+
+# target to preprocess a source file
+src/MvrFileParser.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFileParser.cpp.i
+.PHONY : src/MvrFileParser.cpp.i
+
+src/MvrFileParser.s: src/MvrFileParser.cpp.s
+.PHONY : src/MvrFileParser.s
+
+# target to generate assembly for a file
+src/MvrFileParser.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFileParser.cpp.s
+.PHONY : src/MvrFileParser.cpp.s
+
+src/MvrFunctorASyncTask.o: src/MvrFunctorASyncTask.cpp.o
+.PHONY : src/MvrFunctorASyncTask.o
+
+# target to build an object file
+src/MvrFunctorASyncTask.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFunctorASyncTask.cpp.o
+.PHONY : src/MvrFunctorASyncTask.cpp.o
+
+src/MvrFunctorASyncTask.i: src/MvrFunctorASyncTask.cpp.i
+.PHONY : src/MvrFunctorASyncTask.i
+
+# target to preprocess a source file
+src/MvrFunctorASyncTask.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFunctorASyncTask.cpp.i
+.PHONY : src/MvrFunctorASyncTask.cpp.i
+
+src/MvrFunctorASyncTask.s: src/MvrFunctorASyncTask.cpp.s
+.PHONY : src/MvrFunctorASyncTask.s
+
+# target to generate assembly for a file
+src/MvrFunctorASyncTask.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrFunctorASyncTask.cpp.s
+.PHONY : src/MvrFunctorASyncTask.cpp.s
+
+src/MvrInterpolation.o: src/MvrInterpolation.cpp.o
+.PHONY : src/MvrInterpolation.o
+
+# target to build an object file
+src/MvrInterpolation.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrInterpolation.cpp.o
+.PHONY : src/MvrInterpolation.cpp.o
+
+src/MvrInterpolation.i: src/MvrInterpolation.cpp.i
+.PHONY : src/MvrInterpolation.i
+
+# target to preprocess a source file
+src/MvrInterpolation.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrInterpolation.cpp.i
+.PHONY : src/MvrInterpolation.cpp.i
+
+src/MvrInterpolation.s: src/MvrInterpolation.cpp.s
+.PHONY : src/MvrInterpolation.s
+
+# target to generate assembly for a file
+src/MvrInterpolation.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrInterpolation.cpp.s
+.PHONY : src/MvrInterpolation.cpp.s
+
+src/MvrJoyHandler.o: src/MvrJoyHandler.cpp.o
+.PHONY : src/MvrJoyHandler.o
+
+# target to build an object file
+src/MvrJoyHandler.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrJoyHandler.cpp.o
+.PHONY : src/MvrJoyHandler.cpp.o
+
+src/MvrJoyHandler.i: src/MvrJoyHandler.cpp.i
+.PHONY : src/MvrJoyHandler.i
+
+# target to preprocess a source file
+src/MvrJoyHandler.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrJoyHandler.cpp.i
+.PHONY : src/MvrJoyHandler.cpp.i
+
+src/MvrJoyHandler.s: src/MvrJoyHandler.cpp.s
+.PHONY : src/MvrJoyHandler.s
+
+# target to generate assembly for a file
+src/MvrJoyHandler.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrJoyHandler.cpp.s
+.PHONY : src/MvrJoyHandler.cpp.s
+
+src/MvrKeyHandler.o: src/MvrKeyHandler.cpp.o
+.PHONY : src/MvrKeyHandler.o
+
+# target to build an object file
+src/MvrKeyHandler.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrKeyHandler.cpp.o
+.PHONY : src/MvrKeyHandler.cpp.o
+
+src/MvrKeyHandler.i: src/MvrKeyHandler.cpp.i
+.PHONY : src/MvrKeyHandler.i
+
+# target to preprocess a source file
+src/MvrKeyHandler.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrKeyHandler.cpp.i
+.PHONY : src/MvrKeyHandler.cpp.i
+
+src/MvrKeyHandler.s: src/MvrKeyHandler.cpp.s
+.PHONY : src/MvrKeyHandler.s
+
+# target to generate assembly for a file
+src/MvrKeyHandler.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrKeyHandler.cpp.s
+.PHONY : src/MvrKeyHandler.cpp.s
+
+src/MvrLog.o: src/MvrLog.cpp.o
+.PHONY : src/MvrLog.o
+
+# target to build an object file
+src/MvrLog.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrLog.cpp.o
+.PHONY : src/MvrLog.cpp.o
+
+src/MvrLog.i: src/MvrLog.cpp.i
+.PHONY : src/MvrLog.i
+
+# target to preprocess a source file
+src/MvrLog.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrLog.cpp.i
+.PHONY : src/MvrLog.cpp.i
+
+src/MvrLog.s: src/MvrLog.cpp.s
+.PHONY : src/MvrLog.s
+
+# target to generate assembly for a file
+src/MvrLog.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrLog.cpp.s
+.PHONY : src/MvrLog.cpp.s
+
+src/MvrLogFileConnection.o: src/MvrLogFileConnection.cpp.o
+.PHONY : src/MvrLogFileConnection.o
+
+# target to build an object file
+src/MvrLogFileConnection.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrLogFileConnection.cpp.o
+.PHONY : src/MvrLogFileConnection.cpp.o
+
+src/MvrLogFileConnection.i: src/MvrLogFileConnection.cpp.i
+.PHONY : src/MvrLogFileConnection.i
+
+# target to preprocess a source file
+src/MvrLogFileConnection.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrLogFileConnection.cpp.i
+.PHONY : src/MvrLogFileConnection.cpp.i
+
+src/MvrLogFileConnection.s: src/MvrLogFileConnection.cpp.s
+.PHONY : src/MvrLogFileConnection.s
+
+# target to generate assembly for a file
+src/MvrLogFileConnection.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrLogFileConnection.cpp.s
+.PHONY : src/MvrLogFileConnection.cpp.s
+
+src/MvrMode.o: src/MvrMode.cpp.o
+.PHONY : src/MvrMode.o
+
+# target to build an object file
+src/MvrMode.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrMode.cpp.o
+.PHONY : src/MvrMode.cpp.o
+
+src/MvrMode.i: src/MvrMode.cpp.i
+.PHONY : src/MvrMode.i
+
+# target to preprocess a source file
+src/MvrMode.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrMode.cpp.i
+.PHONY : src/MvrMode.cpp.i
+
+src/MvrMode.s: src/MvrMode.cpp.s
+.PHONY : src/MvrMode.s
+
+# target to generate assembly for a file
+src/MvrMode.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrMode.cpp.s
+.PHONY : src/MvrMode.cpp.s
+
+src/MvrModes.o: src/MvrModes.cpp.o
+.PHONY : src/MvrModes.o
+
+# target to build an object file
+src/MvrModes.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModes.cpp.o
+.PHONY : src/MvrModes.cpp.o
+
+src/MvrModes.i: src/MvrModes.cpp.i
+.PHONY : src/MvrModes.i
+
+# target to preprocess a source file
+src/MvrModes.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModes.cpp.i
+.PHONY : src/MvrModes.cpp.i
+
+src/MvrModes.s: src/MvrModes.cpp.s
+.PHONY : src/MvrModes.s
+
+# target to generate assembly for a file
+src/MvrModes.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModes.cpp.s
+.PHONY : src/MvrModes.cpp.s
+
+src/MvrModule.o: src/MvrModule.cpp.o
+.PHONY : src/MvrModule.o
+
+# target to build an object file
+src/MvrModule.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModule.cpp.o
+.PHONY : src/MvrModule.cpp.o
+
+src/MvrModule.i: src/MvrModule.cpp.i
+.PHONY : src/MvrModule.i
+
+# target to preprocess a source file
+src/MvrModule.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModule.cpp.i
+.PHONY : src/MvrModule.cpp.i
+
+src/MvrModule.s: src/MvrModule.cpp.s
+.PHONY : src/MvrModule.s
+
+# target to generate assembly for a file
+src/MvrModule.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModule.cpp.s
+.PHONY : src/MvrModule.cpp.s
+
+src/MvrModuleLoader.o: src/MvrModuleLoader.cpp.o
+.PHONY : src/MvrModuleLoader.o
+
+# target to build an object file
+src/MvrModuleLoader.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModuleLoader.cpp.o
+.PHONY : src/MvrModuleLoader.cpp.o
+
+src/MvrModuleLoader.i: src/MvrModuleLoader.cpp.i
+.PHONY : src/MvrModuleLoader.i
+
+# target to preprocess a source file
+src/MvrModuleLoader.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModuleLoader.cpp.i
+.PHONY : src/MvrModuleLoader.cpp.i
+
+src/MvrModuleLoader.s: src/MvrModuleLoader.cpp.s
+.PHONY : src/MvrModuleLoader.s
+
+# target to generate assembly for a file
+src/MvrModuleLoader.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrModuleLoader.cpp.s
+.PHONY : src/MvrModuleLoader.cpp.s
+
+src/MvrMutex.o: src/MvrMutex.cpp.o
+.PHONY : src/MvrMutex.o
+
+# target to build an object file
+src/MvrMutex.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrMutex.cpp.o
+.PHONY : src/MvrMutex.cpp.o
+
+src/MvrMutex.i: src/MvrMutex.cpp.i
+.PHONY : src/MvrMutex.i
+
+# target to preprocess a source file
+src/MvrMutex.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrMutex.cpp.i
+.PHONY : src/MvrMutex.cpp.i
+
+src/MvrMutex.s: src/MvrMutex.cpp.s
+.PHONY : src/MvrMutex.s
+
+# target to generate assembly for a file
+src/MvrMutex.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrMutex.cpp.s
+.PHONY : src/MvrMutex.cpp.s
+
+src/MvrRobot.o: src/MvrRobot.cpp.o
+.PHONY : src/MvrRobot.o
+
+# target to build an object file
+src/MvrRobot.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobot.cpp.o
+.PHONY : src/MvrRobot.cpp.o
+
+src/MvrRobot.i: src/MvrRobot.cpp.i
+.PHONY : src/MvrRobot.i
+
+# target to preprocess a source file
+src/MvrRobot.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobot.cpp.i
+.PHONY : src/MvrRobot.cpp.i
+
+src/MvrRobot.s: src/MvrRobot.cpp.s
+.PHONY : src/MvrRobot.s
+
+# target to generate assembly for a file
+src/MvrRobot.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobot.cpp.s
+.PHONY : src/MvrRobot.cpp.s
+
+src/MvrRobotBatteryPacketReader.o: src/MvrRobotBatteryPacketReader.cpp.o
+.PHONY : src/MvrRobotBatteryPacketReader.o
+
+# target to build an object file
+src/MvrRobotBatteryPacketReader.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotBatteryPacketReader.cpp.o
+.PHONY : src/MvrRobotBatteryPacketReader.cpp.o
+
+src/MvrRobotBatteryPacketReader.i: src/MvrRobotBatteryPacketReader.cpp.i
+.PHONY : src/MvrRobotBatteryPacketReader.i
+
+# target to preprocess a source file
+src/MvrRobotBatteryPacketReader.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotBatteryPacketReader.cpp.i
+.PHONY : src/MvrRobotBatteryPacketReader.cpp.i
+
+src/MvrRobotBatteryPacketReader.s: src/MvrRobotBatteryPacketReader.cpp.s
+.PHONY : src/MvrRobotBatteryPacketReader.s
+
+# target to generate assembly for a file
+src/MvrRobotBatteryPacketReader.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotBatteryPacketReader.cpp.s
+.PHONY : src/MvrRobotBatteryPacketReader.cpp.s
+
+src/MvrRobotConfig.o: src/MvrRobotConfig.cpp.o
+.PHONY : src/MvrRobotConfig.o
+
+# target to build an object file
+src/MvrRobotConfig.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConfig.cpp.o
+.PHONY : src/MvrRobotConfig.cpp.o
+
+src/MvrRobotConfig.i: src/MvrRobotConfig.cpp.i
+.PHONY : src/MvrRobotConfig.i
+
+# target to preprocess a source file
+src/MvrRobotConfig.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConfig.cpp.i
+.PHONY : src/MvrRobotConfig.cpp.i
+
+src/MvrRobotConfig.s: src/MvrRobotConfig.cpp.s
+.PHONY : src/MvrRobotConfig.s
+
+# target to generate assembly for a file
+src/MvrRobotConfig.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConfig.cpp.s
+.PHONY : src/MvrRobotConfig.cpp.s
+
+src/MvrRobotConfigPacketReader.o: src/MvrRobotConfigPacketReader.cpp.o
+.PHONY : src/MvrRobotConfigPacketReader.o
+
+# target to build an object file
+src/MvrRobotConfigPacketReader.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConfigPacketReader.cpp.o
+.PHONY : src/MvrRobotConfigPacketReader.cpp.o
+
+src/MvrRobotConfigPacketReader.i: src/MvrRobotConfigPacketReader.cpp.i
+.PHONY : src/MvrRobotConfigPacketReader.i
+
+# target to preprocess a source file
+src/MvrRobotConfigPacketReader.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConfigPacketReader.cpp.i
+.PHONY : src/MvrRobotConfigPacketReader.cpp.i
+
+src/MvrRobotConfigPacketReader.s: src/MvrRobotConfigPacketReader.cpp.s
+.PHONY : src/MvrRobotConfigPacketReader.s
+
+# target to generate assembly for a file
+src/MvrRobotConfigPacketReader.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConfigPacketReader.cpp.s
+.PHONY : src/MvrRobotConfigPacketReader.cpp.s
+
+src/MvrRobotConnector.o: src/MvrRobotConnector.cpp.o
+.PHONY : src/MvrRobotConnector.o
+
+# target to build an object file
+src/MvrRobotConnector.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConnector.cpp.o
+.PHONY : src/MvrRobotConnector.cpp.o
+
+src/MvrRobotConnector.i: src/MvrRobotConnector.cpp.i
+.PHONY : src/MvrRobotConnector.i
+
+# target to preprocess a source file
+src/MvrRobotConnector.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConnector.cpp.i
+.PHONY : src/MvrRobotConnector.cpp.i
+
+src/MvrRobotConnector.s: src/MvrRobotConnector.cpp.s
+.PHONY : src/MvrRobotConnector.s
+
+# target to generate assembly for a file
+src/MvrRobotConnector.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotConnector.cpp.s
+.PHONY : src/MvrRobotConnector.cpp.s
+
+src/MvrRobotJoyHandler.o: src/MvrRobotJoyHandler.cpp.o
+.PHONY : src/MvrRobotJoyHandler.o
+
+# target to build an object file
+src/MvrRobotJoyHandler.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotJoyHandler.cpp.o
+.PHONY : src/MvrRobotJoyHandler.cpp.o
+
+src/MvrRobotJoyHandler.i: src/MvrRobotJoyHandler.cpp.i
+.PHONY : src/MvrRobotJoyHandler.i
+
+# target to preprocess a source file
+src/MvrRobotJoyHandler.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotJoyHandler.cpp.i
+.PHONY : src/MvrRobotJoyHandler.cpp.i
+
+src/MvrRobotJoyHandler.s: src/MvrRobotJoyHandler.cpp.s
+.PHONY : src/MvrRobotJoyHandler.s
+
+# target to generate assembly for a file
+src/MvrRobotJoyHandler.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotJoyHandler.cpp.s
+.PHONY : src/MvrRobotJoyHandler.cpp.s
+
+src/MvrRobotPacket.o: src/MvrRobotPacket.cpp.o
+.PHONY : src/MvrRobotPacket.o
+
+# target to build an object file
+src/MvrRobotPacket.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacket.cpp.o
+.PHONY : src/MvrRobotPacket.cpp.o
+
+src/MvrRobotPacket.i: src/MvrRobotPacket.cpp.i
+.PHONY : src/MvrRobotPacket.i
+
+# target to preprocess a source file
+src/MvrRobotPacket.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacket.cpp.i
+.PHONY : src/MvrRobotPacket.cpp.i
+
+src/MvrRobotPacket.s: src/MvrRobotPacket.cpp.s
+.PHONY : src/MvrRobotPacket.s
+
+# target to generate assembly for a file
+src/MvrRobotPacket.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacket.cpp.s
+.PHONY : src/MvrRobotPacket.cpp.s
+
+src/MvrRobotPacketReaderThread.o: src/MvrRobotPacketReaderThread.cpp.o
+.PHONY : src/MvrRobotPacketReaderThread.o
+
+# target to build an object file
+src/MvrRobotPacketReaderThread.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketReaderThread.cpp.o
+.PHONY : src/MvrRobotPacketReaderThread.cpp.o
+
+src/MvrRobotPacketReaderThread.i: src/MvrRobotPacketReaderThread.cpp.i
+.PHONY : src/MvrRobotPacketReaderThread.i
+
+# target to preprocess a source file
+src/MvrRobotPacketReaderThread.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketReaderThread.cpp.i
+.PHONY : src/MvrRobotPacketReaderThread.cpp.i
+
+src/MvrRobotPacketReaderThread.s: src/MvrRobotPacketReaderThread.cpp.s
+.PHONY : src/MvrRobotPacketReaderThread.s
+
+# target to generate assembly for a file
+src/MvrRobotPacketReaderThread.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketReaderThread.cpp.s
+.PHONY : src/MvrRobotPacketReaderThread.cpp.s
+
+src/MvrRobotPacketReceiver.o: src/MvrRobotPacketReceiver.cpp.o
+.PHONY : src/MvrRobotPacketReceiver.o
+
+# target to build an object file
+src/MvrRobotPacketReceiver.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketReceiver.cpp.o
+.PHONY : src/MvrRobotPacketReceiver.cpp.o
+
+src/MvrRobotPacketReceiver.i: src/MvrRobotPacketReceiver.cpp.i
+.PHONY : src/MvrRobotPacketReceiver.i
+
+# target to preprocess a source file
+src/MvrRobotPacketReceiver.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketReceiver.cpp.i
+.PHONY : src/MvrRobotPacketReceiver.cpp.i
+
+src/MvrRobotPacketReceiver.s: src/MvrRobotPacketReceiver.cpp.s
+.PHONY : src/MvrRobotPacketReceiver.s
+
+# target to generate assembly for a file
+src/MvrRobotPacketReceiver.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketReceiver.cpp.s
+.PHONY : src/MvrRobotPacketReceiver.cpp.s
+
+src/MvrRobotPacketSender.o: src/MvrRobotPacketSender.cpp.o
+.PHONY : src/MvrRobotPacketSender.o
+
+# target to build an object file
+src/MvrRobotPacketSender.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketSender.cpp.o
+.PHONY : src/MvrRobotPacketSender.cpp.o
+
+src/MvrRobotPacketSender.i: src/MvrRobotPacketSender.cpp.i
+.PHONY : src/MvrRobotPacketSender.i
+
+# target to preprocess a source file
+src/MvrRobotPacketSender.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketSender.cpp.i
+.PHONY : src/MvrRobotPacketSender.cpp.i
+
+src/MvrRobotPacketSender.s: src/MvrRobotPacketSender.cpp.s
+.PHONY : src/MvrRobotPacketSender.s
+
+# target to generate assembly for a file
+src/MvrRobotPacketSender.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotPacketSender.cpp.s
+.PHONY : src/MvrRobotPacketSender.cpp.s
+
+src/MvrRobotParams.o: src/MvrRobotParams.cpp.o
+.PHONY : src/MvrRobotParams.o
+
+# target to build an object file
+src/MvrRobotParams.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotParams.cpp.o
+.PHONY : src/MvrRobotParams.cpp.o
+
+src/MvrRobotParams.i: src/MvrRobotParams.cpp.i
+.PHONY : src/MvrRobotParams.i
+
+# target to preprocess a source file
+src/MvrRobotParams.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotParams.cpp.i
+.PHONY : src/MvrRobotParams.cpp.i
+
+src/MvrRobotParams.s: src/MvrRobotParams.cpp.s
+.PHONY : src/MvrRobotParams.s
+
+# target to generate assembly for a file
+src/MvrRobotParams.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotParams.cpp.s
+.PHONY : src/MvrRobotParams.cpp.s
+
+src/MvrRobotTypes.o: src/MvrRobotTypes.cpp.o
+.PHONY : src/MvrRobotTypes.o
+
+# target to build an object file
+src/MvrRobotTypes.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotTypes.cpp.o
+.PHONY : src/MvrRobotTypes.cpp.o
+
+src/MvrRobotTypes.i: src/MvrRobotTypes.cpp.i
+.PHONY : src/MvrRobotTypes.i
+
+# target to preprocess a source file
+src/MvrRobotTypes.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotTypes.cpp.i
+.PHONY : src/MvrRobotTypes.cpp.i
+
+src/MvrRobotTypes.s: src/MvrRobotTypes.cpp.s
+.PHONY : src/MvrRobotTypes.s
+
+# target to generate assembly for a file
+src/MvrRobotTypes.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrRobotTypes.cpp.s
+.PHONY : src/MvrRobotTypes.cpp.s
+
+src/MvrSimpleConnector.o: src/MvrSimpleConnector.cpp.o
+.PHONY : src/MvrSimpleConnector.o
+
+# target to build an object file
+src/MvrSimpleConnector.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSimpleConnector.cpp.o
+.PHONY : src/MvrSimpleConnector.cpp.o
+
+src/MvrSimpleConnector.i: src/MvrSimpleConnector.cpp.i
+.PHONY : src/MvrSimpleConnector.i
+
+# target to preprocess a source file
+src/MvrSimpleConnector.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSimpleConnector.cpp.i
+.PHONY : src/MvrSimpleConnector.cpp.i
+
+src/MvrSimpleConnector.s: src/MvrSimpleConnector.cpp.s
+.PHONY : src/MvrSimpleConnector.s
+
+# target to generate assembly for a file
+src/MvrSimpleConnector.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSimpleConnector.cpp.s
+.PHONY : src/MvrSimpleConnector.cpp.s
+
+src/MvrSocket.o: src/MvrSocket.cpp.o
+.PHONY : src/MvrSocket.o
+
+# target to build an object file
+src/MvrSocket.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSocket.cpp.o
+.PHONY : src/MvrSocket.cpp.o
+
+src/MvrSocket.i: src/MvrSocket.cpp.i
+.PHONY : src/MvrSocket.i
+
+# target to preprocess a source file
+src/MvrSocket.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSocket.cpp.i
+.PHONY : src/MvrSocket.cpp.i
+
+src/MvrSocket.s: src/MvrSocket.cpp.s
+.PHONY : src/MvrSocket.s
+
+# target to generate assembly for a file
+src/MvrSocket.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSocket.cpp.s
+.PHONY : src/MvrSocket.cpp.s
+
+src/MvrStringInfoGroup.o: src/MvrStringInfoGroup.cpp.o
+.PHONY : src/MvrStringInfoGroup.o
+
+# target to build an object file
+src/MvrStringInfoGroup.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrStringInfoGroup.cpp.o
+.PHONY : src/MvrStringInfoGroup.cpp.o
+
+src/MvrStringInfoGroup.i: src/MvrStringInfoGroup.cpp.i
+.PHONY : src/MvrStringInfoGroup.i
+
+# target to preprocess a source file
+src/MvrStringInfoGroup.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrStringInfoGroup.cpp.i
+.PHONY : src/MvrStringInfoGroup.cpp.i
+
+src/MvrStringInfoGroup.s: src/MvrStringInfoGroup.cpp.s
+.PHONY : src/MvrStringInfoGroup.s
+
+# target to generate assembly for a file
+src/MvrStringInfoGroup.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrStringInfoGroup.cpp.s
+.PHONY : src/MvrStringInfoGroup.cpp.s
+
+src/MvrSyncLoop.o: src/MvrSyncLoop.cpp.o
+.PHONY : src/MvrSyncLoop.o
+
+# target to build an object file
+src/MvrSyncLoop.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSyncLoop.cpp.o
+.PHONY : src/MvrSyncLoop.cpp.o
+
+src/MvrSyncLoop.i: src/MvrSyncLoop.cpp.i
+.PHONY : src/MvrSyncLoop.i
+
+# target to preprocess a source file
+src/MvrSyncLoop.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSyncLoop.cpp.i
+.PHONY : src/MvrSyncLoop.cpp.i
+
+src/MvrSyncLoop.s: src/MvrSyncLoop.cpp.s
+.PHONY : src/MvrSyncLoop.s
+
+# target to generate assembly for a file
+src/MvrSyncLoop.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSyncLoop.cpp.s
+.PHONY : src/MvrSyncLoop.cpp.s
+
+src/MvrSyncTask.o: src/MvrSyncTask.cpp.o
+.PHONY : src/MvrSyncTask.o
+
+# target to build an object file
+src/MvrSyncTask.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSyncTask.cpp.o
+.PHONY : src/MvrSyncTask.cpp.o
+
+src/MvrSyncTask.i: src/MvrSyncTask.cpp.i
+.PHONY : src/MvrSyncTask.i
+
+# target to preprocess a source file
+src/MvrSyncTask.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSyncTask.cpp.i
+.PHONY : src/MvrSyncTask.cpp.i
+
+src/MvrSyncTask.s: src/MvrSyncTask.cpp.s
+.PHONY : src/MvrSyncTask.s
+
+# target to generate assembly for a file
+src/MvrSyncTask.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSyncTask.cpp.s
+.PHONY : src/MvrSyncTask.cpp.s
+
+src/MvrSystemStatus.o: src/MvrSystemStatus.cpp.o
+.PHONY : src/MvrSystemStatus.o
+
+# target to build an object file
+src/MvrSystemStatus.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSystemStatus.cpp.o
+.PHONY : src/MvrSystemStatus.cpp.o
+
+src/MvrSystemStatus.i: src/MvrSystemStatus.cpp.i
+.PHONY : src/MvrSystemStatus.i
+
+# target to preprocess a source file
+src/MvrSystemStatus.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSystemStatus.cpp.i
+.PHONY : src/MvrSystemStatus.cpp.i
+
+src/MvrSystemStatus.s: src/MvrSystemStatus.cpp.s
+.PHONY : src/MvrSystemStatus.s
+
+# target to generate assembly for a file
+src/MvrSystemStatus.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrSystemStatus.cpp.s
+.PHONY : src/MvrSystemStatus.cpp.s
+
+src/MvrThread.o: src/MvrThread.cpp.o
+.PHONY : src/MvrThread.o
+
+# target to build an object file
+src/MvrThread.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrThread.cpp.o
+.PHONY : src/MvrThread.cpp.o
+
+src/MvrThread.i: src/MvrThread.cpp.i
+.PHONY : src/MvrThread.i
+
+# target to preprocess a source file
+src/MvrThread.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrThread.cpp.i
+.PHONY : src/MvrThread.cpp.i
+
+src/MvrThread.s: src/MvrThread.cpp.s
+.PHONY : src/MvrThread.s
+
+# target to generate assembly for a file
+src/MvrThread.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrThread.cpp.s
+.PHONY : src/MvrThread.cpp.s
+
+src/MvrTransform.o: src/MvrTransform.cpp.o
+.PHONY : src/MvrTransform.o
+
+# target to build an object file
+src/MvrTransform.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrTransform.cpp.o
+.PHONY : src/MvrTransform.cpp.o
+
+src/MvrTransform.i: src/MvrTransform.cpp.i
+.PHONY : src/MvrTransform.i
+
+# target to preprocess a source file
+src/MvrTransform.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrTransform.cpp.i
+.PHONY : src/MvrTransform.cpp.i
+
+src/MvrTransform.s: src/MvrTransform.cpp.s
+.PHONY : src/MvrTransform.s
+
+# target to generate assembly for a file
+src/MvrTransform.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/MvrTransform.cpp.s
+.PHONY : src/MvrTransform.cpp.s
+
+src/Mvria.o: src/Mvria.cpp.o
+.PHONY : src/Mvria.o
+
+# target to build an object file
+src/Mvria.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/Mvria.cpp.o
+.PHONY : src/Mvria.cpp.o
+
+src/Mvria.i: src/Mvria.cpp.i
+.PHONY : src/Mvria.i
+
+# target to preprocess a source file
+src/Mvria.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/Mvria.cpp.i
+.PHONY : src/Mvria.cpp.i
+
+src/Mvria.s: src/Mvria.cpp.s
+.PHONY : src/Mvria.s
+
+# target to generate assembly for a file
+src/Mvria.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/Mvria.cpp.s
+.PHONY : src/Mvria.cpp.s
+
+src/md5.o: src/md5.cpp.o
+.PHONY : src/md5.o
+
+# target to build an object file
+src/md5.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/md5.cpp.o
+.PHONY : src/md5.cpp.o
+
+src/md5.i: src/md5.cpp.i
+.PHONY : src/md5.i
+
+# target to preprocess a source file
+src/md5.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/md5.cpp.i
+.PHONY : src/md5.cpp.i
+
+src/md5.s: src/md5.cpp.s
+.PHONY : src/md5.s
+
+# target to generate assembly for a file
+src/md5.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/md5.cpp.s
+.PHONY : src/md5.cpp.s
+
+src/mvriaUtil.o: src/mvriaUtil.cpp.o
+.PHONY : src/mvriaUtil.o
+
+# target to build an object file
+src/mvriaUtil.cpp.o:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/mvriaUtil.cpp.o
+.PHONY : src/mvriaUtil.cpp.o
+
+src/mvriaUtil.i: src/mvriaUtil.cpp.i
+.PHONY : src/mvriaUtil.i
+
+# target to preprocess a source file
+src/mvriaUtil.cpp.i:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/mvriaUtil.cpp.i
+.PHONY : src/mvriaUtil.cpp.i
+
+src/mvriaUtil.s: src/mvriaUtil.cpp.s
+.PHONY : src/mvriaUtil.s
+
+# target to generate assembly for a file
+src/mvriaUtil.cpp.s:
+	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/mvriaUtil.cpp.s
+.PHONY : src/mvriaUtil.cpp.s
+
+tests/timeTest.o: tests/timeTest.cpp.o
+.PHONY : tests/timeTest.o
+
+# target to build an object file
+tests/timeTest.cpp.o:
+	$(MAKE) -f CMakeFiles/timeTest.dir/build.make CMakeFiles/timeTest.dir/tests/timeTest.cpp.o
+.PHONY : tests/timeTest.cpp.o
+
+tests/timeTest.i: tests/timeTest.cpp.i
+.PHONY : tests/timeTest.i
+
+# target to preprocess a source file
+tests/timeTest.cpp.i:
+	$(MAKE) -f CMakeFiles/timeTest.dir/build.make CMakeFiles/timeTest.dir/tests/timeTest.cpp.i
+.PHONY : tests/timeTest.cpp.i
+
+tests/timeTest.s: tests/timeTest.cpp.s
+.PHONY : tests/timeTest.s
+
+# target to generate assembly for a file
+tests/timeTest.cpp.s:
+	$(MAKE) -f CMakeFiles/timeTest.dir/build.make CMakeFiles/timeTest.dir/tests/timeTest.cpp.s
+.PHONY : tests/timeTest.cpp.s
 
 # Help Target
 help:
@@ -144,12 +1309,157 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... MVRTest"
+	@echo "... Mvria"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... test/test.o"
-	@echo "... test/test.i"
-	@echo "... test/test.s"
+	@echo "... timeTest"
+	@echo "... src/MvrASyncTask.o"
+	@echo "... src/MvrASyncTask.i"
+	@echo "... src/MvrASyncTask.s"
+	@echo "... src/MvrAction.o"
+	@echo "... src/MvrAction.i"
+	@echo "... src/MvrAction.s"
+	@echo "... src/MvrArg.o"
+	@echo "... src/MvrArg.i"
+	@echo "... src/MvrArg.s"
+	@echo "... src/MvrArgumentBuilder.o"
+	@echo "... src/MvrArgumentBuilder.i"
+	@echo "... src/MvrArgumentBuilder.s"
+	@echo "... src/MvrArgumentParser.o"
+	@echo "... src/MvrArgumentParser.i"
+	@echo "... src/MvrArgumentParser.s"
+	@echo "... src/MvrBasePacket.o"
+	@echo "... src/MvrBasePacket.i"
+	@echo "... src/MvrBasePacket.s"
+	@echo "... src/MvrCondition.o"
+	@echo "... src/MvrCondition.i"
+	@echo "... src/MvrCondition.s"
+	@echo "... src/MvrConfig.o"
+	@echo "... src/MvrConfig.i"
+	@echo "... src/MvrConfig.s"
+	@echo "... src/MvrConfigArg.o"
+	@echo "... src/MvrConfigArg.i"
+	@echo "... src/MvrConfigArg.s"
+	@echo "... src/MvrConfigGroup.o"
+	@echo "... src/MvrConfigGroup.i"
+	@echo "... src/MvrConfigGroup.s"
+	@echo "... src/MvrDataLogger.o"
+	@echo "... src/MvrDataLogger.i"
+	@echo "... src/MvrDataLogger.s"
+	@echo "... src/MvrDeviceConnection.o"
+	@echo "... src/MvrDeviceConnection.i"
+	@echo "... src/MvrDeviceConnection.s"
+	@echo "... src/MvrFileDeviceConnection.o"
+	@echo "... src/MvrFileDeviceConnection.i"
+	@echo "... src/MvrFileDeviceConnection.s"
+	@echo "... src/MvrFileParser.o"
+	@echo "... src/MvrFileParser.i"
+	@echo "... src/MvrFileParser.s"
+	@echo "... src/MvrFunctorASyncTask.o"
+	@echo "... src/MvrFunctorASyncTask.i"
+	@echo "... src/MvrFunctorASyncTask.s"
+	@echo "... src/MvrInterpolation.o"
+	@echo "... src/MvrInterpolation.i"
+	@echo "... src/MvrInterpolation.s"
+	@echo "... src/MvrJoyHandler.o"
+	@echo "... src/MvrJoyHandler.i"
+	@echo "... src/MvrJoyHandler.s"
+	@echo "... src/MvrKeyHandler.o"
+	@echo "... src/MvrKeyHandler.i"
+	@echo "... src/MvrKeyHandler.s"
+	@echo "... src/MvrLog.o"
+	@echo "... src/MvrLog.i"
+	@echo "... src/MvrLog.s"
+	@echo "... src/MvrLogFileConnection.o"
+	@echo "... src/MvrLogFileConnection.i"
+	@echo "... src/MvrLogFileConnection.s"
+	@echo "... src/MvrMode.o"
+	@echo "... src/MvrMode.i"
+	@echo "... src/MvrMode.s"
+	@echo "... src/MvrModes.o"
+	@echo "... src/MvrModes.i"
+	@echo "... src/MvrModes.s"
+	@echo "... src/MvrModule.o"
+	@echo "... src/MvrModule.i"
+	@echo "... src/MvrModule.s"
+	@echo "... src/MvrModuleLoader.o"
+	@echo "... src/MvrModuleLoader.i"
+	@echo "... src/MvrModuleLoader.s"
+	@echo "... src/MvrMutex.o"
+	@echo "... src/MvrMutex.i"
+	@echo "... src/MvrMutex.s"
+	@echo "... src/MvrRobot.o"
+	@echo "... src/MvrRobot.i"
+	@echo "... src/MvrRobot.s"
+	@echo "... src/MvrRobotBatteryPacketReader.o"
+	@echo "... src/MvrRobotBatteryPacketReader.i"
+	@echo "... src/MvrRobotBatteryPacketReader.s"
+	@echo "... src/MvrRobotConfig.o"
+	@echo "... src/MvrRobotConfig.i"
+	@echo "... src/MvrRobotConfig.s"
+	@echo "... src/MvrRobotConfigPacketReader.o"
+	@echo "... src/MvrRobotConfigPacketReader.i"
+	@echo "... src/MvrRobotConfigPacketReader.s"
+	@echo "... src/MvrRobotConnector.o"
+	@echo "... src/MvrRobotConnector.i"
+	@echo "... src/MvrRobotConnector.s"
+	@echo "... src/MvrRobotJoyHandler.o"
+	@echo "... src/MvrRobotJoyHandler.i"
+	@echo "... src/MvrRobotJoyHandler.s"
+	@echo "... src/MvrRobotPacket.o"
+	@echo "... src/MvrRobotPacket.i"
+	@echo "... src/MvrRobotPacket.s"
+	@echo "... src/MvrRobotPacketReaderThread.o"
+	@echo "... src/MvrRobotPacketReaderThread.i"
+	@echo "... src/MvrRobotPacketReaderThread.s"
+	@echo "... src/MvrRobotPacketReceiver.o"
+	@echo "... src/MvrRobotPacketReceiver.i"
+	@echo "... src/MvrRobotPacketReceiver.s"
+	@echo "... src/MvrRobotPacketSender.o"
+	@echo "... src/MvrRobotPacketSender.i"
+	@echo "... src/MvrRobotPacketSender.s"
+	@echo "... src/MvrRobotParams.o"
+	@echo "... src/MvrRobotParams.i"
+	@echo "... src/MvrRobotParams.s"
+	@echo "... src/MvrRobotTypes.o"
+	@echo "... src/MvrRobotTypes.i"
+	@echo "... src/MvrRobotTypes.s"
+	@echo "... src/MvrSimpleConnector.o"
+	@echo "... src/MvrSimpleConnector.i"
+	@echo "... src/MvrSimpleConnector.s"
+	@echo "... src/MvrSocket.o"
+	@echo "... src/MvrSocket.i"
+	@echo "... src/MvrSocket.s"
+	@echo "... src/MvrStringInfoGroup.o"
+	@echo "... src/MvrStringInfoGroup.i"
+	@echo "... src/MvrStringInfoGroup.s"
+	@echo "... src/MvrSyncLoop.o"
+	@echo "... src/MvrSyncLoop.i"
+	@echo "... src/MvrSyncLoop.s"
+	@echo "... src/MvrSyncTask.o"
+	@echo "... src/MvrSyncTask.i"
+	@echo "... src/MvrSyncTask.s"
+	@echo "... src/MvrSystemStatus.o"
+	@echo "... src/MvrSystemStatus.i"
+	@echo "... src/MvrSystemStatus.s"
+	@echo "... src/MvrThread.o"
+	@echo "... src/MvrThread.i"
+	@echo "... src/MvrThread.s"
+	@echo "... src/MvrTransform.o"
+	@echo "... src/MvrTransform.i"
+	@echo "... src/MvrTransform.s"
+	@echo "... src/Mvria.o"
+	@echo "... src/Mvria.i"
+	@echo "... src/Mvria.s"
+	@echo "... src/md5.o"
+	@echo "... src/md5.i"
+	@echo "... src/md5.s"
+	@echo "... src/mvriaUtil.o"
+	@echo "... src/mvriaUtil.i"
+	@echo "... src/mvriaUtil.s"
+	@echo "... tests/timeTest.o"
+	@echo "... tests/timeTest.i"
+	@echo "... tests/timeTest.s"
 .PHONY : help
 
 

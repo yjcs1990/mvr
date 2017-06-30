@@ -1,14 +1,33 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrSonarAutoDisabler.h
- > Description  : Class for automatically disabling sonar when the robot is stopped
- > Author       : Yu Jie
- > Create Time  : 2017年05月23日
- > Modify Time  : 2017年05月23日
-***************************************************************************************************/
-#ifndef MVRSONARAUTODISABLER_H
-#define MVRSONARAUTODISABLER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARSONARAUTODISABLER_H
+#define ARSONARAUTODISABLER_H
+
+/// Class for automatically disabling sonar when the robot is stopped
 /**
    If you create one of this class it will disable the sonar when the
    robot stops moving and then enable the sonar when the robot moves.
@@ -18,61 +37,64 @@
 
    Note that this class assumes it is the only class turning the sonar
    on or off and that the sonar start on.
+
+    @ingroup OptionalClasses
  **/
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrFunctor.h"
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArFunctor.h"
 
-class MvrRobot;
+class ArRobot;
 
-class MvrSonarAutoDisabler
+class ArSonarAutoDisabler
 {
 public:
   /// Constructor
-  MVREXPORT MvrSonarAutoDisabler(MvrRobot *robot);
+  AREXPORT ArSonarAutoDisabler(ArRobot *robot);
   /// Destructor
-  MVREXPORT virtual ~MvrSonarAutoDisabler();
+  AREXPORT virtual ~ArSonarAutoDisabler();
   /// Supresses this disabler (which turns off the sonar)
   void supress(void) 
-  { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::supress:"); 
-    mySupressed = true; }
+    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::supress:"); 
+      mySupressed = true; }
   /// Gets the callback to supress the autodisabler
-  MvrFunctor *getSupressCallback(void) { return &mySupressCB; }
+  ArFunctor *getSupressCallback(void) { return &mySupressCB; }
   /// Unsupresses this disabler (goes back to auto enabling/disabling)
   void unsupress(void) 
-  { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::unsupress:"); 
-    mySupressed = false; }
+    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::unsupress:"); 
+      mySupressed = false; }
   /// Gets the callback to supress the autodisabler
-  MvrFunctor *getUnsupressCallback(void) { return &myUnsupressCB; }
+  ArFunctor *getUnsupressCallback(void) { return &myUnsupressCB; }
 
   /// Sets that we're autonomous drivign so we only enable some sonar
   void setAutonomousDriving(void) 
-  { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::setAutonomousDriving:"); 
-    myAutonomousDriving = true; }
+    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::setAutonomousDriving:"); 
+      myAutonomousDriving = true; }
   /// Gets the callback to set that we're driving autonomously
-  MvrFunctor *getSetAutonomousDrivingCallback(void) { return &mySetAutonomousDrivingCB; }
+  ArFunctor *getSetAutonomousDrivingCallback(void) 
+    { return &mySetAutonomousDrivingCB; }
   /// Sets that we're driving non-autonomously so we enable all sonar
   void clearAutonomousDriving(void) 
-  { MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler::clearAutonomousDriving:"); 
-    myAutonomousDriving = false; }
+    { ArLog::log(ArLog::Normal, "ArSonarAutoDisabler::clearAutonomousDriving:"); 
+      myAutonomousDriving = false; }
   /// Gets the callback to set that we're not driving autonomously
-  MvrFunctor *getClearAutonomousDrivingCallback(void) 
-  { return &myClearAutonomousDrivingCB; }
+  ArFunctor *getClearAutonomousDrivingCallback(void) 
+    { return &myClearAutonomousDrivingCB; }
 protected:
   /// our user task
-  MVREXPORT void userTask(void);
-  MvrRobot *myRobot;
-  MvrTime myLastMoved;
-  MvrTime myLastSupressed;
+  AREXPORT void userTask(void);
+  ArRobot *myRobot;
+  ArTime myLastMoved;
+  ArTime myLastSupressed;
   bool mySupressed;
   bool myAutonomousDriving;
 
-  MvrFunctorC<MvrSonarAutoDisabler> myUserTaskCB;
-  MvrFunctorC<MvrSonarAutoDisabler> mySupressCB;
-  MvrFunctorC<MvrSonarAutoDisabler> myUnsupressCB;
-  MvrFunctorC<MvrSonarAutoDisabler> mySetAutonomousDrivingCB;
-  MvrFunctorC<MvrSonarAutoDisabler> myClearAutonomousDrivingCB;
+  ArFunctorC<ArSonarAutoDisabler> myUserTaskCB;
+  ArFunctorC<ArSonarAutoDisabler> mySupressCB;
+  ArFunctorC<ArSonarAutoDisabler> myUnsupressCB;
+  ArFunctorC<ArSonarAutoDisabler> mySetAutonomousDrivingCB;
+  ArFunctorC<ArSonarAutoDisabler> myClearAutonomousDrivingCB;
 };
 
-#endif // MVRSONARAUTODISABLER_H
+#endif // ARSONARAUTODISABLER

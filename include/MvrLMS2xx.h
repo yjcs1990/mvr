@@ -1,44 +1,114 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrLMS2xx.h
- > Description  : Interface to a SICK LMS-200 laser range device
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRLMS2XX_H
-#define MVRLMS2XX_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARLMS2XX_H
+#define ARLMS2XX_H
 
 
-#include "mvriaTypedefs.h"
-#include "MvrLMS2xxPacket.h"
-#include "MvrLMS2xxPacketReceiver.h"
-#include "MvrRobotPacket.h"
-#include "MvrLaser.h"   
-#include "MvrFunctor.h"
-#include "MvrCondition.h"
+#include "ariaTypedefs.h"
+#include "ArLMS2xxPacket.h"
+#include "ArLMS2xxPacketReceiver.h"
+#include "ArRobotPacket.h"
+#include "ArLaser.h"   
+#include "ArFunctor.h"
+#include "ArCondition.h"
 
-class MvrLMS2xx : public MvrLaser
+/// Interface to a SICK LMS-200 laser range device
+/**
+ * This class processes incoming data from a SICK LMS-200
+ * laser rangefinding device in a background thread, and provides
+ * it through the standard ArRangeDevice API, to be used via ArRobot
+ * (see ArRobot::addRangeDevice()), used by an ArAction, or used directly.
+ *
+ * An ArSick instance must be connected to the laser through a serial port
+ * (or simulator): the typical procedure is to allow your ArSimpleConnector
+ * to configure the laser based on the robot connection type and command
+ * line parameters; then initiate the ArSick background thread; and finally
+ * connect ArSick to the laser device.
+ * For example:
+ * @code
+ *  ArRobot robot;
+ *  ArSick laser;
+ *  ArSimpleConnector connector(...);
+ *  ...
+ *   Setup the simple connector and connect to the robot --
+ *   see the example programs.
+ *  ...
+ *  connector.setupLaser(&laser);
+ *  laser.runAsync();
+ *  if(!laser.blockingConnect())
+ *  {
+ *    // Error...
+ *    ...
+ *  }
+ *  ...
+ * @endcode
+ *
+ * The most important methods in this class are the constructor, runAsync(), 
+ * blockingConnect(), getSensorPosition(), isConnected(), addConnectCB(),
+ * asyncConnect(), configure(), in addition to the ArRangeDevice interface. 
+ *
+ * @note The "extra int" on the raw readings returned by
+ * ArRangeDevice::getRawReadings() is like other laser
+ * devices and is the reflectance value, if enabled, ranging between 0 and 255.
+ *
+ * ArLMS2xx uses the following buffer parameters by default (see ArRangeDevice
+ * documentation):
+ * <dl>
+ *  <dt>MinDistBetweenCurrent <dd>50 mm
+ *  <dt>MaxDistToKeepCumulative <dd>6000 mm
+ *  <dt>MinDistBetweenCumulative <dd>200 mm
+ *  <dt>MaxSecondsToKeepCumulative <dd>30 sec
+ *  <dt>MaxINsertDistCumulative <dd>3000 mm
+ * </dl>
+ * The current buffer is replaced for each new set of readings.
+ *
+ * @since 2.7.0
+**/
+class ArLMS2xx : public ArLaser
 {
 public:
   /// Constructor
-  MVREXPORT MvrLMS2xx(int laserNumber,
+  AREXPORT ArLMS2xx(int laserNumber,
 		    const char *name = "lms2xx",
 		    bool appendLaserNumberToName = true);
 
   /// Destructor
-  MVREXPORT virtual ~MvrLMS2xx();
+  AREXPORT virtual ~ArLMS2xx();
 
   /// Connect to the laser while blocking
-  MVREXPORT virtual bool blockingConnect(void);
+  AREXPORT virtual bool blockingConnect(void);
   /// Connect to the laser asyncronously
-  MVREXPORT bool asyncConnect(void);
+  AREXPORT bool asyncConnect(void);
   /// Disconnect from the laser
-  MVREXPORT virtual bool disconnect(void);
+  AREXPORT virtual bool disconnect(void);
   /// Sees if this is connected to the laser
-  MVREXPORT virtual bool isConnected(void) 
+  AREXPORT virtual bool isConnected(void) 
     { if (myState == STATE_CONNECTED) return true; else return false; }
-  MVREXPORT virtual bool isTryingToConnect(void) 
+  AREXPORT virtual bool isTryingToConnect(void) 
     { 
       if (myState != STATE_CONNECTED && myState != STATE_NONE) 
 	return true; 
@@ -49,51 +119,51 @@ public:
     }
 
   /// Sets the device connection
-  MVREXPORT virtual void setDeviceConnection(MvrDeviceConnection *conn);
+  AREXPORT virtual void setDeviceConnection(ArDeviceConnection *conn);
 
-  /** The internal function used by the MvrRangeDeviceThreaded
+  /** The internal function used by the ArRangeDeviceThreaded
    *  @internal
    */
-  MVREXPORT virtual void * runThread(void *arg);
-  MVREXPORT virtual void setRobot(MvrRobot *robot);
+  AREXPORT virtual void * runThread(void *arg);
+  AREXPORT virtual void setRobot(ArRobot *robot);
 protected:
   // The packet handler for when connected to the simulator
-  MVREXPORT bool simPacketHandler(MvrRobotPacket * packet);
+  AREXPORT bool simPacketHandler(ArRobotPacket * packet);
   // The function called if the laser isn't running in its own thread and isn't simulated
-  MVREXPORT void sensorInterpCallback(void);
+  AREXPORT void sensorInterpCallback(void);
   // An internal function for connecting to the sim
-  MVREXPORT bool internalConnectSim(void);
+  AREXPORT bool internalConnectSim(void);
   /// An internal function, single loop event to connect to laser
-  MVREXPORT int internalConnectHandler(void);
+  AREXPORT int internalConnectHandler(void);
   // The internal function which processes the sickPackets
-  MVREXPORT void processPacket(MvrLMS2xxPacket *packet, MvrPose pose, 
-			      MvrPose encoderPose, unsigned int counter,
-			      bool deinterlace, MvrPose deinterlaceDelta);
+  AREXPORT void processPacket(ArLMS2xxPacket *packet, ArPose pose, 
+			      ArPose encoderPose, unsigned int counter,
+			      bool deinterlace, ArPose deinterlaceDelta);
   // The internal function that gets does the work
-  MVREXPORT void runOnce(bool lockRobot);
+  AREXPORT void runOnce(bool lockRobot);
   // Internal function, shouldn't be used, drops the conn because of error
-  MVREXPORT void dropConnection(void);
+  AREXPORT void dropConnection(void);
   // Internal function, shouldn't be used, denotes the conn failed
-  MVREXPORT void failedConnect(void);
+  AREXPORT void failedConnect(void);
   // Internal function, shouldn't be used, does the after conn stuff
-  MVREXPORT void madeConnection(void);
+  AREXPORT void madeConnection(void);
 
-  /// Internal function that gets whether the laser is simulated or not (just for the old MvrSick)
-  MVREXPORT bool sickGetIsUsingSim(void);
+  /// Internal function that gets whether the laser is simulated or not (just for the old ArSick)
+  AREXPORT bool sickGetIsUsingSim(void);
 
-  /// Internal function that sets whether the laser is simulated or not (just for the old MvrSick)
-  MVREXPORT void sickSetIsUsingSim(bool usingSim);
+  /// Internal function that sets whether the laser is simulated or not (just for the old ArSick)
+  AREXPORT void sickSetIsUsingSim(bool usingSim);
 
-  /// internal function to runOnRobot so that MvrSick can do that while this class won't
-  MVREXPORT bool internalRunOnRobot(void);
+  /// internal function to runOnRobot so that ArSick can do that while this class won't
+  AREXPORT bool internalRunOnRobot(void);
 
   /// Finishes getting the unset parameters from the robot then
   /// setting some internal variables that need it
   bool finishParams(void);
 
-  MVREXPORT virtual bool laserCheckParams(void);
+  AREXPORT virtual bool laserCheckParams(void);
 
-  MVREXPORT virtual void laserSetName(const char *name);
+  AREXPORT virtual void laserSetName(const char *name);
 
   enum State {
     STATE_NONE, ///< Nothing, haven't tried to connect or anything
@@ -111,24 +181,24 @@ protected:
     STATE_CONNECTED ///< We're connected and getting readings
   };
   /// Internal function for switching states
-  MVREXPORT void switchState(State state);
+  AREXPORT void switchState(State state);
   State myState;
-  MvrTime myStateStart;
-  MvrFunctorC<MvrLMS2xx> myRobotConnectCB;
-  MvrRetFunctor1C<bool, MvrLMS2xx, MvrRobotPacket *> mySimPacketHandler;
-  MvrFunctorC<MvrLMS2xx> mySensorInterpCB;
-  std::list<MvrSensorReading *>::iterator myIter;
+  ArTime myStateStart;
+  ArFunctorC<ArLMS2xx> myRobotConnectCB;
+  ArRetFunctor1C<bool, ArLMS2xx, ArRobotPacket *> mySimPacketHandler;
+  ArFunctorC<ArLMS2xx> mySensorInterpCB;
+  std::list<ArSensorReading *>::iterator myIter;
   bool myStartConnect;
   bool myRunningOnRobot;
 
   // range buffers to hold current range set and assembling range set
-  std::list<MvrSensorReading *> *myAssembleReadings;
-  std::list<MvrSensorReading *> *myCurrentReadings;
+  std::list<ArSensorReading *> *myAssembleReadings;
+  std::list<ArSensorReading *> *myCurrentReadings;
 
   bool myProcessImmediately;
   bool myInterpolation;
   // list of packets, so we can process them from the sensor callback
-  std::list<MvrLMS2xxPacket *> myPackets;
+  std::list<ArLMS2xxPacket *> myPackets;
 
   // these two are just for the sim packets
   unsigned int myWhichReading;
@@ -139,24 +209,24 @@ protected:
   double myIncrementAmount;
 
   // packet stuff
-  MvrLMS2xxPacket myPacket;
+  ArLMS2xxPacket myPacket;
   bool myUseSim;
   
   int myNumReflectorBits;
   bool myInterlaced;
 
   // stuff for the sim packet
-  MvrPose mySimPacketStart;
-  MvrTransform mySimPacketTrans;
-  MvrTransform mySimPacketEncoderTrans;
+  ArPose mySimPacketStart;
+  ArTransform mySimPacketTrans;
+  ArTransform mySimPacketEncoderTrans;
   unsigned int mySimPacketCounter;
 
   // connection
-  MvrLMS2xxPacketReceiver myLMS2xxPacketReceiver;
+  ArLMS2xxPacketReceiver myLMS2xxPacketReceiver;
 
-  MvrMutex myStateMutex;
-  MvrRetFunctorC<bool, MvrLMS2xx> myMvriaExitCB;
+  ArMutex myStateMutex;
+  ArRetFunctorC<bool, ArLMS2xx> myAriaExitCB;
 };
 
 
-#endif  // MVRLMS2XX_H
+#endif 

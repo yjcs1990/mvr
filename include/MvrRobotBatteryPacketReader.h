@@ -1,36 +1,55 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotBatteryPacketReader.h
- > Description  : This class will read a config packet from the robot
- > Author       : Yu Jie
- > Create Time  : 2017年05月19日
- > Modify Time  : 2017年05月19日
-***************************************************************************************************/
-#ifndef MVRROBOTBATTERYPACKETREADER_H
-#define MVRROBOTBATTERYPACKETREADER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrFunctor.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrRobot;
-class MvrRobotPacket;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-class MvrRobotBatteryPacketReader
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARROBOTBATTERYPACKETREADER_H
+#define ARROBOTBATTERYPACKETREADER_H
+
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArFunctor.h"
+
+class ArRobot;
+class ArRobotPacket;
+
+/// This class will read a config packet from the robot
+class ArRobotBatteryPacketReader
 {
 public:
   /// Constructor
-  MVREXPORT MvrRobotBatteryPacketReader(MvrRobot *robot);
+  AREXPORT ArRobotBatteryPacketReader(ArRobot *robot);
   /// Destructor
-  MVREXPORT ~MvrRobotBatteryPacketReader();
+  AREXPORT ~ArRobotBatteryPacketReader();
   /// Request a single packet.. 
-  MVREXPORT void requestSinglePacket(void);
+  AREXPORT void requestSinglePacket(void);
   /// Request a continous stream of packets
-  MVREXPORT void requestContinuousPackets(void);
+  AREXPORT void requestContinuousPackets(void);
   /// Stop the stream of packets
-  MVREXPORT void stopPackets(void);
+  AREXPORT void stopPackets(void);
   /// See if we've requested packets
-  MVREXPORT bool haveRequestedPackets(void);
+  AREXPORT bool haveRequestedPackets(void);
   /// See if we've gotten the data
   bool hasPacketArrived(void) const { return myPacketArrived; }
   /// Gets the number of batteries
@@ -48,14 +67,15 @@ public:
   /// Gets the absolute state of charge for a particular battery
   int getAbsSOC(int battery) { return myAbsSOC[battery]; }
 
+
 protected:
   /// internal, packet handler
-  MVREXPORT bool packetHandler(MvrRobotPacket *packet);
+  AREXPORT bool packetHandler(ArRobotPacket *packet);
   /// internal, packet handler
-  MVREXPORT void connectCallback(void);
+  AREXPORT void connectCallback(void);
 
   // the robot
-  MvrRobot *myRobot;
+  ArRobot *myRobot;
 
   int myNumBatteries;
   int myNumBytesPerBattery;
@@ -69,13 +89,13 @@ protected:
   // whether our data has been received or not
   bool myPacketArrived;
   // last time we requested a packet (we'll only ask every 200 ms)
-  MvrTime myLastPacketRequest;
+  ArTime myLastPacketRequest;
 
   bool myRequestedBatteryPackets;
 
   // the callback
-  MvrRetFunctor1C<bool, MvrRobotBatteryPacketReader, MvrRobotPacket *> myPacketHandlerCB;
-  MvrFunctorC<MvrRobotBatteryPacketReader> myConnectCB;
+  ArRetFunctor1C<bool, ArRobotBatteryPacketReader, ArRobotPacket *> myPacketHandlerCB;
+  ArFunctorC<ArRobotBatteryPacketReader> myConnectCB;
 };
 
-#endif // MVRROBOTBATTERYPACKETREADER_H
+#endif // ARROBOTBATTERYPACKETREADER_H

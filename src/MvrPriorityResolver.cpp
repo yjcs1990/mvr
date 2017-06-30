@@ -1,35 +1,52 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrPriorityResolver.h
- > Description  : This class takes the action list and uses the priority to resolve
- > Author       : Yu Jie
- > Create Time  : 2017年05月24日
- > Modify Time  : 2017年06月20日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "MvrAction.h"
-#include "MvrRobot.h"
-#include "MvrPriorityResolver.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-MVREXPORT MvrPriorityResolver::MvrPriorityResolver() :
-          MvrResolver("MvrPriorityResolver","Resolver strictly by using priority, the highest priority action to act is the one that gets to go.  Does no mixing of any variety.")
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArPriorityResolver.h"
+#include "ArAction.h"
+#include "ArRobot.h"
+
+AREXPORT ArPriorityResolver::ArPriorityResolver() :
+  ArResolver("ArPriorityResolver", "Resolves strictly by using priority, the highest priority action to act is the one that gets to go.  Does no mixing of any variety.")
 {
-
 }
 
-MVREXPORT MvrPriorityResolver::~MvrPriorityResolver()
-{
 
+AREXPORT ArPriorityResolver::~ArPriorityResolver()
+{
 }
 
-MVREXPORT MvrPriorityResolver *MvrPriorityResolver::resolve(MvrResolver::MvrActionMap *actions,
-                                                            MvrRobot *robot, bool logActions)
+AREXPORT ArActionDesired *ArPriorityResolver::resolve(
+	ArResolver::ActionMap *actions, ArRobot *robot, bool logActions)
 {
-  MvrResolver::ActionMap::reverse_iterator it;
-  MvrAction *action;
-  MvrActionDesired *act;
-  MvrActionDesired averaging;
+  ArResolver::ActionMap::reverse_iterator it;
+  ArAction *action;
+  ArActionDesired *act;
+  ArActionDesired averaging;
   bool first = true;
   int lastPriority;
   bool printedFirst = true;
@@ -46,38 +63,46 @@ MVREXPORT MvrPriorityResolver *MvrPriorityResolver::resolve(MvrResolver::MvrActi
     action = (*it).second;
     if (action != NULL && action->isActive())
     {
+      /// MPL jan 7 '12 moved this next code block up 'from here'
       if (first || (*it).first != lastPriority)
       {
-        averaging.endAverage();
-        myActionDesired.merge(&averaging);
-        
-        averaging.reset();
-        averaging.startAverage();
-        first = false;
-        lastPriority = (*it).first;
+	averaging.endAverage();
+	myActionDesired.merge(&averaging);
+	
+	averaging.reset();
+	averaging.startAverage();
+	first = false;
+	lastPriority = (*it).first;
       }
       act = action->fire(myActionDesired);
       if (robot != NULL && act != NULL)
-	      act->accountForRobotHeading(robot->getTh());
+	act->accountForRobotHeading(robot->getTh());
       if (act != NULL)
-	      act->sanityCheck(action->getName());
+	act->sanityCheck(action->getName());
+      // from here
       averaging.addAverage(act);
       if (logActions && act != NULL && act->isAnythingDesired())
       {
-        if (printedFirst || printedLast != (*it).first)
-        {
-          MvrLog::log(MvrLog::Terse, "Priority %d:", (*it).first);
-          printedLast = (*it).first;
-          printedFirst = false;
-        }
-        MvrLog::log(MvrLog::Terse, "Action: %s", action->getName());
-        act->log();
+	if (printedFirst || printedLast != (*it).first)
+	{
+	  ArLog::log(ArLog::Terse, "Priority %d:", (*it).first);
+	  printedLast = (*it).first;
+	  printedFirst = false;
+	}
+	ArLog::log(ArLog::Terse, "Action: %s", action->getName());
+	act->log();
       }
+	
+	
     }
   }
-  
   averaging.endAverage();
   myActionDesired.merge(&averaging);
- 
+  /*
+  printf(
+      "desired delta %.0f strength %.3f, desired speed %.0f strength %.3f\n",
+      myActionDesired.getDeltaHeading(), myActionDesired.getHeadingStrength(), 
+      myActionDesired.getVel(), myActionDesired.getVelStrength());
+  */
   return &myActionDesired;
 }

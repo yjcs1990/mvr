@@ -1,43 +1,83 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrTCM2.h
- > Description  :  Interface to the PNI TCM 2, TCM 2.5, and TCM 2.6  3-axis compass (magnetometer)
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRTCM2_H
-#define MVRTCM2_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-#include "mvriaUtil.h"
-#include "MvrFunctor.h"
-#include "MvrRobot.h"
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARTCM2_H
+#define ARTCM2_H
+
+#include "ariaUtil.h"
+#include "ArFunctor.h"
+#include "ArRobot.h"
 
 
 #ifdef WIN32
-#define MVRTCM2_DEFAULT_SERIAL_PORT "COM4"
+#define ARTCM2_DEFAULT_SERIAL_PORT "COM4"
 #else
-#define MVRTCM2_DEFAULT_SERIAL_PORT "/dev/ttyS3"
+#define ARTCM2_DEFAULT_SERIAL_PORT "/dev/ttyS3"
 #endif
 
-class MvrTCM2
+
+/** Interface to the PNI TCM 2, TCM 2.5, and TCM 2.6  3-axis compass (magnetometer)  that can sense absolute heading, as well as pitch, roll, and includes a temperature sensor.
+ *
+ * See subclasses and ArCompassConnector for more information, as well as 
+ * your robot manuals.  PNI's TCM manual is also available for download at the 
+ * MobileRobots support website, documentation section.
+ *
+ * This is an abstract interface. To create a compass interface object,
+ * instantiate a subclass or use ArCompassConnector.
+
+    @ingroup OptionalClasses
+  @ingroup DeviceClasses
+ *
+ * @note The compass returns a heading relative to magnetic north, which varies
+ * depending on your location in the Earth's magnetic field (declination also
+ * varies slowly over time as the Earth's magnetic field changes).  To find true
+ * north, you must apply an offset, or declination. For example, on 
+ * June 1, 2007, the magnetic declination of MobileRobots' location 
+ * of Amherst, NH, USA was 15 1/6 degrees West, so a value of approx. 
+ * -15.166666 would have to be applied. You can look up declination values for 
+ * various locations on Earth at 
+ * http://www.ngdc.noaa.gov/seg/geomag/jsp/Declination.jsp
+ */
+class ArTCM2
 {
 public:
   
-  MVREXPORT MvrTCM2();
-  virtual ~MvrTCM2() {}
+  AREXPORT ArTCM2();
+  virtual ~ArTCM2() {}
 
   /** If a connection/initialization procedure is required, perform it, and
       return true on success, false on failure. Otherwise, just return true.
   */
-  MVREXPORT virtual bool connect();
+  AREXPORT virtual bool connect();
 
   /** If a connection/initialization procedure is required, perform it, wait
    * until data is recieved from the compass, and
       return true on success, false on failure. Otherwise, just return true.
   */
-  MVREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
+  AREXPORT virtual bool blockingConnect(unsigned long connectTimeout = 5000);
 
 
   /// Get the compass heading (-180, 180] degrees
@@ -120,7 +160,7 @@ public:
   }
 
   // Add a callback to be invoked when a new heading is recieved
-  void addHeadingDataCallback(MvrFunctor1<double> *f) {
+  void addHeadingDataCallback(ArFunctor1<double> *f) {
     myHeadingDataCallbacks.push_back(f);
   }
 
@@ -149,7 +189,7 @@ protected:
   bool myHaveCalibrationV;
   bool myHaveCalibrationM;
 
-  std::list< MvrFunctor1<double>* > myHeadingDataCallbacks;
+  std::list< ArFunctor1<double>* > myHeadingDataCallbacks;
 
   // packet count
   time_t myTimeLastPacket;
@@ -169,7 +209,7 @@ protected:
 
   // call the heading data callbacks
   void invokeHeadingDataCallbacks(double heading) {
-    for(std::list<MvrFunctor1<double>*>::iterator i = myHeadingDataCallbacks.begin(); i != myHeadingDataCallbacks.end(); ++i)
+    for(std::list<ArFunctor1<double>*>::iterator i = myHeadingDataCallbacks.begin(); i != myHeadingDataCallbacks.end(); ++i)
       if(*i) (*i)->invoke(heading);
   }
   
@@ -180,16 +220,18 @@ protected:
  * and connect to the device based on program command line options. 
  * This allows the user of a program to select a different kind
  * of compass configuration (for example, if the compass is connected
- * to a computer serial port, use MvrTCMCompassDirect instead of
- * the normal MvrTCMCompassRobot.)
+ * to a computer serial port, use ArTCMCompassDirect instead of
+ * the normal ArTCMCompassRobot.)
+ *
+ * The following command-line arguments are checked:
+ * @verbinclude ArCompassConnector_options
  */
-
-class MvrCompassConnector
+class ArCompassConnector
 {
 protected:
-  MvrArgumentParser *myArgParser;
-  MvrRetFunctorC<bool, MvrCompassConnector> myParseArgsCallback;
-  MvrFunctorC<MvrCompassConnector> myLogArgsCallback;
+  ArArgumentParser *myArgParser;
+  ArRetFunctorC<bool, ArCompassConnector> myParseArgsCallback;
+  ArFunctorC<ArCompassConnector> myLogArgsCallback;
   typedef enum {
     Robot,
     SerialTCM,
@@ -197,15 +239,15 @@ protected:
   } DeviceType;
   DeviceType myDeviceType;
   const char *mySerialPort;
-  MVREXPORT bool parseArgs();
-  MvrFunctor *mySerialTCMReadFunctor;
-  MvrRobot *myRobot;
-  MVREXPORT void logOptions();
+  AREXPORT bool parseArgs();
+  ArFunctor *mySerialTCMReadFunctor;
+  ArRobot *myRobot;
+  AREXPORT void logOptions();
 public:
-  MVREXPORT MvrCompassConnector(MvrArgumentParser *argParser);
-  MVREXPORT ~MvrCompassConnector();
-  MVREXPORT MvrTCM2 *create(MvrRobot *robot);
-  MVREXPORT bool connect(MvrTCM2*) const;
+  AREXPORT ArCompassConnector(ArArgumentParser *argParser);
+  AREXPORT ~ArCompassConnector();
+  AREXPORT ArTCM2 *create(ArRobot *robot);
+  AREXPORT bool connect(ArTCM2*) const;
 };
 
-#endif // MVRTCM2_H
+#endif // ARTCM2_H

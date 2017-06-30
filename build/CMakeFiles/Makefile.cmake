@@ -41,5 +41,6 @@ SET(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 SET(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/MVRTest.dir/DependInfo.cmake"
+  "CMakeFiles/Mvria.dir/DependInfo.cmake"
+  "CMakeFiles/timeTest.dir/DependInfo.cmake"
   )

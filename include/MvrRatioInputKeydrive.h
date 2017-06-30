@@ -1,62 +1,84 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRatioInputKeydrive.h
- > Description  : This will use the keyboard arrow keys and the MvrActionRatioInput to drive the robot
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRRATIOINPUTKEYDRIVE_H
-#define MVRRATIOINPUTKEYDRIVE_H
-
-#include "mvriaTypedefs.h"
-#include "MvrAction.h"
-#include "MvrFunctor.h"
-#include "MvrActionRatioInput.h"
-
 /*
-   You have to make an MvrActionRatioInput and add it to the robot like
-   a normal action for this to work.
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-class MvrRatioInputKeydrive 
+#ifndef ARRATIOINPUTKEYDRIVE_H
+#define ARRATIOINPUTKEYDRIVE_H
+
+#include "ariaTypedefs.h"
+#include "ArAction.h"
+#include "ArFunctor.h"
+#include "ArActionRatioInput.h"
+
+
+/// This will use the keyboard arrow keys and the ArActionRatioInput to drive the robot
+/**
+   You have to make an ArActionRatioInput and add it to the robot like
+   a normal action for this to work.
+
+  @ingroup OptionalClasses
+**/
+class ArRatioInputKeydrive 
 {
 public:
   /// Constructor
-  MVREXPORT MvrRatioInputKeydrive(MvrRobot *robot, MvrActionRatioInput *input, 
-			                          	int priority = 25, double velIncrement = 5);
+  AREXPORT ArRatioInputKeydrive(ArRobot *robot, ArActionRatioInput *input, 
+				int priority = 25, double velIncrement = 5);
   /// Destructor
-  MVREXPORT virtual ~MvrRatioInputKeydrive();
+  AREXPORT virtual ~ArRatioInputKeydrive();
   /// Takes the keys this action wants to use to drive
-  MVREXPORT void takeKeys(void);
+  AREXPORT void takeKeys(void);
   /// Gives up the keys this action wants to use to drive
-  MVREXPORT void giveUpKeys(void);
+  AREXPORT void giveUpKeys(void);
   /// Internal, callback for up arrow
-  MVREXPORT void up(void);
+  AREXPORT void up(void);
   /// Internal, callback for down arrow
-  MVREXPORT void down(void);
+  AREXPORT void down(void);
   /// Internal, callback for z
-  MVREXPORT void z(void);
+  AREXPORT void z(void);
   /// Internal, callback for x 
-  MVREXPORT void x(void);
+  AREXPORT void x(void);
   /// Internal, callback for left arrow
-  MVREXPORT void left(void);
+  AREXPORT void left(void);
   /// Internal, callback for right arrow
-  MVREXPORT void right(void);
+  AREXPORT void right(void);
   /// Internal, callback for space key
-  MVREXPORT void space(void);
+  AREXPORT void space(void);
   /// Internal, gets our firecb
-  MVREXPORT MvrFunctor *getFireCB(void) { return &myFireCB; }
+  AREXPORT ArFunctor *getFireCB(void) { return &myFireCB; }
 protected:
-  MVREXPORT void activate(void);
-  MVREXPORT void deactivate(void);
-  MVREXPORT void fireCallback(void);
-  MvrFunctorC<MvrRatioInputKeydrive> myUpCB;
-  MvrFunctorC<MvrRatioInputKeydrive> myDownCB;
-  MvrFunctorC<MvrRatioInputKeydrive> myLeftCB;
-  MvrFunctorC<MvrRatioInputKeydrive> myRightCB;
-  MvrFunctorC<MvrRatioInputKeydrive> myZCB;
-  MvrFunctorC<MvrRatioInputKeydrive> myXCB;
-  MvrFunctorC<MvrRatioInputKeydrive> mySpaceCB;
+  AREXPORT void activate(void);
+  AREXPORT void deactivate(void);
+  AREXPORT void fireCallback(void);
+  ArFunctorC<ArRatioInputKeydrive> myUpCB;
+  ArFunctorC<ArRatioInputKeydrive> myDownCB;
+  ArFunctorC<ArRatioInputKeydrive> myLeftCB;
+  ArFunctorC<ArRatioInputKeydrive> myRightCB;
+  ArFunctorC<ArRatioInputKeydrive> myZCB;
+  ArFunctorC<ArRatioInputKeydrive> myXCB;
+  ArFunctorC<ArRatioInputKeydrive> mySpaceCB;
 
   double myPrinting;
   double myTransRatio;
@@ -64,15 +86,15 @@ protected:
   double myThrottle;
   double myLatRatio;
 
-  MvrRobot *myRobot;
+  ArRobot *myRobot;
   bool myHaveKeys;
   double myVelIncrement;
   double myLatVelIncrement;
-  MvrActionRatioInput *myInput;
-  MvrFunctorC<MvrRatioInputKeydrive> myFireCB;
-  MvrFunctorC<MvrRatioInputKeydrive> myActivateCB;
-  MvrFunctorC<MvrRatioInputKeydrive> myDeactivateCB;
+  ArActionRatioInput *myInput;
+  ArFunctorC<ArRatioInputKeydrive> myFireCB;
+  ArFunctorC<ArRatioInputKeydrive> myActivateCB;
+  ArFunctorC<ArRatioInputKeydrive> myDeactivateCB;
 };
 
 
-#endif // MVRRATIOINPUTKEYDRIVE_H
+#endif // ARRATIOINPUTKEYDRIVE_H

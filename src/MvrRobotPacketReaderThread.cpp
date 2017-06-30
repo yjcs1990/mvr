@@ -1,55 +1,73 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotPacketReaderThread.h
- > Description  : 
- > Author       : Yu Jie
- > Create Time  : 2017年05月22日
- > Modify Time  : 2017年06月21日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "MvrLog.h"
-#include "mvriaUtil.h"
-#include "MvrRobot.h"
-#include "MvrRobotPacketReaderThread.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-MVREXPORT MvrRobotPacketReaderThread::MvrRobotPacketReaderThread() :
-          MvrASyncTask(),
-          myStopRunIfNotConnected(false),
-          myRobot(0)
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArRobotPacketReaderThread.h"
+#include "ArLog.h"
+#include "ariaUtil.h"
+#include "ArRobot.h"
+
+
+AREXPORT ArRobotPacketReaderThread::ArRobotPacketReaderThread() :
+  ArASyncTask(),
+  myStopRunIfNotConnected(false),
+  myRobot(0)
 {
-  setThreadName("MvrRobotPacketReader");
+  setThreadName("ArRobotPacketReader");
   myInRun = false;
-}          
-
-MVREXPORT MvrRobotPacketReaderThread::~MvrRobotPacketReaderThread()
-{
-
 }
 
-MVREXPORT void MvrRobotPacketReaderThread::setRobot(MvrRobot *robot)
+AREXPORT ArRobotPacketReaderThread::~ArRobotPacketReaderThread()
 {
-  myRobot = robot;
 }
 
-MVREXPORT void MvrRobotPacketReaderThread::stopRunIfNotConnected(bool stopRun)
+AREXPORT void ArRobotPacketReaderThread::setRobot(ArRobot *robot)
+{
+  myRobot=robot;
+}
+
+AREXPORT void ArRobotPacketReaderThread::stopRunIfNotConnected(bool stopRun)
 {
   myStopRunIfNotConnected = stopRun;
 }
 
-MVREXPORT void * MvrRobotPacketReaderThread::runThread(void *arg)
+AREXPORT void * ArRobotPacketReaderThread::runThread(void *arg)
 {
   threadStarted();
 
   if (!myRobot)
   {
-    MvrLog::log(MvrLog::Normal,
-                "MvrRobotPacketReaderThread::runThread: Trying to run the robot packet reader without a robot.")
-    return 0;                
+    ArLog::log(ArLog::Terse, "ArRobotPacketReaderThread::runThread: Trying to run the robot packet reader without a robot.");
+    return(0);
   }
-  // This skips the normal one, since the function will exit when the robot run stops
-  myPacket->packetHandlerThreadedReader();
 
+  // this skips the normal one, since the function will exit when the robot run stops
+  myRobot->packetHandlerThreadedReader();
+  
   /*
   while (myRunning)
   {
@@ -58,14 +76,15 @@ MVREXPORT void * MvrRobotPacketReaderThread::runThread(void *arg)
     myInRun = false;
   }
   */
+
   threadFinished();
-  return 0;
+  return(0);
 }
 
-MVREXPORT const char *MvrRobotPacketReaderThread::getThreadActivity(void)
+AREXPORT const char *ArRobotPacketReaderThread::getThreadActivity(void)
 {
   if (myRunning)
     return "Unknown running";
   else
-    return "Unknown";
+    return "Unknown"; 
 }

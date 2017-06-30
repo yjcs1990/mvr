@@ -1,17 +1,37 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionDriveDistance.h
- > Description  : This action drives the robot specific distances
- > Author       : Yu Jie
- > Create Time  : 2017年04月24日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONDRIVEDISTANCE_H
-#define MVRACTIONDRIVEDISTANCE_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrAction.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONDRIVEDISTANCE_H
+#define ARACTIONDRIVEDISTANCE_H
+
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArAction.h"
+
+/// This action drives the robot specific distances
 
 /**
    This action naively drives a fixed distance. The action stops the
@@ -21,22 +41,31 @@
    You can give it a distance with setDistance(), cancel its movement
    with cancelDistance(), and see if it got there with
    haveAchievedDistance().
+
+   You can tell it to go backwards by calling setDistance with a
+   negative value.
+
+   This doesn't avoid obstacles or anything, you could add have an
+   limiting ArAction at a higher priority to try to do this (so you
+   don't smash things). (For truly intelligent navigation, see
+   the ARNL or SONARNL software libraries.)
+  @ingroup ActionClasses
 **/
 
 
-class MvrActionDriveDistance : public MvrAction
+class ArActionDriveDistance : public ArAction
 {
 public:
-  MVREXPORT MvrActionDriveDistance(const char *name = "driveDistance", 
+  AREXPORT ArActionDriveDistance(const char *name = "driveDistance", 
 				double speed = 400, double deceleration = 200);
-  MVREXPORT virtual ~MvrActionDriveDistance();
+  AREXPORT virtual ~ArActionDriveDistance();
 
   /// Sees if the goal has been achieved
-  MVREXPORT bool haveAchievedDistance(void);
+  AREXPORT bool haveAchievedDistance(void);
   /// Cancels the goal the robot has
-  MVREXPORT void cancelDistance(void);
+  AREXPORT void cancelDistance(void);
   /// Sets a new goal and sets the action to go there
-  MVREXPORT void setDistance(double distance, bool useEncoders = true);
+  AREXPORT void setDistance(double distance, bool useEncoders = true);
   /// Gets whether we're using the encoder position or the normal position
   bool usingEncoders(void) { return myUseEncoders; }
   /// Sets the speed the action will travel at (mm/sec)
@@ -50,10 +79,10 @@ public:
   double getDeceleration(void) { return myDeceleration; }
   /// Sets if we're printing or not
   void setPrinting(bool printing) { myPrinting = printing; }
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
 protected:
@@ -61,12 +90,12 @@ protected:
   bool myUseEncoders;
   double mySpeed;
   double myDeceleration;
-  MvrActionDesired myDesired;
+  ArActionDesired myDesired;
   bool myPrinting;
   double myLastVel;
 
   double myDistTravelled;
-  MvrPose myLastPose;
+  ArPose myLastPose;
   
   enum State
   {
@@ -77,4 +106,4 @@ protected:
   State myState;
 };
 
-#endif // MVRACTIONDRIVEDISTANCE_H
+#endif // ARACTIONDRIVE

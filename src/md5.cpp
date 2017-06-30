@@ -1,12 +1,91 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : md5.h
- > Description  : This package supports both compile-time and run-time 
-                  determination of CPU byte order
- > Author       : Yu Jie
- > Create Time  : 2017年06月20日
- > Modify Time  : 2017年06月20日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+/*
+  MPL (ActivMedia) renamed to a cpp file
+
+*/
+
+/* RH (ActivMedia/MobileRobots) including header from ARIA which defines AREXPORT to export
+   functions from Windows DLLs, and added AREXPORT to functions defined below:
+*/
+#include "ArExport.h"
+
+/*
+  Copyright (C) 1999, 2000, 2002 Aladdin Enterprises.  All rights reserved.
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+  L. Peter Deutsch
+  ghost@aladdin.com
+
+ */
+/*
+  Independent implementation of MD5 (RFC 1321).
+
+  This code implements the MD5 Algorithm defined in RFC 1321, whose
+  text is available at
+	http://www.ietf.org/rfc/rfc1321.txt
+  The code is derived from the text of the RFC, including the test suite
+  (section A.5) but excluding the rest of Appendix A.  It does not include
+  any code or documentation that is identified in the RFC as being
+  copyrighted.
+
+  The original and principal author of md5.c is L. Peter Deutsch
+  <ghost@aladdin.com>.  Other authors are noted in the change history
+  that follows (in reverse chronological order):
+
+  2002-04-13 lpd Clarified derivation from RFC 1321; now handles byte order
+	either statically or dynamically; added missing #include <string.h>
+	in library.
+  2002-03-11 lpd Corrected argument list for main(), and added int return
+	type, in test program and T value program.
+  2002-02-21 lpd Added missing #include <stdio.h> in test program.
+  2000-07-03 lpd Patched to eliminate warnings about "constant is
+	unsigned in ANSI C, signed in traditional"; made test program
+	self-checking.
+  1999-11-04 lpd Edited comments slightly for automatic TOC extraction.
+  1999-10-18 lpd Fixed typo in header comment (ansi2knr rather than md5).
+  1999-05-03 lpd Original version.
+ */
+
 #include "md5.h"
 #include <string.h>
 
@@ -84,9 +163,10 @@
 #define T64 /* 0xeb86d391 */ (T_MASK ^ 0x14792c6e)
 
 
-static void md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
+static void
+md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
 {
-  md5_word_t
+    md5_word_t
 	a = pms->abcd[0], b = pms->abcd[1],
 	c = pms->abcd[2], d = pms->abcd[3];
     md5_word_t t;
@@ -116,16 +196,13 @@ static void md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
 	     * On little-endian machines, we can process properly aligned
 	     * data without copying it.
 	     */
-	    if (!((data - (const md5_byte_t *)0) & 3)) 
-      {
-        /* data are properly aligned */
-        X = (const md5_word_t *)data;
-	    } 
-      else 
-      {
-        /* not aligned */
-        memcpy(xbuf, data, 64);
-        X = xbuf;
+	    if (!((data - (const md5_byte_t *)0) & 3)) {
+		/* data are properly aligned */
+		X = (const md5_word_t *)data;
+	    } else {
+		/* not aligned */
+		memcpy(xbuf, data, 64);
+		X = xbuf;
 	    }
 	}
 #endif
@@ -147,7 +224,7 @@ static void md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
 #    define xbuf X		/* (static only) */
 #  endif
 	    for (i = 0; i < 16; ++i, xp += 4)
-		    xbuf[i] = xp[0] + (xp[1] << 8) + (xp[2] << 16) + (xp[3] << 24);
+		xbuf[i] = xp[0] + (xp[1] << 8) + (xp[2] << 16) + (xp[3] << 24);
 	}
 #endif
     }
@@ -267,7 +344,7 @@ static void md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
     pms->abcd[3] += d;
 }
 
-MVREXPORT void
+AREXPORT void
 md5_init(md5_state_t *pms)
 {
     pms->count[0] = pms->count[1] = 0;
@@ -277,63 +354,63 @@ md5_init(md5_state_t *pms)
     pms->abcd[3] = 0x10325476;
 }
 
-MVREXPORT void md5_append(md5_state_t *pms, const md5_byte_t *data, int nbytes)
+AREXPORT void
+md5_append(md5_state_t *pms, const md5_byte_t *data, int nbytes)
 {
-  const md5_byte_t *p = data;
-  int left = nbytes;
-  int offset = (pms->count[0] >> 3) & 63;
-  md5_word_t nbits = (md5_word_t)(nbytes << 3);
+    const md5_byte_t *p = data;
+    int left = nbytes;
+    int offset = (pms->count[0] >> 3) & 63;
+    md5_word_t nbits = (md5_word_t)(nbytes << 3);
 
-  if (nbytes <= 0)
-   return;
+    if (nbytes <= 0)
+	return;
 
-  /* Update the message length. */
-  pms->count[1] += nbytes >> 29;
-  pms->count[0] += nbits;
-  if (pms->count[0] < nbits)
-  	pms->count[1]++;
+    /* Update the message length. */
+    pms->count[1] += nbytes >> 29;
+    pms->count[0] += nbits;
+    if (pms->count[0] < nbits)
+	pms->count[1]++;
 
-  /* Process an initial partial block. */
-  if (offset) 
-  {
-	  int copy = (offset + nbytes > 64 ? 64 - offset : nbytes);
+    /* Process an initial partial block. */
+    if (offset) {
+	int copy = (offset + nbytes > 64 ? 64 - offset : nbytes);
 
-	  memcpy(pms->buf + offset, p, copy);
-	  if (offset + copy < 64)
+	memcpy(pms->buf + offset, p, copy);
+	if (offset + copy < 64)
 	    return;
-	  p += copy;
-	  left -= copy;
-	  md5_process(pms, pms->buf);
-  }
+	p += copy;
+	left -= copy;
+	md5_process(pms, pms->buf);
+    }
 
-  /* Process full blocks. */
-  for (; left >= 64; p += 64, left -= 64)
-	  md5_process(pms, p);
+    /* Process full blocks. */
+    for (; left >= 64; p += 64, left -= 64)
+	md5_process(pms, p);
 
-  /* Process a final partial block. */
-  if (left)
-	  memcpy(pms->buf, p, left);
+    /* Process a final partial block. */
+    if (left)
+	memcpy(pms->buf, p, left);
 }
 
-MVREXPORT void md5_finish(md5_state_t *pms, md5_byte_t digest[16])
+AREXPORT void
+md5_finish(md5_state_t *pms, md5_byte_t digest[16])
 {
-    static const md5_byte_t pad[64] = 
-    {
-      0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    static const md5_byte_t pad[64] = {
+	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     };
     md5_byte_t data[8];
     int i;
 
     /* Save the length before padding. */
     for (i = 0; i < 8; ++i)
-	    data[i] = (md5_byte_t)(pms->count[i >> 2] >> ((i & 3) << 3));
+	data[i] = (md5_byte_t)(pms->count[i >> 2] >> ((i & 3) << 3));
     /* Pad to 56 bytes mod 64. */
     md5_append(pms, pad, ((55 - (pms->count[0] >> 3)) & 63) + 1);
     /* Append the length. */
     md5_append(pms, data, 8);
     for (i = 0; i < 16; ++i)
-	    digest[i] = (md5_byte_t)(pms->abcd[i >> 2] >> ((i & 3) << 3));
+	digest[i] = (md5_byte_t)(pms->abcd[i >> 2] >> ((i & 3) << 3));
 }

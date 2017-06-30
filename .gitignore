@@ -1,0 +1,12 @@
+# 忽略dbg文件和dbg目录
+.idea/
+.vscode/
+build/
+/build
+cmake-build-debug/
+*.[oa]
+*.so
+*.i
+*.cpp~
+*.h~
+*.o

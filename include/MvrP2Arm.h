@@ -1,39 +1,84 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrP2Arm.h
- > Description  : P2 Arm classes: MvrP2Arm for control and MvrP2ArmJoints for P2 Arm joint data
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRP2ARM_H
-#define MVRP2ARM_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-#include "MvrRobot.h"
-#include "mvriaTypedefs.h"
-#include "MvrSerialConnection.h"
-#include "mvriaOSDef.h"
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARP2ARM_H
+#define ARP2ARM_H
+
+#include "ArRobot.h"
+#include "ariaTypedefs.h"
+#include "ArSerialConnection.h"
+#include "ariaOSDef.h"
+
+// P2 Arm classes: ArP2Arm for control and ArP2ArmJoints for P2 Arm joint data
 
 /// P2 Arm joint info
 class P2ArmJoint
 {
 public:
 
-  MVREXPORT P2ArmJoint();
-  MVREXPORT virtual ~P2ArmJoint();
+  AREXPORT P2ArmJoint();
+  AREXPORT virtual ~P2ArmJoint();
 
-  MvrTypes::UByte myPos;
-  MvrTypes::UByte myVel;
-  MvrTypes::UByte myHome;
-  MvrTypes::UByte myMin;
-  MvrTypes::UByte myCenter;
-  MvrTypes::UByte myMax;
-  MvrTypes::UByte myTicksPer90;
+  ArTypes::UByte myPos;
+  ArTypes::UByte myVel;
+  ArTypes::UByte myHome;
+  ArTypes::UByte myMin;
+  ArTypes::UByte myCenter;
+  ArTypes::UByte myMax;
+  ArTypes::UByte myTicksPer90;
 };
 
+/**
+   ArP2Arm is the interface to the AROS/P2OS-based Pioneer 2 Arm servers,
+   by means of which the robot microcontroller firmware can control the
+   original 5-DOF Pioneer 2 Arm manipulator.
+   The P2 Arm is attached to the robot's microcontroller via an auxiliary
+   serial port.
+
+   To use ArmP2, you must first set up an ArRobot and have it connect
+   with the robot. The ArRobot needs to be run so that it reads and writes
+   packets to and from server. The easiest way is ArRobot::runAsync()
+   which runs the ArRobot in its own thread.
+
+   Then call ArP2Arm::setRobot() with ArRobot, and finally initialized
+   with ArmP2::init().  Once initialized, use the various ArP2Arm
+   methods to power the P2 Arm servos, move joints, and so on.
+
+   For simple examples on how to use ArP2Arm, look in the Aria/examples
+   directory for P2ArmSimple.cpp and P2ArmJoydrive.cpp.
+
+   For additional information about the original 5-DOF Pioneer 2 Arm,
+   see the robot operations manual and the arm manual, available at
+   <a href="http://robots.mobilerobots.com">http://robots.mobilerobots.com</a>.
+
+   @ingroup DeviceClasses
+   @ingroup OptionalClasses
+**/
 /// Arm Control class
-class MvrP2Arm
+class ArP2Arm
 {
 public:
 
@@ -42,7 +87,7 @@ public:
     SUCCESS, ///< Succeded
     ALREADY_INITED, ///< The class is already initialized
     NOT_INITED, ///< The class is not initialized
-    ROBOT_NOT_SETUP, ///< The MvrRobot class is not setup properly
+    ROBOT_NOT_SETUP, ///< The ArRobot class is not setup properly
     NO_ARM_FOUND, ///< The arm can not be found
     COMM_FAILED, ///< Communications has failed
     COULD_NOT_OPEN_PORT, ///< Could not open the communications port
@@ -53,13 +98,13 @@ public:
     INVALID_POSITION ///< Invalid position specified
     } State;
 
-  /// Type of arm packet identifiers. Used in MvrP2Arm::setPacketCB().
+  /// Type of arm packet identifiers. Used in ArP2Arm::setPacketCB().
   typedef enum {
     StatusPacket, ///< The status packet type
     InfoPacket ///< The info packet type
   } PacketType;
 
-  /// Type of status packets to request for. Used in MvrP2Arm::requestStatus()
+  /// Type of status packets to request for. Used in ArP2Arm::requestStatus()
   typedef enum
   {
     StatusOff=0, ///< Stop sending status packets
@@ -68,141 +113,142 @@ public:
   } StatusType;
 
   /// Bit for joint 1 in arm status byte
-  MVREXPORT static const int ArmJoint1;
+  AREXPORT static const int ArmJoint1;
   /// Bit for joint 2 in arm status byte
-  MVREXPORT static const int ArmJoint2;
+  AREXPORT static const int ArmJoint2;
   /// Bit for joint 3 in arm status byte
-  MVREXPORT static const int ArmJoint3;
+  AREXPORT static const int ArmJoint3;
   /// Bit for joint 4 in arm status byte
-  MVREXPORT static const int ArmJoint4;
+  AREXPORT static const int ArmJoint4;
   /// Bit for joint 5 in arm status byte
-  MVREXPORT static const int ArmJoint5;
+  AREXPORT static const int ArmJoint5;
   /// Bit for joint 6 in arm status byte
-  MVREXPORT static const int ArmJoint6;
+  AREXPORT static const int ArmJoint6;
   /// Bit for arm good state in arm status byte
-  MVREXPORT static const int ArmGood;
+  AREXPORT static const int ArmGood;
   /// Bit for arm initialized in arm status byte
-  MVREXPORT static const int ArmInited;
+  AREXPORT static const int ArmInited;
   /// Bit for arm powered on in arm status byte
-  MVREXPORT static const int ArmPower;
+  AREXPORT static const int ArmPower;
   /// Bit for arm homing in arm status byte
-  MVREXPORT static const int ArmHoming;
+  AREXPORT static const int ArmHoming;
   /// Number of joints that the arm has
-  MVREXPORT static int NumJoints;
+  AREXPORT static int NumJoints;
 
   /// Constructor
-  MVREXPORT MvrP2Arm();
+  AREXPORT ArP2Arm();
 
   /// Destructor
-  MVREXPORT virtual ~MvrP2Arm();
+  AREXPORT virtual ~ArP2Arm();
 
   /// Set the robot to use to talk to the arm
-  MVREXPORT void setRobot(MvrRobot *robot) {myRobot=robot;}
+  AREXPORT void setRobot(ArRobot *robot) {myRobot=robot;}
 
   /// Init the arm class
-  MVREXPORT virtual State init();
+  AREXPORT virtual State init();
 
   /// Uninit the arm class
-  MVREXPORT virtual State uninit();
+  AREXPORT virtual State uninit();
 
   /// Power on the arm
-  MVREXPORT virtual State powerOn(bool doWait=true);
+  AREXPORT virtual State powerOn(bool doWait=true);
 
   /// Power off the arm
-  MVREXPORT virtual State powerOff();
+  AREXPORT virtual State powerOff();
 
   /// Request the arm info packet
-  MVREXPORT virtual State requestInfo();
+  AREXPORT virtual State requestInfo();
 
   /// Request the arm status packet
-  MVREXPORT virtual State requestStatus(StatusType status);
+  AREXPORT virtual State requestStatus(StatusType status);
 
   /// Request arm initialization
-  MVREXPORT virtual State requestInit();
+  AREXPORT virtual State requestInit();
 
   /// Check to see if the arm is still connected
-  MVREXPORT virtual State checkArm(bool waitForResponse=true);
+  AREXPORT virtual State checkArm(bool waitForResponse=true);
 
   /// Home the arm
-  MVREXPORT virtual State home(int joint=-1);
+  AREXPORT virtual State home(int joint=-1);
 
   /// Home the arm and power if off
-  MVREXPORT virtual State park();
+  AREXPORT virtual State park();
 
   /// Move a joint to a position in degrees
-  MVREXPORT virtual State moveTo(int joint, float pos, unsigned char vel=0);
+  AREXPORT virtual State moveTo(int joint, float pos, unsigned char vel=0);
 
   /// Move a joint to a position in low level arm controller ticks
-  MVREXPORT virtual State moveToTicks(int joint, unsigned char pos);
+  AREXPORT virtual State moveToTicks(int joint, unsigned char pos);
 
   /// Move a joint step degrees
-  MVREXPORT virtual State moveStep(int joint, float pos, unsigned char vel=0);
+  AREXPORT virtual State moveStep(int joint, float pos, unsigned char vel=0);
 
   /// Move a joint step ticks
-  MVREXPORT virtual State moveStepTicks(int joint, signed char pos);
+  AREXPORT virtual State moveStepTicks(int joint, signed char pos);
 
   /// Set the joint to move at the given velocity
-  MVREXPORT virtual State moveVel(int joint, int vel);
+  AREXPORT virtual State moveVel(int joint, int vel);
 
   /// Stop the arm
-  MVREXPORT virtual State stop();
+  AREXPORT virtual State stop();
 
   /// Set the auto park timer value
-  MVREXPORT virtual State setAutoParkTimer(int waitSecs);
+  AREXPORT virtual State setAutoParkTimer(int waitSecs);
 
   /// Set the gripper park timer value
-  MVREXPORT virtual State setGripperParkTimer(int waitSecs);
+  AREXPORT virtual State setGripperParkTimer(int waitSecs);
 
   /// Set the arm stopped callback
-  MVREXPORT virtual void setStoppedCB(MvrFunctor *func) {myStoppedCB=func;}
+  AREXPORT virtual void setStoppedCB(ArFunctor *func) {myStoppedCB=func;}
 
   /// set the arm packet callback
-  MVREXPORT virtual void setPacketCB(MvrFunctor1<PacketType> *func)
+  AREXPORT virtual void setPacketCB(ArFunctor1<PacketType> *func)
     {myPacketCB=func;}
 
   /// Get the arm version
-  MVREXPORT virtual std::string getArmVersion() {return(myVersion);}
+  AREXPORT virtual std::string getArmVersion() {return(myVersion);}
 
   /// Get the joints position in degrees
-  MVREXPORT virtual float getJointPos(int joint);
+  AREXPORT virtual float getJointPos(int joint);
 
   /// Get the joints position in ticks
-  MVREXPORT virtual unsigned char getJointPosTicks(int joint);
+  AREXPORT virtual unsigned char getJointPosTicks(int joint);
 
   /// Check to see if the arm is moving
-  MVREXPORT virtual bool getMoving(int joint=-1);
+  AREXPORT virtual bool getMoving(int joint=-1);
 
   /// Check to see if the arm is powered
-  MVREXPORT virtual bool isPowered();
+  AREXPORT virtual bool isPowered();
 
   /// Check to see if the arm is communicating
-  MVREXPORT virtual bool isGood();
+  AREXPORT virtual bool isGood();
 
   /// Get the two byts of status info from P2OS
-  MVREXPORT virtual int getStatus() {return(myStatus);}
+  AREXPORT virtual int getStatus() {return(myStatus);}
 
   /// Get when the last arm status packet came in
-  MVREXPORT virtual MvrTime getLastStatusTime() {return(myLastStatusTime);}
+  AREXPORT virtual ArTime getLastStatusTime() {return(myLastStatusTime);}
 
   /// Get the robot that the arm is on
-  MVREXPORT virtual MvrRobot * getRobot() {return(myRobot);}
+  AREXPORT virtual ArRobot * getRobot() {return(myRobot);}
 
   /// Get the joints data structure
-  MVREXPORT virtual P2ArmJoint * getJoint(int joint);
+  AREXPORT virtual P2ArmJoint * getJoint(int joint);
 
   /// Converts degrees to low level arm controller ticks
-  MVREXPORT virtual bool convertDegToTicks(int joint, float pos,
+  AREXPORT virtual bool convertDegToTicks(int joint, float pos,
 					  unsigned char *ticks);
 
   /// Converts low level arm controller ticks to degrees
-  MVREXPORT virtual bool convertTicksToDeg(int joint, unsigned char pos, float *degrees);
+  AREXPORT virtual bool convertTicksToDeg(int joint, unsigned char pos,
+					  float *degrees);
 
 
 protected:
 
-  // MVROS/P2OS parameters
-  static const unsigned int MVRMpac;
-  static const unsigned int MVRMINFOpac;
+  // AROS/P2OS parameters
+  static const unsigned int ARMpac;
+  static const unsigned int ARMINFOpac;
   static const unsigned char ComArmInfo;
   static const unsigned char ComArmStats;
   static const unsigned char ComArmInit;
@@ -229,25 +275,26 @@ protected:
   bool comArmAutoPark(int waitSecs);
   bool comArmGripperPark(int waitSecs);
 
-  bool armPacketHandler(MvrRobotPacket *packet);
+  bool armPacketHandler(ArRobotPacket *packet);
 
   bool myInited;
-  MvrRobot *myRobot;
-  MvrTime myLastStatusTime;
-  MvrTime myLastInfoTime;
+  ArRobot *myRobot;
+  //  ArmP2Model myModel;
+  ArTime myLastStatusTime;
+  ArTime myLastInfoTime;
   std::string myVersion;
   StatusType myStatusRequest;
-  MvrTypes::UByte2 myLastStatus;
-  MvrTypes::UByte2 myStatus;
-  MvrSerialConnection myCon;
-  MvrRetFunctorC<State, MvrP2Arm> myMvriaUninitCB;
-  MvrRetFunctor1C<bool, MvrP2Arm, MvrRobotPacket*> myArmPacketHandler;
-  MvrFunctor1<PacketType> *myPacketCB;
-  MvrFunctor *myStoppedCB;
+  ArTypes::UByte2 myLastStatus;
+  ArTypes::UByte2 myStatus;
+  ArSerialConnection myCon;
+  ArRetFunctorC<State, ArP2Arm> myAriaUninitCB;
+  ArRetFunctor1C<bool, ArP2Arm, ArRobotPacket*> myArmPacketHandler;
+  ArFunctor1<PacketType> *myPacketCB;
+  ArFunctor *myStoppedCB;
 
   // We have 6 joints. Including the gripper. It's here so that we can
   // store its position even though its not really a joint.
   P2ArmJoint myJoints[6];
 };
 
-#endif  // MVRP2ARM_H
+#endif // _ARP2ARM_H

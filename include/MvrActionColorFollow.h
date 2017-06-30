@@ -1,67 +1,88 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionColorFollow.h
- > Description  : This class is the Base class for actions
- > Author       : Yu Jie
- > Create Time  : 2017年04月24日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONCOLORFOLLOW_H
-#define MVRACTIONCOLORFOLLOW_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrFunctor.h"
-#include "MvrAction.h"
-#include "MvrACTS.h"
-#include "MvrPTZ.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrActionColorFollow : public MvrAction
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONCOLORFOLLOW_H
+#define ARACTIONCOLORFOLLOW_H
+
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArFunctor.h"
+#include "ArAction.h"
+#include "ArACTS.h"
+#include "ArPTZ.h"
+
+/// ArActionColorFollow is an action that moves the robot toward the
+/// largest ACTS blob that appears in it's current field of view.
+///  @ingroup ActionClasses
+class ArActionColorFollow : public ArAction
 {
   
 public:
   // Constructor
-  MVREXPORT MvrActionColorFollow(const char *name, 
-			       MvrACTS_1_2 *acts,
-			       MvrPTZ *camera,
+  AREXPORT ArActionColorFollow(const char *name, 
+			       ArACTS_1_2 *acts,
+			       ArPTZ *camera,
 			       double speed = 200, 
 			       int width = 160, 
 			       int height = 120);
   
   // Destructor
-  MVREXPORT virtual ~MvrActionColorFollow(void);
+  AREXPORT virtual ~ArActionColorFollow(void);
   
   // The action
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
 
   // Set the ACTS channel that we want to get blob info out of
-  MVREXPORT bool setChannel(int channel);
+  AREXPORT bool setChannel(int channel);
 
   // Set the camera that we will be controlling
-  MVREXPORT void setCamera(MvrPTZ *camera);
+  AREXPORT void setCamera(ArPTZ *camera);
 
   // Toggle whether we should try to acquire a blob
   // if one cannot be seen
-  MVREXPORT void setAcquire(bool acquire);
+  AREXPORT void setAcquire(bool acquire);
 
-  // Stop moving all together
-  MVREXPORT void stopMovement(void);
+  // Stop moving alltogether
+  AREXPORT void stopMovement(void);
   
   // Start moving
-  MVREXPORT void startMovement(void);
+  AREXPORT void startMovement(void);
 
   // Return the channel that we are looking for blobs on
-  MVREXPORT int getChannel();
+  AREXPORT int getChannel();
   
   // Return whether or not we are trying to acquire a blob
   // if we cannot see one
-  MVREXPORT bool getAcquire();
+  AREXPORT bool getAcquire();
   
   // Return whether or not we are moving
-  MVREXPORT bool getMovement();
+  AREXPORT bool getMovement();
 
   // Return whether or not we can see a target
-  MVREXPORT bool getBlob();
+  AREXPORT bool getBlob();
 
   // The state of the action
   enum TargetState 
@@ -85,16 +106,16 @@ public:
     RIGHT,          // The blob is on the right side of the screen
     CENTER          // The blob is relatively close to the center
   };
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
-  { return &myDesired; }
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+                                                        { return &myDesired; }
 #endif
 protected:
-  MvrActionDesired myDesired;
-  MvrACTS_1_2 *myActs;
-  MvrPTZ *myCamera;
-  MvrTime myLastSeen;
+  ArActionDesired myDesired;
+  ArACTS_1_2 *myActs;
+  ArPTZ *myCamera;
+  ArTime myLastSeen;
   TargetState myState;
   MoveState myMove;
   LocationState myLocation;
@@ -107,4 +128,5 @@ protected:
   double mySpeed;
 };
 
-#endif  // MVRACTIONCOLORFOLLOW_H
+
+#endif // ARACTIONCOLORFOLLOW_H

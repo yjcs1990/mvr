@@ -1,20 +1,38 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrAMPTU.h
- > Description  : A class with the commands for the AMPTU
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRAMPTU_H
-#define MVRAMPTU_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrBasePacket.h"
-#include "MvrPTZ.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARAMPTU_H
+#define ARAMPTU_H
+
+#include "ariaTypedefs.h"
+#include "ArBasePacket.h"
+#include "ArPTZ.h"
 
 /// A class with the commands for the AMPTU
-class MvrAMPTUCommands
+class ArAMPTUCommands
 {
 public:
   enum {
@@ -43,84 +61,93 @@ public:
 };
 
 /// A class for for making commands to send to the AMPTU
-
-class MvrAMPTUPacket: public MvrBasePacket
+/** 
+    There are only a few functioning ways to put things into this packet, you
+    MUST use thse, if you use anything else your commands won't work.  You 
+    must use byteToBuf and byte2ToBuf.  
+    @see getUnitNumber
+    @see setUnitNumber
+*/
+class ArAMPTUPacket: public ArBasePacket
 {
 public:
   /// Constructor
-  MVREXPORT MvrAMPTUPacket(MvrTypes::UByte2 bufferSize = 30);
+  AREXPORT ArAMPTUPacket(ArTypes::UByte2 bufferSize = 30);
   /// Destructor
-  MVREXPORT virtual ~MvrAMPTUPacket();
+  AREXPORT virtual ~ArAMPTUPacket();
 
   /// Gets the unit number this packet is for
-  MVREXPORT unsigned char getUnitNumber(void);
-  /// Sets the unit number this packet is for
-  MVREXPORT bool setUnitNumber(unsigned char unitNumber);
+  AREXPORT unsigned char getUnitNumber(void);
+  /// Sets the unit number htis packet is for
+  AREXPORT bool setUnitNumber(unsigned char unitNumber);
   
-  MVREXPORT virtual void byteToBuf(MvrTypes::Byte val);
-  MVREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
+  AREXPORT virtual void byteToBuf(ArTypes::Byte val);
+  AREXPORT virtual void byte2ToBuf(ArTypes::Byte2 val);
   
-  MVREXPORT virtual void finalizePacket(void);
+  AREXPORT virtual void finalizePacket(void);
 
 protected:
   unsigned char myUnitNumber;
 };
 
 /// Driver for the AMPTU
-
-class MvrAMPTU : public MvrPTZ
+/// @ingroup ObscureClasses
+class ArAMPTU : public ArPTZ
 {
 public:
   /// Constructor
-  MVREXPORT MvrAMPTU(MvrRobot *robot, int unitNumber = 0);
+  AREXPORT ArAMPTU(ArRobot *robot, int unitNumber = 0);
   /// Destructor
-  MVREXPORT virtual ~MvrAMPTU();
-  MVREXPORT virtual bool init(void);
-  MVREXPORT virtual const char *getTypeName() { return "amptu"; }
+  AREXPORT virtual ~ArAMPTU();
+  AREXPORT virtual bool init(void);
+  AREXPORT virtual const char *getTypeName() { return "amptu"; }
 protected:
-  MVREXPORT virtual bool pan_i(double deg);
-  MVREXPORT virtual bool panRel_i(double deg);
-  MVREXPORT virtual bool tilt_i(double deg);
-  MVREXPORT virtual bool tiltRel_i(double deg);
-  MVREXPORT virtual bool panTilt_i(double panDeg, double tiltDeg);
-  MVREXPORT virtual bool panTiltRel_i(double panDeg, double tiltDeg);
+  AREXPORT virtual bool pan_i(double deg);
+  AREXPORT virtual bool panRel_i(double deg);
+  AREXPORT virtual bool tilt_i(double deg);
+  AREXPORT virtual bool tiltRel_i(double deg);
+  AREXPORT virtual bool panTilt_i(double panDeg, double tiltDeg);
+  AREXPORT virtual bool panTiltRel_i(double panDeg, double tiltDeg);
 public:
   /// Sets the rate that the camera pans at
-  MVREXPORT bool panSlew(double deg);
+  AREXPORT bool panSlew(double deg);
   /// Sets the rate the camera tilts at 
-  MVREXPORT bool tiltSlew(double deg);
+  AREXPORT bool tiltSlew(double deg);
   virtual bool canZoom(void) const { return false; }
   virtual bool canPanTiltSlew() { return true; }
   
 
 
   /// Stops current pan/tilt, can be resumed later
-  MVREXPORT bool pause(void);
+  AREXPORT bool pause(void);
   /// Resumes a previously paused pan/tilt
-  MVREXPORT bool resume(void);
+  AREXPORT bool resume(void);
   /// Stops motion and purges last command
-  MVREXPORT bool purge(void);
+  AREXPORT bool purge(void);
   /// Retrieves the camera status
-  MVREXPORT bool requestStatus(void);
+  AREXPORT bool requestStatus(void);
   /// Gets the angle the camera is panned to
-  MVREXPORT virtual double getPan_i(void) const { return myPan; }
+  AREXPORT virtual double getPan_i(void) const { return myPan; }
   /// Gets the angle the camera is tilted to
-  MVREXPORT virtual double getTilt_i(void) const { return myTilt; }
+  AREXPORT virtual double getTilt_i(void) const { return myTilt; }
   enum {
     MIN_SLEW = 15,
     MAX_TILT_SLEW = 200,
     MAX_PAN_SLEW = 120
   };
 protected:
-  MvrRobot *myRobot;
-  MvrAMPTUPacket myPacket;
+  ArRobot *myRobot;
+  ArAMPTUPacket myPacket;
   int myUnitNumber;
   double myPan;
   double myTilt;
   double myPanSlew;
   double myTiltSlew;
-
+  /*double myCurPan;
+  double myCurTilt;
+  double myCurPanSlew;
+  double myCurTiltSlew;*/
 };
 
-#endif // MVRAMPTU_H
+#endif // ARAMPTU_H
 

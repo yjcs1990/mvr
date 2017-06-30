@@ -1,22 +1,41 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrThread.h
- > Description  : POSIX/WIN32 thread wrapper class. 
- > Author       : Yu Jie
- > Create Time  : 2017年05月22日
- > Modify Time  : 2017年05月22日
-***************************************************************************************************/
-#ifndef MVRTHREAD_H
-#define MVRTHREAD_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARTHREAD_H
+#define ARTHREAD_H
+
 
 #include <map>
 #if !defined(WIN32) || defined(MINGW)
 #include <pthread.h>
 #endif
-#include "mvriaTypedefs.h"
-#include "MvrMutex.h"
-#include "MvrFunctor.h"
-#include "MvrLog.h"
+#include "ariaTypedefs.h"
+#include "ArMutex.h"
+#include "ArFunctor.h"
+#include "ArLog.h"
 
 #ifdef MINGW
 #include <vector>
@@ -24,81 +43,101 @@
 #include <map>
 #endif
 
-class MvrThread
+/// POSIX/WIN32 thread wrapper class. 
+/**
+  create() will create the thread. That thread will run the given Functor.
+
+  A thread can either be in a detached state or a joinable state. If the
+  thread is in a detached state, that thread can not be join()'ed upon. The
+  thread will simply run until the program exits, or its function exits.
+  A joinable thread means that another thread and call join() upon it. If
+  this function is called, the caller will block until the thread exits
+  its function. This gives a way to synchronize upon the lifespan of threads.
+
+  Calling cancel() will cancel the thread.
+
+  The static function self() will return a thread
+
+  @sa ArASyncTask which provides a different approach with a simpler interface.
+
+*/
+class ArThread
 {
 public:
+
 #if defined(WIN32) && !defined(MINGW)
   typedef DWORD ThreadType;
 #else
   typedef pthread_t ThreadType;
 #endif
 
-/// pthread_t on Linux happens to be an integer or pointer that can be used in a map. 
-/// On other platforms, pthread_t may be a struct or similar, and this is true on MINGW, so store them differently.  
-/// Use the access methods that follow to access the map.
+// pthread_t on Linux happens to be an integer or pointer that can be used in a map. On other platforms, pthread_t may be a struct or similar, and this is true on MINGW, so store them differently.  Use the access methods that follow to access the map.
 #ifdef MINGW
-  typedef std::vector< std::pair<ThreadType, MvrThread*> > MapType;
+  typedef std::vector< std::pair<ThreadType, ArThread*> > MapType;
 #else
-  typedef std::map<ThreadType, MvrThread*> MapType;
+  typedef std::map<ThreadType, ArThread*> MapType;
 #endif
 
 protected:
-  static MvrThread* findThreadInMap(ThreadType t);
+  static ArThread* findThreadInMap(ThreadType t);
   static void removeThreadFromMap(ThreadType t); 
-  static void addThreadToMap(ThreadType pt, MvrThread *at);
+  static void addThreadToMap(ThreadType pt, ArThread *at);
   
 public:
   typedef enum {
-    STATUS_FAILED=1,         ///< Failed to create the thread
-    STATUS_NORESOURCE,       ///< Not enough system resources to create the thread
-    STATUS_NO_SUCH_THREAD,   ///< The thread can no longer be found
-    STATUS_INVALID,          ///< Thread is detached or another thread is joining on it
-    STATUS_JOIN_SELF,        ///< Thread is your own thread. Can't join on self.
+    STATUS_FAILED=1, ///< Failed to create the thread
+    STATUS_NORESOURCE, ///< Not enough system resources to create the thread
+    STATUS_NO_SUCH_THREAD, ///< The thread can no longer be found
+    STATUS_INVALID, ///< Thread is detached or another thread is joining on it
+    STATUS_JOIN_SELF, ///< Thread is your own thread. Can't join on self.
     STATUS_ALREADY_DETATCHED ///< Thread is already detatched
   } Status;
 
   /// Constructor
-  MVREXPORT MvrThread(bool blockAllSignals=true);
+  AREXPORT ArThread(bool blockAllSignals=true);
   /// Constructor - starts the thread
-  MVREXPORT MvrThread(ThreadType thread, bool joinable, bool blockAllSignals=true);
+  AREXPORT ArThread(ThreadType thread, bool joinable,
+		    bool blockAllSignals=true);
   /// Constructor - starts the thread
-  MVREXPORT MvrThread(MvrFunctor *func, bool joinable=true, bool blockAllSignals=true);
+  AREXPORT ArThread(ArFunctor *func, bool joinable=true,
+		    bool blockAllSignals=true);
   /// Destructor
-  MVREXPORT virtual ~MvrThread();
+  AREXPORT virtual ~ArThread();
 
   /// Initialize the internal book keeping structures
-  MVREXPORT static void init(void);
+  AREXPORT static void init(void);
   /// Returns the instance of your own thread (the current one)
-  MVREXPORT static MvrThread * self(void);
+  AREXPORT static ArThread * self(void);
   /// Returns the os self of the current thread
-  MVREXPORT static ThreadType osSelf(void);
+  AREXPORT static ThreadType osSelf(void);
   /// Stop all threads
-  MVREXPORT static void stopAll();
+  AREXPORT static void stopAll();
   /// Cancel all threads
-  MVREXPORT static void cancelAll(void);
+  AREXPORT static void cancelAll(void);
   /// Join on all threads
-  MVREXPORT static void joinAll(void);
+  AREXPORT static void joinAll(void);
 
   /// Shuts down and deletes the last remaining thread; call after joinAll
-  MVREXPORT static void shutdown();
+  AREXPORT static void shutdown();
 
   /// Yield the processor to another thread
-  MVREXPORT static void yieldProcessor(void);
+  AREXPORT static void yieldProcessor(void);
   /// Gets the logging level for thread information
-  static MvrLog::LogLevel getLogLevel(void) { return ourLogLevel; }
+  static ArLog::LogLevel getLogLevel(void) { return ourLogLevel; }
   /// Sets the logging level for thread information
-  static void setLogLevel(MvrLog::LogLevel level) { ourLogLevel = level; }
+  static void setLogLevel(ArLog::LogLevel level) { ourLogLevel = level; }
 
   /// Create and start the thread
-  MVREXPORT virtual int create(MvrFunctor *func, bool joinable=true, bool lowerPriority=true);
+  AREXPORT virtual int create(ArFunctor *func, bool joinable=true,
+			      bool lowerPriority=true);
   /// Stop the thread
   virtual void stopRunning(void) {myRunning=false;}
   /// Join on the thread
-  MVREXPORT virtual int join(void **ret=NULL);
+  AREXPORT virtual int join(void **ret=NULL);
   /// Detatch the thread so it cant be joined
-  MVREXPORT virtual int detach(void);
+  AREXPORT virtual int detach(void);
   /// Cancel the thread
-  MVREXPORT virtual void cancel(void);
+  AREXPORT virtual void cancel(void);
 
   /// Get the running status of the thread
   virtual bool getRunning(void) const {return(myRunning);}
@@ -112,23 +151,23 @@ public:
   /// Get the underlying os thread type
   virtual ThreadType getOSThread(void) const {return(myThread);}
   /// Get the functor that the thread runs
-  virtual MvrFunctor * getFunc(void) const {return(myFunc);}
+  virtual ArFunctor * getFunc(void) const {return(myFunc);}
 
   /// Set the running value on the thread
   virtual void setRunning(bool running) {myRunning=running;}
 
 #ifndef SWIG
-  /*
-   * Lock the thread instance
-   */
+  /** Lock the thread instance
+      @swigomit
+  */
   int lock(void) {return(myMutex.lock());}
-  /*
-   * Try to lock the thread instance without blocking
-   */
+  /** Try to lock the thread instance without blocking
+      @swigomit
+  */
   int tryLock(void) {return(myMutex.tryLock());}
-  /*
-   * Unlock the thread instance
-   */
+  /** Unlock the thread instance
+      @swigomit
+  */
   int unlock(void) {return(myMutex.unlock());}
 #endif
 
@@ -139,7 +178,7 @@ public:
   virtual const char *getThreadName(void) { return myName.c_str();  }
 
   /// Sets the name of the thread
-  MVREXPORT virtual void setThreadName(const char *name);
+  AREXPORT virtual void setThreadName(const char *name);
 
   /// Gets a string that describes what the thread is doing NULL if it
   /// doesn't know
@@ -151,7 +190,7 @@ public:
      then call some things for logging (to make debugging easier)
      This method should be called before the main thread loop begins.
    **/
-  MVREXPORT virtual void threadStarted(void);
+  AREXPORT virtual void threadStarted(void);
 
   /// Marks the thread as finished and logs useful debugging information.
   /**
@@ -159,25 +198,25 @@ public:
      enables the creator of the thread to determine that the thread has
      actually been completed and can be deleted.
    **/
-  MVREXPORT virtual void threadFinished(void);
+  AREXPORT virtual void threadFinished(void);
 
   /// Returns whether the thread has been started.
   /**
    * This is dependent on the thread implementation calling the 
    * threadStarted() method.
   **/
-  MVREXPORT virtual bool isThreadStarted() const;
+  AREXPORT virtual bool isThreadStarted() const;
 
   /// Returns whether the thread has been completed and can be deleted.
   /**
    * This is dependent on the thread implementation calling the 
    * threadFinished() method.
   **/
-  MVREXPORT virtual bool isThreadFinished() const;
+  AREXPORT virtual bool isThreadFinished() const;
 
 
   /// Logs the information about this thread
-  MVREXPORT virtual void logThreadInfo(void);
+  AREXPORT virtual void logThreadInfo(void);
 
 #ifndef WIN32
   pid_t getPID(void) { return myPID; }
@@ -185,25 +224,25 @@ public:
 #endif
 
   /// Gets the name of the this thread
-  MVREXPORT static const char *getThisThreadName(void);
+  AREXPORT static const char *getThisThreadName(void);
   /// Get the underlying thread type of this thread
-  MVREXPORT static const ThreadType * getThisThread(void);
+  AREXPORT static const ThreadType * getThisThread(void);
   /// Get the underlying os thread type of this thread
-  MVREXPORT static ThreadType getThisOSThread(void);
+  AREXPORT static ThreadType getThisOSThread(void);
 
 protected:
-  static MvrMutex ourThreadsMutex;
+  static ArMutex ourThreadsMutex;
   static MapType ourThreads;
 #if defined(WIN32) && !defined(MINGW)
-  static std::map<HANDLE, MvrThread *> ourThreadHandles;
+  static std::map<HANDLE, ArThread *> ourThreadHandles;
 #endif 
-  MVREXPORT static MvrLog::LogLevel ourLogLevel; 
+  AREXPORT static ArLog::LogLevel ourLogLevel; 
 
-  MVREXPORT virtual int doJoin(void **ret=NULL);
+  AREXPORT virtual int doJoin(void **ret=NULL);
 
   std::string myName;
 
-  MvrMutex myMutex;
+  ArMutex myMutex;
   /// State variable to denote when the thread should continue or exit
   bool myRunning;
   bool myJoinable;
@@ -212,13 +251,14 @@ protected:
   bool myStarted;
   bool myFinished;
 
-  MvrStrMap myStrMap;
-  MvrFunctor *myFunc;
+  ArStrMap myStrMap;
+  ArFunctor *myFunc;
   ThreadType myThread;
 #if defined(WIN32) && !defined(MINGW)
   HANDLE myThreadHandle;
 #endif
 
+  
 #if !defined(WIN32) || defined(MINGW)
   pid_t myPID;
   pid_t myTID;
@@ -227,4 +267,5 @@ protected:
   static std::string ourUnknownThreadName;
 };
 
-#endif  // MVRTHREAD_H
+
+#endif // ARTHREAD_H

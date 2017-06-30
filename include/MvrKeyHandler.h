@@ -1,17 +1,34 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrKeyHandler.h
- > Description  : Perform actions when keyboard keys are pressed
- > Author       : Yu Jie
- > Create Time  : 2017年05月22日
- > Modify Time  : 2017年05月22日
-***************************************************************************************************/
-/// @ingroup OptionalClasses
-#ifndef MVRKEYHANDLER_H
-#define MVRKEYHANDLER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrFunctor.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARKEYHANDLER_H
+#define ARKEYHANDLER_H
+
+#include "ariaTypedefs.h"
+#include "ArFunctor.h"
 #include <map>
 #include <stdio.h>
 
@@ -20,89 +37,123 @@
 #include <unistd.h>
 #endif
 
-class MvrKeyHandler
+
+/// Perform actions when keyboard keys are pressed
+/**
+   This class is used for handling input from the keyboard.
+   Use addKeyHandler() to associate a functor with a keyboard key.
+   ArKeyHandler will call that functor when the key is pressed.
+
+   You should also register the keyhandler with Aria::setKeyHandler(),
+   and before you create a key handler you should see if one is
+   already there with Aria::getKeyHandler().  Only one key handler
+   can be created in a program, and this lets independent parts
+   of a program use the same key handler.
+   
+   You can attach a key handler to a robot with
+   ArRobot::attachKeyHandler() which will put a task into the robots
+   list of tasks to check for new keyboard input in each cycle, and which
+   will also add a handler to end the robot's task cycle when Escape is pressed
+   (you can override this by replacing it with your own handler).
+   If you have mulitple ArRobot objects, only create one key handler and attach
+   it to one robot.
+
+   Alternatively, you can call checkKeys() periodically to check for new key input.
+
+  @ingroup OptionalClasses
+**/
+
+class ArKeyHandler
 {
 public:
   /// This object will take over key capture when constructed, and release
-  /// kye capture when destroyed
-  MVREXPORT MvrKeyHandler(bool blocking=false, bool addMvriaExitCB=true, FILE *stream=NULL,
-                          bool takeKeysInConstructor=true);
+  /// key capture when destroyed.
+  AREXPORT ArKeyHandler(bool blocking = false, bool addAriaExitCB = true, 
+			FILE *stream = NULL, 
+			bool takeKeysInConstructor = true);
+
   /// Destructor. Reseases control of the keyboard and restores state before
   /// this key handler was created.
-  MVREXPORT ~MvrKeyHandler();
+  AREXPORT ~ArKeyHandler();
 
   /// These are symbols for the non-ascii keys
   enum KEY {
-    UP = 256,       /// < Up arrow (keypad or 4 key dirs)
-    DOWN,           /// < Down arrow (keypad or 4 kye dirs)
-    LEFT,           /// < Left arrow (keypad or 4 kye dirs)
-    RIGHT,          /// < Right arrow (keypad or 4 kye dirs)
-    ESCAPE,         /// < Escape key
-    SPACE,          /// < Space key
-    TAB,            /// < Tab key
-    ENTER,          /// < Enter key
-    BACKSPACE,      /// < Backspace key
-    _StartFKeys,    /// < F key offset (internal, don;t use).
-    F1,             /// < F1
-    F2,             /// < F2
-    F3,             /// < F3
-    F4,             /// < F4
-    F5,             /// < F5 (not supported on Windows yet)
-    F6,             /// < F6 (not supported on Windows yet)
-    F7,             /// < F7 (not supported on Windows yet)
-    F8,             /// < F8 (not supported on Windows yet)
-    F9,             /// < F9 (not supported on Windows yet)
-    F10,            /// < F10 (not supported on Windows yet)
-    F11,            /// < F11 (not supported on Windows yet)
-    F12,            /// < F12 (not supported on Windows yet)
-    _EndFKeys,      /// < F key range (internal; don't use)
-    PAGEUP,         /// < Page Up (not supported on Windows yet)
-    PAGEDOWN,       /// < Page Down (not supported on Windows yet)
-    HOME,           /// < Home key (not supported on Windows yet)
-    END,            /// < End key (not supported on Windows yet)
-    INSERT,         /// < Insert key (not supported on Windows yet)
-    DEL             /// < Special delete key (often forward-delete) (not supported on Windows yet)
+    UP = 256, ///< Up arrow (keypad or 4 key dirs)
+    DOWN, ///< Down arrow (keypad or 4 key dirs)
+    LEFT, ///< Left arrow (keypad or 4 key dirs)
+    RIGHT, ///< Right arrow (keypad or 4 key dirs)
+    ESCAPE, ///< Escape key
+    SPACE, ///< Space key
+    TAB, ///< Tab key
+    ENTER, ///< Enter key
+    BACKSPACE, ///< Backspace key
+    _StartFKeys,  ///< F key offset (internal; don't use).
+    F1, ///< F1
+    F2, ///< F2
+    F3, ///< F3
+    F4, ///< F4
+    F5, ///< F5 (not supported on Windows yet)
+    F6, ///< F6 (not supported on Windows yet)
+    F7, ///< F7 (not supported on Windows yet)
+    F8, ///< F8 (not supported on Windows yet)
+    F9, ///< F9 (not supported on Windows yet)
+    F10, ///< F10 (not supported on Windows yet)
+    F11, ///< F11 (not supported on Windows yet)
+    F12, ///< F12 (not supported on Windows yet)
+    _EndFKeys, ///< F key range (internal; don't use)
+    PAGEUP, ///< Page Up (not supported on Windows yet)
+    PAGEDOWN, ///< Page Down (not supported on Windows yet)
+    HOME,   ///< Home key (not supported on Windows yet)
+    END,    ///< End key (not supported on Windows yet)
+    INSERT, ///< Insert key (not supported on Windows yet)
+    DEL  ///< Special delete key (often forward-delete) (not supported on Windows yet)
   };
 
   /// This adds a keyhandler, when the keyToHandle is hit, functor will fire
-  MVREXPORT bool addKeyHandler(int keyToHandler, MvrFunctor *functor);
+  AREXPORT bool addKeyHandler(int keyToHandle, ArFunctor *functor);
+
   /// This removes a key handler, by key
-  MVREXPORT bool remKeyHandler(int keyToHandler);
-  MVREXPORT bool remKeyHandler(MvrFunctor *functor);
-  
+  AREXPORT bool remKeyHandler(int keyToHandler);
+  /// This removes a key handler, by key
+  AREXPORT bool remKeyHandler(ArFunctor *functor);
+
   /// Takes the key control over. For internal or special use, since it's
-  /// called in the constructor
-  MVREXPORT void takeKeys(bool blocking=false);
-  
-  /// Sets stdin back to tis original settings, if its been restored
-  /// it won't read anymore. For internal or special use, since it's
-  /// called in the destructor 
-  MVREXPORT void restore(void);
-  
+  /// called in the constructor.
+  AREXPORT void takeKeys(bool blocking = false);
+
+  /// Sets stdin back to its original settings, if its been restored
+  /// it won't read anymore. For internal or special use, since it's 
+  /// called in the destructor.
+  AREXPORT void restore(void);
+
   ///  Checks for keys and handles them. This is automatically done in an
-  /// MvrRobot task if a keyhandler attached to MvrRobot with
-  /// MvrRobot::attachKeyHandler() or Mvria::setKeyHandler(), in which case 
-  /// you do not need to call it.  If not using or running an MvrRobot 
+  /// ArRobot task if a keyhandler attached to ArRobot with
+  /// ArRobot::attachKeyHandler() or Aria::setKeyHandler(), in which case 
+  /// you do not need to call it.  If not using or running an ArRobot 
   /// task cycle, call this instead.
-  MVREXPORT void checkKeys(void);
+  AREXPORT void checkKeys(void);
   
   /// internal, use addKeyHandler instead... Gets a key from the stdin if ones
   /// available, -1 if there aren't any available
-  MVREXPORT int getKey(void);
+  AREXPORT int getKey(void);
+
 protected:
 #ifndef WIN32
   int getChar(void);
-#endif  // WIN32
-  std::map<int, MvrFunctor *> myMap;
-  bool myBlocking;
+#endif 
 
+  std::map<int, ArFunctor *> myMap;
+  bool myBlocking;
+  
   bool myRestored;
-  MvrFunctorC<MvrKeyHandler> myMvriaExitCB;
+  ArFunctorC<ArKeyHandler> myAriaExitCB;
 #ifndef WIN32
   struct termios myOriginalTermios;
-#endif 
+#endif
+  
   FILE *myStream;
   bool myTookKeys;
 };
 
-#endif  // MVRKEYHANDLER_H
+
+#endif // ARKEYHANDLER_H

@@ -1,68 +1,85 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotPacket.h
- > Description  : Represents the packets sent to the robot as well as those received from it
- > Author       : Yu Jie
- > Create Time  : 2017年05月18日
- > Modify Time  : 2017年06月21日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "stdio.h"
-#include "MvrRobotPacket.h"
-
 /*
- * @param sync1 first byte of the header of this packet, this should be left as
- * the default in nearly all cases, ie don't mess with it
- * @param sync2 second byte of the header of this packet, this should be left
- * as the default in nearly all cases, ie don't mess with it
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArRobotPacket.h"
+#include "stdio.h"
+
+/**
+   @param sync1 first byte of the header of this packet, this should be left as
+   the default in nearly all cases, ie don't mess with it
+   @param sync2 second byte of the header of this packet, this should be left
+   as the default in nearly all cases, ie don't mess with it
  */
-MVREXPORT MvrRobotPacket::MvrRobotPacket(unsigned char sync1, unsigned char sync2)
+AREXPORT ArRobotPacket::ArRobotPacket(unsigned char sync1,
+				      unsigned char sync2) :
+    ArBasePacket(265, 4, NULL, 2)
 {
   mySync1 = sync1;
   mySync2 = sync2;
-} 
-
-MVREXPORT MvrRobotPacket::~MvrRobotPacket()
-{
-
 }
 
-MVREXPORT MvrRobotPacket &MvrRobotPacket::operator=(const MvrRobotPacket &other)
+AREXPORT ArRobotPacket::~ArRobotPacket()
 {
-  if (this != &other)
-  {
-    myHeaderLength   = other.myHeaderLength;
-    myFootererLength = other.myFootererLength;
-    myReadLength     = other.myReadLength;
-    myLength         = other.myLength;
-    mySync1          = other.mySync1;
-    mySync2          = other.mySync2;
-    myTimeReceived   = other.myTimeReceived;
+}
 
-    if (myMaxLength != other.myMaxLength)
-    {
+AREXPORT ArRobotPacket &ArRobotPacket::operator=(const ArRobotPacket &other)
+{
+  if (this != &other) {
+
+    myHeaderLength = other.myHeaderLength;
+    myFooterLength = other.myFooterLength;
+    myReadLength   = other.myReadLength;
+    myLength = other.myLength;
+    mySync1 = other.mySync1;
+    mySync2 = other.mySync2;
+    myTimeReceived = other.myTimeReceived;
+
+    if (myMaxLength != other.myMaxLength) {
       if (myOwnMyBuf && myBuf != NULL)
-        delete [] myBuf;
+	delete [] myBuf;
       myOwnMyBuf = true;
-      myBuf      = NULL;
-      if (other.myMaxLength > 0)
-      {
-        myMaxLength = new char [other.myMaxLength];
+      myBuf = NULL;
+      if (other.myMaxLength > 0) {
+        myBuf = new char[other.myMaxLength];
       }
       myMaxLength = other.myMaxLength;
     }
 
-    if ((myBuf != NULL) && (other.myBuf != NULL))
-    {
+    if ((myBuf != NULL) && (other.myBuf != NULL)) {
       memcpy(myBuf, other.myBuf, myMaxLength);
     }
+   
     myIsValid = other.myIsValid;
   }
   return *this;
 }
 
-MVREXPORT MvrTypes::UByte MvrRobotPacket::getID(void)
+AREXPORT ArTypes::UByte ArRobotPacket::getID(void)
 {
   if (myLength >= 4)
     return myBuf[3];
@@ -70,12 +87,12 @@ MVREXPORT MvrTypes::UByte MvrRobotPacket::getID(void)
     return 0;
 }
 
-MVREXPORT void MvrRobotPacket::SetID(MvrTypes::UByte id)
+AREXPORT void ArRobotPacket::setID(ArTypes::UByte id)
 {
   myBuf[3] = id;
 }
 
-MVREXPORT void MvrRobotPacket::finalizePacket(void)
+AREXPORT void ArRobotPacket::finalizePacket(void)
 {
   int len = myLength;
   int chkSum;
@@ -83,13 +100,12 @@ MVREXPORT void MvrRobotPacket::finalizePacket(void)
   myLength = 0;
   uByteToBuf(mySync1);
   uByteToBuf(mySync2);
-  uByteToBuf(len-getHeaderLength() + 3);
+  uByteToBuf(len - getHeaderLength() + 3);
   myLength = len;
 
   chkSum = calcCheckSum();
-  byteToBuf((chkSum >> 8) && 0xff);
-  byteToBuf(chkSum & 0xff);
-
+  byteToBuf((chkSum >> 8) & 0xff );
+  byteToBuf(chkSum & 0xff );
   /* Put this in if you want to see the packets being outputted 
      printf("Output(%3d) ", getID());
      printHex();
@@ -98,71 +114,72 @@ MVREXPORT void MvrRobotPacket::finalizePacket(void)
   //printf("Output %d\n", getID());
 }
 
-MVREXPORT MvrTypes::Byte2 MvrRobotPacket::calcCheckSum(void)
+AREXPORT ArTypes::Byte2 ArRobotPacket::calcCheckSum(void)
 {
   int i;
   unsigned char n;
   int c = 0;
 
   i = 3;
-  n = myBuf[2] - 3;
-  while (n > 1)
-  {
-    c += ((unsigned char)myBuf[i] << 8) | (unsigned char)myBuf[i+1];
+  n = myBuf[2] - 2;
+  while (n > 1) {
+    c += ((unsigned char)myBuf[i]<<8) | (unsigned char)myBuf[i+1];
     c = c & 0xffff;
     n -= 2;
     i += 2;
   }
-  if (n > 0)
+  if (n > 0) 
     c = c ^ (int)((unsigned char) myBuf[i]);
   return c;
 }
 
-
-MVREXPORT bool MvrRobotPacket::verifyCheckSum(void)
+AREXPORT bool ArRobotPacket::verifyCheckSum(void) 
 {
-  MvrTypes::Byte2 chksum;
+  ArTypes::Byte2 chksum;
   unsigned char c1, c2;
 
   if (myLength - 2 < myHeaderLength)
     return false;
-  
+
   c2 = myBuf[myLength - 2];
   c1 = myBuf[myLength - 1];
+  chksum = (c1 & 0xff) | (c2 << 8);
 
-  if (chksum == calcCheckSum())
+  if (chksum == calcCheckSum()) {
     return true;
-  else
+  } else {
     return false;
+  }
+  
 }
 
-MVREXPORT MvrTime MvrRobotPacket::getTimeReceived(void)
+AREXPORT ArTime ArRobotPacket::getTimeReceived(void)
 {
   return myTimeReceived;
 }
 
-MVREXPORT void MvrRobotPacket::setTimeReceived(MvrTime timeReceived)
+AREXPORT void ArRobotPacket::setTimeReceived(ArTime timeReceived)
 {
   myTimeReceived = timeReceived;
 }
 
-MVREXPORT void MvrRobotPacket::log(void)
+AREXPORT void ArRobotPacket::log()
 {
   int i;
-  MvrLog::log(MvrLog::Normal,
-              "Robot Packet: (length = %i)", myLength);
+  ArLog::log(ArLog::Normal, "Robot Packet: (length = %i)", myLength);
   for (i = 0; i < myLength; i++)
-    MvrLog::log(MvrLog::Terse,
-                "  [%03i] % 5d\t0x%x\t%c\t%s", i,
-                (unsigned char) myBuf[i],
-                (unsigned char) myBuf[i],
-                (myBuf[i] >= ' ' && myBuf[i] <= '~') ? (unsigned char) myBuf[i] : ' ',
-                i == 0 ? "[header0]" :
-                  i ==  1 ? "[header1]" :
-                    i == 2 ? "[packet data length]" :
-                      i == 3 ? "[packet id]" :
-                        i == (myLength - 2) ? "[first checksum byte]" :
-                          i == (myLength - 1) ? "[second checksum byte]" :
-                            "" );
-  MvrLog::log(MvrLog::Terse, "\n");
+    ArLog::log(ArLog::Terse, "  [%03i] % 5d\t0x%x\t%c\t%s", i,
+        (unsigned char) myBuf[i],
+        (unsigned char) myBuf[i],
+        (myBuf[i] >= ' ' && myBuf[i] <= '~') ? (unsigned char) myBuf[i] : ' ',
+        i == 0 ? "[header0]" :
+          i == 1 ? "[header1]" :
+            i == 2 ? "[packet data length]" :
+              i == 3 ? "[packet id]" :
+                i == (myLength - 2) ? "[first checksum byte]" :
+                  i == (myLength - 1) ? "[second checksum byte]" :
+                    ""
+    );
+  ArLog::log(ArLog::Terse, "\n");
 }
+

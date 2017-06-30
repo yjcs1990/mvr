@@ -1,13 +1,5 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvriaInternal.h
- > Description  : Contains global initialization, deinitialization and other global functions
- > Author       : Yu Jie
- > Create Time  : 2017年05月23日
- > Modify Time  : 2017年05月23日
-***************************************************************************************************/
 /*
-Adept MobileRobots Robotics Interface for Applications (MVRIA)
+Adept MobileRobots Robotics Interface for Applications (ARIA)
 Copyright (C) 2004-2005 ActivMedia Robotics LLC
 Copyright (C) 2006-2010 MobileRobots Inc.
 Copyright (C) 2011-2015 Adept Technology, Inc.
@@ -19,322 +11,324 @@ Copyright (C) 2016 Omron Adept Technologies, Inc.
      (at your option) any later version.
 
      This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WMVRRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PMVRTICULMVR PURPOSE.  See the
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
 
      You should have received a copy of the GNU General Public License
      along with this program; if not, write to the Free Software
      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-If you wish to redistribute MVRIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of MVRIA at 
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#ifndef MVRIAINTERNAL_H
-#define MVRIAINTERNAL_H
+#ifndef ARIAINTERNAL_H
+#define ARIAINTERNAL_H
 
 
-#include "MvrMutex.h"
-#include "MvrFunctor.h"
-#include "MvrConfig.h"
+#include "ArMutex.h"
+#include "ArFunctor.h"
+#include "ArConfig.h"
 
-#ifndef MVRINTERFACE
-#include "MvrStringInfoGroup.h"
-class MvrRobot;
-class MvrRobotJoyHandler;
-class MvrSonarMTX;
-class MvrBatteryMTX;
-class MvrLCDMTX;
-#endif // MVRINTERFACE
+#ifndef ARINTERFACE
+#include "ArStringInfoGroup.h"
+class ArRobot;
+class ArRobotJoyHandler;
+class ArSonarMTX;
+class ArBatteryMTX;
+class ArLCDMTX;
+#endif // ARINTERFACE
 
-class MvrKeyHandler;
-class MvrJoyHandler;
+class ArKeyHandler;
+class ArJoyHandler;
 
 
-/*
- * Contains global initialization, deinitialization and other global functions
- */
-class Mvria
+/** Contains global initialization, deinitialization and other global functions
+    @ingroup ImportantClasses
+*/
+class Aria
 {
 public:
+
   typedef enum {
     SIGHANDLE_SINGLE, ///< Setup signal handlers in a global, non-thread way
     SIGHANDLE_THREAD, ///< Setup a dedicated signal handling thread
-    SIGHANDLE_NONE    ///< Do no signal handling
+    SIGHANDLE_NONE ///< Do no signal handling
   } SigHandleMethod;
 
-	/// Initialize Mvria global data struture and perform OS-specific initialization, including adding OS signal handlers on Linux, initializing sockets library on Windows, etc.
-  MVREXPORT static void init(SigHandleMethod method = SIGHANDLE_THREAD,
+	/// Initialize Aria global data struture and perform OS-specific initialization, including adding OS signal handlers on Linux, initializing sockets library on Windows, etc.
+  AREXPORT static void init(SigHandleMethod method = SIGHANDLE_THREAD,
 			    bool initSockets = true, 
 			    bool sigHandleExitNotShutdown = true);
 
   /// Performs OS-specific deinitialization, used by shutdown() and exit().
-  MVREXPORT static void uninit();
+  AREXPORT static void uninit();
 
-  /// Adds a callback to call when Mvria is initialized using init()
-  MVREXPORT static void addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position);
+  /// Adds a callback to call when Aria is initialized using init()
+  AREXPORT static void addInitCallBack(ArFunctor *cb, ArListPos::Pos position);
 
-  /// Adds a callback to call when Mvria is uninititialized using uninit()
-  MVREXPORT static void addUninitCallBack(MvrFunctor *cb,
-					 MvrListPos::Pos position);
+  /// Adds a callback to call when Aria is uninititialized using uninit()
+  AREXPORT static void addUninitCallBack(ArFunctor *cb,
+					 ArListPos::Pos position);
 
-  /// Shutdown all Mvria processes/threads
-  MVREXPORT static void shutdown();
+  /// Shutdown all Aria processes/threads
+  AREXPORT static void shutdown();
 
-  /// Shutdown all Mvria processes/threads, call exit callbacks, and exit the program
-  MVREXPORT static void exit(int exitCode = 0);
+  /// Shutdown all Aria processes/threads, call exit callbacks, and exit the program
+  AREXPORT static void exit(int exitCode = 0);
 
-  /// Sees if Mvria is still running (mostly for the thread in main)
-  MVREXPORT static bool getRunning(void);
+  /// Sees if Aria is still running (mostly for the thread in main)
+  AREXPORT static bool getRunning(void);
 
-  /// Sets the directory that MVRIA resides in, to override default
-  MVREXPORT static void setDirectory(const char * directory);
+  /// Sets the directory that ARIA resides in, to override default
+  AREXPORT static void setDirectory(const char * directory);
 
-  /// Gets the directory that MVRIA resides in
-  MVREXPORT static const char *getDirectory(void);
+  /// Gets the directory that ARIA resides in
+  AREXPORT static const char *getDirectory(void);
 
-  /// Parses the arguments for the program (calls all the callbacks added with addParseMvrgsCB())
-  MVREXPORT static bool parseMvrgs(void);
+  /// Parses the arguments for the program (calls all the callbacks added with addParseArgsCB())
+  AREXPORT static bool parseArgs(void);
 
   /// Logs all the options for the program (Calls all the callbacks added with addLogOptionsCB())
-  MVREXPORT static void logOptions(void);
+  AREXPORT static void logOptions(void);
 
   /// Sets the key handler, so that other classes can find it using getKeyHandler()
-  MVREXPORT static void setKeyHandler(MvrKeyHandler *keyHandler);
+  AREXPORT static void setKeyHandler(ArKeyHandler *keyHandler);
 
   /// Gets a pointer to the global key handler, if one has been set with setKeyHandler()
-  MVREXPORT static MvrKeyHandler *getKeyHandler(void);
+  AREXPORT static ArKeyHandler *getKeyHandler(void);
 
   /// Sets the joystick handler, so that other classes can find it using getJoyHandler()
-  MVREXPORT static void setJoyHandler(MvrJoyHandler *joyHandler);
+  AREXPORT static void setJoyHandler(ArJoyHandler *joyHandler);
 
   /// Get a pointer to the joystick handler if one has been set with setJoyHandler()
-  MVREXPORT static MvrJoyHandler *getJoyHandler(void);
+  AREXPORT static ArJoyHandler *getJoyHandler(void);
 
-  /// Adds a functor to by called before program exit by Mvria::exit()
-  MVREXPORT static void addExitCallback(MvrFunctor *functor, int position = 50);
+  /// Adds a functor to by called before program exit by Aria::exit()
+  AREXPORT static void addExitCallback(ArFunctor *functor, int position = 50);
 
-  /// Removes a functor to by called before program exit by Mvria::exit()
-  MVREXPORT static void remExitCallback(MvrFunctor *functor);
+  /// Removes a functor to by called before program exit by Aria::exit()
+  AREXPORT static void remExitCallback(ArFunctor *functor);
 
   /// Sets the log level for the exit callbacks
-  MVREXPORT static void setExitCallbacksLogLevel(MvrLog::LogLevel level);
+  AREXPORT static void setExitCallbacksLogLevel(ArLog::LogLevel level);
 
-  /// Force an exit of all Mvria processes/threads (the old way)
-  MVREXPORT static void exitOld(int exitCode = 0);
+  /// Force an exit of all Aria processes/threads (the old way)
+  AREXPORT static void exitOld(int exitCode = 0);
 
   /// Internal, the callback for the signal handling
-  MVREXPORT static void signalHandlerCB(int sig);
+  AREXPORT static void signalHandlerCB(int sig);
 
   /// Internal, calls the exit callbacks
-  MVREXPORT static void callExitCallbacks(void);
+  AREXPORT static void callExitCallbacks(void);
 
   /// Adds a callback for when we parse arguments 
-  MVREXPORT static void addParseMvrgsCB(MvrRetFunctor<bool> *functor, 
+  AREXPORT static void addParseArgsCB(ArRetFunctor<bool> *functor, 
 				      int position = 50);
 
   /// Sets the log level for the parsing function
-  MVREXPORT static void setParseMvrgLogLevel(MvrLog::LogLevel level);
+  AREXPORT static void setParseArgLogLevel(ArLog::LogLevel level);
 
   /// Adds a callback for when we log options
-  MVREXPORT static void addLogOptionsCB(MvrFunctor *functor, int position = 50);
+  AREXPORT static void addLogOptionsCB(ArFunctor *functor, int position = 50);
 
-  /// Adds a type of deviceConnection for Mvria to be able to create
-  MVREXPORT static bool deviceConnectionAddCreator(
+  /// Adds a type of deviceConnection for Aria to be able to create
+  AREXPORT static bool deviceConnectionAddCreator(
 	  const char *deviceConnectionType, 
-	  MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *creator);
+	  ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *creator);
 
+  
   /// Gets a list of the possible deviceConnection types
-  MVREXPORT static const char *deviceConnectionGetTypes(void);
+  AREXPORT static const char *deviceConnectionGetTypes(void);
 
   /// Gets a list of the possible deviceConnection types (for use in the config)
-  MVREXPORT static const char *deviceConnectionGetChoices(void);
+  AREXPORT static const char *deviceConnectionGetChoices(void);
   
   /// Creates a deviceConnection of the given type
-  MVREXPORT static MvrDeviceConnection *deviceConnectionCreate(
+  AREXPORT static ArDeviceConnection *deviceConnectionCreate(
 	  const char *deviceConnectionType, const char *port, 
 	  const char *defaultInfo, 
-	  const char *prefix = "Mvria::deviceConnectionCreate");
+	  const char *prefix = "Aria::deviceConnectionCreate");
 
-#ifndef MVRINTERFACE
+#ifndef ARINTERFACE
   /// Sets the robot joystick handler, so that other classes can find it
-  MVREXPORT static void setRobotJoyHandler(MvrRobotJoyHandler *robotJoyHandler);
+  AREXPORT static void setRobotJoyHandler(ArRobotJoyHandler *robotJoyHandler);
 
   /// Gets the robot joystick handler if one has been set
-  MVREXPORT static MvrRobotJoyHandler *getRobotJoyHandler(void);
+  AREXPORT static ArRobotJoyHandler *getRobotJoyHandler(void);
 
-  /// Gets the MvrConfig for this program
-  MVREXPORT static MvrConfig *getConfig(void);
+  /// Gets the ArConfig for this program
+  AREXPORT static ArConfig *getConfig(void);
 
-  /// Gets the MvrStringInfoGroup for this program
-  MVREXPORT static MvrStringInfoGroup *getInfoGroup(void);
+  /// Gets the ArStringInfoGroup for this program
+  AREXPORT static ArStringInfoGroup *getInfoGroup(void);
 
   /// Add a robot to the global list of robots
-  MVREXPORT static void addRobot(MvrRobot *robot);
+  AREXPORT static void addRobot(ArRobot *robot);
 
   /// Remove a robot from the global list of robots
-  MVREXPORT static void delRobot(MvrRobot *robot);
+  AREXPORT static void delRobot(ArRobot *robot);
 
   /// Finds a robot in the global list of robots, by name
-  MVREXPORT static MvrRobot *findRobot(char *name);
+  AREXPORT static ArRobot *findRobot(char *name);
 
   /// Get a copy of the global robot list
-  MVREXPORT static std::list<MvrRobot*> * getRobotList();
+  AREXPORT static std::list<ArRobot*> * getRobotList();
   
   /// Gets the maximum number of lasers to use
-  MVREXPORT static int getMaxNumLasers(void);
+  AREXPORT static int getMaxNumLasers(void);
 
   /// Sets the maximum number of lasers to use
-  MVREXPORT static void setMaxNumLasers(int maxNumLasers);
+  AREXPORT static void setMaxNumLasers(int maxNumLasers);
 
   /// Gets the maximum number of sonars to use
-  MVREXPORT static int getMaxNumSonarBoards(void);
+  AREXPORT static int getMaxNumSonarBoards(void);
 
   /// Sets the maximum number of sonars to use
-  MVREXPORT static void setMaxNumSonarBoards(int maxNumSonarBoards);
+  AREXPORT static void setMaxNumSonarBoards(int maxNumSonarBoards);
 
   /// Gets the maximum number of batteris to use
-  MVREXPORT static int getMaxNumBatteries(void);
+  AREXPORT static int getMaxNumBatteries(void);
 
   /// Sets the maximum number of batteries to use
-  MVREXPORT static void setMaxNumBatteries(int maxNumBatteries);
-	
+  AREXPORT static void setMaxNumBatteries(int maxNumBatteries);
+
 	// Gets the maximum number of lcds to use
-  MVREXPORT static int getMaxNumLCDs(void);
+  AREXPORT static int getMaxNumLCDs(void);
 
   /// Sets the maximum number of batteries to use
-  MVREXPORT static void setMaxNumLCDs(int maxNumLCDs);
+  AREXPORT static void setMaxNumLCDs(int maxNumLCDs);
 
   /// Creates a laser of the given type
-  MVREXPORT static MvrLaser *laserCreate(
+  AREXPORT static ArLaser *laserCreate(
 	  const char *laserType, int laserNumber,
-	  const char *prefix = "Mvria::laserCreate");
+	  const char *prefix = "Aria::laserCreate");
 
-  /// Adds a type of laser for Mvria to be able to create
-  MVREXPORT static bool laserAddCreator(
+  /// Adds a type of laser for Aria to be able to create
+  AREXPORT static bool laserAddCreator(
 	  const char *laserType, 
-	  MvrRetFunctor2<MvrLaser *, int, const char *> *creator);
+	  ArRetFunctor2<ArLaser *, int, const char *> *creator);
   
   /// Gets a list of the possible laser types
-  MVREXPORT static const char *laserGetTypes(void);
+  AREXPORT static const char *laserGetTypes(void);
 
   /// Gets a list of the possible laser types (for use in the config)
-  MVREXPORT static const char *laserGetChoices(void);
+  AREXPORT static const char *laserGetChoices(void);
   
   /// Creates a battery of the given type
-  MVREXPORT static MvrBatteryMTX *batteryCreate(
+  AREXPORT static ArBatteryMTX *batteryCreate(
 	  const char *batteryType, int batteryNumber,
-	  const char *prefix = "Mvria::batteryCreate");
+	  const char *prefix = "Aria::batteryCreate");
 
-  /// Adds a type of battery for Mvria to be able to create
-  MVREXPORT static bool batteryAddCreator(
+  /// Adds a type of battery for Aria to be able to create
+  AREXPORT static bool batteryAddCreator(
 	  const char *batteryType, 
-	  MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *creator);
+	  ArRetFunctor2<ArBatteryMTX *, int, const char *> *creator);
   
   /// Gets a list of the possible battery types
-  MVREXPORT static const char *batteryGetTypes(void);
+  AREXPORT static const char *batteryGetTypes(void);
   /// Gets a list of the possible battery types (for use in the config)
-  MVREXPORT static const char *batteryGetChoices(void);
+  AREXPORT static const char *batteryGetChoices(void);
 
   /// Creates a lcd of the given type
-  MVREXPORT static MvrLCDMTX *lcdCreate(
+  AREXPORT static ArLCDMTX *lcdCreate(
 	  const char *lcdType, int lcdNumber,
-	  const char *prefix = "Mvria::lcdCreate");
+	  const char *prefix = "Aria::lcdCreate");
 
-  /// Adds a type of lcd for Mvria to be able to create
-  MVREXPORT static bool lcdAddCreator(
+  /// Adds a type of lcd for Aria to be able to create
+  AREXPORT static bool lcdAddCreator(
 	  const char *lcdType, 
-	  MvrRetFunctor2<MvrLCDMTX *, int, const char *> *creator);
+	  ArRetFunctor2<ArLCDMTX *, int, const char *> *creator);
   
   /// Gets a list of the possible lcd types
-  MVREXPORT static const char *lcdGetTypes(void);
+  AREXPORT static const char *lcdGetTypes(void);
   /// Gets a list of the possible lcd types (for use in the config)
-  MVREXPORT static const char *lcdGetChoices(void);
+  AREXPORT static const char *lcdGetChoices(void);
 
   /// Creates a sonar of the given type
-  MVREXPORT static MvrSonarMTX *sonarCreate(
+  AREXPORT static ArSonarMTX *sonarCreate(
 	  const char *sonarType, int sonarNumber,
-	  const char *prefix = "Mvria::sonarCreate");
+	  const char *prefix = "Aria::sonarCreate");
 
-  /// Adds a type of sonar for Mvria to be able to create
-  MVREXPORT static bool sonarAddCreator(
+  /// Adds a type of sonar for Aria to be able to create
+  AREXPORT static bool sonarAddCreator(
 	  const char *sonarType, 
-	  MvrRetFunctor2<MvrSonarMTX *, int, const char *> *creator);
+	  ArRetFunctor2<ArSonarMTX *, int, const char *> *creator);
   
   /// Gets a list of the possible sonar types
-  MVREXPORT static const char *sonarGetTypes(void);
+  AREXPORT static const char *sonarGetTypes(void);
   /// Gets a list of the possible sonar types (for use in the config)
-  MVREXPORT static const char *sonarGetChoices(void);
+  AREXPORT static const char *sonarGetChoices(void);
   
-  /// Set maximum limit on video devices (used by MvrVideo library)
-  MVREXPORT static void setMaxNumVideoDevices(size_t n); 
-  /// Get maximum limit on video devices (used by MvrVideo library)
-  MVREXPORT static size_t getMaxNumVideoDevices(); 
+  /// Set maximum limit on video devices (used by ArVideo library)
+  AREXPORT static void setMaxNumVideoDevices(size_t n); 
+  /// Get maximum limit on video devices (used by ArVideo library)
+  AREXPORT static size_t getMaxNumVideoDevices(); 
  
-  /// Set maximum limit on PTZ or PTU devices, used by MvrPTZConnector. Call before connecting to PTZ devices with MvrPTZConnector. 
-  MVREXPORT static void setMaxNumPTZs(size_t n); 
-  /// Set maximum limit on PTZ or PTU devices, used by MvrPTZConnector.
-  MVREXPORT static size_t getMaxNumPTZs();  
-#endif // MVRINTERFACE
+  /// Set maximum limit on PTZ or PTU devices, used by ArPTZConnector. Call before connecting to PTZ devices with ArPTZConnector. 
+  AREXPORT static void setMaxNumPTZs(size_t n); 
+  /// Set maximum limit on PTZ or PTU devices, used by ArPTZConnector.
+  AREXPORT static size_t getMaxNumPTZs();  
+#endif // ARINTERFACE
 
-  /// Gets the identifier (for humans) used for this instance of Mvria
-  MVREXPORT static const char *getIdentifier(void);
-  /// Sets the identifier (for humans) used for this instance of Mvria
-  MVREXPORT static void setIdentifier(const char *identifier);
+  /// Gets the identifier (for humans) used for this instance of Aria
+  AREXPORT static const char *getIdentifier(void);
+  /// Sets the identifier (for humans) used for this instance of Aria
+  AREXPORT static void setIdentifier(const char *identifier);
 
 
 protected:
   static bool ourInited;
-  static MvrGlobalFunctor1<int> ourSignalHandlerCB;
+  static ArGlobalFunctor1<int> ourSignalHandlerCB;
   static bool ourRunning;
-  static MvrMutex ourShuttingDownMutex;
+  static ArMutex ourShuttingDownMutex;
   static bool ourShuttingDown;
   static bool ourExiting;
   static std::string ourDirectory;
-  static std::list<MvrFunctor*> ourInitCBs;
-  static std::list<MvrFunctor*> ourUninitCBs;
-  static MvrKeyHandler *ourKeyHandler;
-  static MvrJoyHandler *ourJoyHandler;
-#ifndef MVRINTERFACE
-  static std::list<MvrRobot*> ourRobots;
-  static MvrRobotJoyHandler *ourRobotJoyHandler;
-  static MvrConfig ourConfig;
-  static MvrStringInfoGroup ourInfoGroup;
+  static std::list<ArFunctor*> ourInitCBs;
+  static std::list<ArFunctor*> ourUninitCBs;
+  static ArKeyHandler *ourKeyHandler;
+  static ArJoyHandler *ourJoyHandler;
+#ifndef ARINTERFACE
+  static std::list<ArRobot*> ourRobots;
+  static ArRobotJoyHandler *ourRobotJoyHandler;
+  static ArConfig ourConfig;
+  static ArStringInfoGroup ourInfoGroup;
   static int ourMaxNumLasers;
 	static int ourMaxNumSonarBoards;
 	static int ourMaxNumBatteries;
 	static int ourMaxNumLCDs;
-  static std::map<std::string, MvrRetFunctor2<MvrLaser *, int, const char *> *, MvrStrCaseCmpOp> ourLaserCreatorMap;
+  static std::map<std::string, ArRetFunctor2<ArLaser *, int, const char *> *, ArStrCaseCmpOp> ourLaserCreatorMap;
   static std::string ourLaserTypes;
   static std::string ourLaserChoices;
-  static std::map<std::string, MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp> ourBatteryCreatorMap;
+  static std::map<std::string, ArRetFunctor2<ArBatteryMTX *, int, const char *> *, ArStrCaseCmpOp> ourBatteryCreatorMap;
   static std::string ourBatteryTypes;
   static std::string ourBatteryChoices;
-  static std::map<std::string, MvrRetFunctor2<MvrLCDMTX *, int, const char *> *, MvrStrCaseCmpOp> ourLCDCreatorMap;
+  static std::map<std::string, ArRetFunctor2<ArLCDMTX *, int, const char *> *, ArStrCaseCmpOp> ourLCDCreatorMap;
   static std::string ourLCDTypes;
   static std::string ourLCDChoices;
-  static std::map<std::string, MvrRetFunctor2<MvrSonarMTX *, int, const char *> *, MvrStrCaseCmpOp> ourSonarCreatorMap;
+  static std::map<std::string, ArRetFunctor2<ArSonarMTX *, int, const char *> *, ArStrCaseCmpOp> ourSonarCreatorMap;
   static std::string ourSonarTypes;
   static std::string ourSonarChoices;
-#endif // MVRINTERFACE
-  static MvrMutex ourExitCallbacksMutex;
-  static std::multimap<int, MvrFunctor *> ourExitCallbacks;
+#endif // ARINTERFACE
+  static ArMutex ourExitCallbacksMutex;
+  static std::multimap<int, ArFunctor *> ourExitCallbacks;
   static bool ourSigHandleExitNotShutdown;
-  static std::multimap<int, MvrRetFunctor<bool> *> ourParseMvrgCBs;
-  static MvrLog::LogLevel ourParseMvrgsLogLevel;
-  static std::multimap<int, MvrFunctor *> ourLogOptionsCBs;
-  static MvrLog::LogLevel ourExitCallbacksLogLevel;
-  static std::map<std::string, MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp> ourDeviceConnectionCreatorMap;
+  static std::multimap<int, ArRetFunctor<bool> *> ourParseArgCBs;
+  static ArLog::LogLevel ourParseArgsLogLevel;
+  static std::multimap<int, ArFunctor *> ourLogOptionsCBs;
+  static ArLog::LogLevel ourExitCallbacksLogLevel;
+  static std::map<std::string, ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *, ArStrCaseCmpOp> ourDeviceConnectionCreatorMap;
   static std::string ourDeviceConnectionTypes;
   static std::string ourDeviceConnectionChoices;
   static std::string ourIdentifier;
-#ifndef MVRINTERFACE
+#ifndef ARINTERFACE
   static size_t ourMaxNumVideoDevices;
   static size_t ourMaxNumPTZs;
 #endif
 };
 
 
-#endif // MVRIAINTERNAL_H
+#endif // ARIAINTERNAL_H

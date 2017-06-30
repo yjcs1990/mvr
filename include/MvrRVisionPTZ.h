@@ -1,72 +1,116 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRVisionPTZ.h
- > Description  : A class for for making commands to send to the RVision camera
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRRVISIONPTZ_H
-#define MVRRVISIONPTZ_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrBasePacket.h"
-#include "MvrPTZ.h"
-#include "MvrSerialConnection.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARRVISIONPTZ_H
+#define ARRVISIONPTZ_H
+
+#include "ariaTypedefs.h"
+#include "ArBasePacket.h"
+#include "ArPTZ.h"
+#include "ArSerialConnection.h"
 /// A class for for making commands to send to the RVision camera
-class MvrRVisionPacket: public MvrBasePacket
+/** There are only two functioning ways to put things into this packet,
+ * uByteToBuf() and byte2ToBuf;  You
+ *  MUST use thse, if you use anything else your commands won't work.  
+ *  @since 2.7.0
+*/
+class ArRVisionPacket: public ArBasePacket
 {
 public:
   /// Constructor
-  MVREXPORT MvrRVisionPacket(MvrTypes::UByte2 bufferSize = 15);
-  MVREXPORT virtual ~MvrRVisionPacket();
+  AREXPORT ArRVisionPacket(ArTypes::UByte2 bufferSize = 15);
+  AREXPORT virtual ~ArRVisionPacket();
   
-  MVREXPORT virtual void uByteToBuf(MvrTypes::UByte val);
-  MVREXPORT virtual void byte2ToBuf(MvrTypes::Byte2 val);
+  AREXPORT virtual void uByteToBuf(ArTypes::UByte val);
+  AREXPORT virtual void byte2ToBuf(ArTypes::Byte2 val);
   /// This is a new function, read the details before you try to use it
-  MVREXPORT void byte2ToBufAtPos(MvrTypes::Byte2 val, MvrTypes::UByte2 pose);
+  AREXPORT void byte2ToBufAtPos(ArTypes::Byte2 val, ArTypes::UByte2 pose);
 };
 
+//class ArRobot;
 
-class MvrRVisionPTZ : public MvrPTZ
+/** Control the RVision camera pan tilt zoom unit.
+   In addition to creating an ArRvisionPTZ instance, you will also need
+   to create an ArSerialConnection object and open the serial port connection
+   (the RVision is normally on COM3 on Seekur and Seekur Jr. robots) and
+   use the setDeviceConnection() method to associate the serial connection
+   with the ArRVisionPTZ object.
+	@since 2.7.0
+*/
+
+class ArRVisionPTZ : public ArPTZ
 {
 public:
-  MVREXPORT MvrRVisionPTZ(MvrRobot *robot);
-  MVREXPORT virtual ~MvrRVisionPTZ();
+  AREXPORT ArRVisionPTZ(ArRobot *robot);
+  AREXPORT virtual ~ArRVisionPTZ();
   
-  MVREXPORT virtual bool init(void);
-  MVREXPORT virtual const char *getTypeName() { return "rvision"; }
+  AREXPORT virtual bool init(void);
+  AREXPORT virtual const char *getTypeName() { return "rvision"; }
   /// Set serial port
+  /// @since 2.7.6
   void setPort(const char *port)
   {
 	  mySerialPort = port;
   }
 protected:
-  MVREXPORT virtual bool pan_i(double degrees);
-  MVREXPORT virtual bool panRel_i(double degrees);
-  MVREXPORT virtual bool tilt_i(double degrees);
-  MVREXPORT virtual bool tiltRel_i(double degrees);
-  MVREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt);
-  MVREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt);
+  AREXPORT virtual bool pan_i(double degrees);
+  AREXPORT virtual bool panRel_i(double degrees);
+  AREXPORT virtual bool tilt_i(double degrees);
+  AREXPORT virtual bool tiltRel_i(double degrees);
+  AREXPORT virtual bool panTilt_i(double degreesPan, double degreesTilt);
+  AREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt);
 public:
-  MVREXPORT virtual bool canZoom(void) const { return true; }
-  MVREXPORT virtual bool zoom(int zoomValue);
-  MVREXPORT virtual bool zoomRel(int zoomValue);
+  AREXPORT virtual bool canZoom(void) const { return true; }
+  AREXPORT virtual bool zoom(int zoomValue);
+  AREXPORT virtual bool zoomRel(int zoomValue);
 protected:
-  MVREXPORT virtual double getPan_i(void) const { return myPan; }
-  MVREXPORT virtual double getTilt_i(void) const { return myTilt; }
+  AREXPORT virtual double getPan_i(void) const { return myPan; }
+  AREXPORT virtual double getTilt_i(void) const { return myTilt; }
 public:
-  MVREXPORT virtual int getZoom(void) const { return myZoom; }
+  AREXPORT virtual int getZoom(void) const { return myZoom; }
+  //AREXPORT void getRealPanTilt(void);
+  //AREXPORT void getRealZoomPos(void);
+  /*
+  AREXPORT virtual double getMaxPosPan(void) const { return MAX_PAN; }
+  AREXPORT virtual double getMaxNegPan(void) const { return MIN_PAN; }
+  AREXPORT virtual double getMaxPosTilt(void) const { return MAX_TILT; }
+  AREXPORT virtual double getMaxNegTilt(void) const { return MIN_TILT; }
+  AREXPORT virtual int getMaxZoom(void) const { return MAX_ZOOM; }
+  AREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
+  */
 
-  MVREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
-  MVREXPORT virtual bool canGetRealZoom(void) const { return false; }
-  MVREXPORT virtual bool canGetFOV(void) { return true; }
+  AREXPORT virtual bool canGetRealPanTilt(void) const { return false; }
+  AREXPORT virtual bool canGetRealZoom(void) const { return false; }
+  AREXPORT virtual bool canGetFOV(void) { return true; }
   /// Gets the field of view at maximum zoom
-  MVREXPORT virtual double getFOVAtMaxZoom(void) { return 4.4; }
+  AREXPORT virtual double getFOVAtMaxZoom(void) { return 4.4; }
   /// Gets the field of view at minimum zoom
-  MVREXPORT virtual double getFOVAtMinZoom(void) { return 48.8; }
+  AREXPORT virtual double getFOVAtMinZoom(void) { return 48.8; }
 
-  virtual MvrBasePacket* readPacket(void);
+  virtual ArBasePacket* readPacket(void);
   enum {
     MAX_PAN = 180, ///< maximum degrees the unit can pan (clockwise from top)
     MIN_PAN = -180, ///< minimum degrees the unit can pan (counterclockwise from top)
@@ -78,7 +122,9 @@ public:
     PAN_OFFSET_IN_DEGREES = 190 ///< offset value to convert internal camera coords to world
   };
   
-  /// called automatically by Mvria::init()
+  /// called automatically by Aria::init()
+  ///@since 2.7.6
+  ///@internal
 #ifndef SWIG
   static void registerPTZType();
 #endif
@@ -91,15 +137,17 @@ protected:
   double myDegToPan;
   double myPanOffsetInDegrees;
   double myTiltOffsetInDegrees;
-  MvrRVisionPacket myPacket;
-  MvrRVisionPacket myZoomPacket; 
-  MvrRVisionPacket myPanTiltPacket;
-  MvrRVisionPacket myInquiryPacket;
+  ArRVisionPacket myPacket;
+  ArRVisionPacket myZoomPacket; 
+  ArRVisionPacket myPanTiltPacket;
+  ArRVisionPacket myInquiryPacket;
   const char *mySerialPort;
 
-  static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
-  static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
+  ///@since 2.7.6
+  static ArPTZ* create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot);
+  ///@since 2.7.6
+  static ArPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 
 };
 
-#endif // MVRRVISIONPTZ_H
+#endif // ARRVISIONPTZ_H

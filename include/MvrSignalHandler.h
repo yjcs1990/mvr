@@ -1,13 +1,31 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrSignalHandler.h
- > Description  : Signal handling class
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRSIGNALHANDLER_H
-#define MVRSIGNALHANDLER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARSIGNALHANDLER_H
+#define ARSIGNALHANDLER_H
 
 
 #include <list>
@@ -15,9 +33,9 @@
 #else
 #include <signal.h>
 #endif
-#include "mvriaTypedefs.h"
-#include "MvrASyncTask.h"
-#include "MvrFunctor.h"
+#include "ariaTypedefs.h"
+#include "ArASyncTask.h"
+#include "ArFunctor.h"
 
 
 /// Signal handling class
@@ -34,7 +52,7 @@
    greater chance of the signal handler not interfering with the robot control
    loop.
 
-   See the Mvria main class for how to initialize a default setup of the
+   See the Aria main class for how to initialize a default setup of the
    signal handling.
 
    There are functions to block, unblock, handle and unhandle signals. These
@@ -58,7 +76,7 @@
    signal handling to do anything in Windows. This should not be a problem
    since signals are not used in Windows.
 */
-class MvrSignalHandler : public MvrASyncTask
+class ArSignalHandler : public ArASyncTask
 {
 public:
 
@@ -71,76 +89,76 @@ public:
   } Signal;
 
   /// Setup the signal handling for a non-threaded program
-  MVREXPORT static void createHandlerNonThreaded();
+  AREXPORT static void createHandlerNonThreaded();
 
   /// Setup the signal handling for a multi-threaded program
-  MVREXPORT static void createHandlerThreaded();
+  AREXPORT static void createHandlerThreaded();
 
   /// Block all the common signals the kill a program
-  MVREXPORT static void blockCommon();
+  AREXPORT static void blockCommon();
 
   /// Unblock all the signals
-  MVREXPORT static void unblockAll();
+  AREXPORT static void unblockAll();
 
   /// Block the given signal
-  MVREXPORT static void block(Signal sig);
+  AREXPORT static void block(Signal sig);
 
   /// Unblock the given signal
-  MVREXPORT static void unblock(Signal sig);
+  AREXPORT static void unblock(Signal sig);
 
   /// Handle the given signal
-  MVREXPORT static void handle(Signal sig);
+  AREXPORT static void handle(Signal sig);
 
   /// Dont handle the given signal
-  MVREXPORT static void unhandle(Signal sig);
+  AREXPORT static void unhandle(Signal sig);
 
   /// Add a handler callback
-  MVREXPORT static void addHandlerCB(MvrFunctor1<int> *func,
-				    MvrListPos::Pos position);
+  AREXPORT static void addHandlerCB(ArFunctor1<int> *func,
+				    ArListPos::Pos position);
 
   /// Remove a handler callback
-  MVREXPORT static void delHandlerCB(MvrFunctor1<int> *func);
+  AREXPORT static void delHandlerCB(ArFunctor1<int> *func);
 
   /// Removes all the handlers
-  MVREXPORT static void delAllHandlerCBs(void);
+  AREXPORT static void delAllHandlerCBs(void);
 
-  /// Get a pointer to the single MvrSignalHandler instance
-  MVREXPORT static MvrSignalHandler * getHandler();
+  /// Get a pointer to the single ArSignalHandler instance
+  AREXPORT static ArSignalHandler * getHandler();
 
   /// Get the name of the given signal
-  MVREXPORT static const char * nameSignal(int sig);
+  AREXPORT static const char * nameSignal(int sig);
 
   /// Block all the common signals for the calling thread only
-  MVREXPORT static void blockCommonThisThread();
+  AREXPORT static void blockCommonThisThread();
 
   /// Block all the signals for the calling thread only
-  MVREXPORT static void blockAllThisThread();
+  AREXPORT static void blockAllThisThread();
 
   /// Destructor
-  virtual ~MvrSignalHandler();
+  virtual ~ArSignalHandler();
 
-  MVREXPORT virtual void * runThread(void *arg);
+  AREXPORT virtual void * runThread(void *arg);
 
-  MVREXPORT static void signalCB(int sig);
+  AREXPORT static void signalCB(int sig);
 
-  MVREXPORT static void logThread(void);
+  AREXPORT static void logThread(void);
 protected:
 
-  MvrSignalHandler();
+  ArSignalHandler();
 
   static void initSigMap();
 
   bool ourIgnoreQUIT;
 
-  static MvrSignalHandler *ourSignalHandler;
-  static MvrStrMap ourSigMap;
+  static ArSignalHandler *ourSignalHandler;
+  static ArStrMap ourSigMap;
 #ifdef WIN32
 #else
   static sigset_t ourBlockSigSet;
   static sigset_t ourHandleSigSet;
 #endif
-  static std::list<MvrFunctor1<int>*> ourHandlerList;
+  static std::list<ArFunctor1<int>*> ourHandlerList;
 };
 
 
-#endif // MVRSIGNALHANDLER_H
+#endif // ARSIGNALHANDLER_H

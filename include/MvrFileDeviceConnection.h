@@ -1,47 +1,66 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrFileDeviceConnection.h
- > Description  : Reads/writes data to a plain file or character device.
- > Author       : Yu Jie
- > Create Time  : 2017年06月13日
- > Modify Time  : 2017年06月13日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRFILEDEVICECONNECTION_H
-#define MVRFILEDEVICECONNECTION_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-#include "MvrDeviceConnection.h"
-#include "mvriaTypedefs.h"
-#include "MvrSocket.h"
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARFILECONNECTION_H
+#define ARFILECONNECTION_H
+
+#include "ArDeviceConnection.h"
 #include <string>
 
-/// Used occasionally by certain tests/debugging.  
-/// For real connections, use MvrSerialConnection or MvrFileDeviceConnection.
-class MvrFileDeviceConnection : public MvrDeviceConnection
+#include "ariaTypedefs.h"
+#include "ArSocket.h"
+
+/// Reads/writes data to a plain file or character device. Used occasionally
+/// by certain tests/debugging.  For real connections, use ArSerialConnection or
+/// ArFileDeviceConnection instead.
+class ArFileDeviceConnection: public ArDeviceConnection
 {
-public:
+ public:
   /// Constructor
-  MVREXPORT MvrFileDeviceConnection();
-  /// Destructor closes connection
-  MVREXPORT virtual ~MvrFileDeviceConnection();
+  AREXPORT ArFileDeviceConnection();
+  /// Destructor also closes connection
+  AREXPORT virtual ~ArFileDeviceConnection();
 
   /// Opens a connection to the given host and port
-  MVREXPORT int open(const char *inFileName = NULL, const char *outFileName = NULL, int outFlags = 0);
+  AREXPORT int open(const char *infilename = NULL, const char *outfilename = NULL, int outflags = 0);
   bool openSimple() { return this->open() == 0; }
-  MVREXPORT virtual bool close(void);
-  MVREXPORT virtual int read(const char *data, unsigned int size, unsigned int msWait = 0);
-  MVREXPORT virtual int write(const char *data, unsigned int size);
+  AREXPORT virtual bool close(void);
+  AREXPORT virtual int read(const char *data, unsigned int size, 
+			    unsigned int msWait = 0);
+  AREXPORT virtual int write(const char *data, unsigned int size);
   virtual int getStatus() { return myStatus; }
-  MVREXPORT virtual const char *getOpenMessage(int err);
-  MVREXPORT virtual MvrTime getTimeRead(int index);
-  MVREXPORT virtual bool isTimeStamping(void);
+  AREXPORT virtual const char *getOpenMessage(int err);
+  AREXPORT virtual ArTime getTimeRead(int index);
+  AREXPORT virtual bool isTimeStamping(void);
 
   /// If >0 then only read at most this many bytes during read(), regardless of supplied size argument
   void setForceReadBufferSize(unsigned int s) { myForceReadBufferSize = s; }
 
   /// If >0 then add additional, artificial delay in read() by sleeping this many miliseconds per byte read in read().
-  void setReadByteDelay(float d) { myReadByteDelay = d; }  
+  void setReadByteDelay(float d) { myReadByteDelay = d; }
 
 protected:
   std::string myInFileName;
@@ -50,6 +69,7 @@ protected:
   int myOutFD;
   int myStatus;
   unsigned int myForceReadBufferSize;
-  float myReadByteDelay;    
+  float myReadByteDelay;
 };
-#endif  // MVRFILEDEVICECONNECTION_H
+
+#endif

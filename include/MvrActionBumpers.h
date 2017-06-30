@@ -1,36 +1,67 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionBumpers.h
- > Description  : Action to deal with if the bumpers trigger
- > Author       : Yu Jie
- > Create Time  : 2017年04月24日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONBUMPER_H
-#define MVRACTIONBUMPER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrAction.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrActionBumpers : public MvrAction
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
+#ifndef ARACTIONBUMPERS_H
+#define ARACTIONBUMPERS_H
+
+#include "ariaTypedefs.h"
+#include "ArAction.h"
+
+/// Action to deal with if the bumpers trigger
+/**
+   This class basically responds to the bumpers the robot has, what
+   the activity things the robot has is decided by the param file.  If
+   the robot is going forwards and bumps into something with the front
+   bumpers, it will back up and turn.  If the robot is going backwards
+   and bumps into something with the rear bumpers then the robot will
+   move forward and turn.  
+
+  @ingroup ActionClasses
+*/
+
+class ArActionBumpers : public ArAction
 {
 public:
   /// Constructor
-  MVREXPORT MvrActionBumpers(const char *name="bumper",
-            double backOffSpeed=100, int backOffTime=3000,
-            int turnTime=3000, bool setMaximums=false);
+  AREXPORT ArActionBumpers(const char *name = "bumpers", 
+			   double backOffSpeed = 100, int backOffTime = 3000,
+			   int turnTime = 3000, bool setMaximums = false);
   /// Destructor
-  MVREXPORT virtual ~MvrActionBumpers();
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual ~ArActionBumpers();
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  MVREXPORT double findDegreesToTurn(int bumpValue, int whichBumper);
-  MVREXPORT virtual void activate(void);
+  AREXPORT double findDegreesToTurn(int bumpValue, int whichBumper);
+  AREXPORT virtual void activate(void);
 protected:
-  MvrActionDesired myDesired;
+  ArActionDesired myDesired;
   bool mySetMaximums;
   double myBackOffSpeed;
   int myBackOffTime;
@@ -40,7 +71,8 @@ protected:
   double mySpeed;
   double myHeading;
   int myBumpMask;
-  MvrTime myStartBack;
+  ArTime myStartBack;
+  //ArTime myStoppedSince;
 };
 
-#ifndef MVRACTIONBUMPER_H
+#endif // ARACTIONBUMPERS

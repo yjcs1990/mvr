@@ -1,22 +1,40 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionGotoStraight.h
- > Description  : This action goes to a given MvrPose very naively
- > Author       : Yu Jie
- > Create Time  : 2017年04月24日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRACTIONGOTOSTRAIGHT_H
-#define MVRACTIONGOTOSTRAIGHT_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrAction.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-/// This action goes to a given MvrPose very naively
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONGOTOSTRAIGHT_H
+#define ARACTIONGOTOSTRAIGHT_H
+
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArAction.h"
+
+/// This action goes to a given ArPose very naively
 
 /**
-   This action naively drives straight towards a given MvrPose. The
+   This action naively drives straight towards a given ArPose. The
    action stops the robot when it has travelled the distance that that
    pose is away. It travels at 'speed' mm/sec.
 
@@ -30,41 +48,42 @@
    you wanted within close distance.
 
    This doesn't avoid obstacles or anything, you could add have an obstacle
-   avoidance MvrAction at a higher priority to try to do this. (For
+   avoidance ArAction at a higher priority to try to do this. (For
    truly intelligent navigation, see the ARNL and SONARNL software libraries.)
   @ingroup ActionClasses
 **/
 
-class MvrActionGotoStraight : public MvrAction
+
+class ArActionGotoStraight : public ArAction
 {
 public:
-  MVREXPORT MvrActionGotoStraight(const char *name = "goto", 
-				                          double speed = 400);
-  MVREXPORT virtual ~MvrActionGotoStraight();
+  AREXPORT ArActionGotoStraight(const char *name = "goto", 
+				double speed = 400);
+  AREXPORT virtual ~ArActionGotoStraight();
 
   /// Sees if the goal has been achieved
-  MVREXPORT bool haveAchievedGoal(void);
+  AREXPORT bool haveAchievedGoal(void);
   /// Cancels the goal the robot has
-  MVREXPORT void cancelGoal(void);
+  AREXPORT void cancelGoal(void);
   /// Sets a new goal and sets the action to go there
-  MVREXPORT void setGoal(MvrPose goal, bool backwards = false, 
-			                   bool justDistance = true);
+  AREXPORT void setGoal(ArPose goal, bool backwards = false, 
+			bool justDistance = true);
   /// Sets the goal in a relative way
-  MVREXPORT void setGoalRel(double dist, double deltaHeading, 
-			                      bool backwards = false, bool justDistance = true);
+  AREXPORT void setGoalRel(double dist, double deltaHeading, 
+			   bool backwards = false, bool justDistance = true);
   /// Gets the goal the action has
-  MvrPose getGoal(void) { return myGoal; }
+  ArPose getGoal(void) { return myGoal; }
   /// Gets whether we're using the encoder goal or the normal goal
   bool usingEncoderGoal(void) { return myUseEncoderGoal; }
   /// Sets a new goal and sets the action to go there
-  MVREXPORT void setEncoderGoal(MvrPose encoderGoal, bool backwards = false,
-			                          bool justDistance = true);
+  AREXPORT void setEncoderGoal(ArPose encoderGoal, bool backwards = false,
+			       bool justDistance = true);
   /// Sets the goal in a relative way
-  MVREXPORT void setEncoderGoalRel(double dist, double deltaHeading, 
-                                   bool backwards = false, 
-                                   bool justDistance = true);
+  AREXPORT void setEncoderGoalRel(double dist, double deltaHeading, 
+				  bool backwards = false, 
+				  bool justDistance = true);
   /// Gets the goal the action has
-  MvrPose getEncoderGoal(void) { return myEncoderGoal; }
+  ArPose getEncoderGoal(void) { return myEncoderGoal; }
   /// Sets the speed the action will travel to the goal at (mm/sec)
   void setSpeed(double speed) { mySpeed = speed; }
   /// Gets the speed the action will travel to the goal at (mm/sec)
@@ -75,19 +94,19 @@ public:
   double getCloseDist(void) { return myCloseDist; }
   /// Sets whether we're backing up there or not (set in the setGoals)
   bool getBacking(void) { return myBacking; }
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
-  { return &myDesired; }
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+                                                        { return &myDesired; }
 #endif
 protected:
-  MvrPose myGoal;
+  ArPose myGoal;
   bool myUseEncoderGoal;
-  MvrPose myEncoderGoal;
+  ArPose myEncoderGoal;
   double mySpeed;
   bool myBacking;
-  MvrActionDesired myDesired;
+  ArActionDesired myDesired;
   bool myPrinting;
   double myDist;
   double myCloseDist;
@@ -95,7 +114,7 @@ protected:
   bool myJustDist;
 
   double myDistTravelled;
-  MvrPose myLastPose;
+  ArPose myLastPose;
   
   enum State
   {
@@ -106,4 +125,4 @@ protected:
   State myState;
 };
 
-#endif // MVRACTIONGOTOSTRAIGHT_H
+#endif // ARACTIONGOTO

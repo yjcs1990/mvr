@@ -1,60 +1,82 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotPacketSender.h
- > Description  : Given a device connection which sends commands through it to the robot
- > Author       : Yu Jie
- > Create Time  : 2017年05月19日
- > Modify Time  : 2017年05月19日
-***************************************************************************************************/
-#ifndef MVRROBOTPACKETSENDER_H
-#define MVRROBOTPACKETSENDER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrRobotPacket.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrDeviceConnection;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARROBOTPACKETSENDER_H
+#define ARROBOTPACKETSENDER_H
+
+#include "ariaTypedefs.h"
+#include "ArRobotPacket.h"
+
+class ArDeviceConnection;
 
 /// Given a device connection this sends commands through it to the robot
 
-class MvrRobotPacketSender
+class ArRobotPacketSender
 {
 public:
   /// Constructor without an already assigned device connection
-  MVREXPORT MvrRobotPacketSender(unsigned char sync1 = 0xfa, unsigned char sync2 = 0xfb);
+  AREXPORT ArRobotPacketSender(unsigned char sync1 = 0xfa,
+			       unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection
-  MVREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
-			      unsigned char sync1 = 0xfa, unsigned char sync2 = 0xfb);
+  AREXPORT ArRobotPacketSender(ArDeviceConnection *deviceConnection,
+			       unsigned char sync1 = 0xfa,
+			       unsigned char sync2 = 0xfb);
   /// Constructor with assignment of a device connection and tracking
-  MVREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
-			      unsigned char sync1, unsigned char sync2,
-						bool tracking, const char *trackingLogName);
+  AREXPORT ArRobotPacketSender(ArDeviceConnection *deviceConnection,
+			       unsigned char sync1,
+			       unsigned char sync2,
+						bool tracking,
+						const char *trackingLogName);
   /// Destructor
-  MVREXPORT virtual ~MvrRobotPacketSender();
+  AREXPORT virtual ~ArRobotPacketSender();
 
   /// Sends a command to the robot with no arguments
-  MVREXPORT bool com(unsigned char command);
+  AREXPORT bool com(unsigned char command);
   /// Sends a command to the robot with an int for argument
-  MVREXPORT bool comInt(unsigned char command, short int argument);
+  AREXPORT bool comInt(unsigned char command, short int argument);
   /// Sends a command to the robot with two bytes for argument
-  MVREXPORT bool com2Bytes(unsigned char command, char high, char low);
+  AREXPORT bool com2Bytes(unsigned char command, char high, char low);
   /// Sends a command to the robot with a length-prefixed string for argument
-  MVREXPORT bool comStr(unsigned char command, const char *argument);
+  AREXPORT bool comStr(unsigned char command, const char *argument);
   /// Sends a command to the robot with a length-prefixed string for argument
-  MVREXPORT bool comStrN(unsigned char command, const char *str, int size);
+  AREXPORT bool comStrN(unsigned char command, const char *str, int size);
   /// Sends a command containing exactly the data in the given buffer as argument
-  MVREXPORT bool comDataN(unsigned char command, const char *data, int size);
-  /// Sends a MvrRobotPacket
-  MVREXPORT bool sendPacket(MvrRobotPacket *packet);
+  AREXPORT bool comDataN(unsigned char command, const char *data, int size);
+  /// Sends a ArRobotPacket
+  AREXPORT bool sendPacket(ArRobotPacket *packet);
   
   /// Sets the device this instance sends commands to
-  MVREXPORT void setDeviceConnection(MvrDeviceConnection *deviceConnection);
+  AREXPORT void setDeviceConnection(ArDeviceConnection *deviceConnection);
   /// Gets the device this instance sends commands to
-  MVREXPORT MvrDeviceConnection *getDeviceConnection(void);
+  AREXPORT ArDeviceConnection *getDeviceConnection(void);
 
   /// Sets the callback that gets called with the finalized version of
   /// every packet set... this is ONLY for very internal very
   /// specialized use
-  MVREXPORT void setPacketSentCallback(MvrFunctor1<MvrRobotPacket *> *functor);
+  AREXPORT void setPacketSentCallback(ArFunctor1<ArRobotPacket *> *functor);
 
   void setTracking(bool v = true)
   {
@@ -66,17 +88,18 @@ public:
   }
 protected:
   bool connValid(void);
-  MvrDeviceConnection * myDeviceConn;
-  MvrRobotPacket myPacket;
+  ArDeviceConnection * myDeviceConn;
+  ArRobotPacket myPacket;
 
 	bool myTracking;
 	std::string myTrackingLogName;
 
-  MvrMutex mySendingMutex;
+  ArMutex mySendingMutex;
 
-  MvrFunctor1<MvrRobotPacket *> *myPacketSentCallback;
+  ArFunctor1<ArRobotPacket *> *myPacketSentCallback;
 
   enum { INTARG = 0x3B, NINTARG = 0x1B, STRARG = 0x2B };
 };
 
-#endif  // MVRROBOTPACKETSENDER_H
+
+#endif //ARROBOTPACKETSENDER_H

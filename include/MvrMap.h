@@ -1,107 +1,130 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrMap.h
- > Description  : Contains the set of interfaces that define the Mvria maps.
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-/* Mvria maps are implemented by a collection of classes and interfaces.  The 
- * most important is the MvrMapInterface, which is defined in MvrMapInterface.h
- * and specifies the methods that all Mvria maps must provide.  
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+/*
+ * 
+ * 
+ *
+ * Aria maps are implemented by a collection of classes and interfaces.  The 
+ * most important is the ArMapInterface, which is defined in ArMapInterface.h
+ * and specifies the methods that all Aria maps must provide.  
  * 
  * This file contains the top-level concrete implementation of the 
- * MvrMapInterface.  MvrMap is basically the map that is used by the robot 
+ * ArMapInterface.  ArMap is basically the map that is used by the robot 
  * to navigate its environment.  In addition to implementing the methods of 
- * MvrMapInterface, MvrMap also provides a means of hooking into the Mvria config.  
- * When the map file name is specified in the Mvria config and is changed during 
- * runtime, MvrMap loads the new file and notifies all listeners that the map 
+ * ArMapInterface, ArMap also provides a means of hooking into the Aria config.  
+ * When the map file name is specified in the Aria config and is changed during 
+ * runtime, ArMap loads the new file and notifies all listeners that the map 
  * has been changed.
  * 
- * In order to accomplish this, MvrMap has been implemented using the Proxy 
+ * In order to accomplish this, ArMap has been implemented using the Proxy 
  * design pattern (refer to "Design Patterns", Gamma et al, 1995).  The 
  * participants are as follows:
  * 
- *   - Subject: MvrMapInterface.  The common interface for both the RealSubject
- *     and the Proxy.  It is defined in MvrMapInterface.h and is actually 
- *     the combination of several smaller interfaces:  MvrMapScanInterface,
- *     MvrMapObjectsInterface, MvrMapInfoInterface, and MvrMapSupplementInterface.
+ *   - Subject: ArMapInterface.  The common interface for both the RealSubject
+ *     and the Proxy.  It is defined in ArMapInterface.h and is actually 
+ *     the combination of several smaller interfaces:  ArMapScanInterface,
+ *     ArMapObjectsInterface, ArMapInfoInterface, and ArMapSupplementInterface.
  * 
- *   - RealSubject: MvrMapSimple.  The real object that the Proxy represents.
- *     It is defined in MvrMapComponents.h, and is implemented by a set of 
+ *   - RealSubject: ArMapSimple.  The real object that the Proxy represents.
+ *     It is defined in ArMapComponents.h, and is implemented by a set of 
  *     helper classes that are also defined in that header file. 
  *
- *   - Proxy: MvrMap.  Creates and controls access to the RealSubject.  MvrMap
- *     actually contains references to two MvrMapSimple objects.  One is
+ *   - Proxy: ArMap.  Creates and controls access to the RealSubject.  ArMap
+ *     actually contains references to two ArMapSimple objects.  One is
  *     permanent and is the map object that is used by the robot.  The other
  *     is transient and is the map object that is currently being read from 
- *     a file following an Mvria configuration update.  If the file is 
- *     successfully read, then the loading MvrMapSimple object is copied to 
+ *     a file following an Aria configuration update.  If the file is 
+ *     successfully read, then the loading ArMapSimple object is copied to 
  *     the main permanent one and mapChanged notifications are sent to
  *     registered listeners.
  * 
  * The following "diagram" illustrates the basic hierarchy:
  *
  * <pre>  
- *        MvrMapInterface                          , Defined in MvrMapInterface.h
+ *        ArMapInterface                          , Defined in ArMapInterface.h
  *        ^ (extends)  ^ 
  *        |            |
  *        |            |
- *     MvrMap +-------> MvrMapSimple * +-------> MvrMapScan *
+ *     ArMap +-------> ArMapSimple * +-------> ArMapScan *
  *                 (contains)        |
- *                                   +---------> MvrMapObjects *
+ *                                   +-------> ArMapObjects *
  *                                   |
- *                                   +---------> MvrMapInfo *
+ *                                   +-------> ArMapInfo *
  *                                   |
- *                                   +---------> MvrMapSupplement *
+ *                                   +-------> ArMapSupplement *
  *
- *                                              * : Defined in MvrMapComponents.h
+ *                                              * : Defined in ArMapComponents.h
  * </pre>
  * 
  *
- * This header file originally also contained the definition of MvrMapObject.  
- * That class has been moved into its own header file (MvrMapObject.h).
+ * This header file originally also contained the definition of ArMapObject.  
+ * That class has been moved into its own header file (ArMapObject.h).
  * 
  *
  * Maintenance Note #1: In this case, the use of the Proxy design pattern implies 
- * that modifying the MvrMap external interface requires multiple changes:  
- * First, the MvrMapInterface (or sub-interface) must be updated.  Then the MvrMap 
- * and MvrMapSimple classes must be modified.  Depending on the change, one of the
+ * that modifying the ArMap external interface requires multiple changes:  
+ * First, the ArMapInterface (or sub-interface) must be updated.  Then the ArMap 
+ * and ArMapSimple classes must be modified.  Depending on the change, one of the
  * helper map components may also need to be modified.  It is expected that 
  * such changes to the interface will be infrequent.
  *
- * @see MvrMapInfo
- * @see MvrMapObject
- * @see MvrMapObjects
- * @see MvrMapScan
- * @see MvrMapSupplement
+ * @see ArMapInfo
+ * @see ArMapObject
+ * @see ArMapObjects
+ * @see ArMapScan
+ * @see ArMapSupplement
 **/
-#ifndef MVRMAP_H
-#define MVRMAP_H
+#ifndef ARMAP_H
+#define ARMAP_H
  
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
 
-#include "MvrMapComponents.h"
-#include "MvrMapInterface.h"
-#include "MvrMapUtils.h"
+#include "ArMapComponents.h"
+#include "ArMapInterface.h"
+#include "ArMapUtils.h"
 
-#include "MvrFunctor.h"
-#include "MvrArgumentBuilder.h"
-#include "MvrMutex.h"
+#include "ArFunctor.h"
+#include "ArArgumentBuilder.h"
+#include "ArMutex.h"
 
-#include "MvrGPSCoords.h" // for MvrLLACoords
+#include "ArGPSCoords.h" // for ArLLACoords
 
 #include <vector>
 
-class MvrFileParser;
+class ArFileParser;
 
-/// A map of a two-dimensional space the robot can navigate within, and which can be updated via the Mvria config
+/// A map of a two-dimensional space the robot can navigate within, and which can be updated via the Aria config
 /**
-* MvrMap contains data that represents the operating space of the robot, and can
-* be used for space searching, localizing, navigating etc.  
-* MvrMap also provides methods to read and write the map from and to a file,
-* along with a mechanism for setting the map file via the global Mvria config.
+* ArMap contains data that represents the operating space of the robot, and can
+* be used for space searching, localizing, navigating etc.  MobileRobots' ARNL
+* and SONARNL localization and navigation libraries use ArMap objects.
+* ArMap also provides methods to read and write the map from and to a file,
+* along with a mechanism for setting the map file via the global Aria config.
 * 
 * Types of data stored in a map include sensable obstacles (e.g. walls and 
 * furniture in a room) that are represented either as a collection of data 
@@ -109,15 +132,15 @@ class MvrFileParser;
 * are useful for high resolution sensors like lasers.  The lines create a 
 * vector map that is useful for low resolution sensors like sonar.  For 
 * advanced applications, the sensable obstacle data can be categorized according
-* to the type of scan or sensor; see MvrMapScanInterface for more information.
+* to the type of scan or sensor; see ArMapScanInterface for more information.
 * 
-* In addition to the obstacle data, the Mvria map may contain goals, forbidden
+* In addition to the obstacle data, the Aria map may contain goals, forbidden
 * areas, and other points and regions of interest (a.k.a. "map objects").  
 * Advanced applications can extend the set of predefined map object types.
 * See @ref MapObjects for more information.
 *
 * If the application needs to be aware of any changes that are made to the 
-* Mvria map at runtime, then it should install "mapChanged" callbacks on the map.
+* Aria map at runtime, then it should install "mapChanged" callbacks on the map.
 * If the map file is re-read while the robot is running, then the callbacks 
 * are automatically invoked.  If the application makes other changes to the 
 * map by calling any of the set methods, then it should call mapChanged() when
@@ -127,7 +150,8 @@ class MvrFileParser;
 * 
 * @section MapThreading Thread issuses, and changing the map
 * 
-* Different threads will need to access the same map data However, the MvrMap class is not 
+* Different threads will need to access the same map data (for example ARNL, 
+* ArForbiddenRangeDevice, networking). However, the ArMap class is not 
 * inherently thread-safe.  You must call lock() and  unlock() methods, before 
 * and after any access to the map data (e.g. calls to getMapObjects(), 
 * getPoints(), setMapObjects(), setPoints()).  
@@ -149,21 +173,21 @@ class MvrFileParser;
 * Certain types of objects are predefined for all maps.  These include
 * Goal, GoalWithHeading, Dock, ForbiddenLine, ForbiddenArea, and RobotHome.  
 * 
-*  - Goal and GoalWithHeading are basically named MvrPoses, the difference being
+*  - Goal and GoalWithHeading are basically named ArPoses, the difference being
 *    that the "th" (heading) value is only valid for GoalWithHeading.
-*  - Dock is an MvrPose that must always have a heading.
+*  - Dock is an ArPose that must always have a heading.
 *  - ForbiddenLine is a boundary line, and ForbiddenArea is a rectangular
 *    "sector". The extents of these objects are given as a pair of 
 *    poses, a "from" point and a "to" point.
-*  - RobotHome may be either an MvrPose or a rectangular sector.
+*  - RobotHome may be either an ArPose or a rectangular sector.
 * 
 * Rectangular objects may also have an associated angle of rotation, which is 
-* stored in the object pose theta value (MvrMapObject::getPose().getTh()).
+* stored in the object pose theta value (ArMapObject::getPose().getTh()).
 * The actual global coordinates of the rectangle must be calculated
 * using this angle and its "from-to" values. You can get a list of the 4
-* MvrLineSegment objects that comprise the rectangle's edges using
-* MvrMapObject::getFromToSegments(). If you want to do your own calculations,
-* see MvrMapObject::MvrMapObject().
+* ArLineSegment objects that comprise the rectangle's edges using
+* ArMapObject::getFromToSegments(). If you want to do your own calculations,
+* see ArMapObject::ArMapObject().
 *
 * You can get a pointer to the current list of map objects with getMapObjects(),
 * and directly modify the list.  You can also replace the current list of 
@@ -188,7 +212,7 @@ class MvrFileParser;
 *
  * @ingroup OptionalClasses
 */
-class MvrMap : public MvrMapInterface
+class ArMap : public ArMapInterface
 {
    
 public:
@@ -198,7 +222,7 @@ public:
    * @param baseDirectory the name of the directory in which to search for map
    * files that are not fully qualified
    * @param addToGlobalConfig a bool set to true if the map file name parameter 
-   * should be added to the global config, Mvria::getConfig(); false, otherwise
+   * should be added to the global config, Aria::getConfig(); false, otherwise
    * @param configSection the char * name of the config section to which to 
    * add the map file name parameter name; applicable only if addToGlobalConfig 
    * is true
@@ -209,392 +233,413 @@ public:
    * @param ignoreEmptyFileName a bool set to true if an empty file name is a 
    * valid config parameter value; set to false if a failure should be reported
    * when the file name is empty; applicable only if addToGlobalConfig is true
-   * @param priority the MvrPriority::Priority of the config parameter; 
+   * @param priority the ArPriority::Priority of the config parameter; 
    * applicable only if addToGlobalConfig is true
    * @param tempDirectory the name of the directory in which to write temporary
    * files when saving a map; if NULL, then the map file is written directly.  
    * Note that using a temp file reduces the risk that the map will be corrupted
    * if the application crashes.
-   * @param configProcessFilePriority priority at which MvrMap's configuration
-   * parameters should be processed by MvrConfig.
+   * @param configProcessFilePriority priority at which ArMap's configuration
+   * parameters should be processed by ArConfig.
   **/
-  MVREXPORT MvrMap(const char *baseDirectory = "./",
- 		               bool addToGlobalConfig = true, 
- 		               const char *configSection = "Files",
- 		               const char *configParam = "Map",
- 		               const char *configDesc = 
+  AREXPORT ArMap(const char *baseDirectory = "./",
+ 		             bool addToGlobalConfig = true, 
+ 		             const char *configSection = "Files",
+ 		             const char *configParam = "Map",
+ 		             const char *configDesc = 
  		                  "Map of the environment that the robot uses for navigation",
- 		               bool ignoreEmptyFileName = true,
-                   MvrPriority::Priority priority = MvrPriority::IMPORTANT,
-                   const char *tempDirectory = NULL,
-		               int configProcessFilePriority = 100);
+ 		             bool ignoreEmptyFileName = true,
+                 ArPriority::Priority priority = ArPriority::IMPORTANT,
+                 const char *tempDirectory = NULL,
+		             int configProcessFilePriority = 100);
 
   /// Copy constructor
-  MVREXPORT MvrMap(const MvrMap &other);
+  AREXPORT ArMap(const ArMap &other);
 
   /// Assignment operator
-  MVREXPORT MvrMap &operator=(const MvrMap &other);
+  AREXPORT ArMap &operator=(const ArMap &other);
 
   /// Destructor
-  MVREXPORT virtual ~MvrMap(void);
+  AREXPORT virtual ~ArMap(void);
 
 
   // ===========================================================================
-  // MvrMapInterface Methods
+  // ArMapInterface Methods
   // ===========================================================================
 
    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Scan Types Methods 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
    
-  MVREXPORT virtual std::list<std::string> getScanTypes() const;
+  AREXPORT virtual std::list<std::string> getScanTypes() const;
 
-  MVREXPORT virtual bool setScanTypes(const std::list<std::string> &scanTypeList);
+  AREXPORT virtual bool setScanTypes(const std::list<std::string> &scanTypeList);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Locking / Mutex Methods 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual int lock();
+  AREXPORT virtual int lock();
 
-  MVREXPORT virtual int tryLock();
+  AREXPORT virtual int tryLock();
 
-  MVREXPORT virtual int unlock();
+  AREXPORT virtual int unlock();
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // MvrMapScanInterface
+  // ArMapScanInterface
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual const char *getDisplayString
-            (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual const char *getDisplayString
+                                 (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual std::vector<MvrPose> *getPoints
-            (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual std::vector<ArPose> *getPoints
+                         (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
+  AREXPORT virtual ArPose getMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual ArPose getMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual int getNumPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual bool isSortedPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
 
-  MVREXPORT virtual void setPoints(const std::vector<MvrPose> *points,
-                                   const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
-                                   bool isSortedPoints = false,
-                                   MvrMapChangeDetails *changeDetails = NULL);
+  AREXPORT virtual void setPoints(const std::vector<ArPose> *points,
+                                  const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                  bool isSortedPoints = false,
+                                  ArMapChangeDetails *changeDetails = NULL);
 
-  MVREXPORT virtual std::vector<MvrLineSegment> *getLines
-            (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual std::vector<ArLineSegment> *getLines
+                         (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
+  AREXPORT virtual ArPose getLineMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual ArPose getLineMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual int getNumLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual bool isSortedLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
    
-  MVREXPORT virtual void setLines(const std::vector<MvrLineSegment> *lines,
-                                  const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
-                                  bool isSortedLines = false,
-                                  MvrMapChangeDetails *changeDetails = NULL);
+  AREXPORT virtual void setLines(const std::vector<ArLineSegment> *lines,
+                                 const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                 bool isSortedLines = false,
+                                 ArMapChangeDetails *changeDetails = NULL);
   
-  MVREXPORT virtual int getResolution(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual int getResolution(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual void setResolution(int resolution,
-                                       const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
-                                       MvrMapChangeDetails *changeDetails = NULL);
+  AREXPORT virtual void setResolution(int resolution,
+                                      const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                      ArMapChangeDetails *changeDetails = NULL);
  
-  MVREXPORT virtual void writeScanToFunctor(MvrFunctor1<const char *> *functor, 
-                                            const char *endOfLineChars,
-                                            const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  AREXPORT virtual void writeScanToFunctor
+                              (ArFunctor1<const char *> *functor, 
+			                         const char *endOfLineChars,
+                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual void writePointsToFunctor(MvrFunctor2<int, std::vector<MvrPose> *> *functor,
-                                              const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
-                                              MvrFunctor1<const char *> *keywordFunctor = NULL);
+  AREXPORT virtual void writePointsToFunctor
+                              (ArFunctor2<int, std::vector<ArPose> *> *functor,
+                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                               ArFunctor1<const char *> *keywordFunctor = NULL);
 
-   MVREXPORT virtual void writeLinesToFunctor(MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
-                                              const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
-                                              MvrFunctor1<const char *> *keywordFunctor = NULL);
+   AREXPORT virtual void writeLinesToFunctor
+ 		                          (ArFunctor2<int, std::vector<ArLineSegment> *> *functor,
+                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                               ArFunctor1<const char *> *keywordFunctor = NULL);
   
-   MVREXPORT virtual bool addToFileParser(MvrFileParser *fileParser);
+   AREXPORT virtual bool addToFileParser(ArFileParser *fileParser);
 
-   MVREXPORT virtual bool remFromFileParser(MvrFileParser *fileParser);
+   AREXPORT virtual bool remFromFileParser(ArFileParser *fileParser);
 
 
-   MVREXPORT virtual bool readDataPoint( char *line);
+   AREXPORT virtual bool readDataPoint( char *line);
 
-   MVREXPORT virtual bool readLineSegment( char *line);
+   AREXPORT virtual bool readLineSegment( char *line);
  
-   /** Public for MvrQClientMapProducer **/
+   /** Public for ArQClientMapProducer **/
  
-   MVREXPORT virtual void loadDataPoint(double x, double y);
-   MVREXPORT virtual void loadLineSegment(double x1, double y1, double x2, double y2);
+   AREXPORT virtual void loadDataPoint(double x, double y);
+   AREXPORT virtual void loadLineSegment(double x1, double y1, double x2, double y2);
    
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // MvrMapObjectsInterface
+  // ArMapObjectsInterface
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   MVREXPORT virtual MvrMapObject *findFirstMapObject(const char *name, 
-                                                      const char *type,
-                                                      bool isIncludeWithHeading = false);
+   AREXPORT virtual ArMapObject *findFirstMapObject(const char *name, 
+                                                    const char *type,
+                                                    bool isIncludeWithHeading = false);
  
-   MVREXPORT virtual MvrMapObject *findMapObject(const char *name, 
- 				                                         const char *type = NULL,
-                                                 bool isIncludeWithHeading = false);
- 
-   MVREXPORT virtual std::list<MvrMapObject *> findMapObjectsOfType(const char *type,
+   AREXPORT virtual ArMapObject *findMapObject(const char *name, 
+ 				                                       const char *type = NULL,
                                                bool isIncludeWithHeading = false);
-
-   MVREXPORT virtual std::list<MvrMapObject *> *getMapObjects(void);
  
-   MVREXPORT virtual void setMapObjects(const std::list<MvrMapObject *> *mapObjects,
-                                        bool isSortedObjects = false,
-                                        MvrMapChangeDetails *changeDetails = NULL); 
+   AREXPORT virtual std::list<ArMapObject *> findMapObjectsOfType
+                                               (const char *type,
+                                                bool isIncludeWithHeading = false);
+
+   AREXPORT virtual std::list<ArMapObject *> *getMapObjects(void);
  
-   MVREXPORT virtual void writeObjectListToFunctor(MvrFunctor1<const char *> *functor, 
- 			                                             const char *endOfLineChars);
+   AREXPORT virtual void setMapObjects(const std::list<ArMapObject *> *mapObjects,
+                                       bool isSortedObjects = false,
+                                       ArMapChangeDetails *changeDetails = NULL); 
+ 
+   AREXPORT virtual void writeObjectListToFunctor
+                              (ArFunctor1<const char *> *functor, 
+ 			                         const char *endOfLineChars);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // MvrMapInfoInterface
+  // ArMapInfoInterface
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-   MVREXPORT virtual std::list<MvrArgumentBuilder *> *getInfo(const char *infoName);
+   AREXPORT virtual std::list<ArArgumentBuilder *> *getInfo(const char *infoName);
 
-   MVREXPORT virtual std::list<MvrArgumentBuilder *> *getInfo(int infoType);
+   AREXPORT virtual std::list<ArArgumentBuilder *> *getInfo(int infoType);
 
-   MVREXPORT virtual std::list<MvrArgumentBuilder *> *getMapInfo(void);
+   AREXPORT virtual std::list<ArArgumentBuilder *> *getMapInfo(void);
 
-   MVREXPORT virtual int getInfoCount() const;
+   AREXPORT virtual int getInfoCount() const;
 
-   MVREXPORT virtual std::list<std::string> getInfoNames() const;
+   AREXPORT virtual std::list<std::string> getInfoNames() const;
 
-   MVREXPORT virtual bool setInfo(const char *infoName,
- 						                      const std::list<MvrArgumentBuilder *> *infoList,
-                                  MvrMapChangeDetails *changeDetails = NULL); 
+   AREXPORT virtual bool setInfo(const char *infoName,
+ 						                     const std::list<ArArgumentBuilder *> *infoList,
+                                 ArMapChangeDetails *changeDetails = NULL); 
 
-   MVREXPORT virtual bool setInfo(int infoType,
- 						                      const std::list<MvrArgumentBuilder *> *infoList,
-                                  MvrMapChangeDetails *changeDetails = NULL); 
+   AREXPORT virtual bool setInfo(int infoType,
+ 						                     const std::list<ArArgumentBuilder *> *infoList,
+                                 ArMapChangeDetails *changeDetails = NULL); 
 
-   MVREXPORT virtual bool setMapInfo(const std::list<MvrArgumentBuilder *> *mapInfo,
-                                     MvrMapChangeDetails *changeDetails = NULL); 
+   AREXPORT virtual bool setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
+                                    ArMapChangeDetails *changeDetails = NULL); 
 
-   MVREXPORT virtual const char *getInfoName(int infoType);
+   AREXPORT virtual const char *getInfoName(int infoType);
 
-   MVREXPORT virtual void writeInfoToFunctor(MvrFunctor1<const char *> *functor, 
- 			                                       const char *endOfLineChars);
+   AREXPORT virtual void writeInfoToFunctor(ArFunctor1<const char *> *functor, 
+ 			                                      const char *endOfLineChars);
  
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // MvrMapSupplementInterface
+  // ArMapSupplementInterface
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual bool hasOriginLatLongAlt();
+  AREXPORT virtual bool hasOriginLatLongAlt();
   bool hasOriginLatLonAlt() { return hasOriginLatLongAlt(); }
-  MVREXPORT virtual MvrPose getOriginLatLong();
-  MvrPose getOriginLatLon() { return getOriginLatLong(); }
-  MVREXPORT virtual double getOriginAltitude();
-  double getOriginLatitude() { return getOriginLatLong().getX(); }
-  double getOriginLongitude() { return getOriginLatLong().getY(); }
+  AREXPORT virtual ArPose getOriginLatLong();
+  ArPose getOriginLatLon() { return getOriginLatLong(); }
+  AREXPORT virtual double getOriginAltitude();
+  double getOriginLatitude() {
+    return getOriginLatLong().getX();
+  }
+  double getOriginLongitude() {
+    return getOriginLatLong().getY();
+  }
 
 
-  MvrLLACoords getOriginLLA() { return MvrLLACoords(getOriginLatLon(), getOriginAltitude());}
+  ArLLACoords getOriginLLA() {
+    return ArLLACoords(getOriginLatLon(), getOriginAltitude());
+  }
 
 
-  MVREXPORT virtual void setOriginLatLongAlt(bool hasOriginLatLong,
-                                             const MvrPose &originLatLong,
-                                             double altitude,
-                                             MvrMapChangeDetails *changeDetails = NULL);
+  AREXPORT virtual void setOriginLatLongAlt
+                                        (bool hasOriginLatLong,
+                                         const ArPose &originLatLong,
+                                         double altitude,
+                                         ArMapChangeDetails *changeDetails = NULL);
 
-  void setOriginLatLonAlt(bool hasOriginLatLong, const MvrPose &originLatLong,
-                          double altitude, MvrMapChangeDetails *changeDetails = NULL)
+  void setOriginLatLonAlt
+                                        (bool hasOriginLatLong,
+                                         const ArPose &originLatLong,
+                                         double altitude,
+                                         ArMapChangeDetails *changeDetails = NULL)
   {
     setOriginLatLongAlt(hasOriginLatLong, originLatLong, altitude, changeDetails);
   }
 
 
-  MVREXPORT virtual void writeSupplementToFunctor(MvrFunctor1<const char *> *functor, 
-			                                            const char *endOfLineChars);
+  AREXPORT virtual void writeSupplementToFunctor(ArFunctor1<const char *> *functor, 
+			                                          const char *endOfLineChars);
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // Remaining MvrMapInterface Methods
+  // Remaining ArMapInterface Methods
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual void clear();
+  AREXPORT virtual void clear();
 
-  MVREXPORT virtual bool set(MvrMapInterface *other);
+  AREXPORT virtual bool set(ArMapInterface *other);
 
-  MVREXPORT virtual MvrMapInterface *clone();
+  AREXPORT virtual ArMapInterface *clone();
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Map Changed / Callback Methods
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual void mapChanged(void);
+  AREXPORT virtual void mapChanged(void);
 
-  MVREXPORT virtual void addMapChangedCB(MvrFunctor *functor, int position = 50);
+  AREXPORT virtual void addMapChangedCB(ArFunctor *functor, int position = 50);
 
-  MVREXPORT virtual void remMapChangedCB(MvrFunctor *functor);
+  AREXPORT virtual void remMapChangedCB(ArFunctor *functor);
 
-  MVREXPORT virtual void addPreMapChangedCB(MvrFunctor *functor, int position = 50);
+  AREXPORT virtual void addPreMapChangedCB(ArFunctor *functor,
+					   int position = 50);
 
-  MVREXPORT virtual void remPreMapChangedCB(MvrFunctor *functor);
+  AREXPORT virtual void remPreMapChangedCB(ArFunctor *functor);
 
-  MVREXPORT virtual void setMapChangedLogLevel(MvrLog::LogLevel level); 
+  AREXPORT virtual void setMapChangedLogLevel(ArLog::LogLevel level); 
 
-  MVREXPORT virtual MvrLog::LogLevel getMapChangedLogLevel(void); 
+  AREXPORT virtual ArLog::LogLevel getMapChangedLogLevel(void); 
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Persistence
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual void writeToFunctor(MvrFunctor1<const char *> *functor, 
- 			                                  const char *endOfLineChars);
+  AREXPORT virtual void writeToFunctor(ArFunctor1<const char *> *functor, 
+ 			                                const char *endOfLineChars);
 
-  MVREXPORT virtual void writeObjectsToFunctor(MvrFunctor1<const char *> *functor, 
- 			                                         const char *endOfLineChars,
-                                               bool isOverrideAsSingleScan = false,
-                                               const char *maxCategory = NULL);
+  AREXPORT virtual void writeObjectsToFunctor(ArFunctor1<const char *> *functor, 
+ 			                                        const char *endOfLineChars,
+                                              bool isOverrideAsSingleScan = false,
+                                              const char *maxCategory = NULL);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // File I/O Methods
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   
-  MVREXPORT virtual void addPreWriteFileCB(MvrFunctor *functor,
-                                           MvrListPos::Pos position = MvrListPos::LAST);
-  MVREXPORT virtual void remPreWriteFileCB(MvrFunctor *functor);
+  AREXPORT virtual void addPreWriteFileCB(ArFunctor *functor,
+                                          ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT virtual void remPreWriteFileCB(ArFunctor *functor);
 
-  MVREXPORT virtual void addPostWriteFileCB(MvrFunctor *functor,
-                                            MvrListPos::Pos position = MvrListPos::LAST);
-  MVREXPORT virtual void remPostWriteFileCB(MvrFunctor *functor);
+  AREXPORT virtual void addPostWriteFileCB(ArFunctor *functor,
+                                           ArListPos::Pos position = ArListPos::LAST);
+  AREXPORT virtual void remPostWriteFileCB(ArFunctor *functor);
 
   /// Forces the map to reload if the config is changed/reloaded
-  MVREXPORT void forceMapLoadOnConfigProcessFile(void) { myForceMapLoad = true; }
+  AREXPORT void forceMapLoadOnConfigProcessFile(void) 
+    { myForceMapLoad = true; }
 
 #ifndef SWIG
   /** @swigomit (can't write to arguments yet) */
-  MVREXPORT virtual bool readFile(const char *fileName, 
- 			                            char *errorBuffer,
-                                  size_t errorBufferLen,
-                                  unsigned char *md5DigestBuffer,
-                                  size_t md5DigestBufferLen);
-  MVREXPORT bool readFile(const char *fileName, char *errorBuffer, size_t errorBufferLen);
+  AREXPORT virtual bool readFile(const char *fileName, 
+ 			                           char *errorBuffer,
+                                 size_t errorBufferLen,
+                                 unsigned char *md5DigestBuffer,
+                                 size_t md5DigestBufferLen);
+  AREXPORT bool readFile(const char *fileName, char *errorBuffer, size_t errorBufferLen);
 #endif
-  MVREXPORT bool readFile(const char *fileName);
+  AREXPORT bool readFile(const char *fileName);
 
 #ifndef SWIG
   /** @swigomit (can't write to arguments yet) */
-  MVREXPORT virtual bool writeFile(const char *fileName, 
-                                   bool internalCall,
-                                   unsigned char *md5DigestBuffer = NULL,
-                                   size_t md5DigestBufferLen = 0,
-                                   time_t fileTimestamp = -1);
+  AREXPORT virtual bool writeFile(const char *fileName, 
+                                  bool internalCall,
+                                  unsigned char *md5DigestBuffer = NULL,
+                                  size_t md5DigestBufferLen = 0,
+                                  time_t fileTimestamp = -1);
 #endif
 
   virtual bool writeFile(const char *fileName) 
-  { return writeFile(fileName, false, NULL, 0, -1); }
+  {
+    return writeFile(fileName, false, NULL, 0, -1);
+  }
 
 #ifndef SWIG
   /// @swigomit
-  MVREXPORT virtual struct stat getReadFileStat() const;
+  AREXPORT virtual struct stat getReadFileStat() const;
 #endif
 
-  MVREXPORT virtual bool getMapId(MvrMapId *mapIdOut, bool isInternalCall = false);
+  AREXPORT virtual bool getMapId(ArMapId *mapIdOut,
+                                 bool isInternalCall = false);
 
-  MVREXPORT virtual bool calculateChecksum(unsigned char *md5DigestBuffer,
-                                           size_t md5DigestBufferLen);
-
-
-  MVREXPORT virtual const char *getBaseDirectory(void) const;
-
-  MVREXPORT virtual void setBaseDirectory(const char *baseDirectory);
-
-  MVREXPORT virtual const char *getTempDirectory(void) const;
-
-  MVREXPORT virtual void setTempDirectory(const char *tempDirectory);
+  AREXPORT virtual bool calculateChecksum(unsigned char *md5DigestBuffer,
+                                          size_t md5DigestBufferLen);
 
 
- 	MVREXPORT virtual std::string createRealFileName(const char *fileName);
+  AREXPORT virtual const char *getBaseDirectory(void) const;
 
-  MVREXPORT virtual const char *getFileName(void) const;
+  AREXPORT virtual void setBaseDirectory(const char *baseDirectory);
 
-  MVREXPORT virtual void setSourceFileName(const char *sourceName,
-                                           const char *fileName,
-                                           bool isInternalCall = false);
+  AREXPORT virtual const char *getTempDirectory(void) const;
 
-  MVREXPORT virtual bool refresh();
+  AREXPORT virtual void setTempDirectory(const char *tempDirectory);
 
-  MVREXPORT virtual void setIgnoreEmptyFileName(bool ignore);
 
-  MVREXPORT virtual bool getIgnoreEmptyFileName(void);
+ 	AREXPORT virtual std::string createRealFileName(const char *fileName);
 
-  MVREXPORT virtual void setIgnoreCase(bool ignoreCase = false);
+  AREXPORT virtual const char *getFileName(void) const;
 
-  MVREXPORT virtual bool getIgnoreCase(void);
+  AREXPORT virtual void setSourceFileName(const char *sourceName,
+                                          const char *fileName,
+                                          bool isInternalCall = false);
+
+  AREXPORT virtual bool refresh();
+
+  AREXPORT virtual void setIgnoreEmptyFileName(bool ignore);
+
+  AREXPORT virtual bool getIgnoreEmptyFileName(void);
+
+  AREXPORT virtual void setIgnoreCase(bool ignoreCase = false);
+
+  AREXPORT virtual bool getIgnoreCase(void);
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Inactive Section
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual MvrMapInfoInterface *getInactiveInfo();
+  AREXPORT virtual ArMapInfoInterface *getInactiveInfo();
 
-  MVREXPORT virtual MvrMapObjectsInterface *getInactiveObjects();
+  AREXPORT virtual ArMapObjectsInterface *getInactiveObjects();
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Child Objects Section
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  MVREXPORT virtual MvrMapObjectsInterface *getChildObjects();
+  AREXPORT virtual ArMapObjectsInterface *getChildObjects();
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // Miscellaneous
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-  MVREXPORT virtual MvrArgumentBuilder *findMapObjectParams(const char *mapObjectName);
+  AREXPORT virtual ArArgumentBuilder *findMapObjectParams
+                                          (const char *mapObjectName);
 
-  MVREXPORT virtual bool setMapObjectParams(const char *mapObjectName,
-                                            MvrArgumentBuilder *params,
-                                            MvrMapChangeDetails  *changeDetails = NULL);
+  AREXPORT virtual bool setMapObjectParams(const char *mapObjectName,
+                                           ArArgumentBuilder *params,
+                                           ArMapChangeDetails  *changeDetails = NULL);
 
 
-  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getRemainder();
+  AREXPORT virtual std::list<ArArgumentBuilder *> *getRemainder();
 
-  MVREXPORT virtual void setQuiet(bool isQuiet);
+  AREXPORT virtual void setQuiet(bool isQuiet);
  	
-  MVREXPORT virtual bool parseLine(char *line);
+  AREXPORT virtual bool parseLine(char *line);
 
-  MVREXPORT virtual void parsingComplete(void);
+  AREXPORT virtual void parsingComplete(void);
 
-  MVREXPORT virtual bool isLoadingDataStarted();
+  AREXPORT virtual bool isLoadingDataStarted();
 
-  MVREXPORT virtual bool isLoadingLinesAndDataStarted();
+  AREXPORT virtual bool isLoadingLinesAndDataStarted();
 
   // ===========================================================================
-  // End of MvrMapInterface
+  // End of ArMapInterface
   // ===========================================================================
 
 
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // MvrMap Methods
+  // ArMap Methods
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /// Reads a map and changes the config map name to that file
-  MVREXPORT bool readFileAndChangeConfig(const char *fileName);
+  AREXPORT bool readFileAndChangeConfig(const char *fileName);
   /// Changes the config map name
-  MVREXPORT void changeConfigMapName(const char *fileName);
+  AREXPORT void changeConfigMapName(const char *fileName);
 
 
 
  protected:
  
-   /// Processes changes to the Mvria configuration; loads a new map file if necessary
+   /// Processes changes to the Aria configuration; loads a new map file if necessary
    bool processFile(char *errorBuffer, size_t errorBufferLen);
  
  protected:
  
    // Lock to protect data during file I/O operations
-   MvrMutex myMutex;
+   ArMutex myMutex;
  
    /// File path in which to find the map file name
    std::string myBaseDirectory;
@@ -603,34 +648,34 @@ public:
    /// File statistics for the map file
    struct stat myReadFileStat;
 
-   /// Name of the Mvria config parameter that specifies the map file name
+   /// Name of the Aria config parameter that specifies the map file name
    std::string myConfigParam;
-   /// Whether to ignore (not process) an empty Mvria config parameter
+   /// Whether to ignore (not process) an empty Aria config parameter
    bool myIgnoreEmptyFileName;
    /// Whether to ignore case when comparing map file names
    bool myIgnoreCase;
  
-   /// Whether the Mvria config has already been processed at least once
+   /// Whether the Aria config has already been processed at least once
    bool myConfigProcessedBefore;
-   /// The name of the map file specified in the Mvria config parameter
+   /// The name of the map file specified in the Aria config parameter
    char myConfigMapName[MAX_MAP_NAME_LENGTH];
    /// Whether we want to force loading the map for some reasing
    bool myForceMapLoad;
  
    /// The current map used by the robot
-   MvrMapSimple * const myCurrentMap;
+   ArMapSimple * const myCurrentMap;
    /// The map that is being loaded, i.e. read from a file; will be copied to the current map if successful
-   MvrMapSimple * myLoadingMap;
+   ArMapSimple * myLoadingMap;
    
    /// Whether to run in "quiet mode", i.e. logging less information
    bool myIsQuiet;
   
-   /// Callback that processes changes to the Mvria config.
-   MvrRetFunctor2C<bool, MvrMap, char *, size_t> myProcessFileCB;
+   /// Callback that processes changes to the Aria config.
+   ArRetFunctor2C<bool, ArMap, char *, size_t> myProcessFileCB;
  
-}; // end class MvrMap
+}; // end class ArMap
 
  
-#endif // MVRMAP_H
+#endif // ARMAP_H
  
  

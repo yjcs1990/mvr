@@ -1,18 +1,44 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrGripper.h
- > Description  : Contains gripper command numbers
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRGRIPPER_H
-#define MVRGRIPPER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrRobot.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrGripperCommands
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARGRIPPER_H
+#define ARGRIPPER_H
+
+#include "ariaTypedefs.h"
+#include "ArRobot.h"
+
+/// Contains gripper command numbers
+/**
+   A class with an enum of the commands for the gripper, see the Pioneer operations
+   manual and the gripper guide available at <a href="http://robots.mobilerobots.com">http://robots.mobilerobots.com</a> for more detailed descriptions.  The enum 
+   values which start with GRIP are for the gripper paddles, the ones which
+   start with LIFT are the for the lift, and the ones which start with GRIPPER
+   are for the entire unit.
+*/
+class ArGripperCommands
 {
 public:
   enum Commands {
@@ -23,103 +49,104 @@ public:
     LIFT_DOWN = 5, ///< lowers the lift to the bottom of its range
     LIFT_STOP = 6, ///< stops the lift where it is
     GRIPPER_STORE = 7, /**< 
-                          closes the paddles and raises the lift simultaneously, 
-                          this is for storage not for grasping/carrying an object
-                        */
+		       closes the paddles and raises the lift simultaneously, 
+		       this is for storage not for grasping/carrying an object
+		    */
     GRIPPER_DEPLOY = 8, /**< 
-                        opens the paddles and lowers the lieft simultaneously,
-                        this is for getting ready to grasp an object, not for
-                        object drops
-                          */
+			opens the paddles and lowers the lieft simultaneously,
+			this is for getting ready to grasp an object, not for
+			object drops
+		     */
     GRIPPER_HALT = 15, ///< stops the gripper paddles and lift from moving
     GRIP_PRESSURE = 16, /**< 
-                        sets the time delay in 20 msec increments after the
-                        gripper paddles first grasp an object before they stop
-                        moving, regulates grasp pressure
-                          */
-    LIFT_CMVRRY = 17 /**<
-                      raises or lowers the lieft, the argument is the number
-                      of 20 msec increments to raise or lower the lift,
-                      poseitive arguments for raise, negative for lower
-                    */
+			sets the time delay in 20 msec increments after the
+			gripper paddles first grasp an object before they stop
+			moving, regulates grasp pressure
+		     */
+    LIFT_CARRY = 17 /**<
+		       raises or lowers the lieft, the argument is the number
+		       of 20 msec increments to raise or lower the lift,
+		       poseitive arguments for raise, negative for lower
+		    */
   };
 };
 
 /// Provides an interface to the Pioneer gripper device
 ///  @ingroup OptionalClasses
 ///  @ingroup DeviceClasses
-class MvrGripper
+class ArGripper
 {
 public:
   /// Constructor
-  MVREXPORT MvrGripper(MvrRobot *robot, int gripperType = QUERYTYPE);
+  AREXPORT ArGripper(ArRobot *robot, int gripperType = QUERYTYPE);
   /// Destructor
-  MVREXPORT virtual ~MvrGripper();
+  AREXPORT virtual ~ArGripper();
   /// Opens the gripper paddles
-  MVREXPORT bool gripOpen(void);
+  AREXPORT bool gripOpen(void);
   /// Closes the gripper paddles
-  MVREXPORT bool gripClose(void);
+  AREXPORT bool gripClose(void);
   /// Stops the gripper paddles
-  MVREXPORT bool gripStop(void);
+  AREXPORT bool gripStop(void);
   /// Raises the lift to the top
-  MVREXPORT bool liftUp(void);
+  AREXPORT bool liftUp(void);
   /// Lowers the lift to the bottom
-  MVREXPORT bool liftDown(void);
+  AREXPORT bool liftDown(void);
   /// Stops the lift
-  MVREXPORT bool liftStop(void);
+  AREXPORT bool liftStop(void);
   /// Puts the gripper in a storage position
-  MVREXPORT bool gripperStore(void);
+  AREXPORT bool gripperStore(void);
   /// Puts the gripper in a deployed position, ready for use
-  MVREXPORT bool gripperDeploy(void);
+  AREXPORT bool gripperDeploy(void);
   /// Halts the lift and the gripper paddles
-  MVREXPORT bool gripperHalt(void);
+  AREXPORT bool gripperHalt(void);
   /// Sets the amount of pressure the gripper applies
-  MVREXPORT bool gripPressure(int mSecIntervals);
+  AREXPORT bool gripPressure(int mSecIntervals);
   /// Raises the lift by a given amount of time
-  MVREXPORT bool liftCarry(int mSecIntervals);
+  AREXPORT bool liftCarry(int mSecIntervals);
   /// Returns true if the gripper paddles are moving
-  MVREXPORT bool isGripMoving(void) const;
+  AREXPORT bool isGripMoving(void) const;
   /// Returns true if the lift is moving
-  MVREXPORT bool isLiftMoving(void) const;
+  AREXPORT bool isLiftMoving(void) const;
   /// Returns the state of the gripper paddles
-  MVREXPORT int getGripState(void) const;
+  AREXPORT int getGripState(void) const;
   /// Returns the state of each gripper paddle
-  MVREXPORT int getPaddleState(void) const;
+  AREXPORT int getPaddleState(void) const;
   /// Returns the state of the gripper's breakbeams
-  MVREXPORT int getBreakBeamState(void) const;
+  AREXPORT int getBreakBeamState(void) const;
   /// Returns the state of the lift
-  MVREXPORT bool isLiftMaxed(void) const;
+  AREXPORT bool isLiftMaxed(void) const;
   /// Gets the type of the gripper
-  MVREXPORT int getType(void) const;
+  AREXPORT int getType(void) const;
   /// Sets the type of the gripper
-  MVREXPORT void setType(int type);
+  AREXPORT void setType(int type);
   /// Gets the number of mSec since the last gripper packet
-  MVREXPORT long getMSecSinceLastPacket(void) const;
+  AREXPORT long getMSecSinceLastPacket(void) const;
   /// Gets the grasp time
-  MVREXPORT int getGraspTime(void) const;
+  AREXPORT int getGraspTime(void) const;
   /// logs the gripper state
-  MVREXPORT void logState(void) const;
+  AREXPORT void logState(void) const;
   /// Parses the gripper packet
-  MVREXPORT bool packetHandler(MvrRobotPacket *packet);
+  AREXPORT bool packetHandler(ArRobotPacket *packet);
   /// The handler for when the robot connects
-  MVREXPORT void connectHandler(void);
+  AREXPORT void connectHandler(void);
   /// These are the types for the gripper
   enum Type {
     QUERYTYPE, ///< Finds out what type from the robot, default
-    GENIO,     ///< Uses general IO
-    USERIO,    ///< Uses the user IO
-    GRIPPAC,   ///< Uses a packet requested from the robot
-    NOGRIPPER  ///< There isn't a gripper
+    GENIO, ///< Uses general IO
+    USERIO, ///< Uses the user IO
+    GRIPPAC, ///< Uses a packet requested from the robot
+    NOGRIPPER ///< There isn't a gripper
   }; 
 protected:
-  MvrRobot *myRobot;
+  ArRobot *myRobot;
   int myType;
   unsigned char myState;
   unsigned char mySwitches;
   unsigned char myGraspTime;
-  MvrTime myLastDataTime;
-  MvrFunctorC<MvrGripper> myConnectCB;
-  MvrRetFunctor1C<bool, MvrGripper, MvrRobotPacket *> myPacketHandlerCB;
+  ArTime myLastDataTime;
+  ArFunctorC<ArGripper> myConnectCB;
+  ArRetFunctor1C<bool, ArGripper, ArRobotPacket *> myPacketHandlerCB;
 };
 
-#endif  // MVRGRIPPER_H
+
+#endif // ARGRIPPER_H

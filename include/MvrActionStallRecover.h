@@ -1,38 +1,62 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionStallRecover.h
- > Description  : Action to recover from a stall
- > Author       : Yu Jie
- > Create Time  : 2017年04月24日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONSTALLRECOVER_H
-#define MVRACTIONSTALLRECOVER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrAction.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrResolver;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-class MvrActionStallRecover : public public MvrAction
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONSTALLRECOVER_H
+#define ARACTIONSTALLRECOVER_H
+
+#include "ariaTypedefs.h"
+#include "ArAction.h"
+
+class ArResolver;
+
+/// Action to recover from a stall
+/**
+   This action tries to recover if one of the wheels has stalled, it has a 
+   series of actions it tries in order to get out of the stall.
+   @ingroup ActionClasses
+*/
+class ArActionStallRecover : public ArAction
 {
 public:
   /// Constructor
-  MVREXPORT MvrActionStallRecover(const char * name = "stall recover", 
-                                  double obstacleDistance = 225, int cyclesToMove = 50, 
-                                  double speed = 150, double degreesToTurn = 45,
-                                  bool enabled = true);
+  AREXPORT ArActionStallRecover(const char * name = "stall recover", 
+				double obstacleDistance = 225, int cyclesToMove = 50, 
+				double speed = 150, double degreesToTurn = 45,
+				bool enabled = true);
   /// Destructor
-  MVREXPORT virtual ~MvrActionStallRecover();
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  MVREXPORT virtual MvrActionDesired *getDesired(void) 
-  { return &myActionDesired; }
+  AREXPORT virtual ~ArActionStallRecover();
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *getDesired(void) 
+    { return &myActionDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
-  { return &myActionDesired; }
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
+                                                   { return &myActionDesired; }
 #endif
-  MVREXPORT void addToConfig(MvrConfig* config, const char* sectionName, MvrPriority::Priority priority = MvrPriority::NORMAL);
-  MVREXPORT virtual void activate(void);
+  AREXPORT void addToConfig(ArConfig* config, const char* sectionName, ArPriority::Priority priority = ArPriority::NORMAL);
+  AREXPORT virtual void activate(void);
 protected:
   // these are internal things, don't touch unless you know what you are doing
   void doit(void); // does whatever should be done
@@ -70,9 +94,9 @@ protected:
   int myCyclesToTurn;
   double myDegreesToTurn;
   double myDesiredHeading;
-  MvrActionDesired myActionDesired;
+  ArActionDesired myActionDesired;
   
-  MvrResolver *myResolver;
+  ArResolver *myResolver;
 };
 
-#endif  // MVRACTIONSTALLRECOVER_H
+#endif //ARACTIONSTALLRECOVER_H

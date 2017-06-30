@@ -1,24 +1,42 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotParams.h
- > Description  : Stores a set of video device parameters read from one of the video sections 
-                  of a robot parameter file.
- > Author       : Yu Jie
- > Create Time  : 2017年05月19日
- > Modify Time  : 2017年05月19日
-***************************************************************************************************/
-#ifndef MVRROBOTPARAMS_H
-#define MVRROBOTPARAMS_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrConfig.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARROBOTPARAMS_H
+#define ARROBOTPARAMS_H
+
+#include "ariaTypedefs.h"
+#include "ArConfig.h"
 #include <vector>
 
 #ifndef SWIG
 
 /// Stores a set of video device parameters read from one of the video sections of a robot parameter file.
 /// @internal
-class MvrVideoParams
+/// @swigomit
+class ArVideoParams
 {
 public:
 	std::string type;
@@ -32,26 +50,27 @@ public:
 	std::string address;
 	int tcpPort; bool tcpPortSet;
 	bool inverted; bool invertedSet;
-	MvrVideoParams() :type("unknown"),
-                    connect(false),
-                    connectSet(false),
-                    imageWidth(-1),
-                    imageHeight(-1),
-                    deviceIndex(-1),
-                    deviceName("none"),
-                    channel(-1),
-                    analogSignalFormat(""),
-                    address("none"),
-                    tcpPort(80),
-                    tcpPortSet(false),
-                    inverted(false),
-                    invertedSet(false)
+	ArVideoParams() :
+		type("unknown"),
+		connect(false),
+		connectSet(false),
+		imageWidth(-1),
+		imageHeight(-1),
+		deviceIndex(-1),
+		deviceName("none"),
+		channel(-1),
+		analogSignalFormat(""),
+		address("none"),
+		tcpPort(80),
+		tcpPortSet(false),
+		inverted(false),
+		invertedSet(false)
 	{}
-	/// Copy values of any parameters from @param other into @param this, if the param in
-	/// @param other is not a missing/null/empty value (exactly how
-	/// "empty/null/missing/default" is represented depends on the specific
-	/// parameter, see parameter documentation and definition of merge() method in MvrRobotParams.cpp)
-	MVREXPORT void merge(const MvrVideoParams& other);
+	/// Copy values of any parameters from @a other into @a this, if the param in
+	/// @a other is not a missing/null/empty value (exactly how
+	///"empty/null/missing/default" is represented depends on the specific
+	///parameter, see parameter documentation and definition of merge() method in ArRobotParams.cpp)
+	AREXPORT void merge(const ArVideoParams& other);
 	void setType(const std::string& t) { type = t; }
 	void setConnect(bool c) { connect = c; connectSet = true; }
 	void setImageSize(int w, int h) { imageWidth = w; imageHeight = h; }
@@ -64,11 +83,12 @@ public:
 	}
 	void setAddress(const std::string& a) { address = a; }
 	void setTCPPort(int p) { tcpPort = p; tcpPortSet = true; }
-};  // end of class MvrVideoParams
+};
 
 /// Stores a set of PTZ/PTU device parameters read from one of the PTZ sections of a robot parameter file.
 /// @internal
-class MvrPTZParams
+/// @swigomit
+class ArPTZParams
 {
 public:
 	std::string type;
@@ -78,19 +98,20 @@ public:
 	std::string address;
 	int tcpPort; bool tcpPortSet;
 	bool inverted; bool invertedSet;
-	MvrPTZParams() : type("unknown"),
-                   connect(false),
-                   connectSet(false),
-                   serialPort("none"),
-                   robotAuxPort(-1),
-                   address("none"),
-                   tcpPort(80),
-                   tcpPortSet(false),
-                   inverted(false),
-                   invertedSet(false)
+	ArPTZParams() :
+		type("unknown"),
+		connect(false),
+		connectSet(false),
+		serialPort("none"),
+		robotAuxPort(-1),
+		address("none"),
+		tcpPort(80),
+		tcpPortSet(false),
+		inverted(false),
+		invertedSet(false)
 	{}
-	/// Copy values of any parameters in @param other into @param this, if given in @param other
-	void merge(const MvrPTZParams& other);
+	/// Copy values of any parameters in @a other into @a this, if given in @a other
+	void merge(const ArPTZParams& other);
 	void setType(const std::string& t) { type = t; }
 	void setConnect(bool c) { connect = c; connectSet = true; }
 	void setSerialPort(const std::string& sp) { serialPort = sp; }
@@ -98,28 +119,28 @@ public:
 	void setRobotAuxPort(int p) { robotAuxPort = p; }
 	void setInverted(bool i) { inverted = i; invertedSet = true; }
 	void setAddress(const std::string& a) { address = a; }
-};  // end of class MvrPTZParams
+};
 
 #endif // ifndef SWIG
 
 ///Stores parameters read from the robot's parameter files
 /** 
-    Use MvrRobot::getRobotParams() after a successful robot 
-    connection to obtain a pointer to an MvrRobotParams instance containing the
+    Use ArRobot::getRobotParams() after a successful robot 
+    connection to obtain a pointer to an ArRobotParams instance containing the
     values read from the files.  
 
     See @ref ParamFiles for a description of the robot parameter files.
 
-    MvrRobotParams is a subclass of MvrConfig which contains some useful methods
+    ArRobotParams is a subclass of ArConfig which contains some useful methods
     and features.
 */
-class MvrRobotParams : public MvrConfig
+class ArRobotParams : public ArConfig
 {
 public:
   /// Constructor
-  MVREXPORT MvrRobotParams();
+  AREXPORT ArRobotParams();
   /// Destructor
-  MVREXPORT virtual ~MvrRobotParams();
+  AREXPORT virtual ~ArRobotParams();
   /// Returns the class from the parameter file
   const char *getClassName(void) const { return myClass; }
   /// Returns the subclass from the parameter file
@@ -145,7 +166,8 @@ public:
   /// Returns the max rotational velocity of the robot
   int getAbsoluteMaxRotVelocity(void) const { return myAbsoluteMaxRVelocity; }
   /// Returns the max lateral velocity of the robot
-  int getAbsoluteMaxLatVelocity(void) const { return myAbsoluteMaxLatVelocity; }
+  int getAbsoluteMaxLatVelocity(void) const 
+    { return myAbsoluteMaxLatVelocity; }
   /// Returns true if IO packets are automatically requested upon connection to the robot.
   bool getRequestIOPackets(void) const { return myRequestIOPackets; }
   /// Returns true if encoder packets are automatically requested upon connection to the robot.
@@ -182,54 +204,55 @@ public:
   int getNumIR(void) const { return myNumIR; }
   /// Returns if the IR of the given number is valid
   bool haveIR(int number) const
-  {
-    if (myIRMap.find(number) != myIRMap.end())
-	    return true;
-    else
-	    return false;
-  }
+    {
+      if (myIRMap.find(number) != myIRMap.end())
+	return true;
+      else
+	return false;
+    }
   /// Returns the X location of the given numbered IR
   int getIRX(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = myIRMap.find(number)) == myIRMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(IR_X)) == (*it).second.end())
-      return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = myIRMap.find(number)) == myIRMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(IR_X)) == (*it).second.end())
+
+	return 0;
+      return (*it2).second;
+    }
   /// Returns the Y location of the given numbered IR
   int getIRY(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = myIRMap.find(number)) == myIRMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(IR_Y)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = myIRMap.find(number)) == myIRMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(IR_Y)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
   int getIRType(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = myIRMap.find(number)) == myIRMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(IR_TYPE)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = myIRMap.find(number)) == myIRMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(IR_TYPE)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
   int getIRCycles(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = myIRMap.find(number)) == myIRMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(IR_CYCLES)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = myIRMap.find(number)) == myIRMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(IR_CYCLES)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
 
   /// Returns the number of sonar
   int getNumSonar(void) const { return myNumSonar; }
@@ -239,207 +262,208 @@ public:
      @deprecated
   **/
   bool getLaserPossessed(void) const 
-  { 
-    MvrLog::log(MvrLog::Normal, "Something called MvrRobotParams::getLaserPossessed, but this is obsolete and doesn't mean anything.");
-    return false; 
-  }
+    { 
+      ArLog::log(ArLog::Normal, "Something called ArRobotParams::getLaserPossessed, but this is obsolete and doesn't mean anything.");
+      return false; 
+    }
 
   /// What type of laser this is
   const char *getLaserType(int laserNumber = 1) const 
-  { 
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserType; 
-    else
-	    return NULL;
-  }
+    { 
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserType; 
+      else
+	return NULL;
+    }
   /// What type of port the laser is on
   const char *getLaserPortType(int laserNumber = 1) const 
-  { 
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserPortType; 
-    else
-	    return NULL;
-  }
+    { 
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserPortType; 
+      else
+	return NULL;
+    }
   /// What port the laser is on
   const char *getLaserPort(int laserNumber = 1) const 
-  { 
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserPort; 
-    else
-	    return NULL;
-  }
+    { 
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserPort; 
+      else
+	return NULL;
+    }
   /// If the laser should be auto connected
   bool getConnectLaser(int laserNumber = 1) const 
-  {       
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserAutoConnect; 
-    else
-	    return false;
-  }
+    {       
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserAutoConnect; 
+      else
+	return false;
+    }
   /// If the laser is flipped on the robot
   bool getLaserFlipped(int laserNumber = 1) const 
-  { 
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserFlipped; 
-    else
-	    return false;
-  }
+    { 
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserFlipped; 
+      else
+	return false;
+    }
   /// If the laser power is controlled by the serial port lines
   bool getLaserPowerControlled(int laserNumber = 1) const 
-  {       
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserPowerControlled; 
-    else
-	    return false;
-  }
+    {       
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserPowerControlled; 
+      else
+	return false;
+    }
   /// The max range to use the laser
   int getLaserMaxRange(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserMaxRange; 
-    else
-	    return 0;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserMaxRange; 
+      else
+	return 0;
+    }
   /// The cumulative buffer size to use for the laser
   int getLaserCumulativeBufferSize(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserCumulativeBufferSize; 
-    else
-	    return 0;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserCumulativeBufferSize; 
+      else
+	return 0;
+    }
   /// The X location of the laser
   int getLaserX(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserX; 
-    else
-	    return 0;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserX; 
+      else
+	return 0;
+    }
   /// The Y location of the laser 
   int getLaserY(int laserNumber = 1) const 
-  { 
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserY; 
-    else
-	    return 0;
-  }
+    { 
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserY; 
+      else
+	return 0;
+    }
   /// The rotation of the laser on the robot
   double getLaserTh(int laserNumber = 1) const 
-  { 
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserTh; 
-    else
-	    return 0;
-  }
+    { 
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserTh; 
+      else
+	return 0;
+    }
   /// The height of the laser off of the ground (0 means unknown)
   int getLaserZ(int laserNumber = 1) const 
-  { 
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserZ; 
-    else
-	    return 0;
-  }
+    { 
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserZ; 
+      else
+	return 0;
+    }
   /// Gets the string that is the readings the laser should ignore
   const char *getLaserIgnore(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserIgnore; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserIgnore; 
+      else
+	return NULL;
+    }
   /// Gets the string that is the degrees the laser should start on
   const char *getLaserStartDegrees(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserStartDegrees; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserStartDegrees; 
+      else
+	return NULL;
+    }
   /// Gets the string that is the degrees the laser should end on
   const char *getLaserEndDegrees(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserEndDegrees; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserEndDegrees; 
+      else
+	return NULL;
+    }
   /// Gets the string that is choice for the number of degrees the laser should use
   const char *getLaserDegreesChoice(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserDegreesChoice; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserDegreesChoice; 
+      else
+	return NULL;
+    }
   /// Gets the string that is choice for the increment the laser should use
   const char *getLaserIncrement(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserIncrement; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserIncrement; 
+      else
+	return NULL;
+    }
   /// Gets the string that is choice for increment the laser should use
   const char *getLaserIncrementChoice(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserIncrementChoice; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserIncrementChoice; 
+      else
+	return NULL;
+    }
   /// Gets the string that is choice for units the laser should use
   const char *getLaserUnitsChoice(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserUnitsChoice; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserUnitsChoice; 
+      else
+	return NULL;
+    }
   /// Gets the string that is choice for reflectorBits the laser should use
   const char *getLaserReflectorBitsChoice(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserReflectorBitsChoice; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserReflectorBitsChoice; 
+      else
+	return NULL;
+    }
   /// Gets the string that is choice for starting baud the laser should use
   const char *getLaserStartingBaudChoice(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserStartingBaudChoice; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserStartingBaudChoice; 
+      else
+	return NULL;
+    }
   /// Gets the string that is choice for auto baud the laser should use
   const char *getLaserAutoBaudChoice(int laserNumber = 1) const 
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserAutoBaudChoice; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserAutoBaudChoice; 
+      else
+	return NULL;
+    }
 
   /// Gets the name of the section the laser information is in (this
   /// mostly doesn't mean anything except for commercial)
   const char *getLaserSection(int laserNumber = 1) const
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->mySection; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->mySection; 
+      else
+	return NULL;
+    }
 
   /// Gets which power output that turns the laser on/off 
   const char *getLaserPowerOutput(int laserNumber = 1) const
-  {
-    if (getLaserData(laserNumber) != NULL)
-	    return getLaserData(laserNumber)->myLaserPowerOutput; 
-    else
-	    return NULL;
-  }
+    {
+      if (getLaserData(laserNumber) != NULL)
+	return getLaserData(laserNumber)->myLaserPowerOutput; 
+      else
+	return NULL;
+    }
 
+	/// PS 8/21/12 - new code to support BatteryMTX
 	/// What type of battery this is
 	const char *getBatteryMTXBoardType (int batteryNumber = 1) const
 	{
@@ -482,6 +506,7 @@ public:
 	}
 
 
+	/// PS 9/4/12 - new code to support LCDMTX
 	/// What type of LCD this is
 	const char *getLCDMTXBoardType (int lcdNumber = 1) const
 	{
@@ -542,6 +567,7 @@ public:
 
 
 
+	/// PS 8/21/12 - new code to support SonarMTX
 	/// What type of sonar this is
 	const char *getSonarMTXBoardType (int sonarNumber = 1) const
 	{
@@ -585,185 +611,217 @@ public:
 
   /// What delay the sonar board has
   int getSonarMTXBoardDelay(int sonarBoardNum = 1) const 
-  { 
-    if (getSonarMTXBoardData(sonarBoardNum) != NULL)
-    	return getSonarMTXBoardData(sonarBoardNum)->mySonarDelay; 
-    else
-	    return 0;
-  }
+    { 
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->mySonarDelay; 
+      else
+	return 0;
+    }
 
   /// What default gain the sonar board has
   int getSonarMTXBoardGain(int sonarBoardNum = 1) const 
-  { 
-    if (getSonarMTXBoardData(sonarBoardNum) != NULL)
-	    return getSonarMTXBoardData(sonarBoardNum)->mySonarGain; 
-    else
-	    return 0;
-  }
+    { 
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->mySonarGain; 
+      else
+	return 0;
+    }
+
+	/*
+  /// What delay the sonar has
+  int getSonarMTXBoardNoiseDelta(int sonarBoardNum = 1) const 
+    { 
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->mySonarGain; 
+      else
+	return 0;
+    }
+	*/
 
   /// What delay the sonar has
   int getSonarMTXBoardDetectionThreshold(int sonarBoardNum = 1) const 
-  { 
-    if (getSonarMTXBoardData(sonarBoardNum) != NULL)
-    	return getSonarMTXBoardData(sonarBoardNum)->mySonarDetectionThreshold; 
-    else
-	    return 0;
-  }
+    { 
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->mySonarDetectionThreshold; 
+      else
+	return 0;
+    }
 
   /// What max range the sonar has
   int getSonarMTXBoardMaxRange(int sonarBoardNum = 1) const 
-  { 
-    if (getSonarMTXBoardData(sonarBoardNum) != NULL)
-	    return getSonarMTXBoardData(sonarBoardNum)->mySonarMaxRange; 
-    else
-	    return 0;
-  }
+    { 
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->mySonarMaxRange; 
+      else
+	return 0;
+    }
 
   /// What autonomous driving flage the sonar has
   int getSonarMTXBoardUseForAutonomousDriving(int sonarBoardNum = 1) const 
-  { 
-    if (getSonarMTXBoardData(sonarBoardNum) != NULL)
-	    return getSonarMTXBoardData(sonarBoardNum)->mySonarUseForAutonomousDriving; 
-    else
-	    return 0;
-  }
+    { 
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->mySonarUseForAutonomousDriving; 
+      else
+	return 0;
+    }
 
   /// Gets which power output turns the sonar board on or off
   const char *getSonarMTXBoardPowerOutput(int sonarBoardNum = 1) const 
-  { 
-    if (getSonarMTXBoardData(sonarBoardNum) != NULL)
-	    return getSonarMTXBoardData(sonarBoardNum)->mySonarMTXBoardPowerOutput; 
-    else
-	    return NULL;
-  }
+    { 
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->mySonarMTXBoardPowerOutput; 
+      else
+	return NULL;
+    }
 
   /// get number of units (ie transducers) configured on a specific board 
   int getNumSonarOnMTXBoard(int sonarBoardNum = 1) const 
-  { 
-    if (getSonarMTXBoardData(sonarBoardNum) != NULL)
-	    return getSonarMTXBoardData(sonarBoardNum)->myNumSonarTransducers; 
-    else
-	    return 0;
-  }
+    { 
+
+      if (getSonarMTXBoardData(sonarBoardNum) != NULL)
+	return getSonarMTXBoardData(sonarBoardNum)->myNumSonarTransducers; 
+      else
+	return 0;
+    }
 
   /// get number of units (ie transducers) configued 
-  int getNumSonarUnits() const { return myNumSonarUnits; }
+  int getNumSonarUnits() const 
+    { 
+      return myNumSonarUnits;
+    }
 
+  /// MPL TODO discuss boardNum here?
   /// Returns if the sonar of the given number is valid
   bool haveSonar(int boardNum) const
-  {
-    if (mySonarMap.find(boardNum) != mySonarMap.end())
-    	return true;
-    else
-	    return false;
-  }
+    {
+      if (mySonarMap.find(boardNum) != mySonarMap.end())
+	return true;
+      else
+	return false;
+    }
   /// Returns the X location of the given numbered sonar disc
   int getSonarX(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_X)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_X)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
   /// Returns the Y location of the given numbered sonar disc
   int getSonarY(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_Y)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_Y)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
   /// Returns the heading of the given numbered sonar disc
   int getSonarTh(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_TH)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_TH)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
   /// Returns the gain of the given numbered sonar disc (only
   /// valid for MTX sonar)
   int getSonarGain(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_GAIN)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
-
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_GAIN)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
+  /// Returns the noise delta of the given numbered sonar disk (only
+  /// valid for MTX sonar)
+	/*
+  int getSonarNoiseDelta(int number) const
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_NOISE_DELTA)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
+	*/
   /// Returns the detection threshold of the given numbered sonar disc (only
   /// valid for MTX sonar)
   int getSonarDetectionThreshold(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-    	return 0;
-    if ((it2 = (*it).second.find(SONAR_DETECTION_THRESHOLD)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_DETECTION_THRESHOLD)) == 
+	  (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
   /// Returns the thres med of the given numbered sonar disc (only
   /// valid for MTX sonar)
   int getSonarMaxRange(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_MAX_RANGE)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_MAX_RANGE)) == 
+	  (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
 
   /// Returns the useforautonomousdriving of the given numbered sonar disc (only
   /// valid for MTX sonar)
   int getSonarUseForAutonomousDriving(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_USE_FOR_AUTONOMOUS_DRIVING)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_USE_FOR_AUTONOMOUS_DRIVING)) == 
+	  (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
 
   /// Returns the board a sonar is on
   int getSonarMTXBoard(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_BOARD)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_BOARD)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
 
   /// Returns the unit on the board a sonar transducer is on
   int getSonarMTXBoardUnitPosition(int number) const
-  {
-    std::map<int, std::map<int, int> >::const_iterator it;
-    std::map<int, int>::const_iterator it2;
-    if ((it = mySonarMap.find(number)) == mySonarMap.end())
-	    return 0;
-    if ((it2 = (*it).second.find(SONAR_BOARDUNITPOSITION)) == (*it).second.end())
-	    return 0;
-    return (*it2).second;
-  }
+    {
+      std::map<int, std::map<int, int> >::const_iterator it;
+      std::map<int, int>::const_iterator it2;
+      if ((it = mySonarMap.find(number)) == mySonarMap.end())
+	return 0;
+      if ((it2 = (*it).second.find(SONAR_BOARDUNITPOSITION)) == (*it).second.end())
+	return 0;
+      return (*it2).second;
+    }
 
 
 
@@ -791,8 +849,8 @@ public:
   int getLatAccel(void) const { return myTransAccel; }
   /// Gets the lat decel from param file (0 uses microcontroller param)
   int getLatDecel(void) const { return myTransDecel; }
-  /// Saves it to the subtype.p in Mvria::getDirectory/params
-  MVREXPORT bool save(void);
+  /// Saves it to the subtype.p in Aria::getDirectory/params
+  AREXPORT bool save(void);
 
   /// The X (forward-back) location of the GPS (antenna) on the robot
   int getGPSX() const { return myGPSX; }
@@ -821,14 +879,15 @@ public:
   
   /// Internal function to set if we use the default behavior
   /// (shouldn't be used outside of core developers)
-  static void internalSetUseDefaultBehavior(bool useDefaultBehavior, const char *owerOutputDisplayHint);
+  static void internalSetUseDefaultBehavior(bool useDefaultBehavior,
+					    const char *owerOutputDisplayHint);
 
   /// Internal function to get if we use the default behavior
   /// (shouldn't be used outside of core developers)
   static bool internalGetUseDefaultBehavior(void);
 
   /// Adds things to the config for the commercial software
-  void internalAddToConfigCommercial(MvrConfig *config);
+  void internalAddToConfigCommercial(ArConfig *config);
 
   /// Internal call that adds to this config the same way it's always
   /// been done (this is only exposed for some internal testing)
@@ -836,43 +895,45 @@ public:
 #endif
 
   /// return a const reference to the video device parameters
-  const std::vector<MvrVideoParams>& getVideoParams() const { return myVideoParams; }
+  const std::vector<ArVideoParams>& getVideoParams() const { return myVideoParams; }
   
   /// return a const reference to the PTU/PTZ parameters
-  const std::vector<MvrPTZParams>& getPTZParams() const { return myPTZParams; }
+  const std::vector<ArPTZParams>& getPTZParams() const { return myPTZParams; }
 
 protected:
   static bool ourUseDefaultBehavior;
   static std::string ourPowerOutputChoices;
 
   // Adds a laser to the config
-  MVREXPORT void addLaserToConfig(int laserNumber, MvrConfig *config, 
-				    bool useDefaultBehavior, const char *section);
+  AREXPORT void addLaserToConfig(int laserNumber, ArConfig *config, 
+				 bool useDefaultBehavior, 
+				 const char *section);
 
   // Adds a battery to the config 
-  MVREXPORT void addBatteryToConfig(int batteryNumber, MvrConfig *config, 
-				    bool useDefaultBehavior);
+  AREXPORT void addBatteryToConfig(int batteryNumber, ArConfig *config, 
+				   bool useDefaultBehavior);
 
   // Adds an LCD to the config 
-  MVREXPORT void addLCDToConfig(int lcdNumber, MvrConfig *config, 
-			      bool useDefaultBehavior);
+  AREXPORT void addLCDToConfig(int lcdNumber, ArConfig *config, 
+			       bool useDefaultBehavior);
 
   // Adds the sonar to the config (it's added automatically for
   // non-commercial)
-  MVREXPORT void addSonarToConfigCommercial(MvrConfig *config, bool isMTXSonar);
+  AREXPORT void addSonarToConfigCommercial(ArConfig *config, bool isMTXSonar);
 
   // Processes the 
-  MVREXPORT void processSonarCommercial(MvrConfig *config);
+  AREXPORT void processSonarCommercial(ArConfig *config);
 
   // Adds a sonarBoard to the config 
-  MVREXPORT void addSonarBoardToConfig(int sonarBoardNumber, 
-				    MvrConfig *config, bool useDefaultBehavior);
+  AREXPORT void addSonarBoardToConfig(int sonarBoardNumber, 
+				      ArConfig *config,
+				      bool useDefaultBehavior);
 
-  MVREXPORT void addPTZToConfig(int i, MvrConfig *config);
-  MVREXPORT void addVideoToConfig(int i, MvrConfig *config);
+  AREXPORT void addPTZToConfig(int i, ArConfig *config);
+  AREXPORT void addVideoToConfig(int i, ArConfig *config);
   
   // Processes the config for commercial
-  MVREXPORT bool commercialProcessFile(void);
+  AREXPORT bool commercialProcessFile(void);
     
   char myClass[1024];
   char mySubClass[1024];
@@ -907,32 +968,32 @@ protected:
   {
   public:
     LaserData()
-    {
-      myLaserType[0] = '\0';
-      myLaserPortType[0] = '\0';
-      myLaserPort[0] = '\0';
-      myLaserAutoConnect = false;
-      myLaserFlipped = false;
-      myLaserPowerControlled = true;
-      myLaserMaxRange = 0;
-      myLaserCumulativeBufferSize = 0;
-      myLaserX = 0;
-      myLaserY = 0;
-      myLaserTh = 0.0;
-      myLaserZ = 0;
-      myLaserIgnore[0] = '\0';
-      myLaserStartDegrees[0] = '\0';
-      myLaserEndDegrees[0] = '\0';
-      myLaserDegreesChoice[0] = '\0';
-      myLaserIncrement[0] = '\0';
-      myLaserIncrementChoice[0] = '\0';
-      myLaserUnitsChoice[0] = '\0';
-      myLaserReflectorBitsChoice[0] = '\0';
-      myLaserStartingBaudChoice[0] = '\0';
-      myLaserAutoBaudChoice[0] = '\0';
-      mySection[0] = '\0';
-      myLaserPowerOutput[0] = '\0';
-    }
+      {
+	myLaserType[0] = '\0';
+	myLaserPortType[0] = '\0';
+	myLaserPort[0] = '\0';
+	myLaserAutoConnect = false;
+	myLaserFlipped = false;
+	myLaserPowerControlled = true;
+	myLaserMaxRange = 0;
+	myLaserCumulativeBufferSize = 0;
+	myLaserX = 0;
+	myLaserY = 0;
+	myLaserTh = 0.0;
+	myLaserZ = 0;
+	myLaserIgnore[0] = '\0';
+	myLaserStartDegrees[0] = '\0';
+	myLaserEndDegrees[0] = '\0';
+	myLaserDegreesChoice[0] = '\0';
+	myLaserIncrement[0] = '\0';
+	myLaserIncrementChoice[0] = '\0';
+	myLaserUnitsChoice[0] = '\0';
+	myLaserReflectorBitsChoice[0] = '\0';
+	myLaserStartingBaudChoice[0] = '\0';
+	myLaserAutoBaudChoice[0] = '\0';
+	mySection[0] = '\0';
+	myLaserPowerOutput[0] = '\0';
+      }
     virtual ~LaserData() {}
   
     char myLaserType[256];
@@ -963,35 +1024,35 @@ protected:
   std::map<int, LaserData *> myLasers;
 
   const LaserData *getLaserData(int laserNumber) const
-  {
-    std::map<int, LaserData *>::const_iterator it;
-    if ((it = myLasers.find(laserNumber)) != myLasers.end())
-	    return (*it).second;
-    else
-	    return NULL;
-  }
+    {
+      std::map<int, LaserData *>::const_iterator it;
+      if ((it = myLasers.find(laserNumber)) != myLasers.end())
+	return (*it).second;
+      else
+	return NULL;
+    }
 
   LaserData *getLaserData(int laserNumber) 
-  {
-    std::map<int, LaserData *>::const_iterator it;
-    if ((it = myLasers.find(laserNumber)) != myLasers.end())
-	    return (*it).second;
-    else
-	    return NULL;
-  }
+    {
+      std::map<int, LaserData *>::const_iterator it;
+      if ((it = myLasers.find(laserNumber)) != myLasers.end())
+	return (*it).second;
+      else
+	return NULL;
+    }
 
   class BatteryMTXBoardData
   {
   public:
     BatteryMTXBoardData()
-    {
-      myBatteryMTXBoardType[0] = '\0';
-      myBatteryMTXBoardPortType[0] = '\0';
-      //sprintf((char *)myBatteryMTXBoardPortType, "serial");
-      myBatteryMTXBoardPort[0] = '\0';
-      myBatteryMTXBoardBaud = 0;
-      myBatteryMTXBoardAutoConn = false;
-    }
+      {
+	myBatteryMTXBoardType[0] = '\0';
+	myBatteryMTXBoardPortType[0] = '\0';
+	//sprintf((char *)myBatteryMTXBoardPortType, "serial");
+	myBatteryMTXBoardPort[0] = '\0';
+	myBatteryMTXBoardBaud = 0;
+	myBatteryMTXBoardAutoConn = false;
+      }
     virtual ~BatteryMTXBoardData() {}
   
     char myBatteryMTXBoardType[256];
@@ -1003,38 +1064,38 @@ protected:
   std::map<int, BatteryMTXBoardData *> myBatteryMTXBoards;
 
   const BatteryMTXBoardData *getBatteryMTXBoardData(int batteryBoardNum) const
-  {
-    std::map<int, BatteryMTXBoardData *>::const_iterator it;
-    if ((it = myBatteryMTXBoards.find(batteryBoardNum)) != myBatteryMTXBoards.end())
-	    return (*it).second;
-    else
-	    return NULL;
-  }
+    {
+      std::map<int, BatteryMTXBoardData *>::const_iterator it;
+      if ((it = myBatteryMTXBoards.find(batteryBoardNum)) != myBatteryMTXBoards.end())
+	return (*it).second;
+      else
+	return NULL;
+    }
 
   BatteryMTXBoardData *getBatteryMTXBoardData(int batteryBoardNum) 
-  {
-    std::map<int, BatteryMTXBoardData *>::const_iterator it;
-    if ((it = myBatteryMTXBoards.find(batteryBoardNum)) != myBatteryMTXBoards.end())
-	    return (*it).second;
-    else
-	    return NULL;
-  }
+    {
+      std::map<int, BatteryMTXBoardData *>::const_iterator it;
+      if ((it = myBatteryMTXBoards.find(batteryBoardNum)) != myBatteryMTXBoards.end())
+	return (*it).second;
+      else
+	return NULL;
+    }
 
 
   class LCDMTXBoardData
   {
   public:
     LCDMTXBoardData()
-    {
-      myLCDMTXBoardType[0] = '\0';
-      myLCDMTXBoardPortType[0] = '\0';
-      //sprintf((char *)myLCDMTXBoardPortType, "serial");
-      myLCDMTXBoardPort[0] = '\0';
-      myLCDMTXBoardBaud = 0;
-      myLCDMTXBoardAutoConn = false;
-      myLCDMTXBoardConnFailOption = false;
-      myLCDMTXBoardPowerOutput[0] = '\0';
-    }
+      {
+	myLCDMTXBoardType[0] = '\0';
+	myLCDMTXBoardPortType[0] = '\0';
+	//sprintf((char *)myLCDMTXBoardPortType, "serial");
+	myLCDMTXBoardPort[0] = '\0';
+	myLCDMTXBoardBaud = 0;
+	myLCDMTXBoardAutoConn = false;
+	myLCDMTXBoardConnFailOption = false;
+	myLCDMTXBoardPowerOutput[0] = '\0';
+      }
     virtual ~LCDMTXBoardData() {}
   
     char myLCDMTXBoardType[256];
@@ -1048,29 +1109,29 @@ protected:
   std::map<int, LCDMTXBoardData *> myLCDMTXBoards;
 
   const LCDMTXBoardData *getLCDMTXBoardData(int lcdBoardNum) const
-  {
-    std::map<int, LCDMTXBoardData *>::const_iterator it;
-    if ((it = myLCDMTXBoards.find(lcdBoardNum)) != myLCDMTXBoards.end())
-	    return (*it).second;
-    else
-	    return NULL;
-  }
+    {
+      std::map<int, LCDMTXBoardData *>::const_iterator it;
+      if ((it = myLCDMTXBoards.find(lcdBoardNum)) != myLCDMTXBoards.end())
+	return (*it).second;
+      else
+	return NULL;
+    }
 
   LCDMTXBoardData *getLCDMTXBoardData(int lcdBoardNum) 
-  {
-    std::map<int, LCDMTXBoardData *>::const_iterator it;
-    if ((it = myLCDMTXBoards.find(lcdBoardNum)) != myLCDMTXBoards.end())
-	    return (*it).second;
-    else
-	    return NULL;
-  }
+    {
+      std::map<int, LCDMTXBoardData *>::const_iterator it;
+      if ((it = myLCDMTXBoards.find(lcdBoardNum)) != myLCDMTXBoards.end())
+	return (*it).second;
+      else
+	return NULL;
+    }
 
 
   class SonarMTXBoardData
   {
   public:
     SonarMTXBoardData()
-    {
+      {
 			mySonarMTXBoardType[0] = '\0';
 			mySonarMTXBoardPortType[0] = '\0';
 			mySonarMTXBoardPort[0] = '\0';
@@ -1080,11 +1141,14 @@ protected:
 			myNumSonarTransducers = 0;
 			mySonarDelay = 2;
 			mySonarGain = 10;
+			/*
+			mySonarNoiseDelta = 1250;
+			*/
 			mySonarDetectionThreshold = 25;
 			mySonarMaxRange = 255 * 17;
 			mySonarUseForAutonomousDriving = false;
 			mySonarMTXBoardPowerOutput[0] = '\0';
-    }
+      }
     virtual ~SonarMTXBoardData() {}
   
     char mySonarMTXBoardType[256];
@@ -1097,6 +1161,9 @@ protected:
     int mySonarBaud;
     int mySonarDelay;
     int mySonarGain;
+		/*
+    int mySonarNoiseDelta;
+		*/
     int mySonarDetectionThreshold;
     int mySonarMaxRange;
 		bool mySonarUseForAutonomousDriving;
@@ -1105,22 +1172,22 @@ protected:
   std::map<int, SonarMTXBoardData *> mySonarMTXBoards;
 
   const SonarMTXBoardData *getSonarMTXBoardData(int sonarBoardNum) const
-  {
-    std::map<int, SonarMTXBoardData *>::const_iterator it;
-		if ((it = mySonarMTXBoards.find(sonarBoardNum)) != mySonarMTXBoards.end())
-			return (*it).second;
-		else
-			return NULL;
-  }
-
-  SonarMTXBoardData *getSonarMTXBoardData(int sonarBoardNum) 
-  {
+    {
 		std::map<int, SonarMTXBoardData *>::const_iterator it;
 		if ((it = mySonarMTXBoards.find(sonarBoardNum)) != mySonarMTXBoards.end())
 			return (*it).second;
 		else
 			return NULL;
-  }
+    }
+
+  SonarMTXBoardData *getSonarMTXBoardData(int sonarBoardNum) 
+    {
+		std::map<int, SonarMTXBoardData *>::const_iterator it;
+		if ((it = mySonarMTXBoards.find(sonarBoardNum)) != mySonarMTXBoards.end())
+			return (*it).second;
+		else
+			return NULL;
+    }
 
   bool mySettableVelMaxes;
   int myTransVelMax;
@@ -1151,18 +1218,22 @@ protected:
     SONAR_BOARD,
     SONAR_BOARDUNITPOSITION,
     SONAR_GAIN,
+		/*
+    SONAR_NOISE_DELTA,
+		*/
     SONAR_DETECTION_THRESHOLD,
     SONAR_MAX_RANGE,
 		SONAR_USE_FOR_AUTONOMOUS_DRIVING
   };
-  MVREXPORT void internalSetSonar(int num, int x, int y, int th, 
-            int mtxboard = 0, int mtxunit = 0, int mtxgain = 0, int mtxthresh = 0, int mtxmax = 0);
-  MVREXPORT bool parseSonarUnit(MvrArgumentBuilder *builder);
-  MVREXPORT bool parseMTXSonarUnit(MvrArgumentBuilder *builder);
-	MVREXPORT const std::list<MvrArgumentBuilder *> *getSonarUnits(void);
-  std::list<MvrArgumentBuilder *> myGetSonarUnitList;
-  MvrRetFunctorC<const std::list<MvrArgumentBuilder *> *, MvrRobotParams> mySonarUnitGetFunctor;
-  MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> mySonarUnitSetFunctor;
+  AREXPORT void internalSetSonar(int num, int x, int y, int th, 
+    int mtxboard = 0, int mtxunit = 0, int mtxgain = 0, int mtxthresh = 0, int mtxmax = 0);
+  AREXPORT bool parseSonarUnit(ArArgumentBuilder *builder);
+  AREXPORT bool parseMTXSonarUnit(ArArgumentBuilder *builder);
+	AREXPORT const std::list<ArArgumentBuilder *> *getSonarUnits(void);
+	//AREXPORT const std::list<ArArgumentBuilder *> *getMTXSonarUnits(void);
+  std::list<ArArgumentBuilder *> myGetSonarUnitList;
+  ArRetFunctorC<const std::list<ArArgumentBuilder *> *, ArRobotParams> mySonarUnitGetFunctor;
+  ArRetFunctor1C<bool, ArRobotParams, ArArgumentBuilder *> mySonarUnitSetFunctor;
 
 
   // Battery
@@ -1184,12 +1255,12 @@ protected:
     IR_TYPE,
     IR_CYCLES
   };
-  MVREXPORT void internalSetIR(int num, int type, int cycles, int x, int y);
-  MVREXPORT bool parseIRUnit(MvrArgumentBuilder *builder);
-  MVREXPORT const std::list<MvrArgumentBuilder *> *getIRUnits(void);
-  std::list<MvrArgumentBuilder *> myGetIRUnitList;
-  MvrRetFunctorC<const std::list<MvrArgumentBuilder *> *, MvrRobotParams> myIRUnitGetFunctor;
-  MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> myIRUnitSetFunctor;
+  AREXPORT void internalSetIR(int num, int type, int cycles, int x, int y);
+  AREXPORT bool parseIRUnit(ArArgumentBuilder *builder);
+  AREXPORT const std::list<ArArgumentBuilder *> *getIRUnits(void);
+  std::list<ArArgumentBuilder *> myGetIRUnitList;
+  ArRetFunctorC<const std::list<ArArgumentBuilder *> *, ArRobotParams> myIRUnitGetFunctor;
+  ArRetFunctor1C<bool, ArRobotParams, ArArgumentBuilder *> myIRUnitSetFunctor;
 
   // GPS
   bool myGPSPossessed;
@@ -1210,12 +1281,12 @@ protected:
 
 
   // PTZ/PTU parameters
-  std::vector<MvrPTZParams> myPTZParams;
+  std::vector<ArPTZParams> myPTZParams;
 
   // Video device parameters
-  std::vector<MvrVideoParams> myVideoParams; 
+  std::vector<ArVideoParams> myVideoParams;  
 
-  MvrConfig *myCommercialConfig;
+  ArConfig *myCommercialConfig;
   bool myCommercialAddedConnectables;
   bool myCommercialProcessedSonar;
   int myCommercialNumSonar;
@@ -1223,11 +1294,11 @@ protected:
   int myCommercialMaxNumberOfBatteries;
   int myCommercialMaxNumberOfLCDs;
   int myCommercialMaxNumberOfSonarBoards;
-  
   /// This lets us just have a straight mapping from the child
   /// argument number to the sonar map above
   std::map<int, int> myCommercialSonarFieldMap;
 
-  MvrRetFunctorC<bool, MvrRobotParams> myCommercialProcessFileCB;
-}; 
-#endif  // MVRROBOTPARAMS_H
+  ArRetFunctorC<bool, ArRobotParams> myCommercialProcessFileCB;
+};
+
+#endif // ARROBOTPARAMS_H

@@ -1,21 +1,40 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrAnalogGyro.h
- > Description  : Use onboard gyro to improve the heading in an MvrRobot object's pose value
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年05月25日
-***************************************************************************************************/
-#ifndef MVRANALOGGYRO_H
-#define MVRANALOGGYRO_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "mvriaUtil.h"
-#include "MvrFunctor.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrRobot;
-class MvrRobotPacket;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARANALOGGYRO_H
+#define ARANALOGGYRO_H
+
+#include "ariaTypedefs.h"
+#include "ariaUtil.h"
+#include "ArFunctor.h"
+
+class ArRobot;
+class ArRobotPacket;
+
+/// Use onboard gyro to improve the heading in an ArRobot object's pose value
 /**
    The gyro is an accessory connected to the robot's microcontroller.
    The gyro's purpose is to improve large errors due to wheel
@@ -23,22 +42,22 @@ class MvrRobotPacket;
    (or for the skid steer of an AT). The gyro also happens to provide
    temperature readings as well.
 
-   When an MvrAnalogGyro object is created, it registers callbacks with the
+   When an ArAnalogGyro object is created, it registers callbacks with the
    robot, and automatic heading correction will begin when new data arrives
    from the robot.
    If you delete the object, it will remove itself from the robot.  
    
    The readings come back from the gyro over the robot microcontroller's analog ports.  
    The microcontroller then sends the readings to us just before
-   sending us the standard packet.  MvrAnalogGyro uses these  readings to
+   sending us the standard packet.  ArAnalogGyro uses these  readings to
    calculate a better heading of the robot (integrating the velocities to
-   give position).  Then when the standard packet comes in, MvrRobot calls
-   an encoder correction callback in MvrAnalogGyro which does a simple 
+   give position).  Then when the standard packet comes in, ArRobot calls
+   an encoder correction callback in ArAnalogGyro which does a simple 
    Kalman filter and fuses the encoder information's heading with the gyro's heading
    to compute the most probable heading which it then returns to the
-   MvrRobot object to use as its heading.
+   ArRobot object to use as its heading.
 
-   The robot's normal dead-reconing angle is fairly good if you have properly
+   The robot's normal dead reconing angle is fairly good if you have properly
    inflated tires (if you have pneumatic tires) and if you have
    the revcount parameter sent correctly.  See the robot operation manual for
    how to change the revcount parameter.
@@ -74,33 +93,34 @@ class MvrRobotPacket;
    @ingroup OptionalClasses
 
 */
-class MvrAnalogGyro
+class ArAnalogGyro
 {
 public:
   /// Constructor
-  MVREXPORT MvrAnalogGyro(MvrRobot *robot);
+  AREXPORT ArAnalogGyro(ArRobot *robot);
   /// Destructor
-  MVREXPORT virtual ~MvrAnalogGyro();
+  AREXPORT virtual ~ArAnalogGyro();
   /// Gets if we really have a gyro or not
-  MVREXPORT bool isActive(void) { return myIsActive; }
+  AREXPORT bool isActive(void) { return myIsActive; }
   /// Lets the gyro correct readings
-  MVREXPORT void activate(void);
+  AREXPORT void activate(void);
   /// Stops the gyro from correcting readings (still accumulates)
-  MVREXPORT void deactivate(void);
+  AREXPORT void deactivate(void);
   /// If we have a gyro only mode
   bool hasGyroOnlyMode(void) { return myHasGyroOnlyMode; }
   /// If we're using gyro only mode
   bool isGyroOnlyActive(void) { return myIsGyroOnlyActive; }
   /// Activates it and puts it in gyro only mode
-  MVREXPORT void activateGyroOnly(void);
-  /// If this class actually has data or not 
+  AREXPORT void activateGyroOnly(void);
+  /// If this class actually has data or not (if it has no data, the
+  /// robot is all there is)
   bool hasNoInternalData(void) { return myHasNoData; }
   /// Returns true if any amount of gyro data has yet been received, false if no readings have yet been received from the robot.
-  MVREXPORT bool haveGottenData(void) { return myHaveGottenData; }
+  AREXPORT bool haveGottenData(void) { return myHaveGottenData; }
   /// Gets a heading calculated from past gyro readings
-  MVREXPORT double getHeading(void) const { return myHeading; }
+  AREXPORT double getHeading(void) const { return myHeading; }
   /// Gets the temperature the gyro has
-  MVREXPORT int getTemperature(void) const { return myTemperature; }
+  AREXPORT int getTemperature(void) const { return myTemperature; }
   /// Set the parameters of the Kalman filter model
   /**
      @param gyroSigma the amount its off statically
@@ -112,31 +132,32 @@ public:
      @param transVar the amount the translation throws off the heading
      proportionally
   **/
-  MVREXPORT void setFilterModel(double gyroSigma, double inertialVar, 
-				                        double rotVar, double transVar)
-  { myGyroSigma = gyroSigma; myInertialVarianceModel = inertialVar;
-    myRotVarianceModel = rotVar; myTransVarianceModel = transVar; };
+  AREXPORT void setFilterModel(double gyroSigma, double inertialVar, 
+				       double rotVar, double transVar)
+    { myGyroSigma = gyroSigma; myInertialVarianceModel = inertialVar;
+      myRotVarianceModel = rotVar; myTransVarianceModel = transVar; };
 
   /// Returns the number of readings taken in the last second
-  MVREXPORT int getPacCount(void) { return myPacCount; }
+  AREXPORT int getPacCount(void) { return myPacCount; }
 
-  /// Gets the most recently calculated average rotational velocity 
-  MVREXPORT double getAverage(void) const { return myLastAverage; }
+  /// Gets the most recently calculated average rotational velocity (over one
+  //second)
+  AREXPORT double getAverage(void) const { return myLastAverage; }
   /// Gets the time the last average was taken 
-  MVREXPORT MvrTime getAverageTaken(void) const { return myLastAverageTaken; }
+  AREXPORT ArTime getAverageTaken(void) const { return myLastAverageTaken; }
   /// Gets the scaling factor used for multiplying the reading values received (default 1.626)
-  MVREXPORT double getScalingFactor(void) const { return myScalingFactor; }
+  AREXPORT double getScalingFactor(void) const { return myScalingFactor; }
   /// Sets the scaling factor used for multiplying the readings
-  MVREXPORT void setScalingFactor(double factor) { myScalingFactor = factor; }
+  AREXPORT void setScalingFactor(double factor) { myScalingFactor = factor; }
 
   /// Internal packet handler for the gyro packets
-  MVREXPORT bool handleGyroPacket(MvrRobotPacket *packet);
+  AREXPORT bool handleGyroPacket(ArRobotPacket *packet);
   /// internal function for correcting the encoder readings with the gyro data
-  MVREXPORT double encoderCorrect(MvrPoseWithTime deltaPose);
+  AREXPORT double encoderCorrect(ArPoseWithTime deltaPose);
   /// Internal connection callback; delays for a short amount of time to give the gyro enough time to stabilize before we try to use it
-  MVREXPORT void stabilizingCallback(void);
+  AREXPORT void stabilizingCallback(void);
   /// Internal user task callback
-  MVREXPORT void userTaskCallback(void);
+  AREXPORT void userTaskCallback(void);
   /// Sets whether we log anomalies or not (temporary function for debugging)
   void setLogAnomalies(bool logAnomalies) { myLogAnomalies = logAnomalies; }
 protected:
@@ -156,9 +177,9 @@ protected:
   time_t myTimeLastPacket;
 
   // data for averaging
-  MvrTime myAverageStarted;
+  ArTime myAverageStarted;
   double myLastAverage;
-  MvrTime myLastAverageTaken;
+  ArTime myLastAverageTaken;
   double myAverageTotal;
   int myAverageCount;
 
@@ -176,18 +197,18 @@ protected:
   double myHeading;
   int myTemperature;
   double myLastHeading;
-  MvrRobot *myRobot;
-  MvrRetFunctor1C<bool, MvrAnalogGyro, MvrRobotPacket *> myHandleGyroPacketCB;
-  MvrRetFunctor1C<double, MvrAnalogGyro, MvrPoseWithTime> myEncoderCorrectCB;
-  MvrFunctorC<MvrAnalogGyro> myStabilizingCB;
-  MvrFunctorC<MvrAnalogGyro> myUserTaskCB;
+  ArRobot *myRobot;
+  ArRetFunctor1C<bool, ArAnalogGyro, ArRobotPacket *> myHandleGyroPacketCB;
+  ArRetFunctor1C<double, ArAnalogGyro, ArPoseWithTime> myEncoderCorrectCB;
+  ArFunctorC<ArAnalogGyro> myStabilizingCB;
+  ArFunctorC<ArAnalogGyro> myUserTaskCB;
 
   /// Gyro type
   enum GyroType
   {
-    GYRO_NONE,              ///< No gyro
-    GYRO_ANALOG_COMPUTER,   ///< Analog gyro used by computer
-    GYRO_ANALOG_CONTROLLER  //< Analog gyro used by microcontroller
+    GYRO_NONE, ///< No gyro
+    GYRO_ANALOG_COMPUTER, ///< Analog gyro used by computer
+    GYRO_ANALOG_CONTROLLER ///< Analog gyro used by microcontroller
   };
   GyroType myGyroType;
   bool myHasNoData;
@@ -197,4 +218,6 @@ protected:
   bool myGyroWorking;
 };
 
-#endif // MVRANALOGGYRO_H
+#endif // ARANALOGGYRO_H
+
+

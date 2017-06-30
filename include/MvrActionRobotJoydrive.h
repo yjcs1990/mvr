@@ -1,37 +1,73 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrActionRobotJoydrive.h
- > Description  : This action will use the joystick for input to drive the robot
- > Author       : Yu Jie
- > Create Time  : 2017年05月14日
- > Modify Time  : 2017年05月24日
-***************************************************************************************************/
-#ifndef MVRACTIONROBOTJOYDRIVE_H
-#define MVRACTIONROBOTJOYDRIVE_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrAction.h"
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-class MvrRobotPacket;
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-class MvrActionRobotJoydrive : public MvrAction
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARACTIONROBOTJOYDRIVE_H
+#define ARACTIONROBOTJOYDRIVE_H
+
+#include "ariaTypedefs.h"
+#include "ArAction.h"
+
+class ArRobotPacket;
+
+/// This action will use the joystick for input to drive the robot
+/**
+   This class creates its own ArJoyHandler to get input from the
+   joystick.  Then it will scale the speed between 0 and the given max
+   for velocity and turning, up and down on the joystick go
+   forwards/backwards while right and left go right and left.  You
+   must press in one of the two joystick buttons for the class to pay
+   attention to the joystick.
+   
+   NOTE: The joystick does not save calibration information, so you
+   must calibrate the joystick before each time you use it.  To do
+   this, press the button for at least a half a second while the
+   joystick is in the middle.  Then let go of the button and hold the
+   joystick in the upper left for at least a half second and then in
+   the lower right corner for at least a half second.
+
+   @ingroup ActionClasses
+**/
+class ArActionRobotJoydrive : public ArAction
 {
 public:
   /// Constructor
-  MVREXPORT MvrActionRobotJoydrive(const char * name = "robotJoyDrive", 
-				                            bool requireDeadmanPushed = true);
+  AREXPORT ArActionRobotJoydrive(const char * name = "robotJoyDrive", 
+				 bool requireDeadmanPushed = true);
   /// Destructor
-  MVREXPORT virtual ~MvrActionRobotJoydrive();
-  MVREXPORT virtual MvrActionDesired *fire(MvrActionDesired currentDesired);
-  MVREXPORT virtual MvrActionDesired *getDesired(void) { return &myDesired; }
+  AREXPORT virtual ~ArActionRobotJoydrive();
+  AREXPORT virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  AREXPORT virtual ArActionDesired *getDesired(void) { return &myDesired; }
 #ifndef SWIG
-  MVREXPORT virtual const MvrActionDesired *getDesired(void) const 
+  AREXPORT virtual const ArActionDesired *getDesired(void) const 
                                                         { return &myDesired; }
 #endif
-  MVREXPORT virtual void setRobot(NvrRobot *robot);
+  AREXPORT virtual void setRobot(ArRobot *robot);
 protected:
-  MVREXPORT bool handleJoystickPacket(MvrRobotPacket *packet);
-  MVREXPORT void connectCallback(void);
+  AREXPORT bool handleJoystickPacket(ArRobotPacket *packet);
+  AREXPORT void connectCallback(void);
   // whether we require the deadman to be pushed to drive
   bool myRequireDeadmanPushed;
 
@@ -41,11 +77,12 @@ protected:
   int myJoyX;
   int myJoyY;
   int myThrottle;
-  MvrTime myPacketReceivedTime;
+  ArTime myPacketReceivedTime;
   // action desired
-  MvrActionDesired myDesired;
-  MvrRetFunctor1C<bool, MvrActionRobotJoydrive, 
-      MvrRobotPacket *> myHandleJoystickPacketCB;
-  MvrFunctorC<MvrActionRobotJoydrive> myConnectCB;
+  ArActionDesired myDesired;
+  ArRetFunctor1C<bool, ArActionRobotJoydrive, 
+      ArRobotPacket *> myHandleJoystickPacketCB;
+  ArFunctorC<ArActionRobotJoydrive> myConnectCB;
 };
-#endif  // MVRACTIONROBOTJOYDRIVE_H
+
+#endif //ARACTIONROBOTJOYDRIVE_H

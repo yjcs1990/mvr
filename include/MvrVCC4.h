@@ -1,21 +1,116 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrVCC4.h
- > Description  : Control the pan, tilt, and zoom mechanisms of the Canon VC-C4 and VC-C50i cameras.
- > Author       : Yu Jie
- > Create Time  : 2017年05月23日
- > Modify Time  : 2017年05月23日
-***************************************************************************************************/
-#ifndef MVRVCC4_H
-#define MVRVCC4_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#include "mvriaTypedefs.h"
-#include "MvrBasePacket.h"
-#include "MvrPTZ.h"
-#include "mvriaUtil.h"
-#include "MvrCommands.h"
-#include "MvrSerialConnection.h"
-class MvrVCC4Commands
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARVCC4_H
+#define ARVCC4_H
+
+#include "ariaTypedefs.h"
+#include "ArBasePacket.h"
+#include "ArPTZ.h"
+#include "ariaUtil.h"
+#include "ArCommands.h"
+#include "ArSerialConnection.h"
+
+// maximum number of bytes expected for a response from the camera
+#define MAX_RESPONSE_BYTES 14
+
+// the state timeout when using bidirectional communication
+// This is big because it may have to wait for a power on or
+// power off command to complete, which take ~4 seconds.
+#define BIDIRECTIONAL_TIMEOUT 5000
+
+// The number of ms to wait for a timeout for unidirectional communication.
+// This is how long the usertask will wait before assuming that the camera
+// has processed the last command.
+#define UNIDIRECTIONAL_TIMEOUT 300
+
+// how often to request position information from the camera if using
+// bidirectional communication (in ms)
+#define AUTO_UPDATE_TIME 2000
+
+// accuracy of camera movements.  This sets how different the current 
+// position and the desired position must be in order for a command to be
+// sent to the camera.
+#define TOLERANCE .1
+
+/** @class ArVCC4
+ *  Control the pan, tilt, and zoom mechanisms of the Canon VC-C4 and VC-C50i cameras.
+ *
+ *  An ArVCC4 object can be used to control the pan, tilt, zoom and some
+ *  other aspects of the Canon VC-C4 camera.  Since the camera is 
+ *  typically connected to the robot microcontroller's auxilliary serial
+ *  port, and also uses ArRobot task cycle callbacks, a connected and
+ *  running ArRobot object is required. 
+ *
+ *  Communication with the camera can operate in two modes or directions. 
+ *  In unidirectional mode(COMM_UNIDIRECTIONAL),
+ *  ArVCC4 simply sends commands to the camera, and waits for
+ *  some time to allow the camera to process it. However, it will have
+ *  no way of verifying that a command was successfully received by the 
+ *  cameral. In bidirectional mode (COMM_BIDIRECTIONAL), ArVCC4 waits for a 
+ *  response from the camera. Bidirectinal mode requires that the CTS 
+ *  line (pin 2 on the VISCA port) be connected. 
+ *  When you create an ArVCC4 object, you can request a specific mode, 
+ *  or you can specify COMM_UNKNOWN, and ArVCC4 will switch into
+ *  bidirectional mode if it receives any responses from the camera.
+ *
+ *  Programmer's manuals for the VC-C45 and VC-C50i, detailing the
+ *  communications protocol (including commands not implemented by ArVCC4),
+ *  as well as user manuals containing specifications and hardware information,
+ *  are available at <a href="http://robots.mobilerobots.com">http://robots.mobilerobots.com</a>. 
+ *  ArVCC4 sends commands to the camera using the ArVCC4Packet class to construct the command, and
+ *  using either the ArRobot pointer or an internal ArDeviceConnection,
+ *  depending on whether the camera is connected to the robot 
+ *  microcontroller's auxilliary serial port (the usual connection method for
+ *  most robots) or a computer serial port.
+ * 
+ * @todo Implement setFocus() (send "Focus Position Assignment" command 0xB0 to camera)
+
+\section VCC4CommandDetails Command-Response details:
+
+This camera has a reponse mechanism, whereby each packet sent to the camera generates an answer within 300ms.  For the most part, the answer consists of a 6-byte packet which has an error-status within it.  Some commands generate longer packets.  Receiving the error status is helpful in that you know that the camera will or will not execute the command.  However, it doesn't tell you when the command is completed.
+
+In order for the the reponses to work, the CTS line on the camera must be high.  This is pin 2 on the visca port.  If your camera is not wired in such a fashion, then no answers will be sent to the computer, and the computer will not know whether or not the last packet was processed correctly.  Because of this, systems operating without the answer feature will need to run with delays between sending packets.  Otherwise, packets will be ignored, but you will have no way of knowing that.  To achieve this, there are two types of communication modes that this class will operate under - COMM_UNIDIRECTIONAL or COMM_BIDIRECTIONAL.  The default is COMM_UNKNOWN, in which it will use bidirectional commuication if a response is received.
+
+To handle the states and packet processing, this class runs as a user-task, different than the other pan/tilt devices.  Because of this, it must have a valid robot connection and a valid serial connection if using a computer serial port.  Note that the computer port must be set independently of this class.  The aux port can be selected via setAuxPort from the ArPTZ class.
+
+\section VCC4UnitConversions Unit Conversions:
+
+The camera's pan and tilt commands work on a number of units equal to (degrees / 0.1125).  The panTilt function always rounds the conversion closer to zero, so that a magnitude greater than the allowable range of movement is not sent to the camera.
+
+
+\section VCC4C50iFeatures C50i features:
+
+NEW - There is now limited support for the night-mode version of the C50i.  To enable night-mode support, pass the camera type in with the constructor.  Night-mode consists of two parts - a phsyical IR-cutoff filter, and IR LEDs.  The cutoff filter must be enabled first, then turn on the IR LEDs.
+
+This camera has a digital zoom as well as the optical one.  There is an additional function for handling the digital.  There is also limited support for the auto-focus mechanism, which may need to be elaborated on for better night-vision.  In addition to the focus, there are also gain and backlight adjustments that can be made, but are not yet implemented in this class.
+*/
+
+/// Used by the ArVCC4 class
+class ArVCC4Commands
 {
 public:
   enum Command {
@@ -50,28 +145,28 @@ public:
 
 };
 
-/// Used by MvrVCC4 to construct command packets
+/// Used by ArVCC4 to construct command packets
 /** 
     There are only a few functioning ways to put things into this packet, you
     MUST use thse, if you use anything else your commands won't work.  You 
-    must use only byteToBuf() and byte2ToBuf(), no other MvrBasePacket methods.
+    must use only byteToBuf() and byte2ToBuf(), no other ArBasePacket methods.
 */
-class MvrVCC4Packet: public MvrBasePacket
+class ArVCC4Packet: public ArBasePacket
 {
 public:
   /// Constructor
-  MVREXPORT MvrVCC4Packet(MvrTypes::UByte2 bufferSize = 30);
+  AREXPORT ArVCC4Packet(ArTypes::UByte2 bufferSize = 30);
   /// Destructor
-  MVREXPORT virtual ~MvrVCC4Packet();
+  AREXPORT virtual ~ArVCC4Packet();
 
-  MVREXPORT virtual void byte2ToBuf(MvrTypes::Byte4 val);
+  AREXPORT virtual void byte2ToBuf(ArTypes::Byte4 val);
 
-  MVREXPORT virtual void finalizePacket(void);
+  AREXPORT virtual void finalizePacket(void);
 
 protected:
 };
 
-class MvrVCC4 : public MvrPTZ
+class ArVCC4 : public ArPTZ
 {
 public:
   // the states for communication
@@ -87,20 +182,20 @@ public:
   };
 
   /// Constructor
-  MVREXPORT MvrVCC4(MvrRobot *robot, bool inverted = false, CommState commDirection = COMM_UNKNOWN, bool autoUpdate = true, bool disableLED = false, CameraType cameraType = CAMERA_VCC4);
+  AREXPORT ArVCC4(ArRobot *robot, bool inverted = false, CommState commDirection = COMM_UNKNOWN, bool autoUpdate = true, bool disableLED = false, CameraType cameraType = CAMERA_VCC4);
   /// Destructor
-  MVREXPORT virtual ~MvrVCC4();
+  AREXPORT virtual ~ArVCC4();
 
-  MVREXPORT virtual bool power(bool state) { myPowerStateDesired = state; return true; }
-  MVREXPORT bool getPower(void) { return myPowerState; }
-  MVREXPORT virtual bool init(void) { myInitRequested = true; return true; }
-  MVREXPORT virtual void reset(void) { MvrPTZ::reset(); init(); }
-  MVREXPORT virtual const char  *getTypeName() { return "vcc4"; }
+  AREXPORT virtual bool power(bool state) { myPowerStateDesired = state; return true; }
+  AREXPORT bool getPower(void) { return myPowerState; }
+  AREXPORT virtual bool init(void) { myInitRequested = true; return true; }
+  AREXPORT virtual void reset(void) { ArPTZ::reset(); init(); }
+  AREXPORT virtual const char  *getTypeName() { return "vcc4"; }
 
   /// Returns true if the camera has been initialized
    bool isInitted(void) { return myCameraIsInitted; }
-  MVREXPORT virtual void connectHandler(void);
-  MVREXPORT virtual bool packetHandler(MvrBasePacket *packet);
+  AREXPORT virtual void connectHandler(void);
+  AREXPORT virtual bool packetHandler(ArBasePacket *packet);
 
 protected:
    virtual bool pan_i(double deg) { return panTilt_i(deg, myTiltDesired); }
@@ -112,82 +207,82 @@ protected:
 public:
 
   /*
-  MVREXPORT virtual double getMaxPosPan(void) const 
+  AREXPORT virtual double getMaxPosPan(void) const 
     { if (myInverted) return invert(MIN_PAN); else return MAX_PAN; }
-  MVREXPORT virtual double getMaxNegPan(void) const 
+  AREXPORT virtual double getMaxNegPan(void) const 
     { if (myInverted) return invert(MAX_PAN); else return MIN_PAN; }
-  MVREXPORT virtual double getMaxPosTilt(void) const 
+  AREXPORT virtual double getMaxPosTilt(void) const 
     { if (myInverted) return invert(MIN_TILT); else return MAX_TILT; }
-  MVREXPORT virtual double getMaxNegTilt(void) const
+  AREXPORT virtual double getMaxNegTilt(void) const
     { if (myInverted) return invert(MAX_TILT); else return MIN_TILT; }
  */
 
   /// Requests that a packet be sent to the camera to retrieve what
   /// the camera thinks are its pan/tilt positions. getPan() and getTilt()
   /// will then return this information instead of your last requested values.
-  MVREXPORT void getRealPanTilt(void) { myRealPanTiltRequested = true; }
+  AREXPORT void getRealPanTilt(void) { myRealPanTiltRequested = true; }
 
   /// Requests that a packet be sent to the camera to retrieve what
   /// the camera thinks is its zoom position. getZoom()
   /// will then return this information instead of your last requested value.
-  MVREXPORT void getRealZoomPos(void) { myRealZoomRequested = true; }
+  AREXPORT void getRealZoomPos(void) { myRealZoomRequested = true; }
 
-  MVREXPORT virtual bool canZoom(void) const { return true; }
+  AREXPORT virtual bool canZoom(void) const { return true; }
 
 protected:
-  MVREXPORT virtual bool panTilt_i(double pdeg, double tdeg);
+  AREXPORT virtual bool panTilt_i(double pdeg, double tdeg);
 
 public:
-  MVREXPORT virtual bool zoom(int deg);
+  AREXPORT virtual bool zoom(int deg);
   /// adjust the digital zoom amount.  Has four states, takes 0-3 for:
   /// 1x, 2x, 4x, 8x
-  MVREXPORT bool digitalZoom(int deg);
+  AREXPORT bool digitalZoom(int deg);
 
   /// Adds an error callback to a list of callbacks to be called when there
   /// is a serious error in communicating - either the parameters were incorrect,
   /// the mode was incorrect, or there was an unknown error.
-  MVREXPORT void addErrorCB(MvrFunctor *functor, MvrListPos::Pos position);
+  AREXPORT void addErrorCB(ArFunctor *functor, ArListPos::Pos position);
 
   /// Remove an error callback from the callback list
-  MVREXPORT void remErrorCB(MvrFunctor *functor);
+  AREXPORT void remErrorCB(ArFunctor *functor);
 
   /// Halts all pan-tilt movement
-  MVREXPORT bool haltPanTilt(void) { myHaltPanTiltRequested = true; return true; }
+  AREXPORT bool haltPanTilt(void) { myHaltPanTiltRequested = true; return true; }
   /// Halts zoom movement
-  MVREXPORT bool haltZoom(void) { myHaltZoomRequested = true; return true; }
+  AREXPORT bool haltZoom(void) { myHaltZoomRequested = true; return true; }
 
   /// Sets the rate that the unit pans at
-  MVREXPORT bool panSlew(double deg) { myPanSlewDesired = deg; return true; }
+  AREXPORT bool panSlew(double deg) { myPanSlewDesired = deg; return true; }
   /// Sets the rate the unit tilts at 
-  MVREXPORT bool tiltSlew(double deg) { myTiltSlewDesired = deg; return true; }
+  AREXPORT bool tiltSlew(double deg) { myTiltSlewDesired = deg; return true; }
   bool canSetPanTiltSlew() { return true; }
 
   /// Adds device ID and delimeter to packet buffer
-  MVREXPORT void preparePacket(MvrVCC4Packet *packet);
+  AREXPORT void preparePacket(ArVCC4Packet *packet);
 
 protected:
-  MVREXPORT virtual double getPan_i(void) const { return myPanDesired; }
-  MVREXPORT virtual double getTilt_i(void) const { return myTiltDesired; }
+  AREXPORT virtual double getPan_i(void) const { return myPanDesired; }
+  AREXPORT virtual double getTilt_i(void) const { return myTiltDesired; }
 
 public:
-  MVREXPORT virtual int getZoom(void) const { return myZoomDesired; }
-  MVREXPORT double getDigitalZoom(void) const { return myDigitalZoomDesired; }
+  AREXPORT virtual int getZoom(void) const { return myZoomDesired; }
+  AREXPORT double getDigitalZoom(void) const { return myDigitalZoomDesired; }
 
-  MVREXPORT virtual bool canGetRealPanTilt(void) const { return true; }
-  MVREXPORT virtual bool canGetRealZoom(void) const { return true; }
-  MVREXPORT virtual bool canSetFocus(void) const { return false; }
+  AREXPORT virtual bool canGetRealPanTilt(void) const { return true; }
+  AREXPORT virtual bool canGetRealZoom(void) const { return true; }
+  AREXPORT virtual bool canSetFocus(void) const { return false; }
   /// Set autofocus mode:
   /// @deprecated use setAutoFocus() instead
-  MVREXPORT virtual bool autoFocus(void) { myFocusModeDesired = 0; return true;}
+  AREXPORT virtual bool autoFocus(void) { myFocusModeDesired = 0; return true;}
   /// set manual focus mode
   /// @deprecated use setAutoFocus() instead
-  MVREXPORT virtual bool manualFocus(void) { myFocusModeDesired = 1; return true;}
+  AREXPORT virtual bool manualFocus(void) { myFocusModeDesired = 1; return true;}
   /// auto-focus on a near object
-  MVREXPORT virtual bool focusNear(void) { myFocusModeDesired = 2; return true;}
+  AREXPORT virtual bool focusNear(void) { myFocusModeDesired = 2; return true;}
   /// auto-focus on a far object
-  MVREXPORT virtual bool focusFar(void) { myFocusModeDesired = 3; return true; }
+  AREXPORT virtual bool focusFar(void) { myFocusModeDesired = 3; return true; }
 
-  MVREXPORT virtual bool setAutoFocus(bool af = true) 
+  AREXPORT virtual bool setAutoFocus(bool af = true) 
   {
     if(af)
       return autoFocus();
@@ -196,52 +291,52 @@ public:
   }
 
   /// Gets the current pan slew
-  MVREXPORT double getPanSlew(void) { return myPanSlewDesired; }
+  AREXPORT double getPanSlew(void) { return myPanSlewDesired; }
   /// Gets the maximum pan slew
-  MVREXPORT double getMaxPanSlew(void) { return MAX_PAN_SLEW; }
+  AREXPORT double getMaxPanSlew(void) { return MAX_PAN_SLEW; }
   /// Gets the minimum pan slew
-  MVREXPORT double getMinPanSlew(void) { return MIN_PAN_SLEW; }
+  AREXPORT double getMinPanSlew(void) { return MIN_PAN_SLEW; }
 
   /// Gets the current tilt slew
-  MVREXPORT double getTiltSlew(void) { return myTiltSlewDesired; }
+  AREXPORT double getTiltSlew(void) { return myTiltSlewDesired; }
   /// Gets the maximum tilt slew
-  MVREXPORT double getMaxTiltSlew(void) { return MAX_TILT_SLEW; }
+  AREXPORT double getMaxTiltSlew(void) { return MAX_TILT_SLEW; }
   /// Gets the minimum tilt slew
-  MVREXPORT double getMinTiltSlew(void) { return MIN_TILT_SLEW; }
+  AREXPORT double getMinTiltSlew(void) { return MIN_TILT_SLEW; }
 
-  MVREXPORT virtual int getMaxZoom(void) const;
-  MVREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
+  AREXPORT virtual int getMaxZoom(void) const;
+  AREXPORT virtual int getMinZoom(void) const { return MIN_ZOOM; }
 
-  MVREXPORT virtual bool canGetFOV(void) { return true; }
+  AREXPORT virtual bool canGetFOV(void) { return true; }
   /// Gets the field of view at maximum zoom
-  MVREXPORT virtual double getFOVAtMaxZoom(void) { return myFOVAtMaxZoom; }
+  AREXPORT virtual double getFOVAtMaxZoom(void) { return myFOVAtMaxZoom; }
   /// Gets the field of view at minimum zoom
-  MVREXPORT virtual double getFOVAtMinZoom(void) { return myFOVAtMinZoom; }
+  AREXPORT virtual double getFOVAtMinZoom(void) { return myFOVAtMinZoom; }
 
 
   /// Returns true if the error callback list was called during the last cycle
-  MVREXPORT bool wasError(void) { return myWasError; }
+  AREXPORT bool wasError(void) { return myWasError; }
 
   /// Toggle the state of the auto-update
-  MVREXPORT void enableAutoUpdate(void) { myAutoUpdate = true; }
-  MVREXPORT void disableAutoUpdate(void) { myAutoUpdate = false; }
-  MVREXPORT bool getAutoUpdate(void) { return myAutoUpdate; }
+  AREXPORT void enableAutoUpdate(void) { myAutoUpdate = true; }
+  AREXPORT void disableAutoUpdate(void) { myAutoUpdate = false; }
+  AREXPORT bool getAutoUpdate(void) { return myAutoUpdate; }
 
   /// Set the control mode for the status LED on the front of the camera
   /// 0 = auto-control, 1 = Green ON, 2 = All OFF, 3 = Red ON, 4 = Orange ON
-  MVREXPORT void setLEDControlMode(int controlMode) { myDesiredLEDControlMode = controlMode; }
+  AREXPORT void setLEDControlMode(int controlMode) { myDesiredLEDControlMode = controlMode; }
   /// Turn on IR LEDs.  IR-filter must be in place for LEDs to turn on
-  MVREXPORT void enableIRLEDs(void) { myDesiredIRLEDsMode = true; }
+  AREXPORT void enableIRLEDs(void) { myDesiredIRLEDsMode = true; }
   /// Turn off IR LEDs
-  MVREXPORT void disableIRLEDs(void) { myDesiredIRLEDsMode = false; }
+  AREXPORT void disableIRLEDs(void) { myDesiredIRLEDsMode = false; }
   /// Returns true if the IR LEDs are on
-  MVREXPORT bool getIRLEDsEnabled(void) { return myIRLEDsEnabled; }
+  AREXPORT bool getIRLEDsEnabled(void) { return myIRLEDsEnabled; }
   /// Enable physical IR cutoff filter
-  MVREXPORT void enableIRFilterMode(void) { myDesiredIRFilterMode = true; }
+  AREXPORT void enableIRFilterMode(void) { myDesiredIRFilterMode = true; }
   /// Disable IR cutoff filter.  This also turns off the LEDs, if they're on
-  MVREXPORT void disableIRFilterMode(void) { myDesiredIRFilterMode = false; }
+  AREXPORT void disableIRFilterMode(void) { myDesiredIRFilterMode = false; }
   /// Returns true if the IR cutoff filter is in place
-  MVREXPORT bool getIRFilterModeEnabled (void) { return myIRFilterModeEnabled; }
+  AREXPORT bool getIRFilterModeEnabled (void) { return myIRFilterModeEnabled; }
 protected:
 
   // preset limits on movements.  Based on empirical data
@@ -262,7 +357,7 @@ protected:
   enum Error {
     CAM_ERROR_NONE = 0x30, ///<No error
     CAM_ERROR_BUSY = 0x31, ///<Camera busy, will not execute the command
-    CAM_ERROR_PMVRAM = 0x35, ///<Illegal parameters to function call
+    CAM_ERROR_PARAM = 0x35, ///<Illegal parameters to function call
     CAM_ERROR_MODE = 0x39,  ///<Not in host control mode
     CAM_ERROR_UNKNOWN = 0xFF ///<Unknown error condition.  Should never happen
  };
@@ -311,15 +406,15 @@ protected:
   // the camera name.  "C50i" for C50i, and "VC-C" for VC-C4
   std::string myProductName;
 
-  MvrRobot *myRobot;
-  MvrDeviceConnection *myConn;
-  MvrBasePacket *newPacket;
-  MvrVCC4Packet myPacket;
+  ArRobot *myRobot;
+  ArDeviceConnection *myConn;
+  ArBasePacket *newPacket;
+  ArVCC4Packet myPacket;
 
   // timers for watching for timeouts
-  MvrTime myStateTime;
-  MvrTime myPacketTime;
-  MvrTime myIdleTime;
+  ArTime myStateTime;
+  ArTime myPacketTime;
+  ArTime myIdleTime;
 
   // gets set to true if using an aux port vs computer serial port
   bool myUsingAuxPort;
@@ -331,10 +426,10 @@ protected:
   CommState myCommType;
 
   // used to read data if the camera is attached directly to a computer
-  virtual MvrBasePacket* readPacket(void);
+  virtual ArBasePacket* readPacket(void);
 
   // the functor to add as a usertask
-  MvrFunctorC<MvrVCC4> myTaskCB;
+  ArFunctorC<ArVCC4> myTaskCB;
 
   // the actual task to be added as a usertask
   void camTask(void);
@@ -497,18 +592,21 @@ protected:
   void throwError();
 
   // the list of error callbacks to step through when a error occurs
-  std::list<MvrFunctor *> myErrorCBList;
+  std::list<ArFunctor *> myErrorCBList;
 
-  /// Used by MvrPTZConnector to create an MvrVCC4 object based on robot parameters and program options.
-
-  static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
-  /// Used by MvrPTZConnector to create an MvrVCC4 object based on robot parameters and program options.
-  static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
+  /// Used by ArPTZConnector to create an ArVCC4 object based on robot parameters and program options.
+  /// @since 2.7.6
+  /// @internal
+  static ArPTZ* create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot);
+  /// Used by ArPTZConnector to create an ArVCC4 object based on robot parameters and program options.
+  /// @since 2.7.6
+  /// @internal
+  static ArPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 public:
 #ifndef SWIG
-  ///<@internal Called by Mvria::init() toregister this class with MvrPTZConnector for vcc4 and vcc50i PTZ types.
-  static void registerPTZType(); 
+  static void registerPTZType(); ///<@internal Called by Aria::init() toregister this class with ArPTZConnector for vcc4 and vcc50i PTZ types. @since 2.7.6
 #endif
 };
 
-#endif // MVRVCC4_H
+#endif // ARVCC4_H
+

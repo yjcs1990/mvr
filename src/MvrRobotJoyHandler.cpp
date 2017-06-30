@@ -1,28 +1,47 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrRobotJoyHandler.cpp
- > Description  : Interfaces to a joystick on the robot's microcontroller
- > Author       : Yu Jie
- > Create Time  : 2017年05月25日
- > Modify Time  : 2017年06月22日
-***************************************************************************************************/
-#include "MvrExport.h"
-#include "mvriaOSDef.h"
-#include "MvrRobotJoyHandler.h"
-#include "MvrRobot.h"
-#include "MvrCommands.h"
-#include "mvriaInternal.h"
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-MVREXPORT MvrRobotJoyHandler::MvrRobotJoyHandler(MvrRobot *robot) : 
-          myHandleJoystickPacketCB(this, &MvrRobotJoyHandler::handleJoystickPacket),
-          myConnectCB(this, &MvrRobotJoyHandler::connectCallback),
-          myStopPacketsCB(this, &MvrRobotJoyHandler::stopPackets)
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
+#include "ArExport.h"
+#include "ariaOSDef.h"
+#include "ArRobotJoyHandler.h"
+#include "ArRobot.h"
+#include "ArCommands.h"
+#include "ariaInternal.h"
+
+AREXPORT ArRobotJoyHandler::ArRobotJoyHandler(ArRobot *robot) : 
+    myHandleJoystickPacketCB(this, &ArRobotJoyHandler::handleJoystickPacket),
+    myConnectCB(this, &ArRobotJoyHandler::connectCallback),
+    myStopPacketsCB(this, &ArRobotJoyHandler::stopPackets)
 {
   myRobot = robot;
 
-  myHandleJoystickPacketCB.setName("MvrRobotJoyHandler");
+  myHandleJoystickPacketCB.setName("ArRobotJoyHandler");
   myRobot->addConnectCB(&myConnectCB);
-  myRobot->addPacketHandler(&myHandleJoystickPacketCB, MvrListPos::FIRST);
+  myRobot->addPacketHandler(&myHandleJoystickPacketCB, ArListPos::FIRST);
   if (myRobot->isConnected())
     connectCallback();
 
@@ -43,28 +62,28 @@ MVREXPORT MvrRobotJoyHandler::MvrRobotJoyHandler(MvrRobot *robot) :
   myGotData = false;
 }
 
-MVREXPORT MvrRobotJoyHandler::~MvrRobotJoyHandler()
+AREXPORT ArRobotJoyHandler::~ArRobotJoyHandler()
 {
   myRobot->remConnectCB(&myConnectCB);
   myRobot->remPacketHandler(&myHandleJoystickPacketCB);
   stopPackets();
   myRobot->remDisconnectNormallyCB(&myStopPacketsCB);
-  Mvria::remExitCallback(&myStopPacketsCB);
+  Aria::remExitCallback(&myStopPacketsCB);
 }
 
-MVREXPORT void MvrRobotJoyHandler::connectCallback(void)
+AREXPORT void ArRobotJoyHandler::connectCallback(void)
 {
   myRobot->addDisconnectNormallyCB(&myStopPacketsCB);
-  Mvria::addExitCallback(&myStopPacketsCB);
-  myRobot->comInt(MvrCommands::JOYINFO, 2);
+  Aria::addExitCallback(&myStopPacketsCB);
+  myRobot->comInt(ArCommands::JOYINFO, 2);
 }
 
-void MvrRobotJoyHandler::stopPackets()
+void ArRobotJoyHandler::stopPackets()
 {
-  myRobot->comInt(MvrCommands::JOYINFO, 0);
+  myRobot->comInt(ArCommands::JOYINFO, 0);
 }
 
-MVREXPORT bool MvrRobotJoyHandler::handleJoystickPacket(MvrRobotPacket *packet)
+AREXPORT bool ArRobotJoyHandler::handleJoystickPacket(ArRobotPacket *packet)
 {
 
   if (packet->getID() != 0xF8)
@@ -122,16 +141,24 @@ MVREXPORT bool MvrRobotJoyHandler::handleJoystickPacket(MvrRobotPacket *packet)
   // these should vary between 1 and 0
   myThrottle = (double)myRawThrottle / 1024.0;
 
-  
+  //%10d.%03d ago 
+  //myStarted.secSince(), myStarted.mSecSince() % 1000, 
+  /*
+  ArLog::log(ArLog::Normal, 
+	     "%6.3f %6.3f %5.3f %d %d raw %4d %4d %4d center %4d %4d", 
+	     myJoyX, myJoyY, myThrottle, myButton1, myButton2, 
+	     myRawX, myRawY, myRawThrottle, myJoyXCenter, myJoyYCenter);
+  */
+  //  printf("%d %d %g %g %g\n", myButton1, myButton2, myJoyX, myJoyY, myThrottle);
   if (!myGotData)
   {
-    MvrLog::log(MvrLog::Verbose, "Received joystick information from the robot");
+    ArLog::log(ArLog::Verbose, "Received joystick information from the robot");
     myGotData = true;
   }
   return true;
 }
 
-MVREXPORT void MvrRobotJoyHandler::getDoubles(double *x, double *y, double *z)
+AREXPORT void ArRobotJoyHandler::getDoubles(double *x, double *y, double *z)
 {
   if (x != NULL)
     *x = myJoyX;
@@ -141,18 +168,18 @@ MVREXPORT void MvrRobotJoyHandler::getDoubles(double *x, double *y, double *z)
     *z = myThrottle;
 }
 
-MVREXPORT void MvrRobotJoyHandler::addToConfig(MvrConfig *config, 
+AREXPORT void ArRobotJoyHandler::addToConfig(ArConfig *config, 
 					     const char *section)
 {
-  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);
+  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);
   config->addParam(
-	  MvrConfigArg("JoyXCenter", &myJoyXCenter,
+	  ArConfigArg("JoyXCenter", &myJoyXCenter,
 		      "The X center", 0.0, 1024.0),
-	  section, MvrPriority::NORMAL);
+	  section, ArPriority::NORMAL);
 
   config->addParam(
-	  MvrConfigArg("JoyYCenter", &myJoyYCenter,
+	  ArConfigArg("JoyYCenter", &myJoyYCenter,
 		      "The Y center", 0.0, 1024.0),
-	  section, MvrPriority::NORMAL);
-  config->addParam(MvrConfigArg(MvrConfigArg::SEPARATOR), section, MvrPriority::NORMAL);  
+	  section, ArPriority::NORMAL);
+  config->addParam(ArConfigArg(ArConfigArg::SEPARATOR), section, ArPriority::NORMAL);  
 }

@@ -1,101 +1,170 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrLaserConnector.h
- > Description  : Create laser interface objects and connect to lasers based on parameters 
-                  from robot parameter file and command-line arguments
- > Author       : Yu Jie
- > Create Time  : 2017年05月18日
- > Modify Time  : 2017年05月18日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRLASERCONNECTOR_H
-#define MVRLASERCONNECTOR_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-#include "mvriaTypedefs.h"
-#include "MvrSerialConnection.h"
-#include "MvrTcpConnection.h"
-#include "MvrArgumentBuilder.h"
-#include "MvrArgumentParser.h"
-#include "mvriaUtil.h"
-#include "MvrRobotConnector.h"
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-class MvrLaser;
-class MvrRobot;
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-class MvrLaserConnector
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARLASERCONNECTOR_H
+#define ARLASERCONNECTOR_H
+
+#include "ariaTypedefs.h"
+#include "ArSerialConnection.h"
+#include "ArTcpConnection.h"
+#include "ArArgumentBuilder.h"
+#include "ArArgumentParser.h"
+#include "ariaUtil.h"
+#include "ArRobotConnector.h"
+
+class ArLaser;
+class ArRobot;
+
+
+
+/// Create laser interface objects (for any kind of laser supported by ARIA) and connect to lasers based on parameters from robot parameter file and command-line arguments
+/**
+
+   ArLaserConnector makes a laser connection (e.g. through serial port, 
+   TCP network connection, or to simulator connection as a special case if
+   the robot connection is to a simulator.)
+   Parameters are configurable through command-line arguments or in the robot
+   parameter file. 
+
+  
+   When you create your ArLaserConnector, pass it command line parameters via
+   either the argc and argv variables from main(), or pass it an
+   ArArgumentBuilder or ArArgumentParser object. (ArArgumentBuilder
+   is able to obtain command line parameters from a Windows program
+   that uses WinMain() instead of main()).
+   ArLaserConnector registers a callback with the global Aria class. Use
+   Aria::parseArgs() to parse all command line parameters to the program, and
+   Aria::logOptions() to print out information about all registered command-line parameters.
+   ArLaserConnector will be included in these.
+
+   Then, to connect to any lasers that were set up in the robot parameter file or
+   via command line arguments, call connectLasers().  If successful, 
+   connectLasers() will return true and add an entry for each laser connected
+   in the ArRobot object's list of lasers.  These ArLaser objects can be
+   accessed from your ArRobot object via ArRobot::findLaser() or ArRobot::getLaserMap(). 
+   
+   (The internal interface used by ARIA to connect to configured lasers and add
+   them to ArRobot is also
+   available if you need to use it: See addLaser(); but this is normally not
+neccesary for almost all cases.)
+
+   The following command-line arguments are checked:
+   @verbinclude ArLaserConnector_options
+
+   @since 2.7.0
+   @ingroup ImportantClasses
+   @ingroup DeviceClasses
+ **/
+class ArLaserConnector
 {
 public:
   /// Constructor that takes argument parser
-  MVREXPORT MvrLaserConnector(MvrArgumentParser *parser, MvrRobot *robot, MvrRobotConnector *robotConnector,
-	          bool autoParseArgs = true, MvrLog::LogLevel infoLogLevel = MvrLog::Verbose,
-	          MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
-        	  MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
+  AREXPORT ArLaserConnector(
+	  ArArgumentParser *parser, 
+	  ArRobot *robot, ArRobotConnector *robotConnector,
+	  bool autoParseArgs = true,
+	  ArLog::LogLevel infoLogLevel = ArLog::Verbose,
+	  ArRetFunctor1<bool, const char *> *turnOnPowerOutputCB = NULL,
+	  ArRetFunctor1<bool, const char *> *turnOffPowerOutputCB = NULL);
   /// Destructor
-  MVREXPORT ~MvrLaserConnector(void);
+  AREXPORT ~ArLaserConnector(void);
   /// Connects all the lasers the robot has that should be auto connected
-  MVREXPORT bool connectLasers(bool continueOnFailedConnect = false, bool addConnectedLasersToRobot = true,
-			      bool addAllLasersToRobot = false, bool turnOnLasers = true,
-			      bool powerCycleLaserOnFailedConnect = true, int *failedOnLaser = NULL);
+  AREXPORT bool connectLasers(bool continueOnFailedConnect = false,
+			      bool addConnectedLasersToRobot = true,
+			      bool addAllLasersToRobot = false,
+			      bool turnOnLasers = true,
+			      bool powerCycleLaserOnFailedConnect = true,
+			      int *failedOnLaser = NULL);
   /// Sets up a laser to be connected
-  MVREXPORT bool setupLaser(MvrLaser *laser, int laserNumber = 1);
+  AREXPORT bool setupLaser(ArLaser *laser, 
+			   int laserNumber = 1);
   /// Connects the laser synchronously (will take up to a minute)
-  MVREXPORT bool connectLaser(MvrLaser *laser, int laserNumber = 1, bool forceConnection = true);
+  AREXPORT bool connectLaser(ArLaser *laser,
+			     int laserNumber = 1,
+			     bool forceConnection = true);
   /// Adds a laser so parsing will get it
-  MVREXPORT bool addLaser(MvrLaser *laser, int laserNumber = 1);
+  AREXPORT bool addLaser(ArLaser *laser,
+			 int laserNumber = 1);
   /// Adds a laser for parsing but where connectLaser will be called later
-  MVREXPORT bool addPlaceholderLaser(MvrLaser *placeholderLaser, int laserNumber = 1, bool takeOwnershipOfPlaceholder = false);
+  AREXPORT bool addPlaceholderLaser(ArLaser *placeholderLaser,
+				    int laserNumber = 1,
+				    bool takeOwnershipOfPlaceholder = false);
   /// Function to parse the arguments given in the constructor
-  MVREXPORT bool parseArgs(void);
+  AREXPORT bool parseArgs(void);
   /// Function to parse the arguments given in an arbitrary parser
-  MVREXPORT bool parseArgs(MvrArgumentParser *parser);
+  AREXPORT bool parseArgs(ArArgumentParser *parser);
   /// Log the command-line options available to the user
-  MVREXPORT void logOptions(void) const;
+  AREXPORT void logOptions(void) const;
   /// Internal function to get the laser (only useful between parseArgs and connectLasers)
-  MVREXPORT MvrLaser *getLaser(int laserNumber);
+  AREXPORT ArLaser *getLaser(int laserNumber);
 
   /// Internal function to replace the laser (only useful between parseArgs and connectLasers) but not the laser data
-  MVREXPORT bool replaceLaser(MvrLaser *laser, int laserNumber);
+  AREXPORT bool replaceLaser(ArLaser *laser, int laserNumber);
 
   /// Log all currently set paramter values
-  MVREXPORT void logLaserData();
+  AREXPORT void logLaserData();
   
 protected:
   /// Class that holds information about the laser data
   class LaserData
   {
   public:
-    LaserData(int number, MvrLaser *laser, bool laserIsPlaceholder = false, bool ownPlaceholder = false)
-    { 
-      myNumber = number; 
-      myLaser = laser; 
-      myConn = NULL;
-      myLaserIsPlaceholder = laserIsPlaceholder;
-      myOwnPlaceholder = ownPlaceholder;
-      myConnect = false; myConnectReallySet = false;
-      myPort = NULL; 
-      myPortType = NULL;
-      myRemoteTcpPort = 0; myRemoteTcpPortReallySet = false;
-      myFlipped = false; myFlippedReallySet = false; 
-      myDegreesStart = HUGE_VAL; myDegreesStartReallySet = false; 
-      myDegreesEnd = -HUGE_VAL; myDegreesEndReallySet = false; 
-      myDegrees = NULL; 
-      myIncrementByDegrees = -HUGE_VAL; myIncrementByDegreesReallySet = false; 
-      myIncrement = NULL; 
-      myUnits = NULL; 
-      myReflectorBits = NULL;
-      myPowerControlled = true; myPowerControlledReallySet = false; 
-      myStartingBaud = NULL;
-      myAutoBaud = NULL;
-      myMaxRange = INT_MAX; myMaxRangeReallySet = false; 
-      myAdditionalIgnoreReadings = NULL;
-    }
+    LaserData(int number, ArLaser *laser, 
+	      bool laserIsPlaceholder = false, bool ownPlaceholder = false)
+      { 
+	myNumber = number; 
+	myLaser = laser; 
+	myConn = NULL;
+	myLaserIsPlaceholder = laserIsPlaceholder;
+	myOwnPlaceholder = ownPlaceholder;
+	myConnect = false; myConnectReallySet = false;
+	myPort = NULL; 
+	myPortType = NULL;
+	myRemoteTcpPort = 0; myRemoteTcpPortReallySet = false;
+	myFlipped = false; myFlippedReallySet = false; 
+	myDegreesStart = HUGE_VAL; myDegreesStartReallySet = false; 
+	myDegreesEnd = -HUGE_VAL; myDegreesEndReallySet = false; 
+	myDegrees = NULL; 
+	myIncrementByDegrees = -HUGE_VAL; myIncrementByDegreesReallySet = false; 
+	myIncrement = NULL; 
+	myUnits = NULL; 
+	myReflectorBits = NULL;
+	myPowerControlled = true; myPowerControlledReallySet = false; 
+	myStartingBaud = NULL;
+	myAutoBaud = NULL;
+	myMaxRange = INT_MAX; myMaxRangeReallySet = false; 
+	myAdditionalIgnoreReadings = NULL;
+      }
     virtual ~LaserData() {}
     /// The number of this laser
     int myNumber;
     /// The actual pointer to this laser
-    MvrLaser *myLaser;
+    ArLaser *myLaser;
     // our connection
-    MvrDeviceConnection *myConn;
+    ArDeviceConnection *myConn;
     /// If the laser is a placeholder for parsing
     bool myLaserIsPlaceholder;
     /// If we own the placeholder laser
@@ -154,31 +223,32 @@ protected:
   std::map<int, LaserData *> myLasers;
   
   /// Parses the laser arguments
-  MVREXPORT bool parseLaserArgs(MvrArgumentParser *parser, 
+  AREXPORT bool parseLaserArgs(ArArgumentParser *parser, 
 			       LaserData *laserData);
   /// Logs the laser command line option help text. 
-  MVREXPORT void logLaserOptions(LaserData *laserdata, bool header = true, bool metaOpts = true) const;
+  AREXPORT void logLaserOptions(LaserData *laserdata, bool header = true, bool metaOpts = true) const;
   // Sets the laser parameters
   bool internalConfigureLaser(LaserData *laserData);
 
   std::string myLaserTypes;
 
   // our parser
-  MvrArgumentParser *myParser;
+  ArArgumentParser *myParser;
   bool myOwnParser;
   // if we should autoparse args or toss errors 
   bool myAutoParseArgs;
   bool myParsedArgs;
 
-  MvrRobot *myRobot;
-  MvrRobotConnector *myRobotConnector;
+  ArRobot *myRobot;
+  ArRobotConnector *myRobotConnector;
 
-  MvrLog::LogLevel myInfoLogLevel;
+  ArLog::LogLevel myInfoLogLevel;
 
-  MvrRetFunctor1<bool, const char *> *myTurnOnPowerOutputCB;
-  MvrRetFunctor1<bool, const char *> *myTurnOffPowerOutputCB;
+  ArRetFunctor1<bool, const char *> *myTurnOnPowerOutputCB;
+  ArRetFunctor1<bool, const char *> *myTurnOffPowerOutputCB;
 
-  MvrRetFunctorC<bool, MvrLaserConnector> myParseArgsCB;
-  MvrConstFunctorC<MvrLaserConnector> myLogOptionsCB;
+  ArRetFunctorC<bool, ArLaserConnector> myParseArgsCB;
+  ArConstFunctorC<ArLaserConnector> myLogOptionsCB;
 };
-#endif  //MVRLASERCONNECTOR_H
+
+#endif // ARLASERCONNECTOR_H

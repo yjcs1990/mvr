@@ -1,70 +1,86 @@
-/**************************************************************************************************
- > Project Name : MVR - mobile vacuum robot
- > File Name    : MvrArgumentBuilder.h
- > Description  : Base class for device connections
- > Author       : Yu Jie
- > Create Time  : 2017年04月10日
- > Modify Time  : 2017年05月17日
-***************************************************************************************************/
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRARGUMENTBUILDER_H
-#define MVRARGUMENTBUILDER_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
 
-#include "mvriaTypedefs.h"
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARARGUMENTBUILDER_H
+#define ARARGUMENTBUILDER_H
+
+#include "ariaTypedefs.h"
 
 /// This class is to build arguments for things that require argc and argv
 /// @ingroup ImportantClasses
-
-class MvrArgumentBuilder
+class ArArgumentBuilder
 {
 public:
   /// Constructor
-  MVREXPORT MvrArgumentBuilder(size_t argvLen = 512, 
-                               char extraSpaceChar = '\0',
-			                         bool ignoreNormalSpaces = false, 
-                               bool isPreCompressQuotes = false);
+  AREXPORT ArArgumentBuilder(size_t argvLen = 512, 
+                             char extraSpaceChar = '\0',
+			                       bool ignoreNormalSpaces = false,
+                             bool isPreCompressQuotes = false);
   /// Copy Constructor
-  MVREXPORT MvrArgumentBuilder(const MvrArgumentBuilder &builder);
+  AREXPORT ArArgumentBuilder(const ArArgumentBuilder &builder);
 
-  MVREXPORT MvrArgumentBuilder &operator=(const MvrArgumentBuilder &builder);
+  AREXPORT ArArgumentBuilder &operator=(const ArArgumentBuilder &builder);
 
   /// Destructor
-  MVREXPORT virtual ~MvrArgumentBuilder();
+  AREXPORT virtual ~ArArgumentBuilder();
 #ifndef SWIG
   /** @brief Adds the given string, with varargs, separates if there are spaces
    *  @swignote Not available
    */
-  MVREXPORT void add(const char *str, ...);
+  AREXPORT void add(const char *str, ...);
 #endif
   /// Adds the given string, without varargs (wrapper for java)
-  MVREXPORT void addPlain(const char *str, int position = -1);
+  AREXPORT void addPlain(const char *str, int position = -1);
   /// Adds the given string, without varargs and without touching the str
-  MVREXPORT void addPlainAsIs(const char *str, int position = -1);
-  /// Adds the given string that divided
-  MVREXPORT void addStrings(char **argv, int argc, int position = -1);
-  /// Adds the given string that divided
-  MVREXPORT void addStrings(int argc, char **argv, int position = -1);
-  /// Adds the given string that divided (but doesn't touch the strings)
-  MVREXPORT void addStringsAsIs(int argc, char **argv, int position = -1);
+  AREXPORT void addPlainAsIs(const char *str, int position = -1);
+  /// Adds the given string thats divided
+  AREXPORT void addStrings(char **argv, int argc, int position = -1);
+  /// Adds the given string thats divided
+  AREXPORT void addStrings(int argc, char **argv, int position = -1);
+  /// Adds the given string thats divided (but doesn't touch the strings)
+  AREXPORT void addStringsAsIs(int argc, char **argv, int position = -1);
   /// Gets the original string of the input
-  MVREXPORT const char *getFullString(void) const;
+  AREXPORT const char *getFullString(void) const;
   /// Sets the full string (this is so you can have a more raw full string)
-  MVREXPORT void setFullString(const char *str);
+  AREXPORT void setFullString(const char *str);
   /// Gets the extra string of the input, used differently by different things
-  MVREXPORT const char *getExtraString(void) const;
+  AREXPORT const char *getExtraString(void) const;
   /// Sets the extra string of the input, used differently by different things
-  MVREXPORT void setExtraString(const char *str);
+  AREXPORT void setExtraString(const char *str);
   /// Prints out the arguments
-  MVREXPORT void log(void) const;
+  AREXPORT void log(void) const;
   /// Gets the argc
-  MVREXPORT size_t getArgc(void) const;
+  AREXPORT size_t getArgc(void) const;
   /// Gets the argv
-  MVREXPORT char** getArgv(void) const;
+  AREXPORT char** getArgv(void) const;
   /// Gets a specific argument as a string
-  MVREXPORT const char* getArg(size_t whichArg) const;
+  AREXPORT const char* getArg(size_t whichArg) const;
 
   /// Sees if an argument is a bool
-  MVREXPORT bool isArgBool(size_t whichArg) const;
+  AREXPORT bool isArgBool(size_t whichArg) const;
 
   /// Gets the value of an argument as a boolean 
   /**
@@ -81,7 +97,8 @@ public:
    * @return bool the retrieved argument value; valid only if ok or isArgBool
    * is true
   **/
-  MVREXPORT bool getArgBool(size_t whichArg, bool *ok = NULL) const;
+  AREXPORT bool getArgBool(size_t whichArg,
+                           bool *ok = NULL) const;
 
   /// Sees if an argument is an int
   /**
@@ -89,7 +106,7 @@ public:
    * and less than getArgc()
    * @param forceHex if true this makes it find the int in base 16 instead of 10
    */
-  MVREXPORT bool isArgInt(size_t whichArg, bool forceHex = false) const;
+  AREXPORT bool isArgInt(size_t whichArg, bool forceHex = false) const;
 
   /// Gets the value of an argument as an integer
   /**
@@ -106,10 +123,11 @@ public:
    * @return int the retrieved argument value; valid only if ok or isArgInt 
    * is true
   **/
-  MVREXPORT int getArgInt(size_t whichArg, bool *ok = NULL, bool forceHex = false) const;
+  AREXPORT int getArgInt(size_t whichArg,
+                         bool *ok = NULL, bool forceHex = false) const;
 
   /// Sees if an argument is a long long int
-  MVREXPORT bool isArgLongLongInt(size_t whichArg) const;
+  AREXPORT bool isArgLongLongInt(size_t whichArg) const;
 
   /// Gets the value of an argument as a long long integer
   /**
@@ -125,10 +143,11 @@ public:
    * @return int the retrieved argument value; valid only if ok or isArgInt 
    * is true
   **/
-  MVREXPORT int getArgLongLongInt(size_t whichArg, bool *ok = NULL) const;
+  AREXPORT int getArgLongLongInt(size_t whichArg,
+				 bool *ok = NULL) const;
 
   /// Sees if an argument is a double
-  MVREXPORT bool isArgDouble(size_t whichArg) const;
+  AREXPORT bool isArgDouble(size_t whichArg) const;
 
   /// Gets the value of an argument as a double
   /**
@@ -144,20 +163,22 @@ public:
    * @return double the retrieved argument value; valid only if ok or 
    * isArgDouble is true
   **/
-  MVREXPORT double getArgDouble(size_t whichArg, bool *ok = NULL) const;
+  AREXPORT double getArgDouble(size_t whichArg,
+                               bool *ok = NULL) const;
 
   /// Delete a particular arg, you MUST finish adding before you can remove
-  MVREXPORT void removeArg(size_t which, bool isRebuildFullString = false);
+  AREXPORT void removeArg(size_t which,
+									        bool isRebuildFullString = false);
   /// Combines quoted arguments into one
-  MVREXPORT void compressQuoted(bool stripQuotationMarks = false);
+  AREXPORT void compressQuoted(bool stripQuotationMarks = false);
 
   /// Turn on this flag to reduce the number of verbose log messages.
-  MVREXPORT void setQuiet(bool isQuiet);
+  AREXPORT void setQuiet(bool isQuiet);
 
 protected:
-  MVREXPORT void internalAdd(const char *str, int position = -1);
-  MVREXPORT void internalAddAsIs(const char *str, int position = -1);
-	MVREXPORT void rebuildFullString();
+  AREXPORT void internalAdd(const char *str, int position = -1);
+  AREXPORT void internalAddAsIs(const char *str, int position = -1);
+	AREXPORT void rebuildFullString();
 
   /// Characters that may be used to separate arguments; bitwise flags so QUOTE can be combined with spaces
   enum ArgSeparatorType {
@@ -178,7 +199,10 @@ protected:
    * will mark the end of the argument.  If quotes are being pre-processed, and the
    * current argument starts with space-quote, then the argument must end with a quote-space.
   **/
-  bool isStartArg(const char *buf, int len, int index, int *endArgFlagsOut);
+  bool isStartArg(const char *buf, 
+                  int len, 
+                  int index,
+                  int *endArgFlagsOut);
 
   /// Determines whether the current buffer position marks the end of an argument
   /**
@@ -193,7 +217,10 @@ protected:
    * argument.  If quotes are being pre-processed, and the current argument started
    * with space-quote, then the argument must end with a quote-space.
   **/
-  bool isEndArg(const char *buf, int len, int &indexInOut, int endArgFlags);
+  bool isEndArg(const char *buf, 
+                int len, 
+                int &indexInOut,
+                int endArgFlags);
 
   /// Determines whether the specified character is an acceptable space (either normal or extra)
   bool isSpace(char c);
@@ -224,13 +251,17 @@ protected:
 };
 
 // ----------------------------------------------------------------------------
+
 /// Comparator that returns true if arg1's full string is less than arg2's.
-struct MvrArgumentBuilderCompareOp
+struct ArArgumentBuilderCompareOp
 {
 public:
+
   /// Compares arg1's full string to arg2's.
-  MVREXPORT bool operator() (MvrArgumentBuilder *arg1, MvrArgumentBuilder *arg2) const;
+  AREXPORT bool operator() (ArArgumentBuilder* arg1, ArArgumentBuilder* arg2) const;
 
-}; // end struct MvrArgumentBuilderCompareOp
+}; // end struct ArArgumentBuilderCompareOp
 
-#endif  // MVRARGUMENTBUILDER_H
+
+
+#endif // ARARGUMENTBUILDER_H
