@@ -1,39 +1,13 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSonarDevice.h"
 #include "MvrSensorReading.h"
 #include "MvrRobot.h"
 
-MVREXPORT ArSonarDevice::ArSonarDevice(size_t currentBufferSize,
+MVREXPORT MvrSonarDevice::MvrSonarDevice(size_t currentBufferSize,
 			     size_t cumulativeBufferSize, const char *name) :
-  ArRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000), 
-  myProcessCB(this, &ArSonarDevice::processReadings),
+  MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000), 
+  myProcessCB(this, &MvrSonarDevice::processReadings),
   myIgnoreReadingCB(NULL)
 {
   // Remove readings from cumulative buffer if far away from robot after it
@@ -54,14 +28,14 @@ MVREXPORT ArSonarDevice::ArSonarDevice(size_t currentBufferSize,
   setMaxSecondsToKeepCumulative(15);
 
   // Visualization properties for GUI clients such as MobileEyes:
-  setCurrentDrawingData(new ArDrawingData("polyArrows", 
-                                          ArColor(0x33, 0xCC, 0xFF), 
+  setCurrentDrawingData(new MvrDrawingData("polyArrows", 
+                                          MvrColor(0x33, 0xCC, 0xFF), 
                                           200,  // mm length of arrow
                                           70),  // first sensor layer
                         true);
 }
 
-MVREXPORT ArSonarDevice::~MvrSonarDevice()
+MVREXPORT MvrSonarDevice::~MvrSonarDevice()
 {
   if (myRobot != NULL)
   {
@@ -70,29 +44,29 @@ MVREXPORT ArSonarDevice::~MvrSonarDevice()
   }
 }
 
-MVREXPORT void ArSonarDevice::setRobot(MvrRobot *robot)
+MVREXPORT void MvrSonarDevice::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
     myRobot->addSensorInterpTask(myName.c_str(), 10, &myProcessCB);
-  ArRangeDevice::setRobot(robot);
+  MvrRangeDevice::setRobot(robot);
 }
 
-MVREXPORT void ArSonarDevice::processReadings(void)
+MVREXPORT void MvrSonarDevice::processReadings(void)
 {
   int i;
-  ArSensorReading *reading;
+  MvrSensorReading *reading;
   lockDevice();
 
   for (i = 0; i < myRobot->getNumSonar(); i++)
   {
-    // Get a reference to the ArSensorReading object for sonar sensor #i, which
+    // Get a reference to the MvrSensorReading object for sonar sensor #i, which
     // will provide an X,Y position and timestamp for the most recently received
-    // obstacle detected by that sonar sensor. ArRobot created a set of 
-    // ArSensorReading objects for each sonar sensor  when it connected to the 
+    // obstacle detected by that sonar sensor. MvrRobot created a set of 
+    // MvrSensorReading objects for each sonar sensor  when it connected to the 
     // robot, configured them with the position of the sonar sensor relative to the
-    // center of the robot. It calls ArSensorReading::newData() when new sonar
-    // data is received to cause the ArSensorReading object to update the X,Y
+    // center of the robot. It calls MvrSensorReading::newData() when new sonar
+    // data is received to cause the MvrSensorReading object to update the X,Y
     // position based on the range value received from the sonar sensor.
 
     reading = myRobot->getSonarReading(i);
@@ -104,8 +78,8 @@ MVREXPORT void ArSonarDevice::processReadings(void)
   }
 
   // delete too-far readings
-  std::list<ArPoseWithTime *> *readingList;
-  std::list<ArPoseWithTime *>::iterator it;
+  std::list<MvrPoseWithTime *> *readingList;
+  std::list<MvrPoseWithTime *>::iterator it;
   double dx, dy, rx, ry;
     
   myCumulativeBuffer.beginInvalidationSweep();
@@ -137,7 +111,7 @@ MVREXPORT void ArSonarDevice::processReadings(void)
    @param x the global x coordinate of the reading
    @param y the global y coordinate of the reading
 */
-MVREXPORT void ArSonarDevice::addReading(double x, double y)
+MVREXPORT void MvrSonarDevice::addReading(double x, double y)
 {
   double rx = myRobot->getX();
   double ry = myRobot->getY();
@@ -150,8 +124,8 @@ MVREXPORT void ArSonarDevice::addReading(double x, double y)
   
   if (dist2 < myMaxDistToKeepCumulative * myMaxDistToKeepCumulative)
     {
-      std::list<ArPoseWithTime *> *readingList;
-      std::list<ArPoseWithTime *>::iterator it;
+      std::list<MvrPoseWithTime *> *readingList;
+      std::list<MvrPoseWithTime *>::iterator it;
 
       myCumulativeBuffer.beginInvalidationSweep();
 
@@ -174,8 +148,8 @@ MVREXPORT void ArSonarDevice::addReading(double x, double y)
 }
 
 
-MVREXPORT void ArSonarDevice::setIgnoreReadingCB(
-	ArRetFunctor1<bool, ArPose> *ignoreReadingCB)
+MVREXPORT void MvrSonarDevice::setIgnoreReadingCB(
+	MvrRetFunctor1<bool, MvrPose> *ignoreReadingCB)
 {
   lockDevice();
   myIgnoreReadingCB = ignoreReadingCB;

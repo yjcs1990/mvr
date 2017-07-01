@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRMODES_H
+#define MVRMODES_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARMODES_H
-#define ARMODES_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrMode.h"
 #include "MvrActionGroups.h"
 #include "MvrGripper.h"
@@ -56,10 +30,10 @@ public:
   MVREXPORT virtual void help(void);
   MVREXPORT virtual void userTask(void);
 protected:
-  //ArActionGroupTeleop myGroup;
+  //MvrActionGroupTeleop myGroup;
   // use our new ratio drive instead
   MvrActionGroupRatioDrive myGroup;
-  MvrFunctorC<ArRobot> myEnableMotorsCB;
+  MvrFunctorC<MvrRobot> myEnableMotorsCB;
 };
 
 /// Mode for teleoping the robot with joystick + keyboard
@@ -75,10 +49,10 @@ public:
   MVREXPORT virtual void help(void);
   MVREXPORT virtual void userTask(void);
 protected:
-  //ArActionGroupUnguardedTeleop myGroup;
+  //MvrActionGroupUnguardedTeleop myGroup;
   // use our new ratio drive instead
   MvrActionGroupRatioDriveUnsafe myGroup;
-  MvrFunctorC<ArRobot> myEnableMotorsCB;
+  MvrFunctorC<MvrRobot> myEnableMotorsCB;
 };
 
 /// Mode for wandering around
@@ -127,12 +101,12 @@ protected:
   bool myExercising;
   ExerState myExerState;
   MvrTime myLastExer;
-  MvrFunctorC<ArModeGripper> myOpenCB;
-  MvrFunctorC<ArModeGripper> myCloseCB;
-  MvrFunctorC<ArModeGripper> myUpCB;
-  MvrFunctorC<ArModeGripper> myDownCB;
-  MvrFunctorC<ArModeGripper> myStopCB;
-  MvrFunctorC<ArModeGripper> myExerciseCB;
+  MvrFunctorC<MvrModeGripper> myOpenCB;
+  MvrFunctorC<MvrModeGripper> myCloseCB;
+  MvrFunctorC<MvrModeGripper> myUpCB;
+  MvrFunctorC<MvrModeGripper> myDownCB;
+  MvrFunctorC<MvrModeGripper> myStopCB;
+  MvrFunctorC<MvrModeGripper> myExerciseCB;
   
 };
 
@@ -216,37 +190,37 @@ protected:
   MvrTime myLastExerZoomed;
   MvrSerialConnection myConn;
   MvrPTZ *myCam;
-  MvrFunctorC<ArModeCamera> myUpCB;
-  MvrFunctorC<ArModeCamera> myDownCB;
-  MvrFunctorC<ArModeCamera> myLeftCB;
-  MvrFunctorC<ArModeCamera> myRightCB;
-  MvrFunctorC<ArModeCamera> myCenterCB;
-  MvrFunctorC<ArModeCamera> myZoomInCB;
-  MvrFunctorC<ArModeCamera> myZoomOutCB;
-  MvrFunctorC<ArModeCamera> myExerciseCB;
-  MvrFunctorC<ArModeCamera> mySonyCB;
-  MvrFunctorC<ArModeCamera> myCanonCB;
-  MvrFunctorC<ArModeCamera> myDpptuCB;
-  MvrFunctorC<ArModeCamera> myAmptuCB;
-  MvrFunctorC<ArModeCamera> myCanonInvertedCB;
-  MvrFunctorC<ArModeCamera> mySonySerialCB;
-  MvrFunctorC<ArModeCamera> myCanonSerialCB;
-  MvrFunctorC<ArModeCamera> myDpptuSerialCB;
-  MvrFunctorC<ArModeCamera> myAmptuSerialCB;
-  MvrFunctorC<ArModeCamera> myCanonInvertedSerialCB;
-  MvrFunctorC<ArModeCamera> myRVisionSerialCB;
-  MvrFunctorC<ArModeCamera> myCom1CB;
-  MvrFunctorC<ArModeCamera> myCom2CB;
-  MvrFunctorC<ArModeCamera> myCom3CB;
-  MvrFunctorC<ArModeCamera> myCom4CB;
-  MvrFunctorC<ArModeCamera> myUSBCom0CB;
-  MvrFunctorC<ArModeCamera> myUSBCom9CB;
-  MvrFunctorC<ArModeCamera> myAux1CB;
-  MvrFunctorC<ArModeCamera> myAux2CB;
+  MvrFunctorC<MvrModeCamera> myUpCB;
+  MvrFunctorC<MvrModeCamera> myDownCB;
+  MvrFunctorC<MvrModeCamera> myLeftCB;
+  MvrFunctorC<MvrModeCamera> myRightCB;
+  MvrFunctorC<MvrModeCamera> myCenterCB;
+  MvrFunctorC<MvrModeCamera> myZoomInCB;
+  MvrFunctorC<MvrModeCamera> myZoomOutCB;
+  MvrFunctorC<MvrModeCamera> myExerciseCB;
+  MvrFunctorC<MvrModeCamera> mySonyCB;
+  MvrFunctorC<MvrModeCamera> myCanonCB;
+  MvrFunctorC<MvrModeCamera> myDpptuCB;
+  MvrFunctorC<MvrModeCamera> myAmptuCB;
+  MvrFunctorC<MvrModeCamera> myCanonInvertedCB;
+  MvrFunctorC<MvrModeCamera> mySonySerialCB;
+  MvrFunctorC<MvrModeCamera> myCanonSerialCB;
+  MvrFunctorC<MvrModeCamera> myDpptuSerialCB;
+  MvrFunctorC<MvrModeCamera> myAmptuSerialCB;
+  MvrFunctorC<MvrModeCamera> myCanonInvertedSerialCB;
+  MvrFunctorC<MvrModeCamera> myRVisionSerialCB;
+  MvrFunctorC<MvrModeCamera> myCom1CB;
+  MvrFunctorC<MvrModeCamera> myCom2CB;
+  MvrFunctorC<MvrModeCamera> myCom3CB;
+  MvrFunctorC<MvrModeCamera> myCom4CB;
+  MvrFunctorC<MvrModeCamera> myUSBCom0CB;
+  MvrFunctorC<MvrModeCamera> myUSBCom9CB;
+  MvrFunctorC<MvrModeCamera> myAux1CB;
+  MvrFunctorC<MvrModeCamera> myAux2CB;
   const int myPanAmount;
   const int myTiltAmount;
   bool myAutoFocusOn;
-  MvrFunctorC<ArModeCamera> myToggleAutoFocusCB;
+  MvrFunctorC<MvrModeCamera> myToggleAutoFocusCB;
 };
 
 /// Mode for displaying the sonar
@@ -276,11 +250,11 @@ protected:
     STATE_FOURTH
   };
   State myState;
-  MvrFunctorC<ArModeSonar> myAllSonarCB;
-  MvrFunctorC<ArModeSonar> myFirstSonarCB;
-  MvrFunctorC<ArModeSonar> mySecondSonarCB;
-  MvrFunctorC<ArModeSonar> myThirdSonarCB;
-  MvrFunctorC<ArModeSonar> myFourthSonarCB;
+  MvrFunctorC<MvrModeSonar> myAllSonarCB;
+  MvrFunctorC<MvrModeSonar> myFirstSonarCB;
+  MvrFunctorC<MvrModeSonar> mySecondSonarCB;
+  MvrFunctorC<MvrModeSonar> myThirdSonarCB;
+  MvrFunctorC<MvrModeSonar> myFourthSonarCB;
 };
 
 class MvrModeBumps : public MvrMode
@@ -324,16 +298,16 @@ protected:
   bool myInHeadingMode;
   double myHeading;
   double myDistance;
-  MvrFunctorC<ArModePosition> myUpCB;
-  MvrFunctorC<ArModePosition> myDownCB;
-  MvrFunctorC<ArModePosition> myLeftCB;
-  MvrFunctorC<ArModePosition> myRightCB;
-  MvrFunctorC<ArModePosition> myStopCB;  
-  MvrFunctorC<ArModePosition> myResetCB;  
-  MvrFunctorC<ArModePosition> myModeCB;
-  MvrFunctorC<ArModePosition> myGyroCB;
-  MvrFunctorC<ArModePosition> myIncDistCB;
-  MvrFunctorC<ArModePosition> myDecDistCB;
+  MvrFunctorC<MvrModePosition> myUpCB;
+  MvrFunctorC<MvrModePosition> myDownCB;
+  MvrFunctorC<MvrModePosition> myLeftCB;
+  MvrFunctorC<MvrModePosition> myRightCB;
+  MvrFunctorC<MvrModePosition> myStopCB;  
+  MvrFunctorC<MvrModePosition> myResetCB;  
+  MvrFunctorC<MvrModePosition> myModeCB;
+  MvrFunctorC<MvrModePosition> myGyroCB;
+  MvrFunctorC<MvrModePosition> myIncDistCB;
+  MvrFunctorC<MvrModePosition> myDecDistCB;
 };
 
 class MvrModeIO : public MvrMode
@@ -352,7 +326,7 @@ protected:
   MvrTime myLastPacketTime;
   char myExplanation[1024];
   char myOutput[1024];
-  MvrFunctorC<ArModeIO> myProcessIOCB;
+  MvrFunctorC<MvrModeIO> myProcessIOCB;
 };
 
 class MvrModeLaser : public MvrMode
@@ -383,10 +357,10 @@ protected:
 
   bool myPrintMiddle;
 
-  MvrFunctorC<ArModeLaser> myTogMiddleCB;
+  MvrFunctorC<MvrModeLaser> myTogMiddleCB;
 
   std::map<int, MvrLaser *> myLasers;
-  std::map<int, MvrFunctor1C<ArModeLaser, int> *> myLaserCallbacks;
+  std::map<int, MvrFunctor1C<MvrModeLaser, int> *> myLaserCallbacks;
 };
 
 /// Mode for following a color blob using ACTS
@@ -420,17 +394,17 @@ protected:
   MvrACTS_1_2 *myActs;
   MvrRobot *myRobot;
 
-  MvrFunctorC<ArModeActs> myChannel1CB;
-  MvrFunctorC<ArModeActs> myChannel2CB;
-  MvrFunctorC<ArModeActs> myChannel3CB;
-  MvrFunctorC<ArModeActs> myChannel4CB;
-  MvrFunctorC<ArModeActs> myChannel5CB;
-  MvrFunctorC<ArModeActs> myChannel6CB;
-  MvrFunctorC<ArModeActs> myChannel7CB;
-  MvrFunctorC<ArModeActs> myChannel8CB;
-  MvrFunctorC<ArModeActs> myStopCB;
-  MvrFunctorC<ArModeActs> myStartCB;
-  MvrFunctorC<ArModeActs> myToggleAcquireCB;
+  MvrFunctorC<MvrModeActs> myChannel1CB;
+  MvrFunctorC<MvrModeActs> myChannel2CB;
+  MvrFunctorC<MvrModeActs> myChannel3CB;
+  MvrFunctorC<MvrModeActs> myChannel4CB;
+  MvrFunctorC<MvrModeActs> myChannel5CB;
+  MvrFunctorC<MvrModeActs> myChannel6CB;
+  MvrFunctorC<MvrModeActs> myChannel7CB;
+  MvrFunctorC<MvrModeActs> myChannel8CB;
+  MvrFunctorC<MvrModeActs> myStopCB;
+  MvrFunctorC<MvrModeActs> myStartCB;
+  MvrFunctorC<MvrModeActs> myToggleAcquireCB;
 };
 
 class MvrModeCommand : public MvrMode
@@ -449,20 +423,20 @@ protected:
   void finishParsing(void);
   void reset(bool print = true);
   char myCommandString[70];
-  MvrFunctor1C<ArModeCommand, int> my0CB;
-  MvrFunctor1C<ArModeCommand, int> my1CB;
-  MvrFunctor1C<ArModeCommand, int> my2CB;
-  MvrFunctor1C<ArModeCommand, int> my3CB;
-  MvrFunctor1C<ArModeCommand, int> my4CB;
-  MvrFunctor1C<ArModeCommand, int> my5CB;
-  MvrFunctor1C<ArModeCommand, int> my6CB;
-  MvrFunctor1C<ArModeCommand, int> my7CB;
-  MvrFunctor1C<ArModeCommand, int> my8CB;
-  MvrFunctor1C<ArModeCommand, int> my9CB;
-  MvrFunctor1C<ArModeCommand, int> myMinusCB;
-  MvrFunctor1C<ArModeCommand, int> myBackspaceCB;
-  MvrFunctor1C<ArModeCommand, int> mySpaceCB;
-  MvrFunctorC<ArModeCommand> myEnterCB;
+  MvrFunctor1C<MvrModeCommand, int> my0CB;
+  MvrFunctor1C<MvrModeCommand, int> my1CB;
+  MvrFunctor1C<MvrModeCommand, int> my2CB;
+  MvrFunctor1C<MvrModeCommand, int> my3CB;
+  MvrFunctor1C<MvrModeCommand, int> my4CB;
+  MvrFunctor1C<MvrModeCommand, int> my5CB;
+  MvrFunctor1C<MvrModeCommand, int> my6CB;
+  MvrFunctor1C<MvrModeCommand, int> my7CB;
+  MvrFunctor1C<MvrModeCommand, int> my8CB;
+  MvrFunctor1C<MvrModeCommand, int> my9CB;
+  MvrFunctor1C<MvrModeCommand, int> myMinusCB;
+  MvrFunctor1C<MvrModeCommand, int> myBackspaceCB;
+  MvrFunctor1C<MvrModeCommand, int> mySpaceCB;
+  MvrFunctorC<MvrModeCommand> myEnterCB;
 
 };
 
@@ -484,14 +458,14 @@ protected:
   MvrTCM2 *myTCM2;
   MvrCompassConnector *connector;
   MvrRobot *myRobot;
-  MvrFunctorC<ArTCM2> *myOffCB;
-  MvrFunctorC<ArTCM2> *myCompassCB;
-  MvrFunctorC<ArTCM2> *myOnePacketCB;
-  MvrFunctorC<ArTCM2> *myContinuousPacketsCB;
-  MvrFunctorC<ArTCM2> *myUserCalibrationCB;
-  MvrFunctorC<ArTCM2> *myAutoCalibrationCB;
-  MvrFunctorC<ArTCM2> *myStopCalibrationCB;
-  MvrFunctorC<ArTCM2> *myResetCB;
+  MvrFunctorC<MvrTCM2> *myOffCB;
+  MvrFunctorC<MvrTCM2> *myCompassCB;
+  MvrFunctorC<MvrTCM2> *myOnePacketCB;
+  MvrFunctorC<MvrTCM2> *myContinuousPacketsCB;
+  MvrFunctorC<MvrTCM2> *myUserCalibrationCB;
+  MvrFunctorC<MvrTCM2> *myAutoCalibrationCB;
+  MvrFunctorC<MvrTCM2> *myStopCalibrationCB;
+  MvrFunctorC<MvrTCM2> *myResetCB;
 
 };
 
@@ -509,7 +483,7 @@ public:
 protected:
   MvrRobot *myRobot;
   MvrRobotConfigPacketReader myConfigPacketReader;
-  MvrFunctorC<ArModeConfig> myGotConfigPacketCB;
+  MvrFunctorC<MvrModeConfig> myGotConfigPacketCB;
 
   void gotConfigPacket();
 };
@@ -547,4 +521,4 @@ protected:
 };
 
 
-#endif // ARMODES_H
+#endif // MVRMODES_H

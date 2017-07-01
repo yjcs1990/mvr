@@ -1,29 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 /* 
  * Contains utility classes for the MvrMap class.
  *
@@ -55,8 +29,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *    them after the Mvria map has been changed.
  */
 
-#ifndef ARMAPUTILS_H
-#define ARMAPUTILS_H
+#ifndef MVRMAPUTILS_H
+#define MVRMAPUTILS_H
 
 #include <algorithm>
 #include <functional>
@@ -65,8 +39,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <string>
 #include <vector>
 
-#include "ariaTypedefs.h"
-#include "ariaUtil.h"
+#include "mvriaTypedefs.h"
+#include "mvriaUtil.h"
 
 
 class MvrArgumentBuilder;
@@ -421,7 +395,7 @@ public:
     return &myParentLine;
   }
   /// Returns a pointer to the list of child map file lines.
-  std::vector<ArMapFileLine> *getChildLines() {
+  std::vector<MvrMapFileLine> *getChildLines() {
     return &myChildLines;
   }
 
@@ -435,7 +409,7 @@ public:
 public: // users may access class members directly
 
   MvrMapFileLine myParentLine; ///< The map file line that is the parent of the group
-  std::vector<ArMapFileLine> myChildLines; ///< A list of child map file lines
+  std::vector<MvrMapFileLine> myChildLines; ///< A list of child map file lines
 
 }; // end class MvrFileLineGroup
 
@@ -503,7 +477,7 @@ struct MvrMapFileLineGroupLineNumCompare :
  * @swigomit
  * @internal
 **/
-class MvrMapFileLineSet : public std::vector<ArMapFileLineGroup>
+class MvrMapFileLineSet : public std::vector<MvrMapFileLineGroup>
 {
 public:
 
@@ -537,14 +511,14 @@ public:
 
   /// Copy constructor
   MvrMapFileLineSet(const MvrMapFileLineSet &other) :
-    std::vector<ArMapFileLineGroup>(other)
+    std::vector<MvrMapFileLineGroup>(other)
   {}
 
   /// Assignment operator
   MvrMapFileLineSet &operator=(const MvrMapFileLineSet &other) 
   {
     if (this != &other) {
-      std::vector<ArMapFileLineGroup>::operator =(other);
+      std::vector<MvrMapFileLineGroup>::operator =(other);
     }
     return *this;
   }
@@ -660,7 +634,7 @@ public:
    * are to be returned; must be non-NULL
    * @return a non-NULL pointer to the vector of MvrPose's that have been changed
   **/
-  MVREXPORT std::vector<ArPose> *getChangedPoints(MapLineChangeType change,
+  MVREXPORT std::vector<MvrPose> *getChangedPoints(MapLineChangeType change,
                                                  const char *scanType);
 
   /// Returns a pointer to the data line segments that have been changed for the specified scan type
@@ -671,7 +645,7 @@ public:
    * segments are to be returned; must be non-NULL
    * @return a non-NULL pointer to the vector of MvrLineSegment's that have been changed
   **/
-  MVREXPORT std::vector<ArLineSegment> *getChangedLineSegments
+  MVREXPORT std::vector<MvrLineSegment> *getChangedLineSegments
                                                 (MapLineChangeType change,
                                                  const char *scanType);
 
@@ -756,8 +730,8 @@ protected:
   /// Summary of changes for a specific map scan type.
   struct MvrMapScanChangeDetails {
 
-    std::vector<ArPose> myChangedPoints[CHANGE_TYPE_COUNT];
-    std::vector<ArLineSegment> myChangedLineSegments[CHANGE_TYPE_COUNT];
+    std::vector<MvrPose> myChangedPoints[CHANGE_TYPE_COUNT];
+    std::vector<MvrLineSegment> myChangedLineSegments[CHANGE_TYPE_COUNT];
 
     MvrMapFileLineSet myChangedSummaryLines[CHANGE_TYPE_COUNT];
 
@@ -957,5 +931,5 @@ class MvrMapChangedHelper
  
 #endif // ifndef SWIG
 
-#endif // ARMAPUTILS_H
+#endif // MVRMAPUTILS_H
 

@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrFileParser.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include <ctype.h>
 
 
@@ -43,7 +17,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * is false and preserves the original behavior where each argument is a 
  * space-separated alphanumeric string.
 **/
-MVREXPORT MvrFileParser::ArFileParser(const char *baseDirectory,
+MVREXPORT MvrFileParser::MvrFileParser(const char *baseDirectory,
                                     bool isPreCompressQuotes) :
   myCommentDelimiterList(),
   myPreParseFunctor(NULL),
@@ -116,7 +90,7 @@ MVREXPORT bool MvrFileParser::addHandler(
 **/
 MVREXPORT bool MvrFileParser::addHandlerWithError(
 	const char *keyword, 
-	ArRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
+	MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
 {
   std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   if (keyword == NULL)
@@ -193,7 +167,7 @@ MVREXPORT bool MvrFileParser::remHandler(const char *keyword,
 }
 
 MVREXPORT bool MvrFileParser::remHandler(
-	ArRetFunctor1<bool, MvrArgumentBuilder *> *functor)
+	MvrRetFunctor1<bool, MvrArgumentBuilder *> *functor)
 {
   std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   HandlerCBType *handler;
@@ -226,7 +200,7 @@ MVREXPORT bool MvrFileParser::remHandler(
 }
 
 MVREXPORT bool MvrFileParser::remHandler(
-	ArRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
+	MvrRetFunctor3<bool, MvrArgumentBuilder *, char *, size_t> *functor)
 {
   std::map<std::string, HandlerCBType *, MvrStrCaseCmpOp>::iterator it;
   HandlerCBType *handler;
@@ -259,7 +233,7 @@ MVREXPORT bool MvrFileParser::remHandler(
 }
 
 /*
-MVREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *ArFileParser::getHandler(const char *keyword)
+MVREXPORT MvrRetFunctor1<bool, MvrArgumentBuilder *> *MvrFileParser::getHandler(const char *keyword)
 {
   std::map<std::string, MvrRetFunctor1<bool, MvrArgumentBuilder *> *, MvrStrCaseCmpOp>::iterator it;
 
@@ -280,7 +254,7 @@ MVREXPORT void MvrFileParser::setBaseDirectory(const char *baseDirectory)
     myBaseDir = "";
 }
 
-MVREXPORT const char *ArFileParser::getBaseDirectory(void) const
+MVREXPORT const char *MvrFileParser::getBaseDirectory(void) const
 {
   return myBaseDir.c_str();
 }
@@ -302,7 +276,7 @@ MVREXPORT void MvrFileParser::setCommentDelimiters(const std::list<std::string> 
        iter != delimiters.end();
        iter++, i++) {
     std::string curDelimiter = *iter;
-    if (!ArUtil::isStrEmpty(curDelimiter.c_str())) {
+    if (!MvrUtil::isStrEmpty(curDelimiter.c_str())) {
       myCommentDelimiterList.push_back(curDelimiter);
     }
     else {
@@ -382,7 +356,7 @@ MVREXPORT bool MvrFileParser::parseLine(char *line,
   // if this is 0 then we have an empty line so we continue
   if (len == 0)
   {
-    //ArLog::log(MvrLog::Verbose, "line %d: empty line", myLineNumber);
+    //MvrLog::log(MvrLog::Verbose, "line %d: empty line", myLineNumber);
     return true;
   }
   // first find the start of the text
@@ -440,7 +414,7 @@ MVREXPORT bool MvrFileParser::parseLine(char *line,
   }
 
   keyword[i-textStart] = '\0';
-  //ArLog::log(MvrLog::Verbose, "line %d: keyword %s", lineNumber, keyword);
+  //MvrLog::log(MvrLog::Verbose, "line %d: keyword %s", lineNumber, keyword);
   // now find the start of the value (first non whitespace)
   for (; i < len; i++)
   {

@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrVersalogicIO.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
 #include <sys/ioctl.h>
 #include <fcntl.h>
@@ -52,9 +26,9 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define DIGITAL_GET_BANK3               _IOWR('v', 13, unsigned char)
 #define GET_SPECIAL_CONTROL_REGISTER    _IOWR('v', 14, unsigned char)
 
-ArMutex ArVersalogicIO::myMutex;
+MvrMutex MvrVersalogicIO::myMutex;
 
-/** Constructor for the ArVersalogicIO class.  This will open the device
+/** Constructor for the MvrVersalogicIO class.  This will open the device
  * named by @a dev (the default is "/dev/amrio" if the argument is omitted).
  It will find the number of digital banks and set the to inputs.  It will also
  attempt to take an analog reading, which will fail if there is not analog chip
@@ -63,8 +37,8 @@ ArMutex ArVersalogicIO::myMutex;
 
  Check isEnabled() to see if the device was properly opened during construction.
 */
-MVREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
-  myDisconnectCB(this, &ArVersalogicIO::closeIO)
+MVREXPORT MvrVersalogicIO::MvrVersalogicIO(const char * dev) :
+  myDisconnectCB(this, &MvrVersalogicIO::closeIO)
 {
   myMutex.setLogName("MvrVersalogicIO::myMutex");
   myNumBanks = 0;
@@ -74,18 +48,18 @@ MVREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
   myDigitalBank2 = 0;
   myDigitalBank3 = 0;
 
-  ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: opening device %s", dev);
-  myFD = ArUtil::open(dev, O_RDWR);
+  MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::MvrVersalogicIO: opening device %s", dev);
+  myFD = MvrUtil::open(dev, O_RDWR);
 
   if (myFD == -1)
   {
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: open %s failed.  Disabling class", dev);
+    MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::MvrVersalogicIO: open %s failed.  Disabling class", dev);
     myEnabled = false;
   }
   else
   {
     if(ioctl(myFD, DIGITAL_GET_NUM_BANKS, &myNumBanks))
-      ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: failed to get the number of digital IO banks");
+      MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::MvrVersalogicIO: failed to get the number of digital IO banks");
     // set the digital banks to inputs so as to not drive anything
     int i;
     for(i=0;i<myNumBanks;i++)
@@ -94,45 +68,45 @@ MVREXPORT ArVersalogicIO::ArVersalogicIO(const char * dev) :
 
     // check to see if the analog works
     double val;
-    ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::ArVersalogicIO: testing analog functionality");
+    MvrLog::log(MvrLog::Verbose, "MvrVersalogicIO::MvrVersalogicIO: testing analog functionality");
     if ((ioctl(myFD, ANALOG_SET_PORT, 0) != 0) || (ioctl(myFD,ANALOG_GET_VALUE, &val) != 0))
     {
-      ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::ArVersalogicIO: analog conversion failed.  Disabling analog functionality");
+      MvrLog::log(MvrLog::Verbose, "MvrVersalogicIO::MvrVersalogicIO: analog conversion failed.  Disabling analog functionality");
       myAnalogEnabled = false;
     }
     else
     {
-      ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::ArVersalogicIO: analog conversion succeeded.");
+      MvrLog::log(MvrLog::Verbose, "MvrVersalogicIO::MvrVersalogicIO: analog conversion succeeded.");
       myAnalogEnabled = true;
     }
 
-    Aria::addExitCallback(&myDisconnectCB);
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::ArVersalogicIO: device opened");
+    Mvria::addExitCallback(&myDisconnectCB);
+    MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::MvrVersalogicIO: device opened");
   }
 }
 
 /** Destructor.  Attempt to close the device if it was opened
  **/
-MVREXPORT ArVersalogicIO::~MvrVersalogicIO(void)
+MVREXPORT MvrVersalogicIO::~MvrVersalogicIO(void)
 {
   if (myEnabled)
     closeIO();
 }
 
-/** Close the device when Aria exits
+/** Close the device when Mvria exits
  **/
-MVREXPORT bool ArVersalogicIO::closeIO(void)
+MVREXPORT bool MvrVersalogicIO::closeIO(void)
 {
   myEnabled = false;
 
   if (close(myFD) == -1)
   {
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~MvrVersalogicIO: close failed on file descriptor!");
+    MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::~MvrVersalogicIO: close failed on file descriptor!");
     return false;
   }
   else
   {
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::~MvrVersalogicIO: closed device");
+    MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::~MvrVersalogicIO: closed device");
     return true;
   }
 }
@@ -143,7 +117,7 @@ MVREXPORT bool ArVersalogicIO::closeIO(void)
  @param val the address of the integer to store the reading in
  @return true if a reading was acquired.  false otherwise
  **/
-MVREXPORT bool ArVersalogicIO::getAnalogValueRaw(int port, int *val)
+MVREXPORT bool MvrVersalogicIO::getAnalogValueRaw(int port, int *val)
 {
   if (!myEnabled || !myAnalogEnabled)
     return false;
@@ -152,13 +126,13 @@ MVREXPORT bool ArVersalogicIO::getAnalogValueRaw(int port, int *val)
 
   if (ioctl(myFD, ANALOG_SET_PORT, port) != 0)
   {
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::getAnalogValueRaw: failed to set analog port %d", port);
+    MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::getAnalogValueRaw: failed to set analog port %d", port);
     return false;
   }
 
   if (ioctl(myFD, ANALOG_GET_VALUE, &tmp) != 0)
   {
-    ArLog::log(MvrLog::Terse, "MvrVersalogicIO::getAnalogValueRaw: failed to get analog port %d", port);
+    MvrLog::log(MvrLog::Terse, "MvrVersalogicIO::getAnalogValueRaw: failed to get analog port %d", port);
     return false;
   }
 
@@ -174,7 +148,7 @@ MVREXPORT bool ArVersalogicIO::getAnalogValueRaw(int port, int *val)
  @param val the address of the double to store the reading in
  @return true if a reading was acquired.  false otherwise
  **/
-MVREXPORT bool ArVersalogicIO::getAnalogValue(int port, double *val)
+MVREXPORT bool MvrVersalogicIO::getAnalogValue(int port, double *val)
 {
   int tmp;
 
@@ -189,12 +163,12 @@ MVREXPORT bool ArVersalogicIO::getAnalogValue(int port, double *val)
 }
 
 // this doesn't work, yet
-MVREXPORT ArVersalogicIO::Direction ArVersalogicIO::getDigitalBankDirection(int bank)
+MVREXPORT MvrVersalogicIO::Direction MvrVersalogicIO::getDigitalBankDirection(int bank)
 {
   return DIGITAL_OUTPUT;
 }
 
-MVREXPORT bool ArVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
+MVREXPORT bool MvrVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
 {
   if (!myEnabled)
     return false;
@@ -211,7 +185,7 @@ MVREXPORT bool ArVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
   }
   else
   {
-    ArLog::log(MvrLog::Verbose, "MvrVersalogicIO::setDigitalBankDirection: invalid argument for direction");
+    MvrLog::log(MvrLog::Verbose, "MvrVersalogicIO::setDigitalBankDirection: invalid argument for direction");
     return false;
   }
 
@@ -223,7 +197,7 @@ MVREXPORT bool ArVersalogicIO::setDigitalBankDirection(int bank, Direction dir)
  
   @return true if the ioctl call was succcessfull, false otherwise
   **/
-MVREXPORT bool ArVersalogicIO::getDigitalBankInputs(int bank, unsigned char *val)
+MVREXPORT bool MvrVersalogicIO::getDigitalBankInputs(int bank, unsigned char *val)
 {
   if (!myEnabled)
     return false;
@@ -267,7 +241,7 @@ MVREXPORT bool ArVersalogicIO::getDigitalBankInputs(int bank, unsigned char *val
  @param val the byte to write the values into
  @return true if the request was satisfied, false otherwise
  **/
-MVREXPORT bool ArVersalogicIO::getDigitalBankOutputs(int bank, unsigned char *val)
+MVREXPORT bool MvrVersalogicIO::getDigitalBankOutputs(int bank, unsigned char *val)
 {
   if (!myEnabled)
     return false;
@@ -303,7 +277,7 @@ MVREXPORT bool ArVersalogicIO::getDigitalBankOutputs(int bank, unsigned char *va
   @param bank the bank number to use.  0 is the lowest bank
   @param val the status of the 8-bits in a single byte.  
  **/
-MVREXPORT bool ArVersalogicIO::setDigitalBankOutputs(int bank, unsigned char val)
+MVREXPORT bool MvrVersalogicIO::setDigitalBankOutputs(int bank, unsigned char val)
 {
   if (!myEnabled)
     return false;
@@ -347,7 +321,7 @@ MVREXPORT bool ArVersalogicIO::setDigitalBankOutputs(int bank, unsigned char val
   as set in the BIOS
 
  **/
-MVREXPORT bool ArVersalogicIO::getSpecialControlRegister(unsigned char *val)
+MVREXPORT bool MvrVersalogicIO::getSpecialControlRegister(unsigned char *val)
 {
   if (!myEnabled)
     return false;

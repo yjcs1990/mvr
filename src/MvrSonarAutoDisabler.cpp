@@ -1,41 +1,15 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrCommands.h"
 #include "MvrExport.h"
 #include "MvrSonarAutoDisabler.h"
 #include "MvrRobot.h"
 
-MVREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(MvrRobot *robot) :
-  myUserTaskCB(this, &ArSonarAutoDisabler::userTask),
-  mySupressCB(this, &ArSonarAutoDisabler::supress),
-  myUnsupressCB(this, &ArSonarAutoDisabler::unsupress),
-  mySetAutonomousDrivingCB(this, &ArSonarAutoDisabler::setAutonomousDriving),
-  myClearAutonomousDrivingCB(this, &ArSonarAutoDisabler::clearAutonomousDriving)
+MVREXPORT MvrSonarAutoDisabler::MvrSonarAutoDisabler(MvrRobot *robot) :
+  myUserTaskCB(this, &MvrSonarAutoDisabler::userTask),
+  mySupressCB(this, &MvrSonarAutoDisabler::supress),
+  myUnsupressCB(this, &MvrSonarAutoDisabler::unsupress),
+  mySetAutonomousDrivingCB(this, &MvrSonarAutoDisabler::setAutonomousDriving),
+  myClearAutonomousDrivingCB(this, &MvrSonarAutoDisabler::clearAutonomousDriving)
 {
   myRobot = robot;
   myLastMoved.setToNow();
@@ -49,21 +23,21 @@ MVREXPORT ArSonarAutoDisabler::ArSonarAutoDisabler(MvrRobot *robot) :
   }
   else
   {
-    ArLog::log(MvrLog::Normal, "MvrSonarAutoDisabler not active since there are no sonar");
+    MvrLog::log(MvrLog::Normal, "MvrSonarAutoDisabler not active since there are no sonar");
   }
 }
 
-MVREXPORT ArSonarAutoDisabler::~MvrSonarAutoDisabler()
+MVREXPORT MvrSonarAutoDisabler::~MvrSonarAutoDisabler()
 {
   myRobot->remUserTask("SonarAutoDisabler");
 }
 
-MVREXPORT void ArSonarAutoDisabler::userTask(void)
+MVREXPORT void MvrSonarAutoDisabler::userTask(void)
 {
   if (mySupressed && (myRobot->areSonarsEnabled() || 
 		      myRobot->areAutonomousDrivingSonarsEnabled()))
   {
-    ArLog::log(MvrLog::Normal, "SonarAutoDisabler: Supression turning off sonar");
+    MvrLog::log(MvrLog::Normal, "SonarAutoDisabler: Supression turning off sonar");
     myRobot->disableSonar();
   }
   
@@ -98,7 +72,7 @@ MVREXPORT void ArSonarAutoDisabler::userTask(void)
     if (!myAutonomousDriving && !myRobot->areSonarsEnabled() && 
 	myRobot->areMotorsEnabled())
     {
-      ArLog::log(MvrLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "SonarAutoDisabler: Turning on all sonar (%d %.0f %.0f)",
 		 myRobot->isTryingToMove(), fabs(myRobot->getVel()),
 		 fabs(myRobot->getRotVel()));
@@ -110,7 +84,7 @@ MVREXPORT void ArSonarAutoDisabler::userTask(void)
 	!myRobot->areAutonomousDrivingSonarsEnabled() && 
 	myRobot->areMotorsEnabled())
     {
-      ArLog::log(MvrLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
  "SonarAutoDisabler: Turning on sonar for autonomous driving (%d %.0f %.0f)",
 		 myRobot->isTryingToMove(), fabs(myRobot->getVel()),
 		 fabs(myRobot->getRotVel()));
@@ -125,7 +99,7 @@ MVREXPORT void ArSonarAutoDisabler::userTask(void)
 	 myRobot->areAutonomousDrivingSonarsEnabled()) && 
 	myLastMoved.mSecSince() > 1000)
     {
-      ArLog::log(MvrLog::Normal, "SonarAutoDisabler: Turning off sonar");
+      MvrLog::log(MvrLog::Normal, "SonarAutoDisabler: Turning off sonar");
       myRobot->disableSonar();
     }
   }

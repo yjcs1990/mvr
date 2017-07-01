@@ -1,51 +1,25 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrLMS2xx.h"
 #include "MvrRobot.h"
 #include "MvrSerialConnection.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include <time.h>
 
-MVREXPORT MvrLMS2xx::ArLMS2xx(
+MVREXPORT MvrLMS2xx::MvrLMS2xx(
 	int laserNumber, const char *name, bool appendLaserNumberToName) :
   MvrLaser(laserNumber, name, 32000, false, appendLaserNumberToName),
-  mySimPacketHandler(this, &ArLMS2xx::simPacketHandler),
-  mySensorInterpCB(this, &ArLMS2xx::sensorInterpCallback),
+  mySimPacketHandler(this, &MvrLMS2xx::simPacketHandler),
+  mySensorInterpCB(this, &MvrLMS2xx::sensorInterpCallback),
   myLMS2xxPacketReceiver(0, true),
-  myAriaExitCB(this, &ArLMS2xx::disconnect)
+  myMvriaExitCB(this, &MvrLMS2xx::disconnect)
 {
   std::string str;
   laserSetName(getName());
   laserSetDefaultTcpPort(8102);
   laserSetDefaultPortType("serial");
 
-  Mvria::addExitCallback(&myAriaExitCB, -10);
+  Mvria::addExitCallback(&myMvriaExitCB, -10);
 
   std::map<std::string, double> degreesChoices;
   degreesChoices["180"] = 180;
@@ -80,8 +54,8 @@ MVREXPORT MvrLMS2xx::ArLMS2xx(
   laserAllowAutoBaudChoices("38400", baudChoices);
 
 
-  myAssembleReadings = new std::list<ArSensorReading *>;
-  myCurrentReadings = new std::list<ArSensorReading *>;
+  myAssembleReadings = new std::list<MvrSensorReading *>;
+  myCurrentReadings = new std::list<MvrSensorReading *>;
   myRawReadings = myCurrentReadings;
   myIter = myAssembleReadings->begin();
   myConn = NULL;
@@ -121,7 +95,7 @@ MVREXPORT MvrLMS2xx::ArLMS2xx(
 
 MVREXPORT MvrLMS2xx::~MvrLMS2xx()
 {
-  Mvria::remExitCallback(&myAriaExitCB);
+  Mvria::remExitCallback(&myMvriaExitCB);
   if (myRobot != NULL)
   {
     myRobot->remRangeDevice(this);
@@ -143,7 +117,7 @@ MVREXPORT void MvrLMS2xx::laserSetName(const char *name)
   myName = name;
 
   myStateMutex.setLogNameVar("%s::myStateMutex", getName());
-  myAriaExitCB.setNameVar("%s::exitCallback", getName());
+  myMvriaExitCB.setNameVar("%s::exitCallback", getName());
   mySimPacketHandler.setNameVar("%s::simPacketHandler", getName());
   
   MvrLaser::laserSetName(getName());
@@ -184,14 +158,14 @@ MVREXPORT void MvrLMS2xx::setRobot(MvrRobot *robot)
 /** @internal */
 MVREXPORT bool MvrLMS2xx::simPacketHandler(MvrRobotPacket *packet)
 {
-  std::list<ArFunctor *>::iterator it;
+  std::list<MvrFunctor *>::iterator it;
 
   unsigned int totalNumReadings;
   unsigned int readingNumber;
   double atDeg;
   unsigned int i;
   MvrSensorReading *reading;
-  std::list<ArSensorReading *>::iterator tempIt;
+  std::list<MvrSensorReading *>::iterator tempIt;
   unsigned int newReadings;
   int range;
   int refl = 0;
@@ -388,13 +362,13 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
     }
     if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN)
     {
-      if ((conn = dynamic_cast<ArSerialConnection *>(myConn)) != NULL)
+      if ((conn = dynamic_cast<MvrSerialConnection *>(myConn)) != NULL)
       {
 	conn->setBaud(atoi(getStartingBaudChoice()));
       }
       if (!myConn->openSimple())
       {
-	ArLog::log(MvrLog::Terse,
+	MvrLog::log(MvrLog::Terse,
 		   "%s: Failed to connect to laser, could not open port.",
 		   getName());
 	switchState(STATE_NONE);
@@ -455,7 +429,7 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
     break;
   case STATE_CHANGE_BAUD:
     // don't autobaud if this isn't a serial device, just move on to the next stage
-    if ((conn = dynamic_cast<ArSerialConnection *>(myConn)) == NULL)
+    if ((conn = dynamic_cast<MvrSerialConnection *>(myConn)) == NULL)
     {
       switchState(STATE_CONFIGURE);
       return 0;
@@ -554,7 +528,7 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
       }
       else if (packet->getID() == 0xb0)
       {
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "%s: extra data packet while waiting for configure ack", 
 		   getName());
 	myPacket.empty();
@@ -568,7 +542,7 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
 	}
       }
       else
-	ArLog::log(MvrLog::Terse, "%s: Got a 0x%x", getName(), packet->getID(),
+	MvrLog::log(MvrLog::Terse, "%s: Got a 0x%x", getName(), packet->getID(),
 		   getName());
     }
     if (myStateStart.mSecSince() > 10000)
@@ -647,7 +621,7 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
       else if (packet->getID() == 0xb0)
       {
 	
-	ArLog::log(MvrLog::Terse, "%s: extra data packet",
+	MvrLog::log(MvrLog::Terse, "%s: extra data packet",
 		   getName());
 	myPacket.empty();
 	myPacket.uByteToBuf(0x20);
@@ -660,7 +634,7 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
 	}
       }
       else
-	ArLog::log(MvrLog::Terse, "%s: bad packet 0x%x", packet->getID(),
+	MvrLog::log(MvrLog::Terse, "%s: bad packet 0x%x", packet->getID(),
 		   getName());
     }
     if (myStateStart.mSecSince() > 10000)
@@ -820,7 +794,7 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
       else if (packet->getID() == 0xb0)
       {
 	
-	ArLog::log(MvrLog::Terse, "%s: extra data packet",
+	MvrLog::log(MvrLog::Terse, "%s: extra data packet",
 		   getName());
 	myPacket.empty();
 	myPacket.uByteToBuf(0x20);
@@ -838,7 +812,7 @@ MVREXPORT int MvrLMS2xx::internalConnectHandler(void)
 	return 0;
       }
       else
-	ArLog::log(MvrLog::Terse, "%s: Got a 0x%x", getName(), packet->getID());
+	MvrLog::log(MvrLog::Terse, "%s: Got a 0x%x", getName(), packet->getID());
     }
     if (myStateStart.mSecSince() > 14000)
     {
@@ -947,7 +921,7 @@ MVREXPORT bool MvrLMS2xx::internalConnectSim(void)
 
   myRobot->lock();
   // return true if we could send all the commands
-  if (myRobot->comInt(36, -ArMath::roundInt(offset)) &&   // Start angle
+  if (myRobot->comInt(36, -MvrMath::roundInt(offset)) &&   // Start angle
       myRobot->comInt(37, MvrMath::roundInt(offset)) &&    // End angle
       myRobot->comInt(38, MvrMath::roundInt(increment * 100.0)) && // increment
       myRobot->comInt(35, 2)) // Enable sending data, with extended info 
@@ -974,7 +948,7 @@ MVREXPORT bool MvrLMS2xx::internalConnectSim(void)
 /** @internal */
 MVREXPORT void MvrLMS2xx::dropConnection(void)
 {
-  std::list<ArFunctor *>::iterator it;  
+  std::list<MvrFunctor *>::iterator it;  
 
   if (myState != STATE_CONNECTED)
     return;
@@ -996,7 +970,7 @@ MVREXPORT void MvrLMS2xx::dropConnection(void)
 /** @internal */
 MVREXPORT void MvrLMS2xx::failedConnect(void)
 {
-  std::list<ArFunctor *>::iterator it;  
+  std::list<MvrFunctor *>::iterator it;  
   
   switchState(STATE_NONE);
 
@@ -1024,7 +998,7 @@ MVREXPORT void MvrLMS2xx::madeConnection(void)
 **/
 MVREXPORT bool MvrLMS2xx::disconnect(void)
 {
-  std::list<ArFunctor *>::iterator it;  
+  std::list<MvrFunctor *>::iterator it;  
   bool ret;
   MvrSerialConnection *conn;
 
@@ -1090,7 +1064,7 @@ MVREXPORT bool MvrLMS2xx::disconnect(void)
     if (myConn->write(myPacket.getBuf(), myPacket.getLength()))
     {
       MvrUtil::sleep(20);
-      if ((conn = dynamic_cast<ArSerialConnection *>(myConn)))
+      if ((conn = dynamic_cast<MvrSerialConnection *>(myConn)))
 	  conn->setBaud(9600);
     } else
       ret = false;
@@ -1309,7 +1283,7 @@ MVREXPORT void MvrLMS2xx::processPacket(MvrLMS2xxPacket *packet, MvrPose pose,
 				    bool deinterlace,
 				    MvrPose deinterlaceDelta)
 {
-  std::list<ArFunctor *>::iterator it;  
+  std::list<MvrFunctor *>::iterator it;  
   unsigned int rawValue;
   unsigned int value;
   unsigned int reflector = 0;
@@ -1319,7 +1293,7 @@ MVREXPORT void MvrLMS2xx::processPacket(MvrLMS2xxPacket *packet, MvrPose pose,
   unsigned int onReading;
   MvrSensorReading *reading;
   int dist;
-  std::list<ArSensorReading *>::iterator tempIt;
+  std::list<MvrSensorReading *>::iterator tempIt;
   int multiplier;
   MvrTransform transform;
   //std::list<double>::iterator ignoreIt;  
@@ -1558,8 +1532,8 @@ MVREXPORT void MvrLMS2xx::runOnce(bool lockRobot)
 /** @internal */
 MVREXPORT void MvrLMS2xx::sensorInterpCallback(void)
 {
-  std::list<ArLMS2xxPacket *>::iterator it;
-  std::list<ArLMS2xxPacket *> processed;
+  std::list<MvrLMS2xxPacket *>::iterator it;
+  std::list<MvrLMS2xxPacket *> processed;
   MvrLMS2xxPacket *packet;
   MvrTime time;
   MvrPose pose;
@@ -1619,7 +1593,7 @@ MVREXPORT void MvrLMS2xx::sensorInterpCallback(void)
     {
       if (myRobot->isConnected())
       {
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "%s::processPacket: too old to process",
 		   getName());
       }
@@ -1632,7 +1606,7 @@ MVREXPORT void MvrLMS2xx::sensorInterpCallback(void)
     }
     else 
     {
-      //ArLog::log(MvrLog::Terse, "%s::processPacket: error %d from interpolation\n", getName(), ret);
+      //MvrLog::log(MvrLog::Terse, "%s::processPacket: error %d from interpolation\n", getName(), ret);
       //printf("$$$ ret = %d\n", ret);
     }
   }
@@ -1647,7 +1621,7 @@ MVREXPORT void MvrLMS2xx::sensorInterpCallback(void)
 }
 
 /** @internal */
-MVREXPORT void *ArLMS2xx::runThread(void *arg)
+MVREXPORT void *MvrLMS2xx::runThread(void *arg)
 {
   while (getRunningWithLock())
   {

@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrJoyHandler.h"
 
 MVREXPORT bool MvrJoyHandler::init(void)
@@ -45,9 +19,9 @@ MVREXPORT bool MvrJoyHandler::init(void)
     // z, so only one is used
     myPhysMax  = myJoyCaps.wXmax - myJoyCaps.wXmin;
 	/*
-	ArLog::log(MvrLog::Normal, "caps 0x%x numAxes %d maxAxes %d %s",
+	MvrLog::log(MvrLog::Normal, "caps 0x%x numAxes %d maxAxes %d %s",
 			myJoyCaps.wCaps, myJoyCaps.wNumAxes, myJoyCaps.wMaxAxes, myJoyCaps.szPname);
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		"xMin %d xMax %d yMin %d yMax %d zMin %d zMax %d rMin %d rMax %d uMin %d uMax %d",
 			myJoyCaps.wXmin, myJoyCaps.wXmax, myJoyCaps.wYmin, myJoyCaps.wYmax, 
 			myJoyCaps.wRmin, myJoyCaps.wRmax, myJoyCaps.wZmin, 
@@ -69,9 +43,9 @@ MVREXPORT bool MvrJoyHandler::init(void)
     // z, so only one is used
     myPhysMax = myJoyCaps.wXmax - myJoyCaps.wXmin;
 	/*
-	ArLog::log(MvrLog::Normal, "2 caps 0x%x numAxes %d maxAxes %d %s",
+	MvrLog::log(MvrLog::Normal, "2 caps 0x%x numAxes %d maxAxes %d %s",
 			myJoyCaps.wCaps, myJoyCaps.wNumAxes, myJoyCaps.wMaxAxes, myJoyCaps.szPname);
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		"2 xMin %d xMax %d yMin %d yMax %d zMin %d zMax %d rMin %d rMax %d uMin %d uMax %d",
 			myJoyCaps.wXmin, myJoyCaps.wXmax, myJoyCaps.wYmin, myJoyCaps.wYmax, 
 			myJoyCaps.wRmin, myJoyCaps.wRmax, myJoyCaps.wZmin, 
@@ -128,7 +102,7 @@ void MvrJoyHandler::getData(void)
 		axes += " y ";
 	if (joyInfoEx.dwFlags & JOY_RETURNZ)
 		axes += " z ";
-	ArLog::log(MvrLog::Normal, "Axes %s\n", axes.c_str());
+	MvrLog::log(MvrLog::Normal, "Axes %s\n", axes.c_str());
   }
   */
 

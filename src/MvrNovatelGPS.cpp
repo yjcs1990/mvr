@@ -1,47 +1,20 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrNovatelGPS.h"
 #include "MvrDeviceConnection.h"
 
 
-MVREXPORT ArNovatelGPS::ArNovatelGPS() :
-  ArGPS(),
-  myNovatelGPGGAHandler(this, &ArNovatelGPS::handleNovatelGPGGA)
+MVREXPORT MvrNovatelGPS::MvrNovatelGPS() :
+  MvrGPS(),
+  myNovatelGPGGAHandler(this, &MvrNovatelGPS::handleNovatelGPGGA)
 {
   // override normal GPGGA handler:
   addNMEAHandler("GGA", &myNovatelGPGGAHandler);
 }
 
-MVREXPORT bool ArNovatelGPS::initDevice()
+MVREXPORT bool MvrNovatelGPS::initDevice()
 {
-  if (!ArGPS::initDevice()) return false;
+  if (!MvrGPS::initDevice()) return false;
 
   char cmd[32];
   memset(cmd, 0, 32);
@@ -53,15 +26,15 @@ MVREXPORT bool ArNovatelGPS::initDevice()
   if (myDevice->write(sbasCmd, strlen(sbasCmd)) < (int) strlen(sbasCmd))
     return false;
 
-  // Send a command to start sending data for each message type in the ArGPS
+  // Send a command to start sending data for each message type in the MvrGPS
   // handlers map:
-  const ArNMEAParser::HandlerMap& handlers = myNMEAParser.getHandlersRef();
+  const MvrNMEAParser::HandlerMap& handlers = myNMEAParser.getHandlersRef();
   for(MvrNMEAParser::HandlerMap::const_iterator i = handlers.begin(); i != handlers.end(); ++i)
   {
     float interval = 1;
     if( (*i).first == "GPRMC") interval = 0.25;  //special case, make this come faster
     snprintf(cmd, 32, "log thisport %s ontime %g\r\n", (*i).first.c_str(), interval);
-    //ArLog::log(MvrLog::Verbose, "MvrNovatelGPS: sending command: %s", cmd);
+    //MvrLog::log(MvrLog::Verbose, "MvrNovatelGPS: sending command: %s", cmd);
     if (myDevice->write(cmd, strlen(cmd)) != (int) strlen(cmd)) return false;
   }
 
@@ -69,22 +42,22 @@ MVREXPORT bool ArNovatelGPS::initDevice()
 }
 
 
-MVREXPORT ArNovatelGPS::~MvrNovatelGPS() {
+MVREXPORT MvrNovatelGPS::~MvrNovatelGPS() {
   if(!myDevice) return;
   myDevice->write("unlogall\r\n", strlen("unlogall\r\n")); // don't worry about errors
 }
 
 
-void ArNovatelGPS::handleNovatelGPGGA(MvrNMEAParser::Message msg)
+void MvrNovatelGPS::handleNovatelGPGGA(MvrNMEAParser::Message msg)
 {
   // call base handler
-  ArGPS::handleGPGGA(msg);
+  MvrGPS::handleGPGGA(msg);
 
   // Some of Novatel's values are different from the standard:
   // (see
   // http://na1.salesforce.com/_ui/selfservice/pkb/PublicKnowledgeSolution/d?orgId=00D300000000T86&id=501300000008RAN&retURL=%2Fsol%2Fpublic%2Fsolutionbrowser.jsp%3Fsearch%3DGPGGA%26cid%3D000000000000000%26orgId%3D00D300000000T86%26t%3D4&ps=1 or search Novatel's Knowlege Base for "GPGGA")
  
-  ArNMEAParser::MessageVector *message = msg.message;
+  MvrNMEAParser::MessageVector *message = msg.message;
   if(message->size() < 7) return;
   switch((*message)[6].c_str()[0])
   {
@@ -100,33 +73,33 @@ void ArNovatelGPS::handleNovatelGPGGA(MvrNMEAParser::Message msg)
   }
 }
 
-MVREXPORT ArNovatelSPAN::ArNovatelSPAN() : 
-  ArNovatelGPS(), 
-  myGPRMCHandler(this, &ArNovatelSPAN::handleGPRMC),
-  myINGLLHandler(this, &ArNovatelSPAN::handleINGLL),
+MVREXPORT MvrNovatelSPAN::MvrNovatelSPAN() : 
+  MvrNovatelGPS(), 
+  myGPRMCHandler(this, &MvrNovatelSPAN::handleGPRMC),
+  myINGLLHandler(this, &MvrNovatelSPAN::handleINGLL),
   GPSLatitude(0), GPSLongitude(0), haveGPSPosition(false), GPSValidFlag(false) 
 {
   replaceNMEAHandler("GPRMC", &myGPRMCHandler);
 
   // NOTE if the SPAN provides an "INRMC" that has the same format as GPRMC,
-  // then this class could be simplified by supplying ArGPS::myGPRMCHandler as
+  // then this class could be simplified by supplying MvrGPS::myGPRMCHandler as
   // the handler for INRMC, instead of implementing a new INGLL handler here.
   addNMEAHandler("INGLL", &myINGLLHandler);
   addNMEAHandler("GLL", &myINGLLHandler);
 }
 
-MVREXPORT ArNovatelSPAN::~MvrNovatelSPAN()
+MVREXPORT MvrNovatelSPAN::~MvrNovatelSPAN()
 {
 }
 
-void ArNovatelSPAN::handleGPRMC(MvrNMEAParser::Message msg)
+void MvrNovatelSPAN::handleGPRMC(MvrNMEAParser::Message msg)
 {
   parseGPRMC(msg, GPSLatitude, GPSLongitude, GPSValidFlag, haveGPSPosition, timeGotGPSPosition, GPSTimestamp, myData.haveSpeed, myData.speed);
 }
 
-void ArNovatelSPAN::handleINGLL(MvrNMEAParser::Message msg)
+void MvrNovatelSPAN::handleINGLL(MvrNMEAParser::Message msg)
 {
-  const ArNMEAParser::MessageVector *mv = msg.message;
+  const MvrNMEAParser::MessageVector *mv = msg.message;
 
   if(mv->size() < 5) return;
   double lat, lon;
@@ -147,12 +120,12 @@ void ArNovatelSPAN::handleINGLL(MvrNMEAParser::Message msg)
   myData.qualityFlag = ((*mv)[6] != "V" && (*mv)[6] != "N");
 }
 
-MVREXPORT bool ArNovatelSPAN::initDevice()
+MVREXPORT bool MvrNovatelSPAN::initDevice()
 {
-  if(!ArNovatelGPS::initDevice()) return false;
-  ArLog::log(MvrLog::Normal, "MvrNovatelSPAN: will request INS-corrected latitude and longitude to use as GPS position.");
+  if(!MvrNovatelGPS::initDevice()) return false;
+  MvrLog::log(MvrLog::Normal, "MvrNovatelSPAN: will request INS-corrected latitude and longitude to use as GPS position.");
 
-  // Actually request a faster rate for INGLL than ArNovatelGPS::initDevice() did:
+  // Actually request a faster rate for INGLL than MvrNovatelGPS::initDevice() did:
   const char *cmd = "log thisport INGLL ontime 0.25\r\n";
   myDevice->write(cmd, strlen(cmd));
 

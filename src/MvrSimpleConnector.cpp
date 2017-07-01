@@ -1,93 +1,67 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSimpleConnector.h"
 #include "MvrRobot.h"
 #include "MvrLaser.h"
 #include "MvrSick.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
-MVREXPORT ArSimpleConnector::ArSimpleConnector(int *argc, char **argv) 
+MVREXPORT MvrSimpleConnector::MvrSimpleConnector(int *argc, char **argv) 
 {
-  myParser = new ArArgumentParser(argc, argv);
+  myParser = new MvrArgumentParser(argc, argv);
   myOwnParser = true;
   finishConstructor();
 }
 
 /** @warning do not delete @a builder during the lifetime of this
- * ArSimpleConnector, which may need to access its contents later.
+ * MvrSimpleConnector, which may need to access its contents later.
  */
-MVREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentBuilder *builder)
+MVREXPORT MvrSimpleConnector::MvrSimpleConnector(MvrArgumentBuilder *builder)
 {
-  myParser = new ArArgumentParser(builder);
+  myParser = new MvrArgumentParser(builder);
   myOwnParser = true;
   finishConstructor();
 }
 
 /** @warning do not delete @a parser during the lifetime of this
- * ArSimpleConnector, which may need to access its contents later.
+ * MvrSimpleConnector, which may need to access its contents later.
  */
-MVREXPORT ArSimpleConnector::ArSimpleConnector(MvrArgumentParser *parser) 
+MVREXPORT MvrSimpleConnector::MvrSimpleConnector(MvrArgumentParser *parser) 
 {
   myParser = parser;
   myOwnParser = false;
   finishConstructor();
 }
 
-MVREXPORT ArSimpleConnector::~MvrSimpleConnector(void)
+MVREXPORT MvrSimpleConnector::~MvrSimpleConnector(void)
 {
 
 }
 
 
-void ArSimpleConnector::finishConstructor(void)
+void MvrSimpleConnector::finishConstructor(void)
 {
-  myRobotConnector = new ArRobotConnector(myParser, NULL);
-  myLaserConnector = new ArLaserConnector(myParser, NULL, myRobotConnector);
+  myRobotConnector = new MvrRobotConnector(myParser, NULL);
+  myLaserConnector = new MvrLaserConnector(myParser, NULL, myRobotConnector);
   setMaxNumLasers();
   //myLaserConnector->addLaser
 }
 
-MVREXPORT void ArSimpleConnector::setMaxNumLasers(int maxNumLasers)
+MVREXPORT void MvrSimpleConnector::setMaxNumLasers(int maxNumLasers)
 {
   int i;
   for (i = 1; i <= maxNumLasers; i++)
-    myLaserConnector->addPlaceholderLaser(new ArSick, i, true);
+    myLaserConnector->addPlaceholderLaser(new MvrSick, i, true);
 
 }
 
-MVREXPORT bool ArSimpleConnector::parseArgs(void)
+MVREXPORT bool MvrSimpleConnector::parseArgs(void)
 {
   return parseArgs(myParser);
 }
 
 /**
- * Parse command line arguments held by the given ArArgumentParser.
+ * Parse command line arguments held by the given MvrArgumentParser.
  *
   @return true if the arguments were parsed successfully false if not
 
@@ -168,12 +142,12 @@ MVREXPORT bool ArSimpleConnector::parseArgs(void)
 
  **/
 
-MVREXPORT bool ArSimpleConnector::parseArgs(MvrArgumentParser *parser)
+MVREXPORT bool MvrSimpleConnector::parseArgs(MvrArgumentParser *parser)
 {
   return myRobotConnector->parseArgs() && myLaserConnector->parseArgs();
 }
 
-MVREXPORT void ArSimpleConnector::logOptions(void) const
+MVREXPORT void MvrSimpleConnector::logOptions(void) const
 {
   myRobotConnector->logOptions();
   myLaserConnector->logOptions();
@@ -187,27 +161,27 @@ MVREXPORT void ArSimpleConnector::logOptions(void) const
  * If -remoteHost was given, then open that TCP port. If it was not given,
  * then try to open a TCP port to the simulator on localhost.
  * If that fails, then use a local serial port connection.
- * Sets the given ArRobot's device connection pointer to this object.
+ * Sets the given MvrRobot's device connection pointer to this object.
  * Sets up internal settings determined by command line arguments such
  * as serial port and baud rate, etc.
  *
  * After calling this function  (and it returns true), then you may connect
- * ArRobot to the robot using ArRobot::blockingConnect() (or similar).
+ * MvrRobot to the robot using MvrRobot::blockingConnect() (or similar).
  *
  * @return false if -remoteHost was given and there was an error connecting to
  * the remote host, true otherwise.
  **/
-MVREXPORT bool ArSimpleConnector::setupRobot(MvrRobot *robot)
+MVREXPORT bool MvrSimpleConnector::setupRobot(MvrRobot *robot)
 {
   return myRobotConnector->setupRobot(robot);
 }
 
-/** Prepares the given ArRobot object for connection, then begins
+/** Prepares the given MvrRobot object for connection, then begins
  * a blocking connection attempt.
- * If you wish to simply prepare the ArRobot object, but not begin
+ * If you wish to simply prepare the MvrRobot object, but not begin
  * the connection, then use setupRobot().
  */
-MVREXPORT bool ArSimpleConnector::connectRobot(MvrRobot *robot)
+MVREXPORT bool MvrSimpleConnector::connectRobot(MvrRobot *robot)
 {
   return myRobotConnector->connectRobot(robot);
 }
@@ -220,11 +194,11 @@ MVREXPORT bool ArSimpleConnector::connectRobot(MvrRobot *robot)
    If --remoteHost wasn't provided and the robot connected to a
    simulator as described elsewhere then the laser is just configured
    to be simulated, if the robot isn't connected to a simulator it
-   tries to open a serial connection to ArUtil::COM3 or --laserPort if
+   tries to open a serial connection to MvrUtil::COM3 or --laserPort if
    that argument is given.
 **/
 
-MVREXPORT bool ArSimpleConnector::setupLaser(MvrSick *laser)
+MVREXPORT bool MvrSimpleConnector::setupLaser(MvrSick *laser)
 {
   return myLaserConnector->setupLaser(laser, 1);
 }
@@ -232,16 +206,16 @@ MVREXPORT bool ArSimpleConnector::setupLaser(MvrSick *laser)
 /**
    Description of the logic for connecting to a second laser:  Given
    the fact that there are no parameters for the location of a second
-   laser, the laser's port must be passed in to ArSimpleConnector from
-   the main or from ArArgumentBuilder.  Similarly, a tcp connection must
+   laser, the laser's port must be passed in to MvrSimpleConnector from
+   the main or from MvrArgumentBuilder.  Similarly, a tcp connection must
    be explicitly defined with the --remoteLaserTcpPort2 argument.
 **/
-MVREXPORT bool ArSimpleConnector::setupSecondLaser(MvrSick *laser)
+MVREXPORT bool MvrSimpleConnector::setupSecondLaser(MvrSick *laser)
 {
   return myLaserConnector->setupLaser(laser, 2);
 }
 
-MVREXPORT bool ArSimpleConnector::setupLaserArbitrary(MvrSick *laser,
+MVREXPORT bool MvrSimpleConnector::setupLaserArbitrary(MvrSick *laser,
 						    int laserNumber)
 {
   return myLaserConnector->setupLaser(laser, laserNumber);
@@ -253,7 +227,7 @@ MVREXPORT bool ArSimpleConnector::setupLaserArbitrary(MvrSick *laser,
    wanted.
 **/
 
-MVREXPORT bool ArSimpleConnector::connectLaser(MvrSick *laser)
+MVREXPORT bool MvrSimpleConnector::connectLaser(MvrSick *laser)
 {
   return myLaserConnector->connectLaser(laser, 1, false);
 }
@@ -263,13 +237,13 @@ MVREXPORT bool ArSimpleConnector::connectLaser(MvrSick *laser)
    was given to do so or simply return true if no connection was
    requested.
 **/
-MVREXPORT bool ArSimpleConnector::connectSecondLaser(MvrSick *laser)
+MVREXPORT bool MvrSimpleConnector::connectSecondLaser(MvrSick *laser)
 {
   return myLaserConnector->connectLaser(laser, 1, false);
 }
 
-MVREXPORT bool ArSimpleConnector::connectLaserArbitrary(
-	ArSick *laser, int laserNumber)
+MVREXPORT bool MvrSimpleConnector::connectLaserArbitrary(
+	MvrSick *laser, int laserNumber)
 {
   return myLaserConnector->connectLaser(laser, laserNumber, false);
 }

@@ -1,39 +1,13 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSonarConnector.h"
 #include "MvrRobot.h"
 #include "MvrSonarMTX.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include "MvrCommands.h"
 #include "MvrRobotConfigPacketReader.h"
 /** @warning do not delete @a parser during the lifetime of this
- ArSonarConnector, which may need to access its contents later.
+ MvrSonarConnector, which may need to access its contents later.
  @param parser the parser with the arguments to parse
  @param robot the robot these sonars are attached to (or NULL for none)
  @param robotConnector the connector used for connecting to the robot
@@ -44,14 +18,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  sonars and such, this is also passed to all the sonars created as
  their infoLogLevel too
  */
-MVREXPORT ArSonarConnector::ArSonarConnector (
-  ArArgumentParser *parser, ArRobot *robot,
-  ArRobotConnector *robotConnector, bool autoParseArgs,
-  ArLog::LogLevel infoLogLevel,
-  ArRetFunctor1<bool, const char *> *turnOnPowerOutputCB,
-  ArRetFunctor1<bool, const char *> *turnOffPowerOutputCB) :
-	myParseArgsCB (this, &ArSonarConnector::parseArgs),
-	myLogOptionsCB (this, &ArSonarConnector::logOptions)
+MVREXPORT MvrSonarConnector::MvrSonarConnector (
+  MvrArgumentParser *parser, MvrRobot *robot,
+  MvrRobotConnector *robotConnector, bool autoParseArgs,
+  MvrLog::LogLevel infoLogLevel,
+  MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB,
+  MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB) :
+	myParseArgsCB (this, &MvrSonarConnector::parseArgs),
+	myLogOptionsCB (this, &MvrSonarConnector::logOptions)
 {
 	myParser = parser;
 	myOwnParser = false;
@@ -67,28 +41,28 @@ MVREXPORT ArSonarConnector::ArSonarConnector (
   myTurnOffPowerOutputCB = turnOffPowerOutputCB;
 
 	myParseArgsCB.setName ("MvrSonarConnector");
-	Aria::addParseArgsCB (&myParseArgsCB, 60);
+	Mvria::addParseArgsCB (&myParseArgsCB, 60);
 	myLogOptionsCB.setName ("MvrSonarConnector");
-	Aria::addLogOptionsCB (&myLogOptionsCB, 80);
+	Mvria::addLogOptionsCB (&myLogOptionsCB, 80);
 }
-MVREXPORT ArSonarConnector::~MvrSonarConnector (void)
+MVREXPORT MvrSonarConnector::~MvrSonarConnector (void)
 {
-//  Aria::remParseArgsCB(&myParseArgsCB);
-//  Aria::remLogOptionsCB(&myLogOptionsCB);
+//  Mvria::remParseArgsCB(&myParseArgsCB);
+//  Mvria::remLogOptionsCB(&myLogOptionsCB);
 }
 /**
- * Parse command line arguments using the ArArgumentParser given in the ArSonarConnector constructor.
+ * Parse command line arguments using the MvrArgumentParser given in the MvrSonarConnector constructor.
  *
  * See parseArgs(MvrArgumentParser*) for details about argument parsing.
  *
   @return true if the arguments were parsed successfully false if not
  **/
-MVREXPORT bool ArSonarConnector::parseArgs (void)
+MVREXPORT bool MvrSonarConnector::parseArgs (void)
 {
 	return parseArgs (myParser);
 }
 /**
- * Parse command line arguments held by the given ArArgumentParser.
+ * Parse command line arguments held by the given MvrArgumentParser.
  *
   @return true if the arguments were parsed successfully false if not
 
@@ -105,7 +79,7 @@ MVREXPORT bool ArSonarConnector::parseArgs (void)
     <dt>-dncs</dt>
   </dl>
  **/
-MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
+MVREXPORT bool MvrSonarConnector::parseArgs (MvrArgumentParser *parser)
 {
 
 	if (myParsedArgs)
@@ -120,7 +94,7 @@ MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 	bool wasReallySetOnlyTrue = parser->getWasReallySetOnlyTrue();
 	parser->setWasReallySetOnlyTrue (true);
 
-	for (i = 1; i <= Aria::getMaxNumSonarBoards(); i++) {
+	for (i = 1; i <= Mvria::getMaxNumSonarBoards(); i++) {
 		if (i == 1)
 			buf[0] = '\0';
 		else
@@ -131,7 +105,7 @@ MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 		    "-sonarType%s", buf) ||
 		    !parser->checkParameterArgumentStringVar (&typeReallySet, &type,
 		        "-st%s", buf)) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "MvrSonarConnector: Bad sonar type given for sonar number %d",
 			            i);
 			parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
@@ -141,24 +115,24 @@ MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 		if (!typeReallySet)
 			continue;
 		if ( (it = mySonars.find (i)) != mySonars.end()) {
-			ArLog::log (MvrLog::Normal, "MvrSonarConnector: A sonar already exists for sonar number %d, replacing it with a new one of type %s",
+			MvrLog::log (MvrLog::Normal, "MvrSonarConnector: A sonar already exists for sonar number %d, replacing it with a new one of type %s",
 			            i, type);
 			sonarData = (*it).second;
 			delete sonarData;
 			mySonars.erase (i);
 		}
 		if (typeReallySet && type != NULL) {
-			ArSonarMTX *sonar = NULL;
-			if ( (sonar = Aria::sonarCreate (type, i, "MvrSonarConnector: ")) != NULL) {
-				ArLog::log (myInfoLogLevel,
+			MvrSonarMTX *sonar = NULL;
+			if ( (sonar = Mvria::sonarCreate (type, i, "MvrSonarConnector: ")) != NULL) {
+				MvrLog::log (myInfoLogLevel,
 				            "MvrSonarConnector: Created %s as sonar %d from arguments",
 				            sonar->getName(), i);
 				mySonars[i] = new SonarData (i, sonar);
 				sonar->setInfoLogLevel (myInfoLogLevel);
 			} else {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "Unknown sonar type %s for sonar %d, choices are %s",
-				            type, i, Aria::sonarGetTypes());
+				            type, i, Mvria::sonarGetTypes());
 				parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 				return false;
 			}
@@ -176,13 +150,13 @@ MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 
 	// go through the robot param list and add the sonars defined
 	// in the parameter file.
-	const ArRobotParams *params = NULL;
+	const MvrRobotParams *params = NULL;
 	if (myRobot != NULL) {
 		params = myRobot->getRobotParams();
 		if (params != NULL) {
 
 
-			for (i = 1; i <= Aria::getMaxNumSonarBoards(); i++) {
+			for (i = 1; i <= Mvria::getMaxNumSonarBoards(); i++) {
 				// if we already have a sonar for this then don't add one from
 				// the param file, since it was added either explicitly by a
 				// program or from the command line
@@ -197,24 +171,24 @@ MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 				if (baud == 0)
 					continue;
 
-				ArSonarMTX *sonar = NULL;
+				MvrSonarMTX *sonar = NULL;
 				if ( (sonar =
-				        Aria::sonarCreate (type, i, "MvrSonarConnector: ")) != NULL) {
-					ArLog::log (myInfoLogLevel,
+				        Mvria::sonarCreate (type, i, "MvrSonarConnector: ")) != NULL) {
+					MvrLog::log (myInfoLogLevel,
 					            "MvrSonarConnector::parseArgs() Created %s as sonar %d from parameter file",
 					            sonar->getName(), i);
 					mySonars[i] = new SonarData (i, sonar);
 					sonar->setInfoLogLevel (myInfoLogLevel);
 				} else {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "MvrSonarConnector::parseArgs() Unknown sonar type %s for sonar %d from the .p file, choices are %s",
-					            type, i, Aria::sonarGetTypes());
+					            type, i, Mvria::sonarGetTypes());
 					parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
 					return false;
 				}
 			}
 		} else {
-			ArLog::log (MvrLog::Normal, "MvrSonarConnector::parseArgs() Have robot, but robot has NULL params, so cannot configure its sonar");
+			MvrLog::log (MvrLog::Normal, "MvrSonarConnector::parseArgs() Have robot, but robot has NULL params, so cannot configure its sonar");
 		}
 	}
 	// now go through and parse the args for any sonar that we have
@@ -232,21 +206,21 @@ MVREXPORT bool ArSonarConnector::parseArgs (MvrArgumentParser *parser)
 
 } // end parseArgs
 
-MVREXPORT bool ArSonarConnector::parseSonarArgs (MvrArgumentParser *parser,
+MVREXPORT bool MvrSonarConnector::parseSonarArgs (MvrArgumentParser *parser,
     SonarData *sonarData)
 {
 	char buf[512];
 	if (sonarData == NULL) {
-		ArLog::log (MvrLog::Terse, "MvrSonarConnector::parseSonarArgs() Was given NULL sonar");
+		MvrLog::log (MvrLog::Terse, "MvrSonarConnector::parseSonarArgs() Was given NULL sonar");
 		return false;
 	}
 	if (sonarData->mySonar == NULL) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "MvrSonarConnector::parseSonarArgs() There is no sonar for sonar number %d but there should be",
 		            sonarData->myNumber);
 		return false;
 	}
-	ArSonarMTX *sonar = sonarData->mySonar;
+	MvrSonarMTX *sonar = sonarData->mySonar;
 	if (sonarData->myNumber == 1)
 		buf[0] = '\0';
 	else
@@ -302,39 +276,39 @@ MVREXPORT bool ArSonarConnector::parseSonarArgs (MvrArgumentParser *parser,
 } // end parseSonarArgs
 
 
-bool ArSonarConnector::internalConfigureSonar (
+bool MvrSonarConnector::internalConfigureSonar (
   SonarData *sonarData)
 {
 	if(sonarData->myConnectReallySet && ! sonarData->myConnect)
 	{
-		ArLog::log(MvrLog::Terse, "MvrSonarConnector: Warning: connection to sonar %d explicitly disabled by opion", sonarData->myNumber);
+		MvrLog::log(MvrLog::Terse, "MvrSonarConnector: Warning: connection to sonar %d explicitly disabled by opion", sonarData->myNumber);
 		return true;
 	}
-	ArSonarMTX *sonar = sonarData->mySonar;
+	MvrSonarMTX *sonar = sonarData->mySonar;
 	if (sonar == NULL) {
-		ArLog::log (MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar() No sonar for number %d",
+		MvrLog::log (MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar() No sonar for number %d",
 		            sonarData->myNumber);
 		return false;
 	}
 	// the rest handles all the connection stuff
-	const ArRobotParams *params;
+	const MvrRobotParams *params;
 	char portBuf[1024];
 	if (sonarData->mySonar == NULL) {
-		ArLog::log (MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar() There is no sonar, cannot connect");
+		MvrLog::log (MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar() There is no sonar, cannot connect");
 		return false;
 	}
 	sprintf (portBuf, "%s", sonarData->mySonar->getDefaultTcpPort());
 	if (myRobotConnector == NULL) {
-		ArLog::log (MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar() No ArRobotConnector is passed in so simulators and remote hosts will not work correctly");
+		MvrLog::log (MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar() No MvrRobotConnector is passed in so simulators and remote hosts will not work correctly");
 	}
 	if ( (sonarData->myPort == NULL || strlen (sonarData->myPort) == 0) &&
 	     (sonarData->myPortType != NULL && strlen (sonarData->myPortType) > 0)) {
-		ArLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a sonar port type given ('%s') for sonar %d (%s), but no sonar port given, cannot configure sonar",
+		MvrLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a sonar port type given ('%s') for sonar %d (%s), but no sonar port given, cannot configure sonar",
 		            sonarData->myPortType, sonarData->myNumber, sonar->getName());
 		return false;
 	}
 
-	ArLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar() command line sonar #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
+	MvrLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar() command line sonar #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
 							sonarData->myNumber, 
 							sonarData->myType,
 							sonarData->myPort,
@@ -345,10 +319,10 @@ bool ArSonarConnector::internalConfigureSonar (
 
 	if ( (sonarData->myPort != NULL && strlen (sonarData->myPort) > 0) &&
 	     (sonarData->myPortType != NULL && strlen (sonarData->myPortType) > 0)) {
-		ArLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar() Connection type and port given for sonar %d (%s), so overriding everything and using that information",
+		MvrLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar() Connection type and port given for sonar %d (%s), so overriding everything and using that information",
 		            sonarData->myNumber, sonar->getName());
 		
-		if ( (sonarData->myConn = Aria::deviceConnectionCreate (
+		if ( (sonarData->myConn = Mvria::deviceConnectionCreate (
 		                              sonarData->myPortType, sonarData->myPort, portBuf,
 		                              "MvrSonarConnector:")) == NULL) {
 			return false;
@@ -362,8 +336,8 @@ bool ArSonarConnector::internalConfigureSonar (
 		if (myRobot != NULL && (params = myRobot->getRobotParams()) != NULL) {
 			if (params->getSonarMTXBoardPortType (sonarData->myNumber) != NULL &&
 			    params->getSonarMTXBoardPortType (sonarData->myNumber) [0] != '\0') {
-				ArLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a port given, but no port type given so using the robot parameters port type");
-				if ( (sonarData->myConn = Aria::deviceConnectionCreate (
+				MvrLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a port given, but no port type given so using the robot parameters port type");
+				if ( (sonarData->myConn = Mvria::deviceConnectionCreate (
 				                              params->getSonarMTXBoardPortType (sonarData->myNumber),
 				                              sonarData->myPort, portBuf,
 				                              "MvrSonarConnector: ")) == NULL) {
@@ -371,17 +345,17 @@ bool ArSonarConnector::internalConfigureSonar (
 				}
 			} else if (sonar->getDefaultPortType() != NULL &&
 			           sonar->getDefaultPortType() [0] != '\0') {
-				ArLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a port given for sonar %d (%s), but no port type given and no robot parameters port type so using the sonar's default port type", sonarData->myNumber, sonar->getName());
-				if ( (sonarData->myConn = Aria::deviceConnectionCreate (
+				MvrLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a port given for sonar %d (%s), but no port type given and no robot parameters port type so using the sonar's default port type", sonarData->myNumber, sonar->getName());
+				if ( (sonarData->myConn = Mvria::deviceConnectionCreate (
 				                              sonar->getDefaultPortType(),
 				                              sonarData->myPort, portBuf,
 				                              "MvrSonarConnector: ")) == NULL) {
 					return false;
 				}
 			} else {
-				ArLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a port given for sonar %d (%s), but no port type given, no robot parameters port type, and no sonar default port type, so using serial",
+				MvrLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a port given for sonar %d (%s), but no port type given, no robot parameters port type, and no sonar default port type, so using serial",
 				            sonarData->myNumber, sonar->getName());
-				if ( (sonarData->myConn = Aria::deviceConnectionCreate (
+				if ( (sonarData->myConn = Mvria::deviceConnectionCreate (
 				                              "serial",
 				                              sonarData->myPort, portBuf,
 				                              "MvrSonarConnector: ")) == NULL) {
@@ -391,9 +365,9 @@ bool ArSonarConnector::internalConfigureSonar (
 			sonar->setDeviceConnection (sonarData->myConn);
 			return true;
 		} else {
-			ArLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a sonar port given ('%s') for sonar %d (%s), but no sonar port type given and there are no robot params to find the information in, so assuming serial",
+			MvrLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() There is a sonar port given ('%s') for sonar %d (%s), but no sonar port type given and there are no robot params to find the information in, so assuming serial",
 			            sonarData->myPort, sonarData->myNumber, sonar->getName());
-			if ( (sonarData->myConn = Aria::deviceConnectionCreate (
+			if ( (sonarData->myConn = Mvria::deviceConnectionCreate (
 			                              sonarData->myPortType, sonarData->myPort, portBuf,
 			                              "MvrSonarConnector: ")) == NULL) {
 				return false;
@@ -406,12 +380,12 @@ bool ArSonarConnector::internalConfigureSonar (
 
 	// if we get down here there was no information provided by the command line or in a sonar connector, so see if we have params... if not then fail, if so then use those
 	if (myRobot == NULL || (params = myRobot->getRobotParams()) == NULL) {
-		ArLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() No robot params are available, and no command line information given on how to connect to the sonar %d (%s), so cannot connect", sonarData->myNumber, sonar->getName());
+		MvrLog::log (MvrLog::Normal, "MvrSonarConnector::internalConfigureSonar() No robot params are available, and no command line information given on how to connect to the sonar %d (%s), so cannot connect", sonarData->myNumber, sonar->getName());
 		return false;
 	}
 
   int i = sonarData->myNumber;
-	ArLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar() .p sonar #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
+	MvrLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar() .p sonar #%d type= %s port=%s portType=%s baud=%d autoconnect=%d ",
 							i,
 							params->getSonarMTXBoardType (i),
 							params->getSonarMTXBoardPort (i),
@@ -430,13 +404,13 @@ bool ArSonarConnector::internalConfigureSonar (
     sonarData->myConnectReallySet = true;
   }
 
-	ArLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar(): Using robot params for connecting to sonar %d (%s) (port=%s, portType=%s)", sonarData->myNumber, sonar->getName(), sonarData->myPort, sonarData->myPortType);
+	MvrLog::log (MvrLog::Verbose, "MvrSonarConnector::internalConfigureSonar(): Using robot params for connecting to sonar %d (%s) (port=%s, portType=%s)", sonarData->myNumber, sonar->getName(), sonarData->myPort, sonarData->myPortType);
 
-  sonarData->myConn = Aria::deviceConnectionCreate(sonarData->myPortType, sonarData->myPort, portBuf, "MvrSonarConnector: ");
+  sonarData->myConn = Mvria::deviceConnectionCreate(sonarData->myPortType, sonarData->myPort, portBuf, "MvrSonarConnector: ");
 
 	if (sonarData->myConn == NULL)
   {
-    ArLog::log(MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar(): Error creating device connection.");
+    MvrLog::log(MvrLog::Terse, "MvrSonarConnector::internalConfigureSonar(): Error creating device connection.");
 		return false;
 	}
 
@@ -444,17 +418,17 @@ bool ArSonarConnector::internalConfigureSonar (
 
 	return true;
 }
-MVREXPORT void ArSonarConnector::logOptions (void) const
+MVREXPORT void MvrSonarConnector::logOptions (void) const
 {
-	ArLog::log (MvrLog::Terse, "Options for ArSonarConnector:");
-  ArLog::log(MvrLog::Terse, "-sonarLogPacketsReceived");
-  ArLog::log(MvrLog::Terse, "-slpr");
-  ArLog::log(MvrLog::Terse, "-sonarLogPacketsSent");
-  ArLog::log(MvrLog::Terse, "-slps");
-	ArLog::log (MvrLog::Terse, "\nOptions shown are for currently set up sonars.  Activate sonars with -sonarType<N> option");
-	ArLog::log (MvrLog::Terse, "to see options for that sonar (e.g. \"-help -sonarType1 sonarMTX\").");
-	ArLog::log (MvrLog::Terse, "Valid sonar types are: %s", Aria::sonarGetTypes());
-	ArLog::log (MvrLog::Terse, "\nSee docs for details.");
+	MvrLog::log (MvrLog::Terse, "Options for MvrSonarConnector:");
+  MvrLog::log(MvrLog::Terse, "-sonarLogPacketsReceived");
+  MvrLog::log(MvrLog::Terse, "-slpr");
+  MvrLog::log(MvrLog::Terse, "-sonarLogPacketsSent");
+  MvrLog::log(MvrLog::Terse, "-slps");
+	MvrLog::log (MvrLog::Terse, "\nOptions shown are for currently set up sonars.  Activate sonars with -sonarType<N> option");
+	MvrLog::log (MvrLog::Terse, "to see options for that sonar (e.g. \"-help -sonarType1 sonarMTX\").");
+	MvrLog::log (MvrLog::Terse, "Valid sonar types are: %s", Mvria::sonarGetTypes());
+	MvrLog::log (MvrLog::Terse, "\nSee docs for details.");
 	std::map<int, SonarData *>::const_iterator it;
 	SonarData *sonarData;
 	for (it = mySonars.begin(); it != mySonars.end(); it++) {
@@ -462,54 +436,54 @@ MVREXPORT void ArSonarConnector::logOptions (void) const
 		logSonarOptions (sonarData);
 	}
 }
-MVREXPORT void ArSonarConnector::logSonarOptions (
+MVREXPORT void MvrSonarConnector::logSonarOptions (
   SonarData *sonarData, bool header, bool metaOpts) const
 {
 	char buf[512];
 	if (sonarData == NULL) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "Tried to log sonar options with NULL sonar data");
 		return;
 	}
 	if (sonarData->mySonar == NULL) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "MvrSonarConnector: There is no sonar for sonar number %d but there should be",
 		            sonarData->myNumber);
 		return;
 	}
-	ArSonarMTX *sonar = sonarData->mySonar;
+	MvrSonarMTX *sonar = sonarData->mySonar;
 	if (sonarData->myNumber == 1)
 		buf[0] = '\0';
 	else
 		sprintf (buf, "%d", sonarData->myNumber);
 	if (header) {
-		ArLog::log (MvrLog::Terse, "");
-		ArLog::log (MvrLog::Terse, "Sonar%s: (\"%s\")", buf, sonar->getName());
+		MvrLog::log (MvrLog::Terse, "");
+		MvrLog::log (MvrLog::Terse, "Sonar%s: (\"%s\")", buf, sonar->getName());
 	}
 	if (metaOpts) {
-		ArLog::log (MvrLog::Terse, "-sonarType%s <%s>", buf, Aria::sonarGetTypes());
-		ArLog::log (MvrLog::Terse, "-st%s <%s>", buf, Aria::sonarGetTypes());
-		ArLog::log (MvrLog::Terse, "-doNotConnectSonar%s", buf);
-		ArLog::log (MvrLog::Terse, "-dncs%s", buf);
+		MvrLog::log (MvrLog::Terse, "-sonarType%s <%s>", buf, Mvria::sonarGetTypes());
+		MvrLog::log (MvrLog::Terse, "-st%s <%s>", buf, Mvria::sonarGetTypes());
+		MvrLog::log (MvrLog::Terse, "-doNotConnectSonar%s", buf);
+		MvrLog::log (MvrLog::Terse, "-dncs%s", buf);
 	}
-	ArLog::log (MvrLog::Terse, "-sonarPort%s <sonarPort>", buf);
-	ArLog::log (MvrLog::Terse, "-sp%s <sonarPort>", buf);
-	ArLog::log (MvrLog::Terse, "-sonarPortType%s <%s>", buf, Aria::deviceConnectionGetTypes());
-	ArLog::log (MvrLog::Terse, "-spt%s <%s>", buf, Aria::deviceConnectionGetTypes());
-	ArLog::log (MvrLog::Terse, "-remoteSonarTcpPort%s <remoteSonarTcpPort>", buf);
-	ArLog::log (MvrLog::Terse, "-rstp%s <remoteSonarTcpPort>", buf);
+	MvrLog::log (MvrLog::Terse, "-sonarPort%s <sonarPort>", buf);
+	MvrLog::log (MvrLog::Terse, "-sp%s <sonarPort>", buf);
+	MvrLog::log (MvrLog::Terse, "-sonarPortType%s <%s>", buf, Mvria::deviceConnectionGetTypes());
+	MvrLog::log (MvrLog::Terse, "-spt%s <%s>", buf, Mvria::deviceConnectionGetTypes());
+	MvrLog::log (MvrLog::Terse, "-remoteSonarTcpPort%s <remoteSonarTcpPort>", buf);
+	MvrLog::log (MvrLog::Terse, "-rstp%s <remoteSonarTcpPort>", buf);
 }
 /**
    Normally adding sonars is done from the .p file, you can use this
    if you want to add them explicitly in a program (which will
    override the .p file, and may cause some problems).
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArSonarConnector::connectSonars.()
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrSonarConnector::connectSonars.()
    @internal
 **/
-MVREXPORT bool ArSonarConnector::addSonar (
-  ArSonarMTX *sonar, int sonarNumber)
+MVREXPORT bool MvrSonarConnector::addSonar (
+  MvrSonarMTX *sonar, int sonarNumber)
 {
 	std::map<int, SonarData *>::iterator it;
 	SonarData *sonarData = NULL;
@@ -517,11 +491,11 @@ MVREXPORT bool ArSonarConnector::addSonar (
 		sonarData = (*it).second;
 	if (sonarData != NULL) {
 		if (sonarData->mySonar != NULL)
-			ArLog::log (MvrLog::Terse,
+			MvrLog::log (MvrLog::Terse,
 			            "MvrSonarConnector::addSonar: Already have sonar for number #%d of type %s but a replacement sonar of type %s was passed in",
 			            sonarNumber, sonarData->mySonar->getName(), sonar->getName());
 		else
-			ArLog::log (MvrLog::Terse,
+			MvrLog::log (MvrLog::Terse,
 			            "MvrSonarConnector::addSonar: Already have sonar for number #%d but a replacement sonar of type %s was passed in",
 			            sonarNumber, sonar->getName());
 		delete sonarData;
@@ -530,7 +504,7 @@ MVREXPORT bool ArSonarConnector::addSonar (
 	mySonars[sonarNumber] = new SonarData (sonarNumber, sonar);
 	return true;
 }
-MVREXPORT ArSonarMTX *ArSonarConnector::getSonar (int sonarNumber)
+MVREXPORT MvrSonarMTX *MvrSonarConnector::getSonar (int sonarNumber)
 {
 	std::map<int, SonarData *>::iterator it;
 	SonarData *sonarData = NULL;
@@ -542,8 +516,8 @@ MVREXPORT ArSonarMTX *ArSonarConnector::getSonar (int sonarNumber)
 	// otherwise, return the sonar
 	return sonarData->mySonar;
 }
-MVREXPORT bool ArSonarConnector::replaceSonar (
-  ArSonarMTX *sonar, int sonarNumber)
+MVREXPORT bool MvrSonarConnector::replaceSonar (
+  MvrSonarMTX *sonar, int sonarNumber)
 {
 	std::map<int, SonarData *>::iterator it;
 	SonarData *sonarData = NULL;
@@ -553,11 +527,11 @@ MVREXPORT bool ArSonarConnector::replaceSonar (
 	if (sonarData == NULL)
 		return false;
 	if (sonarData->mySonar != NULL)
-		ArLog::log (myInfoLogLevel,
+		MvrLog::log (myInfoLogLevel,
 		            "MvrSonarConnector::replaceSonar: Already have sonar for number #%d of type %s but a replacement sonar of type %s was passed in",
 		            sonarNumber, sonarData->mySonar->getName(), sonar->getName());
 	else
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "MvrSonarConnector::replaceSonar: Replacing a non existant sonar number #%d with a sonar of type %s passed in",
 		            sonarNumber, sonar->getName());
 	sonarData->mySonar = sonar;
@@ -565,31 +539,31 @@ MVREXPORT bool ArSonarConnector::replaceSonar (
 }
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArSonarConnector::connectSonars().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrSonarConnector::connectSonars().
    @internal
 **/
-MVREXPORT bool ArSonarConnector::setupSonar (MvrSonarMTX *sonar,
+MVREXPORT bool MvrSonarConnector::setupSonar (MvrSonarMTX *sonar,
     int sonarNumber)
 {
 	if (myRobot == NULL && myRobotConnector != NULL)
 		myRobot = myRobotConnector->getRobot();
 	std::map<int, SonarData *>::iterator it;
 	SonarData *sonarData = NULL;
-	//const ArRobotParams *params;
+	//const MvrRobotParams *params;
 	if ( (it = mySonars.find (sonarNumber)) != mySonars.end())
 		sonarData = (*it).second;
 	if (sonarData == NULL && sonar == NULL) {
-		ArLog::log (MvrLog::Terse, "MvrSonarConnector::setupSonar: Do not have sonar #%d", sonarNumber) ;
+		MvrLog::log (MvrLog::Terse, "MvrSonarConnector::setupSonar: Do not have sonar #%d", sonarNumber) ;
 		return false;
 	}
 	if (sonarData != NULL && sonar != NULL &&
 	    sonarData->mySonar != sonar) {
 		if (sonarData->mySonar != NULL)
-			ArLog::log (MvrLog::Terse, "MvrSonarConnector::setupSonar: Already have sonar for number #%d (%s) but a replacement sonar (%s) was passed in, this will replace all of the command line arguments for that sonar",
+			MvrLog::log (MvrLog::Terse, "MvrSonarConnector::setupSonar: Already have sonar for number #%d (%s) but a replacement sonar (%s) was passed in, this will replace all of the command line arguments for that sonar",
 			            sonarNumber, sonarData->mySonar->getName(), sonar->getName());
 		else
-			ArLog::log (MvrLog::Terse, "MvrSonarConnector::setupSonar: Already have sonar for number #%d but a replacement sonar (%s) was passed in, this will replace all of the command line arguments for that sonar",
+			MvrLog::log (MvrLog::Terse, "MvrSonarConnector::setupSonar: Already have sonar for number #%d but a replacement sonar (%s) was passed in, this will replace all of the command line arguments for that sonar",
 			            sonarNumber, sonar->getName());
 		delete sonarData;
 		mySonars.erase (sonarNumber);
@@ -599,7 +573,7 @@ MVREXPORT bool ArSonarConnector::setupSonar (MvrSonarMTX *sonar,
 		sonarData = new SonarData (sonarNumber, sonar);
 		mySonars[sonarNumber] = sonarData;
 		if (myAutoParseArgs && !parseSonarArgs (myParser, sonarData)) {
-			ArLog::log (MvrLog::Terse, "MvrSonarConnector: Error Auto parsing args for sonar %s (num %d)", sonarData->mySonar->getName(), sonarNumber);
+			MvrLog::log (MvrLog::Terse, "MvrSonarConnector: Error Auto parsing args for sonar %s (num %d)", sonarData->mySonar->getName(), sonarNumber);
 			return false;
 		}
 	}
@@ -619,17 +593,17 @@ MVREXPORT bool ArSonarConnector::setupSonar (MvrSonarMTX *sonar,
 		myRobot->addSonar (sonar, sonarNumber);
 		//myRobot->addRangeDevice(sonar);
 	} else {
-		ArLog::log (MvrLog::Normal, "MvrSonarConnector::setupSonar: No robot, so sonar cannot be added to robot");
+		MvrLog::log (MvrLog::Normal, "MvrSonarConnector::setupSonar: No robot, so sonar cannot be added to robot");
 	}
 	return true;
 }
 /**
    This is mainly for backwards compatibility (ie used for
-   ArSimpleConnector).  If you're using this class you should probably
-   use the new functionality which is just ArSonarConnector::connectSonars().
+   MvrSimpleConnector).  If you're using this class you should probably
+   use the new functionality which is just MvrSonarConnector::connectSonars().
    @internal
 **/
-MVREXPORT bool ArSonarConnector::connectSonar (MvrSonarMTX *sonar,
+MVREXPORT bool MvrSonarConnector::connectSonar (MvrSonarMTX *sonar,
     int sonarNumber,
     bool forceConnection)
 {
@@ -645,7 +619,7 @@ MVREXPORT bool ArSonarConnector::connectSonar (MvrSonarMTX *sonar,
 	if ( (it = mySonars.find (sonarNumber)) != mySonars.end())
 		sonarData = (*it).second;
 	if (sonarData == NULL) {
-		ArLog::log (MvrLog::Normal, "MvrSonarConnector::connectSonar: Some horrendous error in connectSonar with sonar number %d", sonarNumber);
+		MvrLog::log (MvrLog::Normal, "MvrSonarConnector::connectSonar: Some horrendous error in connectSonar with sonar number %d", sonarNumber);
 		return false;
 	}
 	// see if we want to connect
@@ -656,18 +630,18 @@ MVREXPORT bool ArSonarConnector::connectSonar (MvrSonarMTX *sonar,
 }
 
 
-MVREXPORT bool ArSonarConnector::connectSonars (
+MVREXPORT bool MvrSonarConnector::connectSonars (
   bool continueOnFailedConnect, bool addConnectedSonarsToRobot,
   bool addAllSonarsToRobot, bool turnOnSonars,
   bool powerCycleSonarOnFailedConnect)
 {
 	std::map<int, SonarData *>::iterator it;
 	SonarData *sonarData = NULL;
-	ArLog::log (myInfoLogLevel,
+	MvrLog::log (myInfoLogLevel,
 	            "MvrSonarConnector::connectSonars() Connecting sonars... myAutoParseArgs=%d myParsedArgs=%d addAllSonarsToRobot=%d", myAutoParseArgs, myParsedArgs, addAllSonarsToRobot);
 
 	if (myAutoParseArgs && !myParsedArgs) {
-		ArLog::log (myInfoLogLevel,
+		MvrLog::log (myInfoLogLevel,
 		            "MvrSonarConnector::connectSonars() Auto parsing args for sonars");
 		if (!parseArgs()) {
 			return false;
@@ -675,23 +649,23 @@ MVREXPORT bool ArSonarConnector::connectSonars (
 	}
 
 	if (addAllSonarsToRobot) {
-		ArLog::log (myInfoLogLevel,
+		MvrLog::log (myInfoLogLevel,
 		            "MvrSonarConnector::connectSonars() addAllSonarsToRobot");
 		if (myRobot != NULL) {
 			for (it = mySonars.begin(); it != mySonars.end(); it++) {
 				sonarData = (*it).second;
 				myRobot->addSonar (sonarData->mySonar, sonarData->myNumber);
-				ArLog::log (MvrLog::Verbose,
+				MvrLog::log (MvrLog::Verbose,
 				            "MvrSonarConnector::connectSonars: Added %s to robot as sonar %d",
 				            sonarData->mySonar->getName(), sonarData->myNumber);
 			}
 		} else {
-			ArLog::log (MvrLog::Normal, "MvrSonarConnector::connectSonars: Error: Supposed to add all sonars to robot, but there is no robot");
+			MvrLog::log (MvrLog::Normal, "MvrSonarConnector::connectSonars: Error: Supposed to add all sonars to robot, but there is no robot");
 			return false;
 		}
 	}
 
-  ArLog::log(myInfoLogLevel, "MvrSonarConnector::connectSonars(), finally connecting to each sonar...");
+  MvrLog::log(myInfoLogLevel, "MvrSonarConnector::connectSonars(), finally connecting to each sonar...");
 	for (it = mySonars.begin(); it != mySonars.end(); it++) {
 		sonarData = (*it).second;
 		if ( (sonarData == NULL) || (myRobot == NULL))
@@ -699,7 +673,7 @@ MVREXPORT bool ArSonarConnector::connectSonars (
 //	if ( (sonarData->myPort == NULL || strlen (sonarData->myPort) == 0) &&
 //	     (sonarData->myPortType != NULL && strlen (sonarData->myPortType) > 0)) {
 
-		ArLog::log (myInfoLogLevel, "MvrSonarConnector::connectSonars() sonar #%d type= %s port=%s portType=%s baud=%s autoconnect=%s, connect=%d",
+		MvrLog::log (myInfoLogLevel, "MvrSonarConnector::connectSonars() sonar #%d type= %s port=%s portType=%s baud=%s autoconnect=%s, connect=%d",
 		            sonarData->myNumber,
 		            sonarData->myType,
 		            sonarData->myPort,
@@ -714,8 +688,8 @@ MVREXPORT bool ArSonarConnector::connectSonars (
 
 		if (sonarData->myConnectReallySet && sonarData->myConnect) {
       if (!turnOnPower(sonarData))
-        ArLog::log(MvrLog::Normal, "MvrSonarConnector: Warning: unable to turn on sonar power. Continuing anyway...");
-			ArLog::log (myInfoLogLevel,
+        MvrLog::log(MvrLog::Normal, "MvrSonarConnector: Warning: unable to turn on sonar power. Continuing anyway...");
+			MvrLog::log (myInfoLogLevel,
 			            "MvrSonarConnector::connectSonars() Connecting %s",
 			            sonarData->mySonar->getName());
 			sonarData->mySonar->setRobot (myRobot);
@@ -729,46 +703,46 @@ MVREXPORT bool ArSonarConnector::connectSonars (
 				if (myRobot != NULL) {
 					myRobot->addSonar (sonarData->mySonar, sonarData->myNumber);
 					//myRobot->addRangeDevice(sonarData->mySonar);
-					ArLog::log (myInfoLogLevel,
-					            //ArLog::log (MvrLog::Verbose,
+					MvrLog::log (myInfoLogLevel,
+					            //MvrLog::log (MvrLog::Verbose,
 					            "MvrSonarConnector::connectSonars() Added %s to robot",
 					            sonarData->mySonar->getName());
 				} else {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "MvrSonarConnector::connectSonars() Could not add %s to robot, since there is no robot",
 					            sonarData->mySonar->getName());
 				}
 			} else if (addAllSonarsToRobot && myRobot != NULL) {
-				ArLog::log (MvrLog::Normal,
-//					ArLog::log (MvrLog::Verbose,
+				MvrLog::log (MvrLog::Normal,
+//					MvrLog::log (MvrLog::Verbose,
 				            "MvrSonarConnector::connectSonars() %s already added to robot)",
 				            sonarData->mySonar->getName());
 			} else if (myRobot != NULL) {
-				ArLog::log (MvrLog::Normal,
-//					ArLog::log (MvrLog::Verbose,
+				MvrLog::log (MvrLog::Normal,
+//					MvrLog::log (MvrLog::Verbose,
 				            "MvrSonarConnector::connectSonars() Did not add %s to robot",
 				            sonarData->mySonar->getName());
 			}
 		} else {
 			if (!continueOnFailedConnect) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "MvrSonarConnector::connectSonars() Could not connect %s, stopping",
 				            sonarData->mySonar->getName());
 				return false;
 			} else
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "MvrSonarConnector::connectSonars() Could not connect %s, continuing with remainder of sonars",
 				            sonarData->mySonar->getName());
 		}
 	}
 	}
 
-	ArLog::log (myInfoLogLevel,
+	MvrLog::log (myInfoLogLevel,
             "MvrSonarConnector() Done connecting sonars");
 	return true;
 }
 
-MVREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
+MVREXPORT bool MvrSonarConnector::turnOnPower(SonarData *sonarData)
 
 {
   /// MPL the new way
@@ -779,7 +753,7 @@ MVREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
 					myRobot->getRobotParams()->getSonarMTXBoardPowerOutput(
 		sonarData->myNumber)[0] == '\0')
     {
-      ArLog::log(MvrLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 										"MvrSonarConnector::connectSonars: Sonar %d has no power output set so can't be turned on (things may still work).",
 										sonarData->myNumber);
 			return false;
@@ -790,7 +764,7 @@ MVREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
 		  myRobot->getRobotParams()->getSonarMTXBoardPowerOutput(
 			  sonarData->myNumber)))
       {
-			ArLog::log(myInfoLogLevel, 
+			MvrLog::log(myInfoLogLevel, 
 					"MvrSonarConnector::connectSonars: Turned on power output %s for sonar %d",
 
 			myRobot->getRobotParams()->getSonarMTXBoardPowerOutput(
@@ -800,7 +774,7 @@ MVREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
       }
       else
       {
-			ArLog::log(MvrLog::Normal, 
+			MvrLog::log(MvrLog::Normal, 
 					"MvrSonarConnector::connectSonars: Could not turn on power output %s for sonar %d (things may still work).",
 			myRobot->getRobotParams()->getSonarMTXBoardPowerOutput(
 									sonarData->myNumber),
@@ -813,7 +787,7 @@ MVREXPORT bool ArSonarConnector::turnOnPower(SonarData *sonarData)
   return true;
 }
 
-MVREXPORT bool ArSonarConnector::connectReplaySonars(
+MVREXPORT bool MvrSonarConnector::connectReplaySonars(
   bool continueOnFailedConnect, bool addConnectedSonarsToRobot,
   bool addAllSonarsToRobot, bool turnOnSonars,
   bool powerCycleSonarOnFailedConnect)
@@ -821,10 +795,10 @@ MVREXPORT bool ArSonarConnector::connectReplaySonars(
 {
 	std::map<int, SonarData *>::iterator it;
 	SonarData *sonarData = NULL;
-	ArLog::log (myInfoLogLevel,
+	MvrLog::log (myInfoLogLevel,
 	            "MvrSonarConnector::connectReplaySonars() Connecting sonars %d %d", myAutoParseArgs, myParsedArgs);
 	if (myAutoParseArgs && !myParsedArgs) {
-		ArLog::log (MvrLog::Verbose,
+		MvrLog::log (MvrLog::Verbose,
 		            "MvrSonarConnector::connectReplaySonars() Auto parsing args for sonars");
 		if (!parseArgs()) {
 			return false;
@@ -832,7 +806,7 @@ MVREXPORT bool ArSonarConnector::connectReplaySonars(
 	}
 
 	if (addAllSonarsToRobot) {
-			ArLog::log (MvrLog::Verbose,
+			MvrLog::log (MvrLog::Verbose,
 		            "MvrSonarConnector::connectReplaySonars() addAllSonarsToRobot");
 
 		if (myRobot != NULL) {
@@ -840,12 +814,12 @@ MVREXPORT bool ArSonarConnector::connectReplaySonars(
 			for (it = mySonars.begin(); it != mySonars.end(); it++) {
 				sonarData = (*it).second;
 				myRobot->addSonar (sonarData->mySonar, sonarData->myNumber);
-				ArLog::log (MvrLog::Verbose,
+				MvrLog::log (MvrLog::Verbose,
 				            "MvrSonarConnector::connectReplaySonars: Added %s to robot as sonar %d",
 				            sonarData->mySonar->getName(), sonarData->myNumber);
 			}
 		} else {
-			ArLog::log (MvrLog::Normal, "MvrSonarConnector::connectReplaySonars: Supposed to add all sonars to robot, but there is no robot");
+			MvrLog::log (MvrLog::Normal, "MvrSonarConnector::connectReplaySonars: Supposed to add all sonars to robot, but there is no robot");
 			return false;
 		}
 	}
@@ -856,7 +830,7 @@ MVREXPORT bool ArSonarConnector::connectReplaySonars(
 		if ((sonarData == NULL) || (myRobot == NULL))
 			continue;
 
-		ArLog::log (MvrLog::Verbose, "MvrSonarConnector::connectReplaySonars() sonar #%d type= %s port=%s portType=%s baud=%s autoconnect=%s ",
+		MvrLog::log (MvrLog::Verbose, "MvrSonarConnector::connectReplaySonars() sonar #%d type= %s port=%s portType=%s baud=%s autoconnect=%s ",
 							sonarData->myNumber, 
 							sonarData->myType,
 							sonarData->myPort,
@@ -872,7 +846,7 @@ MVREXPORT bool ArSonarConnector::connectReplaySonars(
   return true;
 }
 
-MVREXPORT bool ArSonarConnector::disconnectSonars()
+MVREXPORT bool MvrSonarConnector::disconnectSonars()
 {
   
 	for(std::map<int, SonarData *>::iterator it = mySonars.begin();

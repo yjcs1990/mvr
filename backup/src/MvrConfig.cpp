@@ -976,7 +976,7 @@ MVREXPORT bool MvrConfig::addParam(const MvrConfigArg &arg,
 
   IFDEBUG(MvrLog::log(MvrLog::Verbose, "%sAdded parameter '%s' to section '%s'", 
                       myLogPrefix.c_str(), arg.getName(), section->getName()));
-  //arg.log();
+  //Mvrg.log();
   return true;
 }
 
@@ -1082,7 +1082,7 @@ MVREXPORT bool MvrConfig::parseSection(MvrArgumentBuilder *arg,
           myLogPrefix.c_str(),
           arg->getFullString());
         //printf("Config switching to section '%s'\n", 
-        //arg->getFullString());
+        //Mvrg->getFullString());
         mySection = arg->getFullString();
         mySectionBroken = false;
         mySectionIgnored = false;
@@ -1094,7 +1094,7 @@ MVREXPORT bool MvrConfig::parseSection(MvrArgumentBuilder *arg,
           myLogPrefix.c_str(),
           arg->getFullString());
         //printf("Config switching to section '%s'\n", 
-        //arg->getFullString());
+        //Mvrg->getFullString());
         mySection = arg->getFullString();
         mySectionBroken = false;
         mySectionIgnored = true;

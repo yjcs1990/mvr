@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrActionGroup.h"
 #include "MvrActionGroups.h"
 #include "MvrActionLimiterTableSensor.h"
@@ -45,7 +19,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRatioInputJoydrive.h"
 #include "MvrRatioInputRobotJoydrive.h"
 
-MVREXPORT MvrActionGroupInput::ArActionGroupInput(MvrRobot *robot)
+MVREXPORT MvrActionGroupInput::MvrActionGroupInput(MvrRobot *robot)
   : MvrActionGroup(robot)
 {
   addAction(new MvrActionLimiterTableSensor, 100);
@@ -91,12 +65,12 @@ MVREXPORT void MvrActionGroupInput::clear(void)
   myInput->clear();
 }
 
-MVREXPORT MvrActionInput *ArActionGroupInput::getActionInput(void)
+MVREXPORT MvrActionInput *MvrActionGroupInput::getActionInput(void)
 {
   return myInput;
 }
 
-MVREXPORT MvrActionGroupStop::ArActionGroupStop(MvrRobot *robot)
+MVREXPORT MvrActionGroupStop::MvrActionGroupStop(MvrRobot *robot)
   : MvrActionGroup(robot)
 {
   myActionStop = new MvrActionStop;
@@ -109,12 +83,12 @@ MVREXPORT MvrActionGroupStop::~MvrActionGroupStop()
   deleteActions();
 }
 
-MVREXPORT MvrActionStop *ArActionGroupStop::getActionStop(void)
+MVREXPORT MvrActionStop *MvrActionGroupStop::getActionStop(void)
 {
   return myActionStop;
 }
 
-MVREXPORT MvrActionGroupTeleop::ArActionGroupTeleop(MvrRobot *robot)
+MVREXPORT MvrActionGroupTeleop::MvrActionGroupTeleop(MvrRobot *robot)
   : MvrActionGroup(robot)
 {
   addAction(new MvrActionLimiterTableSensor, 100);
@@ -143,7 +117,7 @@ MVREXPORT void MvrActionGroupTeleop::setThrottleParams(int lowSpeed,
   myJoydrive->setThrottleParams(lowSpeed, highSpeed);
 }
 
-MVREXPORT MvrActionGroupUnguardedTeleop::ArActionGroupUnguardedTeleop(MvrRobot *robot)
+MVREXPORT MvrActionGroupUnguardedTeleop::MvrActionGroupUnguardedTeleop(MvrRobot *robot)
   : MvrActionGroup(robot)
 {
   myJoydrive = new MvrActionJoydrive;
@@ -164,7 +138,7 @@ MVREXPORT void MvrActionGroupUnguardedTeleop::setThrottleParams(int lowSpeed,
   myJoydrive->setThrottleParams(lowSpeed, highSpeed);
 }
 
-MVREXPORT MvrActionGroupWander::ArActionGroupWander(MvrRobot *robot, int forwardVel, int avoidFrontDist, int avoidVel, int avoidTurnAmt)
+MVREXPORT MvrActionGroupWander::MvrActionGroupWander(MvrRobot *robot, int forwardVel, int avoidFrontDist, int avoidVel, int avoidTurnAmt)
   : MvrActionGroup(robot)
 {
   addAction(new MvrActionBumpers, 100);
@@ -184,7 +158,7 @@ MVREXPORT MvrActionGroupWander::~MvrActionGroupWander()
 }
 
 // The color follow action group
-MVREXPORT MvrActionGroupColorFollow::ArActionGroupColorFollow(MvrRobot *robot, MvrACTS_1_2 *acts, MvrPTZ *camera)
+MVREXPORT MvrActionGroupColorFollow::MvrActionGroupColorFollow(MvrRobot *robot, MvrACTS_1_2 *acts, MvrPTZ *camera)
   : MvrActionGroup(robot)
 {
   // Add the limiters so the robot is less likely to run into things
@@ -265,7 +239,7 @@ MVREXPORT bool MvrActionGroupColorFollow::getBlob()
   return myColorFollow->getBlob();
 }
 
-MVREXPORT MvrActionGroupRatioDrive::ArActionGroupRatioDrive(MvrRobot *robot)
+MVREXPORT MvrActionGroupRatioDrive::MvrActionGroupRatioDrive(MvrRobot *robot)
   : MvrActionGroup(robot)
 {
   // add the actions, put the ratio input on top, then have the
@@ -311,7 +285,7 @@ MVREXPORT MvrActionGroupRatioDrive::~MvrActionGroupRatioDrive()
 }
 
 
-MVREXPORT MvrActionRatioInput *ArActionGroupRatioDrive::getActionRatioInput(void)
+MVREXPORT MvrActionRatioInput *MvrActionGroupRatioDrive::getActionRatioInput(void)
 {
   return myInput;
 }
@@ -324,7 +298,7 @@ MVREXPORT void MvrActionGroupRatioDrive::addToConfig(MvrConfig *config,
   myDeceleratingLimiterBackward->addToConfig(config, section, "Backward");
 }
 
-MVREXPORT MvrActionGroupRatioDriveUnsafe::ArActionGroupRatioDriveUnsafe(MvrRobot *robot)
+MVREXPORT MvrActionGroupRatioDriveUnsafe::MvrActionGroupRatioDriveUnsafe(MvrRobot *robot)
   : MvrActionGroup(robot)
 {
   // add the actions, put the ratio input on top, then have the
@@ -346,7 +320,7 @@ MVREXPORT MvrActionGroupRatioDriveUnsafe::~MvrActionGroupRatioDriveUnsafe()
 }
 
 
-MVREXPORT MvrActionRatioInput *ArActionGroupRatioDriveUnsafe::getActionRatioInput(void)
+MVREXPORT MvrActionRatioInput *MvrActionGroupRatioDriveUnsafe::getActionRatioInput(void)
 {
   return myInput;
 }

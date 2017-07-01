@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARLASERLOGGER_H
-#define ARLASERLOGGER_H
+#ifndef MVRLASERLOGGER_H
+#define MVRLASERLOGGER_H
 
 #include <stdio.h>
 
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include "MvrFunctor.h"
 
 class MvrLaser;
@@ -68,7 +42,7 @@ public:
 	  const std::map<std::string, 
 	  MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *, 
 	  MvrStrCaseCmpOp> *extraLocationData = NULL,
-	  std::list<ArLaser *> *extraLasers = NULL);
+	  std::list<MvrLaser *> *extraLasers = NULL);
   /// Destructor
   MVREXPORT virtual ~MvrLaserLogger();
 
@@ -127,7 +101,7 @@ protected:
   void internalTakeLaserReading(MvrLaser *laser, int laserNumber);
   // internal function that prints the position
   void internalPrintPos(MvrPose encoderPoseTaken, MvrPose goalPoseTaken, 
-			ArTime timeTaken);
+			MvrTime timeTaken);
   // internal function that logs the pose and conf
   void internalPrintLaserPoseAndConf(MvrLaser *laser, int laserNumber);
   // internal packet for handling the loop packets
@@ -161,7 +135,7 @@ protected:
   double myDistDiff;
   double myDegDiff;
   MvrSectors mySectors;
-  MvrFunctorC<ArLaserLogger> myTaskCB;
+  MvrFunctorC<MvrLaserLogger> myTaskCB;
   int myScanNumber;
   MvrTime myStartTime;
   bool myTakeReadingExplicit;
@@ -186,13 +160,13 @@ protected:
 	   MvrStrCaseCmpOp> myExtraLocationData;
   
   // holders for the extra lasers 
-  std::list<ArLaser *> myLasers;
+  std::list<MvrLaser *> myLasers;
 
-  MvrFunctorC<ArLaserLogger> myGoalKeyCB;
+  MvrFunctorC<MvrLaserLogger> myGoalKeyCB;
   MvrRetFunctor1C<bool, MvrLaserLogger, MvrRobotPacket *> myLoopPacketHandlerCB;
 };
 
 /// @deprecated
 typedef MvrLaserLogger MvrSickLogger;
 
-#endif // ARLASERLOGGER_H
+#endif // MVRLASERLOGGER_H

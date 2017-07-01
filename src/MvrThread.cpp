@@ -1,49 +1,23 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-// ArThread.cc -- Thread classes
+// MvrThread.cc -- Thread classes
 
 
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include <errno.h>
 #include <list>
 #include "MvrThread.h"
 #include "MvrLog.h"
 
 
-ArMutex ArThread::ourThreadsMutex;
-ArThread::MapType ArThread::ourThreads;
+MvrMutex MvrThread::ourThreadsMutex;
+MvrThread::MapType MvrThread::ourThreads;
 #if defined(WIN32) && !defined(MINGW)
-std::map<HANDLE, ArThread *> ArThread::ourThreadHandles;
+std::map<HANDLE, MvrThread *> MvrThread::ourThreadHandles;
 #endif
-MVREXPORT ArLog::LogLevel ArThread::ourLogLevel = ArLog::Verbose; // todo, instead of MVREXPORT move accessors into .cpp?
-std::string ArThread::ourUnknownThreadName = "unknown";
+MVREXPORT MvrLog::LogLevel MvrThread::ourLogLevel = MvrLog::Verbose; // todo, instead of MVREXPORT move accessors into .cpp?
+std::string MvrThread::ourUnknownThreadName = "unknown";
 
-MVREXPORT void ArThread::stopAll()
+MVREXPORT void MvrThread::stopAll()
 {
   MapType::iterator iter;
 
@@ -53,10 +27,10 @@ MVREXPORT void ArThread::stopAll()
   ourThreadsMutex.unlock();
 }
 
-MVREXPORT void ArThread::joinAll()
+MVREXPORT void MvrThread::joinAll()
 {
   MapType::iterator iter;
-  ArThread *thread = self();
+  MvrThread *thread = self();
   ourThreadsMutex.lock();
   for (iter=ourThreads.begin(); iter != ourThreads.end(); ++iter)
   {
@@ -82,7 +56,7 @@ MVREXPORT void ArThread::joinAll()
   ourThreadsMutex.unlock();
 }
 
-MVREXPORT ArThread::ArThread(bool blockAllSignals) :
+MVREXPORT MvrThread::MvrThread(bool blockAllSignals) :
   myName("(unnamed)"),
   myRunning(false),
   myJoinable(false),
@@ -101,7 +75,7 @@ MVREXPORT ArThread::ArThread(bool blockAllSignals) :
 {
 }
 
-MVREXPORT ArThread::ArThread(ThreadType thread, bool joinable,
+MVREXPORT MvrThread::MvrThread(ThreadType thread, bool joinable,
 			    bool blockAllSignals) :
   myRunning(false),
   myJoinable(joinable),
@@ -119,7 +93,7 @@ MVREXPORT ArThread::ArThread(ThreadType thread, bool joinable,
 {
 }
 
-MVREXPORT ArThread::ArThread(MvrFunctor *func, bool joinable,
+MVREXPORT MvrThread::MvrThread(MvrFunctor *func, bool joinable,
 			    bool blockAllSignals) :
   myRunning(false),
   myJoinable(false),
@@ -139,7 +113,7 @@ MVREXPORT ArThread::ArThread(MvrFunctor *func, bool joinable,
 }
 
 #if !defined(WIN32) || defined(MINGW)
-MVREXPORT ArThread::~MvrThread()
+MVREXPORT MvrThread::~MvrThread()
 {
   // Just make sure the thread is no longer in the map.
   removeThreadFromMap(myThread);
@@ -154,7 +128,7 @@ MVREXPORT ArThread::~MvrThread()
 }
 #endif 
 
-MVREXPORT int ArThread::join(void **iret)
+MVREXPORT int MvrThread::join(void **iret)
 {
   int ret;
   ret=doJoin(iret);
@@ -171,7 +145,7 @@ MVREXPORT int ArThread::join(void **iret)
   return(0);
 }
 
-MVREXPORT void ArThread::setThreadName(const char *name)
+MVREXPORT void MvrThread::setThreadName(const char *name)
 { 
   myName = name; 
   std::string mutexLogName;
@@ -180,38 +154,38 @@ MVREXPORT void ArThread::setThreadName(const char *name)
   myMutex.setLogName(mutexLogName.c_str());
 }
 
-MVREXPORT bool ArThread::isThreadStarted() const
+MVREXPORT bool MvrThread::isThreadStarted() const
 {
   return myStarted;
 }
 
-MVREXPORT bool ArThread::isThreadFinished() const
+MVREXPORT bool MvrThread::isThreadFinished() const
 {
   return myFinished;
 }
 
-MVREXPORT const char *ArThread::getThisThreadName(void) 
+MVREXPORT const char *MvrThread::getThisThreadName(void) 
 {
-  ArThread *self;
-  if ((self = ArThread::self()) != NULL)
+  MvrThread *self;
+  if ((self = MvrThread::self()) != NULL)
     return self->getThreadName();
   else
     return ourUnknownThreadName.c_str();
 }
 
-MVREXPORT const ArThread::ThreadType * ArThread::getThisThread(void)
+MVREXPORT const MvrThread::ThreadType * MvrThread::getThisThread(void)
 {
-  ArThread *self;
-  if ((self = ArThread::self()) != NULL)
+  MvrThread *self;
+  if ((self = MvrThread::self()) != NULL)
     return self->getThread();
   else
     return NULL;
 }
 
-MVREXPORT ArThread::ThreadType ArThread::getThisOSThread(void)
+MVREXPORT MvrThread::ThreadType MvrThread::getThisOSThread(void)
 {
-  ArThread *self;
-  if ((self = ArThread::self()) != NULL)
+  MvrThread *self;
+  if ((self = MvrThread::self()) != NULL)
     return self->getOSThread();
   else
 #ifdef MINGW
@@ -226,7 +200,7 @@ MVREXPORT ArThread::ThreadType ArThread::getThisOSThread(void)
 
 #ifdef MINGW
 
-ArThread* ArThread::findThreadInMap(ThreadType t) 
+MvrThread* MvrThread::findThreadInMap(ThreadType t) 
 {
 	ourThreadsMutex.lock();
 	for(MapType::iterator i = ourThreads.begin(); i != ourThreads.end(); ++i)
@@ -241,7 +215,7 @@ ArThread* ArThread::findThreadInMap(ThreadType t)
 	return NULL;
 }
 
-void ArThread::removeThreadFromMap(ThreadType t) 
+void MvrThread::removeThreadFromMap(ThreadType t) 
 {
 	ourThreadsMutex.lock();
 	MapType::iterator found = ourThreads.end();
@@ -253,27 +227,27 @@ void ArThread::removeThreadFromMap(ThreadType t)
 	ourThreadsMutex.unlock();
 }
 
-void ArThread::addThreadToMap(ThreadType pt, ArThread *at) 
+void MvrThread::addThreadToMap(ThreadType pt, MvrThread *at) 
 {
 	ourThreadsMutex.lock();
-	ourThreads.push_back(std::pair<ThreadType, ArThread*>(pt, at));
+	ourThreads.push_back(std::pair<ThreadType, MvrThread*>(pt, at));
 	ourThreadsMutex.unlock();
 }
   
 #else
 
-ArThread* ArThread::findThreadInMap(ThreadType pt) 
+MvrThread* MvrThread::findThreadInMap(ThreadType pt) 
 {
 	ourThreadsMutex.lock();
 	MapType::iterator iter = ourThreads.find(pt);
-	ArThread *r = NULL;
+	MvrThread *r = NULL;
 	if (iter != ourThreads.end())
 		r = (*iter).second;
 	ourThreadsMutex.unlock();
 	return r;
 }
 
-void ArThread::removeThreadFromMap(ThreadType t) 
+void MvrThread::removeThreadFromMap(ThreadType t) 
 {  
 	ourThreadsMutex.lock();
 	MapType::iterator iter = ourThreads.find(t);
@@ -283,7 +257,7 @@ void ArThread::removeThreadFromMap(ThreadType t)
 	ourThreadsMutex.unlock();
 }
 
-void ArThread::addThreadToMap(ThreadType pt, ArThread *at) 
+void MvrThread::addThreadToMap(ThreadType pt, MvrThread *at) 
 {
 	ourThreadsMutex.lock();
 	ourThreads[pt] = at;

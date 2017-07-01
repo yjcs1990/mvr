@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrLMS2xxPacketReceiver.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
 
 /*
@@ -37,7 +11,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    packet (false)... most everything should use false as this will help prevent
    many memory leaks or corruptions
 */
-MVREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
+MVREXPORT MvrLMS2xxPacketReceiver::MvrLMS2xxPacketReceiver(
 	unsigned char receivingAddress, bool allocatePackets,
 	bool useBase0Address) 
 {
@@ -53,8 +27,8 @@ MVREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
    packet (false)... most everything should use false as this will help prevent
    many memory leaks or corruptions
 */
-MVREXPORT MvrLMS2xxPacketReceiver::ArLMS2xxPacketReceiver(
-	ArDeviceConnection *deviceConnection, 
+MVREXPORT MvrLMS2xxPacketReceiver::MvrLMS2xxPacketReceiver(
+	MvrDeviceConnection *deviceConnection, 
 	unsigned char receivingAddress, bool allocatePackets,
 	bool useBase0Address)
 {
@@ -70,12 +44,12 @@ MVREXPORT MvrLMS2xxPacketReceiver::~MvrLMS2xxPacketReceiver()
 }
 
 MVREXPORT void MvrLMS2xxPacketReceiver::setDeviceConnection(
-	ArDeviceConnection *deviceConnection)
+	MvrDeviceConnection *deviceConnection)
 {
   myDeviceConn = deviceConnection;
 }
 
-MVREXPORT MvrDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *MvrLMS2xxPacketReceiver::getDeviceConnection(void)
 {
   return myDeviceConn;
 }
@@ -89,7 +63,7 @@ MVREXPORT MvrDeviceConnection *ArLMS2xxPacketReceiver::getDeviceConnection(void)
     this packet, the packet must be used and done with by the time this 
     method is called again
 */
-MVREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
+MVREXPORT MvrLMS2xxPacket *MvrLMS2xxPacketReceiver::receivePacket(
 	unsigned int msWait)
 {
   MvrLMS2xxPacket *packet;
@@ -140,7 +114,7 @@ MVREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
       }
       else
       {
-	//ArUtil::sleep(1);
+	//MvrUtil::sleep(1);
 	continue;
       }
     }
@@ -184,7 +158,7 @@ MVREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
       }
       else // go back to beginning, packet hosed
       {
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "MvrLMS2xxPacketReceiver::receivePacket: wrong address (0x%x instead of 0x%x)", c, (unsigned) 0x80 + myReceivingAddress);
 	state = STATE_START;
       }
@@ -206,7 +180,7 @@ MVREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
       if (packetLength > ((long)myPacket.getMaxLength() -
 			  (long)myPacket.getHeaderLength()))
       {
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 	   "MvrLMS2xxPacketReceiver::receivePacket: packet too long, it is %d long while the maximum is %d.", packetLength, myPacket.getMaxLength());
 	state = STATE_START;
 	//myPacket.log();
@@ -253,7 +227,7 @@ MVREXPORT MvrLMS2xxPacket *ArLMS2xxPacketReceiver::receivePacket(
       }
       else 
       {
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 	   "MvrLMS2xxPacketReceiver::receivePacket: bad packet, bad checksum");
 	state = STATE_START;
 	//myPacket.log();

@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRARG_H
+#define MVRARG_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARARG_H
-#define ARARG_H
-
-#include "ariaTypedefs.h"
-#include "ariaUtil.h"
+#include "mvriaTypedefs.h"
+#include "mvriaUtil.h"
 #include "MvrFunctor.h"
 
 class MvrArgumentBuilder;
@@ -89,7 +63,7 @@ public:
   /// Constructor for making an argument that has functors to handle things
   MVREXPORT MvrArg(const char *name, 
 		 MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
-		 MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
+		 MvrRetFunctor<const std::list<MvrArgumentBuilder *> *> *getFunctor,
 		 const char *description);
   /// Constructor for just holding a description (for MvrConfig)
   MVREXPORT MvrArg(const char *description);
@@ -129,7 +103,7 @@ public:
   /// Gets the argument value, for string arguments
   MVREXPORT const char *getString(void) const;
   /// Gets the argument value, which is a list of argumentbuilders here
-  MVREXPORT const std::list<ArArgumentBuilder *> *getArgsWithFunctor(void) const;
+  MVREXPORT const std::list<MvrArgumentBuilder *> *getArgsWithFunctor(void) const;
   /// Logs the type, name, and value of this argument
   MVREXPORT void log(void) const;
   /// Gets the minimum int value
@@ -167,7 +141,7 @@ protected:
   bool myConfigPrioritySet;
   MvrPriority::Priority myConfigPriority;
   MvrRetFunctor1<bool, MvrArgumentBuilder *> *mySetFunctor;
-  MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *myGetFunctor;
+  MvrRetFunctor<const std::list<MvrArgumentBuilder *> *> *myGetFunctor;
 };
 
-#endif // ARARGUMENT_H
+#endif // MVRARG_H

@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRGPSCOORDS_H
+#define MVRGPSCOORDS_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARGPSCOORDS_H
-#define ARGPSCOORDS_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 
 
 
@@ -106,9 +80,9 @@ protected:
 
 #ifdef WIN32
 // Need to export some variables on Windows because they are used in inline methods (which is good), but they can't be exported if const.
-#define ARGPSCOORDS_CONSTANT 
+#define MVRGPSCOORDS_CONSTANT 
 #else
-#define ARGPSCOORDS_CONSTANT const
+#define MVRGPSCOORDS_CONSTANT const
 #endif
 
 
@@ -131,16 +105,16 @@ class MvrWGS84
   
 
 private:
-  MVREXPORT static ARGPSCOORDS_CONSTANT double mya;     // meters
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myb;     // meters
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myep; 
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myc;     // m/sec
-  MVREXPORT static ARGPSCOORDS_CONSTANT double mye;
-  MVREXPORT static ARGPSCOORDS_CONSTANT double my1byf;
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myOmega; // rad/sec
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myGM;    // m^3/sec^2
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myg;     // m/sec^2. Ave g.
-  MVREXPORT static ARGPSCOORDS_CONSTANT double myM;     // kg. Mass of earth.
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double mya;     // meters
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myb;     // meters
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myep; 
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myc;     // m/sec
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double mye;
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double my1byf;
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myOmega; // rad/sec
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myGM;    // m^3/sec^2
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myg;     // m/sec^2. Ave g.
+  MVREXPORT static MVRGPSCOORDS_CONSTANT double myM;     // kg. Mass of earth.
 };
 
 
@@ -233,4 +207,4 @@ class MvrMapGPSCoords : public MvrENUCoords
 
 
 
-#endif // ARGPSCOORDS_H
+#endif // MVRGPSCOORDS_H

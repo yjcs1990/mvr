@@ -1,38 +1,12 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSonarMTX.h"
 #include "MvrSensorReading.h"
 //#include "MvrRobot.h"
 
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSerialConnection.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include <time.h>
 
 
@@ -44,10 +18,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif
 
 
-MVREXPORT ArSonarMTX::ArSonarMTX (int sonarBoardNum,
-																	const char *name, ArDeviceConnection *conn,
-                                 ArRobot *robot) :
-	mySensorInterpTask (this, &ArSonarMTX::sensorInterp),
+MVREXPORT MvrSonarMTX::MvrSonarMTX (int sonarBoardNum,
+																	const char *name, MvrDeviceConnection *conn,
+                                 MvrRobot *robot) :
+	mySensorInterpTask (this, &MvrSonarMTX::sensorInterp),
 	myConn (conn),
 	myName (name),
   myTimeoutSeconds(1.0),
@@ -64,13 +38,13 @@ MVREXPORT ArSonarMTX::ArSonarMTX (int sonarBoardNum,
 	myReceiver(NULL),
 	mySender(NULL),
 	myFirmwareVersion(0),
-	myAriaExitCB (this, &ArSonarMTX::disconnect)
+	myMvriaExitCB (this, &MvrSonarMTX::disconnect)
 {
 
 	mySonarMap.clear();
 
-	myInfoLogLevel = ArLog::Verbose;
-  ArThread::setLogLevel(myInfoLogLevel);
+	myInfoLogLevel = MvrLog::Verbose;
+  MvrThread::setLogLevel(myInfoLogLevel);
 
 	clear();
 
@@ -79,39 +53,39 @@ MVREXPORT ArSonarMTX::ArSonarMTX (int sonarBoardNum,
 
 	sprintf(myNameWithBoard, "%s%d", name, sonarBoardNum);
 
-	ArLog::log (myInfoLogLevel, "%s::ArSonarMTX initializing",
+	MvrLog::log (myInfoLogLevel, "%s::MvrSonarMTX initializing",
 		            getNameWithBoard());
 
 
-	Aria::addExitCallback (&myAriaExitCB, -10);
+	Mvria::addExitCallback (&myMvriaExitCB, -10);
 
 
 
 }
 
-MVREXPORT ArSonarMTX::~MvrSonarMTX()
+MVREXPORT MvrSonarMTX::~MvrSonarMTX()
 {
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask (&myProcessCB);
 	}
-  Aria::remExitCallback(&myAriaExitCB);
+  Mvria::remExitCallback(&myMvriaExitCB);
 }
 
 
-MVREXPORT void ArSonarMTX::setDeviceConnection (
-  ArDeviceConnection *conn)
+MVREXPORT void MvrSonarMTX::setDeviceConnection (
+  MvrDeviceConnection *conn)
 {
 	myConn = conn;
   myConn->setDeviceName(getName());
 }
 
 
-MVREXPORT ArDeviceConnection *ArSonarMTX::getDeviceConnection (void)
+MVREXPORT MvrDeviceConnection *MvrSonarMTX::getDeviceConnection (void)
 {
 	return myConn;
 }
 
-MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
+MVREXPORT void MvrSonarMTX::setRobot (MvrRobot *robot)
 {
 	myRobot = robot;
 
@@ -141,19 +115,19 @@ MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 
 		myBoardUseForAutonomousDriving = robot->getRobotParams()->getSonarMTXBoardUseForAutonomousDriving (myBoardNum);
 
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d delay %d",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d delay %d",
 		            getNameWithBoard(), myBoardNum, myBoardDelay);
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d gain %d",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d gain %d",
 		            getNameWithBoard(), myBoardNum, myBoardGain);
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d detection threshold %d",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d detection threshold %d",
 		            getNameWithBoard(), myBoardNum, myBoardDetectionThreshold);
 /* - no longer supported
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d noise delta %d",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d noise delta %d",
 		            getNameWithBoard(), myBoardNum, myBoardNoiseDelta);
 */
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d max range %d (note it's value is divided by 17 from config page)",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d max range %d (note it's value is divided by 17 from config page)",
 		            getNameWithBoard(), myBoardNum, myBoardMaxRange);
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d use for autonomous driving %d",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar board %d use for autonomous driving %d",
 		            getNameWithBoard(), myBoardNum, myBoardUseForAutonomousDriving);
 
 		// go thru each configure sonarunit, see if it's for this board, if
@@ -170,11 +144,11 @@ MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 
     int n = robot->getRobotParams()->getNumSonarUnits();
 
-		ArLog::log (myInfoLogLevel, "%s::setRobot() Sonar board %d can have a max %d sonar units",
+		MvrLog::log (myInfoLogLevel, "%s::setRobot() Sonar board %d can have a max %d sonar units",
 		            getNameWithBoard(), myBoardNum, n);
     if(n <= 0)
     {
-      ArLog::log(MvrLog::Normal, "%s: Error: no sonar parameters set in robot parameters!", getNameWithBoard());
+      MvrLog::log(MvrLog::Normal, "%s: Error: no sonar parameters set in robot parameters!", getNameWithBoard());
 		  return;
     }
 
@@ -189,7 +163,7 @@ MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 			// units are numbered 1-8, but the protocol uses 0-7
 
 			if (t == 0) {
-				ArLog::log (MvrLog::Normal, "%s::setRobot(): Sonar %d has SonarBoardUnitPosition of 0 - ignoring",
+				MvrLog::log (MvrLog::Normal, "%s::setRobot(): Sonar %d has SonarBoardUnitPosition of 0 - ignoring",
 		            getNameWithBoard(), i+1);
 
 				continue;
@@ -202,7 +176,7 @@ MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 			mySonarMap[t][SONAR_IS_CONFIGURED] = false;
 
 			if (robot->getRobotParams()->getSonarMTXBoard (i) != myBoardNum) {
-				ArLog::log (MvrLog::Normal, "%s::setRobot(): Sonar_%d has a mismatched SonarBoard number %d - ignoring",
+				MvrLog::log (MvrLog::Normal, "%s::setRobot(): Sonar_%d has a mismatched SonarBoard number %d - ignoring",
 		            getNameWithBoard(), i+1, myBoardNum);
 				continue;
 			}
@@ -249,7 +223,7 @@ MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 			if (mySonarMap[t][SONAR_MAX_RANGE] == 0)
 				mySonarMap[t][SONAR_MAX_RANGE] = myBoardMaxRange;
 
-			ArLog::log (myInfoLogLevel, "%s::setRobot() Sonar_%d params %d %d %d %d %d %d %d %d",
+			MvrLog::log (myInfoLogLevel, "%s::setRobot() Sonar_%d params %d %d %d %d %d %d %d %d",
 			            getNameWithBoard(), i+1, mySonarMap[t][SONAR_MAPPING]+1,
 			            mySonarMap[t][SONAR_X],
 			            mySonarMap[t][SONAR_Y],
@@ -264,13 +238,13 @@ MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 
 		} // end for
 
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Number of configured sonar units = %d",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Number of configured sonar units = %d",
 			            getNameWithBoard(), myNumConfiguredTransducers);
 
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar mask MSB (0x%x) LSB (0x%x)",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar mask MSB (0x%x) LSB (0x%x)",
 			            getNameWithBoard(), myTransducerMaskMSB, myTransducerMaskLSB);
 
-		ArLog::log (MvrLog::Verbose, "%s::setRobot() Sonar use for autonomous driving mask MSB (0x%x) LSB (0x%x)",
+		MvrLog::log (MvrLog::Verbose, "%s::setRobot() Sonar use for autonomous driving mask MSB (0x%x) LSB (0x%x)",
 			            getNameWithBoard(), myAutonomousDrivingTransducerMaskMSB, myAutonomousDrivingTransducerMaskLSB);
 
 	}
@@ -278,7 +252,7 @@ MVREXPORT void ArSonarMTX::setRobot (MvrRobot *robot)
 }
 
 
-void ArSonarMTX::clear (void)
+void MvrSonarMTX::clear (void)
 {
 	myIsConnected = false;
 	myTryingToConnect = false;
@@ -286,13 +260,13 @@ void ArSonarMTX::clear (void)
 
 }
 
-MVREXPORT void ArSonarMTX::sonarSetName (const char *name)
+MVREXPORT void MvrSonarMTX::sonarSetName (const char *name)
 {
 	myName = name;
 	myDeviceMutex.setLogNameVar ("%s::myDeviceMutex", getNameWithBoard());
 	myPacketsMutex.setLogNameVar ("%s::myPacketsMutex", getNameWithBoard());
 	myDataMutex.setLogNameVar ("%s::myDataMutex", getNameWithBoard());
-	myAriaExitCB.setNameVar ("%s::exitCallback", getNameWithBoard());
+	myMvriaExitCB.setNameVar ("%s::exitCallback", getNameWithBoard());
   myDisconnectOnErrorCBList.setNameVar(
 	  "%s::myDisconnectOnErrorCBList", myName.c_str());
   
@@ -300,7 +274,7 @@ MVREXPORT void ArSonarMTX::sonarSetName (const char *name)
 }
 
 
-MVREXPORT int ArSonarMTX::getReadingCount()
+MVREXPORT int MvrSonarMTX::getReadingCount()
 {
   if (myTimeLastReading == time(NULL))
     return myReadingCount;
@@ -309,7 +283,7 @@ MVREXPORT int ArSonarMTX::getReadingCount()
   return 0;
 }
 
-MVREXPORT void ArSonarMTX::internalGotReading(void)
+MVREXPORT void MvrSonarMTX::internalGotReading(void)
 {
   IFDEBUG(puts("internalGotReading");)
   if (myTimeLastReading != time(NULL)) 
@@ -324,12 +298,12 @@ MVREXPORT void ArSonarMTX::internalGotReading(void)
   
 }
 
-MVREXPORT bool ArSonarMTX::disconnect (void)
+MVREXPORT bool MvrSonarMTX::disconnect (void)
 {
 	if (!isConnected())
 		return true;
 
-	ArLog::log (MvrLog::Normal, "%s: Disconnecting", getNameWithBoard());
+	MvrLog::log (MvrLog::Normal, "%s: Disconnecting", getNameWithBoard());
 
   if(myConn)
     myConn->close();
@@ -337,10 +311,10 @@ MVREXPORT bool ArSonarMTX::disconnect (void)
 	return true;
 }
 
-void ArSonarMTX::failedToConnect (void)
+void MvrSonarMTX::failedToConnect (void)
 {
 
-	ArLog::log (MvrLog::Normal,
+	MvrLog::log (MvrLog::Normal,
 	            "%s:failedToConnect Cound not connect to sonar",
 	            getNameWithBoard());
 
@@ -349,10 +323,10 @@ void ArSonarMTX::failedToConnect (void)
 	myDeviceMutex.unlock();
 }
 
-void ArSonarMTX::sensorInterp (void)
+void MvrSonarMTX::sensorInterp (void)
 {
-	//ArSonarMTXPacket *packet;
-	ArRobotPacket *packet;
+	//MvrSonarMTXPacket *packet;
+	MvrRobotPacket *packet;
 
 	int sonarNum;
 	int sonarRange;
@@ -378,7 +352,7 @@ void ArSonarMTX::sensorInterp (void)
 		// make sure its a data packet with 7 bytes
 //packet->getLength()
 		if ( (packet->getID() != START_SCAN) || (packet->getLength() != 10)) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s:sensorInterp Could not process packet, command or packet length is invalid %02x %02x %02x %02x %02x %02x %02x %02x %d",
 			            getNameWithBoard(), buf[0], buf[1], buf[2], buf[3],buf[4], buf[5], buf[6],packet->getLength());
 
@@ -386,7 +360,7 @@ void ArSonarMTX::sensorInterp (void)
 			continue;
 		}
 
-		ArTime time = packet->getTimeReceived();
+		MvrTime time = packet->getTimeReceived();
 
 		sonarNum = (buf[5] << 8) | (buf[4]);
 
@@ -400,12 +374,12 @@ void ArSonarMTX::sensorInterp (void)
 					sprintf (&obuf[j], "_%02x", buf[i]);
 					j= j+3;
 				}
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::sensorInterp() packet = %s",getNameWithBoard(), obuf);
 #endif
 
 		if (sonarNum > myNumTransducers) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s:sensorInterp Could not process packet, transducer number is invalid %d %d",
 			            getNameWithBoard(), sonarNum, myNumTransducers);
 			delete packet;
@@ -420,7 +394,7 @@ void ArSonarMTX::sensorInterp (void)
 
 		if (iter2 == mySonarMap.end()) {
 				if (!myWarnedAboutExtraSonar)  {
-					ArLog::log(MvrLog::Normal, "Robot gave back extra sonar reading!  Either the parameter file for the robot or the firmware needs updating.");
+					MvrLog::log(MvrLog::Normal, "Robot gave back extra sonar reading!  Either the parameter file for the robot or the firmware needs updating.");
 					myWarnedAboutExtraSonar = true;
 				}
 
@@ -439,7 +413,7 @@ void ArSonarMTX::sensorInterp (void)
 
 #if 0
 		if ( (buf[7] == 0xff) && (buf[6] == 0xff)) {
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s:sensorInterp Could not process packet, range is invalid for %d",
 					getNameWithBoard(), sonarNum);
 			delete packet;
@@ -450,11 +424,11 @@ void ArSonarMTX::sensorInterp (void)
 
 		sonarRange = (buf[7] << 8) | (buf[6]);
 
-		sonarRangeConverted = ArMath::roundInt (
+		sonarRangeConverted = MvrMath::roundInt (
 		                        sonarRange * myRobot->getRobotParams()->getRangeConvFactor());
 
 
-		//ArLog::log(MvrLog::Normal,
+		//MvrLog::log(MvrLog::Normal,
 		//			"%s:sensorInterp range is valid = %d for transducer %d mapped sonar = %d",
 		//					getNameWithBoard(), sonarRangeConverted, sonarNum, mappedSonarNum);
 
@@ -473,7 +447,7 @@ void ArSonarMTX::sensorInterp (void)
 					sprintf (&obuf[j], "_%02x", buf[i]);
 					j= j+3;
 				}
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::sensorInterp() packet = %s num = %d mapped = %d range = %d",getNameWithBoard(), obuf, sonarNum, mappedSonarNum, sonarRangeConverted);
 }
 #endif
@@ -491,7 +465,7 @@ void ArSonarMTX::sensorInterp (void)
 	} // end while
 }
 
-MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking )
+MVREXPORT bool MvrSonarMTX::blockingConnect (bool sendTracking, bool recvTracking )
 {
   if (!mySendTrackingSet)
 	  mySendTracking = sendTracking;
@@ -502,7 +476,7 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 
   if( myNumConfiguredTransducers == 0 || (myRobot && myRobot->getNumSonar() == 0) )
   {
-    ArLog::log(MvrLog::Terse, "%s: Error: No transducers configured or No sonar set up in parameters.",
+    MvrLog::log(MvrLog::Terse, "%s: Error: No transducers configured or No sonar set up in parameters.",
       getNameWithBoard());
     myDeviceMutex.unlock();
     failedToConnect();
@@ -510,7 +484,7 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
   }
 
 	if (myConn == NULL) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s: Could not connect because there is no connection defined",
 		            getNameWithBoard());
 		myDeviceMutex.unlock();
@@ -518,19 +492,19 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 		return false;
 	}
 
-	ArSerialConnection *serConn = NULL;
-	serConn = dynamic_cast<ArSerialConnection *> (myConn);
+	MvrSerialConnection *serConn = NULL;
+	serConn = dynamic_cast<MvrSerialConnection *> (myConn);
 
 	if (serConn != NULL)
   {
-    ArLog::log(myInfoLogLevel, "MvrSonarMTX::blockingConnect: Forcing baud rate to 115200...");
+    MvrLog::log(myInfoLogLevel, "MvrSonarMTX::blockingConnect: Forcing baud rate to 115200...");
 		serConn->setBaud (115200);
   }
 
-	if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 	    && !myConn->openSimple()) {
-		ArLog::log (
-		  ArLog::Terse,
+		MvrLog::log (
+		  MvrLog::Terse,
 		  "%s: Could not connect because the connection was not open and could not open it",
 		  getNameWithBoard());
 		myDeviceMutex.unlock();
@@ -540,11 +514,11 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 
 	// PS - set logging level and laser type in packet receiver class
 
-	myReceiver = new ArRobotPacketReceiver(myConn, true, HEADER1, HEADER2, 
+	myReceiver = new MvrRobotPacketReceiver(myConn, true, HEADER1, HEADER2, 
 																					myRecvTracking,
 																					"MvrSonarMTX");
 
-	mySender = new ArRobotPacketSender(myConn, HEADER1, HEADER2, 
+	mySender = new MvrRobotPacketSender(myConn, HEADER1, HEADER2, 
 																					mySendTracking,
 																					"MvrSonarMTX");
 
@@ -567,32 +541,32 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 	myDeviceMutex.unlock();
 
 
-	ArTime timeDone;
+	MvrTime timeDone;
 
 	if (!timeDone.addMSec (30 * 1000)) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() error adding msecs (30 * 1000)",
 		            getNameWithBoard());
 	}
 
-	//ArSonarMTXPacket *packet;
-	ArRobotPacket *packet;
+	//MvrSonarMTXPacket *packet;
+	MvrRobotPacket *packet;
 
 	if (!sendAlive()) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not send Alive to Sonar", getNameWithBoard());
 		failedToConnect();
 		return false;
 	}
 
 	do {
-		//ArLog::log(MvrLog::Normal,
+		//MvrLog::log(MvrLog::Normal,
 		//		"%s::blockingConnect() calling receive packet", getNameWithBoard());
 		packet = myReceiver->receivePacket (1000);
 
 		if (packet != NULL) {
 			// verify alive received
-			//ArLog::log (MvrLog::Normal,
+			//MvrLog::log (MvrLog::Normal,
 		     //       "%s::blockingConnect() Response to Alive received from Sonar", getNameWithBoard());
 			//unsigned char command = packet->bufToUByte();
 			if (packet->getID() == ALIVE) {
@@ -607,70 +581,70 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 
         const int cmdDelay = 100;
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
         
 				// send a stop
 				if (!sendStop()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not send stop to Sonar", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
 				if (!queryFirmwareVersion()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not get firmware version", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
 				if (!validateTransducers()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not validate transducers", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
 #if 0 // temp for adam
 
 				if (!validateDelay()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not validate delay", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 #endif // tem for adam
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
 				if (!validateGain()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not validate gain", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
 #if 0
 				if (!validateNumThresholdRanges()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not validate num threshold ranges", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 
-        ArUtil::sleep(cmdDelay);
+        MvrUtil::sleep(cmdDelay);
 #endif
 
 				if (!validateThresholds()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not validate thresholds", getNameWithBoard());
 					failedToConnect();
 					return false;
@@ -679,22 +653,22 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 
 /* this is no longer supported - 
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
 				if (!validateNoiseDelta()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not validate noise delta", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 */
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
       
 //#if 0 // temp for adam
 
 				if (!validateMaxRange()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not validate max range", getNameWithBoard());
 					failedToConnect();
 					return false;
@@ -715,24 +689,24 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 				}
 #endif
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
        
 
 
 				if (!sendSetMask (myTransducerMaskLSB, myTransducerMaskMSB)) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not send set mask to Sonar", getNameWithBoard());
 					failedToConnect();
 					return false;
 				}
 
-				ArUtil::sleep(cmdDelay);
+				MvrUtil::sleep(cmdDelay);
 
   
 
 
 				if (!sendGetMask()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 		            "%s::blockingConnect() Could not send getmask to Sonar", getNameWithBoard());
 					failedToConnect();
 					return false;
@@ -742,7 +716,7 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 				packet = myReceiver->receivePacket (1000);
 
 				if (packet == NULL) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 										"%s::blockingConnect() Receive of transducer mask failed", getNameWithBoard());
 					failedToConnect();
 					return false;
@@ -752,7 +726,7 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 
 				// verify get num trans received
 				if ( maskBuf[3] != GET_TRANSDUCER_MASK) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 			            "%s::blockingConnect() Receive invalid response to get transducer mask", getNameWithBoard());
 					failedToConnect();
 					return false;
@@ -761,7 +735,7 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 
 
       IFDEBUG(
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 			            "%s::blockingConnect() Transducer mask LSB (0x%02x) MSB (0x%02x)", 
 									getNameWithBoard(), maskBuf[5], maskBuf[4]);
       )
@@ -769,11 +743,11 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 				myTransducersAreOn = true;
 		
     	  // send start
-        ArUtil::sleep(cmdDelay);
+        MvrUtil::sleep(cmdDelay);
         if(mySendTracking)
-          ArLog::log(MvrLog::Normal, "%s::blockingConnect(): sending START...", getNameWithBoard());
+          MvrLog::log(MvrLog::Normal, "%s::blockingConnect(): sending START...", getNameWithBoard());
 				if (!sendStart()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not send start scan to Sonar", getNameWithBoard());
 					failedToConnect();
 					return false;
@@ -796,13 +770,13 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 						}
 
 						printf ("\n\n");
-						//ArLog::log(MvrLog::Normal,
+						//MvrLog::log(MvrLog::Normal,
 						//	"%s::blockingConnect() packet received - command = %d length = %d", getNameWithBoard(), packet->getCommand(), packet->getDataLength() );
 						delete packet;
 						packet = NULL;
 
 					} else {
-						ArLog::log (MvrLog::Normal,
+						MvrLog::log (MvrLog::Normal,
 						            "%s::blockingConnect() No packet received", getNameWithBoard());
 					}
 				}
@@ -816,7 +790,7 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 				myIsConnected = true;
 				myTryingToConnect = false;
 
-				ArLog::log (MvrLog::Verbose, "%s::blockingConnect() Connection successful",
+				MvrLog::log (MvrLog::Verbose, "%s::blockingConnect() Connection successful",
 				            getNameWithBoard());
 
 				myLastReading.setToNow();
@@ -826,13 +800,13 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 				return true;
 
 			} else {
-				ArLog::log (MvrLog::Normal, "%s::blockingConnect() Wrong command recieved from Alive request = 0x%x - resending",
+				MvrLog::log (MvrLog::Normal, "%s::blockingConnect() Wrong command recieved from Alive request = 0x%x - resending",
 				            getNameWithBoard(), packet->getID());
 				delete packet;
 				packet = NULL;
 
 				if (!sendAlive()) {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "%s::blockingConnect() Could not send Alive to Sonar", getNameWithBoard());
 					failedToConnect();
 					return false;
@@ -840,12 +814,12 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 			}
 
 		} else {
-			ArLog::log (MvrLog::Normal, "%s::blockingConnect() Did not get response to Alive request (%d msec until timeout) - resending",
+			MvrLog::log (MvrLog::Normal, "%s::blockingConnect() Did not get response to Alive request (%d msec until timeout) - resending",
 			            getNameWithBoard(), timeDone.mSecTo());
 
 
 			if (!sendAlive()) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::blockingConnect() Could not send Alive to Sonar", getNameWithBoard());
 				failedToConnect();
 				return false;
@@ -853,7 +827,7 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 		}
 	} while (timeDone.mSecTo() >= 0);
 
-	ArLog::log (MvrLog::Normal,
+	MvrLog::log (MvrLog::Normal,
 	            "%s::blockingConnect()  Connection to sonar failed",
 	            getNameWithBoard());
 	failedToConnect();
@@ -863,24 +837,24 @@ MVREXPORT bool ArSonarMTX::blockingConnect (bool sendTracking, bool recvTracking
 
 
 
-MVREXPORT bool ArSonarMTX::fakeConnect ()
+MVREXPORT bool MvrSonarMTX::fakeConnect ()
 {
 
 	if (myConn == NULL) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s: Could not connect because there is no connection defined",
 		            getNameWithBoard());
 		failedToConnect();
 		return false;
 	}
 
-	ArSerialConnection *serConn = NULL;
-	serConn = dynamic_cast<ArSerialConnection *> (myConn);
+	MvrSerialConnection *serConn = NULL;
+	serConn = dynamic_cast<MvrSerialConnection *> (myConn);
 
-	if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 	    && !myConn->openSimple()) {
-		ArLog::log (
-		  ArLog::Terse,
+		MvrLog::log (
+		  MvrLog::Terse,
 		  "%s: Could not connect because the connection was not open and could not open it",
 		  getNameWithBoard());
 		failedToConnect();
@@ -888,11 +862,11 @@ MVREXPORT bool ArSonarMTX::fakeConnect ()
 	}
 
 
-	myReceiver = new ArRobotPacketReceiver(myConn, true, HEADER1, HEADER2, 
+	myReceiver = new MvrRobotPacketReceiver(myConn, true, HEADER1, HEADER2, 
 																					myRecvTracking,
 																					"MvrSonarMTX");
 
-	mySender = new ArRobotPacketSender(myConn, HEADER1, HEADER2, 
+	mySender = new MvrRobotPacketSender(myConn, HEADER1, HEADER2, 
 																					mySendTracking,
 																					"MvrSonarMTX");
 
@@ -905,7 +879,7 @@ MVREXPORT bool ArSonarMTX::fakeConnect ()
 	// PS 2/28/14 - there is a problem with debug replay - this might do the trick
 	myTransducersAreOn = true;
 
-	ArLog::log (MvrLog::Normal, "%s::fakeConnect() Connection successful",
+	MvrLog::log (MvrLog::Normal, "%s::fakeConnect() Connection successful",
 				            getNameWithBoard());
 
 	myLastReading.setToNow();
@@ -916,25 +890,25 @@ MVREXPORT bool ArSonarMTX::fakeConnect ()
 
 }
 
-MVREXPORT const char * ArSonarMTX::getName (void) const
+MVREXPORT const char * MvrSonarMTX::getName (void) const
 {
 	return myName.c_str();
 }
 
-MVREXPORT const char * ArSonarMTX::getNameWithBoard (void) const
+MVREXPORT const char * MvrSonarMTX::getNameWithBoard (void) const
 {
 	return myNameWithBoard;
 }
 
-MVREXPORT void * ArSonarMTX::runThread (void *arg)
+MVREXPORT void * MvrSonarMTX::runThread (void *arg)
 {
 	//char buf[1024];
 
-	//ArSonarMTXPacket *packet;
-	ArRobotPacket *packet = NULL;
+	//MvrSonarMTXPacket *packet;
+	MvrRobotPacket *packet = NULL;
 
   IFDEBUG(
-    ArLog::log (MvrLog::Normal,
+    MvrLog::log (MvrLog::Normal,
 		            "%s::runThread()", getNameWithBoard());
   )
 
@@ -966,7 +940,7 @@ MVREXPORT void * ArSonarMTX::runThread (void *arg)
 		  if (myTransducersAreOn) 
       {
 
-			  ArLog::log (MvrLog::Terse,
+			  MvrLog::log (MvrLog::Terse,
 		              "%s::runThread()  Lost connection to the MTX sonar because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getNameWithBoard(),
 		              myLastReading.mSecSince() / 1000.0,
 		              getConnectionTimeoutSeconds() );
@@ -978,7 +952,7 @@ MVREXPORT void * ArSonarMTX::runThread (void *arg)
 
   }
 
-	ArLog::log (myInfoLogLevel,
+	MvrLog::log (myInfoLogLevel,
 		            "%s::runThread() thread killed (getRunning is false)", getNameWithBoard());
 
 	return NULL;
@@ -990,7 +964,7 @@ MVREXPORT void * ArSonarMTX::runThread (void *arg)
    getConnectionTimeoutSeconds.  If there is a robot then it will not
    start the check until the sonar is running and connected.
 **/
-MVREXPORT bool ArSonarMTX::checkLostConnection(void)
+MVREXPORT bool MvrSonarMTX::checkLostConnection(void)
 {
   //puts("checkLostConnection"); fflush(stdout);
   if ((myRobot == NULL || myRobotRunningAndConnected) && 
@@ -1008,35 +982,35 @@ MVREXPORT bool ArSonarMTX::checkLostConnection(void)
   return false;
 }
 
-MVREXPORT void ArSonarMTX::disconnectOnError(void)
+MVREXPORT void MvrSonarMTX::disconnectOnError(void)
 {
-  ArLog::log(MvrLog::Normal, "%s: Disconnected because of error", getNameWithBoard());
+  MvrLog::log(MvrLog::Normal, "%s: Disconnected because of error", getNameWithBoard());
   myDisconnectOnErrorCBList.invoke();
 }
 
-MVREXPORT bool ArSonarMTX::sendAlive()
+MVREXPORT bool MvrSonarMTX::sendAlive()
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID(ALIVE);
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendAlive() sending alive to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendAlive() Could not send alive request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendAlive() alive sent to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
@@ -1047,28 +1021,28 @@ MVREXPORT bool ArSonarMTX::sendAlive()
 
 
 
-MVREXPORT bool ArSonarMTX::sendReset()
+MVREXPORT bool MvrSonarMTX::sendReset()
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (RESET); // reset message
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendReset() Could not send reset request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendReset() sending reset to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendReset() reset sent to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
@@ -1077,21 +1051,21 @@ MVREXPORT bool ArSonarMTX::sendReset()
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendStart()
+MVREXPORT bool MvrSonarMTX::sendStart()
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (START_SCAN); 
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendStart() Could not send start request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendStart() start sent to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
@@ -1101,21 +1075,21 @@ MVREXPORT bool ArSonarMTX::sendStart()
 }
 
 
-MVREXPORT bool ArSonarMTX::sendStop()
+MVREXPORT bool MvrSonarMTX::sendStop()
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (STOP_SCAN); 
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendStop() Could not send stop request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendStop() stop sent to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
@@ -1123,21 +1097,21 @@ MVREXPORT bool ArSonarMTX::sendStop()
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendGetTransducerCount()
+MVREXPORT bool MvrSonarMTX::sendGetTransducerCount()
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (GET_NUM_TRANDUCERS); 
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendGetTransducerCount() Could not send get trasnsducer count request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetTransducerCount() get number of transducers sent to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
@@ -1145,22 +1119,22 @@ MVREXPORT bool ArSonarMTX::sendGetTransducerCount()
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendGetGain (unsigned char transducerNumber)
+MVREXPORT bool MvrSonarMTX::sendGetGain (unsigned char transducerNumber)
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (GET_GAIN); 
 	sendPacket.uByteToBuf (transducerNumber);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendGetGain() Could not send get gain request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetGain() get gain sent to Sonar 0x%x",
 	              getNameWithBoard(), transducerNumber);
 
@@ -1170,22 +1144,22 @@ MVREXPORT bool ArSonarMTX::sendGetGain (unsigned char transducerNumber)
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendGetMaxRange (unsigned char transducerNumber)
+MVREXPORT bool MvrSonarMTX::sendGetMaxRange (unsigned char transducerNumber)
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (GET_ECHO_SAMPLE_SIZE); 
 	sendPacket.uByteToBuf (transducerNumber);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendGetMaxRange() Could not send get max range (echosamplesize) to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetMaxRange() get maxrange (echosamplesize) sent to Sonar 0x%x",
 	              getNameWithBoard(), transducerNumber);
 
@@ -1196,21 +1170,21 @@ MVREXPORT bool ArSonarMTX::sendGetMaxRange (unsigned char transducerNumber)
 }
 
 
-MVREXPORT bool ArSonarMTX::sendGetDelay()
+MVREXPORT bool MvrSonarMTX::sendGetDelay()
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (GET_SONAR_DELAY); 
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendGetDelay() Could not send get delay request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetDelay() get delay sent to Sonar",
 	              getNameWithBoard());
 
@@ -1220,23 +1194,23 @@ MVREXPORT bool ArSonarMTX::sendGetDelay()
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendSetGain (unsigned char transducerNumber,
+MVREXPORT bool MvrSonarMTX::sendSetGain (unsigned char transducerNumber,
                                        unsigned char gain)
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (SET_GAIN); 
 	sendPacket.uByteToBuf (transducerNumber);
 	sendPacket.uByteToBuf (gain);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendSetGain() Could not send set gain request to Sonar", getNameWithBoard());
 		return false;
 	}
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetGain() set gain sent to Sonar 0x%x 0x%x",
 	              getNameWithBoard(), transducerNumber, gain);
 
@@ -1246,20 +1220,20 @@ MVREXPORT bool ArSonarMTX::sendSetGain (unsigned char transducerNumber,
 
 
 
-MVREXPORT bool ArSonarMTX::requestFirmwareVersion ()
+MVREXPORT bool MvrSonarMTX::requestFirmwareVersion ()
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (GET_VERSION); 
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::requestFirmwareVersion() Could not send get version request to Sonar", getNameWithBoard());
 		return false;
 	}
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::requestFirmwareVersion() set get version to sonar",
 	              getNameWithBoard());
 
@@ -1268,10 +1242,10 @@ MVREXPORT bool ArSonarMTX::requestFirmwareVersion ()
 }
 
 
-MVREXPORT bool ArSonarMTX::sendSetMaxRange (unsigned char transducerNumber,
+MVREXPORT bool MvrSonarMTX::sendSetMaxRange (unsigned char transducerNumber,
     int echoSampleSize)
 {
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (SET_ECHO_SAMPLE_SIZE); 
 	sendPacket.uByteToBuf (transducerNumber);
 
@@ -1280,14 +1254,14 @@ MVREXPORT bool ArSonarMTX::sendSetMaxRange (unsigned char transducerNumber,
 
 	if (!mySender->sendPacket(&sendPacket)) {
 
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendSetMaxRange() Could not send set MaxRange (echosamplesize) to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetMaxRange() set MaxRange (echosamplesize) sent to Sonar 0x%x 0x%x",
 	              getNameWithBoard(), transducerNumber, echoSampleSize);
 
@@ -1297,22 +1271,22 @@ MVREXPORT bool ArSonarMTX::sendSetMaxRange (unsigned char transducerNumber,
 }
 
 
-MVREXPORT bool ArSonarMTX::sendSetDelay (unsigned char delay)
+MVREXPORT bool MvrSonarMTX::sendSetDelay (unsigned char delay)
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (SET_SONAR_DELAY); // set delay
 	sendPacket.uByteToBuf (delay);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendASetDelay() Could not send set delay request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetDelay() set delay sent to Sonar 0x%x",
 	              getNameWithBoard(), delay);
 
@@ -1322,23 +1296,23 @@ MVREXPORT bool ArSonarMTX::sendSetDelay (unsigned char delay)
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendSetMask (unsigned char maskLsb, unsigned char maskMsb)
+MVREXPORT bool MvrSonarMTX::sendSetMask (unsigned char maskLsb, unsigned char maskMsb)
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 	sendPacket.setID (SET_TRANSDUCER_MASK); // set mask
 	sendPacket.uByteToBuf (maskLsb);
 	sendPacket.uByteToBuf (maskMsb);
 	
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendSetMask() Could not send set mask request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetMask() set mask sent to Sonar", getNameWithBoard());
 
 	); // end IFDEBUG
@@ -1347,10 +1321,10 @@ MVREXPORT bool ArSonarMTX::sendSetMask (unsigned char maskLsb, unsigned char mas
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::validateTransducers()
+MVREXPORT bool MvrSonarMTX::validateTransducers()
 {
 
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 
 	// send get transducer count
 	bool gotTransducerCount = false;
@@ -1358,7 +1332,7 @@ MVREXPORT bool ArSonarMTX::validateTransducers()
 
 	for (int i = 0; i < 10; i++) {
 		if (!sendGetTransducerCount()) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateTransducers() Could not send gettransducercount to Sonar", getNameWithBoard());
 			return false;
 		}
@@ -1366,7 +1340,7 @@ MVREXPORT bool ArSonarMTX::validateTransducers()
 		packet = myReceiver->receivePacket (1000);
 
 		if (packet == NULL) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateTransducers() No response to get transducer count", getNameWithBoard());
 			continue;
 		}
@@ -1375,7 +1349,7 @@ MVREXPORT bool ArSonarMTX::validateTransducers()
 
 		// verify get num trans received
 		if ( (transBuf[3] != GET_NUM_TRANDUCERS) || (transBuf[4] == 0)) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateTransducers() Invalid response from sonar to gettransducercount (0x%x 0x%x)",
 			            getNameWithBoard(), transBuf[3], transBuf[4]);
 			continue;
@@ -1387,7 +1361,7 @@ MVREXPORT bool ArSonarMTX::validateTransducers()
 	} // endfor
 
 	if (!gotTransducerCount) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::validateTransducers() Cannot get transducer count - exiting",
 		            getNameWithBoard());
 		return false;
@@ -1395,11 +1369,11 @@ MVREXPORT bool ArSonarMTX::validateTransducers()
 
 	gotTransducerCount = false;
 	myNumTransducers = transBuf[4];
-	ArLog::log (myInfoLogLevel,
+	MvrLog::log (myInfoLogLevel,
 	            "%s::validateTransducers() Sonar has %d transducers", getNameWithBoard(), myNumTransducers);
 
 	if (myNumTransducers < myNumConfiguredTransducers) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::validateTransducers() there are more transducers configured %d then there are on the board %d",
 		            getNameWithBoard(), myNumConfiguredTransducers, myNumTransducers);
 		return false;
@@ -1410,9 +1384,9 @@ MVREXPORT bool ArSonarMTX::validateTransducers()
 }
 
 
-MVREXPORT bool ArSonarMTX::validateGain()
+MVREXPORT bool MvrSonarMTX::validateGain()
 {
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 	// send get gain
 	bool gotGain = false;
 	unsigned char *gainBuf;
@@ -1425,7 +1399,7 @@ MVREXPORT bool ArSonarMTX::validateGain()
 
 		for (int i = 0; i < 10; i++) {
 			if (!sendGetGain (j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateGain() Could not send get gain to Sonar", getNameWithBoard());
 				return false;
 			}
@@ -1433,7 +1407,7 @@ MVREXPORT bool ArSonarMTX::validateGain()
 			packet = myReceiver->receivePacket (1000);
 			
 			if (packet == NULL) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateGain() No response to get gain - resending", getNameWithBoard());
 				continue;
 			}
@@ -1442,7 +1416,7 @@ MVREXPORT bool ArSonarMTX::validateGain()
 
 			// verify get num trans received
 			if ( (gainBuf[3] != GET_GAIN) || (gainBuf[4] != j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateGain() Invalid response from Sonar_%d to get gain (0x%x 0x%x)",
 				            getNameWithBoard(), j+1, gainBuf[3], gainBuf[4]);
 				continue;
@@ -1454,7 +1428,7 @@ MVREXPORT bool ArSonarMTX::validateGain()
 		} // endfor
 
 		if (!gotGain) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateGain() Cannot get gain for Sonar_%d",
 			            getNameWithBoard(), j+1);
 			return false;
@@ -1464,16 +1438,16 @@ MVREXPORT bool ArSonarMTX::validateGain()
 
 		unsigned char gain = gainBuf[5];
 		IFDEBUG (
-		  ArLog::log (MvrLog::Normal,
+		  MvrLog::log (MvrLog::Normal,
 		              "%s::validateGain() Sonar_%d has gain of %d", getNameWithBoard(), j+1, gain));
 
 		if (mySonarMap[j][SONAR_GAIN] != gain) {
-			ArLog::log (MvrLog::Verbose,
+			MvrLog::log (MvrLog::Verbose,
 			            "%s::validateGain() Sonar_%d gain %d does not match configured gain %d, setting new gain",
 			            getNameWithBoard(), j+1, gain, mySonarMap[j][SONAR_GAIN]);
 
 			if (!sendSetGain (j, mySonarMap[j][SONAR_GAIN])) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateGain() Could not send set gain to Sonar_%d", getNameWithBoard(), j+1);
 				return false;
 			}
@@ -1483,21 +1457,21 @@ MVREXPORT bool ArSonarMTX::validateGain()
 	}
 
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::validateGain() Gain valid", getNameWithBoard()));
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::validateDelay()
+MVREXPORT bool MvrSonarMTX::validateDelay()
 {
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 	// send get delay
 	bool gotDelay = false;
 	unsigned char *delayBuf;
 
 	for (int i = 0; i < 10; i++) {
 		if (!sendGetDelay ()) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateDelay() Could not send get delay to Sonar", getNameWithBoard());
 			return false;
 		}
@@ -1505,7 +1479,7 @@ MVREXPORT bool ArSonarMTX::validateDelay()
 		packet = myReceiver->receivePacket (1000);
 
 		if (packet == NULL) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateDelay() No response to get delay - resending (%d)",
 			            getNameWithBoard(), i);
 			continue;
@@ -1515,7 +1489,7 @@ MVREXPORT bool ArSonarMTX::validateDelay()
 
 		// verify get num trans received
 		if ( (delayBuf[3] != GET_SONAR_DELAY) || (delayBuf[4] == 0)) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateDelay() Invalid response from sonar to get delay (0x%x 0x%x)",
 			            getNameWithBoard(), delayBuf[3], delayBuf[4]);
 			continue;
@@ -1527,7 +1501,7 @@ MVREXPORT bool ArSonarMTX::validateDelay()
 	} // endfor
 
 	if (!gotDelay) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::validateDelay() Cannot get delay - exiting",
 		            getNameWithBoard());
 		return false;
@@ -1537,16 +1511,16 @@ MVREXPORT bool ArSonarMTX::validateDelay()
 
 	unsigned char delay = delayBuf[4];
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::validateDelay() Sonar has delay of %d", getNameWithBoard(), delay));
 
 	if (myBoardDelay != delay) {
-		ArLog::log (MvrLog::Verbose,
+		MvrLog::log (MvrLog::Verbose,
 		            "%s::validateDelay() delay %d does not match configured delay %d, setting new delay",
 		            getNameWithBoard(), delay, myBoardDelay);
 
 		if (!sendSetDelay (myBoardDelay)) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateDelay() Could not send set delay to Sonar", getNameWithBoard());
 			return false;
 		}
@@ -1554,20 +1528,20 @@ MVREXPORT bool ArSonarMTX::validateDelay()
 
 	delete packet;
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::validateDelay() Delay valid", getNameWithBoard()));
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::validateNumThresholdRanges()
+MVREXPORT bool MvrSonarMTX::validateNumThresholdRanges()
 {
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 	bool gotNumThres = false;
 	unsigned char *numBuf;
 
 	for (int i = 0; i < 10; i++) {
 		if (!sendGetNumThresholdRanges ()) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateNumThresholdRanges() Could not send get num threshold ranges to Sonar", getNameWithBoard());
 			return false;
 		}
@@ -1575,7 +1549,7 @@ MVREXPORT bool ArSonarMTX::validateNumThresholdRanges()
 		packet = myReceiver->receivePacket (1000);
 
 		if (packet == NULL) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateNumThresholdRanges() No response to get num threshold ranges - resending (%d)",
 			            getNameWithBoard(), i);
 			continue;
@@ -1587,7 +1561,7 @@ MVREXPORT bool ArSonarMTX::validateNumThresholdRanges()
 	}
 
 	if (!gotNumThres) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::validateNumThresholdRanges() Cannot get num threshold ranges - exiting",
 		            getNameWithBoard());
 		return false;
@@ -1596,7 +1570,7 @@ MVREXPORT bool ArSonarMTX::validateNumThresholdRanges()
 	unsigned char numThres = numBuf[4];
 
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::validateNumThresholdRanges() Sonar has num of threshold ranges of %d", getNameWithBoard(), numThres));
 
 	delete packet;
@@ -1604,16 +1578,16 @@ MVREXPORT bool ArSonarMTX::validateNumThresholdRanges()
 }
 
 
-MVREXPORT bool ArSonarMTX::queryFirmwareVersion()
+MVREXPORT bool MvrSonarMTX::queryFirmwareVersion()
 {
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 	// send get delay
 	bool gotVersion = false;
 	unsigned char *versionBuf;
 
 	for (int i = 0; i < 10; i++) {
 		if (!requestFirmwareVersion ()) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::queryFirmwareVersion() Could not send get version to Sonar", getNameWithBoard());
 			return false;
 		}
@@ -1622,7 +1596,7 @@ MVREXPORT bool ArSonarMTX::queryFirmwareVersion()
 			packet = myReceiver->receivePacket (1000);		
 
 			if (packet == NULL) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 			            "%s::queryFirmwareVersion() No response to get version - resending (%d)",
 			            getNameWithBoard(), i);
 				continue;
@@ -1631,7 +1605,7 @@ MVREXPORT bool ArSonarMTX::queryFirmwareVersion()
 			versionBuf = (unsigned char *) packet->getBuf();
 
 			if ( (versionBuf[3] != GET_VERSION) || (versionBuf[4] == 0)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 			            "%s::queryFirmwareVersion() Invalid response from sonar to get version (0x%x 0x%x)",
 			            getNameWithBoard(), versionBuf[3], versionBuf[4]);
 				continue;
@@ -1646,7 +1620,7 @@ MVREXPORT bool ArSonarMTX::queryFirmwareVersion()
 	} // endfor
 
 	if (!gotVersion) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::queryFirmwareVersion() Cannot get version - exiting",
 		            getNameWithBoard());
 		return false;
@@ -1654,7 +1628,7 @@ MVREXPORT bool ArSonarMTX::queryFirmwareVersion()
 
 	myFirmwareVersion = versionBuf[4];
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::queryFirmwareVersion() Sonar has firmware version of %d", getNameWithBoard(), myFirmwareVersion));
 
 	delete packet;
@@ -1663,9 +1637,9 @@ MVREXPORT bool ArSonarMTX::queryFirmwareVersion()
 
 
 
-MVREXPORT bool ArSonarMTX::validateMaxRange()
+MVREXPORT bool MvrSonarMTX::validateMaxRange()
 {
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 
 	// send get echosamplesize
 	bool gotEchoSampleSize = false;
@@ -1679,7 +1653,7 @@ MVREXPORT bool ArSonarMTX::validateMaxRange()
 
 		for (int i = 0; i < 10; i++) {
 			if (!sendGetMaxRange (j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateMaxRange() Could not send get maxrange echosamplesize to Sonar_%d",
 				            getNameWithBoard(), j+1);
 				return false;
@@ -1688,7 +1662,7 @@ MVREXPORT bool ArSonarMTX::validateMaxRange()
 			packet = myReceiver->receivePacket (1000);
 
 			if (packet == NULL) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateMaxRange() No response to get maxrange - echosamplesize - resending", getNameWithBoard());
 				continue;
 			}
@@ -1697,7 +1671,7 @@ MVREXPORT bool ArSonarMTX::validateMaxRange()
 
 			// verify get num max range received
 			if ( (echosamplesizeBuf[3] != GET_ECHO_SAMPLE_SIZE) || (echosamplesizeBuf[4] != j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateMaxRange() Invalid response from Sonar_%d to get maxange echosamplesize (0x%x 0x%x)",
 				            getNameWithBoard(), j+1, echosamplesizeBuf[3], echosamplesizeBuf[4]);
 				delete packet;
@@ -1713,7 +1687,7 @@ MVREXPORT bool ArSonarMTX::validateMaxRange()
 		} // endfor
 
 		if (!gotEchoSampleSize) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateMaxRange() Cannot get maxrange echosamplesize from Sonar_%d",
 			            getNameWithBoard(), j+1);
 			return false;
@@ -1724,16 +1698,16 @@ MVREXPORT bool ArSonarMTX::validateMaxRange()
 		int echoSampleSize = (echosamplesizeBuf[6] << 8) | (echosamplesizeBuf[5]);
 
 		IFDEBUG (
-		  ArLog::log (MvrLog::Normal,
+		  MvrLog::log (MvrLog::Normal,
 		              "%s::validateMaxRange() Sonar_%d has maxrange echosamplesize of %d", getNameWithBoard(), j+1, echoSampleSize));
 
 		if (mySonarMap[j][SONAR_MAX_RANGE] != echoSampleSize) {
-			ArLog::log (MvrLog::Verbose,
+			MvrLog::log (MvrLog::Verbose,
 			            "%s::validateMaxRange() Sonar_%d maxrange echosamplesize %d does not match configured maxrange echosamplesize %d, setting new maxrange echosamplesize",
 			            getNameWithBoard(), j+1, echoSampleSize, mySonarMap[j][SONAR_MAX_RANGE]);
 
 			if (!sendSetMaxRange (j, mySonarMap[j][SONAR_MAX_RANGE])) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateMaxRange() Could not send set maxrange echosamplesize to Sonar_%d", getNameWithBoard(), j+1);
 				return false;
 			}
@@ -1743,15 +1717,15 @@ MVREXPORT bool ArSonarMTX::validateMaxRange()
 	}
 
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::validateMaxRange() EchoSampleSize valid", getNameWithBoard()));
 	return true;
 }
 
 
-MVREXPORT bool ArSonarMTX::validateThresholds()
+MVREXPORT bool MvrSonarMTX::validateThresholds()
 {
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 
 	// send get threshold
 	bool gotThresholds = false;
@@ -1766,7 +1740,7 @@ MVREXPORT bool ArSonarMTX::validateThresholds()
 
 		for (int i = 0; i < 10; i++) {
 			if (!sendGetThresholds (j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateThresholds() Could not send get threshold to Sonar_%d",
 				            getNameWithBoard(), j+1);
 				return false;
@@ -1775,7 +1749,7 @@ MVREXPORT bool ArSonarMTX::validateThresholds()
 			packet = myReceiver->receivePacket (1000);
 
 			if (packet == NULL) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateThresholds() No response to get threshold - resending", getNameWithBoard());
 				continue;
 			}
@@ -1784,7 +1758,7 @@ MVREXPORT bool ArSonarMTX::validateThresholds()
 
 			// verify get
 			if ( (thresholdBuf[3] != GET_THRESHOLDS) || (thresholdBuf[4] != j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateThresholds() Invalid response from Sonar_%d to get threshold (0x%x 0x%x)",
 				            getNameWithBoard(), j+1, thresholdBuf[3], thresholdBuf[4]);
 				delete packet;
@@ -1797,7 +1771,7 @@ MVREXPORT bool ArSonarMTX::validateThresholds()
 		} // endfor
 
 		if (!gotThresholds) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateThresholds() Cannot get threshold from Sonar_%d",
 			            getNameWithBoard(), j+1);
 			return false;
@@ -1808,17 +1782,17 @@ MVREXPORT bool ArSonarMTX::validateThresholds()
 		int thres = (thresholdBuf[6] << 8) | (thresholdBuf[5]);
 
 		IFDEBUG (
-		  ArLog::log (MvrLog::Normal,
+		  MvrLog::log (MvrLog::Normal,
 		              "%s::validateThresholds() Sonar_%d has threshold of %d", getNameWithBoard(), j+1, thres));
 
 		if (mySonarMap[j][SONAR_DETECTION_THRES] != thres) {
-			ArLog::log (MvrLog::Verbose,
+			MvrLog::log (MvrLog::Verbose,
 			            "%s::validateThresholds() Sonar_%d has detection threshold %d, it does not match configured threshold %d, setting new threshold",
 			            getNameWithBoard(), j+1, thres,
 			            mySonarMap[j][SONAR_DETECTION_THRES]);
 
 			if (!sendSetThresholds (j, mySonarMap[j][SONAR_DETECTION_THRES])) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateThresholds() Could not send set threshold to Sonar_%d", getNameWithBoard(), j+1);
 				return false;
 			}
@@ -1828,27 +1802,27 @@ MVREXPORT bool ArSonarMTX::validateThresholds()
 	}
 
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::validateThresholds() Thresholds valid", getNameWithBoard()));
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendGetThresholds (unsigned char transducerNumber)
+MVREXPORT bool MvrSonarMTX::sendGetThresholds (unsigned char transducerNumber)
 {
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (GET_THRESHOLDS); // get thresholds
 	sendPacket.uByteToBuf (transducerNumber);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendGetThresholds() Could not send get thresholds request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetThresholds() get thresholds sent to Sonar 0x%x",
 	              getNameWithBoard(), transducerNumber);
 
@@ -1858,21 +1832,21 @@ MVREXPORT bool ArSonarMTX::sendGetThresholds (unsigned char transducerNumber)
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendGetMask ()
+MVREXPORT bool MvrSonarMTX::sendGetMask ()
 {
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (GET_TRANSDUCER_MASK); // get transducer mask
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendGetMask() Could not send get transducer mask request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetMask() get transducer mask sent to Sonar",
 	              getNameWithBoard());
 
@@ -1882,21 +1856,21 @@ MVREXPORT bool ArSonarMTX::sendGetMask ()
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendGetNumThresholdRanges ()
+MVREXPORT bool MvrSonarMTX::sendGetNumThresholdRanges ()
 {
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (NUM_THRESHOLD_RANGES);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendGetNumThresholdRanges() Could not send get number threshold ranges request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetNumThresholdRanges() get number threshold ranges sent to Sonar",
 	              getNameWithBoard());
 
@@ -1906,11 +1880,11 @@ MVREXPORT bool ArSonarMTX::sendGetNumThresholdRanges ()
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendSetThresholds (unsigned char transducerNumber,
+MVREXPORT bool MvrSonarMTX::sendSetThresholds (unsigned char transducerNumber,
     int thres)
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (SET_THRESHOLDS); // set thresholds
 	sendPacket.uByteToBuf (transducerNumber);
@@ -1918,14 +1892,14 @@ MVREXPORT bool ArSonarMTX::sendSetThresholds (unsigned char transducerNumber,
 	sendPacket.uByteToBuf (thres >> 8);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendSetThresholds() Could not send set thresholds request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetThresholds() set thresholds sent to Sonar 0x%x 0x%x",
 	              getNameWithBoard(), transducerNumber, thres);
 
@@ -1934,9 +1908,9 @@ MVREXPORT bool ArSonarMTX::sendSetThresholds (unsigned char transducerNumber,
 	return true;
 }
 /*
-MVREXPORT bool ArSonarMTX::validateNoiseDelta()
+MVREXPORT bool MvrSonarMTX::validateNoiseDelta()
 {
-	ArRobotPacket *packet;
+	MvrRobotPacket *packet;
 
 	// send get noiseDelta
 	bool gotNoiseDelta = false;
@@ -1950,7 +1924,7 @@ MVREXPORT bool ArSonarMTX::validateNoiseDelta()
 
 		for (int i = 0; i < 10; i++) {
 			if (!sendGetNoiseDelta (j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateNoiseDelta() Could not send get noiseDelta to Sonar_%d",
 				            getNameWithBoard(), j+1);
 				return false;
@@ -1959,7 +1933,7 @@ MVREXPORT bool ArSonarMTX::validateNoiseDelta()
 			packet = myReceiver->receivePacket (1000);
 
 			if (packet == NULL) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateNoiseDelta() No response to get noiseDelta - resending", getNameWithBoard());
 				continue;
 			}
@@ -1968,7 +1942,7 @@ MVREXPORT bool ArSonarMTX::validateNoiseDelta()
 
 			// verify get
 			if ( (noiseDeltaBuf[3] != GET_NOISE_DELTA) || (noiseDeltaBuf[4] != j)) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateNoiseDelta() Invalid response from Sonar_%d to get noiseDelta (0x%x 0x%x)",
 				            getNameWithBoard(), j+1, noiseDeltaBuf[3], noiseDeltaBuf[4]);
 				delete packet;
@@ -1981,7 +1955,7 @@ MVREXPORT bool ArSonarMTX::validateNoiseDelta()
 		} // endfor
 
 		if (!gotNoiseDelta) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateNoiseDelta() Cannot get noiseDelta from Sonar_%d",
 			            getNameWithBoard(), j+1);
 			return false;
@@ -1991,17 +1965,17 @@ MVREXPORT bool ArSonarMTX::validateNoiseDelta()
 		int noiseDelta = (noiseDeltaBuf[6] << 8) | (noiseDeltaBuf[5]);
 
 		IFDEBUG (
-		  ArLog::log (MvrLog::Normal,
+		  MvrLog::log (MvrLog::Normal,
 		              "%s::validateNoiseDelta() Sonar_%d has noiseDelta of %d", getNameWithBoard(), j+1, noiseDelta));
 
 		if (mySonarMap[j][SONAR_NOISE_DELTA] != noiseDelta) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::validateNoiseDelta() Sonar_%d has detection noiseDelta %d, it does not match configured noiseDelta %d, setting new noiseDelta",
 			            getNameWithBoard(), j+1, noiseDelta,
 			            mySonarMap[j][SONAR_NOISE_DELTA]);
 
 			if (!sendSetNoiseDelta (j, mySonarMap[j][SONAR_NOISE_DELTA])) {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::validateNoiseDelta() Could not send set noiseDelta to Sonar_%d", getNameWithBoard(), j+1);
 				return false;
 			}
@@ -2011,27 +1985,27 @@ MVREXPORT bool ArSonarMTX::validateNoiseDelta()
 	}
 
 	IFDEBUG (
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::validateNoiseDelta() NoiseDelta valid", getNameWithBoard()));
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendGetNoiseDelta (unsigned char transducerNumber)
+MVREXPORT bool MvrSonarMTX::sendGetNoiseDelta (unsigned char transducerNumber)
 {
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (GET_NOISE_DELTA); // get noiseDelta
 	sendPacket.uByteToBuf (transducerNumber);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendNoiseDelta() Could not send get noisedelta request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendGetNoiseDelta() get noisedelta sent to Sonar 0x%x",
 	              getNameWithBoard(), transducerNumber);
 
@@ -2041,11 +2015,11 @@ MVREXPORT bool ArSonarMTX::sendGetNoiseDelta (unsigned char transducerNumber)
 	return true;
 }
 
-MVREXPORT bool ArSonarMTX::sendSetNoiseDelta (unsigned char transducerNumber,
+MVREXPORT bool MvrSonarMTX::sendSetNoiseDelta (unsigned char transducerNumber,
     int noiseDelta)
 {
 
-	ArRobotPacket sendPacket(HEADER1, HEADER2);
+	MvrRobotPacket sendPacket(HEADER1, HEADER2);
 
 	sendPacket.setID (SET_NOISE_DELTA); // set noiseDelta
 	sendPacket.uByteToBuf (transducerNumber);
@@ -2053,14 +2027,14 @@ MVREXPORT bool ArSonarMTX::sendSetNoiseDelta (unsigned char transducerNumber,
 	sendPacket.uByteToBuf (noiseDelta >> 8);
 
 	if (!mySender->sendPacket(&sendPacket)) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::sendSetNoiseDelta() Could not send set noise delta request to Sonar", getNameWithBoard());
 		return false;
 	}
 
 	IFDEBUG (
 
-	  ArLog::log (MvrLog::Normal,
+	  MvrLog::log (MvrLog::Normal,
 	              "%s::sendSetNoiseDelta() set noise delta sent to Sonar 0x%x 0x%x",
 	              getNameWithBoard(), transducerNumber, noiseDelta);
 
@@ -2070,12 +2044,12 @@ MVREXPORT bool ArSonarMTX::sendSetNoiseDelta (unsigned char transducerNumber,
 }
 */
 
-bool ArSonarMTX::turnOnTransducers()
+bool MvrSonarMTX::turnOnTransducers()
 {
 
 
 	if (sendSetMask(myTransducerMaskLSB, myTransducerMaskMSB)) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 	              "%s::turnOnTransducers() turning ON transducers",
 	              getNameWithBoard());
 		myTransducersAreOn = true;
@@ -2084,7 +2058,7 @@ bool ArSonarMTX::turnOnTransducers()
 
 	}
 	else {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 	              "%s::turnOnTransducers() failed turning ON transducers",
 	              getNameWithBoard());
 		return false;
@@ -2093,11 +2067,11 @@ bool ArSonarMTX::turnOnTransducers()
 
 }
 
-bool ArSonarMTX::turnOffTransducers()
+bool MvrSonarMTX::turnOffTransducers()
 {
 
 	if (sendSetMask(0, 0)) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 	              "%s::turnOffTransducers() turning OFF transducers",
 	              getNameWithBoard());
 		myTransducersAreOn = false;
@@ -2105,7 +2079,7 @@ bool ArSonarMTX::turnOffTransducers()
 
 	}
 	else {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 	              "%s::turnOnTransducers() failed turning OFF transducers",
 	              getNameWithBoard());
 		return false;
@@ -2114,13 +2088,13 @@ bool ArSonarMTX::turnOffTransducers()
 
 }
 
-MVREXPORT bool ArSonarMTX::disableForAutonomousDriving()
+MVREXPORT bool MvrSonarMTX::disableForAutonomousDriving()
 {
 
 
 
 	if (sendSetMask(myAutonomousDrivingTransducerMaskLSB, myAutonomousDrivingTransducerMaskMSB)) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 	              "%s::disableForAutonomousDriving() turning OFF all non autonomous driving transducers",
 	              getNameWithBoard());
 		myTransducersAreOn = false;
@@ -2128,7 +2102,7 @@ MVREXPORT bool ArSonarMTX::disableForAutonomousDriving()
 
 	}
 	else {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 	              "%s::disableForAutonomousDriving() failed turning OFF non autonomous driving transducers",
 	              getNameWithBoard());
 		return false;

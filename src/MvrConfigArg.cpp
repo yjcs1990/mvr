@@ -1,41 +1,15 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrConfigArg.h"
 #include "MvrLog.h"
 #include "MvrArgumentBuilder.h"
 #include "MvrFileParser.h"
 #include "MvrSocket.h"
 
-//#define ARDEBUG_CONFIGARG
+//#define MVRDEBUG_CONFIGARG
 
-#if (defined(ARDEBUG_CONFIGARG))
-//#if (defined(_DEBUG) && defined(ARDEBUG_CONFIGARG))
+#if (defined(MVRDEBUG_CONFIGARG))
+//#if (defined(_DEBUG) && defined(MVRDEBUG_CONFIGARG))
 #define IFDEBUG(code) {code;}
 #else
 #define IFDEBUG(code)
@@ -45,18 +19,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 //
 int MvrConfigArg::ourIndentSpaceCount = 3;
 
-MVREXPORT const char *ArConfigArg::LIST_BEGIN_TAG  = "_beginList";
-MVREXPORT const char *ArConfigArg::LIST_END_TAG    = "_endList";
+MVREXPORT const char *MvrConfigArg::LIST_BEGIN_TAG  = "_beginList";
+MVREXPORT const char *MvrConfigArg::LIST_END_TAG    = "_endList";
 
-MVREXPORT const char *ArConfigArg::NULL_TAG = "NULL";
-MVREXPORT const char *ArConfigArg::NEW_RESOURCE_TAG = "xltrNew";
-
-
-std::map<std::string, MvrConfigArg::Type, MvrStrCaseCmpOp> *ArConfigArg::ourTextToTypeMap = NULL;
-std::map<std::string, MvrConfigArg::RestartLevel, MvrStrCaseCmpOp> *ArConfigArg::ourTextToRestartLevelMap = NULL;
+MVREXPORT const char *MvrConfigArg::NULL_TAG = "NULL";
+MVREXPORT const char *MvrConfigArg::NEW_RESOURCE_TAG = "xltrNew";
 
 
-MVREXPORT const char *ArConfigArg::toString(Type t)
+std::map<std::string, MvrConfigArg::Type, MvrStrCaseCmpOp> *MvrConfigArg::ourTextToTypeMap = NULL;
+std::map<std::string, MvrConfigArg::RestartLevel, MvrStrCaseCmpOp> *MvrConfigArg::ourTextToRestartLevelMap = NULL;
+
+
+MVREXPORT const char *MvrConfigArg::toString(Type t)
 {
    switch (t) {
    case INVALID:
@@ -91,7 +65,7 @@ MVREXPORT const char *ArConfigArg::toString(Type t)
 } // end method toString
 
 
-const char *ArConfigArg::toString(RestartLevel r)
+const char *MvrConfigArg::toString(RestartLevel r)
 {
   switch (r) {
 
@@ -111,7 +85,7 @@ const char *ArConfigArg::toString(RestartLevel r)
 } // end method toString
 
 
-ArConfigArg::Type MvrConfigArg::typeFromString(const char *text)
+MvrConfigArg::Type MvrConfigArg::typeFromString(const char *text)
 {
   if (MvrUtil::isStrEmpty(text)) {
     return INVALID;
@@ -166,13 +140,13 @@ MVREXPORT MvrConfigArg::RestartLevel MvrConfigArg::restartLevelFromString(const 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-MVREXPORT MvrConfigArg::ArConfigArg()
+MVREXPORT MvrConfigArg::MvrConfigArg()
 {
   clear(true);
 }
 
 /** @swigomit */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, int *pointer, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, int *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_INT);
@@ -185,7 +159,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, int *pointer,
 }
 
 /** @swigomit */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, short *pointer, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, short *pointer, 
 		      const char * description, int minInt, int maxInt) 
 
 { 
@@ -199,7 +173,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, short *pointer,
 }
 
 /** @swigomit */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned short *pointer, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, unsigned short *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_UNSIGNED_SHORT);
@@ -212,7 +186,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned short *pointer,
 }
 
 /** @swigomit */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned char *pointer, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, unsigned char *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_UNSIGNED_CHAR);
@@ -225,7 +199,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, unsigned char *pointer,
 }
 
 /** @swigomit */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, double *pointer,
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, double *pointer,
 		                              const char * description, 
                                   double minDouble, 
 		                              double maxDouble,
@@ -241,7 +215,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, double *pointer,
 }
 
 /** @swigomit */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, bool *pointer, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, bool *pointer, 
 		      const char * description) 
 
 { 
@@ -253,7 +227,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, bool *pointer,
 
 
 /** @swigomit Use MvrConfigArg_Int subclass instead. */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, int val, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, int val, 
 		      const char * description, int minInt, int maxInt) 
 { 
   clear(true, INT, INT_INT);
@@ -269,7 +243,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, int val,
 }
 
 /** @swigomit Use MvrConfigArg_Double subclass instead. */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, 
                                   double val,
 		                              const char * description, 
                                   double minDouble, 
@@ -289,7 +263,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name,
 }
 
 /** @swigomit Use MvrConfigArg_Bool subclass instead. */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, bool val, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, bool val, 
 		      const char * description) 
 { 
   clear(true, BOOL);
@@ -314,7 +288,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, bool val,
  *
  *  @swigomit Use MvrConfigArg_String subclass instead (which has no maxStrLen parameter in its constructor)
 */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, char *str, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, char *str, 
 		      const char * description, size_t maxStrLen) 
 { 
   clear(true, STRING);
@@ -347,7 +321,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, char *str,
  *
  *  @swigomit Use MvrConfigArg_String subclass instead (which has no maxStrLen parameter in its constructor)
 */
-MVREXPORT MvrConfigArg::ArConfigArg(const char * name, const char *str, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, const char *str, 
 				  const char * description) 
 { 
   clear(true, STRING);
@@ -361,7 +335,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * name, const char *str,
 }
 
 /** @swigomit */
-MVREXPORT MvrConfigArg::ArConfigArg(const char *name, std::string *strptr, const char *description)
+MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, std::string *strptr, const char *description)
 {
   clear(true, CPPSTRING);
   set(CPPSTRING, name, description);
@@ -393,9 +367,9 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char *name, std::string *strptr, const
     special meaning when saved and loaded from a config file, such as '#', ';',
     tab, or newline.  
 **/
-MVREXPORT MvrConfigArg::ArConfigArg(const char *name, 
+MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, 
 		      MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
-	      MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
+	      MvrRetFunctor<const std::list<MvrArgumentBuilder *> *> *getFunctor,
 		      const char *description)
 {
   clear(true, FUNCTOR);
@@ -405,7 +379,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char *name,
   myData.myFunctorData.myGetFunctor = getFunctor;
 }
 
-MVREXPORT MvrConfigArg::ArConfigArg(const char * str, Type type)
+MVREXPORT MvrConfigArg::MvrConfigArg(const char * str, Type type)
 { 
   clear(true, type);
   if (type == DESCRIPTION_HOLDER)
@@ -423,7 +397,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char * str, Type type)
  * This constructor is used for creating composite (LIST or LIST_HOLDER type)
  * parameters.
 **/
-MVREXPORT MvrConfigArg::ArConfigArg(Type type,
+MVREXPORT MvrConfigArg::MvrConfigArg(Type type,
                                   const char *name, 
 		                              const char *description)
 {
@@ -440,7 +414,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(Type type,
  * This constructor is useful for creating separators within a config
  * section.
 **/
-MVREXPORT MvrConfigArg::ArConfigArg(Type type)
+MVREXPORT MvrConfigArg::MvrConfigArg(Type type)
 {
   clear(true, type);
   set(type, "", "");
@@ -451,7 +425,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(Type type)
     special meaning when saved and loaded from a config file, such as '#', ';',
     tab, or newline.  
 */
-MVREXPORT MvrConfigArg::ArConfigArg(const char *name, const char *str)
+MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, const char *str)
 {
   /* MPL Taking this out
   MvrLog::log(MvrLog::Normal,
@@ -473,7 +447,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char *name, const char *str)
 }
 
 
-MVREXPORT MvrConfigArg::ArConfigArg(const char *argName,
+MVREXPORT MvrConfigArg::MvrConfigArg(const char *argName,
                                   const MvrConfigArg & arg)
 {
   clear(true, 
@@ -487,7 +461,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const char *argName,
 } // end ctor
 
 
-MVREXPORT MvrConfigArg::ArConfigArg(const MvrConfigArg & arg) 
+MVREXPORT MvrConfigArg::MvrConfigArg(const MvrConfigArg & arg) 
 {
   clear(true, 
         arg.myType, 
@@ -496,7 +470,7 @@ MVREXPORT MvrConfigArg::ArConfigArg(const MvrConfigArg & arg)
   copy(arg, false);
 }
 
-MVREXPORT MvrConfigArg &ArConfigArg::operator=(const MvrConfigArg & arg) 
+MVREXPORT MvrConfigArg &MvrConfigArg::operator=(const MvrConfigArg & arg) 
 {
   if (this != &arg) 
   {
@@ -734,7 +708,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg,
     {
       myOwnPointedTo = true;
       if (arg.myData.myListData.myChildArgList != NULL) {
-        for (std::list<ArConfigArg>::const_iterator iter = arg.myData.myListData.myChildArgList->begin();
+        for (std::list<MvrConfigArg>::const_iterator iter = arg.myData.myListData.myChildArgList->begin();
              iter != arg.myData.myListData.myChildArgList->end();
              iter++) {
           addArg(*iter);
@@ -833,12 +807,12 @@ MVREXPORT bool MvrConfigArg::promoteList(const MvrConfigArg &arg)
   myExtraExplanation = arg.myExtraExplanation;
   myDisplayName = arg.myDisplayName;
   
-  ///ArConfigArgData myData;
+  ///MvrConfigArgData myData;
 
   myConfigPriority = arg.myConfigPriority;
   myDisplayHint = arg.myDisplayHint;
   myRestartLevel = arg.myRestartLevel;
-  //ArConfigArg *myParentArg;
+  //MvrConfigArg *myParentArg;
 
   myOwnPointedTo = arg.myOwnPointedTo;
   myValueSet = arg.myValueSet;
@@ -1091,7 +1065,7 @@ MVREXPORT MvrConfigArg::Type MvrConfigArg::getType(void) const
 /**
  * @return char *, the name of this arg or "" if none
 **/
-MVREXPORT const char *ArConfigArg::getName(void) const
+MVREXPORT const char *MvrConfigArg::getName(void) const
 {
   return myName.c_str();
 }
@@ -1099,7 +1073,7 @@ MVREXPORT const char *ArConfigArg::getName(void) const
 /**
  * @return char *, the description of this arg or "" if none
 **/
-MVREXPORT const char *ArConfigArg::getDescription(void) const
+MVREXPORT const char *MvrConfigArg::getDescription(void) const
 {
   return myDescription.c_str();
 }
@@ -1114,7 +1088,7 @@ MVREXPORT void MvrConfigArg::setExtraExplanation(const char *extraExplanation)
 } // end method setExtraExplanation
 
   
-MVREXPORT const char *ArConfigArg::getExtraExplanation() const
+MVREXPORT const char *MvrConfigArg::getExtraExplanation() const
 {
   return myExtraExplanation.c_str();
 }
@@ -1427,7 +1401,7 @@ MVREXPORT bool MvrConfigArg::setBool(bool val, char *errorBuffer,
 // Methods for STRING and STRING_HOLDER Type 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-MVREXPORT const char *ArConfigArg::getString(bool *ok) const
+MVREXPORT const char *MvrConfigArg::getString(bool *ok) const
 {
   if (ok != NULL) {
     *ok = ((myType == STRING) || 
@@ -1618,7 +1592,7 @@ MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
   MvrConfigArg newChildArg(arg);
 
   MvrConfigArg *existingChildArg = NULL;
-  if (!ArUtil::isStrEmpty(arg.getName())) {
+  if (!MvrUtil::isStrEmpty(arg.getName())) {
     existingChildArg = findArg(arg.getName());
   }
 
@@ -1660,7 +1634,7 @@ MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
       MvrArgumentBuilder holderBuilder;
       holderBuilder.add(existingChildArg->getString());
 
-      //ArConfigArg newChildArg(arg);
+      //MvrConfigArg newChildArg(arg);
 
       bool isParseSuccessful = newChildArg.parseArgument(&holderBuilder, 
 				                                                 NULL,
@@ -1702,7 +1676,7 @@ MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
   // If the member list has not yet been allocated, then create it.
   if (myData.myListData.myChildArgList == NULL) {
     
-    myData.myListData.myChildArgList = new std::list<ArConfigArg>();
+    myData.myListData.myChildArgList = new std::list<MvrConfigArg>();
 
     // Check for memory allocation errors.
     if (myData.myListData.myChildArgList == NULL) {
@@ -1750,7 +1724,7 @@ MVREXPORT bool MvrConfigArg::removeArg(const MvrConfigArg  &arg)
     return false;
   }
   
-  for (std::list<ArConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
+  for (std::list<MvrConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
        iter !=myData.myListData.myChildArgList->end(); 
        iter++) {
     if (MvrUtil::strcasecmp((*iter).getName(), arg.getName()) == 0) {
@@ -1799,7 +1773,7 @@ MVREXPORT size_t MvrConfigArg::getDescendantArgCount() const
     return 0;
   }
   int count = 0;
-  for (std::list<ArConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
+  for (std::list<MvrConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
        iter != myData.myListData.myChildArgList->end();
        iter++) {
     // The child counts as a descendent
@@ -1814,12 +1788,12 @@ MVREXPORT size_t MvrConfigArg::getDescendantArgCount() const
 
 
 /**
- * @return std::list<ArConfigArg> a list of all of the child arg (copies) 
+ * @return std::list<MvrConfigArg> a list of all of the child arg (copies) 
  * in this arg.
 **/
-MVREXPORT std::list<ArConfigArg> MvrConfigArg::getArgs(bool *ok) const
+MVREXPORT std::list<MvrConfigArg> MvrConfigArg::getArgs(bool *ok) const
 {
-  std::list<ArConfigArg> retList;
+  std::list<MvrConfigArg> retList;
  
   if (ok != NULL) {
     *ok = isListType();
@@ -1834,16 +1808,16 @@ MVREXPORT std::list<ArConfigArg> MvrConfigArg::getArgs(bool *ok) const
 
   
 /**
- * @return std::list<ArConfigArg> a list of all of the child arg (copies) 
+ * @return std::list<MvrConfigArg> a list of all of the child arg (copies) 
  * in this arg.
 **/
-MVREXPORT const MvrConfigArg *ArConfigArg::getArg(size_t index) const
+MVREXPORT const MvrConfigArg *MvrConfigArg::getArg(size_t index) const
 {
   MvrConfigArg *arg = NULL;
   if ((isListType()) &&
       (myData.myListData.myChildArgList != NULL)) {
     size_t curIndex = 0;
-    for (std::list<ArConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
+    for (std::list<MvrConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
          iter != myData.myListData.myChildArgList->end();
          iter++, curIndex++) {
       if (curIndex == index) {
@@ -1857,13 +1831,13 @@ MVREXPORT const MvrConfigArg *ArConfigArg::getArg(size_t index) const
 
 } // end method getArg
 
-MVREXPORT MvrConfigArg *ArConfigArg::getArg(size_t index) 
+MVREXPORT MvrConfigArg *MvrConfigArg::getArg(size_t index) 
 {
   MvrConfigArg *arg = NULL;
   if ((isListType()) &&
       (myData.myListData.myChildArgList != NULL)) {
     size_t curIndex = 0;
-    for (std::list<ArConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
+    for (std::list<MvrConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
          iter != myData.myListData.myChildArgList->end();
          iter++, curIndex++) {
       if (curIndex == index) {
@@ -1886,7 +1860,7 @@ MVREXPORT MvrConfigArg *ArConfigArg::getArg(size_t index)
  * @return MvrConfigArg * a pointer to the requested child arg; or NULL if not 
  * found.
 **/
-MVREXPORT const MvrConfigArg *ArConfigArg::findArg(const char *childParamName)  const
+MVREXPORT const MvrConfigArg *MvrConfigArg::findArg(const char *childParamName)  const
 {
   // Cannot look up empty name 
   if (MvrUtil::isStrEmpty(childParamName)) {
@@ -1915,11 +1889,11 @@ MVREXPORT const MvrConfigArg *ArConfigArg::findArg(const char *childParamName)  
 
   MvrConfigArg *child = NULL;
 
-  for (std::list<ArConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
+  for (std::list<MvrConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
        ((iter != myData.myListData.myChildArgList->end()) && (child == NULL));
        iter++) {
     MvrConfigArg &curArg = *iter;
-    if (!ArUtil::isStrEmpty(curArg.getName()) &&
+    if (!MvrUtil::isStrEmpty(curArg.getName()) &&
         (MvrUtil::strcasecmp(childParamName, curArg.getName()) == 0)) {
       child = &curArg;
     } // end if name matches
@@ -1936,7 +1910,7 @@ MVREXPORT const MvrConfigArg *ArConfigArg::findArg(const char *childParamName)  
  * @return MvrConfigArg * a pointer to the requested child arg; or NULL if not 
  * found.
 **/
-MVREXPORT MvrConfigArg *ArConfigArg::findArg(const char *childParamName)
+MVREXPORT MvrConfigArg *MvrConfigArg::findArg(const char *childParamName)
 {
   // Cannot look up empty name 
   if (MvrUtil::isStrEmpty(childParamName)) {
@@ -1965,11 +1939,11 @@ MVREXPORT MvrConfigArg *ArConfigArg::findArg(const char *childParamName)
 
   MvrConfigArg *child = NULL;
 
-  for (std::list<ArConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
+  for (std::list<MvrConfigArg>::iterator iter = myData.myListData.myChildArgList->begin();
        ((iter != myData.myListData.myChildArgList->end()) && (child == NULL));
        iter++) {
     MvrConfigArg &curArg = *iter;
-    if (!ArUtil::isStrEmpty(curArg.getName()) &&
+    if (!MvrUtil::isStrEmpty(curArg.getName()) &&
         (MvrUtil::strcasecmp(childParamName, curArg.getName()) == 0)) {
       child = &curArg;
     } // end if name matches
@@ -1980,7 +1954,7 @@ MVREXPORT MvrConfigArg *ArConfigArg::findArg(const char *childParamName)
 
 
 MVREXPORT bool MvrConfigArg::getAncestorList
-                            (std::list<ArConfigArg*> *ancestorListOut) 
+                            (std::list<MvrConfigArg*> *ancestorListOut) 
 {
  
   if (getParentArg() == NULL) {
@@ -2004,7 +1978,7 @@ MVREXPORT bool MvrConfigArg::getAncestorList
 } // end method getAncestorArgs
 
 
-MVREXPORT const MvrConfigArg *ArConfigArg::getTopLevelArg() const
+MVREXPORT const MvrConfigArg *MvrConfigArg::getTopLevelArg() const
 {
   MvrConfigArg *parentArg = getParentArg();
   if (parentArg == NULL) {
@@ -2022,7 +1996,7 @@ MVREXPORT const MvrConfigArg *ArConfigArg::getTopLevelArg() const
 // Methods for FUNCTOR Type 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-MVREXPORT const std::list<ArArgumentBuilder *> *ArConfigArg::getArgsWithFunctor(bool *ok) const
+MVREXPORT const std::list<MvrArgumentBuilder *> *MvrConfigArg::getArgsWithFunctor(bool *ok) const
 {
   if (ok != NULL) {
     *ok = (myType == FUNCTOR);
@@ -2069,7 +2043,7 @@ MVREXPORT bool MvrConfigArg::setArgWithFunctor(MvrArgumentBuilder *argument,
  * @return MvrConfigArg * the parent arg, if this is a child in a list arg; 
  * otherwise, NULL
 **/
-MVREXPORT MvrConfigArg *ArConfigArg::getParentArg() const
+MVREXPORT MvrConfigArg *MvrConfigArg::getParentArg() const
 {
   return myParentArg;
 
@@ -2165,7 +2139,7 @@ MVREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
   // the parser however.
   else if (myData.myListData.myChildArgList != NULL) {
      
-    for (std::list<ArConfigArg>::const_iterator iter = 
+    for (std::list<MvrConfigArg>::const_iterator iter = 
                                       myData.myListData.myChildArgList->begin();
          iter != myData.myListData.myChildArgList->end();
          iter++) {
@@ -2193,7 +2167,7 @@ MVREXPORT bool MvrConfigArg::addToFileParser(MvrFileParser *parser,
  * error occurred
 **/
 MVREXPORT bool MvrConfigArg::parseArgument(
-	ArArgumentBuilder *arg, 
+	MvrArgumentBuilder *arg, 
 	char *errorBuffer,
 	size_t errorBufferLen,
 	const char *logPrefix,
@@ -2587,7 +2561,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
     // put the comments in the file first
     int nextChar = snprintf(lineBuf, lineBufSize, "; ");
 
-    if (!ArUtil::isStrEmpty(getDescription())) {
+    if (!MvrUtil::isStrEmpty(getDescription())) {
       writeMultiLineComment(getDescription(),
                             file,
                             lineBuf, 
@@ -2595,8 +2569,8 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
                             startLine);
     } // end if description
 
-    std::list<ArArgumentBuilder *>::const_iterator argIt;
-    const std::list<ArArgumentBuilder *> *argList = getArgsWithFunctor();
+    std::list<MvrArgumentBuilder *>::const_iterator argIt;
+    const std::list<MvrArgumentBuilder *> *argList = getArgsWithFunctor();
     if (argList != NULL) {
       for (argIt = argList->begin(); argIt != argList->end(); argIt++)
       {
@@ -2714,8 +2688,8 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
     // into the existing framework, maybe return later
   //case FUNCTOR:
   //  {
-  //    std::list<ArArgumentBuilder *>::const_iterator argIt;
-  //    const std::list<ArArgumentBuilder *> *argList = param->getArgsWithFunctor();
+  //    std::list<MvrArgumentBuilder *>::const_iterator argIt;
+  //    const std::list<MvrArgumentBuilder *> *argList = param->getArgsWithFunctor();
   //    if (argList != NULL) {
   //      for (argIt = argList->begin(); argIt != argList->end(); argIt++)
   //      {
@@ -2777,7 +2751,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
   // the lineBuf is empty, then the sprintf results in garbage being 
   // printed.  (See Bug 12735).  If, however, the empty string is directly
   // passed -- as in the else clause below -- then there isn't a problem.
-  else if (!ArUtil::isStrEmpty(lineBuf)) {
+  else if (!MvrUtil::isStrEmpty(lineBuf)) {
     sprintf(lineBuf, startLine, lineBuf);
   }
   else {
@@ -2791,7 +2765,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
 
   
   // if we have a description to put in, put it in with word wrap
-  if (!ArUtil::isStrEmpty(getDescription()))
+  if (!MvrUtil::isStrEmpty(getDescription()))
   {
     writeMultiLineComment(getDescription(),
                           file,
@@ -2813,7 +2787,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
   if (isListType()) {
 
     if (myData.myListData.myChildArgList != NULL) {
-      for (std::list<ArConfigArg>::const_iterator cIter = myData.myListData.myChildArgList->begin();
+      for (std::list<MvrConfigArg>::const_iterator cIter = myData.myListData.myChildArgList->begin();
             cIter != myData.myListData.myChildArgList->end();
             cIter++) {
 
@@ -2894,7 +2868,7 @@ MVREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
   MvrConfigArg configArg;
   bool ok = true;
 
-  // This is a redundant check. The ARCL command handler should have verified the count
+  // This is a redundant check. The MVRCL command handler should have verified the count
   // before calling this method and will display a better error message.
   if (args.getArgc() <=  SOCKET_INDEX_OF_TYPE) {
     if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
@@ -3494,7 +3468,7 @@ MVREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg,
     
   if (arg == NULL) {
     MvrLog::log(MvrLog::Normal,
-               "%sArConfigArg::parseResource(), invalid input",
+               "%sMvrConfigArg::parseResource(), invalid input",
                ((logPrefix != NULL) ? logPrefix : ""));
     return false;
   }
@@ -3506,7 +3480,7 @@ MVREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg,
 
   if (arg->getArgc() <= RESOURCE_INDEX_OF_DESCRIPTION) {
     MvrLog::log(MvrLog::Normal,
-               "%sArConfigArg::parseResource(), invalid input, too few args (%i)",
+               "%sMvrConfigArg::parseResource(), invalid input, too few args (%i)",
                ((logPrefix != NULL) ? logPrefix : ""),
                arg->getArgc());
     return false;
@@ -3514,7 +3488,7 @@ MVREXPORT bool MvrConfigArg::parseResource(MvrArgumentBuilder *arg,
 
   if (MvrUtil::isStrEmpty(arg->getArg(RESOURCE_INDEX_OF_ARG_NAME))) {
     MvrLog::log(MvrLog::Normal,
-               "%sArConfigArg::parseResource(), empty name",
+               "%sMvrConfigArg::parseResource(), empty name",
                ((logPrefix != NULL) ? logPrefix : ""));   
   }
 
@@ -3571,7 +3545,7 @@ MVREXPORT std::string MvrConfigArg::parseResourceSectionName(MvrArgumentBuilder 
       (arg->getArgc() <= RESOURCE_INDEX_OF_SECTION_NAME)) {
     
      MvrLog::log(MvrLog::Normal,
-                "%sArConfigArg::parseResourceSectionName() invalid input",
+                "%sMvrConfigArg::parseResourceSectionName() invalid input",
                 ((logPrefix != NULL) ? logPrefix : ""));
     return sectionName;
   }
@@ -3596,7 +3570,7 @@ MVREXPORT std::string MvrConfigArg::parseResourceArgName(MvrArgumentBuilder *arg
       (arg->getArgc() <= RESOURCE_INDEX_OF_ARG_NAME)) {
     
      MvrLog::log(MvrLog::Normal,
-                "%sArConfigArg::parseResourceArgName() invalid input (%s)",
+                "%sMvrConfigArg::parseResourceArgName() invalid input (%s)",
                 ((logPrefix != NULL) ? logPrefix : ""),
                 ((arg != NULL) ? arg->getFullString() : "NULL"));
     return argName;
@@ -3623,7 +3597,7 @@ MVREXPORT MvrConfigArg::Type MvrConfigArg::parseResourceType(MvrArgumentBuilder 
       (arg->getArgc() <= RESOURCE_INDEX_OF_TYPE)) {
     
      MvrLog::log(MvrLog::Normal,
-                "%sArConfigArg::parseResourceType() invalid input",
+                "%sMvrConfigArg::parseResourceType() invalid input",
                 ((logPrefix != NULL) ? logPrefix : ""));
     return t;
   }
@@ -3648,7 +3622,7 @@ MVREXPORT  bool MvrConfigArg::isResourceTopLevel(MvrArgumentBuilder *arg,
       (arg->getArgc() <= RESOURCE_INDEX_OF_PARENT_PATH)) {
     
      MvrLog::log(MvrLog::Normal,
-                "%sArConfigArg::isResourceTopLevel() invalid input",
+                "%sMvrConfigArg::isResourceTopLevel() invalid input",
                 ((logPrefix != NULL) ? logPrefix : ""));
     return b;
   }
@@ -3675,7 +3649,7 @@ MVREXPORT std::list<std::string> MvrConfigArg::parseResourceParentPath(MvrArgume
       (arg->getArgc() <= RESOURCE_INDEX_OF_PARENT_PATH)) {
     
      MvrLog::log(MvrLog::Normal,
-                "%sArConfigArg::isResourceTopLevel() invalid input",
+                "%sMvrConfigArg::isResourceTopLevel() invalid input",
                 ((logPrefix != NULL) ? logPrefix : ""));
     return path;
   }
@@ -3701,7 +3675,7 @@ MVREXPORT std::string MvrConfigArg::parseResourceDescription(MvrArgumentBuilder 
       (arg->getArgc() <= RESOURCE_INDEX_OF_DESCRIPTION)) {
     
      MvrLog::log(MvrLog::Normal,
-                "%sArConfigArg::parseResourceDescription() invalid input (%s)",
+                "%sMvrConfigArg::parseResourceDescription() invalid input (%s)",
                 ((logPrefix != NULL) ? logPrefix : ""),
                 ((arg != NULL) ? arg->getFullString() : "NULL"));
     return desc;
@@ -3727,7 +3701,7 @@ MVREXPORT std::string MvrConfigArg::parseResourceExtra(MvrArgumentBuilder *arg,
       (arg->getArgc() <= RESOURCE_INDEX_OF_EXTRA)) {
     
      MvrLog::log(MvrLog::Normal,
-                "%sArConfigArg::parseResourceExtra() invalid input (%s)",
+                "%sMvrConfigArg::parseResourceExtra() invalid input (%s)",
                 ((logPrefix != NULL) ? logPrefix : ""),
                 ((arg != NULL) ? arg->getFullString() : "NULL"));
     return desc;
@@ -3813,7 +3787,7 @@ MVREXPORT bool MvrConfigArg::writeResource(FILE *file,
 
   if ((file == NULL) || (lineBuf == NULL) || (lineBufSize <= 0)) {
     MvrLog::log(MvrLog::Normal,
-               "%sArConfigArg::writeCsv() error writing %s, invalid input",
+               "%sMvrConfigArg::writeCsv() error writing %s, invalid input",
                ((logPrefix != NULL) ? logPrefix : ""),
                ((getName() != NULL) ? getName() : ""));
     return false;
@@ -3874,14 +3848,14 @@ MVREXPORT int MvrConfigArg::writeResourceHeader(FILE *file,
 
   if ((file == NULL) || (lineBuf == NULL) || (lineBufSize <= 0)) {
     MvrLog::log(MvrLog::Normal,
-               "%sArConfigArg::writeResourceHeader() error writing header, invalid input",
+               "%sMvrConfigArg::writeResourceHeader() error writing header, invalid input",
                ((logPrefix != NULL) ? logPrefix : ""));
     return false;
   }
 
 
   IFDEBUG(MvrLog::log(MvrLog::Normal,
-               "%sArConfigArg::writeResourceHeader() writing header with section title = %s",
+               "%sMvrConfigArg::writeResourceHeader() writing header with section title = %s",
                ((logPrefix != NULL) ? logPrefix : ""),
                ((sectionTitle != NULL) ? sectionTitle : "NULL")));
   
@@ -3889,7 +3863,7 @@ MVREXPORT int MvrConfigArg::writeResourceHeader(FILE *file,
            //0   1   2   3   4   5   6   7   8   9
            "%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s%c%s",
            //"\"%s\"%c\"%s\"%c\"%s\"%c\"%s\"%c\"%s\"%c\"%s\"%c\"%s\"%c\"%s\"%c\"%s\"%c\"%s\"\n",
-           ((!ArUtil::isStrEmpty(sectionTitle)) ? sectionTitle : "SECTION"),  // 0
+           ((!MvrUtil::isStrEmpty(sectionTitle)) ? sectionTitle : "SECTION"),  // 0
            separatorChar,
            "NAME",                                       // 1
            separatorChar,
@@ -3958,7 +3932,7 @@ MVREXPORT int MvrConfigArg::writeResourceSectionHeader(FILE *file,
   if ((file == NULL) || (lineBuf == NULL) || (lineBufSize <= 0) ||
       (MvrUtil::isStrEmpty(sectionName))) {
     MvrLog::log(MvrLog::Normal,
-               "%sArConfigArg::writeResourceSectionHeader() error writing header, invalid input",
+               "%sMvrConfigArg::writeResourceSectionHeader() error writing header, invalid input",
                ((logPrefix != NULL) ? logPrefix : ""));
     return false;
   }
@@ -3980,11 +3954,11 @@ MVREXPORT int MvrConfigArg::writeResourceSectionHeader(FILE *file,
            separatorChar,
            NULL_TAG,                                       // 5
            separatorChar,
-           ((!ArUtil::isStrEmpty(sectionDesc)) ? sectionDesc : NULL_TAG),   // 6
+           ((!MvrUtil::isStrEmpty(sectionDesc)) ? sectionDesc : NULL_TAG),   // 6
            separatorChar,
-           ((!ArUtil::isStrEmpty(sectionExtra)) ? sectionExtra : NULL_TAG), // 7
+           ((!MvrUtil::isStrEmpty(sectionExtra)) ? sectionExtra : NULL_TAG), // 7
            separatorChar,
-           ((!ArUtil::isStrEmpty(sectionDisplayName)) ? sectionDisplayName : NULL_TAG), // 8
+           ((!MvrUtil::isStrEmpty(sectionDisplayName)) ? sectionDisplayName : NULL_TAG), // 8
            separatorChar,
            ((isTranslated) ? NULL_TAG : NEW_RESOURCE_TAG));  // TODO Any indication for new sections?
   
@@ -4203,8 +4177,8 @@ MVREXPORT void MvrConfigArg::log(bool verbose,
                                int indentCount,
                                const char *logPrefix) const
 {
-  std::list<ArArgumentBuilder *>::const_iterator it;
-  const std::list<ArArgumentBuilder *> *argList = NULL;
+  std::list<MvrArgumentBuilder *>::const_iterator it;
+  const std::list<MvrArgumentBuilder *> *argList = NULL;
   std::string intType;
 
   // Mvrbitrarily capping at 11 tabs
@@ -4369,7 +4343,7 @@ MVREXPORT void MvrConfigArg::log(bool verbose,
   if ((isListType()) && 
       (myData.myListData.myChildArgList != NULL)) {
     int c = 1;
-    for (std::list<ArConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
+    for (std::list<MvrConfigArg>::const_iterator iter = myData.myListData.myChildArgList->begin();
 	 iter != myData.myListData.myChildArgList->end();
 	 iter++, c++) {
       MvrLog::log(MvrLog::Terse, 
@@ -4400,7 +4374,7 @@ MVREXPORT void MvrConfigArg::setConfigPriority(MvrPriority::Priority priority)
 }
 
 
-MVREXPORT const char *ArConfigArg::getDisplayHint() const
+MVREXPORT const char *MvrConfigArg::getDisplayHint() const
 {
   if (myDisplayHint.length() > 0) {
     return myDisplayHint.c_str();
@@ -4802,7 +4776,7 @@ MVREXPORT bool MvrConfigArg::isValueEqual(const MvrConfigArg &other) const
 
         if (myData.myListData.myChildArgList->size() == 
                               other.myData.myListData.myChildArgList->size()) {
-          for (std::list<ArConfigArg>::const_iterator 
+          for (std::list<MvrConfigArg>::const_iterator 
                                           iter1 = myData.myListData.myChildArgList->begin(),
                                           iter2 = other.myData.myListData.myChildArgList->begin();
                ((iter1 != myData.myListData.myChildArgList->end()) &&
@@ -4907,10 +4881,10 @@ MVREXPORT bool MvrConfigArg::setValue(const MvrConfigArg &source,
       if (myData.myListData.myChildArgList->size() == 
               source.myData.myListData.myChildArgList->size()) {
 
-        std::list<ArConfigArg>::const_iterator iter2 = 
+        std::list<MvrConfigArg>::const_iterator iter2 = 
                                   source.myData.myListData.myChildArgList->begin();
 
-        for (std::list<ArConfigArg>::iterator 
+        for (std::list<MvrConfigArg>::iterator 
                  iter1 = myData.myListData.myChildArgList->begin();
              ((iter1 != myData.myListData.myChildArgList->end()) && 
               (iter2 != source.myData.myListData.myChildArgList->end()));

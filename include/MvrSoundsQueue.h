@@ -1,35 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
-#ifndef ARSOUNDSQUEUE_H
-#define ARSOUNDSQUEUE_H
+#ifndef MVRSOUNDSQUEUE_H
+#define MVRSOUNDSQUEUE_H
 
 
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrASyncTask.h"
 #include "MvrCondition.h"
 #include "MvrFunctor.h"
@@ -91,7 +64,7 @@ public:
     int priority;
     std::list<InterruptItemFunctor*> interruptCallbacks;
     std::list<PlayItemFunctor*> playCallbacks;
-    std::list<ArFunctor*> doneCallbacks;
+    std::list<MvrFunctor*> doneCallbacks;
     std::list<PlaybackConditionFunctor*> playbackConditionCallbacks;
 
     MVREXPORT Item();
@@ -229,14 +202,14 @@ public:
   /// queue.
   MVREXPORT MvrFunctor* getPauseCallback() 
   {
-    return new MvrFunctorC<ArSoundsQueue>(this, &ArSoundsQueue::pause);
+    return new MvrFunctorC<MvrSoundsQueue>(this, &MvrSoundsQueue::pause);
   }
 
   /// Create and return a new functor for resume(), which other modules can use to resume this
   ///  sounds queue.
   MVREXPORT MvrFunctor* getResumeCallback() 
   {
-    return new MvrFunctorC<ArSoundsQueue>(this, &ArSoundsQueue::resume);
+    return new MvrFunctorC<MvrSoundsQueue>(this, &MvrSoundsQueue::resume);
   }
 
 
@@ -278,14 +251,14 @@ public:
 
   /** Add a callback functor to be invoked when playback of one sound or speech utterance starts. */
   MVREXPORT void addSoundItemStartedCallback(
-	  MvrFunctor1<ArSoundsQueue::Item> *f)
+	  MvrFunctor1<MvrSoundsQueue::Item> *f)
   {
     myStartItemPlaybackCBList.push_back(f);
   }
 
   /** Remove a callback functor to be invoked when playback one sound or speech utterance starts. */
   MVREXPORT void remSoundItemStartedCallback(
-	  MvrFunctor1<ArSoundsQueue::Item> *f)
+	  MvrFunctor1<MvrSoundsQueue::Item> *f)
   {
     myStartItemPlaybackCBList.remove(f);
   }
@@ -293,7 +266,7 @@ public:
   /** Add a callback functor to be invoked when plackback of one sound or speech
    * utterance finishes */
   MVREXPORT void addSoundItemFinishedCallback(
-	  MvrFunctor1<ArSoundsQueue::Item> *f)
+	  MvrFunctor1<MvrSoundsQueue::Item> *f)
   {
     myEndItemPlaybackCBList.push_back(f);
   }
@@ -301,7 +274,7 @@ public:
   /** Remove a callback functor to be invoked when plackback of one sound or
    * speech utterance finishes. */
   MVREXPORT void remSoundItemFinishedCallback(
-	  MvrFunctor1<ArSoundsQueue::Item> *f)
+	  MvrFunctor1<MvrSoundsQueue::Item> *f)
   {
     myEndItemPlaybackCBList.remove(f);
   }
@@ -522,21 +495,21 @@ protected:
 
   /// Functors to invoke during queue processing
   //@{
-  std::list<ArFunctor*> myStartPlaybackCBList;
-  std::list<ArFunctor*> myEndPlaybackCBList;
-  std::list<ArFunctor1<ArSoundsQueue::Item> *> myStartItemPlaybackCBList;
-  std::list<ArFunctor1<ArSoundsQueue::Item> *> myEndItemPlaybackCBList;
-  std::list<ArFunctor*> myQueueNonemptyCallbacks;
-  std::list<ArFunctor*> myQueueEmptyCallbacks;
+  std::list<MvrFunctor*> myStartPlaybackCBList;
+  std::list<MvrFunctor*> myEndPlaybackCBList;
+  std::list<MvrFunctor1<MvrSoundsQueue::Item> *> myStartItemPlaybackCBList;
+  std::list<MvrFunctor1<MvrSoundsQueue::Item> *> myEndItemPlaybackCBList;
+  std::list<MvrFunctor*> myQueueNonemptyCallbacks;
+  std::list<MvrFunctor*> myQueueEmptyCallbacks;
   //@}
   
   PlaybackConditionFunctor* myDefaultPlayConditionCB; ///< Used when creating default configured speech and sound file items
 
   /// Invoke each functor in a list
-  void invokeCallbacks(const std::list<ArFunctor*>& lst);
+  void invokeCallbacks(const std::list<MvrFunctor*>& lst);
 
   /// Invoke each functor in a list, but stop if any of them return false.
-  void invokeCallbacks(const std::list<ArRetFunctor<bool>*>& lst);
+  void invokeCallbacks(const std::list<MvrRetFunctor<bool>*>& lst);
 
   /**  push item onto queue 
    * @sa addItem()
@@ -554,5 +527,5 @@ protected:
 
 };
 
-#endif
+#endif  // MVRSOUNDSQUEUE_H
 

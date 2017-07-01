@@ -1,45 +1,19 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARIAINTERNAL_H
-#define ARIAINTERNAL_H
+#ifndef MVRIAINTERNAL_H
+#define MVRIAINTERNAL_H
 
 
 #include "MvrMutex.h"
 #include "MvrFunctor.h"
 #include "MvrConfig.h"
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 #include "MvrStringInfoGroup.h"
 class MvrRobot;
 class MvrRobotJoyHandler;
 class MvrSonarMTX;
 class MvrBatteryMTX;
 class MvrLCDMTX;
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 class MvrKeyHandler;
 class MvrJoyHandler;
@@ -137,7 +111,7 @@ public:
   /// Adds a type of deviceConnection for Mvria to be able to create
   MVREXPORT static bool deviceConnectionAddCreator(
 	  const char *deviceConnectionType, 
-	  MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *creator);
+	  MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *creator);
 
   
   /// Gets a list of the possible deviceConnection types
@@ -152,7 +126,7 @@ public:
 	  const char *defaultInfo, 
 	  const char *prefix = "Mvria::deviceConnectionCreate");
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   /// Sets the robot joystick handler, so that other classes can find it
   MVREXPORT static void setRobotJoyHandler(MvrRobotJoyHandler *robotJoyHandler);
 
@@ -175,7 +149,7 @@ public:
   MVREXPORT static MvrRobot *findRobot(char *name);
 
   /// Get a copy of the global robot list
-  MVREXPORT static std::list<ArRobot*> * getRobotList();
+  MVREXPORT static std::list<MvrRobot*> * getRobotList();
   
   /// Gets the maximum number of lasers to use
   MVREXPORT static int getMaxNumLasers(void);
@@ -209,7 +183,7 @@ public:
   /// Adds a type of laser for Mvria to be able to create
   MVREXPORT static bool laserAddCreator(
 	  const char *laserType, 
-	  MvrRetFunctor2<ArLaser *, int, const char *> *creator);
+	  MvrRetFunctor2<MvrLaser *, int, const char *> *creator);
   
   /// Gets a list of the possible laser types
   MVREXPORT static const char *laserGetTypes(void);
@@ -225,7 +199,7 @@ public:
   /// Adds a type of battery for Mvria to be able to create
   MVREXPORT static bool batteryAddCreator(
 	  const char *batteryType, 
-	  MvrRetFunctor2<ArBatteryMTX *, int, const char *> *creator);
+	  MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *creator);
   
   /// Gets a list of the possible battery types
   MVREXPORT static const char *batteryGetTypes(void);
@@ -240,7 +214,7 @@ public:
   /// Adds a type of lcd for Mvria to be able to create
   MVREXPORT static bool lcdAddCreator(
 	  const char *lcdType, 
-	  MvrRetFunctor2<ArLCDMTX *, int, const char *> *creator);
+	  MvrRetFunctor2<MvrLCDMTX *, int, const char *> *creator);
   
   /// Gets a list of the possible lcd types
   MVREXPORT static const char *lcdGetTypes(void);
@@ -255,7 +229,7 @@ public:
   /// Adds a type of sonar for Mvria to be able to create
   MVREXPORT static bool sonarAddCreator(
 	  const char *sonarType, 
-	  MvrRetFunctor2<ArSonarMTX *, int, const char *> *creator);
+	  MvrRetFunctor2<MvrSonarMTX *, int, const char *> *creator);
   
   /// Gets a list of the possible sonar types
   MVREXPORT static const char *sonarGetTypes(void);
@@ -271,7 +245,7 @@ public:
   MVREXPORT static void setMaxNumPTZs(size_t n); 
   /// Set maximum limit on PTZ or PTU devices, used by MvrPTZConnector.
   MVREXPORT static size_t getMaxNumPTZs();  
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
   /// Gets the identifier (for humans) used for this instance of Mvria
   MVREXPORT static const char *getIdentifier(void);
@@ -287,12 +261,12 @@ protected:
   static bool ourShuttingDown;
   static bool ourExiting;
   static std::string ourDirectory;
-  static std::list<ArFunctor*> ourInitCBs;
-  static std::list<ArFunctor*> ourUninitCBs;
+  static std::list<MvrFunctor*> ourInitCBs;
+  static std::list<MvrFunctor*> ourUninitCBs;
   static MvrKeyHandler *ourKeyHandler;
   static MvrJoyHandler *ourJoyHandler;
-#ifndef ARINTERFACE
-  static std::list<ArRobot*> ourRobots;
+#ifndef MVRINTERFACE
+  static std::list<MvrRobot*> ourRobots;
   static MvrRobotJoyHandler *ourRobotJoyHandler;
   static MvrConfig ourConfig;
   static MvrStringInfoGroup ourInfoGroup;
@@ -300,19 +274,19 @@ protected:
 	static int ourMaxNumSonarBoards;
 	static int ourMaxNumBatteries;
 	static int ourMaxNumLCDs;
-  static std::map<std::string, MvrRetFunctor2<ArLaser *, int, const char *> *, MvrStrCaseCmpOp> ourLaserCreatorMap;
+  static std::map<std::string, MvrRetFunctor2<MvrLaser *, int, const char *> *, MvrStrCaseCmpOp> ourLaserCreatorMap;
   static std::string ourLaserTypes;
   static std::string ourLaserChoices;
-  static std::map<std::string, MvrRetFunctor2<ArBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp> ourBatteryCreatorMap;
+  static std::map<std::string, MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp> ourBatteryCreatorMap;
   static std::string ourBatteryTypes;
   static std::string ourBatteryChoices;
-  static std::map<std::string, MvrRetFunctor2<ArLCDMTX *, int, const char *> *, MvrStrCaseCmpOp> ourLCDCreatorMap;
+  static std::map<std::string, MvrRetFunctor2<MvrLCDMTX *, int, const char *> *, MvrStrCaseCmpOp> ourLCDCreatorMap;
   static std::string ourLCDTypes;
   static std::string ourLCDChoices;
-  static std::map<std::string, MvrRetFunctor2<ArSonarMTX *, int, const char *> *, MvrStrCaseCmpOp> ourSonarCreatorMap;
+  static std::map<std::string, MvrRetFunctor2<MvrSonarMTX *, int, const char *> *, MvrStrCaseCmpOp> ourSonarCreatorMap;
   static std::string ourSonarTypes;
   static std::string ourSonarChoices;
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
   static MvrMutex ourExitCallbacksMutex;
   static std::multimap<int, MvrFunctor *> ourExitCallbacks;
   static bool ourSigHandleExitNotShutdown;
@@ -320,15 +294,15 @@ protected:
   static MvrLog::LogLevel ourParseArgsLogLevel;
   static std::multimap<int, MvrFunctor *> ourLogOptionsCBs;
   static MvrLog::LogLevel ourExitCallbacksLogLevel;
-  static std::map<std::string, MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp> ourDeviceConnectionCreatorMap;
+  static std::map<std::string, MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp> ourDeviceConnectionCreatorMap;
   static std::string ourDeviceConnectionTypes;
   static std::string ourDeviceConnectionChoices;
   static std::string ourIdentifier;
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   static size_t ourMaxNumVideoDevices;
   static size_t ourMaxNumPTZs;
 #endif
 };
 
 
-#endif // ARIAINTERNAL_H
+#endif // MVRIAINTERNAL_H

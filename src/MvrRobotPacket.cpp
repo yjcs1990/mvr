@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrRobotPacket.h"
 #include "stdio.h"
 
@@ -35,19 +9,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param sync2 second byte of the header of this packet, this should be left
    as the default in nearly all cases, ie don't mess with it
  */
-MVREXPORT ArRobotPacket::ArRobotPacket(unsigned char sync1,
+MVREXPORT MvrRobotPacket::MvrRobotPacket(unsigned char sync1,
 				      unsigned char sync2) :
-    ArBasePacket(265, 4, NULL, 2)
+    MvrBasePacket(265, 4, NULL, 2)
 {
   mySync1 = sync1;
   mySync2 = sync2;
 }
 
-MVREXPORT ArRobotPacket::~MvrRobotPacket()
+MVREXPORT MvrRobotPacket::~MvrRobotPacket()
 {
 }
 
-MVREXPORT ArRobotPacket &ArRobotPacket::operator=(const ArRobotPacket &other)
+MVREXPORT MvrRobotPacket &MvrRobotPacket::operator=(const MvrRobotPacket &other)
 {
   if (this != &other) {
 
@@ -79,7 +53,7 @@ MVREXPORT ArRobotPacket &ArRobotPacket::operator=(const ArRobotPacket &other)
   return *this;
 }
 
-MVREXPORT ArTypes::UByte ArRobotPacket::getID(void)
+MVREXPORT MvrTypes::UByte MvrRobotPacket::getID(void)
 {
   if (myLength >= 4)
     return myBuf[3];
@@ -87,12 +61,12 @@ MVREXPORT ArTypes::UByte ArRobotPacket::getID(void)
     return 0;
 }
 
-MVREXPORT void ArRobotPacket::setID(MvrTypes::UByte id)
+MVREXPORT void MvrRobotPacket::setID(MvrTypes::UByte id)
 {
   myBuf[3] = id;
 }
 
-MVREXPORT void ArRobotPacket::finalizePacket(void)
+MVREXPORT void MvrRobotPacket::finalizePacket(void)
 {
   int len = myLength;
   int chkSum;
@@ -114,7 +88,7 @@ MVREXPORT void ArRobotPacket::finalizePacket(void)
   //printf("Output %d\n", getID());
 }
 
-MVREXPORT ArTypes::Byte2 ArRobotPacket::calcCheckSum(void)
+MVREXPORT MvrTypes::Byte2 MvrRobotPacket::calcCheckSum(void)
 {
   int i;
   unsigned char n;
@@ -133,9 +107,9 @@ MVREXPORT ArTypes::Byte2 ArRobotPacket::calcCheckSum(void)
   return c;
 }
 
-MVREXPORT bool ArRobotPacket::verifyCheckSum(void) 
+MVREXPORT bool MvrRobotPacket::verifyCheckSum(void) 
 {
-  ArTypes::Byte2 chksum;
+  MvrTypes::Byte2 chksum;
   unsigned char c1, c2;
 
   if (myLength - 2 < myHeaderLength)
@@ -153,22 +127,22 @@ MVREXPORT bool ArRobotPacket::verifyCheckSum(void)
   
 }
 
-MVREXPORT ArTime ArRobotPacket::getTimeReceived(void)
+MVREXPORT MvrTime MvrRobotPacket::getTimeReceived(void)
 {
   return myTimeReceived;
 }
 
-MVREXPORT void ArRobotPacket::setTimeReceived(MvrTime timeReceived)
+MVREXPORT void MvrRobotPacket::setTimeReceived(MvrTime timeReceived)
 {
   myTimeReceived = timeReceived;
 }
 
-MVREXPORT void ArRobotPacket::log()
+MVREXPORT void MvrRobotPacket::log()
 {
   int i;
-  ArLog::log(MvrLog::Normal, "Robot Packet: (length = %i)", myLength);
+  MvrLog::log(MvrLog::Normal, "Robot Packet: (length = %i)", myLength);
   for (i = 0; i < myLength; i++)
-    ArLog::log(MvrLog::Terse, "  [%03i] % 5d\t0x%x\t%c\t%s", i,
+    MvrLog::log(MvrLog::Terse, "  [%03i] % 5d\t0x%x\t%c\t%s", i,
         (unsigned char) myBuf[i],
         (unsigned char) myBuf[i],
         (myBuf[i] >= ' ' && myBuf[i] <= '~') ? (unsigned char) myBuf[i] : ' ',
@@ -180,6 +154,6 @@ MVREXPORT void ArRobotPacket::log()
                   i == (myLength - 1) ? "[second checksum byte]" :
                     ""
     );
-  ArLog::log(MvrLog::Terse, "\n");
+  MvrLog::log(MvrLog::Terse, "\n");
 }
 

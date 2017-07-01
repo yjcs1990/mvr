@@ -1,38 +1,12 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrLaser.h"
 #include "MvrRobot.h"
 #include "MvrDeviceConnection.h"
 
 bool MvrLaser::ourUseSimpleNaming = false;
 
-MVREXPORT MvrLaser::ArLaser(
+MVREXPORT MvrLaser::MvrLaser(
 	int laserNumber, const char *name, 
 	unsigned int absoluteMaxRange, bool locationDependent, 
 	bool appendLaserNumberToName) :
@@ -191,7 +165,7 @@ void MvrLaser::laserProcessReadings(void)
   if (myRawReadings == NULL || myRawReadings->begin() == myRawReadings->end())
     return;
 
-  std::list<ArSensorReading *>::iterator sensIt;
+  std::list<MvrSensorReading *>::iterator sensIt;
   MvrSensorReading *sReading;
   double x, y;
   double lastX = 0.0, lastY = 0.0;
@@ -320,7 +294,7 @@ void MvrLaser::internalProcessReading(double x, double y,
     clean = false;
 
 
-  std::list<ArPoseWithTime *>::iterator cit;
+  std::list<MvrPoseWithTime *>::iterator cit;
   bool addReading = true;
 
   //double squaredDist;
@@ -624,7 +598,7 @@ MVREXPORT void MvrLaser::setDeviceConnection(MvrDeviceConnection *conn)
   myConnMutex.unlock();
 }
 
-MVREXPORT MvrDeviceConnection *ArLaser::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *MvrLaser::getDeviceConnection(void)
 {
   return myConn;
 }
@@ -1309,7 +1283,7 @@ MVREXPORT bool MvrLaser::addIgnoreReadings(const char *ignoreReadings)
       if (sscanf(str, "%f:%f", &begin, &end) == 2 || 
 	  sscanf(str, "%f-%f", &begin, &end) == 2)
       {
-	ArLog::log(MvrLog::Verbose, "%s: Adding ignore reading from %g to %g", 
+	MvrLog::log(MvrLog::Verbose, "%s: Adding ignore reading from %g to %g", 
 		   getName(), begin, end);
 	// reorder them for easier looping
 	if (begin > end)
@@ -1319,7 +1293,7 @@ MVREXPORT bool MvrLaser::addIgnoreReadings(const char *ignoreReadings)
 	  end = ignore;
 	}
 
-	ArLog::log(MvrLog::Verbose, "%s: Added ignore reading (beginning) %g", 
+	MvrLog::log(MvrLog::Verbose, "%s: Added ignore reading (beginning) %g", 
 		   getName(), begin);
 	addIgnoreReading(begin);
 	for (ignore = begin; ignore <= end; ignore += 1.0)
@@ -1328,13 +1302,13 @@ MVREXPORT bool MvrLaser::addIgnoreReadings(const char *ignoreReadings)
 		     getName(), ignore);
 	  addIgnoreReading(ignore);
 	}
-	ArLog::log(MvrLog::Verbose, "%s: Added ignore reading (ending) %g", 
+	MvrLog::log(MvrLog::Verbose, "%s: Added ignore reading (ending) %g", 
 		   getName(), end);
 	addIgnoreReading(end);
       }
       else
       {
-	ArLog::log(MvrLog::Terse, "%s: Bad syntax for ignore readings, had string '%s' as one of the arguments (the values need to either be individual doubles, or begin:end (75:77) or begin-end (75-77))", getName(), str);
+	MvrLog::log(MvrLog::Terse, "%s: Bad syntax for ignore readings, had string '%s' as one of the arguments (the values need to either be individual doubles, or begin:end (75:77) or begin-end (75-77))", getName(), str);
 	return false;
       }
     }
@@ -1355,7 +1329,7 @@ MVREXPORT void MvrLaser::applyTransform(MvrTransform trans,
 				       bool doCumulative)
 {
   myCurrentBuffer.applyTransform(trans);
-  std::list<ArSensorReading *>::iterator it;
+  std::list<MvrSensorReading *>::iterator it;
 
   for (it = myRawReadings->begin(); it != myRawReadings->end(); ++it)
     (*it)->applyTransform(trans);

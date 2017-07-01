@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrRatioInputJoydrive.h"
 #include "MvrRobot.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
 /**
    @param robot robot
@@ -41,26 +15,26 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    fire)
 
    @param useOSCalForJoystick if this is true we'll use the OS
-   calibration, if false we'll do our own.  See also ArJoyHandler::setUseOSCal()
+   calibration, if false we'll do our own.  See also MvrJoyHandler::setUseOSCal()
 **/
 
-MVREXPORT ArRatioInputJoydrive::ArRatioInputJoydrive(
-	ArRobot *robot,
-	ArActionRatioInput *input,
+MVREXPORT MvrRatioInputJoydrive::MvrRatioInputJoydrive(
+	MvrRobot *robot,
+	MvrActionRatioInput *input,
 	int priority,
 	bool stopIfNoButtonPressed,
 	bool useOSCalForJoystick) :
-  myFireCB(this, &ArRatioInputJoydrive::fireCallback)
+  myFireCB(this, &MvrRatioInputJoydrive::fireCallback)
 {
   myRobot = robot;
   myInput = input;
   myInput->addFireCallback(priority, &myFireCB);
   myFireCB.setName("Joydrive");
-  if ((myJoyHandler = Aria::getJoyHandler()) == NULL)
+  if ((myJoyHandler = Mvria::getJoyHandler()) == NULL)
   {
-    myJoyHandler = new ArJoyHandler;
+    myJoyHandler = new MvrJoyHandler;
     myJoyHandler->init();
-    Aria::setJoyHandler(myJoyHandler);
+    Mvria::setJoyHandler(myJoyHandler);
   }
 
   myUseOSCal = useOSCalForJoystick;
@@ -70,31 +44,31 @@ MVREXPORT ArRatioInputJoydrive::ArRatioInputJoydrive(
   myPrinting = false;
 }
 
-MVREXPORT ArRatioInputJoydrive::~MvrRatioInputJoydrive()
+MVREXPORT MvrRatioInputJoydrive::~MvrRatioInputJoydrive()
 {
   myInput->remFireCallback(&myFireCB);
 }
 
-MVREXPORT void ArRatioInputJoydrive::setStopIfNoButtonPressed(
+MVREXPORT void MvrRatioInputJoydrive::setStopIfNoButtonPressed(
 	bool stopIfNoButtonPressed)
 {
   myStopIfNoButtonPressed = stopIfNoButtonPressed;
 }
 
-MVREXPORT bool ArRatioInputJoydrive::getStopIfNoButtonPressed(void)
+MVREXPORT bool MvrRatioInputJoydrive::getStopIfNoButtonPressed(void)
 {
   return myStopIfNoButtonPressed;
 }
 
-MVREXPORT bool ArRatioInputJoydrive::joystickInited(void)
+MVREXPORT bool MvrRatioInputJoydrive::joystickInited(void)
 {
   return myJoyHandler->haveJoystick();
 }
 
 /**
-   @see ArJoyHandler::setUseOSCal
+   @see MvrJoyHandler::setUseOSCal
 **/
-MVREXPORT void ArRatioInputJoydrive::setUseOSCal(bool useOSCal)
+MVREXPORT void MvrRatioInputJoydrive::setUseOSCal(bool useOSCal)
 {
   myUseOSCal = useOSCal;
   myPreviousUseOSCal = useOSCal;
@@ -102,15 +76,15 @@ MVREXPORT void ArRatioInputJoydrive::setUseOSCal(bool useOSCal)
 }
 
 /**
-   @see ArJoyHandler::getUseOSCal
+   @see MvrJoyHandler::getUseOSCal
 **/
-MVREXPORT bool ArRatioInputJoydrive::getUseOSCal(void)
+MVREXPORT bool MvrRatioInputJoydrive::getUseOSCal(void)
 {
   return myUseOSCal;
 }
 
 
-void ArRatioInputJoydrive::fireCallback(void)
+void MvrRatioInputJoydrive::fireCallback(void)
 {
   double rot, trans, throttle;
 

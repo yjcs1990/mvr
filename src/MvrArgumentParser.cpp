@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrArgumentBuilder.h"
 #include "MvrArgumentParser.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include <stdarg.h>
 
 std::list<std::string> MvrArgumentParser::ourDefaultArgumentLocs;
@@ -38,7 +12,7 @@ std::list<bool> MvrArgumentParser::ourDefaultArgumentLocIsFile;
    @param argc pointer to program argument count (e.g. @a argc from main()) 
    @param argv array of program arguments (e.g. @a arcv from main())
 **/
-MVREXPORT MvrArgumentParser::ArArgumentParser(int *argc, char **argv)
+MVREXPORT MvrArgumentParser::MvrArgumentParser(int *argc, char **argv)
 {
   myArgc = argc;
   myArgv = argv;
@@ -53,7 +27,7 @@ MVREXPORT MvrArgumentParser::ArArgumentParser(int *argc, char **argv)
 /**
  * @param builder an MvrArgumentBuilder object containing arguments
 **/
-MVREXPORT MvrArgumentParser::ArArgumentParser(MvrArgumentBuilder *builder)
+MVREXPORT MvrArgumentParser::MvrArgumentParser(MvrArgumentBuilder *builder)
 {
   myUsingBuilder = true;
   myBuilder = builder;
@@ -566,7 +540,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(
    one given if the argument was found, or a string with the first
    char as NULL again if the argument after the one given isn't there
  **/
-MVREXPORT char *ArArgumentParser::checkParameterArgumentVar(const char *argument, ...)
+MVREXPORT char *MvrArgumentParser::checkParameterArgumentVar(const char *argument, ...)
 {
   char arg[2048];
   va_list ptr;
@@ -689,7 +663,7 @@ MVREXPORT void MvrArgumentParser::log(void) const
     MvrLog::log(MvrLog::Terse, "Mvrg %d: %s", i, getArgv()[i]);
 }
 
-MVREXPORT const char *ArArgumentParser::getStartingArguments(void) const
+MVREXPORT const char *MvrArgumentParser::getStartingArguments(void) const
 {
   if (myUsingBuilder)
     return myBuilder->getFullString();

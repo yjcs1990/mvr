@@ -52,11 +52,11 @@ char MvrLog::ourAramConfigLogLevel[1024] = "Normal";
 double MvrLog::ourAramConfigLogSize = 10;
 bool MvrLog::ourUseAramBehavior = false;
 double MvrLog::ourAramLogSize = 0;
-MvrGlobalRetFunctor<bool> MvrLog::ourAramConfigProcessFileCB(&MvrLog::aramProcessFile);
-std::string MvrLog::ourAramPrefix = "";
+MvrGlobalRetFunctor<bool> MvrLog::ourMvramConfigProcessFileCB(&MvrLog::aramProcessFile);
+std::string MvrLog::ourMvramPrefix = "";
 #endif  // MVRINTERFACE
 
-bool MvrLog::ourAramDaemonized = false;
+bool MvrLog::ourMvramDaemonized = false;
 
 MvrFunctor1<const char *> *MvrLog::ourFunctor;
 
@@ -663,12 +663,12 @@ MVREXPORT bool MvrLog::processFile(void)
   MVREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLevel, double defaultSize, bool daemonized)
   {
     if (prefix == NULL || prefix[0] == '\0')
-      ourAramPrefix += "";
+      ourMvramPrefix += "";
     else
     {
-      ourAramPrefix = prefix;
+      ourMvramPrefix = prefix;
       if (prefix[strlen(prefix)-1] != '/')
-        ourAramPrefix += "/";
+        ourMvramPrefix += "/";
     }
     std::string section = "Log Config";
     Mvria::getConfig()->addParam(
@@ -682,8 +682,8 @@ MVREXPORT bool MvrLog::processFile(void)
       section.c_str(), MvrPriority::TRIVIAL);
     
     ourUseAramBehavior = true;
-    ourAramConfigProcessFileCB.setName("MvrLogAram");
-    Mvria::getConfig->addProcessFileCB(&ourAramConfigProcessFileCB, 210);
+    ourMvramConfigProcessFileCB.setName("MvrLogMvram");
+    Mvria::getConfig->addProcessFileCB(&ourMvramConfigProcessFileCB, 210);
 
     if (defaultLevel == MvrLog::Terse)
       sprintf(ourAramConfigLogLevel, "Terse");
@@ -692,13 +692,13 @@ MVREXPORT bool MvrLog::processFile(void)
     if (defaultLevel == MvrLog::Verbose)
       sprintf(ourAramConfigLogLevel, "Verbose");
 
-    ourAramDaemonized = daemonized;
+    ourMvramDaemonized = daemonized;
 
     char buf[2048];
-    snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
+    snprintf(buf, sizeof(buf), "%slog1.txt", ourMvramPrefix.c_str());
     MvrLog::init(MvrLog::File, defaultLevel, buf, true, !daemonized, true);
 
-    if (ourAramDaemonized)
+    if (ourMvramDaemonized)
     {
       if (dup2(fileno(ourFP), fileno(stderr)) < 0)
         MvrLog::logErrorFromOSNoLock(MvrLog::Normal, "MvrLog: Error redirecting stderr to log file");
@@ -737,11 +737,11 @@ MVREXPORT void MvrLog::filledAramLog(void)
   int i;
   for (i=5; i>0; i--)
   {
-    snprintf(buf, sizeof(buf), "mv %slog%d.txt %slog%d.txt", ourAramPrefix.c_str(), i, ourAramPrefix.c_str(), i+1);
+    snprintf(buf, sizeof(buf), "mv %slog%d.txt %slog%d.txt", ourMvramPrefix.c_str(), i, ourMvramPrefix.c_str(), i+1);
     system(buf);
   }
 
-  snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
+  snprintf(buf, sizeof(buf), "%slog1.txt", ourMvramPrefix.c_str());
   if ((ourFP = MvrUtil::fopen(ourFileName.c_str(), "w")) == NULL)
   {
     ourType = StdOut;
@@ -751,7 +751,7 @@ MVREXPORT void MvrLog::filledAramLog(void)
   }
   ourCharsLogged = 0;
 
-  if (ourAramDaemonized)
+  if (ourMvramDaemonized)
   {
     if (dup2(fileno(ourFP), fileno(stderr)) < 0)
       MvrLog::logErrorFromOSNoLock(MvrLog::Normal, "MvrLog: Error redirecting stderr to log file.");
@@ -781,7 +781,7 @@ MVREXPORT void MvrLog::invokeFunctor(const char *message)
 
 MVREXPORT void MvrLog::checkFileSize(void)
 {
-  if (ourAramDaemonized)
+  if (ourMvramDaemonized)
   {
     long size;
     size = MvrUtil::sizeFile(ourFileName);

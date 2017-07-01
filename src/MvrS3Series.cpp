@@ -1,56 +1,30 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrS3Series.h"
 #include "MvrRobot.h"
 #include "MvrSerialConnection.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include <time.h>
 
 
-MVREXPORT ArS3SeriesPacket::ArS3SeriesPacket() :
-ArBasePacket(10000, 1, NULL, 1) {
+MVREXPORT MvrS3SeriesPacket::MvrS3SeriesPacket() :
+MvrBasePacket(10000, 1, NULL, 1) {
 
 }
 
-MVREXPORT ArS3SeriesPacket::~MvrS3SeriesPacket() {
+MVREXPORT MvrS3SeriesPacket::~MvrS3SeriesPacket() {
 
 }
 
-MVREXPORT ArTime ArS3SeriesPacket::getTimeReceived(void) {
+MVREXPORT MvrTime MvrS3SeriesPacket::getTimeReceived(void) {
 	return myTimeReceived;
 }
 
-MVREXPORT void ArS3SeriesPacket::setTimeReceived(MvrTime timeReceived) {
+MVREXPORT void MvrS3SeriesPacket::setTimeReceived(MvrTime timeReceived) {
 	myTimeReceived = timeReceived;
 }
 
-MVREXPORT void ArS3SeriesPacket::duplicatePacket(MvrS3SeriesPacket *packet) {
+MVREXPORT void MvrS3SeriesPacket::duplicatePacket(MvrS3SeriesPacket *packet) {
 	myLength = packet->getLength();
 	myReadLength = packet->getReadLength();
 	myTimeReceived = packet->getTimeReceived();
@@ -74,47 +48,47 @@ MVREXPORT void ArS3SeriesPacket::duplicatePacket(MvrS3SeriesPacket *packet) {
 	memcpy(myBuf, packet->getBuf(), myLength);
 }
 
-MVREXPORT void ArS3SeriesPacket::empty(void) {
+MVREXPORT void MvrS3SeriesPacket::empty(void) {
 	myLength = 0;
 	myReadLength = 0;
 }
 
-MVREXPORT ArS3SeriesPacketReceiver::ArS3SeriesPacketReceiver() {
+MVREXPORT MvrS3SeriesPacketReceiver::MvrS3SeriesPacketReceiver() {
 
 }
 
-MVREXPORT ArS3SeriesPacketReceiver::~MvrS3SeriesPacketReceiver() {
+MVREXPORT MvrS3SeriesPacketReceiver::~MvrS3SeriesPacketReceiver() {
 
 }
 
-MVREXPORT void ArS3SeriesPacketReceiver::setDeviceConnection(
-		ArDeviceConnection *conn) {
+MVREXPORT void MvrS3SeriesPacketReceiver::setDeviceConnection(
+		MvrDeviceConnection *conn) {
 	myConn = conn;
 }
 
-MVREXPORT ArDeviceConnection *ArS3SeriesPacketReceiver::getDeviceConnection(void) {
+MVREXPORT MvrDeviceConnection *MvrS3SeriesPacketReceiver::getDeviceConnection(void) {
 	return myConn;
 }
 
-ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
+MvrS3SeriesPacket *MvrS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		bool startMode) {
 
-	ArS3SeriesPacket *packet;
+	MvrS3SeriesPacket *packet;
 	unsigned char c;
 	long timeToRunFor;
-	ArTime timeDone;
-	ArTime lastDataRead;
-	ArTime packetReceived;
+	MvrTime timeDone;
+	MvrTime lastDataRead;
+	MvrTime packetReceived;
 	int i;
 
 	if (myConn == NULL || myConn->getStatus()
-			!= ArDeviceConnection::STATUS_OPEN) {
+			!= MvrDeviceConnection::STATUS_OPEN) {
 		return NULL;
 	}
 
 	timeDone.setToNow();
 	if (!timeDone.addMSec(msWait)) {
-		ArLog::log(MvrLog::Verbose, "%s::receivePacket() error adding msecs (%i)",
+		MvrLog::log(MvrLog::Verbose, "%s::receivePacket() error adding msecs (%i)",
 				myName, msWait);
 	}
 	msWait = 10;
@@ -125,7 +99,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		if (timeToRunFor < 0)
 			timeToRunFor = 0;
 		/*
-		 ArLog::log(MvrLog::Terse,
+		 MvrLog::log(MvrLog::Terse,
 		 "%s::receivePacket() timeToRunFor = %d",
 		 myName, timeToRunFor);
 		 */
@@ -145,7 +119,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		for (i = 0; i < 4; i++) {
 			if ((myConn->read((char *) &c, 1, 200)) > 0) {
 				if (c != 0x00) {
-					//ArLog::log(MvrLog::Terse,
+					//MvrLog::log(MvrLog::Terse,
 					//                 "MvrS3Series::receivePacket() error reading first 4 bytes of header");
 					break;
 				}
@@ -158,7 +132,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			} else {
 				/* don't log this if we are in starting mode, means laser is not connecting */
 				if (startMode)
-					ArLog::log(MvrLog::Terse,
+					MvrLog::log(MvrLog::Terse,
 							"%s::receivePacket() myConn->read error (header)",
 							myName);
 				myConn->debugEndPacket(false, -10);
@@ -177,13 +151,13 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			if ((myConn->read((char *) &c, 1, msWait)) > 0) {
 			        myConn->debugBytesRead(1);
 				if (c != 0x00) {
-					//ArLog::log(MvrLog::Terse,
+					//MvrLog::log(MvrLog::Terse,
 					//                 "MvrS3Series::receivePacket() error data block number in header");
 					break;
 				}
 			} else {
-				ArLog::log(
-						ArLog::Terse,
+				MvrLog::log(
+						MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (data block number)",
 						myName);
 				myConn->debugEndPacket(false, -20);
@@ -208,7 +182,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 				temp[i] = c;
 				crcbuf[n++] = c;
 			} else {
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (length)",
 						myName);
 				myConn->debugEndPacket(false, -30);
@@ -233,7 +207,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		myPacket.setNumReadings(((myPacket.getDataLength() - 5) / 2) - 1);
 
 		if (myPacket.getNumReadings() < 0) {
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 								"%s::receivePacket() myConn->read error (header - bad number of readings) %d %d",
 								myName, firstbytelen, secondbytelen);
 			myConn->debugEndPacket(false, -40);
@@ -241,8 +215,8 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		}
 
 		/*
-		//ArLog::Terse,
-			ArLog::log(MvrLog::Normal,
+		//MvrLog::Terse,
+			MvrLog::log(MvrLog::Normal,
 		"%s::receivePacket() Number of readings = %d %d %d", myName, myPacket.getNumReadings(), firstbytelen, secondbytelen);
 		*/
 
@@ -253,8 +227,8 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 				temp[i] = c;
 				crcbuf[n++] = c;
 			} else {
-				ArLog::log(
-						ArLog::Terse,
+				MvrLog::log(
+						MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (coordination flag and device code)",
 						myName);
 				myConn->debugEndPacket(false, -50);
@@ -265,8 +239,8 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		if (temp[0] != 0xff || temp[1] != 0x07)
 		{
 			/*
-		  ArLog::Terse,
-			ArLog::log(MvrLog::Normal,
+		  MvrLog::Terse,
+			MvrLog::log(MvrLog::Normal,
 			     "MvrS3Series::receivePacket() co-oridination flag and device code error");
 			 */
 			myConn->debugEndPacket(false, -51);
@@ -284,8 +258,8 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			}
 			else
 			{
-				ArLog::log(
-						ArLog::Terse,
+				MvrLog::log(
+						MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (protocol version?)",
 						myName);
 				myConn->debugEndPacket(false, -55);
@@ -304,7 +278,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		}
 		else
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::receivePacket() protocol version error (0x%02x 0x%02x)",
 					myName, temp[0], temp[1]);
 			myConn->debugEndPacket(false, -56);
@@ -323,7 +297,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (status flag?)",
 						myName);
 				myConn->debugEndPacket(false, -60);
@@ -345,7 +319,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (time stamp)",
 						myName);
 				myConn->debugEndPacket(false, -70);
@@ -359,8 +333,8 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		myPacket.setTimeStampByte4(temp[3]);
 
 		/*
-		ArLog::log(
-				ArLog::Terse,
+		MvrLog::log(
+				MvrLog::Terse,
 				"%s::receivePacket() Time stamp = %x %x %x %x ",
 				myName, temp[0],temp[1],temp[2],temp[3]);
 		 */
@@ -377,7 +351,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (telegram number)",
 						myName);
 				myConn->debugEndPacket(false, -80);
@@ -389,8 +363,8 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		myPacket.setTelegramNumByte2(temp[1]);
 
 		/*
-		ArLog::log(
-				ArLog::Terse,
+		MvrLog::log(
+				MvrLog::Terse,
 				"%s::receivePacket() Telegram number =  %d  ",
 				myName,  myPacket.getTelegramNumByte2());
 		 */
@@ -404,14 +378,14 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 		// trap if we failed the read
 		if (numRead < 0) {
-			ArLog::log(MvrLog::Terse, "%s::receivePacket() Failed read (%d)",
+			MvrLog::log(MvrLog::Terse, "%s::receivePacket() Failed read (%d)",
 					myName, numRead);
 			myConn->debugEndPacket(false, -90);
 			return NULL;
 		}
 		myConn->debugBytesRead(numRead);
 		/*
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::receivePacket() Number of bytes read = %d", myName,
 				numRead);
 		 */
@@ -424,7 +398,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 					sprintf (&obuf[j], "_%02x", myReadBuf[i]);
 					j= j+3;
 				}
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::receivePacket() packet = %s ",myName, obuf);
 #endif
 
@@ -459,7 +433,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (crc)", myName);
 				myConn->debugEndPacket(false, -100);
 				return NULL;
@@ -478,8 +452,8 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 				numZeros = 0;
 
 			if (numZeros >= 4) {
-				ArLog::log(
-						ArLog::Terse,
+				MvrLog::log(
+						MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (got 4 zeros in data)",
 						myName);
 				myConn->debugEndPacket(false, -110);
@@ -500,7 +474,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 					sprintf (&obuf[j], "_%02x", crcbuf[i]);
 					j= j+3;
 				}
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::receivePacket() packet = %s ",myName, obuf);
 #endif
 
@@ -512,7 +486,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 		if (incrc != crc)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::receivePacket() CRC error (in = 0x%02x calculated = 0x%02x) ",
 					myName, incrc, crc);
 			myConn->debugEndPacket(false, -120);
@@ -529,7 +503,7 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 		if ((myReadBuf[1] == 0xaa) && (myReadBuf[2] == 0xaa)) {
 
 /*
-			ArLog::log(MvrLog::Normal, "%s monitoring case of = %d seq = %d %d time = %d %d %d %d",
+			MvrLog::log(MvrLog::Normal, "%s monitoring case of = %d seq = %d %d time = %d %d %d %d",
 					myName, myReadBuf[3], myPacket.getTelegramNumByte1(), myPacket.getTelegramNumByte2(),
 					myPacket.getTimeStampByte1(), myPacket.getTimeStampByte2(), myPacket.getTimeStampByte3(),
 					myPacket.getTimeStampByte4());
@@ -547,11 +521,11 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 			myPacket.dataToBuf(&myReadBuf[5], myPacket.getNumReadings() * 2);
 
 		myPacket.resetRead();
-		packet = new ArS3SeriesPacket;
+		packet = new MvrS3SeriesPacket;
 		packet->duplicatePacket(&myPacket);
 		myConn->debugEndPacket(true, 1);
 		/*
-		ArLog::log(MvrLog::Normal,
+		MvrLog::log(MvrLog::Normal,
 		           "%s::receivePacket() returning packet %d %d", myName, packet->getNumReadings(), myPacket.getNumReadings());
 		*/
 
@@ -561,27 +535,27 @@ ArS3SeriesPacket *ArS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 	} while (timeDone.mSecTo() >= 0); // || !myStarting)
 
-	ArLog::log(MvrLog::Terse, "%s::receivePacket() Timeout on read", myName);
+	MvrLog::log(MvrLog::Terse, "%s::receivePacket() Timeout on read", myName);
 	myConn->debugEndPacket(false, -130);
 	return NULL;
 }
 
-MVREXPORT ArS3Series::ArS3Series(int laserNumber, const char *name) :
-			ArLaser(laserNumber, name, 20000),
-			mySensorInterpTask(this, &ArS3Series::sensorInterp),
-			myAriaExitCB(this, &ArS3Series::disconnect),
-			myPacketHandlerCB(this, &ArS3Series::packetHandler) {
+MVREXPORT MvrS3Series::MvrS3Series(int laserNumber, const char *name) :
+			MvrLaser(laserNumber, name, 20000),
+			mySensorInterpTask(this, &MvrS3Series::sensorInterp),
+			myMvriaExitCB(this, &MvrS3Series::disconnect),
+			myPacketHandlerCB(this, &MvrS3Series::packetHandler) {
 
-	//ArLog::log(MvrLog::Normal, "%s: Sucessfully created", getName());
+	//MvrLog::log(MvrLog::Normal, "%s: Sucessfully created", getName());
 
   mySendFakeMonitoringData = false;
 
 	clear();
-	myRawReadings = new std::list<ArSensorReading *>;
+	myRawReadings = new std::list<MvrSensorReading *>;
 
 	myIsMonitoringDataAvailable = false;
 
-	Aria::addExitCallback(&myAriaExitCB, -10);
+	Mvria::addExitCallback(&myMvriaExitCB, -10);
 
 	setInfoLogLevel(MvrLog::Normal);
 	//setInfoLogLevel(MvrLog::Terse);
@@ -628,9 +602,9 @@ MVREXPORT ArS3Series::ArS3Series(int laserNumber, const char *name) :
 	// PS 7/1/11
 	//laserAllowAutoBaudChoices("38400", baudChoices);
 
-	//myLogLevel = ArLog::Verbose;
-	//myLogLevel = ArLog::Terse;
-	myLogLevel = ArLog::Normal;
+	//myLogLevel = MvrLog::Verbose;
+	//myLogLevel = MvrLog::Terse;
+	myLogLevel = MvrLog::Normal;
 
 	setMinDistBetweenCurrent(0);
 	setMaxDistToKeepCumulative(4000);
@@ -646,15 +620,15 @@ MVREXPORT ArS3Series::ArS3Series(int laserNumber, const char *name) :
 
 #if 0
 	setCurrentDrawingData(
-			new ArDrawingData("polyDots",
-					ArColor(0, 0, 255),
+			new MvrDrawingData("polyDots",
+					MvrColor(0, 0, 255),
 					80, // mm diameter of dots
 					75), // layer above sonar
 					true);
 
 	setCumulativeDrawingData(
-			new ArDrawingData("polyDots",
-					ArColor(125, 125, 125),
+			new MvrDrawingData("polyDots",
+					MvrColor(125, 125, 125),
 					100, // mm diameter of dots
 					60), // layer below current range devices
 					true);
@@ -662,26 +636,26 @@ MVREXPORT ArS3Series::ArS3Series(int laserNumber, const char *name) :
 #endif
 	// PS make theses a different color, etc
 	setCurrentDrawingData(
-			new ArDrawingData("polyDots", ArColor(223, 223, 0), 75, // mm diameter of dots
+			new MvrDrawingData("polyDots", MvrColor(223, 223, 0), 75, // mm diameter of dots
 					76), // layer above sonar
 					true);
 
 	setCumulativeDrawingData(
-			new ArDrawingData("polyDots", ArColor(128, 128, 0), 95, // mm diameter of dots
+			new MvrDrawingData("polyDots", MvrColor(128, 128, 0), 95, // mm diameter of dots
 					61), // layer below current range devices
 					true);
 
 }
 
-MVREXPORT ArS3Series::~MvrS3Series() {
-	Aria::remExitCallback(&myAriaExitCB);
+MVREXPORT MvrS3Series::~MvrS3Series() {
+	Mvria::remExitCallback(&myMvriaExitCB);
 	if (myRobot != NULL) {
 		myRobot->remRangeDevice(this);
 		myRobot->remLaser(this);
 		myRobot->remSensorInterpTask(&mySensorInterpTask);
 	}
 	if (myRawReadings != NULL) {
-		ArUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
+		MvrUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
 		myRawReadings->clear();
 		delete myRawReadings;
 		myRawReadings = NULL;
@@ -692,7 +666,7 @@ MVREXPORT ArS3Series::~MvrS3Series() {
 	unlockDevice();
 }
 
-void ArS3Series::clear(void) {
+void MvrS3Series::clear(void) {
 	myIsConnected = false;
 	myTryingToConnect = false;
 	myStartConnect = false;
@@ -700,7 +674,7 @@ void ArS3Series::clear(void) {
 	myNumChans = 0;
 }
 
-MVREXPORT void ArS3Series::laserSetName(const char *name) {
+MVREXPORT void MvrS3Series::laserSetName(const char *name) {
 	myName = name;
 
 	myConnMutex.setLogNameVar("%s::myConnMutex", getName());
@@ -708,12 +682,12 @@ MVREXPORT void ArS3Series::laserSetName(const char *name) {
 	mySafetyDebuggingTimeMutex.setLogNameVar("%s::mySafetyDebuggingTimeMutex", 
 					     getName());
 	myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-	myAriaExitCB.setNameVar("%s::exitCallback", getName());
+	myMvriaExitCB.setNameVar("%s::exitCallback", getName());
 
-	ArLaser::laserSetName( getName());
+	MvrLaser::laserSetName( getName());
 }
 
-MVREXPORT void ArS3Series::setRobot(MvrRobot *robot) {
+MVREXPORT void MvrS3Series::setRobot(MvrRobot *robot) {
 	myRobot = robot;
 
 	if (myRobot != NULL) {
@@ -722,35 +696,35 @@ MVREXPORT void ArS3Series::setRobot(MvrRobot *robot) {
 		myRobot->remPacketHandler(&myPacketHandlerCB);
 		myRobot->addPacketHandler(&myPacketHandlerCB);
 	}
-	ArLaser::setRobot(robot);
+	MvrLaser::setRobot(robot);
 }
 
-MVREXPORT bool ArS3Series::asyncConnect(void) {
+MVREXPORT bool MvrS3Series::asyncConnect(void) {
 	myStartConnect = true;
 	if (!getRunning())
 		runAsync();
 	return true;
 }
 
-MVREXPORT bool ArS3Series::disconnect(void) {
+MVREXPORT bool MvrS3Series::disconnect(void) {
 	if (!isConnected())
 		return true;
 
-	ArLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
+	MvrLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
 
 	laserDisconnectNormally();
 	return true;
 }
 
-void ArS3Series::failedToConnect(void) {
+void MvrS3Series::failedToConnect(void) {
 	lockDevice();
 	myTryingToConnect = true;
 	unlockDevice();
 	laserFailedConnect();
 }
 
-void ArS3Series::sensorInterp(void) {
-	ArS3SeriesPacket *packet;
+void MvrS3Series::sensorInterp(void) {
+	MvrS3SeriesPacket *packet;
 
 	bool safetyDebugging = false;
 
@@ -760,7 +734,7 @@ void ArS3Series::sensorInterp(void) {
 	mySafetyDebuggingTimeMutex.unlock();
 
 	if (safetyDebugging)
-	  ArLog::log(MvrLog::Normal, 
+	  MvrLog::log(MvrLog::Normal, 
 		     "%s::SafetyDecommissionWarning: Robot speed %.0f mm/sec (in cycle)",
 		     myName.c_str(), 
 		     myRobot->getVel());
@@ -787,19 +761,19 @@ void ArS3Series::sensorInterp(void) {
 		// way (the two lines above this comment)
 		//packet = myPackets.back();
 		//myPackets.clear();
-		//ArUtil::deleteSet(myPackets.begin(), myPackets.end());
+		//MvrUtil::deleteSet(myPackets.begin(), myPackets.end());
 		myPacketsMutex.unlock();
 
 		//set up the times and poses
 
-		ArTime time = packet->getTimeReceived();
-		ArTime timeEnd = packet->getTimeReceived();
-		ArPose pose;
-		ArPose poseEnd;
+		MvrTime time = packet->getTimeReceived();
+		MvrTime timeEnd = packet->getTimeReceived();
+		MvrPose pose;
+		MvrPose poseEnd;
 		int ret;
 		int retEncoder;
-		ArPose encoderPose;
-		ArPose encoderPoseEnd;
+		MvrPose encoderPose;
+		MvrPose encoderPoseEnd;
 		int dist;
 		int j;
 
@@ -816,7 +790,7 @@ void ArS3Series::sensorInterp(void) {
 					sprintf (&obuf[z], "_%02x", buf[i]);
 					z= z+3;
 				}
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::sensorInterp() packet = %s ", getName(), obuf);
 #endif
 
@@ -853,7 +827,7 @@ void ArS3Series::sensorInterp(void) {
 		{
 		  interpolateReadings = false;
 		  if (!time.addMSec(-30)) {
-		    ArLog::log(MvrLog::Normal,
+		    MvrLog::log(MvrLog::Normal,
 			       "%s::sensorInterp() error adding msecs (-30)", getName());
 		  }
 		}
@@ -866,14 +840,14 @@ void ArS3Series::sensorInterp(void) {
 		  // don't touch time
 		  if (!timeEnd.addMSec(30))
 		  {
-		    ArLog::log(MvrLog::Normal,
+		    MvrLog::log(MvrLog::Normal,
 			       "%s::sensorInterp() error adding end msecs (30)", getName());
 		  }
 		}
 
 		// MPL this was from debugging the intermittent lost
 		// issue thatl ooked like a timing problem
-		//ArLog::log(MvrLog::Normal, "%s packet %lld mSec old", getName(), time.mSecSince());
+		//MvrLog::log(MvrLog::Normal, "%s packet %lld mSec old", getName(), time.mSecSince());
 		
 		if (myRobot == NULL || !myRobot->isConnected())
 		{
@@ -884,7 +858,7 @@ void ArS3Series::sensorInterp(void) {
 				|| (retEncoder = myRobot->getEncoderPoseInterpPosition(time,
 						&encoderPose)) < 0)
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::sensorInterp(): Warning: reading too old to process", getName());
 			delete packet;
 			continue;
@@ -896,13 +870,13 @@ void ArS3Series::sensorInterp(void) {
 		     || (retEncoder = myRobot->getEncoderPoseInterpPosition(
 				 timeEnd, &encoderPoseEnd)) < 0))
 		{
-		  ArLog::log(MvrLog::Normal,
+		  MvrLog::log(MvrLog::Normal,
 			     "%s::sensorInterp(): Warning: reading too old to process end", getName());
 		  delete packet;
 		  continue;
 		}
 
-		ArTransform transform;
+		MvrTransform transform;
 		transform.setTransform(pose);
 
 		unsigned int counter = 0;
@@ -913,8 +887,8 @@ void ArS3Series::sensorInterp(void) {
 		//lockDevice();
 		myDataMutex.lock();
 
-		//std::list<ArSensorReading *>::reverse_iterator it;
-		ArSensorReading *reading;
+		//std::list<MvrSensorReading *>::reverse_iterator it;
+		MvrSensorReading *reading;
 
 		myNumChans = packet->getNumReadings();
 
@@ -930,7 +904,7 @@ void ArS3Series::sensorInterp(void) {
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::sensorInterp(): Warning: The number of readings is not correct = %d",
 					getName(), myNumChans);
 
@@ -946,11 +920,11 @@ void ArS3Series::sensorInterp(void) {
 		// If we don't have any sensor readings created at all, make 'em all
 		if (myRawReadings->size() == 0)
 			for (j = 0; j < eachNumberData; j++)
-				myRawReadings->push_back(new ArSensorReading);
+				myRawReadings->push_back(new MvrSensorReading);
 
 		if (eachNumberData > myRawReadings->size())
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::sensorInterp() Bad data, in theory have %d readings but can only have 541... skipping this packet",
 					getName(), eachNumberData);
 
@@ -963,7 +937,7 @@ void ArS3Series::sensorInterp(void) {
 			continue;
 		}
 
-		std::list<ArSensorReading *>::iterator it;
+		std::list<MvrSensorReading *>::iterator it;
 		double atDeg;
 		int onReading;
 
@@ -1020,7 +994,7 @@ void ArS3Series::sensorInterp(void) {
 		double incrX = 0;
 		double incrY = 0;
 		double incrTh = 0;
-		ArPose interpolateDelta(0, 0, 0);
+		MvrPose interpolateDelta(0, 0, 0);
 		if (interpolateReadings)
 		{
 		  incrX = ((encoderPoseEnd.getX() - encoderPose.getX()) / 
@@ -1041,13 +1015,13 @@ void ArS3Series::sensorInterp(void) {
 			    packet->getNumReadings());
 		  */
 
-		  ArLog::log(MvrLog::Normal, 
+		  MvrLog::log(MvrLog::Normal, 
    "%s:InterpolateReadings: diffAll of %d mSec, x %g y %g th %g (incr x %g y %g th %g) start x %g y %g th %g end x %g y %g th %g",
 			     getName(), 
 			     timeEnd.mSecSince(time), 
 			     encoderPoseEnd.getX() - encoderPose.getX(), 
 			     encoderPoseEnd.getY() - encoderPose.getY(), 
-			     ArMath::subAngle(encoderPoseEnd.getTh(),
+			     MvrMath::subAngle(encoderPoseEnd.getTh(),
 					      encoderPose.getTh()),
 			     incrX, incrY, incrTh,
 			     encoderPose.getX(), encoderPose.getY(), 
@@ -1056,11 +1030,11 @@ void ArS3Series::sensorInterp(void) {
 			     encoderPoseEnd.getTh());
 
 		  
-		  ArLog::log(MvrLog::Normal, 
+		  MvrLog::log(MvrLog::Normal, 
    "%s:InterpolateReadings: diffTh of %d mSec, th %g (%g) start th %g end th %g",
 			     getName(), 
 			     timeEnd.mSecSince(time), 
-			     ArMath::subAngle(encoderPoseEnd.getTh(),
+			     MvrMath::subAngle(encoderPoseEnd.getTh(),
 					      encoderPose.getTh()),
 			     incrTh,
 			     encoderPose.getTh(),
@@ -1095,11 +1069,11 @@ void ArS3Series::sensorInterp(void) {
 			  interpolateDelta.setY(
 				  interpolateDelta.getY() + incrY);
 			  interpolateDelta.setTh(
-				  ArMath::addAngle(interpolateDelta.getTh(),
+				  MvrMath::addAngle(interpolateDelta.getTh(),
 						   incrTh));
 
 			  /*
-			  ArLog::log(MvrLog::Normal, "%d %g %g %g",
+			  MvrLog::log(MvrLog::Normal, "%d %g %g %g",
 				     onReading, 
 				     interpolateDelta.getX(), 
 				     interpolateDelta.getY(), 
@@ -1107,18 +1081,18 @@ void ArS3Series::sensorInterp(void) {
 			  */
 
 			  reading->resetSensorPosition(
-				  ArMath::roundInt(mySensorPose.getX() + 
+				  MvrMath::roundInt(mySensorPose.getX() + 
 						   interpolateDelta.getX()),
-				  ArMath::roundInt(mySensorPose.getY() + 
+				  MvrMath::roundInt(mySensorPose.getY() + 
 						   interpolateDelta.getY()),
-				  ArMath::addAngle(atDeg,
+				  MvrMath::addAngle(atDeg,
 						   interpolateDelta.getTh()));
 			}
 			else
 			{
 			  reading->resetSensorPosition(
-				  ArMath::roundInt(mySensorPose.getX()),
-				  ArMath::roundInt(mySensorPose.getY()), 
+				  MvrMath::roundInt(mySensorPose.getX()),
+				  MvrMath::roundInt(mySensorPose.getY()), 
 				  atDeg);
 			}
 			reading->newData(dist, pose, encoderPose, transform, counter, time,
@@ -1129,7 +1103,7 @@ void ArS3Series::sensorInterp(void) {
 			//					 time, ignore);
 		}
 		/*
-		 ArLog::log(MvrLog::Normal,
+		 MvrLog::log(MvrLog::Normal,
 		 "Received: %s %s scan %d numReadings %d", 
 		 packet->getCommandType(), packet->getCommandName(), 
 		 myScanCounter, onReading);
@@ -1138,8 +1112,8 @@ void ArS3Series::sensorInterp(void) {
 		myDataMutex.unlock();
 
 		/*
-		ArLog::log(
-				ArLog::Terse,
+		MvrLog::log(
+				MvrLog::Terse,
 				"%s::sensorInterp() Telegram number =  %d  ",
 				getName(),  packet->getTelegramNumByte2());
 		 */
@@ -1153,7 +1127,7 @@ void ArS3Series::sensorInterp(void) {
 	unlockDevice();
 }
 
-MVREXPORT bool ArS3Series::blockingConnect(void) {
+MVREXPORT bool MvrS3Series::blockingConnect(void) {
 	long timeToRunFor;
 
 	if (!getRunning())
@@ -1161,7 +1135,7 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 
 	myConnMutex.lock();
 	if (myConn == NULL) {
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s: Error: Could not connect because there is no connection defined",
 				getName());
 		myConnMutex.unlock();
@@ -1174,15 +1148,15 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 	laserCheckParams();
 
 	// PS 9/9/11 - add setting baud
-    ArSerialConnection *serConn = NULL;
-	serConn = dynamic_cast<ArSerialConnection *>(myConn);
+    MvrSerialConnection *serConn = NULL;
+	serConn = dynamic_cast<MvrSerialConnection *>(myConn);
 	if (serConn != NULL)
     	serConn->setBaud(atoi(getStartingBaudChoice()));
 
-	if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 			&& !myConn->openSimple()) {
-		ArLog::log(
-				ArLog::Terse,
+		MvrLog::log(
+				MvrLog::Terse,
 				"%s: Could not connect because the connection was not open and could not open it",
 				getName());
 		myConnMutex.unlock();
@@ -1201,24 +1175,21 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 	myTryingToConnect = true;
 	unlockDevice();
 
-	// PS 9/9/11 - moved up top
-	//laserPullUnsetParamsFromRobot();
-	//laserCheckParams();
 
-	int size = ArMath::roundInt((270 / .25) + 1);
-	ArLog::log(myInfoLogLevel,
+	int size = MvrMath::roundInt((270 / .25) + 1);
+	MvrLog::log(myInfoLogLevel,
 			"%s::blockingConnect() Setting current buffer size to %d",
 			getName(), size);
 	setCurrentBufferSize(size);
 
-	ArTime timeDone;
+	MvrTime timeDone;
 	if (myPowerControlled)
 	{
 	        // MPL 11/28/2012 making this timeout shorter
 	        //if (!timeDone.addMSec(60 * 1000))
 		if (!timeDone.addMSec(5 * 1000))
 		{
-			ArLog::log(MvrLog::Verbose,
+			MvrLog::log(MvrLog::Verbose,
 					"%s::blockingConnect() error adding msecs (60 * 1000)",
 					getName());
 		}
@@ -1229,13 +1200,13 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 	        //if (!timeDone.addMSec(30 * 1000))
 		if (!timeDone.addMSec(5 * 1000))
 		{
-			ArLog::log(MvrLog::Verbose,
+			MvrLog::log(MvrLog::Verbose,
 					"%s::blockingConnect() error adding msecs (30 * 1000)",
 					getName());
 		}
 	}
 
-	ArS3SeriesPacket *packet;
+	MvrS3SeriesPacket *packet;
 
 	bool startMode = true;
 	do
@@ -1246,12 +1217,12 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 
 		if ((packet = myReceiver.receivePacket(1000, startMode)) != NULL)
 		{
-			ArLog::log(MvrLog::Verbose, "%s: got packet", getName());
+			MvrLog::log(MvrLog::Verbose, "%s: got packet", getName());
 			// PS 10/17/12 - verify number of readings
 			// PS - test for both S3000 (190 degrees) and S300 (270 degrees)
 			if (packet->getNumReadings() != 381) {
 				if (packet->getNumReadings() != 540) {
-					ArLog::log(MvrLog::Normal, "%s:blockingConnect - number of readings is invalid %d", getName(), packet->getNumReadings());
+					MvrLog::log(MvrLog::Normal, "%s:blockingConnect - number of readings is invalid %d", getName(), packet->getNumReadings());
 					delete packet;
 					packet = NULL;
 					continue;
@@ -1259,15 +1230,15 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 			}
 
 			if (packet->getMonitoringDataAvailable()) {
-				ArLog::log(MvrLog::Normal, "%s: Monitoring data is available (0x%02x 0x%02x)", getName(), 
+				MvrLog::log(MvrLog::Normal, "%s: Monitoring data is available (0x%02x 0x%02x)", getName(), 
 										packet->getMonitoringDataByte1(), packet->getMonitoringDataByte2());
 			}
 			else {
-				ArLog::log(MvrLog::Normal, "%s: Monitoring data is not available", getName());
+				MvrLog::log(MvrLog::Normal, "%s: Monitoring data is not available", getName());
 
 			}
 
-			ArLog::log(MvrLog::Normal, "%s: Protocol version (0x%02x 0x%02x)", getName(), 
+			MvrLog::log(MvrLog::Normal, "%s: Protocol version (0x%02x 0x%02x)", getName(), 
 										packet->getProtocolVersionByte1(), packet->getProtocolVersionByte2());
 
 
@@ -1278,20 +1249,20 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 			myIsConnected = true;
 			myTryingToConnect = false;
 			unlockDevice();
-			ArLog::log(MvrLog::Normal, "%s: Connected to laser", getName());
+			MvrLog::log(MvrLog::Normal, "%s: Connected to laser", getName());
 			laserConnect();
 			return true;
 		}
 		else
 		{
 			packet = NULL;
-			ArLog::log(MvrLog::Verbose, "%s: MS left = %d", getName(), timeDone.mSecTo());
+			MvrLog::log(MvrLog::Verbose, "%s: MS left = %d", getName(), timeDone.mSecTo());
 		}
 		// this is only used for logging in receivePacket
 		startMode = false;
 	} while (timeDone.mSecTo() >= 0); // || !myStarting)
 
-	ArLog::log(MvrLog::Terse,
+	MvrLog::log(MvrLog::Terse,
 			"%s::blockingConnect()  Did not get scan data back from laser",
 			getName());
 	failedToConnect();
@@ -1299,13 +1270,13 @@ MVREXPORT bool ArS3Series::blockingConnect(void) {
 
 }
 
-MVREXPORT void * ArS3Series::runThread(void *arg) {
+MVREXPORT void * MvrS3Series::runThread(void *arg) {
 	//char buf[1024];
-	ArS3SeriesPacket *packet;
+	MvrS3SeriesPacket *packet;
 
 	bool safetyDebugging = false;
 	
-	ArTimeChecker checker;
+	MvrTimeChecker checker;
 	std::string checkerName = myName + "::safetyZone";
 	checker.setName(checkerName.c_str());
 	checker.setDefaultMSecs(200);
@@ -1333,7 +1304,7 @@ while (getRunning() )
 	unlockDevice();
 	
 	if (!myIsConnected) {
-		ArUtil::sleep (100);
+		MvrUtil::sleep (100);
 		continue;
 	}
 	
@@ -1367,7 +1338,7 @@ while (getRunning() )
 		  else
 		    myMonitoringData = 0;
 		  // MPL taking out the locking since the
-		  // ArRobotPacketSender has it's own mutex to make
+		  // MvrRobotPacketSender has it's own mutex to make
 		  // sure we don't munge the packets
 
 		  //myRobot->lock();
@@ -1377,7 +1348,7 @@ while (getRunning() )
 		    myRobot->comInt(217, 0);
 
 		  if (safetyDebugging)
-		    ArLog::log(MvrLog::Normal, 
+		    MvrLog::log(MvrLog::Normal, 
 			       "%s::SafetyDecommissionWarning: Laser reports zone %d, last sent %lld mSecAgo",
 			       myName.c_str(), 
 			       packet->getMonitoringDataByte1(),
@@ -1386,11 +1357,11 @@ while (getRunning() )
 		  checker.finish();
 		  checker.start();
 		  /*
-			ArLog::log(MvrLog::Normal, "%s monitoring case of = %d seq = %d %d time = %d %d %d %d",
+			MvrLog::log(MvrLog::Normal, "%s monitoring case of = %d seq = %d %d time = %d %d %d %d",
 					getName(), packet->getMonitoringDataByte1(), packet->getTelegramNumByte1(), packet->getTelegramNumByte2(),
 					packet->getTimeStampByte1(), packet->getTimeStampByte2(), packet->getTimeStampByte3(),
 					packet->getTimeStampByte4());
-		  ArLog::log(MvrLog::Normal, "%s: Sent monitoring case of %d", 
+		  MvrLog::log(MvrLog::Normal, "%s: Sent monitoring case of %d", 
 			     getName(), packet->getMonitoringDataByte1());
 		  */
 		  //myRobot->unlock();
@@ -1411,7 +1382,7 @@ while (getRunning() )
 	// if we have a robot but it isn't running yet then don't have a
 	// connection failure
 	if (getRunning() && myIsConnected && laserCheckLostConnection() ) {
-		ArLog::log (MvrLog::Terse,
+		MvrLog::log (MvrLog::Terse,
 		            "%s::runThread()  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 		            myLastReading.mSecSince() / 1000.0,
 		            getConnectionTimeoutSeconds() );
@@ -1422,9 +1393,9 @@ while (getRunning() )
 	
 	/// MPL no sleep here so it'll get back into that while as soon as it can
 	
-	//ArUtil::sleep(1);
-	//ArUtil::sleep(2000);
-	//ArUtil::sleep(500);
+	//MvrUtil::sleep(1);
+	//MvrUtil::sleep(2000);
+	//MvrUtil::sleep(500);
 	
 #if 0 // PS 10/12/11 - fixing disconnects
 	
@@ -1441,7 +1412,7 @@ while (getRunning() )
 		myPackets.push_back (packet);
 		myPacketsMutex.unlock();
 		
-		//ArLog::log(MvrLog::Terse, "myRobot = %s",myRobot);
+		//MvrLog::log(MvrLog::Terse, "myRobot = %s",myRobot);
 		
 		//if (myRobot == NULL)
 		//sensorInterp();
@@ -1453,7 +1424,7 @@ while (getRunning() )
 		// connection failure
 		if (laserCheckLostConnection() ) {
 
-			ArLog::log (MvrLog::Terse,
+			MvrLog::log (MvrLog::Terse,
 			            "%s:  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).",
 			            getName(), myLastReading.mSecSince() / 1000.0,
 			            getConnectionTimeoutSeconds() );
@@ -1464,9 +1435,9 @@ while (getRunning() )
 		}
 	}
 	
-	ArUtil::sleep (1);
-	//ArUtil::sleep(2000);
-	//ArUtil::sleep(500);
+	MvrUtil::sleep (1);
+	//MvrUtil::sleep(2000);
+	//MvrUtil::sleep(500);
 	
 #endif // end PS 10/12/11
 	
@@ -1474,7 +1445,7 @@ while (getRunning() )
 	return NULL;
 }
 
-MVREXPORT bool ArS3Series::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrS3Series::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xd9)
     return false;
@@ -1523,7 +1494,7 @@ crc_table[256] = { 0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5,
 		0x8fd9, 0x9ff8, 0x6e17, 0x7e36, 0x4e55, 0x5e74, 0x2e93, 0x3eb2,
 		0x0ed1, 0x1ef0 };
 
-unsigned short ArS3SeriesPacketReceiver::CRC16(unsigned char *Data, int length) {
+unsigned short MvrS3SeriesPacketReceiver::CRC16(unsigned char *Data, int length) {
 	unsigned short CRC_16 = 0xFFFF;
 	int i;
 	for (i = 0; i < length; i++)

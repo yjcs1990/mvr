@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARMODULE_H
-#define ARMODULE_H
+#ifndef MVRMODULE_H
+#define MVRMODULE_H
 
 
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrRobot.h"
 
 
@@ -114,59 +88,59 @@ protected:
 
 #ifdef ARIA_STATIC
 
-#define ARDEF_MODULE(mod)
+#define MVRDEF_MODULE(mod)
 
 #else
 
 #ifdef WIN32
 
-#define ARDEF_MODULE(mod) \
+#define MVRDEF_MODULE(mod) \
 extern "C" {\
-static MvrModule *__AriaModule_##mod = &mod; \
+static MvrModule *__MvriaModule_##mod = &mod; \
 _declspec(dllexport) bool \
 ariaInitModule(MvrRobot *robot, void *argument = NULL) \
 { \
-  if (__AriaModule_##mod) \
+  if (__MvriaModule_##mod) \
   { \
-    __AriaModule__->setRobot(robot); \
-    return(__AriaModule_##mod->init(robot, argument)); \
+    __MvriaModule__->setRobot(robot); \
+    return(__MvriaModule_##mod->init(robot, argument)); \
   } \
   else \
     return(false); \
 } \
 _declspec(dllexport) bool ariaExitModule() \
 { \
-  if (__AriaModule_##mod) \
-    return(__AriaModule_##mod->exit()); \
+  if (__MvriaModule_##mod) \
+    return(__MvriaModule_##mod->exit()); \
   return(false); \
 } \
 }
 #else // WIN32
 
-#define ARDEF_MODULE(mod) \
-static MvrModule *__AriaModule_##mod = &mod; \
+#define MVRDEF_MODULE(mod) \
+static MvrModule *__MvriaModule_##mod = &mod; \
 extern "C" {\
 bool ariaInitModule(MvrRobot *robot, void *argument = NULL) \
 { \
-  if (__AriaModule_##mod) \
+  if (__MvriaModule_##mod) \
   { \
-    __AriaModule_##mod->setRobot(robot); \
-    return(__AriaModule_##mod->init(robot, argument)); \
+    __MvriaModule_##mod->setRobot(robot); \
+    return(__MvriaModule_##mod->init(robot, argument)); \
   } \
   else \
     return(false); \
 } \
 bool ariaExitModule() \
 { \
-  if (__AriaModule_##mod) \
-    return(__AriaModule_##mod->exit()); \
+  if (__MvriaModule_##mod) \
+    return(__MvriaModule_##mod->exit()); \
   return(false); \
 } \
 }
 
 #endif // WIN32
 
-#endif // ARIA_STATIC
+#endif // MVRIA_STATIC
 
 
-#endif // ARMODULE_H
+#endif // MVRMODULE_H

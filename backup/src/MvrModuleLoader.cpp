@@ -113,7 +113,7 @@ MVREXPORT MvrModuleLoader::Status MvrModuleLoader::load(const char *modName,
     return(STATUS_FAILED_OPEN);
   }
 
-  func=(bool(*)(MvrRobot*,void*))dlsym(handle, "ariaInitModule");
+  func=(bool(*)(MvrRobot*,void*))dlsym(handle, "mvriaInitModule");
   if (!func || dlerror() != NULL)
   {
     if (!quiet)
@@ -195,7 +195,7 @@ MVREXPORT MvrModuleLoader::Status MvrModuleLoader::close(const char *modName,
   else
   {
     handle=(*iter).second;
-    func=(bool(*)())dlsym(handle, "ariaExitModule");
+    func=(bool(*)())dlsym(handle, "mvriaExitModule");
     if (!func)
     {
       if (!quiet)

@@ -1,49 +1,22 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
 #include "MvrSoundPlayer.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include <string.h>
 #include <errno.h>
 
-int ArSoundPlayer::ourPlayChildPID = -1;
-ArGlobalRetFunctor2<bool, const char*, const char*> ArSoundPlayer::ourPlayWavFileCB(&ArSoundPlayer::playWavFile);
-ArGlobalFunctor ArSoundPlayer::ourStopPlayingCB(&ArSoundPlayer::stopPlaying);
-double ArSoundPlayer::ourVolume = 1.0;
+int MvrSoundPlayer::ourPlayChildPID = -1;
+MvrGlobalRetFunctor2<bool, const char*, const char*> MvrSoundPlayer::ourPlayWavFileCB(&MvrSoundPlayer::playWavFile);
+MvrGlobalFunctor MvrSoundPlayer::ourStopPlayingCB(&MvrSoundPlayer::stopPlaying);
+double MvrSoundPlayer::ourVolume = 1.0;
 
-MVREXPORT ArRetFunctor2<bool, const char*, const char*>* ArSoundPlayer::getPlayWavFileCallback() 
+MVREXPORT MvrRetFunctor2<bool, const char*, const char*>* MvrSoundPlayer::getPlayWavFileCallback() 
 {
   return &ourPlayWavFileCB;
 }
 
 
-MVREXPORT ArFunctor* ArSoundPlayer::getStopPlayingCallback()
+MVREXPORT MvrFunctor* MvrSoundPlayer::getStopPlayingCallback()
 {
   return &ourStopPlayingCB;
 }
@@ -55,26 +28,26 @@ MVREXPORT ArFunctor* ArSoundPlayer::getStopPlayingCallback()
 
 #include <assert.h>
 
-MVREXPORT bool ArSoundPlayer::playWavFile(const char* filename, const char* params) 
+MVREXPORT bool MvrSoundPlayer::playWavFile(const char* filename, const char* params) 
 {
   return (PlaySound(filename, NULL, SND_FILENAME) == TRUE);
 }
 
-MVREXPORT bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
+MVREXPORT bool MvrSoundPlayer::playNativeFile(const char* filename, const char* params)
 {
   /* WAV is the Windows native format */
   return playWavFile(filename, 0);
 }
 
-MVREXPORT void ArSoundPlayer::stopPlaying()
+MVREXPORT void MvrSoundPlayer::stopPlaying()
 {
   PlaySound(NULL, NULL, NULL);
 }
 
 
-MVREXPORT bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
+MVREXPORT bool MvrSoundPlayer::playSoundPCM16(char* data, int numSamples)
 {
-  ArLog::log(MvrLog::Terse, "INTERNAL ERROR: ArSoundPlayer::playSoundPCM16() is not implemented for Windows yet! Bug reed@activmedia.com about it!");
+  MvrLog::log(MvrLog::Terse, "INTERNAL ERROR: MvrSoundPlayer::playSoundPCM16() is not implemented for Windows yet! Bug reed@activmedia.com about it!");
   assert(false);
 
   return false;
@@ -97,16 +70,16 @@ MVREXPORT bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
 
 
 
-bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
+bool MvrSoundPlayer::playNativeFile(const char* filename, const char* params)
 {
-  int snd_fd = ArUtil::open("/dev/dsp", O_WRONLY); // | O_NONBLOCK);
+  int snd_fd = MvrUtil::open("/dev/dsp", O_WRONLY); // | O_NONBLOCK);
   if(snd_fd < 0) {
     return false;
   }
-  int file_fd = ArUtil::open(filename, O_RDONLY);
+  int file_fd = MvrUtil::open(filename, O_RDONLY);
   if(file_fd < 0)
   {
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSoundPlayer::playNativeFile: open failed");
     return false;
   }
@@ -116,7 +89,7 @@ bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
   while((len = read(file_fd, buf, buflen)) > 0)
   {
     if (write(snd_fd, buf, len) != len) {
-      ArLog::logErrorFromOS(MvrLog::Normal, 
+      MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSoundPlayer::playNativeFile: write failed");
     }
   }
@@ -125,27 +98,27 @@ bool ArSoundPlayer::playNativeFile(const char* filename, const char* params)
   return true;
 }
 
-bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
+bool MvrSoundPlayer::playWavFile(const char* filename, const char* params)
 {
-  ArArgumentBuilder builder;
+  MvrArgumentBuilder builder;
   //builder.addPlain("sleep .35; play");
   builder.addPlain("play");
   builder.add("-v %.2f", ourVolume);
   builder.addPlain(filename);
   builder.addPlain(params);
-  ArLog::log(MvrLog::Normal, "MvrSoundPlayer: Playing file \"%s\" with \"%s\"", 
+  MvrLog::log(MvrLog::Normal, "MvrSoundPlayer: Playing file \"%s\" with \"%s\"", 
 	     filename, builder.getFullString());
   
   int ret;
   if ((ret = system(builder.getFullString())) != -1)
   {
-    ArLog::log(MvrLog::Normal, "MvrSoundPlayer: Played file \"%s\" with \"%s\" (got %d)", 
+    MvrLog::log(MvrLog::Normal, "MvrSoundPlayer: Played file \"%s\" with \"%s\" (got %d)", 
 	       filename, builder.getFullString(), ret);
     return true;
   }
   else
   {
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSoundPlayer::playWaveFile: system call failed");
     return false;
   }
@@ -170,7 +143,7 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
     snprintf(volstr, 4, "%f", ourVolume);
   }  
 
-  ArLog::log(MvrLog::Normal, "MvrSoundPlayer: Playing file \"%s\" using playback program \"%s\" with argument: -v %s", filename, prog, volstr);
+  MvrLog::log(MvrLog::Normal, "MvrSoundPlayer: Playing file \"%s\" using playback program \"%s\" with argument: -v %s", filename, prog, volstr);
   ourPlayChildPID = fork();
 
   //ourPlayChildPID = vfork(); // XXX rh experimental, avoids the memory copy cost of fork()
@@ -179,11 +152,11 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
   // parent, will result in problems.
   if(ourPlayChildPID == -1) 
   {
-    ArLog::log(MvrLog::Terse, "MvrSoundPlayer: error forking! (%d: %s)", errno, 
+    MvrLog::log(MvrLog::Terse, "MvrSoundPlayer: error forking! (%d: %s)", errno, 
       (errno == EAGAIN) ? "EAGAIN reached process limit, or insufficient memory to copy page tables" : 
         ( (errno == ENOMEM) ? "ENOMEM out of kernel memory" : "unknown error" ) );
 
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSoundPlayer::playWaveFile: fork failed");
     return false;
   }
@@ -202,16 +175,16 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
     }
   } 
   // parent process: wait for child to finish
-  ArLog::log(MvrLog::Verbose, "MvrSoundPlayer: created child process %d to play wav file \"%s\".", 
+  MvrLog::log(MvrLog::Verbose, "MvrSoundPlayer: created child process %d to play wav file \"%s\".", 
       ourPlayChildPID, filename);
   int status;
   waitpid(ourPlayChildPID, &status, 0);
   if(WEXITSTATUS(status) != 0) {
-    ArLog::log(MvrLog::Terse, "MvrSoundPlayer: Error: Wav file playback program \"%s\" with file \"%s\" exited with error code %d.", prog, filename, WEXITSTATUS(status));
+    MvrLog::log(MvrLog::Terse, "MvrSoundPlayer: Error: Wav file playback program \"%s\" with file \"%s\" exited with error code %d.", prog, filename, WEXITSTATUS(status));
     ourPlayChildPID = -1;
     return false;
   }
-  ArLog::log(MvrLog::Verbose, "MvrSoundPlayer: child process %d finished.", ourPlayChildPID);
+  MvrLog::log(MvrLog::Verbose, "MvrSoundPlayer: child process %d finished.", ourPlayChildPID);
   ourPlayChildPID = -1;
   return true;
   */
@@ -219,10 +192,10 @@ bool ArSoundPlayer::playWavFile(const char* filename, const char* params)
 
 
 
-void ArSoundPlayer::stopPlaying()
+void MvrSoundPlayer::stopPlaying()
 {
 
-  ArLog::log(MvrLog::Normal, 
+  MvrLog::log(MvrLog::Normal, 
 	     "MvrSoundPlayer::stopPlaying: killing play and sox");
 
   // so if the system call below is "killall -9 play; killall -9 sox"
@@ -233,14 +206,14 @@ void ArSoundPlayer::stopPlaying()
 
   if ((ret = system("killall play; killall -9 sox")) != -1)
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "MvrSoundPlayer::stopPlaying: killed play and sox (got %d)", 
 	       ret);
     return;
   }
   else
   {
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSoundPlayer::stopPlaying: system call failed");
     return;
   }
@@ -252,17 +225,17 @@ void ArSoundPlayer::stopPlaying()
   // Kill a child processes (created by playWavFile) if it exists.
   if(ourPlayChildPID > 0)
   {
-    ArLog::log(MvrLog::Verbose, "MvrSoundPlayer: Sending SIGTERM to child process %d.", ourPlayChildPID);
+    MvrLog::log(MvrLog::Verbose, "MvrSoundPlayer: Sending SIGTERM to child process %d.", ourPlayChildPID);
     kill(ourPlayChildPID, SIGTERM);
   }
   */
 }
 
 
-bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
+bool MvrSoundPlayer::playSoundPCM16(char* data, int numSamples)
 {
-  //ArLog::log(MvrLog::Normal, "MvrSoundPlayer::playSoundPCM16[linux]: opening sound device.");
-  int fd = ArUtil::open("/dev/dsp", O_WRONLY); // | O_NONBLOCK);
+  //MvrLog::log(MvrLog::Normal, "MvrSoundPlayer::playSoundPCM16[linux]: opening sound device.");
+  int fd = MvrUtil::open("/dev/dsp", O_WRONLY); // | O_NONBLOCK);
   if(fd < 0)
     return false;
   int arg = AFMT_S16_LE;
@@ -283,7 +256,7 @@ bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
     close(fd);
     return false;
   }
-  //ArLog::log(MvrLog::Normal, "MvrSoundPlayer::playSoundPCM16[linux]: writing %d bytes to sound device.", 2*numSamples);
+  //MvrLog::log(MvrLog::Normal, "MvrSoundPlayer::playSoundPCM16[linux]: writing %d bytes to sound device.", 2*numSamples);
   int r;
   if((r = write(fd, data, 2*numSamples) < 0))
   {
@@ -291,7 +264,7 @@ bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
     return false;
   }
   close(fd);
-  ArLog::log(MvrLog::Verbose, "MvrSoundPlayer::playSoundPCM16[linux]: finished playing sound. (wrote %d bytes of 16-bit monaural signed sound data to /dev/dsp)", r);
+  MvrLog::log(MvrLog::Verbose, "MvrSoundPlayer::playSoundPCM16[linux]: finished playing sound. (wrote %d bytes of 16-bit monaural signed sound data to /dev/dsp)", r);
   return true;
 }
 
@@ -299,12 +272,12 @@ bool ArSoundPlayer::playSoundPCM16(char* data, int numSamples)
 
 #endif  // ifdef WIN32
 
-MVREXPORT void ArSoundPlayer::setVolumePercent(double pct)
+MVREXPORT void MvrSoundPlayer::setVolumePercent(double pct)
 {
   setVolume(1.0 + (pct / 100.0));
 }
 
-MVREXPORT void ArSoundPlayer::setVolume(double v)
+MVREXPORT void MvrSoundPlayer::setVolume(double v)
 {
   if(v < 0) ourVolume = 0;
   else ourVolume = v;

@@ -1,67 +1,41 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrRangeBuffer.h"
 #include "MvrLog.h"
 
 /** @param size The size of the buffer, in number of readings */
-MVREXPORT ArRangeBuffer::ArRangeBuffer(int size)
+MVREXPORT MvrRangeBuffer::MvrRangeBuffer(int size)
 {
   mySize = size;
 }
 
-MVREXPORT ArRangeBuffer::~MvrRangeBuffer()
+MVREXPORT MvrRangeBuffer::~MvrRangeBuffer()
 {
-  ArUtil::deleteSet(myBuffer.begin(), myBuffer.end());
-  ArUtil::deleteSet(myInvalidBuffer.begin(), myInvalidBuffer.end());
+  MvrUtil::deleteSet(myBuffer.begin(), myBuffer.end());
+  MvrUtil::deleteSet(myInvalidBuffer.begin(), myInvalidBuffer.end());
 }
 
-MVREXPORT size_t ArRangeBuffer::getSize(void) const
+MVREXPORT size_t MvrRangeBuffer::getSize(void) const
 {
   return mySize;
 }
 
-MVREXPORT ArPose ArRangeBuffer::getPoseTaken() const
+MVREXPORT MvrPose MvrRangeBuffer::getPoseTaken() const
 {
   return myBufferPose;
 }
 
-MVREXPORT void ArRangeBuffer::setPoseTaken(MvrPose p)
+MVREXPORT void MvrRangeBuffer::setPoseTaken(MvrPose p)
 {
   myBufferPose = p;
 }
 
-MVREXPORT ArPose ArRangeBuffer::getEncoderPoseTaken() const
+MVREXPORT MvrPose MvrRangeBuffer::getEncoderPoseTaken() const
 {
   return myEncoderBufferPose;
 }
 
-MVREXPORT void ArRangeBuffer::setEncoderPoseTaken(MvrPose p)
+MVREXPORT void MvrRangeBuffer::setEncoderPoseTaken(MvrPose p)
 {
   myEncoderBufferPose = p;
 }
@@ -72,7 +46,7 @@ MVREXPORT void ArRangeBuffer::setEncoderPoseTaken(MvrPose p)
    is larger then it just leaves room for the buffer to grow
    @param size number of readings to set the buffer to
 */
-MVREXPORT void ArRangeBuffer::setSize(size_t size) 
+MVREXPORT void MvrRangeBuffer::setSize(size_t size) 
 {
   mySize = size;
   // if its smaller then chop the lists down to size
@@ -102,7 +76,7 @@ MVREXPORT void ArRangeBuffer::setSize(size_t size)
     so nothing messes with the list while you are doing so.
     @return the list of positions this range buffer has
 */
-MVREXPORT const std::list<ArPoseWithTime *> *ArRangeBuffer::getBuffer(void) const
+MVREXPORT const std::list<MvrPoseWithTime *> *MvrRangeBuffer::getBuffer(void) const
 { 
   return &myBuffer; 
 }
@@ -116,7 +90,7 @@ MVREXPORT const std::list<ArPoseWithTime *> *ArRangeBuffer::getBuffer(void) cons
     so nothing messes with the list while you are doing so.
     @return the list of positions this range buffer has
 */
-MVREXPORT std::list<ArPoseWithTime *> *ArRangeBuffer::getBuffer(void)
+MVREXPORT std::list<MvrPoseWithTime *> *MvrRangeBuffer::getBuffer(void)
 { 
   return &myBuffer; 
 }
@@ -142,9 +116,9 @@ MVREXPORT std::list<ArPoseWithTime *> *ArRangeBuffer::getBuffer(void)
    to the closest reading, if it is >= maxRange, then there was no reading 
    in the given section
 */
-MVREXPORT double ArRangeBuffer::getClosestPolar(double startAngle, 
+MVREXPORT double MvrRangeBuffer::getClosestPolar(double startAngle, 
 					       double endAngle, 
-					       ArPose startPos, 
+					       MvrPose startPos, 
 					       unsigned int maxRange,
 					       double *angle) const
 {
@@ -152,22 +126,22 @@ MVREXPORT double ArRangeBuffer::getClosestPolar(double startAngle,
 			       startPos, maxRange, angle, &myBuffer);
 }
 
-MVREXPORT double ArRangeBuffer::getClosestPolarInList(
-	double startAngle, double endAngle, ArPose startPos, 
+MVREXPORT double MvrRangeBuffer::getClosestPolarInList(
+	double startAngle, double endAngle, MvrPose startPos, 
 	unsigned int maxRange, double *angle, 
-	const std::list<ArPoseWithTime *> *buffer)
+	const std::list<MvrPoseWithTime *> *buffer)
 {
   double closest;
   bool foundOne = false;
-  std::list<ArPoseWithTime *>::const_iterator it;
-  ArPoseWithTime *reading;
+  std::list<MvrPoseWithTime *>::const_iterator it;
+  MvrPoseWithTime *reading;
   double th;
   double closeTh;
   double dist;
   double angle1, angle2;
 
-  startAngle = ArMath::fixAngle(startAngle);
-  endAngle = ArMath::fixAngle(endAngle);
+  startAngle = MvrMath::fixAngle(startAngle);
+  endAngle = MvrMath::fixAngle(endAngle);
 
   for (it = buffer->begin(); it != buffer->end(); ++it)
   {
@@ -175,7 +149,7 @@ MVREXPORT double ArRangeBuffer::getClosestPolarInList(
 
     angle1=startPos.findAngleTo(*reading);
     angle2=startPos.getTh();
-    th = ArMath::subAngle(angle1, angle2);
+    th = MvrMath::subAngle(angle1, angle2);
     if (MvrMath::angleBetween(th, startAngle, endAngle))
     {
       if (!foundOne || (dist = reading->findDistanceTo(startPos)) < closest)
@@ -213,16 +187,16 @@ MVREXPORT double ArRangeBuffer::getClosestPolarInList(
    @param readingPos a pointer to a position in which to store the location of
    the closest position
    @param targetPose the origin of the local coords for the definition of the 
-   coordinates, e.g. ArRobot::getPosition() to center the box on the robot
+   coordinates, e.g. MvrRobot::getPosition() to center the box on the robot
    @return if the return is >= 0 and <= maxRange then this is the distance
    to the closest reading, if it is >= maxRange, then there was no reading 
    in the given section
 */
-MVREXPORT double ArRangeBuffer::getClosestBox(double x1, double y1, double x2,
-					     double y2, ArPose startPos,
+MVREXPORT double MvrRangeBuffer::getClosestBox(double x1, double y1, double x2,
+					     double y2, MvrPose startPos,
 					     unsigned int maxRange, 
-					     ArPose *readingPos,
-					     ArPose targetPose) const
+					     MvrPose *readingPos,
+					     MvrPose targetPose) const
 {
   return getClosestBoxInList(x1, y1, x2, y2, startPos, maxRange, readingPos, 
 			     targetPose, &myBuffer);
@@ -231,7 +205,7 @@ MVREXPORT double ArRangeBuffer::getClosestBox(double x1, double y1, double x2,
 /**
    Get closest reading in a region defined by two points (opposeite points
    of a rectangle) from a given list readings (rather than the readings
-   stored in an ArRangeBuffer)
+   stored in an MvrRangeBuffer)
 
    @param x1 the x coordinate of one of the rectangle points
    @param y1 the y coordinate of one of the rectangle points
@@ -244,26 +218,26 @@ MVREXPORT double ArRangeBuffer::getClosestBox(double x1, double y1, double x2,
    @param readingPos a pointer to a position in which to store the location of
    the closest position
    @param targetPose the origin of the local coords for the definition of the 
-   coordinates, normally just ArRobot::getPosition()
+   coordinates, normally just MvrRobot::getPosition()
    @param buffer Use the reading positions from this list 
    @param targetPose the pose to see if we're closest too (in local coordinates), this should nearly always be the default of 0 0 0
    @return if the return is >= 0 and <= maxRange then this is the distance
    to the closest reading, if it is >= maxRange, then there was no reading 
    in the given section
 */
-MVREXPORT double ArRangeBuffer::getClosestBoxInList(
-	double x1, double y1, double x2, double y2, ArPose startPos,
-	unsigned int maxRange, ArPose *readingPos, ArPose targetPose,
-	const std::list<ArPoseWithTime *> *buffer)
+MVREXPORT double MvrRangeBuffer::getClosestBoxInList(
+	double x1, double y1, double x2, double y2, MvrPose startPos,
+	unsigned int maxRange, MvrPose *readingPos, MvrPose targetPose,
+	const std::list<MvrPoseWithTime *> *buffer)
 
 {
   double closest = maxRange;
   double dist;
-  ArPose closestPos;
-  std::list<ArPoseWithTime *>::const_iterator it;
-  ArTransform trans;
-  ArPoseWithTime pose;
-  ArPose zeroPos;
+  MvrPose closestPos;
+  std::list<MvrPoseWithTime *>::const_iterator it;
+  MvrTransform trans;
+  MvrPoseWithTime pose;
+  MvrPose zeroPos;
   
   double temp;
 
@@ -314,25 +288,25 @@ MVREXPORT double ArRangeBuffer::getClosestBoxInList(
     to/from local/global coords, but may have other uses
     @param trans the transform to apply to the data
 */    
-MVREXPORT void ArRangeBuffer::applyTransform(MvrTransform trans)
+MVREXPORT void MvrRangeBuffer::applyTransform(MvrTransform trans)
 {
   trans.doTransform(&myBuffer);
 }
 
-MVREXPORT void ArRangeBuffer::clear(void)
+MVREXPORT void MvrRangeBuffer::clear(void)
 {
   beginRedoBuffer();
   endRedoBuffer();
 }
 
-MVREXPORT void ArRangeBuffer::reset(void)
+MVREXPORT void MvrRangeBuffer::reset(void)
 {
   clear();
 }
 
-MVREXPORT void ArRangeBuffer::clearOlderThan(int milliSeconds)
+MVREXPORT void MvrRangeBuffer::clearOlderThan(int milliSeconds)
 {
-  std::list<ArPoseWithTime *>::iterator it;
+  std::list<MvrPoseWithTime *>::iterator it;
 
   beginInvalidationSweep();
   for (it = myBuffer.begin(); it != myBuffer.end(); ++it)
@@ -343,7 +317,7 @@ MVREXPORT void ArRangeBuffer::clearOlderThan(int milliSeconds)
   endInvalidationSweep();
 }
 
-MVREXPORT void ArRangeBuffer::clearOlderThanSeconds(int seconds)
+MVREXPORT void MvrRangeBuffer::clearOlderThanSeconds(int seconds)
 {
   clearOlderThan(seconds*1000);
 }
@@ -358,7 +332,7 @@ MVREXPORT void ArRangeBuffer::clearOlderThanSeconds(int seconds)
    to update in the buffer, call redoReading(double x, double y), then
    when you are done, call endRedoBuffer().
 **/     
-MVREXPORT void ArRangeBuffer::beginRedoBuffer(void)
+MVREXPORT void MvrRangeBuffer::beginRedoBuffer(void)
 {
   myRedoIt = myBuffer.begin();
   myHitEnd = false;
@@ -370,7 +344,7 @@ MVREXPORT void ArRangeBuffer::beginRedoBuffer(void)
    @param x the x param of the coord to add to the buffer
    @param y the x param of the coord to add to the buffer
 */
-MVREXPORT void ArRangeBuffer::redoReading(double x, double y)
+MVREXPORT void MvrRangeBuffer::redoReading(double x, double y)
 {
   if (myRedoIt != myBuffer.end() && !myHitEnd)
   {
@@ -390,7 +364,7 @@ MVREXPORT void ArRangeBuffer::redoReading(double x, double y)
 /**
    For a description of how to use this, see beginRedoBuffer()
 **/
-MVREXPORT void ArRangeBuffer::endRedoBuffer(void)
+MVREXPORT void MvrRangeBuffer::endRedoBuffer(void)
 {
   if (!myHitEnd)
   {
@@ -415,13 +389,13 @@ MVREXPORT void ArRangeBuffer::endRedoBuffer(void)
 
    @param wasAdded pointed to set to true if the reading was added, or false if not
 */
-MVREXPORT void ArRangeBuffer::addReadingConditional(
+MVREXPORT void MvrRangeBuffer::addReadingConditional(
 	double x, double y, double closeDistSquared, bool *wasAdded)
 {
   if (closeDistSquared >= 0)
   {  
-    std::list<ArPoseWithTime *>::iterator it;
-    ArPoseWithTime *pose;
+    std::list<MvrPoseWithTime *>::iterator it;
+    MvrPoseWithTime *pose;
     for (it = myBuffer.begin(); it != myBuffer.end(); ++it)
     {
       pose = (*it);
@@ -445,7 +419,7 @@ MVREXPORT void ArRangeBuffer::addReadingConditional(
    @param x the x position of the reading
    @param y the y position of the reading
 */
-MVREXPORT void ArRangeBuffer::addReading(double x, double y) 
+MVREXPORT void MvrRangeBuffer::addReading(double x, double y) 
 {
   if (myBuffer.size() < mySize)
   {
@@ -458,7 +432,7 @@ MVREXPORT void ArRangeBuffer::addReading(double x, double y)
       myInvalidBuffer.pop_front();
     }
     else
-      myBuffer.push_front(new ArPoseWithTime(x, y));
+      myBuffer.push_front(new MvrPoseWithTime(x, y));
   }
   else if ((myRevIterator = myBuffer.rbegin()) != myBuffer.rend())
   {
@@ -481,7 +455,7 @@ MVREXPORT void ArRangeBuffer::addReading(double x, double y)
    @see invalidateReading
    @see endInvalidationSweep
 */
-void ArRangeBuffer::beginInvalidationSweep(void)
+void MvrRangeBuffer::beginInvalidationSweep(void)
 {
   myInvalidSweepList.clear();
 }
@@ -493,8 +467,8 @@ void ArRangeBuffer::beginInvalidationSweep(void)
    @see beginInvaladationSweep
    @see endInvalidationSweep
 */
-MVREXPORT void ArRangeBuffer::invalidateReading(
-	std::list<ArPoseWithTime*>::iterator readingIt)
+MVREXPORT void MvrRangeBuffer::invalidateReading(
+	std::list<MvrPoseWithTime*>::iterator readingIt)
 {
   myInvalidSweepList.push_front(readingIt);
 }
@@ -505,7 +479,7 @@ MVREXPORT void ArRangeBuffer::invalidateReading(
    @see beginInvalidationSweep
    @see invalidateReading
 */
-void ArRangeBuffer::endInvalidationSweep(void)
+void MvrRangeBuffer::endInvalidationSweep(void)
 {
   while ((myInvalidIt = myInvalidSweepList.begin()) != 
 	 myInvalidSweepList.end())
@@ -522,13 +496,13 @@ void ArRangeBuffer::endInvalidationSweep(void)
 /**
    Copy the readings from this buffer to a vector stored within
    this object, and return a pointer to that vector. 
-   Note that the actual vector object is stored within ArRangeBuffer,
+   Note that the actual vector object is stored within MvrRangeBuffer,
    be careful if accessing it from multiple threads.
    @return Pointer to reading vector.
 */
-MVREXPORT std::vector<ArPoseWithTime> *ArRangeBuffer::getBufferAsVector(void)
+MVREXPORT std::vector<MvrPoseWithTime> *MvrRangeBuffer::getBufferAsVector(void)
 {
-  std::list<ArPoseWithTime *>::iterator it;
+  std::list<MvrPoseWithTime *>::iterator it;
 
   myVector.reserve(myBuffer.size());
   myVector.clear();

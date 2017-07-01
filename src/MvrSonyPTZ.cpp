@@ -1,62 +1,36 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSonyPTZ.h"
 #include "MvrRobot.h"
 #include "MvrCommands.h"
 
-MVREXPORT ArSonyPacket::ArSonyPacket(MvrTypes::UByte2 bufferSize) :
-  ArBasePacket(bufferSize)
+MVREXPORT MvrSonyPacket::MvrSonyPacket(MvrTypes::UByte2 bufferSize) :
+  MvrBasePacket(bufferSize)
 {
   
 }
 
-MVREXPORT ArSonyPacket::~MvrSonyPacket()
+MVREXPORT MvrSonyPacket::~MvrSonyPacket()
 {
 
 }
 
-MVREXPORT void ArSonyPacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void MvrSonyPacket::uByteToBuf(MvrTypes::UByte val)
 {
   if (myLength + 1 > myMaxLength)
   {
-    ArLog::log(MvrLog::Terse, "MvrSonyPacket::uByteToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrSonyPacket::uByteToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = val;
   ++myLength;
 }
 
-MVREXPORT void ArSonyPacket::byte2ToBuf(MvrTypes::Byte2 val)
+MVREXPORT void MvrSonyPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 4) > myMaxLength)
   {
-    ArLog::log(MvrLog::Terse, "MvrSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = (val & 0xf000) >> 12;
@@ -79,14 +53,14 @@ MVREXPORT void ArSonyPacket::byte2ToBuf(MvrTypes::Byte2 val)
    @param val the Byte2 to put into the packet
    @param pose the position in the packets array to put the value
 */
-MVREXPORT void ArSonyPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
-					    ArTypes::UByte2 pose)
+MVREXPORT void MvrSonyPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
+					    MvrTypes::UByte2 pose)
 {
-  ArTypes::Byte2 prevLength = myLength;
+  MvrTypes::Byte2 prevLength = myLength;
 
   if ((pose + 4) > myMaxLength)
   {
-    ArLog::log(MvrLog::Terse, "MvrSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrSonyPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myLength = pose;
@@ -95,8 +69,8 @@ MVREXPORT void ArSonyPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 }
 
 
-MVREXPORT ArSonyPTZ::ArSonyPTZ(MvrRobot *robot) :
-  ArPTZ(robot),
+MVREXPORT MvrSonyPTZ::MvrSonyPTZ(MvrRobot *robot) :
+  MvrPTZ(robot),
   myPacket(255), 
   myZoomPacket(9)
 {
@@ -117,11 +91,11 @@ MVREXPORT ArSonyPTZ::ArSonyPTZ(MvrRobot *robot) :
   myDegToPan = 0x370 / ((double) getMaxPan() /*MAX_PAN*/ );
 }
 
-MVREXPORT ArSonyPTZ::~MvrSonyPTZ()
+MVREXPORT MvrSonyPTZ::~MvrSonyPTZ()
 {
 }
 
-void ArSonyPTZ::initializePackets(void)
+void MvrSonyPTZ::initializePackets(void)
 {
   myZoomPacket.empty();
   myZoomPacket.uByteToBuf(0x81);
@@ -153,7 +127,7 @@ void ArSonyPTZ::initializePackets(void)
 }
 
 
-MVREXPORT bool ArSonyPTZ::init(void)
+MVREXPORT bool MvrSonyPTZ::init(void)
 {
   myPacket.empty();
   myPacket.uByteToBuf(0x88);
@@ -175,7 +149,7 @@ MVREXPORT bool ArSonyPTZ::init(void)
   return true;
 }
 
-MVREXPORT bool ArSonyPTZ::backLightingOn(void)
+MVREXPORT bool MvrSonyPTZ::backLightingOn(void)
 {
   myPacket.empty();
   myPacket.uByteToBuf(0x81);
@@ -188,7 +162,7 @@ MVREXPORT bool ArSonyPTZ::backLightingOn(void)
   return sendPacket(&myPacket);
 }
 
-MVREXPORT bool ArSonyPTZ::backLightingOff(void)
+MVREXPORT bool MvrSonyPTZ::backLightingOff(void)
 {
   myPacket.empty();
   myPacket.uByteToBuf(0x81);
@@ -201,7 +175,7 @@ MVREXPORT bool ArSonyPTZ::backLightingOff(void)
   return sendPacket(&myPacket);
 }
 
-MVREXPORT bool ArSonyPTZ::panTilt_i(double degreesPan, double degreesTilt)
+MVREXPORT bool MvrSonyPTZ::panTilt_i(double degreesPan, double degreesTilt)
 {
   if (degreesPan > getMaxPan())
     degreesPan = getMaxPan();
@@ -220,32 +194,32 @@ MVREXPORT bool ArSonyPTZ::panTilt_i(double degreesPan, double degreesTilt)
   return sendPacket(&myPanTiltPacket);
 }
 
-MVREXPORT bool ArSonyPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
+MVREXPORT bool MvrSonyPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
 {
   return panTilt(myPan + degreesPan, myTilt + degreesTilt);
 }
 
-MVREXPORT bool ArSonyPTZ::pan_i(double degrees)
+MVREXPORT bool MvrSonyPTZ::pan_i(double degrees)
 {
   return panTilt(degrees, myTilt);
 }
 
-MVREXPORT bool ArSonyPTZ::panRel_i(double degrees)
+MVREXPORT bool MvrSonyPTZ::panRel_i(double degrees)
 {
   return panTiltRel(degrees, 0);
 }
 
-MVREXPORT bool ArSonyPTZ::tilt_i(double degrees)
+MVREXPORT bool MvrSonyPTZ::tilt_i(double degrees)
 {
   return panTilt(myPan, degrees);
 }
 
-MVREXPORT bool ArSonyPTZ::tiltRel_i(double degrees)
+MVREXPORT bool MvrSonyPTZ::tiltRel_i(double degrees)
 {
   return panTiltRel(0, degrees);
 }
 
-MVREXPORT bool ArSonyPTZ::zoom(int zoomValue)
+MVREXPORT bool MvrSonyPTZ::zoom(int zoomValue)
 {
   if (zoomValue > getMaxZoom())
     zoomValue = getMaxZoom();
@@ -257,14 +231,14 @@ MVREXPORT bool ArSonyPTZ::zoom(int zoomValue)
   return sendPacket(&myZoomPacket);
 }
 
-MVREXPORT bool ArSonyPTZ::zoomRel(int zoomValue)
+MVREXPORT bool MvrSonyPTZ::zoomRel(int zoomValue)
 {
   return zoom(myZoom + zoomValue);
 }
 
 
 /*
-MVREXPORT bool ArSonyPTZ::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrSonyPTZ::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xE0)
     return false;
@@ -273,14 +247,14 @@ MVREXPORT bool ArSonyPTZ::packetHandler(MvrRobotPacket *packet)
 }
 */
 
-ArPTZConnector::GlobalPTZCreateFunc ArSonyPTZ::ourCreateFunc(&ArSonyPTZ::create);
+MvrPTZConnector::GlobalPTZCreateFunc MvrSonyPTZ::ourCreateFunc(&MvrSonyPTZ::create);
 
-ArPTZ* ArSonyPTZ::create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot)
+MvrPTZ* MvrSonyPTZ::create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot)
 {
-  return new ArSonyPTZ(robot);
+  return new MvrSonyPTZ(robot);
 }
 
-void ArSonyPTZ::registerPTZType()
+void MvrSonyPTZ::registerPTZType()
 {
-  ArPTZConnector::registerPTZType("sony", &ourCreateFunc);
+  MvrPTZConnector::registerPTZType("sony", &ourCreateFunc);
 }

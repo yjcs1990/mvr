@@ -26,24 +26,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
 #include <ctype.h>
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrNetServer.h"
 #include "MvrRobot.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include "MvrSyncTask.h"
 #include "MvrArgumentBuilder.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
 
-ArNetServer::ArNetServer(bool addAriaExitCB, bool doNotAddShutdownServer,
-			 const char *name, ArNetServer *childServer) :
-  myTaskCB(this, &ArNetServer::runOnce),
-  myHelpCB(this, &ArNetServer::internalHelp),
-  myEchoCB(this, &ArNetServer::internalEcho),
-  myQuitCB(this, &ArNetServer::internalQuit),
-  myShutdownServerCB(this, &ArNetServer::internalShutdownServer),
-  myAriaExitCB(this, &ArNetServer::close)
+MvrNetServer::MvrNetServer(bool addMvriaExitCB, bool doNotAddShutdownServer,
+			 const char *name, MvrNetServer *childServer) :
+  myTaskCB(this, &MvrNetServer::runOnce),
+  myHelpCB(this, &MvrNetServer::internalHelp),
+  myEchoCB(this, &MvrNetServer::internalEcho),
+  myQuitCB(this, &MvrNetServer::internalQuit),
+  myShutdownServerCB(this, &MvrNetServer::internalShutdownServer),
+  myMvriaExitCB(this, &MvrNetServer::close)
 {
   if (name != NULL)
     myName = name;
@@ -70,15 +70,15 @@ ArNetServer::ArNetServer(bool addAriaExitCB, bool doNotAddShutdownServer,
   myMutex.setLogName((myName + "::myMutex").c_str());
   myNextCycleSendsMutex.setLogName((myName + "::myNextCycleSendsMutex").c_str());
   
-  myAriaExitCB.setName((myName + "::ariaExit").c_str());
-  if (addAriaExitCB)
-    Aria::addExitCallback(&myAriaExitCB, 40);
+  myMvriaExitCB.setName((myName + "::ariaExit").c_str());
+  if (addMvriaExitCB)
+    Mvria::addExitCallback(&myMvriaExitCB, 40);
 }
 
-ArNetServer::~MvrNetServer()
+MvrNetServer::~MvrNetServer()
 {
-  ArSyncTask *rootTask = NULL;
-  ArSyncTask *proc = NULL;
+  MvrSyncTask *rootTask = NULL;
+  MvrSyncTask *proc = NULL;
   // get rid of us running on the robot task
   if (myRobot != NULL && (rootTask = myRobot->getSyncTaskRoot()) != NULL)
   {
@@ -110,17 +110,17 @@ ArNetServer::~MvrNetServer()
 
    @return true if the server could be started, false otherwise
 **/
-MVREXPORT bool ArNetServer::open(MvrRobot *robot, unsigned int port, 
+MVREXPORT bool MvrNetServer::open(MvrRobot *robot, unsigned int port, 
 				const char *password, bool multipleClients,
 				const char *openOnIP)
 {
-  ArSyncTask *rootTask = NULL;
-  ArSyncTask *proc = NULL;
+  MvrSyncTask *rootTask = NULL;
+  MvrSyncTask *proc = NULL;
   std::string taskName;
 
   if (myOpened)
   {
-    ArLog::log(MvrLog::Terse, "%s already inited, cannot reinit",
+    MvrLog::log(MvrLog::Terse, "%s already inited, cannot reinit",
 	       myName.c_str());
     return false;
   }
@@ -130,22 +130,22 @@ MVREXPORT bool ArNetServer::open(MvrRobot *robot, unsigned int port,
   myPassword = password;
   myMultipleClients = multipleClients;
   
-  if (myServerSocket.open(myPort, ArSocket::TCP, openOnIP))
+  if (myServerSocket.open(myPort, MvrSocket::TCP, openOnIP))
   {
     // this can be taken out since the open does this now
     //myServerSocket.setLinger(0);
     myServerSocket.setNonBlock();
     if (openOnIP != NULL)
-      ArLog::log(MvrLog::Normal, "%s opened on port %d on ip %s.", 
+      MvrLog::log(MvrLog::Normal, "%s opened on port %d on ip %s.", 
 		 myName.c_str(), myPort, openOnIP);
     else
-      ArLog::log(MvrLog::Normal, "%s opened on port %d.", 
+      MvrLog::log(MvrLog::Normal, "%s opened on port %d.", 
 		 myName.c_str(), myPort);
     myOpened = true;
   }
   else
   {
-    ArLog::log(MvrLog::Terse, "%s failed to open: %s", 
+    MvrLog::log(MvrLog::Terse, "%s failed to open: %s", 
 	       myName.c_str(), myServerSocket.getErrorStr().c_str());
     myOpened = false;
     return false;
@@ -171,19 +171,19 @@ MVREXPORT bool ArNetServer::open(MvrRobot *robot, unsigned int port,
    broken up argv and argc are given along with the socket it came
    from (so that acks can occur)
 **/
-MVREXPORT bool ArNetServer::addCommand(const char *command, 
-			      ArFunctor3<char **, int, ArSocket *> *functor,
+MVREXPORT bool MvrNetServer::addCommand(const char *command, 
+			      MvrFunctor3<char **, int, MvrSocket *> *functor,
 				      const char *help)
 {
   if (myChildServer != NULL)
     myChildServer->addCommand(command, functor, help); 
 
-  std::map<std::string, ArFunctor3<char **, int, ArSocket *> *, ArStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrFunctor3<char **, int, MvrSocket *> *, MvrStrCaseCmpOp>::iterator it;
 
 
   if ((it = myFunctorMap.find(command)) != myFunctorMap.end())
   {
-    ArLog::log(MvrLog::Normal, "%s::addCommand: Already a command for %s", myName.c_str(), command);
+    MvrLog::log(MvrLog::Normal, "%s::addCommand: Already a command for %s", myName.c_str(), command);
     return false;
   }
 
@@ -198,7 +198,7 @@ MVREXPORT bool ArNetServer::addCommand(const char *command,
    @param command the command to remove
    @return true if the command was there to remove, false otherwise
 **/
-MVREXPORT bool ArNetServer::remCommand(const char *command)
+MVREXPORT bool MvrNetServer::remCommand(const char *command)
 {
   if (myChildServer != NULL)
     myChildServer->remCommand(command);
@@ -214,17 +214,17 @@ MVREXPORT bool ArNetServer::remCommand(const char *command)
 }
 
 
-MVREXPORT void ArNetServer::sendToAllClientsPlain(const char *str)
+MVREXPORT void MvrNetServer::sendToAllClientsPlain(const char *str)
 {
   if (myChildServer != NULL)
 
 
     myChildServer->sendToAllClientsPlain(str);
 
-  std::list<ArSocket *>::iterator it;
+  std::list<MvrSocket *>::iterator it;
 
   if (myLoggingDataSent)
-    ArLog::log(MvrLog::Terse, "%s::sendToAllClients: Sending %s", 
+    MvrLog::log(MvrLog::Terse, "%s::sendToAllClients: Sending %s", 
 	       myName.c_str(), str);
 
   for (it = myConns.begin(); it != myConns.end(); ++it)
@@ -240,7 +240,7 @@ MVREXPORT void ArNetServer::sendToAllClientsPlain(const char *str)
    This sends the given string to all the clients, this string cannot
    be more than 2048 number of bytes
 **/
-MVREXPORT void ArNetServer::sendToAllClients(const char *str, ...)
+MVREXPORT void MvrNetServer::sendToAllClients(const char *str, ...)
 {
   char buf[40000];
   va_list ptr;
@@ -254,22 +254,22 @@ MVREXPORT void ArNetServer::sendToAllClients(const char *str, ...)
 
 
 
-MVREXPORT void ArNetServer::sendToAllClientsNextCyclePlain(const char *str)
+MVREXPORT void MvrNetServer::sendToAllClientsNextCyclePlain(const char *str)
 {
   if (myChildServer != NULL)
     myChildServer->sendToAllClientsNextCyclePlain(str);
 
-  std::list<ArSocket *>::iterator it;
+  std::list<MvrSocket *>::iterator it;
 
   if (myLoggingDataSent)
-    ArLog::log(MvrLog::Terse, "%s::sendToAllClientsNextCycle: Next cycle will send: %s", myName.c_str(), str);
+    MvrLog::log(MvrLog::Terse, "%s::sendToAllClientsNextCycle: Next cycle will send: %s", myName.c_str(), str);
 
   myNextCycleSendsMutex.lock();
   myNextCycleSends.push_back(str);
   myNextCycleSendsMutex.unlock();
 }
 
-MVREXPORT bool ArNetServer::sendToAllClientsNextCyclePlainBool(const char *str)
+MVREXPORT bool MvrNetServer::sendToAllClientsNextCyclePlainBool(const char *str)
 {
   sendToAllClientsNextCyclePlain(str);
   return true;
@@ -279,7 +279,7 @@ MVREXPORT bool ArNetServer::sendToAllClientsNextCyclePlainBool(const char *str)
    This sends the given string to all the clients, this string cannot
    be more than 2048 number of bytes
 **/
-MVREXPORT void ArNetServer::sendToAllClientsNextCycle(const char *str, ...)
+MVREXPORT void MvrNetServer::sendToAllClientsNextCycle(const char *str, ...)
 {
   char buf[40000];
   va_list ptr;
@@ -292,7 +292,7 @@ MVREXPORT void ArNetServer::sendToAllClientsNextCycle(const char *str, ...)
 }
 
 
-MVREXPORT bool ArNetServer::isOpen(void)
+MVREXPORT bool MvrNetServer::isOpen(void)
 {
   return myOpened;
 }
@@ -302,13 +302,13 @@ MVREXPORT bool ArNetServer::isOpen(void)
    @param loggingData if true data will be logged which means that all
    data sent out to the all the clients will be logged
 **/
-MVREXPORT void ArNetServer::setLoggingDataSent(bool loggingData)
+MVREXPORT void MvrNetServer::setLoggingDataSent(bool loggingData)
 {
   if (myChildServer != NULL)
     myChildServer->setLoggingDataSent(loggingData);
 
   myLoggingDataSent = loggingData;
-  std::list<ArSocket *>::iterator it;
+  std::list<MvrSocket *>::iterator it;
   for (it = myConnectingConns.begin(); it != myConnectingConns.end(); ++it)
     (*it)->setLogWriteStrings(loggingData);
   for (it = myConns.begin(); it != myConns.end(); ++it)
@@ -319,7 +319,7 @@ MVREXPORT void ArNetServer::setLoggingDataSent(bool loggingData)
    @return if true data will be logged which means that all data sent
    out to the all the clients will be logged
 **/
-MVREXPORT bool ArNetServer::getLoggingDataSent(void)
+MVREXPORT bool MvrNetServer::getLoggingDataSent(void)
 {
   return myLoggingDataSent;
 }
@@ -328,7 +328,7 @@ MVREXPORT bool ArNetServer::getLoggingDataSent(void)
    @param loggingData if true data will be logged which means that all
    commands received from clients are logged
 **/
-MVREXPORT void ArNetServer::setLoggingDataReceived(bool loggingData)
+MVREXPORT void MvrNetServer::setLoggingDataReceived(bool loggingData)
 {
   if (myChildServer != NULL)
     myChildServer->setLoggingDataReceived(loggingData);
@@ -340,7 +340,7 @@ MVREXPORT void ArNetServer::setLoggingDataReceived(bool loggingData)
    @return if true data will be logged which means that all commands
    received from clients are logged 
 **/
-MVREXPORT bool ArNetServer::getLoggingDataReceived(void)
+MVREXPORT bool MvrNetServer::getLoggingDataReceived(void)
 {
   return myLoggingDataReceived;
 }
@@ -353,13 +353,13 @@ MVREXPORT bool ArNetServer::getLoggingDataReceived(void)
    of '\\r\\n'); a nonstandard, deprecated line ending, but may be required for certain old
    clients.
 **/
-MVREXPORT void ArNetServer::setUseWrongEndChars(bool useWrongEndChars)
+MVREXPORT void MvrNetServer::setUseWrongEndChars(bool useWrongEndChars)
 {
   if (myChildServer != NULL)
     myChildServer->setUseWrongEndChars(useWrongEndChars);
 
   myUseWrongEndChars = useWrongEndChars;
-  std::list<ArSocket *>::iterator it;
+  std::list<MvrSocket *>::iterator it;
   for (it = myConnectingConns.begin(); it != myConnectingConns.end(); ++it)
     (*it)->setStringUseWrongEndChars(useWrongEndChars);
   for (it = myConns.begin(); it != myConns.end(); ++it)
@@ -370,20 +370,20 @@ MVREXPORT void ArNetServer::setUseWrongEndChars(bool useWrongEndChars)
    @return if true data will be logged which means that all data sent
    out to the all the clients will be logged
 **/
-MVREXPORT bool ArNetServer::getUseWrongEndChars(void)
+MVREXPORT bool MvrNetServer::getUseWrongEndChars(void)
 {
   return myUseWrongEndChars;
 }
 
-MVREXPORT void ArNetServer::runOnce(void)
+MVREXPORT void MvrNetServer::runOnce(void)
 {
 
-  //  ArSocket acceptingSocket;
-  ArSocket *socket;
+  //  MvrSocket acceptingSocket;
+  MvrSocket *socket;
   char *str;
-  std::list<ArSocket *> removeList;
-  std::list<ArSocket *>::iterator it;
-  ArArgumentBuilder *args = NULL;
+  std::list<MvrSocket *> removeList;
+  std::list<MvrSocket *>::iterator it;
+  MvrArgumentBuilder *args = NULL;
   std::string command;
 
   if (!myOpened)
@@ -418,13 +418,13 @@ MVREXPORT void ArNetServer::runOnce(void)
       myAcceptingSocket.writeString(
 	      "Only client allowed and it is already connected.");
       myAcceptingSocket.close();
-      ArLog::log(MvrLog::Terse, "%s not taking multiple clients and another client tried to connect from %s.", myName.c_str(), myAcceptingSocket.getIPString());
+      MvrLog::log(MvrLog::Terse, "%s not taking multiple clients and another client tried to connect from %s.", myName.c_str(), myAcceptingSocket.getIPString());
     }
     else 
     {
       // we want the client so we put it in our list of connecting
       // sockets, which means that it is waiting to give its password
-      socket = new ArSocket;
+      socket = new MvrSocket;
       socket->setLogWriteStrings(myLoggingDataSent);
       socket->setStringUseWrongEndChars(myUseWrongEndChars);
       socket->transfer(&myAcceptingSocket);
@@ -434,13 +434,13 @@ MVREXPORT void ArNetServer::runOnce(void)
       {
 	socket->writeString("Enter password:");
 	myConnectingConns.push_front(socket);
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "%s: Client connecting from %s.",
 		   myName.c_str(), socket->getIPString());
       }
       else
       {
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "%s: Client from %s connected (with no password required).",
 		   myName.c_str(), socket->getIPString());
 	myConns.push_front(socket);
@@ -462,7 +462,7 @@ MVREXPORT void ArNetServer::runOnce(void)
       // now see if the word matchs the password
       if (myPassword == str)
       {
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "%s: Client from %s gave password and connected.",
 		   myName.c_str(), socket->getIPString());
 	myConns.push_front(socket);
@@ -473,7 +473,7 @@ MVREXPORT void ArNetServer::runOnce(void)
       {
 	socket->close();
 	myDeleteList.push_front(socket);
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "%s: Client from %s gave wrong password and is being disconnected.", 
 		   myName.c_str(), socket->getIPString());
       }
@@ -481,7 +481,7 @@ MVREXPORT void ArNetServer::runOnce(void)
     // if we couldn't read a string it means we lost a connection
     else
     {
-      ArLog::log(MvrLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "%s: Connection to %s lost.", 
 		 myName.c_str(), socket->getIPString());
       socket->close();
@@ -515,7 +515,7 @@ MVREXPORT void ArNetServer::runOnce(void)
       socket->setLogWriteStrings(false);
 
       if (myLoggingDataSent)
-	ArLog::log(MvrLog::Terse, "%s::sendToAllClientsNextCycle: Sending: %s", myName.c_str(), (*ncsIt).c_str());
+	MvrLog::log(MvrLog::Terse, "%s::sendToAllClientsNextCycle: Sending: %s", myName.c_str(), (*ncsIt).c_str());
       socket->writeString((*ncsIt).c_str());
       
       socket->setLogWriteStrings(myLoggingDataSent);
@@ -536,9 +536,9 @@ MVREXPORT void ArNetServer::runOnce(void)
       // make sure we read something
       // set up the arguments and then call the function for the
       // argument
-      args = new ArArgumentBuilder;
+      args = new MvrArgumentBuilder;
       args->addPlain(str);
-      //args->log();
+      //Mvrgs->log();
       parseCommandOnSocket(args, socket);
       delete args;
       args = NULL;
@@ -546,7 +546,7 @@ MVREXPORT void ArNetServer::runOnce(void)
     // if str was NULL we lost connection
     if (str == NULL)
     {
-      ArLog::log(MvrLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 		 "%s: Connection to %s lost.", myName.c_str(), 
 		 socket->getIPString());
       socket->close();
@@ -576,15 +576,15 @@ MVREXPORT void ArNetServer::runOnce(void)
   unlock();
 }
 
-MVREXPORT void ArNetServer::close(void)
+MVREXPORT void MvrNetServer::close(void)
 {
-  std::list<ArSocket *>::iterator it;
-  ArSocket *socket;
+  std::list<MvrSocket *>::iterator it;
+  MvrSocket *socket;
   
   if (!myOpened)
     return;
   myWantToClose = false;
-  ArLog::log(MvrLog::Normal, "%s shutting down server.", myName.c_str());
+  MvrLog::log(MvrLog::Normal, "%s shutting down server.", myName.c_str());
   sendToAllClients("Shutting down server");
   for (it = myConnectingConns.begin(); it != myConnectingConns.end(); ++it)
   {
@@ -609,7 +609,7 @@ MVREXPORT void ArNetServer::close(void)
   myServerSocket.close();
 }
 
-MVREXPORT void ArNetServer::internalGreeting(MvrSocket *socket)
+MVREXPORT void MvrNetServer::internalGreeting(MvrSocket *socket)
 {
   if (mySquelchNormal)
     return;
@@ -618,9 +618,9 @@ MVREXPORT void ArNetServer::internalGreeting(MvrSocket *socket)
   internalHelp(socket);
 }
 
-MVREXPORT void ArNetServer::internalHelp(MvrSocket *socket)
+MVREXPORT void MvrNetServer::internalHelp(MvrSocket *socket)
 {
- std::map<std::string, std::string, ArStrCaseCmpOp>::iterator it;
+ std::map<std::string, std::string, MvrStrCaseCmpOp>::iterator it;
   
  socket->writeString("Commands:");
  for (it = myHelpMap.begin(); it != myHelpMap.end(); ++it)
@@ -629,15 +629,15 @@ MVREXPORT void ArNetServer::internalHelp(MvrSocket *socket)
  socket->writeString("End of commands");
 }
 
-MVREXPORT void ArNetServer::internalHelp(char **argv, int argc, 
-					ArSocket *socket)
+MVREXPORT void MvrNetServer::internalHelp(char **argv, int argc, 
+					MvrSocket *socket)
 {
   internalHelp(socket);
 }
 
 
-MVREXPORT void ArNetServer::internalEcho(char **argv, int argc, 
-					    ArSocket *socket)
+MVREXPORT void MvrNetServer::internalEcho(char **argv, int argc, 
+					    MvrSocket *socket)
 {
   // if they just typed it we tell them if its on or off
   if (argc == 1)
@@ -664,18 +664,18 @@ MVREXPORT void ArNetServer::internalEcho(char **argv, int argc,
   }
 }
 
-MVREXPORT void ArNetServer::internalQuit(char **argv, int argc, 
-					 ArSocket *socket)
+MVREXPORT void MvrNetServer::internalQuit(char **argv, int argc, 
+					 MvrSocket *socket)
 {
   socket->writeString("Closing connection");
 
   myDeleteList.push_front(socket);
-  ArLog::log(MvrLog::Normal, "%s: Client from %s quit.", 
+  MvrLog::log(MvrLog::Normal, "%s: Client from %s quit.", 
 	     myName.c_str(), socket->getIPString());
 }
 
-MVREXPORT void ArNetServer::internalShutdownServer(char **argv, int argc, 
-						  ArSocket *socket)
+MVREXPORT void MvrNetServer::internalShutdownServer(char **argv, int argc, 
+						  MvrSocket *socket)
 {
   sendToAllClients("Shutting down server");
   myWantToClose = true;
@@ -684,19 +684,19 @@ MVREXPORT void ArNetServer::internalShutdownServer(char **argv, int argc,
   
 }
 
-MVREXPORT void ArNetServer::parseCommandOnSocket(MvrArgumentBuilder *args, 
-						ArSocket *socket, bool allowLog)
+MVREXPORT void MvrNetServer::parseCommandOnSocket(MvrArgumentBuilder *args, 
+						MvrSocket *socket, bool allowLog)
 {
 
-  std::map<std::string, ArFunctor3<char **, int, ArSocket *> *, ArStrCaseCmpOp>::iterator fIt;
+  std::map<std::string, MvrFunctor3<char **, int, MvrSocket *> *, MvrStrCaseCmpOp>::iterator fIt;
   char **argv;
   int argc;
 
   if (myLoggingDataReceived && !mySquelchNormal && allowLog)
-    ArLog::log(MvrLog::Normal, "%s: Command received from %s: %s",
+    MvrLog::log(MvrLog::Normal, "%s: Command received from %s: %s",
 	       myName.c_str(), socket->getIPString(), args->getFullString());
   else if (myLoggingDataReceived && mySquelchNormal && allowLog)
-    ArLog::log(MvrLog::Normal, "%s: %s",
+    MvrLog::log(MvrLog::Normal, "%s: %s",
 	       socket->getIPString(), args->getFullString());
   argv = args->getArgv();
   argc = args->getArgc();
@@ -714,7 +714,7 @@ MVREXPORT void ArNetServer::parseCommandOnSocket(MvrArgumentBuilder *args,
   }
 }
 
-MVREXPORT void ArNetServer::internalAddSocketToList(MvrSocket *socket)
+MVREXPORT void MvrNetServer::internalAddSocketToList(MvrSocket *socket)
 {
   if (socket != NULL)
   {
@@ -725,12 +725,12 @@ MVREXPORT void ArNetServer::internalAddSocketToList(MvrSocket *socket)
 }
 
 
-MVREXPORT void ArNetServer::internalAddSocketToDeleteList(MvrSocket *socket)
+MVREXPORT void MvrNetServer::internalAddSocketToDeleteList(MvrSocket *socket)
 {
   myDeleteList.push_front(socket);
 }
 
-MVREXPORT void ArNetServer::squelchNormal(void)
+MVREXPORT void MvrNetServer::squelchNormal(void)
 {
   mySquelchNormal = true;
   remCommand("help");
@@ -740,17 +740,17 @@ MVREXPORT void ArNetServer::squelchNormal(void)
 
 }
 
-MVREXPORT void ArNetServer::sendToClientPlain(
-	ArSocket *socket, const char *ipString, const char *str)
+MVREXPORT void MvrNetServer::sendToClientPlain(
+	MvrSocket *socket, const char *ipString, const char *str)
 {
-  std::list<ArSocket *>::iterator it;
+  std::list<MvrSocket *>::iterator it;
 
   for (it = myConns.begin(); it != myConns.end(); ++it)
   {
     if ((*it) == socket && strcmp((*it)->getIPString(), ipString) == 0)
     {
       if (myLoggingDataSent)
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "%s::sendToClient: Sending '%s' to %s", myName.c_str(), str,
 		   ipString);
       (*it)->setLogWriteStrings(false);
@@ -764,7 +764,7 @@ MVREXPORT void ArNetServer::sendToClientPlain(
    This sends the given string to all the clients, this string cannot
    be more than 2048 number of bytes
 **/
-MVREXPORT void ArNetServer::sendToClient(MvrSocket *socket, const char *ipString,
+MVREXPORT void MvrNetServer::sendToClient(MvrSocket *socket, const char *ipString,
 			   const char *str, ...)
 {
   char buf[2049];

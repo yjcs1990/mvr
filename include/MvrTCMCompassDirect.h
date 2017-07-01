@@ -1,36 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
-#ifndef ARTCMCOMPASSDIRECT_H
-#define ARTCMCOMPASSDIRECT_H
+#ifndef MVRTCMCOMPASSDIRECT_H
+#define MVRTCMCOMPASSDIRECT_H
 
 
-#include "ariaTypedefs.h"
-#include "ariaUtil.h"
+#include "mvriaTypedefs.h"
+#include "mvriaUtil.h"
 #include "MvrDeviceConnection.h"
 #include "MvrTCM2.h"
 #include "MvrNMEAParser.h"
@@ -56,7 +29,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *  approx. 8 hz by default) to read and parse incoming data. You can use an
  *  MvrRobot callback to do this, for example:
  *  @code
- *    MvrRetFunctor1C<int, MvrTCMCompassDirect, unsigned int> compassReadFunc(myCompass, &ArTCMCompassDirect::read, 10);
+ *    MvrRetFunctor1C<int, MvrTCMCompassDirect, unsigned int> compassReadFunc(myCompass, &MvrTCMCompassDirect::read, 10);
  *    myRobot->addSensorInterpTask("MvrTCMCompassDirect read", 200, &compassReadFunc);
  *  @endcode
  *
@@ -71,11 +44,11 @@ private:
   const char *mySerialPortName;
   MvrNMEAParser myNMEAParser;
   bool sendTCMCommand(const char *str, ...);
-  MvrFunctor1C<ArTCMCompassDirect, MvrNMEAParser::Message>  myHCHDMHandler;
+  MvrFunctor1C<MvrTCMCompassDirect, MvrNMEAParser::Message>  myHCHDMHandler;
   void handleHCHDM(MvrNMEAParser::Message);
 public:
   MVREXPORT MvrTCMCompassDirect(MvrDeviceConnection *devCon);
-  MVREXPORT MvrTCMCompassDirect(const char *serialPortName = ARTCM2_DEFAULT_SERIAL_PORT);
+  MVREXPORT MvrTCMCompassDirect(const char *serialPortName = MVRTCM2_DEFAULT_SERIAL_PORT);
   MVREXPORT ~MvrTCMCompassDirect();
 
   /** Open device connection if not yet open  and send commands to configure compass. */

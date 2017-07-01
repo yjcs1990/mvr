@@ -1,38 +1,12 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSerialConnection.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
 
 // PS 7/11/11 - nothing is done different for windows for 422
-MVREXPORT ArSerialConnection::ArSerialConnection(bool is422)
+MVREXPORT MvrSerialConnection::MvrSerialConnection(bool is422)
 {
   myPort = INVALID_HANDLE_VALUE;
   myBaudRate = 9600;
@@ -45,13 +19,13 @@ MVREXPORT ArSerialConnection::ArSerialConnection(bool is422)
     setPortType("serial");
 }
 
-MVREXPORT ArSerialConnection::~MvrSerialConnection()
+MVREXPORT MvrSerialConnection::~MvrSerialConnection()
 {
   if (myPort != INVALID_HANDLE_VALUE)
     close();
 }
 
-void ArSerialConnection::buildStrMap(void)
+void MvrSerialConnection::buildStrMap(void)
 {
   myStrMap[OPEN_COULD_NOT_OPEN_PORT] = "Could not open serial port.";
   myStrMap[OPEN_COULD_NOT_SET_UP_PORT] = "Could not set up serial port.";
@@ -60,12 +34,12 @@ void ArSerialConnection::buildStrMap(void)
   myStrMap[OPEN_ALREADY_OPEN] = "Serial port already open.";
 }
 
-MVREXPORT const char * ArSerialConnection::getOpenMessage(int messageNumber)
+MVREXPORT const char * MvrSerialConnection::getOpenMessage(int messageNumber)
 {
   return myStrMap[messageNumber].c_str();
 }
 
-MVREXPORT bool ArSerialConnection::openSimple(void)
+MVREXPORT bool MvrSerialConnection::openSimple(void)
 {
   if (internalOpen() == 0)
     return true;
@@ -79,7 +53,7 @@ MVREXPORT bool ArSerialConnection::openSimple(void)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-MVREXPORT void ArSerialConnection::setPort(const char *port)
+MVREXPORT void MvrSerialConnection::setPort(const char *port)
 {
   if (port == NULL)
     myPortName = "COM1";
@@ -91,7 +65,7 @@ MVREXPORT void ArSerialConnection::setPort(const char *port)
 /**
    @return The seiral port to connect to
 **/
-MVREXPORT const char * ArSerialConnection::getPort(void)
+MVREXPORT const char * MvrSerialConnection::getPort(void)
 {
   return myPortName.c_str();
 }
@@ -102,7 +76,7 @@ MVREXPORT const char * ArSerialConnection::getPort(void)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-MVREXPORT int ArSerialConnection::open(const char *port)
+MVREXPORT int MvrSerialConnection::open(const char *port)
 {
   setPort(port);
   return internalOpen();
@@ -110,19 +84,19 @@ MVREXPORT int ArSerialConnection::open(const char *port)
 
 
 
-MVREXPORT int ArSerialConnection::internalOpen(void)
+MVREXPORT int MvrSerialConnection::internalOpen(void)
 {
   DCB dcb;
 
 
   if (myStatus == STATUS_OPEN) 
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "MvrSerialConnection::open: Serial port already open");
     return OPEN_ALREADY_OPEN;
   }
 
-  ArLog::log(MvrLog::Verbose, "MvrSerialConnection::internalOpen: Connecting to serial port '%s'", myPortName.c_str());
+  MvrLog::log(MvrLog::Verbose, "MvrSerialConnection::internalOpen: Connecting to serial port '%s'", myPortName.c_str());
 
 
   myPort = CreateFile(myPortName.c_str(),
@@ -134,7 +108,7 @@ MVREXPORT int ArSerialConnection::internalOpen(void)
 		      NULL );
 
   if (myPort == INVALID_HANDLE_VALUE) {
-    ArLog::logErrorFromOS(MvrLog::Terse, 
+    MvrLog::logErrorFromOS(MvrLog::Terse, 
 	       "MvrSerialConnection::open: Could not open serial port '%s'",
 	       myPortName.c_str());
     return OPEN_COULD_NOT_OPEN_PORT;
@@ -142,7 +116,7 @@ MVREXPORT int ArSerialConnection::internalOpen(void)
              
   if ( !GetCommState(myPort, &dcb) )
   {  
-    ArLog::logErrorFromOS(MvrLog::Terse, 
+    MvrLog::logErrorFromOS(MvrLog::Terse, 
 			  "MvrSerialConnection::open: Could not get port data to set up port");
     close();
     myStatus = STATUS_OPEN_FAILED;
@@ -179,7 +153,7 @@ MVREXPORT int ArSerialConnection::internalOpen(void)
 
   if ( !SetCommState(myPort, &dcb) )
   {  
-    ArLog::logErrorFromOS(MvrLog::Terse, 
+    MvrLog::logErrorFromOS(MvrLog::Terse, 
 	       "MvrSerialConnection::open: Could not set up port");
     close();
     myStatus = STATUS_OPEN_FAILED;
@@ -191,7 +165,7 @@ MVREXPORT int ArSerialConnection::internalOpen(void)
   /* these are now set above, see the comments there for why
   if (!setBaud(myBaudRate)) 
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "MvrSerialConnection::open: Could not set baud rate.");
     close();
     myStatus = STATUS_OPEN_FAILED;
@@ -200,21 +174,21 @@ MVREXPORT int ArSerialConnection::internalOpen(void)
   
   if (!setHardwareControl(myHardwareControl)) 
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "MvrSerialConnection::open: Could not set hardware control.");
     close();
     myStatus = STATUS_OPEN_FAILED;
     return OPEN_COULD_NOT_SET_UP_PORT;
   }
 */
-  ArLog::log(MvrLog::Verbose,
+  MvrLog::log(MvrLog::Verbose,
 	     "MvrSerialConnection::open: Successfully opened and configured serial port.");
   return 0;
 }
 
 
 
-MVREXPORT bool ArSerialConnection::close(void)
+MVREXPORT bool MvrSerialConnection::close(void)
 {
   bool ret;
 
@@ -232,21 +206,21 @@ MVREXPORT bool ArSerialConnection::close(void)
 
   ret = CloseHandle( myPort ) ;
   if (ret)
-    ArLog::log(MvrLog::Verbose,
+    MvrLog::log(MvrLog::Verbose,
 	       "MvrSerialConnection::close: Successfully closed serial port.");
   else
-    ArLog::logErrorFromOS(MvrLog::Verbose, 
+    MvrLog::logErrorFromOS(MvrLog::Verbose, 
 	       "MvrSerialConnection::close: Unsuccessfully closed serial port.");
   myPort = (HANDLE) INVALID_HANDLE_VALUE;
   return ret;
 }
 
-MVREXPORT int ArSerialConnection::getBaud(void)
+MVREXPORT int MvrSerialConnection::getBaud(void)
 {
    return myBaudRate;
 }
 
-MVREXPORT bool ArSerialConnection::setBaud(int baud)
+MVREXPORT bool MvrSerialConnection::setBaud(int baud)
 {
   DCB dcb;
   
@@ -260,7 +234,7 @@ MVREXPORT bool ArSerialConnection::setBaud(int baud)
 
   if ( !GetCommState(myPort, &dcb) )
   {
-    ArLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::setBaud: Could not get port data.");
+    MvrLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::setBaud: Could not get port data.");
     return false;
   }
 
@@ -268,7 +242,7 @@ MVREXPORT bool ArSerialConnection::setBaud(int baud)
 
   if ( !SetCommState(myPort, &dcb) )
   {  
-    ArLog::logErrorFromOS(MvrLog::Terse,
+    MvrLog::logErrorFromOS(MvrLog::Terse,
 	       "MvrSerialConnection::setBaud: Could not set port data (trying baud %d).", myBaudRate);
     return false;
   }  
@@ -276,12 +250,12 @@ MVREXPORT bool ArSerialConnection::setBaud(int baud)
   return true;
 }
 
-MVREXPORT bool ArSerialConnection::getHardwareControl(void)
+MVREXPORT bool MvrSerialConnection::getHardwareControl(void)
 {
   return myHardwareControl;
 }
 
-MVREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
+MVREXPORT bool MvrSerialConnection::setHardwareControl(bool hardwareControl)
 {
   DCB dcb;
 
@@ -292,7 +266,7 @@ MVREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
  
   if ( !GetCommState(myPort, &dcb) )
   {
-    ArLog::logErrorFromOS(MvrLog::Terse,
+    MvrLog::logErrorFromOS(MvrLog::Terse,
 	       "MvrSerialConnection::setBaud: Could not get port Data.");
     return false;
   }
@@ -310,14 +284,14 @@ MVREXPORT bool ArSerialConnection::setHardwareControl(bool hardwareControl)
 
   if ( !SetCommState(myPort, &dcb) )
   {  
-    ArLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::setBaud: Could not set port Data.");
+    MvrLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::setBaud: Could not set port Data.");
     return false;
   }  
   
   return true;
 }
 
-MVREXPORT int ArSerialConnection::write(const char *data, unsigned int size) 
+MVREXPORT int MvrSerialConnection::write(const char *data, unsigned int size) 
 {
   unsigned long ret;
 
@@ -325,22 +299,22 @@ MVREXPORT int ArSerialConnection::write(const char *data, unsigned int size)
   {
     if (!WriteFile(myPort, data, size, &ret, NULL)) 
     {
-      ArLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::write: Error on writing.");
+      MvrLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::write: Error on writing.");
       return -1;
     }
     return ret;
   }
-  ArLog::log(MvrLog::Terse, "MvrSerialConnection::write: Connection invalid.");
+  MvrLog::log(MvrLog::Terse, "MvrSerialConnection::write: Connection invalid.");
   return -1;
 }
 
-MVREXPORT int ArSerialConnection::read(const char *data, unsigned int size, 
+MVREXPORT int MvrSerialConnection::read(const char *data, unsigned int size, 
 				      unsigned int msWait) 
 {
   COMSTAT stat;
   unsigned long ret;
   unsigned int numToRead;
-  ArTime timeDone;
+  MvrTime timeDone;
 
   if (myPort != INVALID_HANDLE_VALUE && myStatus == STATUS_OPEN)
   {
@@ -348,7 +322,7 @@ MVREXPORT int ArSerialConnection::read(const char *data, unsigned int size,
     {
       timeDone.setToNow();
       if (!timeDone.addMSec(msWait)) {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrSerialConnection::read() error adding msecs (%i)",
                    msWait);
       }
@@ -357,7 +331,7 @@ MVREXPORT int ArSerialConnection::read(const char *data, unsigned int size,
 	if (!ClearCommError(myPort, &ret, &stat))
 	  return -1;
 	if (stat.cbInQue < size)
-	  ArUtil::sleep(2);
+	  MvrUtil::sleep(2);
 	else
 	  break;
       }
@@ -376,33 +350,33 @@ MVREXPORT int ArSerialConnection::read(const char *data, unsigned int size,
     }
     else 
     {
-      ArLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::read:  Read failed.");
+      MvrLog::logErrorFromOS(MvrLog::Terse, "MvrSerialConnection::read:  Read failed.");
       return -1;
     }
   }
-  ArLog::log(MvrLog::Terse, "MvrSerialConnection::read: Connection invalid.");
+  MvrLog::log(MvrLog::Terse, "MvrSerialConnection::read: Connection invalid.");
   return -1;
 }
 
 
-MVREXPORT int ArSerialConnection::getStatus(void)
+MVREXPORT int MvrSerialConnection::getStatus(void)
 {
   return myStatus;
 }
 
-MVREXPORT bool ArSerialConnection::isTimeStamping(void)
+MVREXPORT bool MvrSerialConnection::isTimeStamping(void)
 {
   return false;
 }
 
-MVREXPORT ArTime ArSerialConnection::getTimeRead(int index)
+MVREXPORT MvrTime MvrSerialConnection::getTimeRead(int index)
 {
-  ArTime now;
+  MvrTime now;
   now.setToNow();
   return now;
 }
 
-MVREXPORT bool ArSerialConnection::getCTS(void)
+MVREXPORT bool MvrSerialConnection::getCTS(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))
@@ -416,7 +390,7 @@ MVREXPORT bool ArSerialConnection::getCTS(void)
   }
 } 
 
-MVREXPORT bool ArSerialConnection::getDSR(void)
+MVREXPORT bool MvrSerialConnection::getDSR(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))
@@ -430,7 +404,7 @@ MVREXPORT bool ArSerialConnection::getDSR(void)
   }
 } 
 
-MVREXPORT bool ArSerialConnection::getDCD(void)
+MVREXPORT bool MvrSerialConnection::getDCD(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))
@@ -444,7 +418,7 @@ MVREXPORT bool ArSerialConnection::getDCD(void)
   }
 }
 
-MVREXPORT bool ArSerialConnection::getRing(void)
+MVREXPORT bool MvrSerialConnection::getRing(void)
 {
   DWORD modemStat;
   if (GetCommModemStatus(myPort, &modemStat))

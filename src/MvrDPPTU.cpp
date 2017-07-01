@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrDPPTU.h"
 #include "MvrCommands.h"
 #include "MvrBasePacket.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include "MvrDeviceConnection.h"
 
 #define DO_DEBUG(code) {code;}
@@ -50,7 +24,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #define DEBUG_POS(code) {}
 #endif
 
-MVREXPORT MvrDPPTUPacket::ArDPPTUPacket(MvrTypes::UByte2 bufferSize) :
+MVREXPORT MvrDPPTUPacket::MvrDPPTUPacket(MvrTypes::UByte2 bufferSize) :
   MvrBasePacket(bufferSize, 0)
 {
 }
@@ -62,7 +36,7 @@ MVREXPORT MvrDPPTUPacket::~MvrDPPTUPacket()
 
 MVREXPORT void MvrDPPTUPacket::byte2ToBuf(int val)
 {
-  //ArLog::log(MvrLog::Normal, "Putting %d in an DPPTU packet...", val);
+  //MvrLog::log(MvrLog::Normal, "Putting %d in an DPPTU packet...", val);
   int i;
   char buf[8];
   if (myLength + 4 > myMaxLength)
@@ -97,11 +71,11 @@ MVREXPORT void MvrDPPTUPacket::finalizePacket(void)
  * specifies one device to power on at startup and power off on exit. If -1
  * (default value), then all possible PTU power ports are powered on.
  */
-MVREXPORT MvrDPPTU::ArDPPTU(MvrRobot *robot, DeviceType deviceType, int deviceIndex) :
+MVREXPORT MvrDPPTU::MvrDPPTU(MvrRobot *robot, DeviceType deviceType, int deviceIndex) :
   MvrPTZ(robot),
   myCanGetRealPanTilt(true),
   myInit(false),
-  myQueryCB(this, &ArDPPTU::query),
+  myQueryCB(this, &MvrDPPTU::query),
   myGotPanRes(false),
   myGotTiltRes(false)
 {
@@ -292,7 +266,7 @@ MVREXPORT bool MvrDPPTU::blank(void)
 
 MVREXPORT bool MvrDPPTU::pan_i(double pdeg)
 {
-  //ArLog::log(MvrLog::Normal, "MvrDPPTU::panTilt(%f, %f)", pdeg, tdeg);
+  //MvrLog::log(MvrLog::Normal, "MvrDPPTU::panTilt(%f, %f)", pdeg, tdeg);
   if (pdeg > getMaxPosPan_i())
     pdeg = getMaxPosPan_i();
   if (pdeg < getMaxNegPan_i())
@@ -422,8 +396,8 @@ MVREXPORT bool MvrDPPTU::resetAll(void)
 MVREXPORT bool MvrDPPTU::saveSet(void)
 {
   preparePacket();
-  myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
-  myPacket.byteToBuf('S'); //ArDPPTUCommands::SPEED);
+  myPacket.byteToBuf('D'); //MvrDPPTUCommands::DISABLE);
+  myPacket.byteToBuf('S'); //MvrDPPTUCommands::SPEED);
 
   return sendPacket(&myPacket);
 }
@@ -431,8 +405,8 @@ MVREXPORT bool MvrDPPTU::saveSet(void)
 MVREXPORT bool MvrDPPTU::restoreSet(void)
 {
   preparePacket();
-  myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
-  myPacket.byteToBuf('R'); //ArDPPTUCommands::RESET);
+  myPacket.byteToBuf('D'); //MvrDPPTUCommands::DISABLE);
+  myPacket.byteToBuf('R'); //MvrDPPTUCommands::RESET);
 
   return sendPacket(&myPacket);
 }
@@ -440,8 +414,8 @@ MVREXPORT bool MvrDPPTU::restoreSet(void)
 MVREXPORT bool MvrDPPTU::factorySet(void)
 {
   preparePacket();
-  myPacket.byteToBuf('D'); //ArDPPTUCommands::DISABLE);
-  myPacket.byteToBuf('F'); //ArDPPTUCommands::FACTORY);
+  myPacket.byteToBuf('D'); //MvrDPPTUCommands::DISABLE);
+  myPacket.byteToBuf('F'); //MvrDPPTUCommands::FACTORY);
 
   return sendPacket(&myPacket);
 }
@@ -470,7 +444,7 @@ MVREXPORT bool MvrDPPTU::immedExec(void)
 MVREXPORT bool MvrDPPTU::slaveExec(void)
 {
   preparePacket();
-  myPacket.byteToBuf('S'); //ArDPPTUCommands::SPEED);
+  myPacket.byteToBuf('S'); //MvrDPPTUCommands::SPEED);
 
   return sendPacket(&myPacket);
 }
@@ -478,7 +452,7 @@ MVREXPORT bool MvrDPPTU::slaveExec(void)
 MVREXPORT bool MvrDPPTU::awaitExec(void)
 {
   preparePacket();
-  myPacket.byteToBuf('A'); //ArDPPTUCommands::ACCEL);
+  myPacket.byteToBuf('A'); //MvrDPPTUCommands::ACCEL);
 
   return sendPacket(&myPacket);
 }
@@ -587,7 +561,7 @@ MVREXPORT bool MvrDPPTU::lowerPanSlew(double deg)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::PAN);
-  myPacket.byteToBuf('L'); //ArDPPTUCommands::LIMIT);
+  myPacket.byteToBuf('L'); //MvrDPPTUCommands::LIMIT);
   myPacket.byte2ToBuf(MvrMath::roundInt(deg/myPanConvert));
 
   return sendPacket(&myPacket);
@@ -607,7 +581,7 @@ MVREXPORT bool MvrDPPTU::lowerTiltSlew(double deg)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::TILT);
-  myPacket.byteToBuf('L'); //ArDPPTUCommands::LIMIT);
+  myPacket.byteToBuf('L'); //MvrDPPTUCommands::LIMIT);
   myPacket.byte2ToBuf(MvrMath::roundInt(deg/myTiltConvert));
 
   return sendPacket(&myPacket);
@@ -617,7 +591,7 @@ MVREXPORT bool MvrDPPTU::indepMove(void)
 {
   preparePacket();
   myPacket.byteToBuf(MvrDPPTUCommands::CONTROL);
-  myPacket.byteToBuf('I'); //ArDPPTUCommands::IMMED);
+  myPacket.byteToBuf('I'); //MvrDPPTUCommands::IMMED);
 
   return sendPacket(&myPacket);
 }
@@ -686,7 +660,7 @@ MVREXPORT bool MvrDPPTU::setMovePower(Axis axis, PowerMode mode)
 }
 
 
-MVREXPORT MvrBasePacket *ArDPPTU::readPacket()
+MVREXPORT MvrBasePacket *MvrDPPTU::readPacket()
 {
   if(!myConn)
     return NULL;
@@ -903,9 +877,9 @@ void MvrDPPTU::query()
 }
 
 
-ArPTZConnector::GlobalPTZCreateFunc MvrDPPTU::ourCreateFunc(&ArDPPTU::create);
+MvrPTZConnector::GlobalPTZCreateFunc MvrDPPTU::ourCreateFunc(&MvrDPPTU::create);
 
-ArPTZ* MvrDPPTU::create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot)
+MvrPTZ* MvrDPPTU::create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot)
 {
   return new MvrDPPTU(robot);
 }

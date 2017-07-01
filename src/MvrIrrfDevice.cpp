@@ -1,39 +1,13 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrIrrfDevice.h"
 #include "MvrCommands.h"
 
-MVREXPORT MvrIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
+MVREXPORT MvrIrrfDevice::MvrIrrfDevice(size_t currentBufferSize,
                              size_t cumulativeBufferSize, const char *name) :
   MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000),
-  myPacketHandler(this, &ArIrrfDevice::packetHandler)
+  myPacketHandler(this, &MvrIrrfDevice::packetHandler)
 {
   int i;
   myRobot = NULL;
@@ -45,7 +19,7 @@ MVREXPORT MvrIrrfDevice::ArIrrfDevice(size_t currentBufferSize,
 
   myPacketHandler.setName("MvrIrrfDevice");
   // The 91 readings start at -81 degrees, and move in 1.8 degree steps
-  myRawReadings = new std::list<ArSensorReading *>;
+  myRawReadings = new std::list<MvrSensorReading *>;
   for(i=0;i<91;i++)
     myRawReadings->push_back(new MvrSensorReading(0, 0, (1.8*i - 81)));
 }
@@ -71,9 +45,9 @@ MVREXPORT void MvrIrrfDevice::processReadings(void)
   int i;
   double rx, ry, nx, ny, dx, dy, dist;
   MvrSensorReading *reading;
-  std::list<ArSensorReading *>::iterator rawIt;
-  std::list<ArPoseWithTime *> *readingList;
-  std::list<ArPoseWithTime *>::iterator readIt;
+  std::list<MvrSensorReading *>::iterator rawIt;
+  std::list<MvrPoseWithTime *> *readingList;
+  std::list<MvrPoseWithTime *>::iterator readIt;
   lockDevice();
 
   rx = myRobot->getX();
@@ -148,7 +122,7 @@ MVREXPORT bool MvrIrrfDevice::packetHandler(MvrRobotPacket *packet)
   int portNum, i, dist, packetCounter;
   double conv;
   MvrTransform packetTrans;
-  std::list<ArSensorReading *>::iterator it;
+  std::list<MvrSensorReading *>::iterator it;
   MvrSensorReading *reading;
   MvrPose pose;
   MvrTransform encoderTrans;

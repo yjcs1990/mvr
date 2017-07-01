@@ -1,32 +1,6 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
-#include "ariaInternal.h"
+#include "mvriaOSDef.h"
+#include "mvriaInternal.h"
 #include "MvrMap.h"
 
 
@@ -36,7 +10,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 /**
 @page MapFileFormat Map File Format
 
-ARIA's map file format is used to store data that defines a map of a space 
+MVRIA's map file format is used to store data that defines a map of a space 
 in which the robot can operate.  A map file can be loaded, accessed, and 
 saved using an MvrMap object.
 
@@ -65,7 +39,7 @@ A map is an introductory line (e.g. "2D-Map") followed by the metadata
 section, followed by some number of data sections:
 </p>
 <pre>
-ARMAP                = (MapIntro NEWLINE) (MetadataSection) (*DataSection)
+MVRMAP                = (MapIntro NEWLINE) (MetadataSection) (*DataSection)
 MapIntro             = "2D-Map" / "2D-Map-Ex" / "2D-Map-Ex2"
 </pre>
 <p>
@@ -486,7 +460,7 @@ For more information about the use of <code>MapInfo</code> metadata, see the dis
  *
 **/
 
-MVREXPORT MvrMap::ArMap(const char *baseDirectory,
+MVREXPORT MvrMap::MvrMap(const char *baseDirectory,
 		                  bool addToGlobalConfig, 
 		                  const char *configSection,
 		                  const char *configParam,
@@ -514,13 +488,13 @@ MVREXPORT MvrMap::ArMap(const char *baseDirectory,
 
   myIsQuiet(false),
 
-  myProcessFileCB(this, &ArMap::processFile)
+  myProcessFileCB(this, &MvrMap::processFile)
 {
   myMutex.setLogName("MvrMap::myMutex");
   myConfigMapName[0] = '\0';
   myProcessFileCB.setName("MvrMap");
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   if (addToGlobalConfig)
   {
     MvrLog::log(MvrLog::Verbose,
@@ -542,11 +516,11 @@ MVREXPORT MvrMap::ArMap(const char *baseDirectory,
     Mvria::getConfig()->addProcessFileWithErrorCB(&myProcessFileCB, 
 						 configProcessFilePriority);
   }
-#endif //ARINTERFACE
+#endif //MvrINTERFACE
 
 } // end ctor
    
-MVREXPORT MvrMap::ArMap(const MvrMap &other) :
+MVREXPORT MvrMap::MvrMap(const MvrMap &other) :
   myMutex(),
   myBaseDirectory((other.getBaseDirectory() != NULL) ? other.getBaseDirectory() : ""),
   myFileName((other.getFileName() != NULL) ? other.getFileName() : ""),
@@ -568,8 +542,8 @@ MVREXPORT MvrMap::ArMap(const MvrMap &other) :
 
   myIsQuiet(false),
 
-  //myCurrentMapChangedCB(this, &ArMap::handleCurrentMapChanged),
-  myProcessFileCB(this, &ArMap::processFile)
+  //myCurrentMapChangedCB(this, &MvrMap::handleCurrentMapChanged),
+  myProcessFileCB(this, &MvrMap::processFile)
 {
   myMutex.setLogName("MvrMap::myMutex");
   myConfigMapName[0] = '\0';
@@ -583,7 +557,7 @@ MVREXPORT MvrMap::ArMap(const MvrMap &other) :
 
 } // end copy ctor
 
-MVREXPORT MvrMap &ArMap::operator=(const MvrMap &other)
+MVREXPORT MvrMap &MvrMap::operator=(const MvrMap &other)
 {
   if (this != &other) {
   
@@ -622,8 +596,8 @@ MVREXPORT MvrMap &ArMap::operator=(const MvrMap &other)
     /**
     myIsQuiet(false),
 
-    myCurrentMapChangedCB(this, &ArMap::handleCurrentMapChanged),
-    myProcessFileCB(this, &ArMap::processFile)
+    myCurrentMapChangedCB(this, &MvrMap::handleCurrentMapChanged),
+    myProcessFileCB(this, &MvrMap::processFile)
     **/
   }
   return *this;
@@ -645,13 +619,13 @@ MVREXPORT MvrMap::~MvrMap(void)
 } // end dtor 
 
 
-MVREXPORT MvrMapInterface *ArMap::clone()
+MVREXPORT MvrMapInterface *MvrMap::clone()
 {
   // TODO: There is currently an issue with creating another MvrMap (and I 
   // can't remember exactly what it is).  Creating a simple copy appears
   // to be sufficient at the moment.
 
-  //ArMap *copy = new MvrMap(*this);
+  //MvrMap *copy = new MvrMap(*this);
   MvrMapSimple *copy = new MvrMapSimple(*myCurrentMap);
 
   return copy;
@@ -839,14 +813,14 @@ MVREXPORT bool MvrMap::calculateChecksum(unsigned char *md5DigestBuffer,
 }
 
 
-MVREXPORT const char *ArMap::getBaseDirectory(void) const
+MVREXPORT const char *MvrMap::getBaseDirectory(void) const
 { 
   return myBaseDirectory.c_str();
 
 } // end method getBaseDirectory
 
 
-MVREXPORT const char *ArMap::getFileName(void) const 
+MVREXPORT const char *MvrMap::getFileName(void) const 
 { 
   return myFileName.c_str();
 
@@ -893,7 +867,7 @@ MVREXPORT void MvrMap::setBaseDirectory(const char *baseDirectory)
 } // end method setBaseDirectory
 
 
-MVREXPORT const char *ArMap::getTempDirectory(void) const
+MVREXPORT const char *MvrMap::getTempDirectory(void) const
 {
   return myCurrentMap->getTempDirectory();
 }
@@ -932,7 +906,7 @@ MVREXPORT bool MvrMap::getMapId(MvrMapId *mapIdOut,
 }
   
   
-MVREXPORT MvrArgumentBuilder *ArMap::findMapObjectParams
+MVREXPORT MvrArgumentBuilder *MvrMap::findMapObjectParams
                                           (const char *mapObjectName)
 {
   return myCurrentMap->findMapObjectParams(mapObjectName);
@@ -948,7 +922,7 @@ MVREXPORT bool MvrMap::setMapObjectParams(const char *mapObjectName,
 }
 
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMap::getRemainder()
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMap::getRemainder()
 {
   return myCurrentMap->getRemainder();
 }
@@ -1032,19 +1006,19 @@ MVREXPORT int MvrMap::unlock()
 // MvrMapInfoInterface
 // ---------------------------------------------------------------------------
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMap::getInfo(const char *infoName)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMap::getInfo(const char *infoName)
 { 
   return myCurrentMap->getInfo(infoName);
 
 } // end method getInfo
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMap::getInfo(int infoType)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMap::getInfo(int infoType)
 { 
   return myCurrentMap->getInfo(infoType);
 
 } // end method getInfo
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMap::getMapInfo(void)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMap::getMapInfo(void)
 { 
   return myCurrentMap->getInfo(MvrMapInfo::MAP_INFO_NAME);
 
@@ -1061,7 +1035,7 @@ MVREXPORT std::list<std::string> MvrMap::getInfoNames() const
 }
 
 MVREXPORT bool MvrMap::setInfo(const char *infoName,
-						                 const std::list<ArArgumentBuilder *> *infoList,
+						                 const std::list<MvrArgumentBuilder *> *infoList,
                              MvrMapChangeDetails *changeDetails)
 { 
   return myCurrentMap->setInfo(infoName, infoList, changeDetails);
@@ -1070,14 +1044,14 @@ MVREXPORT bool MvrMap::setInfo(const char *infoName,
 
 
 MVREXPORT bool MvrMap::setInfo(int infoType,
-						                        const std::list<ArArgumentBuilder *> *infoList,
+						                        const std::list<MvrArgumentBuilder *> *infoList,
                                     MvrMapChangeDetails *changeDetails)
 { 
   return myCurrentMap->setInfo(infoType, infoList, changeDetails);
 
 } // end method setInfo
 
-MVREXPORT bool MvrMap::setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
+MVREXPORT bool MvrMap::setMapInfo(const std::list<MvrArgumentBuilder *> *mapInfo,
                                 MvrMapChangeDetails *changeDetails)
 { 
   return myCurrentMap->setInfo(MvrMapInfo::MAP_INFO_NAME, mapInfo, changeDetails);
@@ -1094,7 +1068,7 @@ MVREXPORT void MvrMap::writeInfoToFunctor
 } // end method writeInfoToFunctor
 
 
-MVREXPORT const char *ArMap::getInfoName(int infoType)
+MVREXPORT const char *MvrMap::getInfoName(int infoType)
 { 
   return myCurrentMap->getInfoName(infoType);
 
@@ -1104,7 +1078,7 @@ MVREXPORT const char *ArMap::getInfoName(int infoType)
 // MvrMapObjectsInterface
 // ---------------------------------------------------------------------------
 
-MVREXPORT MvrMapObject *ArMap::findFirstMapObject(const char *name, 
+MVREXPORT MvrMapObject *MvrMap::findFirstMapObject(const char *name, 
                                                       const char *type,
                                                       bool isIncludeWithHeading)
 { 
@@ -1113,7 +1087,7 @@ MVREXPORT MvrMapObject *ArMap::findFirstMapObject(const char *name,
 } // end method findFirstMapObject
 
 
-MVREXPORT MvrMapObject *ArMap::findMapObject(const char *name, 
+MVREXPORT MvrMapObject *MvrMap::findMapObject(const char *name, 
 				                                          const char *type,
                                                   bool isIncludeWithHeading)
 { 
@@ -1121,14 +1095,14 @@ MVREXPORT MvrMapObject *ArMap::findMapObject(const char *name,
 
 } // end method findMapObject
 
-MVREXPORT std::list<ArMapObject *> MvrMap::findMapObjectsOfType
+MVREXPORT std::list<MvrMapObject *> MvrMap::findMapObjectsOfType
                                                 (const char *type,
                                                  bool isIncludeWithHeading)
 {
   return myCurrentMap->findMapObjectsOfType(type, isIncludeWithHeading);
 }
 
-MVREXPORT std::list<ArMapObject *> *ArMap::getMapObjects(void)
+MVREXPORT std::list<MvrMapObject *> *MvrMap::getMapObjects(void)
 { 
   return myCurrentMap->getMapObjects();
 
@@ -1136,7 +1110,7 @@ MVREXPORT std::list<ArMapObject *> *ArMap::getMapObjects(void)
 
 
 MVREXPORT void MvrMap::setMapObjects
-                              (const std::list<ArMapObject *> *mapObjects,
+                              (const std::list<MvrMapObject *> *mapObjects,
                                bool isSortedObjects, 
                                MvrMapChangeDetails *changeDetails) 
 { 
@@ -1213,18 +1187,18 @@ MVREXPORT void MvrMap::writeSupplementToFunctor(MvrFunctor1<const char *> *funct
 // MvrMapScanInterface
 // ---------------------------------------------------------------------------
 
-MVREXPORT const char *ArMap::getDisplayString(const char *scanType)
+MVREXPORT const char *MvrMap::getDisplayString(const char *scanType)
 {
   return myCurrentMap->getDisplayString(scanType);
 }
 
-MVREXPORT std::vector<ArPose> *ArMap::getPoints(const char *scanType)
+MVREXPORT std::vector<MvrPose> *MvrMap::getPoints(const char *scanType)
 { 
   return myCurrentMap->getPoints(scanType);
  
 } // end method getPoints
 
-MVREXPORT std::vector<ArLineSegment> *ArMap::getLines(const char *scanType)
+MVREXPORT std::vector<MvrLineSegment> *MvrMap::getLines(const char *scanType)
 { 
   return myCurrentMap->getLines(scanType);
 
@@ -1282,7 +1256,7 @@ MVREXPORT bool MvrMap::isSortedLines(const char *scanType) const
   return myCurrentMap->isSortedLines(scanType);
 }
 
-MVREXPORT void MvrMap::setPoints(const std::vector<ArPose> *points,
+MVREXPORT void MvrMap::setPoints(const std::vector<MvrPose> *points,
                                const char *scanType,
                                bool isSorted,
                                MvrMapChangeDetails *changeDetails)
@@ -1291,7 +1265,7 @@ MVREXPORT void MvrMap::setPoints(const std::vector<ArPose> *points,
 
 } // end method setPoints
 
-MVREXPORT void MvrMap::setLines(const std::vector<ArLineSegment> *lines,
+MVREXPORT void MvrMap::setLines(const std::vector<MvrLineSegment> *lines,
                               const char *scanType,
                               bool isSorted,
                               MvrMapChangeDetails *changeDetails)
@@ -1320,7 +1294,7 @@ MVREXPORT void MvrMap::writeScanToFunctor(MvrFunctor1<const char *> *functor,
 
 
 MVREXPORT void MvrMap::writePointsToFunctor
-		(MvrFunctor2<int, std::vector<ArPose> *> *functor,
+		(MvrFunctor2<int, std::vector<MvrPose> *> *functor,
      const char *scanType,
      MvrFunctor1<const char *> *keywordFunctor)
 { 
@@ -1329,7 +1303,7 @@ MVREXPORT void MvrMap::writePointsToFunctor
 } // end method writePointsToFunctor
 
 MVREXPORT void MvrMap::writeLinesToFunctor
-	   (MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
+	   (MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
       const char *scanType,
       MvrFunctor1<const char *> *keywordFunctor)
 { 
@@ -1344,17 +1318,17 @@ MVREXPORT void MvrMap::writeToFunctor(MvrFunctor1<const char *> *functor,
  
 } // end method writeToFunctor
 
-MVREXPORT MvrMapInfoInterface *ArMap::getInactiveInfo()
+MVREXPORT MvrMapInfoInterface *MvrMap::getInactiveInfo()
 {
   return myCurrentMap->getInactiveInfo();
 }
 
-MVREXPORT MvrMapObjectsInterface *ArMap::getInactiveObjects()
+MVREXPORT MvrMapObjectsInterface *MvrMap::getInactiveObjects()
 {
   return myCurrentMap->getInactiveObjects();
 }
 
-MVREXPORT MvrMapObjectsInterface *ArMap::getChildObjects()
+MVREXPORT MvrMapObjectsInterface *MvrMap::getChildObjects()
 {
   return myCurrentMap->getChildObjects();
 }

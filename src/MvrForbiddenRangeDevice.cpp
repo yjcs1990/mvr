@@ -1,34 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrRobot.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include "MvrForbiddenRangeDevice.h"
 
 /**
@@ -43,19 +16,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param maxRange how far out to look total
    @param name the name of the device
  **/
-MVREXPORT MvrForbiddenRangeDevice::ArForbiddenRangeDevice(
-	ArMapInterface *armap, double distanceIncrement, unsigned int maxRange,
+MVREXPORT MvrForbiddenRangeDevice::MvrForbiddenRangeDevice(
+	MvrMapInterface *armap, double distanceIncrement, unsigned int maxRange,
 	const char *name) :
   MvrRangeDevice(INT_MAX, 0, name, maxRange, 0, 0, 0, true),
   myDataMutex(),
   myMap(armap),
   myDistanceIncrement(distanceIncrement),
   mySegments(),
-  myProcessCB(this, &ArForbiddenRangeDevice::processReadings),
-  myMapChangedCB(this, &ArForbiddenRangeDevice::processMap)  ,
+  myProcessCB(this, &MvrForbiddenRangeDevice::processReadings),
+  myMapChangedCB(this, &MvrForbiddenRangeDevice::processMap)  ,
   myIsEnabled(true),
-  myEnableCB(this, &ArForbiddenRangeDevice::enable),
-  myDisableCB(this, &ArForbiddenRangeDevice::disable)
+  myEnableCB(this, &MvrForbiddenRangeDevice::enable),
+  myDisableCB(this, &MvrForbiddenRangeDevice::disable)
 {
   myDataMutex.setLogName("MvrForbiddenRangeDevice::myDataMutex");
   
@@ -69,7 +42,7 @@ MVREXPORT MvrForbiddenRangeDevice::~MvrForbiddenRangeDevice()
 
 MVREXPORT void MvrForbiddenRangeDevice::processMap(void)
 {
-  std::list<ArMapObject *>::const_iterator it;
+  std::list<MvrMapObject *>::const_iterator it;
   MvrMapObject *obj;
 
   myDataMutex.lock();
@@ -113,7 +86,7 @@ MVREXPORT void MvrForbiddenRangeDevice::processMap(void)
 MVREXPORT void MvrForbiddenRangeDevice::processReadings(void)
 {
   MvrPose intersection;
-  std::list<ArLineSegment *>::iterator it;
+  std::list<MvrLineSegment *>::iterator it;
   
   lockDevice();
   myDataMutex.lock();
@@ -155,7 +128,7 @@ MVREXPORT void MvrForbiddenRangeDevice::processReadings(void)
     if (MvrMath::squaredDistanceBetween(
 	    segment->getX1(), segment->getY1(), 
 	    myRobot->getX(), myRobot->getY()) < maxSquared ||
-	ArMath::squaredDistanceBetween(
+	MvrMath::squaredDistanceBetween(
 		segment->getX2(), segment->getY2(), 
 		myRobot->getX(), myRobot->getY()) < maxSquared ||
 	segment->getPerpDist(myRobot->getPose()) < max)

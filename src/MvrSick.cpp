@@ -1,48 +1,22 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSick.h"
 #include "MvrRobot.h"
 #include "MvrSerialConnection.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include <time.h>
 
 
-MVREXPORT ArSick::ArSick(
+MVREXPORT MvrSick::MvrSick(
 	size_t currentBufferSize, size_t cumulativeBufferSize,
-	const char *name, bool addAriaExitCB, bool isSecondLaser) : 
-  ArLMS2xx(!isSecondLaser ? 1 : 2, name, !isSecondLaser ? false : true)
+	const char *name, bool addMvriaExitCB, bool isSecondLaser) : 
+  MvrLMS2xx(!isSecondLaser ? 1 : 2, name, !isSecondLaser ? false : true)
 {
   setCurrentBufferSize(currentBufferSize);
   setCumulativeBufferSize(cumulativeBufferSize);
 }
 
-MVREXPORT ArSick::~MvrSick()
+MVREXPORT MvrSick::~MvrSick()
 {
 
 }
@@ -52,15 +26,15 @@ MVREXPORT ArSick::~MvrSick()
  * Manually set laser configuration options for connection. This must be called
  * only before connecting to the laser (not while the laser is connected).
  * This configuration is automatically performed if you are using
- * ArSimpleConnector to connect to the laser based on command line parameters,
+ * MvrSimpleConnector to connect to the laser based on command line parameters,
  * so calling this function is only neccesary if you are not using
- * ArSimpleConnector, or you wish to always override ArSimpleConnector's
+ * MvrSimpleConnector, or you wish to always override MvrSimpleConnector's
  * configuration. 
  *
- * (Don't forget, you must lock ArLMS2xx with lockDevice() if multiple threads
- * are accessing the ArLMS2xx, e.g. if you used runAsync().)
+ * (Don't forget, you must lock MvrLMS2xx with lockDevice() if multiple threads
+ * are accessing the MvrLMS2xx, e.g. if you used runAsync().)
 **/
-MVREXPORT void ArSick::configure(bool useSim, bool powerControl,
+MVREXPORT void MvrSick::configure(bool useSim, bool powerControl,
 				bool laserFlipped, BaudRate baud,
 				Degrees deg, Increment incr)
 {
@@ -73,7 +47,7 @@ MVREXPORT void ArSick::configure(bool useSim, bool powerControl,
 /**
  * @copydoc configure()
 **/
-MVREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
+MVREXPORT void MvrSick::configureShort(bool useSim, BaudRate baud,
 				     Degrees deg, Increment incr)
 {
   myUseSim = useSim;
@@ -88,14 +62,14 @@ MVREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
   else if (baud == BAUD38400)
     chooseAutoBaud("38400");
   else
-    ArLog::log(MvrLog::Normal, "%s: Bad baud choice", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Bad baud choice", getName());
 
   if (deg == DEGREES180)
     chooseDegrees("180");
   else if (deg == DEGREES100)
     chooseDegrees("100");
   else
-    ArLog::log(MvrLog::Normal, "%s: Bad degrees choice", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Bad degrees choice", getName());
 
 
   if (incr == INCREMENT_ONE)
@@ -103,7 +77,7 @@ MVREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
   else if (incr == INCREMENT_HALF)
     chooseIncrement("half");
   else
-    ArLog::log(MvrLog::Normal, "%s: Bad increment choice", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Bad increment choice", getName());
 
 }
 
@@ -112,7 +86,7 @@ MVREXPORT void ArSick::configureShort(bool useSim, BaudRate baud,
    (in effect) the same as the new default.  If you look at the enums
    for these units you can see the effect this has on range.  
 **/
-MVREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
+MVREXPORT void MvrSick::setRangeInformation(Bits bits, Units units)
 {
   if (bits == BITS_1REFLECTOR)
     chooseReflectorBits("1ref");
@@ -121,7 +95,7 @@ MVREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
   else if (bits == BITS_3REFLECTOR)
     chooseReflectorBits("3ref");
   else
-    ArLog::log(MvrLog::Normal, "%s: Bad reflectorBits choice", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Bad reflectorBits choice", getName());
 
   if (units == UNITS_1MM)
     chooseUnits("1mm");
@@ -130,22 +104,22 @@ MVREXPORT void ArSick::setRangeInformation(Bits bits, Units units)
   else if (units == UNITS_10CM)
     chooseUnits("10cm");
   else
-    ArLog::log(MvrLog::Normal, "%s: Bad units choice", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Bad units choice", getName());
 }
 
 
 
-MVREXPORT bool ArSick::isControllingPower(void)
+MVREXPORT bool MvrSick::isControllingPower(void)
 {
   return getPowerControlled(); 
 }
 
-MVREXPORT bool ArSick::isLaserFlipped(void)
+MVREXPORT bool MvrSick::isLaserFlipped(void)
 {
   return getFlipped();
 }
 
-MVREXPORT ArSick::Degrees ArSick::getDegrees(void)
+MVREXPORT MvrSick::Degrees MvrSick::getDegrees(void)
 {
   if (strcasecmp(getDegreesChoice(), "180") == 0)
     return DEGREES180;
@@ -153,13 +127,13 @@ MVREXPORT ArSick::Degrees ArSick::getDegrees(void)
     return DEGREES100;
   else
   {
-    ArLog::log(MvrLog::Normal, "MvrSick::getDegrees: Invalid degrees %s",
+    MvrLog::log(MvrLog::Normal, "MvrSick::getDegrees: Invalid degrees %s",
 	       getDegreesChoice());
     return DEGREES_INVALID;
   }
 }
 
-MVREXPORT ArSick::Increment ArSick::getIncrement(void)
+MVREXPORT MvrSick::Increment MvrSick::getIncrement(void)
 {
   if (strcasecmp(getIncrementChoice(), "one") == 0)
     return INCREMENT_ONE;
@@ -167,13 +141,13 @@ MVREXPORT ArSick::Increment ArSick::getIncrement(void)
     return INCREMENT_HALF;
   else
   {
-    ArLog::log(MvrLog::Normal, "MvrSick::getIncrement: Invalid increment %s",
+    MvrLog::log(MvrLog::Normal, "MvrSick::getIncrement: Invalid increment %s",
 	       getIncrementChoice());
     return INCREMENT_INVALID;
   }
 }
 
-MVREXPORT ArSick::Bits ArSick::getBits(void)
+MVREXPORT MvrSick::Bits MvrSick::getBits(void)
 {
   if (strcasecmp(getReflectorBitsChoice(), "1ref") == 0)
     return BITS_1REFLECTOR;
@@ -183,13 +157,13 @@ MVREXPORT ArSick::Bits ArSick::getBits(void)
     return BITS_3REFLECTOR;
   else
   {
-    ArLog::log(MvrLog::Normal, "MvrSick::getReflectorBits: Invalid ReflectorBits %s",
+    MvrLog::log(MvrLog::Normal, "MvrSick::getReflectorBits: Invalid ReflectorBits %s",
 	       getReflectorBitsChoice());
     return BITS_INVALID;
   }
 }
 
-MVREXPORT ArSick::Units ArSick::getUnits(void)
+MVREXPORT MvrSick::Units MvrSick::getUnits(void)
 {
   if (strcasecmp(getUnitsChoice(), "1mm") == 0)
     return UNITS_1MM;
@@ -199,29 +173,29 @@ MVREXPORT ArSick::Units ArSick::getUnits(void)
     return UNITS_10CM;
   else
   {
-    ArLog::log(MvrLog::Normal, "MvrSick::getUnits: Invalid units %s",
+    MvrLog::log(MvrLog::Normal, "MvrSick::getUnits: Invalid units %s",
 	       getUnitsChoice());
     return UNITS_INVALID;
   }
 }
 
-MVREXPORT void ArSick::setIsControllingPower(bool controlPower)
+MVREXPORT void MvrSick::setIsControllingPower(bool controlPower)
 {
   setPowerControlled(controlPower);
 }
 
-MVREXPORT void ArSick::setIsLaserFlipped(bool laserFlipped)
+MVREXPORT void MvrSick::setIsLaserFlipped(bool laserFlipped)
 {
   setFlipped(laserFlipped);
 }
 
 
-MVREXPORT bool ArSick::isUsingSim(void)
+MVREXPORT bool MvrSick::isUsingSim(void)
 {
   return sickGetIsUsingSim();
 }
 
-MVREXPORT void ArSick::setIsUsingSim(bool usingSim)
+MVREXPORT void MvrSick::setIsUsingSim(bool usingSim)
 {
   return sickSetIsUsingSim(usingSim);
 }

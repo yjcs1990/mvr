@@ -1,97 +1,70 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSignalHandler.h"
 #include "MvrLog.h"
 
 
-ArSignalHandler *ArSignalHandler::ourSignalHandler=0;
-ArStrMap ArSignalHandler::ourSigMap;
-std::list<ArFunctor1<int>*> ArSignalHandler::ourHandlerList;
+MvrSignalHandler *MvrSignalHandler::ourSignalHandler=0;
+MvrStrMap MvrSignalHandler::ourSigMap;
+std::list<MvrFunctor1<int>*> MvrSignalHandler::ourHandlerList;
 
 
-MVREXPORT void ArSignalHandler::signalCB(int sig)
+MVREXPORT void MvrSignalHandler::signalCB(int sig)
 {
-  std::list<ArFunctor1<int>*>::iterator iter;
+  std::list<MvrFunctor1<int>*>::iterator iter;
 
   for (iter=ourHandlerList.begin(); iter != ourHandlerList.end(); ++iter)
     (*iter)->invoke(sig);
   if (ourHandlerList.begin() == ourHandlerList.end())
-    ArLog::log(MvrLog::Terse, "MvrSignalHandler::runThread: No handler function. Unhandled signal '%s'", ourSigMap[sig].c_str());
+    MvrLog::log(MvrLog::Terse, "MvrSignalHandler::runThread: No handler function. Unhandled signal '%s'", ourSigMap[sig].c_str());
 }  
 
-MVREXPORT void ArSignalHandler::createHandlerNonThreaded()
+MVREXPORT void MvrSignalHandler::createHandlerNonThreaded()
 {
 }
 
-MVREXPORT void ArSignalHandler::createHandlerThreaded()
+MVREXPORT void MvrSignalHandler::createHandlerThreaded()
 {
   getHandler()->create(false);
 }
 
-MVREXPORT void ArSignalHandler::blockCommon()
+MVREXPORT void MvrSignalHandler::blockCommon()
 {
 }
 
-MVREXPORT void ArSignalHandler::unblockAll()
+MVREXPORT void MvrSignalHandler::unblockAll()
 {
 }
 
-MVREXPORT void ArSignalHandler::block(Signal sig)
+MVREXPORT void MvrSignalHandler::block(Signal sig)
 {
 }
 
-MVREXPORT void ArSignalHandler::unblock(Signal sig)
+MVREXPORT void MvrSignalHandler::unblock(Signal sig)
 {
 }
 
-MVREXPORT void ArSignalHandler::handle(Signal sig)
+MVREXPORT void MvrSignalHandler::handle(Signal sig)
 {
 }
 
-MVREXPORT void ArSignalHandler::unhandle(Signal sig)
+MVREXPORT void MvrSignalHandler::unhandle(Signal sig)
 {
 }
 
-MVREXPORT void ArSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
-					    ArListPos::Pos position)
+MVREXPORT void MvrSignalHandler::addHandlerCB(MvrFunctor1<int> *func,
+					    MvrListPos::Pos position)
 {
-  if (position == ArListPos::FIRST)
+  if (position == MvrListPos::FIRST)
     ourHandlerList.push_front(func);
-  else if (position == ArListPos::LAST)
+  else if (position == MvrListPos::LAST)
     ourHandlerList.push_back(func);
   else
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "MvrSignalHandler::addHandler: Invalid position.");
 }
 
-MVREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
+MVREXPORT void MvrSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 {
   ourHandlerList.remove(func);
 }
@@ -99,46 +72,46 @@ MVREXPORT void ArSignalHandler::delHandlerCB(MvrFunctor1<int> *func)
 /**
    Removes all of the signal handler callback from the list of callbacks. 
 **/
-MVREXPORT void ArSignalHandler::delAllHandlerCBs(void)
+MVREXPORT void MvrSignalHandler::delAllHandlerCBs(void)
 {
   ourHandlerList.clear();
 }
 
 
-MVREXPORT ArSignalHandler * ArSignalHandler::getHandler()
+MVREXPORT MvrSignalHandler * MvrSignalHandler::getHandler()
 {
   if (!ourSignalHandler)
-    ourSignalHandler=new ArSignalHandler;
+    ourSignalHandler=new MvrSignalHandler;
 
   return(ourSignalHandler);
 }
 
-MVREXPORT void ArSignalHandler::blockCommonThisThread()
+MVREXPORT void MvrSignalHandler::blockCommonThisThread()
 {
 }
 
-MVREXPORT void ArSignalHandler::blockAllThisThread()
+MVREXPORT void MvrSignalHandler::blockAllThisThread()
 {
 }
 
-ArSignalHandler::ArSignalHandler()
+MvrSignalHandler::MvrSignalHandler()
 {
   setThreadName("MvrSignalHandler");
   initSigMap();
 }
 
-ArSignalHandler::~MvrSignalHandler()
+MvrSignalHandler::~MvrSignalHandler()
 {
 }
 
-MVREXPORT void * ArSignalHandler::runThread(void *arg)
+MVREXPORT void * MvrSignalHandler::runThread(void *arg)
 {
   threadStarted();
   threadFinished(); // ??
   return(0);
 }
 
-void ArSignalHandler::initSigMap()
+void MvrSignalHandler::initSigMap()
 {
   ourSigMap[SigHUP]="SIGHUP";
   ourSigMap[SigINT]="SIGINT";
@@ -173,15 +146,15 @@ void ArSignalHandler::initSigMap()
   ourSigMap[SigPWR]="SIGPWR";
 }
 
-MVREXPORT const char * ArSignalHandler::nameSignal(int sig)
+MVREXPORT const char * MvrSignalHandler::nameSignal(int sig)
 {
   return(ourSigMap[sig].c_str());
 }
 
-MVREXPORT void ArSignalHandler::logThread(void)
+MVREXPORT void MvrSignalHandler::logThread(void)
 {
   if (ourSignalHandler != NULL)
     ourSignalHandler->logThreadInfo();
   else
-    ArLog::log(MvrLog::Normal, "No signal handler thread running");
+    MvrLog::log(MvrLog::Normal, "No signal handler thread running");
 }

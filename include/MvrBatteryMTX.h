@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRBATTERYMTX_H
+#define MVRBATTERYMTX_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARBATTERYMTX_H
-#define ARBATTERYMTX_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrRangeDevice.h"
 #include "MvrFunctor.h"
 #include "MvrRobot.h"
@@ -55,8 +29,8 @@ public:
   MVREXPORT MvrBatteryMTX( 
 			 int batteryBoardNum = 0,
 				const char * name = "MTXBattery", 
-				ArDeviceConnection *conn = NULL,
-				ArRobot *robot = NULL);
+				MvrDeviceConnection *conn = NULL,
+				MvrRobot *robot = NULL);
   /// Destructor
   MVREXPORT virtual ~MvrBatteryMTX();
   // Grabs the new readings from the robot and adds them to the buffers
@@ -84,7 +58,7 @@ public:
 
 	MVREXPORT int getAsyncConnectState(void);
 
-	ArRobotPacket getCellPacket()
+	MvrRobotPacket getCellPacket()
 	{ return myCellPacket; }
 
   MVREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking);
@@ -379,8 +353,8 @@ protected:
   MvrCallbackList myBatteryPoweringOffCBList;
   MvrCallbackList myBatteryPoweringOffCancelledCBList;
 
-	ArRobot *myRobot;
-  MvrFunctorC<ArBatteryMTX> myProcessCB;
+	MvrRobot *myRobot;
+  MvrFunctorC<MvrBatteryMTX> myProcessCB;
 
   MVREXPORT virtual void batterySetName(const char *name);
   MVREXPORT virtual void * runThread(void *arg);
@@ -411,20 +385,20 @@ protected:
 
   MvrLog::LogLevel myLogLevel;
 
-  //ArBatteryMTXPacketReceiver myReceiver;
+  //MvrBatteryMTXPacketReceiver myReceiver;
 
 
-	ArRobotPacketReceiver *myReceiver;
+	MvrRobotPacketReceiver *myReceiver;
   MvrRobotPacketSender *mySender;
 
   MvrMutex myPacketsMutex;
   MvrMutex myDataMutex;
-	ArMutex myDeviceMutex;
+	MvrMutex myDeviceMutex;
 	
   MvrLog::LogLevel myInfoLogLevel;
 	
-  //std::list<ArBatteryMTXPacket *> myPackets;
-  std::list<ArRobotPacket *> myPackets;
+  //std::list<MvrBatteryMTXPacket *> myPackets;
+  std::list<MvrRobotPacket *> myPackets;
   
   MvrTime myPrevBatteryIntTime;
 
@@ -551,11 +525,11 @@ enum Sizes {
 
 	// end basic info
 	
-  MvrFunctorC<ArBatteryMTX> mySensorInterpTask;
-  MvrRetFunctorC<bool, MvrBatteryMTX> myAriaExitCB;
+  MvrFunctorC<MvrBatteryMTX> mySensorInterpTask;
+  MvrRetFunctorC<bool, MvrBatteryMTX> myMvriaExitCB;
 
 };
 
 
 
-#endif // ARBATTERYMTX_H
+#endif // MVRBATTERYMTX_H

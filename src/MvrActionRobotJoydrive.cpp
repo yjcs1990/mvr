@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrActionRobotJoydrive.h"
 #include "MvrRobot.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include "MvrCommands.h"
 
 /**
@@ -37,11 +11,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
     if false we'll follow the joystick input no matter what
 **/
 
-MVREXPORT MvrActionRobotJoydrive::ArActionRobotJoydrive(
+MVREXPORT MvrActionRobotJoydrive::MvrActionRobotJoydrive(
 	const char *name, bool requireDeadmanPushed) :
   MvrAction(name, "This action reads the joystick on the robot and sets the translational and rotational velocities based on this."),
-  myHandleJoystickPacketCB(this, &ArActionRobotJoydrive::handleJoystickPacket),
-  myConnectCB(this, &ArActionRobotJoydrive::connectCallback)
+  myHandleJoystickPacketCB(this, &MvrActionRobotJoydrive::handleJoystickPacket),
+  myConnectCB(this, &MvrActionRobotJoydrive::connectCallback)
 {
   myRequireDeadmanPushed = requireDeadmanPushed;
   setNextArgument(MvrArg("whether to require the deadman to be pushed or not", &myRequireDeadmanPushed, "If this is true then deadman will need to be pushed to drive, if false we'll drive based on the joystick all the time"));
@@ -72,7 +46,7 @@ MVREXPORT void MvrActionRobotJoydrive::connectCallback(void)
 }
 
 MVREXPORT bool MvrActionRobotJoydrive::handleJoystickPacket(
-	ArRobotPacket *packet)
+	MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xF8)
     return false;
@@ -89,7 +63,7 @@ MVREXPORT bool MvrActionRobotJoydrive::handleJoystickPacket(
   return true;
 }
 
-MVREXPORT MvrActionDesired *ArActionRobotJoydrive::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *MvrActionRobotJoydrive::fire(MvrActionDesired currentDesired)
 {
   bool printing = false;
   myDesired.reset();

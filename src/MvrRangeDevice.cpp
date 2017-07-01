@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrRangeDevice.h"
 #include "MvrRobot.h"
 
@@ -68,7 +42,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    avoid
    
 **/
-MVREXPORT ArRangeDevice::ArRangeDevice(size_t currentBufferSize,
+MVREXPORT MvrRangeDevice::MvrRangeDevice(size_t currentBufferSize,
 				      size_t cumulativeBufferSize, 
 				      const char *name, 
 				      unsigned int maxRange,
@@ -78,7 +52,7 @@ MVREXPORT ArRangeDevice::ArRangeDevice(size_t currentBufferSize,
 				      bool locationDependent) :
   myCurrentBuffer(currentBufferSize),
   myCumulativeBuffer(cumulativeBufferSize),
-  myFilterCB(this, &ArRangeDevice::filterCallback)
+  myFilterCB(this, &MvrRangeDevice::filterCallback)
 {
   myDeviceMutex.setLogName("MvrRangeDevice::myDeviceMutex");
   myRobot = NULL;
@@ -113,7 +87,7 @@ MVREXPORT ArRangeDevice::ArRangeDevice(size_t currentBufferSize,
   //setMinDistBetweenCumulative();
 }
 
-MVREXPORT ArRangeDevice::~MvrRangeDevice()
+MVREXPORT MvrRangeDevice::~MvrRangeDevice()
 {
   if (myRobot != NULL)
     myRobot->remSensorInterpTask(&myFilterCB);
@@ -133,12 +107,12 @@ MVREXPORT ArRangeDevice::~MvrRangeDevice()
 }
 
 
-MVREXPORT const char * ArRangeDevice::getName(void) const
+MVREXPORT const char * MvrRangeDevice::getName(void) const
 { 
   return myName.c_str(); 
 }
 
-MVREXPORT void ArRangeDevice::setRobot(MvrRobot *robot) 
+MVREXPORT void MvrRangeDevice::setRobot(MvrRobot *robot) 
 { 
   char buf[512];
   sprintf(buf, "filter %s", getName());
@@ -152,14 +126,14 @@ MVREXPORT void ArRangeDevice::setRobot(MvrRobot *robot)
     myRobot->addSensorInterpTask(buf, 100, &myFilterCB);
 }
 
-MVREXPORT ArRobot *ArRangeDevice::getRobot(void) 
+MVREXPORT MvrRobot *MvrRangeDevice::getRobot(void) 
 {
   return myRobot; 
 }
 
-MVREXPORT void ArRangeDevice::filterCallback(void)
+MVREXPORT void MvrRangeDevice::filterCallback(void)
 {
-  std::list<ArPoseWithTime *>::iterator it;
+  std::list<MvrPoseWithTime *>::iterator it;
   lockDevice();
 
   myMaxInsertDistCumulativePose = myRobot->getPose();
@@ -228,12 +202,12 @@ MVREXPORT void ArRangeDevice::filterCallback(void)
    are added.
    @param size number of readings to set the buffer's maximum size to
 */
-MVREXPORT void ArRangeDevice::setCurrentBufferSize(size_t size)
+MVREXPORT void MvrRangeDevice::setCurrentBufferSize(size_t size)
 {
   myCurrentBuffer.setSize(size);
 }
 
-MVREXPORT size_t ArRangeDevice::getCurrentBufferSize(void) const
+MVREXPORT size_t MvrRangeDevice::getCurrentBufferSize(void) const
 {
   return myCurrentBuffer.getSize();
 }
@@ -246,18 +220,18 @@ MVREXPORT size_t ArRangeDevice::getCurrentBufferSize(void) const
    are added.
    @param size number of readings to set the buffer to
 */
-MVREXPORT void ArRangeDevice::setCumulativeBufferSize(size_t size)
+MVREXPORT void MvrRangeDevice::setCumulativeBufferSize(size_t size)
 {
   myCumulativeBuffer.setSize(size);
 }
 
 
-MVREXPORT size_t ArRangeDevice::getCumulativeBufferSize(void) const
+MVREXPORT size_t MvrRangeDevice::getCumulativeBufferSize(void) const
 {
   return myCumulativeBuffer.getSize();
 }
 
-MVREXPORT void ArRangeDevice::addReading(double x, double y, bool *wasAdded)
+MVREXPORT void MvrRangeDevice::addReading(double x, double y, bool *wasAdded)
 {
   myCurrentBuffer.addReadingConditional(x, y, 
 					myMinDistBetweenCurrentSquared,
@@ -269,7 +243,7 @@ MVREXPORT void ArRangeDevice::addReading(double x, double y, bool *wasAdded)
   
   // see if we're doing a max distance
   if (myRobot != NULL && myMaxInsertDistCumulativeSquared > 0 && 
-      ArMath::squaredDistanceBetween(
+      MvrMath::squaredDistanceBetween(
 	      myMaxInsertDistCumulativePose.getX(), 
 	      myMaxInsertDistCumulativePose.getY(), 
 	      x, y) > myMaxInsertDistCumulativeSquared)
@@ -302,18 +276,18 @@ MVREXPORT void ArRangeDevice::addReading(double x, double y, bool *wasAdded)
    @python @a angle is ignored
 
   Example:
-   @image html ArRangeDevice_currentReadingPolar.png This figure illustrates an example range device and the meanings of arguments and return value.
+   @image html MvrRangeDevice_currentReadingPolar.png This figure illustrates an example range device and the meanings of arguments and return value.
 */
-MVREXPORT double ArRangeDevice::currentReadingPolar(double startAngle,
+MVREXPORT double MvrRangeDevice::currentReadingPolar(double startAngle,
 						   double endAngle,
 						   double *angle) const
 {
-  ArPose pose;
+  MvrPose pose;
   if (myRobot != NULL)
     pose = myRobot->getPose();
   else
     {
-      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
+      MvrLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
       pose.setPose(0, 0);
     }
   return myCurrentBuffer.getClosestPolar(startAngle, endAngle, 
@@ -343,18 +317,18 @@ MVREXPORT double ArRangeDevice::currentReadingPolar(double startAngle,
    @python @a angle is ignored
 
   Example:
-   @image html ArRangeDevice_currentReadingPolar.png This figure illustrates an example range device and the meanings of arguments and return value.
+   @image html MvrRangeDevice_currentReadingPolar.png This figure illustrates an example range device and the meanings of arguments and return value.
 */
-MVREXPORT double ArRangeDevice::cumulativeReadingPolar(double startAngle,
+MVREXPORT double MvrRangeDevice::cumulativeReadingPolar(double startAngle,
 						      double endAngle,
 						      double *angle) const
 {
-  ArPose pose;
+  MvrPose pose;
   if (myRobot != NULL)
     pose = myRobot->getPose();
   else
     {
-      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
+      MvrLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get polar reading correctly", getName());
       pose.setPose(0, 0);
     }
   return myCumulativeBuffer.getClosestPolar(startAngle, endAngle, 
@@ -370,21 +344,21 @@ MVREXPORT double ArRangeDevice::cumulativeReadingPolar(double startAngle,
    @param y1 the y coordinate of one of the rectangle points
    @param x2 the x coordinate of the other rectangle point
    @param y2 the y coordinate of the other rectangle point
-   @param pose a pointer to an ArPose object in which to store the location of
+   @param pose a pointer to an MvrPose object in which to store the location of
    the closest position
    @return The range to the reading from the device, or a value >= maxRange if
    no reading was found in the box.
 */
-MVREXPORT double ArRangeDevice::currentReadingBox(double x1, double y1, 
+MVREXPORT double MvrRangeDevice::currentReadingBox(double x1, double y1, 
 						 double x2, double y2,
-						 ArPose *pose) const
+						 MvrPose *pose) const
 {
-  ArPose robotPose;
+  MvrPose robotPose;
   if (myRobot != NULL)
       robotPose = myRobot->getPose();
   else
     {
-      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get reading box correctly", getName());
+      MvrLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get reading box correctly", getName());
       robotPose.setPose(0, 0);
     }
   return myCurrentBuffer.getClosestBox(x1, y1, x2, y2, robotPose,
@@ -399,21 +373,21 @@ MVREXPORT double ArRangeDevice::currentReadingBox(double x1, double y1,
    @param y1 the y coordinate of one of the rectangle points
    @param x2 the x coordinate of the other rectangle point
    @param y2 the y coordinate of the other rectangle point
-   @param pose a pointer to an ArPose object in which to store the location of
+   @param pose a pointer to an MvrPose object in which to store the location of
    the closest position
    @return The range to the reading from the device, or a value >= maxRange if
    no reading was found in the box.
 */
-MVREXPORT double ArRangeDevice::cumulativeReadingBox(double x1, double y1, 
+MVREXPORT double MvrRangeDevice::cumulativeReadingBox(double x1, double y1, 
 						 double x2, double y2,
-						 ArPose *pose) const
+						 MvrPose *pose) const
 {
-  ArPose robotPose;
+  MvrPose robotPose;
   if (myRobot != NULL)
     robotPose = myRobot->getPose();
   else
     {
-      ArLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get reading box correctly", getName());
+      MvrLog::log(MvrLog::Normal, "MvrRangeDevice %s: NULL robot, won't get reading box correctly", getName());
       robotPose.setPose(0, 0);
     }
   return myCumulativeBuffer.getClosestBox(x1, y1, x2, y2, 
@@ -428,7 +402,7 @@ MVREXPORT double ArRangeDevice::cumulativeReadingBox(double x1, double y1,
     @param trans the transform to apply to the data
     @param doCumulative whether to transform the cumulative buffer or not
 */    
-MVREXPORT void ArRangeDevice::applyTransform(MvrTransform trans, 
+MVREXPORT void MvrRangeDevice::applyTransform(MvrTransform trans, 
 					    bool doCumulative)
 {
   myCurrentBuffer.applyTransform(trans);
@@ -437,13 +411,13 @@ MVREXPORT void ArRangeDevice::applyTransform(MvrTransform trans,
 }
 
 /** Copies the list into a vector.
- *  @swignote The return type will be named ArSensorReadingVector instead
+ *  @swignote The return type will be named MvrSensorReadingVector instead
  *    of the std::vector template type.
  */
-MVREXPORT std::vector<ArSensorReading> *ArRangeDevice::getRawReadingsAsVector(void)
+MVREXPORT std::vector<MvrSensorReading> *MvrRangeDevice::getRawReadingsAsVector(void)
 {
   
-  std::list<ArSensorReading *>::const_iterator it;
+  std::list<MvrSensorReading *>::const_iterator it;
   myRawReadingsVector.clear();
   // if we don't have any return an empty list
   if (myRawReadings == NULL)
@@ -455,13 +429,13 @@ MVREXPORT std::vector<ArSensorReading> *ArRangeDevice::getRawReadingsAsVector(vo
 }
 
 /** Copies the list into a vector.
- *  @swignote The return type will be named ArSensorReadingVector instead
+ *  @swignote The return type will be named MvrSensorReadingVector instead
  *    of the std::vector template type.
  */
-MVREXPORT std::vector<ArSensorReading> *ArRangeDevice::getAdjustedRawReadingsAsVector(void)
+MVREXPORT std::vector<MvrSensorReading> *MvrRangeDevice::getAdjustedRawReadingsAsVector(void)
 {
   
-  std::list<ArSensorReading *>::const_iterator it;
+  std::list<MvrSensorReading *>::const_iterator it;
   myAdjustedRawReadingsVector.clear();
   // if we don't have any return an empty list
   if (myAdjustedRawReadings == NULL)
@@ -476,7 +450,7 @@ MVREXPORT std::vector<ArSensorReading> *ArRangeDevice::getAdjustedRawReadingsAsV
 }
 
 
-MVREXPORT void ArRangeDevice::setCurrentDrawingData(MvrDrawingData *data, 
+MVREXPORT void MvrRangeDevice::setCurrentDrawingData(MvrDrawingData *data, 
 						   bool takeOwnershipOfData)
 {
   if (myCurrentDrawingData != NULL && myOwnCurrentDrawingData)
@@ -489,8 +463,8 @@ MVREXPORT void ArRangeDevice::setCurrentDrawingData(MvrDrawingData *data,
   myOwnCurrentDrawingData = takeOwnershipOfData; 
 }
 
-MVREXPORT  void ArRangeDevice::setCumulativeDrawingData(
-	ArDrawingData *data, 
+MVREXPORT  void MvrRangeDevice::setCumulativeDrawingData(
+	MvrDrawingData *data, 
 	bool takeOwnershipOfData)
 {
   if (myCumulativeDrawingData != NULL && myOwnCumulativeDrawingData)
@@ -503,9 +477,9 @@ MVREXPORT  void ArRangeDevice::setCumulativeDrawingData(
   myOwnCumulativeDrawingData = takeOwnershipOfData; 
 }
 
-MVREXPORT void ArRangeDevice::adjustRawReadings(bool interlaced)
+MVREXPORT void MvrRangeDevice::adjustRawReadings(bool interlaced)
 {
-  std::list<ArSensorReading *>::iterator rawIt;
+  std::list<MvrSensorReading *>::iterator rawIt;
 
   // make sure we have raw readings and a robot, and a delay to
   // correct for (note that if we don't have a delay to correct for
@@ -518,21 +492,21 @@ MVREXPORT void ArRangeDevice::adjustRawReadings(bool interlaced)
 
   // if we don't already have a list then make one
   if (myAdjustedRawReadings == NULL)
-    myAdjustedRawReadings = new std::list<ArSensorReading *>;
+    myAdjustedRawReadings = new std::list<MvrSensorReading *>;
   
   // if we've already adjusted these readings then don't do it again
   if (myRawReadings->begin() != myRawReadings->end() &&
       myRawReadings->front()->getAdjusted())
     return;
 
-  std::list<ArSensorReading *>::iterator adjIt;
-  ArSensorReading *adjReading;
-  ArSensorReading *rawReading;
+  std::list<MvrSensorReading *>::iterator adjIt;
+  MvrSensorReading *adjReading;
+  MvrSensorReading *rawReading;
 
-  ArTransform trans;
-  ArTransform encTrans;
-  ArTransform interlacedTrans;
-  ArTransform interlacedEncTrans;
+  MvrTransform trans;
+  MvrTransform encTrans;
+  MvrTransform interlacedTrans;
+  MvrTransform interlacedEncTrans;
 
   bool first = true;
   bool second = true;
@@ -551,17 +525,17 @@ MVREXPORT void ArRangeDevice::adjustRawReadings(bool interlaced)
     }
     else
     {
-      adjReading = new ArSensorReading;
+      adjReading = new MvrSensorReading;
       myAdjustedRawReadings->push_back(adjReading);
     }
     (*adjReading) = (*rawReading);
     if (first || (interlaced && second))
     {
-      ArPose origPose;
-      ArPose corPose;
-      ArPose origEncPose;
-      ArPose corEncPose;
-      ArTime corTime;
+      MvrPose origPose;
+      MvrPose corPose;
+      MvrPose origEncPose;
+      MvrPose corEncPose;
+      MvrTime corTime;
 
 
       corTime = rawReading->getTimeTaken();

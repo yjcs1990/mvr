@@ -1,36 +1,10 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARCONFIGARG_H
-#define ARCONFIGARG_H
+#ifndef MVRCONFIGARG_H
+#define MVRCONFIGARG_H
 
 #include <map>
 
-#include "ariaTypedefs.h"
-#include "ariaUtil.h"
+#include "mvriaTypedefs.h"
+#include "mvriaUtil.h"
 #include "MvrFunctor.h"
 
 class MvrArgumentBuilder;
@@ -54,7 +28,7 @@ class MvrSocket;
     @endcode
 
     Where: <tt>config</tt> is a pointer to an MvrConfig object or subclass (e.g.  use
-    <tt>ArConfig* config = Mvria::getConfig()</tt> to use the global Mvria MvrConfig
+    <tt>MvrConfig* config = Mvria::getConfig()</tt> to use the global Mvria MvrConfig
     object);
     <tt>myTarget</tt> is a variable (e.g. int) that is a class member whose instance will not
     be destroyed before the end of the program, or which will remove the parameter
@@ -288,7 +262,7 @@ public:
   /// Constructor for making an argument that has functors to handle things
   MVREXPORT MvrConfigArg(const char *name, 
 		 MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
-		 MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
+		 MvrRetFunctor<const std::list<MvrArgumentBuilder *> *> *getFunctor,
 		 const char *description);
 
   /// Constructor for just holding a description (for MvrConfig)
@@ -403,7 +377,7 @@ public:
   MVREXPORT const char *getString(bool *ok = NULL) const;
 
   /// Gets the argument value, which is a list of argumentbuilders here
-  MVREXPORT const std::list<ArArgumentBuilder *> *getArgsWithFunctor(bool *ok = NULL) const;
+  MVREXPORT const std::list<MvrArgumentBuilder *> *getArgsWithFunctor(bool *ok = NULL) const;
 
   MVREXPORT std::string getCppString(bool *ok = NULL) const;
 
@@ -435,7 +409,7 @@ public:
   // Perhaps the addition of an iterator would suffice.
   //
   /// Returns a list of all child args in this arg.  Valid only for LIST type; otherwise returns an empty list.
-  MVREXPORT std::list<ArConfigArg> getArgs(bool *ok = NULL) const;
+  MVREXPORT std::list<MvrConfigArg> getArgs(bool *ok = NULL) const;
 
   /// Returns the child arg at the specified index (between 0 and getArgCount()).
   MVREXPORT const MvrConfigArg *getArg(size_t index) const;
@@ -450,7 +424,7 @@ public:
   MVREXPORT MvrConfigArg *findArg(const char *childParamName);
 
   /// If the arg is a list member, returns all ancestors in order.
-  MVREXPORT bool getAncestorList(std::list<ArConfigArg*> *ancestorListOut);
+  MVREXPORT bool getAncestorList(std::list<MvrConfigArg*> *ancestorListOut);
 
   /// If the arg is a list member, returns the top-most arg. Otherwise, returns this.
   MVREXPORT const MvrConfigArg *getTopLevelArg() const;
@@ -808,7 +782,7 @@ private:
   /// Data applicable to LIST args
   struct MvrConfigListData {
 
-    std::list<ArConfigArg> *myChildArgList;
+    std::list<MvrConfigArg> *myChildArgList;
 
   }; // end struct MvrConfigListData
 
@@ -818,7 +792,7 @@ private:
   struct MvrConfigFunctorData {
 
     MvrRetFunctor1<bool, MvrArgumentBuilder *> *mySetFunctor;
-    MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *myGetFunctor;
+    MvrRetFunctor<const std::list<MvrArgumentBuilder *> *> *myGetFunctor;
 
   }; // end struct MvrConfigFunctorData
 
@@ -887,4 +861,4 @@ private:
 
 }; // end class MvrConfigArg
 
-#endif // ARCONFIGARG_H
+#endif // MVRCONFIGARG_H

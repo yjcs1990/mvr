@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRROBOT_H
+#define MVRROBOT_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARROBOT_H
-#define ARROBOT_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrRobotPacketSender.h"
 #include "MvrRobotPacketReceiver.h"
 #include "MvrFunctor.h"
@@ -103,7 +77,7 @@ public:
   /// Constructor
   MVREXPORT MvrRobot(const char * name = NULL, bool ignored = true,
 		   bool doSigHandle=true, 
-		   bool normalInit = true, bool addAriaExitCallback = true);
+		   bool normalInit = true, bool addMvriaExitCallback = true);
 		   
   /// Destructor
   MVREXPORT ~MvrRobot();
@@ -897,7 +871,7 @@ public:
 					  bool ignoreCase = false);
 
   /// Gets the range device list
-  MVREXPORT std::list<ArRangeDevice *> *getRangeDeviceList(void);
+  MVREXPORT std::list<MvrRangeDevice *> *getRangeDeviceList(void);
 
   /// Finds whether a particular range device is attached to this robot or not
   MVREXPORT bool hasRangeDevice(MvrRangeDevice *device) const;
@@ -957,7 +931,7 @@ public:
 
   /// Adds a battery to the robot's map of them
   /// @internal
-  /// (MvrBatteryConnector/ArRobotConnector will automatically add MvrBatteryMTX
+  /// (MvrBatteryConnector/MvrRobotConnector will automatically add MvrBatteryMTX
   /// object(s) if connected.)
   MVREXPORT bool addBattery(MvrBatteryMTX *battery, int batteryNumber);
   /// Remove a battery from the robot's list, by instance
@@ -989,17 +963,17 @@ public:
 
   /// Adds a lcd to the robot's map of them
   /// @internal
-  /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
+  /// (MvrLCDConnector/MvrRobotConnector will automatically add LCD interfaces if
   /// connected.)
   MVREXPORT bool addLCD(MvrLCDMTX *lcd, int lcdNumber);
   /// Remove a lcd from the robot's list, by instance
   /// @internal
-  /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
+  /// (MvrLCDConnector/MvrRobotConnector will automatically add LCD interfaces if
   /// connected.)
   MVREXPORT bool remLCD(MvrLCDMTX *lcd);
   /// Remove a lcd from the robot's list, by number
   /// @internal
-  /// (MvrLCDConnector/ArRobotConnector will automatically add LCD interfaces if
+  /// (MvrLCDConnector/MvrRobotConnector will automatically add LCD interfaces if
   /// connected.)
   MVREXPORT bool remLCD(int lcdNumber);
 
@@ -1026,7 +1000,7 @@ public:
 
 
   /// Adds a sonar to the robot's map of them
-  /// @internal (MvrSonarConnector/ArRobotConnector will automatically and MTX
+  /// @internal (MvrSonarConnector/MvrRobotConnector will automatically and MTX
   /// sonar interfaces upon connection)
   MVREXPORT bool addSonar(MvrSonarMTX *sonar, int sonarNumber);
   /// Remove a sonar from the robot's list, by instance
@@ -1092,7 +1066,7 @@ public:
 
   /// Adds a callback for when disconnect is called while connected
   MVREXPORT void addDisconnectNormallyCB(MvrFunctor *functor, 
-				ArListPos::Pos position = MvrListPos::LAST);
+				MvrListPos::Pos position = MvrListPos::LAST);
   /// Removes a callback for when disconnect is called while connected
   MVREXPORT void remDisconnectNormallyCB(MvrFunctor *functor);
   
@@ -1461,9 +1435,9 @@ public:
   void setPacketsSentTracking(bool packetsSentTracking)
 		{ 
 		if (packetsSentTracking)
-			ArLog::log(MvrLog::Normal, "MvrRobot: tracking packets sent");
+			MvrLog::log(MvrLog::Normal, "MvrRobot: tracking packets sent");
 		else
-			ArLog::log(MvrLog::Normal, "MvrRobot: not tracking packets sent");
+			MvrLog::log(MvrLog::Normal, "MvrRobot: not tracking packets sent");
 		myPacketsSentTracking = packetsSentTracking; 
 		}
 
@@ -1542,13 +1516,13 @@ public:
   MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myMotorPacketCB;
   MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myEncoderPacketCB;
   MvrRetFunctor1C<bool, MvrRobot, MvrRobotPacket *> myIOPacketCB;
-  MvrFunctorC<ArRobot> myPacketHandlerCB;
-  MvrFunctorC<ArRobot> myActionHandlerCB;
-  MvrFunctorC<ArRobot> myStateReflectorCB;
-  MvrFunctorC<ArRobot> myRobotLockerCB;
-  MvrFunctorC<ArRobot> myRobotUnlockerCB;
-  MvrFunctorC<ArRobot> myKeyHandlerExitCB;
-  MvrFunctorC<ArKeyHandler> *myKeyHandlerCB;
+  MvrFunctorC<MvrRobot> myPacketHandlerCB;
+  MvrFunctorC<MvrRobot> myActionHandlerCB;
+  MvrFunctorC<MvrRobot> myStateReflectorCB;
+  MvrFunctorC<MvrRobot> myRobotLockerCB;
+  MvrFunctorC<MvrRobot> myRobotUnlockerCB;
+  MvrFunctorC<MvrRobot> myKeyHandlerExitCB;
+  MvrFunctorC<MvrKeyHandler> *myKeyHandlerCB;
 
   // These four are internal... only people monkeying deeply should mess
   // with them, so they aren't documented... these process the cblists
@@ -1587,7 +1561,7 @@ public:
   /// @internal
   MVREXPORT bool handlePacket(MvrRobotPacket *packet);
 
-  MVREXPORT std::list<ArFunctor *> * getRunExitListCopy();
+  MVREXPORT std::list<MvrFunctor *> * getRunExitListCopy();
   // Internal function, processes a parameter file
   MVREXPORT void processParamFile(void);
 
@@ -1712,27 +1686,27 @@ protected:
   bool myPacketsSentTracking;
   MvrMutex myMutex;
   MvrSyncTask *mySyncTaskRoot;
-  std::list<ArRetFunctor1<bool, MvrRobotPacket *> *> myPacketHandlerList;
+  std::list<MvrRetFunctor1<bool, MvrRobotPacket *> *> myPacketHandlerList;
 
   MvrSyncLoop mySyncLoop;
   MvrRobotPacketReaderThread myPacketReader;
 
   // the data items for reading packets in one thread and processing them in another
   MvrMutex myPacketMutex;
-  std::list<ArRobotPacket *> myPacketList;
+  std::list<MvrRobotPacket *> myPacketList;
   MvrCondition myPacketReceivedCondition;
   bool myRunningNonThreaded;
 
 
-  std::list<ArFunctor *> myStabilizingCBList;
-  std::list<ArFunctor *> myConnectCBList;
-  std::list<ArFunctor *> myFailedConnectCBList;
-  std::list<ArFunctor *> myDisconnectNormallyCBList;
-  std::list<ArFunctor *> myDisconnectOnErrorCBList;
-  std::list<ArFunctor *> myRunExitCBList;
+  std::list<MvrFunctor *> myStabilizingCBList;
+  std::list<MvrFunctor *> myConnectCBList;
+  std::list<MvrFunctor *> myFailedConnectCBList;
+  std::list<MvrFunctor *> myDisconnectNormallyCBList;
+  std::list<MvrFunctor *> myDisconnectOnErrorCBList;
+  std::list<MvrFunctor *> myRunExitCBList;
 
   MvrRetFunctor1<double, MvrPoseWithTime> *myEncoderCorrectionCB;
-  std::list<ArRangeDevice *> myRangeDeviceList;
+  std::list<MvrRangeDevice *> myRangeDeviceList;
   std::map<int, MvrLaser *> myLaserMap;
 
   std::map<int, MvrBatteryMTX *> myBatteryMap;
@@ -1956,8 +1930,8 @@ protected:
 
   bool myDoNotSwitchBaud;
   
-  bool myAddedAriaExitCB;
-  MvrFunctorC<ArRobot> myAriaExitCB;
+  bool myAddedMvriaExitCB;
+  MvrFunctorC<MvrRobot> myMvriaExitCB;
 
   MvrRetFunctor3C<int, MvrRobot, MvrTime, MvrPose *, 
 		 MvrPoseWithTime *> myPoseInterpPositionCB;
@@ -1966,4 +1940,4 @@ protected:
 };
 
 
-#endif // ARROBOT_H
+#endif // MVRROBOT_H

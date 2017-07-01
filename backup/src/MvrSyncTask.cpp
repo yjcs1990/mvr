@@ -174,7 +174,7 @@ MVREXPORT void MvrSyncTask::addNewBranch(const char *nameOfNew, int position,
  * @param position place in list to put the branch, things are run/printed in 
  * the order of highest number to lowest number, no limit on numbers (other 
  * than that it is an int).  ARIA uses 0 to 100 just as a convention.
- * @param functor ArFunctor which contains the functor to invoke when run is 
+ * @param functor MvrFunctor which contains the functor to invoke when run is 
  * called.
  * @param state Pointer to external variable to store task state in, or NULL to
  * use an internal variable instead.

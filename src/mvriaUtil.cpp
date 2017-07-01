@@ -1,34 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #define _GNU_SOURCE 1 // for isnormal() and other newer (non-ansi) C functions
 
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -52,11 +25,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif
 
 
-#include "ariaInternal.h"
-#include "ariaTypedefs.h"
-#include "ariaUtil.h"
+#include "mvriaInternal.h"
+#include "mvriaTypedefs.h"
+#include "mvriaUtil.h"
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 #include "MvrSick.h"
 #include "MvrUrg.h"
 #include "MvrLMS1XX.h"
@@ -66,52 +39,52 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrSonarMTX.h"
 #include "MvrBatteryMTX.h"
 #include "MvrLCDMTX.h"
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 #include "MvrSerialConnection.h"
 #include "MvrTcpConnection.h"
 
 #ifdef WIN32
 #include <io.h>
-MVREXPORT const char *ArUtil::COM1 = "COM1";
-MVREXPORT const char *ArUtil::COM2 = "COM2";
-MVREXPORT const char *ArUtil::COM3 = "COM3";
-MVREXPORT const char *ArUtil::COM4 = "COM4";
-MVREXPORT const char *ArUtil::COM5 = "COM5";
-MVREXPORT const char *ArUtil::COM6 = "COM6";
-MVREXPORT const char *ArUtil::COM7 = "COM7";
-MVREXPORT const char *ArUtil::COM8 = "COM8";
-MVREXPORT const char *ArUtil::COM9 = "COM9";
-MVREXPORT const char *ArUtil::COM10 = "\\\\.\\COM10";
-MVREXPORT const char *ArUtil::COM11 = "\\\\.\\COM11";
-MVREXPORT const char *ArUtil::COM12 = "\\\\.\\COM12";
-MVREXPORT const char *ArUtil::COM13 = "\\\\.\\COM13";
-MVREXPORT const char *ArUtil::COM14 = "\\\\.\\COM14";
-MVREXPORT const char *ArUtil::COM15 = "\\\\.\\COM15";
-MVREXPORT const char *ArUtil::COM16 = "\\\\.\\COM16";
+MVREXPORT const char *MvrUtil::COM1 = "COM1";
+MVREXPORT const char *MvrUtil::COM2 = "COM2";
+MVREXPORT const char *MvrUtil::COM3 = "COM3";
+MVREXPORT const char *MvrUtil::COM4 = "COM4";
+MVREXPORT const char *MvrUtil::COM5 = "COM5";
+MVREXPORT const char *MvrUtil::COM6 = "COM6";
+MVREXPORT const char *MvrUtil::COM7 = "COM7";
+MVREXPORT const char *MvrUtil::COM8 = "COM8";
+MVREXPORT const char *MvrUtil::COM9 = "COM9";
+MVREXPORT const char *MvrUtil::COM10 = "\\\\.\\COM10";
+MVREXPORT const char *MvrUtil::COM11 = "\\\\.\\COM11";
+MVREXPORT const char *MvrUtil::COM12 = "\\\\.\\COM12";
+MVREXPORT const char *MvrUtil::COM13 = "\\\\.\\COM13";
+MVREXPORT const char *MvrUtil::COM14 = "\\\\.\\COM14";
+MVREXPORT const char *MvrUtil::COM15 = "\\\\.\\COM15";
+MVREXPORT const char *MvrUtil::COM16 = "\\\\.\\COM16";
 // See http://support.microsoft.com/kb/115831 for explanation of port names for
 // COM10 and up.
 #else // ifndef WIN32
-MVREXPORT const char *ArUtil::COM1 = "/dev/ttyS0";
-MVREXPORT const char *ArUtil::COM2 = "/dev/ttyS1";
-MVREXPORT const char *ArUtil::COM3 = "/dev/ttyS2";
-MVREXPORT const char *ArUtil::COM4 = "/dev/ttyS3";
-MVREXPORT const char *ArUtil::COM5 = "/dev/ttyS4";
-MVREXPORT const char *ArUtil::COM6 = "/dev/ttyS5";
-MVREXPORT const char *ArUtil::COM7 = "/dev/ttyS6";
-MVREXPORT const char *ArUtil::COM8 = "/dev/ttyS7";
-MVREXPORT const char *ArUtil::COM9 = "/dev/ttyS8";
-MVREXPORT const char *ArUtil::COM10 = "/dev/ttyS9";
-MVREXPORT const char *ArUtil::COM11 = "/dev/ttyS10";
-MVREXPORT const char *ArUtil::COM12 = "/dev/ttyS11";
-MVREXPORT const char *ArUtil::COM13 = "/dev/ttyS12";
-MVREXPORT const char *ArUtil::COM14 = "/dev/ttyS13";
-MVREXPORT const char *ArUtil::COM15 = "/dev/ttyS14";
-MVREXPORT const char *ArUtil::COM16 = "/dev/ttyS15";
+MVREXPORT const char *MvrUtil::COM1 = "/dev/ttyS0";
+MVREXPORT const char *MvrUtil::COM2 = "/dev/ttyS1";
+MVREXPORT const char *MvrUtil::COM3 = "/dev/ttyS2";
+MVREXPORT const char *MvrUtil::COM4 = "/dev/ttyS3";
+MVREXPORT const char *MvrUtil::COM5 = "/dev/ttyS4";
+MVREXPORT const char *MvrUtil::COM6 = "/dev/ttyS5";
+MVREXPORT const char *MvrUtil::COM7 = "/dev/ttyS6";
+MVREXPORT const char *MvrUtil::COM8 = "/dev/ttyS7";
+MVREXPORT const char *MvrUtil::COM9 = "/dev/ttyS8";
+MVREXPORT const char *MvrUtil::COM10 = "/dev/ttyS9";
+MVREXPORT const char *MvrUtil::COM11 = "/dev/ttyS10";
+MVREXPORT const char *MvrUtil::COM12 = "/dev/ttyS11";
+MVREXPORT const char *MvrUtil::COM13 = "/dev/ttyS12";
+MVREXPORT const char *MvrUtil::COM14 = "/dev/ttyS13";
+MVREXPORT const char *MvrUtil::COM15 = "/dev/ttyS14";
+MVREXPORT const char *MvrUtil::COM16 = "/dev/ttyS15";
 #endif  // WIN32
 
-MVREXPORT const char *ArUtil::TRUESTRING = "true";
-MVREXPORT const char *ArUtil::FALSESTRING = "false";
+MVREXPORT const char *MvrUtil::TRUESTRING = "true";
+MVREXPORT const char *MvrUtil::FALSESTRING = "false";
 
 // const double eps = std::numeric_limits<double>::epsilon();  
 const double MvrMath::ourEpsilon = 0.00000001; 
@@ -126,16 +99,16 @@ const long MvrMath::ourRandMax = 2147483648;// 2^31, per lrand48 man page
 
 #ifdef WIN32
 const char  MvrUtil::SEPARATOR_CHAR = '\\';
-const char *ArUtil::SEPARATOR_STRING = "\\";
+const char *MvrUtil::SEPARATOR_STRING = "\\";
 const char  MvrUtil::OTHER_SEPARATOR_CHAR = '/';
 #else
 const char  MvrUtil::SEPARATOR_CHAR = '/';
-const char *ArUtil::SEPARATOR_STRING = "/";
+const char *MvrUtil::SEPARATOR_STRING = "/";
 const char  MvrUtil::OTHER_SEPARATOR_CHAR = '\\';
 #endif
 
 #ifdef WIN32
-ArMutex MvrUtil::ourLocaltimeMutex;
+MvrMutex MvrUtil::ourLocaltimeMutex;
 #endif
 
 
@@ -173,7 +146,7 @@ available, and the current running Linux kernel supports the monotonic clock,
 then the clock_gettime() function is used with the CLOCK_MONOTONIC option 
 (this is an accurate clock that is robust against e.g. changes to the
 system time, etc.). Otherwise, gettimeofday() is used instead. Programs using ARIA
-on Linux must therefore link to the librt library (with -lrt) as well as libAria.  On Windows, the
+on Linux must therefore link to the librt library (with -lrt) as well as libMvria.  On Windows, the
 timeGetTime() function is used from the winmm library -- this means programs
 using ARIA on Windows must be linked to the winmm.lib library as well as ARIA.
    @return millisecond time
@@ -314,7 +287,7 @@ MVREXPORT bool MvrUtil::findFile(const char *fileName)
 {
   FILE *fp;
 
-  if ((fp=ArUtil::fopen(fileName, "r")))
+  if ((fp=MvrUtil::fopen(fileName, "r")))
   {
     fclose(fp);
     return(true);
@@ -962,7 +935,7 @@ MVREXPORT bool MvrUtil::isStrInList(const char *str,
 } // end method isStrInList
 
 
-MVREXPORT const char *ArUtil::convertBool(int val)
+MVREXPORT const char *MvrUtil::convertBool(int val)
 {
   if (val)
     return TRUESTRING;
@@ -1241,7 +1214,7 @@ MVREXPORT void MvrTime::setToNow(void)
       
 }
 
-MVREXPORT MvrRunningAverage::ArRunningAverage(size_t numToAverage)
+MVREXPORT MvrRunningAverage::MvrRunningAverage(size_t numToAverage)
 {
   myNumToAverage = numToAverage;
   myTotal = 0;
@@ -1339,7 +1312,7 @@ MVREXPORT bool MvrRunningAverage::getUseRootMeanSquare(void)
   return myUseRootMeanSquare;
 }
 
-MVREXPORT MvrRootMeanSquareCalculator::ArRootMeanSquareCalculator()
+MVREXPORT MvrRootMeanSquareCalculator::MvrRootMeanSquareCalculator()
 {
   clear();
   myName = "MvrRootMeanSquareCalculator";
@@ -1390,17 +1363,17 @@ MVREXPORT void MvrRootMeanSquareCalculator::setName(const char *name)
     myName = "MvrRootMeanSquareCalculator";
 }
 
-MVREXPORT const char *ArRootMeanSquareCalculator::getName(void)
+MVREXPORT const char *MvrRootMeanSquareCalculator::getName(void)
 {
   return myName.c_str();
 }
 
 #ifndef WIN32
 
-MVREXPORT MvrDaemonizer::ArDaemonizer(int *argc, char **argv, 
+MVREXPORT MvrDaemonizer::MvrDaemonizer(int *argc, char **argv, 
 				    bool closeStdErrAndStdOut) :
   myParser(argc, argv),
-  myLogOptionsCB(this, &ArDaemonizer::logOptions)
+  myLogOptionsCB(this, &MvrDaemonizer::logOptions)
 {
   myIsDaemonized = false;
   myCloseStdErrAndStdOut = closeStdErrAndStdOut;
@@ -1461,13 +1434,13 @@ MVREXPORT void MvrDaemonizer::logOptions(void) const
 #endif // WIN32
 
 
-std::map<ArPriority::Priority, std::string> MvrPriority::ourPriorityNames;
+std::map<MvrPriority::Priority, std::string> MvrPriority::ourPriorityNames;
 std::map<std::string, MvrPriority::Priority, MvrStrCaseCmpOp> MvrPriority::ourNameToPriorityMap;
 
 std::string MvrPriority::ourUnknownPriorityName;
 bool MvrPriority::ourStringsInited = false;
 
-MVREXPORT const char *ArPriority::getPriorityName(Priority priority) 
+MVREXPORT const char *MvrPriority::getPriorityName(Priority priority) 
 {
 
   if (!ourStringsInited)
@@ -1481,7 +1454,7 @@ MVREXPORT const char *ArPriority::getPriorityName(Priority priority)
     ourPriorityNames[FACTORY]       = "Factory";
     ourPriorityNames[CALIBRATION]   = "Calibration";
     
-    for (std::map<ArPriority::Priority, std::string>::iterator iter = ourPriorityNames.begin();
+    for (std::map<MvrPriority::Priority, std::string>::iterator iter = ourPriorityNames.begin();
          iter != ourPriorityNames.end();
          iter++) {
       ourNameToPriorityMap[iter->second] = iter->first;
@@ -1491,7 +1464,7 @@ MVREXPORT const char *ArPriority::getPriorityName(Priority priority)
     ourStringsInited        = true;
   }
 
-  std::map<ArPriority::Priority, std::string>::iterator iter = 
+  std::map<MvrPriority::Priority, std::string>::iterator iter = 
                                                   ourPriorityNames.find(priority);
   if (iter != ourPriorityNames.end()) {
     return iter->second.c_str();
@@ -1820,7 +1793,7 @@ MVREXPORT bool MvrUtil::matchCase(const char *baseDir,
       // make sure we can put the filename in
       if (strlen(ent->d_name) > resultLen - lenOfResult - 2)
       {
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "MvrUtil::matchCase: result not long enough");
 	closedir(dir);
 	return false;
@@ -1994,7 +1967,7 @@ std::list<std::string> MvrUtil::splitFileName(const char *fileName)
     {
       if (i - last > 2047)
       {
-	ArLog::log(MvrLog::Normal, "MvrUtil::splitFileName: some directory or file too long");
+	MvrLog::log(MvrLog::Normal, "MvrUtil::splitFileName: some directory or file too long");
       }
       if (!justSepped)
       {
@@ -2120,7 +2093,7 @@ MVREXPORT void MvrUtil::setFileCloseOnExec(FILE *file, bool closeOnExec)
     setFileCloseOnExec(fileno(file));
 }
 
-MVREXPORT FILE *ArUtil::fopen(const char *path, const char *mode, 
+MVREXPORT FILE *MvrUtil::fopen(const char *path, const char *mode, 
 			     bool closeOnExec)
 {
   FILE *file;
@@ -2161,7 +2134,7 @@ MVREXPORT int MvrUtil::creat(const char *pathname, mode_t mode,
   return fd;
 }
 
-MVREXPORT FILE *ArUtil::popen(const char *command, const char *type, 
+MVREXPORT FILE *MvrUtil::popen(const char *command, const char *type, 
 			     bool closeOnExec)
 {
   FILE *file;
@@ -2232,129 +2205,129 @@ MVREXPORT long MvrMath::randomInRange(long m, long n)
 MVREXPORT double MvrMath::epsilon() { return ourEpsilon; }
 MVREXPORT long MvrMath::getRandMax() { return ourRandMax; }
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *> 
-ArLaserCreatorHelper::ourLMS2xxCB(&ArLaserCreatorHelper::createLMS2xx);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourLMS2xxCB(&MvrLaserCreatorHelper::createLMS2xx);
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *> 
-ArLaserCreatorHelper::ourUrgCB(&ArLaserCreatorHelper::createUrg);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourUrgCB(&MvrLaserCreatorHelper::createUrg);
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *> 
-ArLaserCreatorHelper::ourLMS1XXCB(&ArLaserCreatorHelper::createLMS1XX);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourLMS1XXCB(&MvrLaserCreatorHelper::createLMS1XX);
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *> 
-ArLaserCreatorHelper::ourS3SeriesCB(&ArLaserCreatorHelper::createS3Series);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *> 
+MvrLaserCreatorHelper::ourS3SeriesCB(&MvrLaserCreatorHelper::createS3Series);
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *>
-ArLaserCreatorHelper::ourUrg_2_0CB(&ArLaserCreatorHelper::createUrg_2_0);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourUrg_2_0CB(&MvrLaserCreatorHelper::createUrg_2_0);
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *>
-ArLaserCreatorHelper::ourLMS5XXCB(&ArLaserCreatorHelper::createLMS5XX);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourLMS5XXCB(&MvrLaserCreatorHelper::createLMS5XX);
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *>
-ArLaserCreatorHelper::ourTiM3XXCB(&ArLaserCreatorHelper::createTiM3XX);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourTiM3XXCB(&MvrLaserCreatorHelper::createTiM3XX);
 
-ArGlobalRetFunctor2<ArLaser *, int, const char *>
-ArLaserCreatorHelper::ourSZSeriesCB(&ArLaserCreatorHelper::createSZSeries);
+MvrGlobalRetFunctor2<MvrLaser *, int, const char *>
+MvrLaserCreatorHelper::ourSZSeriesCB(&MvrLaserCreatorHelper::createSZSeries);
 
-ArLaser *createAnyLMS1xx(int laserNumber, const char *logPrefix, const char *name, MvrLMS1XX::LaserModel model)
+MvrLaser *createAnyLMS1xx(int laserNumber, const char *logPrefix, const char *name, MvrLMS1XX::LaserModel model)
 {
 	return new MvrLMS1XX(laserNumber, name, model);
 }
 
-ArGlobalRetFunctor4<ArLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
+MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
 TiM551CB(&createAnyLMS1xx, -1, "", "tim551", MvrLMS1XX::TiM551);
 
-ArGlobalRetFunctor4<ArLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
+MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
 TiM561CB(&createAnyLMS1xx, -1, "", "tim561", MvrLMS1XX::TiM561); 
 
-ArGlobalRetFunctor4<ArLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
+MvrGlobalRetFunctor4<MvrLaser*, int, const char*, const char *, MvrLMS1XX::LaserModel>
 TiM571CB(&createAnyLMS1xx, -1, "", "tim571", MvrLMS1XX::TiM571);
 
-ArRetFunctor2<ArLaser *, int, const char *> *
-ArLaserCreatorHelper::getCreateTiM551CB(void) {
+MvrRetFunctor2<MvrLaser *, int, const char *> *
+MvrLaserCreatorHelper::getCreateTiM551CB(void) {
   return &TiM551CB;
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *
-ArLaserCreatorHelper::getCreateTiM561CB(void) {
+MvrRetFunctor2<MvrLaser *, int, const char *> *
+MvrLaserCreatorHelper::getCreateTiM561CB(void) {
   return &TiM561CB;
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *
-ArLaserCreatorHelper::getCreateTiM571CB(void) {
+MvrRetFunctor2<MvrLaser *, int, const char *> *
+MvrLaserCreatorHelper::getCreateTiM571CB(void) {
   return &TiM571CB;
 }
 
 
-ArGlobalRetFunctor2<ArBatteryMTX *, int, const char *>
-ArBatteryMTXCreatorHelper::ourBatteryMTXCB(&ArBatteryMTXCreatorHelper::createBatteryMTX);
+MvrGlobalRetFunctor2<MvrBatteryMTX *, int, const char *>
+MvrBatteryMTXCreatorHelper::ourBatteryMTXCB(&MvrBatteryMTXCreatorHelper::createBatteryMTX);
 
-ArGlobalRetFunctor2<ArLCDMTX *, int, const char *>
-ArLCDMTXCreatorHelper::ourLCDMTXCB(&ArLCDMTXCreatorHelper::createLCDMTX);
+MvrGlobalRetFunctor2<MvrLCDMTX *, int, const char *>
+MvrLCDMTXCreatorHelper::ourLCDMTXCB(&MvrLCDMTXCreatorHelper::createLCDMTX);
 
-ArGlobalRetFunctor2<ArSonarMTX *, int, const char *>
-ArSonarMTXCreatorHelper::ourSonarMTXCB(&ArSonarMTXCreatorHelper::createSonarMTX);
+MvrGlobalRetFunctor2<MvrSonarMTX *, int, const char *>
+MvrSonarMTXCreatorHelper::ourSonarMTXCB(&MvrSonarMTXCreatorHelper::createSonarMTX);
 
 
-ArLaser *ArLaserCreatorHelper::createLMS2xx(int laserNumber, 
+MvrLaser *MvrLaserCreatorHelper::createLMS2xx(int laserNumber, 
 					    const char *logPrefix)
 {
   return new MvrLMS2xx(laserNumber);
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateLMS2xxCB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS2xxCB(void)
 {
   return &ourLMS2xxCB;
 }
 
-ArLaser *ArLaserCreatorHelper::createUrg(int laserNumber, const char *logPrefix)
+MvrLaser *MvrLaserCreatorHelper::createUrg(int laserNumber, const char *logPrefix)
 {
   return new MvrUrg(laserNumber);
 }
 
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateUrgCB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateUrgCB(void)
 {
   return &ourUrgCB;
 }
 
-ArLaser *ArLaserCreatorHelper::createLMS1XX(int laserNumber, const char *logPrefix)
+MvrLaser *MvrLaserCreatorHelper::createLMS1XX(int laserNumber, const char *logPrefix)
 {
 	return new MvrLMS1XX(laserNumber, "lms1xx", MvrLMS1XX::LMS1XX);
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateLMS1XXCB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS1XXCB(void)
 {
   return &ourLMS1XXCB;
 }
 
-ArLaser *ArLaserCreatorHelper::createS3Series(int laserNumber, 
+MvrLaser *MvrLaserCreatorHelper::createS3Series(int laserNumber, 
 					    const char *logPrefix)
 {
   return new MvrS3Series(laserNumber);
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateS3SeriesCB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateS3SeriesCB(void)
 {
   return &ourS3SeriesCB;
 }
 
 
-ArLaser *ArLaserCreatorHelper::createUrg_2_0(int laserNumber, 
+MvrLaser *MvrLaserCreatorHelper::createUrg_2_0(int laserNumber, 
 					     const char *logPrefix)
 {
   return new MvrUrg_2_0(laserNumber);
 }
 
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateUrg_2_0CB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateUrg_2_0CB(void)
 {
   return &ourUrg_2_0CB;
 }
 
-ArLaser *ArLaserCreatorHelper::createLMS5XX(int laserNumber,
+MvrLaser *MvrLaserCreatorHelper::createLMS5XX(int laserNumber,
 		const char *logPrefix)
 {
 
@@ -2362,12 +2335,12 @@ ArLaser *ArLaserCreatorHelper::createLMS5XX(int laserNumber,
 	return new MvrLMS1XX(laserNumber, "lms5XX", MvrLMS1XX::LMS5XX);
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateLMS5XXCB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateLMS5XXCB(void)
 {
   return &ourLMS5XXCB;
 }
 
-ArLaser *ArLaserCreatorHelper::createTiM3XX(int laserNumber,
+MvrLaser *MvrLaserCreatorHelper::createTiM3XX(int laserNumber,
 		const char *logPrefix)
 {
 
@@ -2375,82 +2348,82 @@ ArLaser *ArLaserCreatorHelper::createTiM3XX(int laserNumber,
 	return new MvrLMS1XX(laserNumber, "tim3XX", MvrLMS1XX::TiM3XX);
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateTiM3XXCB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateTiM3XXCB(void)
 {
   return &ourTiM3XXCB;
 }
 
-ArLaser *ArLaserCreatorHelper::createSZSeries(int laserNumber,
+MvrLaser *MvrLaserCreatorHelper::createSZSeries(int laserNumber,
 					    const char *logPrefix)
 {
   return new MvrSZSeries(laserNumber);
 }
 
-ArRetFunctor2<ArLaser *, int, const char *> *ArLaserCreatorHelper::getCreateSZSeriesCB(void)
+MvrRetFunctor2<MvrLaser *, int, const char *> *MvrLaserCreatorHelper::getCreateSZSeriesCB(void)
 {
   return &ourSZSeriesCB;
 }
 
-ArBatteryMTX *ArBatteryMTXCreatorHelper::createBatteryMTX(int batteryNumber,
+MvrBatteryMTX *MvrBatteryMTXCreatorHelper::createBatteryMTX(int batteryNumber,
 					    const char *logPrefix)
 {
   return new MvrBatteryMTX(batteryNumber);
 }
 
-ArRetFunctor2<ArBatteryMTX *, int, const char *> *ArBatteryMTXCreatorHelper::getCreateBatteryMTXCB(void)
+MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *MvrBatteryMTXCreatorHelper::getCreateBatteryMTXCB(void)
 {
   return &ourBatteryMTXCB;
 }
 
-ArLCDMTX *ArLCDMTXCreatorHelper::createLCDMTX(int lcdNumber,
+MvrLCDMTX *MvrLCDMTXCreatorHelper::createLCDMTX(int lcdNumber,
 					    const char *logPrefix)
 {
   return new MvrLCDMTX(lcdNumber);
 }
 
-ArRetFunctor2<ArLCDMTX *, int, const char *> *ArLCDMTXCreatorHelper::getCreateLCDMTXCB(void)
+MvrRetFunctor2<MvrLCDMTX *, int, const char *> *MvrLCDMTXCreatorHelper::getCreateLCDMTXCB(void)
 {
   return &ourLCDMTXCB;
 }
 
-ArSonarMTX *ArSonarMTXCreatorHelper::createSonarMTX(int sonarNumber,
+MvrSonarMTX *MvrSonarMTXCreatorHelper::createSonarMTX(int sonarNumber,
 					    const char *logPrefix)
 {
   return new MvrSonarMTX(sonarNumber);
 }
 
-ArRetFunctor2<ArSonarMTX *, int, const char *> *ArSonarMTXCreatorHelper::getCreateSonarMTXCB(void)
+MvrRetFunctor2<MvrSonarMTX *, int, const char *> *MvrSonarMTXCreatorHelper::getCreateSonarMTXCB(void)
 {
   return &ourSonarMTXCB;
 }
 
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
-ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> 
-ArDeviceConnectionCreatorHelper::ourSerialCB(
-	&ArDeviceConnectionCreatorHelper::createSerialConnection);
-ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> 
-ArDeviceConnectionCreatorHelper::ourTcpCB(
-	&ArDeviceConnectionCreatorHelper::createTcpConnection);
-ArGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *>
-ArDeviceConnectionCreatorHelper::ourSerial422CB(
-	&ArDeviceConnectionCreatorHelper::createSerial422Connection);
-ArLog::LogLevel MvrDeviceConnectionCreatorHelper::ourSuccessLogLevel = MvrLog::Verbose;
+MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> 
+MvrDeviceConnectionCreatorHelper::ourSerialCB(
+	&MvrDeviceConnectionCreatorHelper::createSerialConnection);
+MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> 
+MvrDeviceConnectionCreatorHelper::ourTcpCB(
+	&MvrDeviceConnectionCreatorHelper::createTcpConnection);
+MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *>
+MvrDeviceConnectionCreatorHelper::ourSerial422CB(
+	&MvrDeviceConnectionCreatorHelper::createSerial422Connection);
+MvrLog::LogLevel MvrDeviceConnectionCreatorHelper::ourSuccessLogLevel = MvrLog::Verbose;
 
-ArDeviceConnection *ArDeviceConnectionCreatorHelper::createSerialConnection(
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createSerialConnection(
 	const char *port, const char *defaultInfo, const char *logPrefix)
 {
-	ArDeviceConnection *devConn;
+	MvrDeviceConnection *devConn;
 
 	devConn = internalCreateSerialConnection(port, defaultInfo, logPrefix, false);
 
 	return devConn;
 }
 
-ArDeviceConnection *ArDeviceConnectionCreatorHelper::createSerial422Connection(
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createSerial422Connection(
 	const char *port, const char *defaultInfo, const char *logPrefix)
 {
-	ArDeviceConnection *devConn;
+	MvrDeviceConnection *devConn;
 
 	devConn = internalCreateSerialConnection(port, defaultInfo, logPrefix, true);
 
@@ -2458,7 +2431,7 @@ ArDeviceConnection *ArDeviceConnectionCreatorHelper::createSerial422Connection(
 }
 
 
-ArDeviceConnection *ArDeviceConnectionCreatorHelper::internalCreateSerialConnection(
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::internalCreateSerialConnection(
 	const char *port, const char *defaultInfo, const char *logPrefix, bool is422)
 {
   MvrSerialConnection *serConn = new MvrSerialConnection(is422);
@@ -2528,19 +2501,19 @@ ArDeviceConnection *ArDeviceConnectionCreatorHelper::internalCreateSerialConnect
 }
 
 
-ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *
-ArDeviceConnectionCreatorHelper::getCreateSerialCB(void)
+MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
+MvrDeviceConnectionCreatorHelper::getCreateSerialCB(void)
 {
   return &ourSerialCB;
 }
 
-ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *
-ArDeviceConnectionCreatorHelper::getCreateSerial422CB(void)
+MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
+MvrDeviceConnectionCreatorHelper::getCreateSerial422CB(void)
 {
   return &ourSerial422CB;
 }
 
-ArDeviceConnection *ArDeviceConnectionCreatorHelper::createTcpConnection(
+MvrDeviceConnection *MvrDeviceConnectionCreatorHelper::createTcpConnection(
 	const char *port, const char *defaultInfo, const char *logPrefix)
 {
   MvrTcpConnection *tcpConn = new MvrTcpConnection;
@@ -2575,29 +2548,29 @@ ArDeviceConnection *ArDeviceConnectionCreatorHelper::createTcpConnection(
   */
 }
 
-ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *
-ArDeviceConnectionCreatorHelper::getCreateTcpCB(void)
+MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *
+MvrDeviceConnectionCreatorHelper::getCreateTcpCB(void)
 {
   return &ourTcpCB;
 }
 
 void MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(
-	ArLog::LogLevel successLogLevel)
+	MvrLog::LogLevel successLogLevel)
 {
   ourSuccessLogLevel = successLogLevel;
 }
 
-ArLog::LogLevel MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(void)
+MvrLog::LogLevel MvrDeviceConnectionCreatorHelper::setSuccessLogLevel(void)
 {
   return ourSuccessLogLevel;
 }
 
-MVREXPORT std::list<ArPose> MvrPoseUtil::findCornersFromRobotBounds(
+MVREXPORT std::list<MvrPose> MvrPoseUtil::findCornersFromRobotBounds(
 	double radius, double widthLeft, double widthRight, 
 	double lengthFront, double lengthRear, bool fastButUnsafe)
 {
 
-  std::list<ArPose> ret;
+  std::list<MvrPose> ret;
 
   if (fastButUnsafe)
   {
@@ -2800,7 +2773,7 @@ MVREXPORT std::list<ArPose> MvrPoseUtil::findCornersFromRobotBounds(
 			 -sqrt(radius * radius - lengthFront * lengthFront));
     */
 
-    std::list<ArPose> ret;
+    std::list<MvrPose> ret;
     ret.push_back(frontLeft);
 
     ret.push_back(leftFront);
@@ -2819,10 +2792,10 @@ MVREXPORT std::list<ArPose> MvrPoseUtil::findCornersFromRobotBounds(
 }
 
 
-MVREXPORT std::list<ArPose> MvrPoseUtil::breakUpDistanceEvenly(
-	ArPose start, MvrPose end, int resolution)
+MVREXPORT std::list<MvrPose> MvrPoseUtil::breakUpDistanceEvenly(
+	MvrPose start, MvrPose end, int resolution)
 {
-  std::list<ArPose> ret;
+  std::list<MvrPose> ret;
 
   ret.push_back(start);
 
@@ -2853,7 +2826,7 @@ MVREXPORT std::list<ArPose> MvrPoseUtil::breakUpDistanceEvenly(
   return ret;
 }
 
-MVREXPORT MvrTimeChecker::ArTimeChecker(const char *name, int defaultMSecs)
+MVREXPORT MvrTimeChecker::MvrTimeChecker(const char *name, int defaultMSecs)
 {
   if (name != NULL)
     myName = name;

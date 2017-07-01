@@ -1,39 +1,13 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include <stdarg.h>
 
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrLaserLogger.h"
 #include "MvrRobot.h"
 #include "MvrLaser.h"
 #include "MvrJoyHandler.h"
 #include "MvrRobotJoyHandler.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
 
 /** @page LaserLogFileFormat Laser Scan Log File Format 
@@ -58,7 +32,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *
  *  <pre>
  *  LaserOdometryLog
- *  \#Created by ARIA's %ArLaserLogger
+ *  \#Created by ARIA's %MvrLaserLogger
  *  version: 3
  *  useEncoderPose: <i>1|0</i>
  *  sick1pose: <i>X</i> <i>Y</i> <i>Theta</i>
@@ -197,20 +171,20 @@ output log file
   @param extraLasers if given, include data from these lasers in the laser log in addition
 to the primary laser @a laser.
 **/
-MVREXPORT MvrLaserLogger::ArLaserLogger(
-	ArRobot *robot, MvrLaser *laser, 
+MVREXPORT MvrLaserLogger::MvrLaserLogger(
+	MvrRobot *robot, MvrLaser *laser, 
 	double distDiff, double degDiff, 
 	const char *fileName, bool addGoals, MvrJoyHandler *joyHandler,
 	const char *baseDirectory, bool useReflectorValues,
-	ArRobotJoyHandler *robotJoyHandler,
+	MvrRobotJoyHandler *robotJoyHandler,
 	const std::map<std::string, 
 		       MvrRetFunctor3<int, MvrTime, MvrPose *, MvrPoseWithTime *> *, 
 		       MvrStrCaseCmpOp> *extraLocationData,
-	std::list<ArLaser *> *extraLasers) :
+	std::list<MvrLaser *> *extraLasers) :
   mySectors(18), 
-  myTaskCB(this, &ArLaserLogger::robotTask),
-  myGoalKeyCB(this, &ArLaserLogger::goalKeyCallback), 
-  myLoopPacketHandlerCB(this, &ArLaserLogger::loopPacketHandler)
+  myTaskCB(this, &MvrLaserLogger::robotTask),
+  myGoalKeyCB(this, &MvrLaserLogger::goalKeyCallback), 
+  myLoopPacketHandlerCB(this, &MvrLaserLogger::loopPacketHandler)
 {
   MvrKeyHandler *keyHandler;
 
@@ -258,7 +232,7 @@ MVREXPORT MvrLaserLogger::ArLaserLogger(
   myLasers.push_back(laser);
   if(extraLasers)
   {
-    std::list<ArLaser *>::iterator laserIt;
+    std::list<MvrLaser *>::iterator laserIt;
     for (laserIt = extraLasers->begin(); 
          laserIt != extraLasers->end(); 
          laserIt++)
@@ -273,7 +247,7 @@ MVREXPORT MvrLaserLogger::ArLaserLogger(
     fprintf(myFile, "#Created by MvrLaserLogger\n");
     fprintf(myFile, "version: 4\n");
 
-    std::list<ArLaser *>::iterator laserIt;
+    std::list<MvrLaser *>::iterator laserIt;
     for (laserIt = myLasers.begin(); laserIt != myLasers.end(); laserIt++)
     {
       if ((*laserIt) == myLaser)
@@ -363,7 +337,7 @@ void MvrLaserLogger::internalPrintLaserPoseAndConf(MvrLaser *laser, int laserNum
     return;
 
 
-  const std::list<ArSensorReading *> *readings;
+  const std::list<MvrSensorReading *> *readings;
 
   readings = laser->getRawReadings();
 
@@ -430,12 +404,12 @@ MVREXPORT bool MvrLaserLogger::loopPacketHandler(MvrRobotPacket *packet)
       if ((loops & bit) && !(myLastLoops & bit))
       {
 	addTagToLog("loop: start %d", num);
-	ArLog::log(MvrLog::Normal, "Starting loop %d", num);
+	MvrLog::log(MvrLog::Normal, "Starting loop %d", num);
       }
       else if (!(loops & bit) && (myLastLoops & bit))
       {
 	addTagToLog("loop: stop %d", num);
-	ArLog::log(MvrLog::Normal, "Stopping loop %d", num);
+	MvrLog::log(MvrLog::Normal, "Stopping loop %d", num);
       }
     }
   }
@@ -629,9 +603,9 @@ void MvrLaserLogger::internalTakeReading(void)
     fprintf(myFile, "velocities: %.2f %.2f %.2f\n", 
 	    myRobot->getVel(), myRobot->getRotVel(), myRobot->getLatVel());
 
-    std::list<ArLaser *>::iterator laserIt;
-    std::multimap<ArTime, MvrLaser *> lasersToLog;
-    std::multimap<ArTime, MvrLaser *>::reverse_iterator lasersToLogIt;
+    std::list<MvrLaser *>::iterator laserIt;
+    std::multimap<MvrTime, MvrLaser *> lasersToLog;
+    std::multimap<MvrTime, MvrLaser *>::reverse_iterator lasersToLogIt;
     MvrLaser * laser;
     
     for (laserIt = myLasers.begin(); laserIt != myLasers.end(); laserIt++)
@@ -641,7 +615,7 @@ void MvrLaserLogger::internalTakeReading(void)
       if (laser->getRawReadings() != NULL && 
 	  !laser->getRawReadings()->empty())
 	lasersToLog.insert(
-		std::pair<ArTime, MvrLaser *>(
+		std::pair<MvrTime, MvrLaser *>(
 			laser->getRawReadings()->front()->getTimeTaken(),
 			laser));
     }
@@ -669,9 +643,9 @@ void MvrLaserLogger::internalTakeReading(void)
 
 void MvrLaserLogger::internalTakeLaserReading(MvrLaser *laser, int laserNumber)
 {
-  const std::list<ArSensorReading *> *readings;
-  std::list<ArSensorReading *>::const_iterator it;
-  std::list<ArSensorReading *>::const_reverse_iterator rit;
+  const std::list<MvrSensorReading *> *readings;
+  std::list<MvrSensorReading *>::const_iterator it;
+  std::list<MvrSensorReading *>::const_reverse_iterator rit;
   MvrPose encoderPoseTaken;
   MvrPose globalPoseTaken;
   MvrTime timeTaken;

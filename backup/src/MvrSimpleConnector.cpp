@@ -68,7 +68,7 @@ MVREXPORT bool MvrSimpleConnector::parseArgs(void)
 }
 
 /*
- * Parse command line arguments held by the given ArArgumentParser.
+ * Parse command line arguments held by the given MvrArgumentParser.
  *
   @return true if the arguments were parsed successfully false if not
 

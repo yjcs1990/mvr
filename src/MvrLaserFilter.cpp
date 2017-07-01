@@ -1,29 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 #include "MvrLaserFilter.h"
 #include "MvrRobot.h"
@@ -31,14 +5,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 //#define DEBUGRANGEFILTER
 
-MVREXPORT MvrLaserFilter::ArLaserFilter(
-	ArLaser *laser, const char *name) :
+MVREXPORT MvrLaserFilter::MvrLaserFilter(
+	MvrLaser *laser, const char *name) :
   MvrLaser(laser->getLaserNumber(),
 	  name != NULL && name[0] != '\0' ? name : laser->getName(), 
 	  laser->getAbsoluteMaxRange(),
 	  laser->isLocationDependent(),
 	  false),
-  myProcessCB(this, &ArLaserFilter::processReadings)
+  myProcessCB(this, &MvrLaserFilter::processReadings)
 {
   myLaser = laser;
 
@@ -50,7 +24,7 @@ MVREXPORT MvrLaserFilter::ArLaserFilter(
     laserSetName(filteredName.c_str());
   }
 
-  myRawReadings = new std::list<ArSensorReading *>;
+  myRawReadings = new std::list<MvrSensorReading *>;
 
   char buf[1024];
   sprintf(buf, "%sProcessCB", getName());
@@ -241,8 +215,8 @@ void MvrLaserFilter::processReadings(void)
   myLaser->lockDevice();
   selfLockDevice();
 
-  const std::list<ArSensorReading *> *rdRawReadings;
-  std::list<ArSensorReading *>::const_iterator rdIt;
+  const std::list<MvrSensorReading *> *rdRawReadings;
+  std::list<MvrSensorReading *>::const_iterator rdIt;
   
   if ((rdRawReadings = myLaser->getRawReadings()) == NULL)
   {
@@ -267,7 +241,7 @@ void MvrLaserFilter::processReadings(void)
 	  myLaser->getCurrentRangeBuffer()->getEncoderPoseTaken());
 
 
-  std::list<ArSensorReading *>::iterator it;
+  std::list<MvrSensorReading *>::iterator it;
   MvrSensorReading *rdReading;
   MvrSensorReading *reading;
 
@@ -311,7 +285,7 @@ void MvrLaserFilter::processReadings(void)
   char buf[1024];
   int i;
   int j;
-  //ArSensorReading *lastAddedReading = NULL;
+  //MvrSensorReading *lastAddedReading = NULL;
   
   // now walk through the readings to filter them
   for (i = 0; i < numReadings; i++)

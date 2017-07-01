@@ -13,8 +13,8 @@
 #include "MvrRangeDevice.h"
 #include "MvrFunctor.h"
 
-class ArSick;
-class ArRobot;
+class MvrSick;
+class MvrRobot;
 
 /** 
     This class is for showing the laser reflectors in MobileEyes.

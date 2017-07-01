@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrKeyHandler.h"
 #include "MvrLog.h"
 
@@ -35,27 +9,27 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <stdio.h>
 #endif
 
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
 /**
    @param blocking whether or not to block waiting on keys, default is
    false, ie not to wait... you probably only want to block if you are
    using checkKeys yourself like after you start a robot run or in its
    own thread or something along those lines
-   @param addAriaExitCB true to add an aria exit cb to restore the keys 
+   @param addMvriaExitCB true to add an aria exit cb to restore the keys 
    @param stream the FILE * pointer to use, if this is NULL (the default)
    then use stdin, otherwise use this...
    @param takeKeysInConstructor whether to take the keys when created or not
    (default is true)
 **/
-MVREXPORT MvrKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB, 
+MVREXPORT MvrKeyHandler::MvrKeyHandler(bool blocking, bool addMvriaExitCB, 
 				    FILE *stream, 
 				    bool takeKeysInConstructor) :
-  myAriaExitCB(this, &ArKeyHandler::restore)
+  myMvriaExitCB(this, &MvrKeyHandler::restore)
 {
-  myAriaExitCB.setName("MvrKeyHandlerExit");
-  if (addAriaExitCB)
-    Mvria::addExitCallback(&myAriaExitCB);
+  myMvriaExitCB.setName("MvrKeyHandlerExit");
+  if (addMvriaExitCB)
+    Mvria::addExitCallback(&myMvriaExitCB);
 
   myStream = stream;
   myTookKeys = false;
@@ -66,7 +40,7 @@ MVREXPORT MvrKeyHandler::ArKeyHandler(bool blocking, bool addAriaExitCB,
 
 MVREXPORT MvrKeyHandler::~MvrKeyHandler()
 {
-  Mvria::remExitCallback(&myAriaExitCB);
+  Mvria::remExitCallback(&myMvriaExitCB);
   restore();
 }
 
@@ -153,7 +127,7 @@ MVREXPORT bool MvrKeyHandler::addKeyHandler(int keyToHandle, MvrFunctor *functor
       MvrLog::log(MvrLog::Normal, "There is already a key to handle number %d 0x%x", keyToHandle, keyToHandle);
     return false;
   }
-  //ArLog::log(MvrLog::Verbose, "keyhandler %p added key '%c' number '%d'", 
+  //MvrLog::log(MvrLog::Verbose, "keyhandler %p added key '%c' number '%d'", 
   //this, keyToHandle, keyToHandle);
   myMap[keyToHandle] = functor;
 
@@ -171,7 +145,7 @@ MVREXPORT bool MvrKeyHandler::remKeyHandler(int keyToHandle)
 {
   if (myMap.find(keyToHandle) == myMap.end())
   {
-    //ArLog::log(MvrLog::Normal, "There is no key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
+    //MvrLog::log(MvrLog::Normal, "There is no key to handle '%c' which is number %d 0x%x", keyToHandle, keyToHandle, keyToHandle);
     return false;
   }
   if (keyToHandle >= '!' && keyToHandle <= '~')
@@ -232,7 +206,7 @@ MVREXPORT void MvrKeyHandler::checkKeys(void)
     // if there's something to handle it, handle it
     if ((it = myMap.find(key)) != myMap.end())
     {
-      //ArLog::log(MvrLog::Verbose, "key '%c' num %d pressed\n", key, key);
+      //MvrLog::log(MvrLog::Verbose, "key '%c' num %d pressed\n", key, key);
       it->second->invoke();
     }
   }

@@ -1,29 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 /*! \file MvrMapComponents.h
  *  \brief Contains the set of component classes used to implement Mvria maps.
  *  \date 06/27/08
@@ -56,11 +30,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  *
  * <pre>  
  *
- *          ________ArMapSupplementInterface________
+ *          ________MvrMapSupplementInterface________
  *         ^                                        ^
- *         |   ________ArMapInfoInterface________   |
+ *         |   ________MvrMapInfoInterface________   |
  *         |   ^                                ^   |
- *         |   |   __ArMapObjectsInterface___   |   |
+ *         |   |   __MvrMapObjectsInterface___   |   |
  *         |   |   ^                        ^   |   |
  *         |   |   |   MvrMapScanInterface   |   |   |
  *         |   |   |   ^                ^   |   |   |
@@ -82,8 +56,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * @see MvrMapInterface
  * @see MvrMap
 **/
-#ifndef ARMAPCOMPONENTS_H
-#define ARMAPCOMPONENTS_H
+#ifndef MVRMAPCOMPONENTS_H
+#define MVRMAPCOMPONENTS_H
 
 #include "MvrMapInterface.h"
 
@@ -126,7 +100,7 @@ public:
    * @param scanType the const char * identifier of the scan; must be 
    * non-NULL and must not contain whitespaces
   **/
-  MVREXPORT MvrMapScan(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT MvrMapScan(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   /// Copy constructor
   MVREXPORT MvrMapScan(const MvrMapScan &other);
@@ -143,62 +117,62 @@ public:
   // --------------------------------------------------------------------------
 
   MVREXPORT virtual const char *getDisplayString
-                                  (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                                  (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual std::vector<ArPose> *getPoints
-                          (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual std::vector<MvrPose> *getPoints
+                          (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual std::vector<ArLineSegment> *getLines
-                          (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual std::vector<MvrLineSegment> *getLines
+                          (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual int getNumPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual bool isSortedPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual bool isSortedPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
 
-  MVREXPORT virtual void setPoints(const std::vector<ArPose> *points,
-                                  const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+  MVREXPORT virtual void setPoints(const std::vector<MvrPose> *points,
+                                  const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                   bool isSortedPoints = false,
                                   MvrMapChangeDetails *changeDetails = NULL);
 
 
-  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual int getNumLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual bool isSortedLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual bool isSortedLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
 
-  MVREXPORT virtual void setLines(const std::vector<ArLineSegment> *lines,
-                                 const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+  MVREXPORT virtual void setLines(const std::vector<MvrLineSegment> *lines,
+                                 const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                  bool isSortedLines = false,
                                  MvrMapChangeDetails *changeDetails = NULL);
 
 
-  MVREXPORT virtual int getResolution(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getResolution(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void setResolution(int resolution,
-                                      const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                      const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                       MvrMapChangeDetails *changeDetails = NULL);
 
 
   MVREXPORT virtual void writeScanToFunctor
                                 (MvrFunctor1<const char *> *functor, 
  			                          const char *endOfLineChars,
-                                const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                                const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void writePointsToFunctor
- 		                        (MvrFunctor2<int, std::vector<ArPose> *> *functor,
-                             const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+ 		                        (MvrFunctor2<int, std::vector<MvrPose> *> *functor,
+                             const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                              MvrFunctor1<const char *> *keywordFunctor = NULL);
 
   MVREXPORT virtual void writeLinesToFunctor
- 	                          (MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
-                             const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+ 	                          (MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
+                             const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                              MvrFunctor1<const char *> *keywordFunctor = NULL);
 
   MVREXPORT virtual bool addToFileParser(MvrFileParser *fileParser);
@@ -247,13 +221,13 @@ public:
   MVREXPORT virtual void writePointsToFunctor
                                 (MvrFunctor1<const char *> *functor, 
  			                          const char *endOfLineChars,
-                                const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                                const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   /// Writes the scan's data lines (and introductory keyword) to the given functor.
   MVREXPORT virtual void writeLinesToFunctor
                                 (MvrFunctor1<const char *> *functor, 
  			                           const char *endOfLineChars,
-                                 const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                                 const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   
   /// Adds the handlers for the data points and lines keywords to the given file parser.
@@ -282,9 +256,9 @@ protected:
   **/
   MVREXPORT virtual void writeLinesToFunctor
                                 (MvrFunctor1<const char *> *functor, 
-                                 const std::vector<ArLineSegment> &lines,
+                                 const std::vector<MvrLineSegment> &lines,
  			                           const char *endOfLineChars,
-                                 const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                                 const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
 
   // Function to read the minimum pos
@@ -388,9 +362,9 @@ protected:
   bool myIsSortedLines;
 
   /// List of data points contained in this scan data.
-  std::vector<ArPose> myPoints;
+  std::vector<MvrPose> myPoints;
   /// List of data lines contained in this scan data.
-  std::vector<ArLineSegment> myLines;
+  std::vector<MvrLineSegment> myLines;
 
   /// Callback to parse the minimum poise from the map file.
   MvrRetFunctor1C<bool, MvrMapScan, MvrArgumentBuilder *> myMinPosCB;
@@ -470,13 +444,13 @@ public :
  				                                      const char *type = NULL, 
                                               bool isIncludeWithHeading = false);
 
-  MVREXPORT virtual std::list<ArMapObject *> findMapObjectsOfType
+  MVREXPORT virtual std::list<MvrMapObject *> findMapObjectsOfType
                                                     (const char *type,
                                                      bool isIncludeWithHeading = false);
 
-  MVREXPORT virtual std::list<ArMapObject *> *getMapObjects(void);
+  MVREXPORT virtual std::list<MvrMapObject *> *getMapObjects(void);
 
-  MVREXPORT virtual void setMapObjects(const std::list<ArMapObject *> *mapObjects,
+  MVREXPORT virtual void setMapObjects(const std::list<MvrMapObject *> *mapObjects,
                                       bool isSortedObjects = false,
                                       MvrMapChangeDetails *changeDetails = NULL); 
    
@@ -506,7 +480,7 @@ protected:
   bool handleMapObject(MvrArgumentBuilder *arg);
 
   /// Sorts the given list of map objects in order of increasing object pose.
-  void sortMapObjects(std::list<ArMapObject *> *mapObjects);
+  void sortMapObjects(std::list<MvrMapObject *> *mapObjects);
 
   /// Writes the map objects to the given MvrMapFileLineSet.
   void createMultiSet(MvrMapFileLineSet *multiSet);
@@ -526,7 +500,7 @@ protected:
   std::string myKeyword;
 
   /// List of map objects contained in the Mvria map.
-  std::list<ArMapObject *> myMapObjects;
+  std::list<MvrMapObject *> myMapObjects;
 
   /// Callback to parse the map object from the map file.
   MvrRetFunctor1C<bool, MvrMapObjects, MvrArgumentBuilder *> myMapObjectCB;
@@ -548,7 +522,7 @@ protected:
  *
  * Info types are currently identified by a unique integer.  The default types
  * are defined in MvrMapInfoInterface::InfoType, but applications may define 
- * additional types.  (See MvrMapInfo::ArMapInfo(int*, char**, size_t))
+ * additional types.  (See MvrMapInfo::MvrMapInfo(int*, char**, size_t))
 **/
 class MvrMapInfo : public MvrMapInfoInterface
 {
@@ -577,24 +551,24 @@ public:
   // MvrMapInfoInterface Methods
   // ---------------------------------------------------------------------------
 
-  MVREXPORT virtual std::list<ArArgumentBuilder *> *getInfo(const char *infoName);
+  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getInfo(const char *infoName);
 
-  MVREXPORT virtual std::list<ArArgumentBuilder *> *getInfo(int infoType);
-  MVREXPORT virtual std::list<ArArgumentBuilder *> *getMapInfo(void);
+  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getInfo(int infoType);
+  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getMapInfo(void);
 
   MVREXPORT virtual int getInfoCount() const;
 
   MVREXPORT virtual std::list<std::string> getInfoNames() const;
 
   MVREXPORT virtual bool setInfo(const char *infoName,
-                                const std::list<ArArgumentBuilder *> *infoList,
+                                const std::list<MvrArgumentBuilder *> *infoList,
                                 MvrMapChangeDetails *changeDetails);
 
 
   MVREXPORT virtual bool setInfo(int infoType,
- 						                    const std::list<ArArgumentBuilder *> *infoList,
+ 						                    const std::list<MvrArgumentBuilder *> *infoList,
                                 MvrMapChangeDetails *changeDetails = NULL); 
-  MVREXPORT virtual bool setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
+  MVREXPORT virtual bool setMapInfo(const std::list<MvrArgumentBuilder *> *mapInfo,
                                    MvrMapChangeDetails *changeDetails = NULL); 
 
 
@@ -654,7 +628,7 @@ protected:
     MvrMapInfo *myParent;
     int myType;
     std::string myKeyword;
-    std::list<ArArgumentBuilder *> myInfo;
+    std::list<MvrArgumentBuilder *> myInfo;
     MvrRetFunctor1C<bool, MvrMapInfo, MvrArgumentBuilder *> *myInfoCB;
 
     MvrMapInfoData(MvrMapInfo *parent,
@@ -874,23 +848,23 @@ public:
   // MvrMapInfoInterface
   // ---------------------------------------------------------------------------
 
-  MVREXPORT virtual std::list<ArArgumentBuilder *> *getInfo(const char *infoName);
-  MVREXPORT virtual std::list<ArArgumentBuilder *> *getInfo(int infoType);
-  MVREXPORT virtual std::list<ArArgumentBuilder *> *getMapInfo(void);
+  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getInfo(const char *infoName);
+  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getInfo(int infoType);
+  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getMapInfo(void);
   
   MVREXPORT virtual int getInfoCount() const;
   
   MVREXPORT virtual std::list<std::string> getInfoNames() const;
 
   MVREXPORT virtual bool setInfo(const char *infoName,
- 						                    const std::list<ArArgumentBuilder *> *infoList,
+ 						                    const std::list<MvrArgumentBuilder *> *infoList,
                                 MvrMapChangeDetails *changeDetails = NULL);
 
   MVREXPORT virtual bool setInfo(int infoType,
- 						                    const std::list<ArArgumentBuilder *> *infoList,
+ 						                    const std::list<MvrArgumentBuilder *> *infoList,
                                 MvrMapChangeDetails *changeDetails = NULL);
 
-  MVREXPORT virtual bool setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
+  MVREXPORT virtual bool setMapInfo(const std::list<MvrArgumentBuilder *> *mapInfo,
                                    MvrMapChangeDetails *changeDetails = NULL);
 
   MVREXPORT virtual void writeInfoToFunctor
@@ -911,13 +885,13 @@ public:
  				                                      const char *type = NULL,
                                               bool isIncludeWithHeading = false);
 
-  MVREXPORT virtual std::list<ArMapObject *> findMapObjectsOfType
+  MVREXPORT virtual std::list<MvrMapObject *> findMapObjectsOfType
                                                     (const char *type,
                                                      bool isIncludeWithHeading = false);
 
-  MVREXPORT virtual std::list<ArMapObject *> *getMapObjects(void);
+  MVREXPORT virtual std::list<MvrMapObject *> *getMapObjects(void);
 
-  MVREXPORT virtual void setMapObjects(const std::list<ArMapObject *> *mapObjects,
+  MVREXPORT virtual void setMapObjects(const std::list<MvrMapObject *> *mapObjects,
                                       bool isSortedObjects = false,
                                       MvrMapChangeDetails *changeDetails = NULL); 
 
@@ -950,56 +924,56 @@ public:
   // ---------------------------------------------------------------------------
 
   MVREXPORT virtual const char *getDisplayString
-                                 (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                                 (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual std::vector<ArPose> *getPoints
-                                 (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual std::vector<MvrPose> *getPoints
+                                 (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual MvrPose getMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual bool isSortedPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
 
-  MVREXPORT virtual void setPoints(const std::vector<ArPose> *points,
-                                  const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+  MVREXPORT virtual void setPoints(const std::vector<MvrPose> *points,
+                                  const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                   bool isSortedPoints = false,
                                   MvrMapChangeDetails *changeDetails = NULL);
 
 
-  MVREXPORT virtual std::vector<ArLineSegment> *getLines
-                                 (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual std::vector<MvrLineSegment> *getLines
+                                 (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual bool isSortedLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
 
-  MVREXPORT virtual void setLines(const std::vector<ArLineSegment> *lines,
-                                 const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+  MVREXPORT virtual void setLines(const std::vector<MvrLineSegment> *lines,
+                                 const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                  bool isSortedLines = false,
                                  MvrMapChangeDetails *changeDetails = NULL);
 
 
-  MVREXPORT virtual int getResolution(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getResolution(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void setResolution(int resolution,
-                                      const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                                      const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                       MvrMapChangeDetails *changeDetails = NULL);
 
   
   MVREXPORT virtual void writeScanToFunctor
                               (MvrFunctor1<const char *> *functor, 
 			                         const char *endOfLineChars,
-                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+                               const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void writePointsToFunctor
-                              (MvrFunctor2<int, std::vector<ArPose> *> *functor,
-                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+                              (MvrFunctor2<int, std::vector<MvrPose> *> *functor,
+                               const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                MvrFunctor1<const char *> *keywordFunctor = NULL);
 
   MVREXPORT virtual void writeLinesToFunctor
- 	                            (MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
-                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
+ 	                            (MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
+                               const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
                                MvrFunctor1<const char *> *keywordFunctor = NULL);
 
   MVREXPORT virtual bool addToFileParser(MvrFileParser *fileParser);
@@ -1135,7 +1109,7 @@ public:
 
 
 
-  MVREXPORT virtual std::list<ArArgumentBuilder *> *getRemainder();
+  MVREXPORT virtual std::list<MvrArgumentBuilder *> *getRemainder();
 
   MVREXPORT virtual void setQuiet(bool isQuiet);
  	
@@ -1159,21 +1133,21 @@ public:
    * @return iterator that points to the parameter information for the map
    * object, or cairnInfoList.end() if not found
   **/
-  MVREXPORT static std::list<ArArgumentBuilder *>::iterator findMapObjectParamInfo
+  MVREXPORT static std::list<MvrArgumentBuilder *>::iterator findMapObjectParamInfo
              (const char *mapObjectName,
-              std::list<ArArgumentBuilder*> &cairnInfoList);
+              std::list<MvrArgumentBuilder*> &cairnInfoList);
 #endif
 protected:
 
   MVREXPORT bool setInactiveInfo(const char *infoName,
- 						                    const std::list<ArArgumentBuilder *> *infoList,
+ 						                    const std::list<MvrArgumentBuilder *> *infoList,
                                 MvrMapChangeDetails *changeDetails = NULL);
 
-  MVREXPORT void setInactiveObjects(const std::list<ArMapObject *> *mapObjects,
+  MVREXPORT void setInactiveObjects(const std::list<MvrMapObject *> *mapObjects,
                                    bool isSortedObjects = false,
                                    MvrMapChangeDetails *changeDetails = NULL); 
 
-  MVREXPORT void setChildObjects(const std::list<ArMapObject *> *mapObjects,
+  MVREXPORT void setChildObjects(const std::list<MvrMapObject *> *mapObjects,
                                 bool isSortedObjects = false,
                                 MvrMapChangeDetails *changeDetails = NULL); 
 
@@ -1272,14 +1246,14 @@ protected:
 
   MVREXPORT static int getNextFileNumber();
 
-  MVREXPORT void invokeCallbackList(std::list<ArFunctor*> *cbList);
+  MVREXPORT void invokeCallbackList(std::list<MvrFunctor*> *cbList);
   
   MVREXPORT void addToCallbackList(MvrFunctor *functor,
                                   MvrListPos::Pos position,
-                                  std::list<ArFunctor*> *cbList);
+                                  std::list<MvrFunctor*> *cbList);
 
   MVREXPORT void remFromCallbackList(MvrFunctor *functor,
-                                    std::list<ArFunctor*> *cbList);
+                                    std::list<MvrFunctor*> *cbList);
 
 protected:
 
@@ -1302,8 +1276,8 @@ protected:
   std::string myFileName;
   struct stat myReadFileStat;
 
-  std::list<ArFunctor*> myPreWriteCBList;
-  std::list<ArFunctor*> myPostWriteCBList;
+  std::list<MvrFunctor*> myPreWriteCBList;
+  std::list<MvrFunctor*> myPostWriteCBList;
 
   bool myIsWriteToTempFile;
   std::string myTempDirectory;
@@ -1350,7 +1324,7 @@ protected:
   std::map<std::string, MvrArgumentBuilder *, MvrStrCaseCmpOp> myMapObjectNameToParamsMap;
 
   /// List of map file lines that were not recognized
-  std::list<ArArgumentBuilder *> myRemainderList;
+  std::list<MvrArgumentBuilder *> myRemainderList;
 
   MvrTime myTimeMapInfoChanged;
   MvrTime myTimeMapObjectsChanged;
@@ -1373,5 +1347,5 @@ protected:
 
 /// --------------------------------------------------------------------------- 
 
-#endif // ARMAPCOMPONENTS_H
+#endif // MVRMAPCOMPONENTS_H
 

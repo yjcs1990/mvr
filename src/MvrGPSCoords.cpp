@@ -1,48 +1,21 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
-#include "ariaOSDef.h"
-#include "ariaUtil.h"
+#include "mvriaOSDef.h"
+#include "mvriaUtil.h"
 #include "MvrLog.h"
 #include "MvrGPSCoords.h"
 
 #include <math.h>
 
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mya = 6378137; // meters
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myb = 6356752.3142; // meters
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myep = 8.2094437949696e-2; 
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myc = 299792458; // m/sec
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::mye = 8.1819190842622e-2;
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::my1byf = 298.257223563;
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myOmega = 7292115e-11; // rad/sec
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myGM = 3986004.418e8; // m^3/sec^2
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myg = 9.7976432222; // m/sec^2. Ave g.
-MVREXPORT ARGPSCOORDS_CONSTANT double MvrWGS84::myM = 5.9733328e24; // kg. Mass of earth.
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::mya = 6378137; // meters
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::myb = 6356752.3142; // meters
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::myep = 8.2094437949696e-2; 
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::myc = 299792458; // m/sec
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::mye = 8.1819190842622e-2;
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::my1byf = 298.257223563;
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::myOmega = 7292115e-11; // rad/sec
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::myGM = 3986004.418e8; // m^3/sec^2
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::myg = 9.7976432222; // m/sec^2. Ave g.
+MVREXPORT MVRGPSCOORDS_CONSTANT double MvrWGS84::myM = 5.9733328e24; // kg. Mass of earth.
 
 
 
@@ -61,7 +34,7 @@ MVREXPORT void Mvr3DPoint::print(const char *head)
  *
  */
 MVREXPORT MvrLLACoords
-ArECEFCoords::ECEF2LLA(void)
+MvrECEFCoords::ECEF2LLA(void)
 {
   // ECEF2LLA - convert earth-centered earth-fixed (ECEF)
   // cartesian coordinates to latitude, longitude,
@@ -125,7 +98,7 @@ ArECEFCoords::ECEF2LLA(void)
  *
  */
 MVREXPORT MvrENUCoords
-ArECEFCoords::ECEF2ENU(MvrECEFCoords ref)
+MvrECEFCoords::ECEF2ENU(MvrECEFCoords ref)
 {
   //    function [e,n,u] = xyz2enuTest(Xr, Yr, Zr, X, Y, Z)
 
@@ -159,7 +132,7 @@ ArECEFCoords::ECEF2ENU(MvrECEFCoords ref)
  *
  */
 MVREXPORT MvrECEFCoords
-ArLLACoords::LLA2ECEF(void)
+MvrLLACoords::LLA2ECEF(void)
 {
   // LLA2ECEF - convert latitude, longitude, and altitude to
   // earth-centered, earth-fixed (ECEF) cartesian
@@ -213,7 +186,7 @@ ArLLACoords::LLA2ECEF(void)
  *
  */
 MVREXPORT MvrECEFCoords
-ArENUCoords::ENU2ECEF(MvrLLACoords ref)
+MvrENUCoords::ENU2ECEF(MvrLLACoords ref)
 {
 
   // function [X, Y, Z] = enu2xyz(refLat, refLong, refH, e, n, u)
@@ -264,7 +237,7 @@ ArENUCoords::ENU2ECEF(MvrLLACoords ref)
  *
  */
 MVREXPORT bool
-ArMapGPSCoords::convertLLA2MapCoords(const double lat, const double lon, const double alt,
+MvrMapGPSCoords::convertLLA2MapCoords(const double lat, const double lon, const double alt,
 				     double& ea, double& no, double& up) const
 {						    
   if(!myOriginSet)
@@ -296,7 +269,7 @@ ArMapGPSCoords::convertLLA2MapCoords(const double lat, const double lon, const d
  * @return true if conversion is possible else false.
  */
 MVREXPORT bool
-ArMapGPSCoords::convertMap2LLACoords(const double ea, const double no, const double up,
+MvrMapGPSCoords::convertMap2LLACoords(const double ea, const double no, const double up,
 				     double& lat, double& lon, double& alt) const
 {						    
   if(!myOriginSet)

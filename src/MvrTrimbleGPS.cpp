@@ -1,55 +1,28 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrTrimbleGPS.h"
 #include "MvrDeviceConnection.h"
 
 //#define DEBUG_ARTRIMBLEGPS 1
 
 #ifdef DEBUG_ARTRIMBLEGPS
-void ArTrimbleGPS_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
+void MvrTrimbleGPS_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
 #endif
 
-MVREXPORT ArTrimbleGPS::ArTrimbleGPS() :
-  myAuxDataHandler(this, &ArTrimbleGPS::handlePTNLAG001)
+MVREXPORT MvrTrimbleGPS::MvrTrimbleGPS() :
+  myAuxDataHandler(this, &MvrTrimbleGPS::handlePTNLAG001)
 {
   myMutex.setLogName("MvrTrimbleGPS::myMutex");
   addNMEAHandler("NLAG001", &myAuxDataHandler);
 }
 
-MVREXPORT ArTrimbleGPS::~MvrTrimbleGPS() {
+MVREXPORT MvrTrimbleGPS::~MvrTrimbleGPS() {
 }
 
 
-MVREXPORT bool ArTrimbleGPS::initDevice()
+MVREXPORT bool MvrTrimbleGPS::initDevice()
 {
-  if (!ArGPS::initDevice()) return false;
+  if (!MvrGPS::initDevice()) return false;
 
   const int maxpktlen = 10;
   char cmd[maxpktlen];
@@ -74,19 +47,19 @@ MVREXPORT bool ArTrimbleGPS::initDevice()
   // Enable WAAS? 
 
 
-  // Enable NMEA output for some messages that we know the ArGPS class
+  // Enable NMEA output for some messages that we know the MvrGPS class
   // uses. See TSIP manual (Rev C), table 2-106 on pg 2-62. The special message PTNLAG001
   // is always sent if data from a second device is recieved and the port
   // protocols/formats are set up correctly. These commands may not actually
   // have any effect if the messages are selected in the configuration using
   // AgRemote anyway.
-  const ArTypes::Byte4 maskGGA = 0x00000001;
-  const ArTypes::Byte4 maskGSV = 0x00000008;
-  const ArTypes::Byte4 maskGSA = 0x00000010;
-  const ArTypes::Byte4 maskRMC = 0x00000080;
-  const ArTypes::Byte4 maskGST = 0x00000400;
-  const ArTypes::Byte4 maskMSS = 0x00001000;
-  const ArTypes::Byte4 mask = maskGGA|maskGSA|maskRMC|maskGSV|maskMSS|maskGST;
+  const MvrTypes::Byte4 maskGGA = 0x00000001;
+  const MvrTypes::Byte4 maskGSV = 0x00000008;
+  const MvrTypes::Byte4 maskGSA = 0x00000010;
+  const MvrTypes::Byte4 maskRMC = 0x00000080;
+  const MvrTypes::Byte4 maskGST = 0x00000400;
+  const MvrTypes::Byte4 maskMSS = 0x00001000;
+  const MvrTypes::Byte4 mask = maskGGA|maskGSA|maskRMC|maskGSV|maskMSS|maskGST;
   const int nmeapktlen = 10;
   cmd[0] = (char)0x10;  // command header
   cmd[1] = (char)0x7A;  // general NMEA command id
@@ -105,7 +78,7 @@ MVREXPORT bool ArTrimbleGPS::initDevice()
   // will have value 0x10.
 
 #ifdef DEBUG_ARTRIMBLEGPS
-  printf("XXX ArTrimbleGPS sending command: hdr=0x%x, id=0x%x, sid=0x%x, int=%d, mask1=0x%x, mask2=0x%x, mask3=0x%x, mask=0x%x [<-those four bytes should match mask 0x%x, but with MSB first], tail1=0x%x, tail2=0x%x.\n", 
+  printf("XXX MvrTrimbleGPS sending command: hdr=0x%x, id=0x%x, sid=0x%x, int=%d, mask1=0x%x, mask2=0x%x, mask3=0x%x, mask=0x%x [<-those four bytes should match mask 0x%x, but with MSB first], tail1=0x%x, tail2=0x%x.\n", 
       (int)cmd[0] & 0xFF, (int)cmd[1] & 0xFF, (int)cmd[2] & 0xFF, 
       (int)cmd[3] & 0xFF, (int)cmd[4] & 0xFF, (int)cmd[5] & 0xFF, 
       (int)cmd[6] & 0xFF, (int)cmd[7] & 0xFF, mask,
@@ -127,11 +100,11 @@ MVREXPORT bool ArTrimbleGPS::initDevice()
  * part of the design of NMEA and which would make life easy, Trimble 
  * wraps messages in a proprietary message  PTNLAG001. This handler
  * just re-serializes the contents of that message and bounces
- * it back to ArGPS for further parsing.
+ * it back to MvrGPS for further parsing.
  */
-void ArTrimbleGPS::handlePTNLAG001(MvrNMEAParser::Message m)
+void MvrTrimbleGPS::handlePTNLAG001(MvrNMEAParser::Message m)
 {
-  ArNMEAParser::MessageVector *message = m.message;
+  MvrNMEAParser::MessageVector *message = m.message;
   if(message->size() < 2) return;
   std::string text;
   size_t len = 0;
@@ -155,12 +128,12 @@ void ArTrimbleGPS::handlePTNLAG001(MvrNMEAParser::Message m)
 }
 
 
-MVREXPORT bool ArTrimbleGPS::sendTSIPCommand(char cmd, const char *data, size_t size)
+MVREXPORT bool MvrTrimbleGPS::sendTSIPCommand(char cmd, const char *data, size_t size)
 {
 #ifdef DEBUG_ARTRIMBLEGPS
-  ArLog::log(MvrLog::Normal, "MvrTrimbleGPS sending command 0x%X to GPS, with data:", cmd & 0xFF);
+  MvrLog::log(MvrLog::Normal, "MvrTrimbleGPS sending command 0x%X to GPS, with data:", cmd & 0xFF);
   printf("\t");
-  ArTrimbleGPS_printTransUnprintable(data, size);
+  MvrTrimbleGPS_printTransUnprintable(data, size);
   puts("");
 #endif
 

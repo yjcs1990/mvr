@@ -279,9 +279,9 @@ MVREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position
    Use this function to clean up or uninitialize Mvria, in particular,
    to stop background threads.
 
-   This calls stop() on all ArThread's and ArASyncTask's. It will
-   block until all ArThread's and ArASyncTask's exit. It is expected
-   that all the tasks will obey the ArThread::myRunning variable and
+   This calls stop() on all MvrThread's and MvrASyncTask's. It will
+   block until all MvrThread's and MvrASyncTask's exit. It is expected
+   that all the tasks will obey the MvrThread::myRunning variable and
    exit when it is false. Note, this only stop Mvria's background threads,
    it does not exit the program. 
 */
@@ -558,7 +558,7 @@ MVREXPORT MvrJoyHandler *Mvria::getJoyHandler(void)
   return ourJoyHandler;
 }
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 /// Sets the robot joy handler, so that other classes can find it
 MVREXPORT void Mvria::setRobotJoyHandler(MvrRobotJoyHandler *robotJoyHandler)
 {
@@ -774,7 +774,7 @@ MVREXPORT bool Mvria::laserAddCreator(const char *laserType, MvrRetFunctor2<MvrL
 
 /**
    Gets a string that is the types of lasers that can be created
-   separated by | characters.  Mostly for internal use by ArLaserConnector.
+   separated by | characters.  Mostly for internal use by MvrLaserConnector.
 **/
 MVREXPORT const char *Mvria::laserGetTypes(void)
 {

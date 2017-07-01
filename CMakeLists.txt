@@ -87,5 +87,5 @@ ADD_LIBRARY(Mvria SHARED
     )
 
 # ADD_EXECUTABLE(MVRTest tests/test.cpp)
-ADD_EXECUTABLE(timeTest tests/timeTest.cpp)
-target_link_libraries(timeTest ${LIBRARY_OUTPUT_PATH}/libMvria.so)
+# ADD_EXECUTABLE(timeTest tests/timeTest.cpp)
+# target_link_libraries(timeTest ${LIBRARY_OUTPUT_PATH}/libMvria.so)

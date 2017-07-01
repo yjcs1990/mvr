@@ -1,48 +1,22 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrActionKeydrive.h"
 #include "MvrRobot.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include "MvrKeyHandler.h"
 
-MVREXPORT MvrActionKeydrive::ArActionKeydrive(const char *name,
+MVREXPORT MvrActionKeydrive::MvrActionKeydrive(const char *name,
 					    double transVelMax,
 					    double turnAmountMax,
 					    double velIncrement,
 					    double turnIncrement)
   :
   MvrAction(name, "This action reads the keyboard arrow keys and sets the translational and rotational velocities based on this."),
-  myUpCB(this, &ArActionKeydrive::up),
-  myDownCB(this, &ArActionKeydrive::down),
-  myLeftCB(this, &ArActionKeydrive::left),
-  myRightCB(this, &ArActionKeydrive::right),
-  mySpaceCB(this, &ArActionKeydrive::space)
+  myUpCB(this, &MvrActionKeydrive::up),
+  myDownCB(this, &MvrActionKeydrive::down),
+  myLeftCB(this, &MvrActionKeydrive::left),
+  myRightCB(this, &MvrActionKeydrive::right),
+  mySpaceCB(this, &MvrActionKeydrive::space)
 {
   setNextArgument(MvrArg("trans vel max", &myTransVelMax, "The maximum speed to go (mm/sec)"));
   myTransVelMax = transVelMax;
@@ -195,7 +169,7 @@ MVREXPORT void MvrActionKeydrive::deactivate(void)
   myTurnAmount = 0;
 }
 
-MVREXPORT MvrActionDesired *ArActionKeydrive::fire(MvrActionDesired currentDesired)
+MVREXPORT MvrActionDesired *MvrActionKeydrive::fire(MvrActionDesired currentDesired)
 {
   myDesired.reset();
 

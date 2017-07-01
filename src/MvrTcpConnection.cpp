@@ -1,45 +1,19 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrTcpConnection.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
-MVREXPORT ArTcpConnection::ArTcpConnection()
+MVREXPORT MvrTcpConnection::MvrTcpConnection()
 {
   myStatus = STATUS_NEVER_OPENED;
   buildStrMap();
   myOwnSocket = true;
-  mySocket = new ArSocket();
+  mySocket = new MvrSocket();
   setPortType("tcp");
 }
 
-MVREXPORT ArTcpConnection::~MvrTcpConnection()
+MVREXPORT MvrTcpConnection::~MvrTcpConnection()
 {
   if (myOwnSocket)
     delete mySocket;
@@ -51,7 +25,7 @@ MVREXPORT ArTcpConnection::~MvrTcpConnection()
    connection.
    @param socket the socket to use
 **/
-MVREXPORT void ArTcpConnection::setSocket(MvrSocket *socket)
+MVREXPORT void MvrTcpConnection::setSocket(MvrSocket *socket)
 {
   if (myOwnSocket)
   {
@@ -61,17 +35,17 @@ MVREXPORT void ArTcpConnection::setSocket(MvrSocket *socket)
   mySocket = socket;
 }
 
-MVREXPORT ArSocket *ArTcpConnection::getSocket(void)
+MVREXPORT MvrSocket *MvrTcpConnection::getSocket(void)
 {
   return mySocket;
 }
 
-MVREXPORT void ArTcpConnection::setStatus(int status)
+MVREXPORT void MvrTcpConnection::setStatus(int status)
 {
   myStatus = status;
 }
 
-MVREXPORT void ArTcpConnection::setPort(const char *host, int port)
+MVREXPORT void MvrTcpConnection::setPort(const char *host, int port)
 {
   myPortNum = port;
 
@@ -90,7 +64,7 @@ MVREXPORT void ArTcpConnection::setPort(const char *host, int port)
   setPortName(portName.c_str());
 }
 
-MVREXPORT bool ArTcpConnection::openSimple(void)
+MVREXPORT bool MvrTcpConnection::openSimple(void)
 {
   if (internalOpen() == 0)
     return true;
@@ -106,20 +80,20 @@ connection)
    @return 0 for success, otherwise one of the open enums
    @see getOpenMessage
 */
-MVREXPORT int ArTcpConnection::open(const char *host, int port)
+MVREXPORT int MvrTcpConnection::open(const char *host, int port)
 {
   setPort(host, port);
   return internalOpen();
 }
 
-MVREXPORT int ArTcpConnection::internalOpen(void)
+MVREXPORT int MvrTcpConnection::internalOpen(void)
 {
   mySocket->init();
 
-  ArLog::log(MvrLog::Verbose, "MvrTcpConnection::internalOpen: Connecting to %s %d", myHostName.c_str(), myPortNum);
+  MvrLog::log(MvrLog::Verbose, "MvrTcpConnection::internalOpen: Connecting to %s %d", myHostName.c_str(), myPortNum);
 
   if (mySocket->connect(const_cast<char *>(myHostName.c_str()), myPortNum,
-		       ArSocket::TCP)) 
+		       MvrSocket::TCP)) 
   {
     myStatus = STATUS_OPEN;
     mySocket->setNonBlock();
@@ -130,23 +104,23 @@ MVREXPORT int ArTcpConnection::internalOpen(void)
   myStatus = STATUS_OPEN_FAILED;
   switch(mySocket->getError())
   {
-  case ArSocket::NetFail:
+  case MvrSocket::NetFail:
     return OPEN_NET_FAIL;
-  case ArSocket::ConBadHost:
+  case MvrSocket::ConBadHost:
     return OPEN_BAD_HOST;
-  case ArSocket::ConNoRoute:
+  case MvrSocket::ConNoRoute:
     return OPEN_NO_ROUTE;
-  case ArSocket::ConRefused:
+  case MvrSocket::ConRefused:
     return OPEN_CON_REFUSED;
-  case ArSocket::NoErr:
-    ArLog::log(MvrLog::Terse, "MvrTcpConnection::open: No error!\n");
+  case MvrSocket::NoErr:
+    MvrLog::log(MvrLog::Terse, "MvrTcpConnection::open: No error!\n");
   default:
     return -1;
   }
 
 }
 
-void ArTcpConnection::buildStrMap(void)
+void MvrTcpConnection::buildStrMap(void)
 {
   myStrMap[OPEN_NET_FAIL] = "Network failed.";
   myStrMap[OPEN_BAD_HOST] = "Could not find host.";
@@ -154,27 +128,27 @@ void ArTcpConnection::buildStrMap(void)
   myStrMap[OPEN_CON_REFUSED] = "Connection refused.";
 }
 
-MVREXPORT const char *ArTcpConnection::getOpenMessage(int messageNumber)
+MVREXPORT const char *MvrTcpConnection::getOpenMessage(int messageNumber)
 {
   return myStrMap[messageNumber].c_str();
 }
 
-MVREXPORT bool ArTcpConnection::close(void)
+MVREXPORT bool MvrTcpConnection::close(void)
 {
   myStatus = STATUS_CLOSED_NORMALLY;
   return mySocket->close();
 }
 
-MVREXPORT int ArTcpConnection::read(const char *data, unsigned int size, 
+MVREXPORT int MvrTcpConnection::read(const char *data, unsigned int size, 
 				   unsigned int msWait)
 {
-  ArTime timeDone;
+  MvrTime timeDone;
   unsigned int bytesRead = 0;
   int n;
 
   if (getStatus() != STATUS_OPEN) 
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "MvrTcpConnection::read: Attempt to use port that is not open.");
     return -1;
   }
@@ -183,7 +157,7 @@ MVREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
   int timeToWait;  
   timeDone.setToNow();
   if (!timeDone.addMSec(msWait)) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrTcpConnection::read() error adding msecs (%i)",
                msWait);
   }
@@ -196,10 +170,10 @@ MVREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
     // if the sockets empty don't read it, but pause some
     if (mySocket->getFD() < 0)
     {
-      ArLog::log(MvrLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 		 "MvrTcpConnection::read: Attempt to read port that already closed. (%d)", timeToWait);
       if (timeToWait > 0)
-	ArUtil::sleep(timeToWait);
+	MvrUtil::sleep(timeToWait);
       return -1;
     }
 
@@ -207,7 +181,7 @@ MVREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
 		       timeToWait);
     /*if (n == -1) 
     {
-      ArLog::log("MvrTcpConnection::read: read failed.");
+      MvrLog::log("MvrTcpConnection::read: read failed.");
       return -1;
       } */
     //printf("%ld %d %d\n", timeDone.mSecTo(), n, size);
@@ -220,20 +194,20 @@ MVREXPORT int ArTcpConnection::read(const char *data, unsigned int size,
   return bytesRead;
 }
 
-MVREXPORT int ArTcpConnection::write(const char *data, unsigned int size)
+MVREXPORT int MvrTcpConnection::write(const char *data, unsigned int size)
 {
   int ret;
 
   if (getStatus() != STATUS_OPEN) 
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "MvrTcpConnection::write: Attempt to use port that is not open.");
     return -1;
   }
   if ((ret = mySocket->write(data, size)) != -1)
     return ret;
 
-  ArLog::log(MvrLog::Terse, "MvrTcpConnection::write: Write failed, closing connection.");
+  MvrLog::log(MvrLog::Terse, "MvrTcpConnection::write: Write failed, closing connection.");
   close();
   return -1;
 }
@@ -243,7 +217,7 @@ MVREXPORT int ArTcpConnection::write(const char *data, unsigned int size)
     @return the name of the host connected to
     @see getPort
 */
-MVREXPORT std::string ArTcpConnection::getHost(void)
+MVREXPORT std::string MvrTcpConnection::getHost(void)
 {
   return myHostName;
 }
@@ -252,24 +226,24 @@ MVREXPORT std::string ArTcpConnection::getHost(void)
    @return the number of the port connected to
    @see getHost
 */
-MVREXPORT int ArTcpConnection::getPort(void)
+MVREXPORT int MvrTcpConnection::getPort(void)
 {
   return myPortNum;
 }
 
-MVREXPORT int ArTcpConnection::getStatus(void)
+MVREXPORT int MvrTcpConnection::getStatus(void)
 {
   return myStatus;
 }
 
-MVREXPORT bool ArTcpConnection::isTimeStamping(void)
+MVREXPORT bool MvrTcpConnection::isTimeStamping(void)
 {
   return false;
 }
 
-MVREXPORT ArTime ArTcpConnection::getTimeRead(int index)
+MVREXPORT MvrTime MvrTcpConnection::getTimeRead(int index)
 {
-  ArTime now;
+  MvrTime now;
   now.setToNow();
   return now;
 }

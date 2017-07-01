@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSocket.h"
 #include "MvrLog.h"
 #include <errno.h>
@@ -38,19 +12,19 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <netinet/tcp.h>
 
 /// We're always initialized in Linux
-bool ArSocket::ourInitialized=true;
+bool MvrSocket::ourInitialized=true;
 
 
 /**
    In Windows, the networking subsystem needs to be initialized and shutdown
    individyaly by each program. So when a program starts they will need to
-   call the static function ArSocket::init() and call ArSocket::shutdown()
-   when it exits. For programs that use Aria::init() and Aria::uninit()
-   calling the ArSocket::init() and ArSocket::shutdown() is unnecessary. The
-   Aria initialization functions take care of this. These functions do nothing
+   call the static function MvrSocket::init() and call MvrSocket::shutdown()
+   when it exits. For programs that use Mvria::init() and Mvria::uninit()
+   calling the MvrSocket::init() and MvrSocket::shutdown() is unnecessary. The
+   Mvria initialization functions take care of this. These functions do nothing
    in Linux.
 */
-bool ArSocket::init()
+bool MvrSocket::init()
 {
   return(true);
 }
@@ -58,17 +32,17 @@ bool ArSocket::init()
 /**
    In Windows, the networking subsystem needs to be initialized and shutdown
    individyaly by each program. So when a program starts they will need to
-   call the static function ArSocket::init() and call ArSocket::shutdown()
-   when it exits. For programs that use Aria::init() and Aria::uninit()
-   calling the ArSocket::init() and ArSocket::shutdown() is unnecessary. The
-   Aria initialization functions take care of this. These functions do nothing
+   call the static function MvrSocket::init() and call MvrSocket::shutdown()
+   when it exits. For programs that use Mvria::init() and Mvria::uninit()
+   calling the MvrSocket::init() and MvrSocket::shutdown() is unnecessary. The
+   Mvria initialization functions take care of this. These functions do nothing
    in Linux.
 */
-void ArSocket::shutdown()
+void MvrSocket::shutdown()
 {
 }
 
-ArSocket::ArSocket() :
+MvrSocket::MvrSocket() :
   myType(Unknown),
   myError(NoErr),
   myErrorStr(),
@@ -86,7 +60,7 @@ ArSocket::ArSocket() :
    @param port port number of the server to connect to
    @param type protocol type to use
 */
-ArSocket::ArSocket(const char *host, int port, Type type) :
+MvrSocket::MvrSocket(const char *host, int port, Type type) :
   myType(type),
   myError(NoErr),
   myErrorStr(),
@@ -99,7 +73,7 @@ ArSocket::ArSocket(const char *host, int port, Type type) :
   connect(host, port, type);
 }
 
-ArSocket::ArSocket(int port, bool doClose, Type type) :
+MvrSocket::MvrSocket(int port, bool doClose, Type type) :
   myType(type),
   myError(NoErr),
   myErrorStr(),
@@ -112,17 +86,17 @@ ArSocket::ArSocket(int port, bool doClose, Type type) :
   open(port, type);
 }
 
-ArSocket::~MvrSocket()
+MvrSocket::~MvrSocket()
 {
   close();
 }
 
-bool ArSocket::hostAddr(const char *host, struct in_addr &addr)
+bool MvrSocket::hostAddr(const char *host, struct in_addr &addr)
 {
   struct hostent *hp;
   if (!(hp=gethostbyname(host)))
   {
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::hostAddr: gethostbyname failed");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::hostAddr: gethostbyname failed");
     memset(&addr, 0, sizeof(in_addr));
     return(false);
   }
@@ -133,7 +107,7 @@ bool ArSocket::hostAddr(const char *host, struct in_addr &addr)
   }
 }
 
-bool ArSocket::addrHost(struct in_addr &addr, char *host)
+bool MvrSocket::addrHost(struct in_addr &addr, char *host)
 {
   struct hostent *hp;
 
@@ -146,7 +120,7 @@ bool ArSocket::addrHost(struct in_addr &addr, char *host)
   return(true);
 }
 
-std::string ArSocket::getHostName()
+std::string MvrSocket::getHostName()
 {
   char localhost[maxHostNameLen()];
 
@@ -156,7 +130,7 @@ std::string ArSocket::getHostName()
     return(localhost);
 }
 
-bool ArSocket::connect(const char *host, int port, Type type,
+bool MvrSocket::connect(const char *host, int port, Type type,
 		       const char *openOnIP)
 {
   char localhost[maxHostNameLen()];
@@ -170,7 +144,7 @@ bool ArSocket::connect(const char *host, int port, Type type,
       myErrorStr="Failure to locate host '";
       myErrorStr+=localhost;
       myErrorStr+="'";
-      ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: gethostname failed");
+      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: gethostname failed");
       return(false);
     }
     host=localhost;
@@ -195,18 +169,18 @@ bool ArSocket::connect(const char *host, int port, Type type,
   {
     myError=NetFail;
     myErrorStr="Failure to make TCP socket";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make tcp socket");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make tcp socket");
     return(false);
   }
   else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
   {
     myError=NetFail;
     myErrorStr="Failure to make UDP socket";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make udp socket");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make udp socket");
     return(false);
   }
 
-  ArUtil::setFileCloseOnExec(myFD);
+  MvrUtil::setFileCloseOnExec(myFD);
 
   if (openOnIP != NULL)
   {
@@ -215,14 +189,14 @@ bool ArSocket::connect(const char *host, int port, Type type,
     {
       myError = NameLookup;
       myErrorStr = "Name lookup failed";
-      ArLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
+      MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
       return(false); 
     }
     outSin.sin_family=AF_INET;
     outSin.sin_port=hostToNetOrder(0);
     if (bind(myFD, (struct sockaddr *)&outSin, sizeof(outSin)) < 0)
     {
-      ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: Failure to bind socket to port %d", 0);
+      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: Failure to bind socket to port %d", 0);
       return(false);
     }
   }
@@ -247,7 +221,7 @@ bool ArSocket::connect(const char *host, int port, Type type,
       myError=NetFail;
       break;
     }
-    ArLog::logErrorFromOS(MvrLog::Verbose, "MvrSocket::connect: could not connect");
+    MvrLog::logErrorFromOS(MvrLog::Verbose, "MvrSocket::connect: could not connect");
 
     ::close(myFD);
     myFD = -1;
@@ -258,7 +232,7 @@ bool ArSocket::connect(const char *host, int port, Type type,
 }
 
 /** @return false and set error code and description string on failure  */
-bool ArSocket::open(int port, Type type, const char *openOnIP)
+bool MvrSocket::open(int port, Type type, const char *openOnIP)
 {
   int ret;
   char localhost[maxHostNameLen()];
@@ -268,17 +242,17 @@ bool ArSocket::open(int port, Type type, const char *openOnIP)
   if ((type == TCP) && ((myFD=socket(AF_INET, SOCK_STREAM, 0)) < 0))
   {
     myErrorStr="Failure to make TCP socket";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create tcp socket");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create tcp socket");
     return(false);
   }
   else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
   {
     myErrorStr="Failure to make UDP socket";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create udp socket");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create udp socket");
     return(false);
   }
 
-  ArUtil::setFileCloseOnExec(myFD);
+  MvrUtil::setFileCloseOnExec(myFD);
 
   setLinger(0);
   setReuseAddress();
@@ -289,7 +263,7 @@ bool ArSocket::open(int port, Type type, const char *openOnIP)
   if (gethostname(localhost, sizeof(localhost)) == 1)
   {
     myErrorStr="Failure to locate localhost";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: gethostname failed");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: gethostname failed");
     return(false);
   }
   */
@@ -306,7 +280,7 @@ bool ArSocket::open(int port, Type type, const char *openOnIP)
     
     if (!hostAddr(openOnIP, mySin.sin_addr))
     {
-      ArLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
+      MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
       myError = NameLookup;
       myErrorStr = "Name lookup failed";
       ::close(myFD);
@@ -333,7 +307,7 @@ bool ArSocket::open(int port, Type type, const char *openOnIP)
     myErrorStr="Failure to bind socket to port ";
     sprintf(localhost, "%d", port);
     myErrorStr+=localhost;
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not bind");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not bind");
     ::close(myFD);
     myFD = -1;
     return(false);
@@ -343,7 +317,7 @@ bool ArSocket::open(int port, Type type, const char *openOnIP)
   {
     myError = NetFail;
     myErrorStr="Failure to listen on socket";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not listen");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not listen");
     ::close(myFD);
     myFD = -1;
     return(false);
@@ -354,7 +328,7 @@ bool ArSocket::open(int port, Type type, const char *openOnIP)
 }
 
 /** @return false and set error code and description string on failure  */
-bool ArSocket::create(Type type)
+bool MvrSocket::create(Type type)
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -363,18 +337,18 @@ bool ArSocket::create(Type type)
   {
     myError = NetFail;
     myErrorStr="Failure to make TCP socket";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create tcp socket");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create tcp socket");
     return(false);
   }
   else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
   {
     myError = NetFail;
     myErrorStr="Failure to make UDP socket";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create udp socket");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create udp socket");
     return(false);
   }
 
-  ArUtil::setFileCloseOnExec(myFD);
+  MvrUtil::setFileCloseOnExec(myFD);
 
   myType=type;
 
@@ -385,7 +359,7 @@ bool ArSocket::create(Type type)
 }
 
 /** @return false on error */
-bool ArSocket::findValidPort(int startPort, const char *openOnIP)
+bool MvrSocket::findValidPort(int startPort, const char *openOnIP)
 {
   //char localhost[maxHostNameLen()];
 
@@ -393,7 +367,7 @@ bool ArSocket::findValidPort(int startPort, const char *openOnIP)
   if (gethostname(localhost, sizeof(localhost)) == 1)
   {
     myErrorStr="Failure to locate localhost";
-    ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::findValidPort: gethostname failed");
+    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::findValidPort: gethostname failed");
     return(false);
   }
   */
@@ -413,7 +387,7 @@ bool ArSocket::findValidPort(int startPort, const char *openOnIP)
       
       if (!hostAddr(openOnIP, mySin.sin_addr))
       {
-	ArLog::log(MvrLog::Normal, "Couldn't find ip of %s to open udp on", openOnIP);
+	MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open udp on", openOnIP);
 	return(false); 
       }
       else
@@ -437,7 +411,7 @@ bool ArSocket::findValidPort(int startPort, const char *openOnIP)
 }
 
 /** @return false and set error code and description string on failure */
-bool ArSocket::connectTo(const char *host, int port)
+bool MvrSocket::connectTo(const char *host, int port)
 {
   char localhost[maxHostNameLen()];
   myError = NoErr;
@@ -452,7 +426,7 @@ bool ArSocket::connectTo(const char *host, int port)
       myErrorStr="Failure to locate host '";
       myErrorStr+=localhost;
       myErrorStr+="'";
-      ArLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connectTo: gethostname failed");
+      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connectTo: gethostname failed");
       return(false);
     }
     host=localhost;
@@ -474,7 +448,7 @@ bool ArSocket::connectTo(const char *host, int port)
 }
 
 /** @return false and set error code and description string on failure */
-bool ArSocket::connectTo(struct sockaddr_in *sin)
+bool MvrSocket::connectTo(struct sockaddr_in *sin)
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -483,7 +457,7 @@ bool ArSocket::connectTo(struct sockaddr_in *sin)
   {
     myErrorStr="Failure to connect socket";
     myError = ConRefused;
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSocket::connectTo: connect failed");
     return(0);
   }
@@ -493,11 +467,11 @@ bool ArSocket::connectTo(struct sockaddr_in *sin)
 }
 
 
-bool ArSocket::close()
+bool MvrSocket::close()
 {
   if (myFD == -1)
     return true;
-  ArLog::log(MvrLog::Verbose, "Closing socket");
+  MvrLog::log(MvrLog::Verbose, "Closing socket");
   if (myCloseFunctor != NULL)
     myCloseFunctor->invoke();
   if (myDoClose && ::close(myFD))
@@ -513,7 +487,7 @@ bool ArSocket::close()
 }
 
 /** @return false and set error code and description string on failure. */
-bool ArSocket::setLinger(int time)
+bool MvrSocket::setLinger(int time)
 {
   struct linger lin;
   myError = NoErr;
@@ -534,7 +508,7 @@ bool ArSocket::setLinger(int time)
   {
     myErrorStr="Failure to setsockopt LINGER";
     myError = NetFail;
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSocket::setLinger: setsockopt failed");
     return(false);
   }
@@ -543,7 +517,7 @@ bool ArSocket::setLinger(int time)
 }
 
 /** @return false and set error code and description string on failure. */
-bool ArSocket::setBroadcast()
+bool MvrSocket::setBroadcast()
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -551,7 +525,7 @@ bool ArSocket::setBroadcast()
   {
     myErrorStr="Failure to setsockopt BROADCAST";
     myError = NetFail;
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSocket::setBroadcast: setsockopt failed");
     return(false);
   }
@@ -561,11 +535,11 @@ bool ArSocket::setBroadcast()
 
 /** @return false and set error code and description string on failure. 
     @internal
-    @note ArSocket always sets the reuse-address option in open(), so calling this function is normally unneccesary.
+    @note MvrSocket always sets the reuse-address option in open(), so calling this function is normally unneccesary.
      (This apparently needs to be done after the socket is created before
      the socket is bound.)
 */
-bool ArSocket::setReuseAddress()
+bool MvrSocket::setReuseAddress()
 {
   int opt=1;
   myError = NoErr;
@@ -575,7 +549,7 @@ bool ArSocket::setReuseAddress()
   {
     myErrorStr="Failure to setsockopt REUSEADDR";
     myError = NetFail;
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSocket::setReuseAddress: setsockopt failed");
     return(false);
   }
@@ -584,7 +558,7 @@ bool ArSocket::setReuseAddress()
 }
 
 /** @return false and set error code and description string on failure.  */
-bool ArSocket::setNonBlock()
+bool MvrSocket::setNonBlock()
 {
   myError = NoErr;
   myErrorStr.clear();
@@ -592,7 +566,7 @@ bool ArSocket::setNonBlock()
   {
     myErrorStr="Failure to fcntl O_NONBLOCK";
     myError = NetFail;
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSocket::setNonBlock: fcntl failed");
     return(false);
   }
@@ -608,7 +582,7 @@ bool ArSocket::setNonBlock()
    the first socket close the file descripter when it is destructed.
  @return false and set error code and description string on failure.  
 */
-bool ArSocket::copy(int fd, bool doclose)
+bool MvrSocket::copy(int fd, bool doclose)
 {
   socklen_t len;
 
@@ -621,7 +595,7 @@ bool ArSocket::copy(int fd, bool doclose)
   {
     myErrorStr="Failed to getsockname on fd ";
     myError = NetFail;
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSocket::copy: getsockname failed");
     return(false);
   }
@@ -636,7 +610,7 @@ bool ArSocket::copy(int fd, bool doclose)
    getFD on the sock you pass in to see if it is actually a valid
    socket.
  **/
-bool ArSocket::accept(MvrSocket *sock)
+bool MvrSocket::accept(MvrSocket *sock)
 {
   socklen_t len;
   //unsigned char *bytes;
@@ -659,7 +633,7 @@ bool ArSocket::accept(MvrSocket *sock)
   {
     myErrorStr="Failed to accept on socket";
     myError = ConRefused;
-    ArLog::logErrorFromOS(MvrLog::Terse, 
+    MvrLog::logErrorFromOS(MvrLog::Terse, 
 			  "MvrSocket::accept: accept failed");
     return(false);
   }
@@ -667,12 +641,12 @@ bool ArSocket::accept(MvrSocket *sock)
   return(true);
 }
 
-void ArSocket::inToA(struct in_addr *addr, char *buff)
+void MvrSocket::inToA(struct in_addr *addr, char *buff)
 {
   strcpy(buff, inet_ntoa(*addr));
 }
 
-bool ArSocket::getSockName()
+bool MvrSocket::getSockName()
 {
   socklen_t size;
   myError = NoErr;
@@ -690,7 +664,7 @@ bool ArSocket::getSockName()
   {
     myErrorStr="Error getting socket name";
     myError = NetFail;
-    ArLog::logErrorFromOS(MvrLog::Normal, 
+    MvrLog::logErrorFromOS(MvrLog::Normal, 
 			  "MvrSocket::getSockName: getSockName failed");
     return(false);
   }
@@ -698,12 +672,12 @@ bool ArSocket::getSockName()
   return(true);
 }
 
-unsigned int ArSocket::hostToNetOrder(int i)
+unsigned int MvrSocket::hostToNetOrder(int i)
 {
   return(htons(i));
 }
 
-unsigned int ArSocket::netToHostOrder(int i)
+unsigned int MvrSocket::netToHostOrder(int i)
 {
   return(ntohs(i));
 }
@@ -716,7 +690,7 @@ unsigned int ArSocket::netToHostOrder(int i)
  *  @return true of the flag was successfully set, false if there was an 
  *    error or this socket is not a TCP socket.
  */
-bool ArSocket::setNoDelay(bool flag)
+bool MvrSocket::setNoDelay(bool flag)
 {
   if(myType != TCP) return false;
   int f = flag?1:0;

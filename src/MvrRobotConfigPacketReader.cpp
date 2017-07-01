@@ -1,30 +1,4 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrExport.h"
 #include "MvrRobotConfigPacketReader.h"
 #include "MvrRobot.h"
@@ -41,10 +15,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param packetArrivedCB a functor to call when the packet comes in,
    note the robot is locked during this callback
  **/
-MVREXPORT ArRobotConfigPacketReader::ArRobotConfigPacketReader(
-	ArRobot *robot, bool onlyOneRequest, ArFunctor *packetArrivedCB) : 
-  myPacketHandlerCB(this, &ArRobotConfigPacketReader::packetHandler),
-  myConnectedCB(this, &ArRobotConfigPacketReader::connected)
+MVREXPORT MvrRobotConfigPacketReader::MvrRobotConfigPacketReader(
+	MvrRobot *robot, bool onlyOneRequest, MvrFunctor *packetArrivedCB) : 
+  myPacketHandlerCB(this, &MvrRobotConfigPacketReader::packetHandler),
+  myConnectedCB(this, &MvrRobotConfigPacketReader::connected)
 {
   myRobot = robot;
   myPacketHandlerCB.setName("MvrRobotConfigPacketReader");
@@ -56,13 +30,13 @@ MVREXPORT ArRobotConfigPacketReader::ArRobotConfigPacketReader(
   myPacketArrivedCB = packetArrivedCB;
 }
 
-MVREXPORT ArRobotConfigPacketReader::~MvrRobotConfigPacketReader(void)
+MVREXPORT MvrRobotConfigPacketReader::~MvrRobotConfigPacketReader(void)
 {
   myRobot->remPacketHandler(&myPacketHandlerCB);
   myRobot->remConnectCB(&myConnectedCB);
 }
 
-MVREXPORT bool ArRobotConfigPacketReader::requestPacket(void)
+MVREXPORT bool MvrRobotConfigPacketReader::requestPacket(void)
 {
   // make sure we haven't already gotten one
   if (myOnlyOneRequest && myPacketArrived)
@@ -78,13 +52,13 @@ MVREXPORT bool ArRobotConfigPacketReader::requestPacket(void)
   return true;
 }
 
-MVREXPORT void ArRobotConfigPacketReader::connected(void)
+MVREXPORT void MvrRobotConfigPacketReader::connected(void)
 {
   if (myPacketRequested)
     myRobot->comInt(MvrCommands::CONFIG, 1);
 }
 
-MVREXPORT bool ArRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
 {
   char buf[256];
 
@@ -201,25 +175,25 @@ MVREXPORT bool ArRobotConfigPacketReader::packetHandler(MvrRobotPacket *packet)
   return true;
 }
   
-MVREXPORT void ArRobotConfigPacketReader::log(void) const
+MVREXPORT void MvrRobotConfigPacketReader::log(void) const
 {
   std::string str;
   str = buildString();
-  ArLog::log(MvrLog::Terse, str.c_str());
+  MvrLog::log(MvrLog::Terse, str.c_str());
 }
 
-MVREXPORT void ArRobotConfigPacketReader::logMovement(void) const
+MVREXPORT void MvrRobotConfigPacketReader::logMovement(void) const
 {
   std::string str;
   str = buildStringMovement();
-  ArLog::log(MvrLog::Terse, str.c_str());
+  MvrLog::log(MvrLog::Terse, str.c_str());
 }
 
 /**
    Like most memory stuff this won't work across DLL's in windows,
    it should work fine in linux or with static library files in windows.
 **/
-MVREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
+MVREXPORT std::string MvrRobotConfigPacketReader::buildString(void) const
 {
   std::string ret;
 
@@ -249,11 +223,11 @@ MVREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
   ret += line;
 
   sprintf(line, "\t(IsBootloader=%d, CanDownloadMTXFirmware=%d, CanDownloadMTXBootloader=%d, NotLegacyGyro=%d, MTXConfigSystem=%d)\n",
-    (flags & ArUtil::BIT0), 
-    (flags & ArUtil::BIT1), 
-    (flags & ArUtil::BIT2), 
-    (flags & ArUtil::BIT3), 
-    (flags & ArUtil::BIT4)
+    (flags & MvrUtil::BIT0), 
+    (flags & MvrUtil::BIT1), 
+    (flags & MvrUtil::BIT2), 
+    (flags & MvrUtil::BIT3), 
+    (flags & MvrUtil::BIT4)
   );
   ret += line;
 
@@ -272,7 +246,7 @@ MVREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
     ret += line;
   }
   sprintf(line, "PWMMax %d ResetBaud %s\n", getPwmMax(),
-	     ArUtil::convertBool(getResetBaud()));
+	     MvrUtil::convertBool(getResetBaud()));
   ret += line;
   sprintf(line, "Current values:\n");
   ret += line;
@@ -292,9 +266,9 @@ MVREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
   ret += line;  
   sprintf(line, 
 	  "Gripper %s FrontSonar %s RearSonar %s Charger %d GyroType %d\n", 
-	  ArUtil::convertBool(getHasGripper()), 
-	  ArUtil::convertBool(getFrontSonar()), 
-	  ArUtil::convertBool(getRearSonar()), 
+	  MvrUtil::convertBool(getHasGripper()), 
+	  MvrUtil::convertBool(getFrontSonar()), 
+	  MvrUtil::convertBool(getRearSonar()), 
 	  getHasCharger(),
 	  getGyroType());
   ret += line;  
@@ -311,7 +285,7 @@ MVREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
   sprintf(line, "GyroRateLimit %d\n",
 	  getGyroRateLimit());
   ret += line;  
-  sprintf(line, "JoyVel %d JoyRVel %d NormalMotorPackets %s\n", getJoyVel(), getJoyRotVel(), ArUtil::convertBool(getNormalMPacs()));
+  sprintf(line, "JoyVel %d JoyRVel %d NormalMotorPackets %s\n", getJoyVel(), getJoyRotVel(), MvrUtil::convertBool(getNormalMPacs()));
   ret += line;  
   sprintf(line, "PID Settings:\n");
   ret += line;  
@@ -370,7 +344,7 @@ MVREXPORT std::string ArRobotConfigPacketReader::buildString(void) const
    Like most memory stuff this won't work across DLL's in windows,
    it should work fine in linux or with static library files in windows.
 **/
-MVREXPORT std::string ArRobotConfigPacketReader::buildStringMovement(void) const
+MVREXPORT std::string MvrRobotConfigPacketReader::buildStringMovement(void) const
 {
   std::string ret;
 

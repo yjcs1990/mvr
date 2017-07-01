@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRROBOTPARAMS_H
+#define MVRROBOTPARAMS_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARROBOTPARAMS_H
-#define ARROBOTPARAMS_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrConfig.h"
 #include <vector>
 
@@ -50,7 +24,7 @@ public:
 	std::string address;
 	int tcpPort; bool tcpPortSet;
 	bool inverted; bool invertedSet;
-	ArVideoParams() :
+	MvrVideoParams() :
 		type("unknown"),
 		connect(false),
 		connectSet(false),
@@ -98,7 +72,7 @@ public:
 	std::string address;
 	int tcpPort; bool tcpPortSet;
 	bool inverted; bool invertedSet;
-	ArPTZParams() :
+	MvrPTZParams() :
 		type("unknown"),
 		connect(false),
 		connectSet(false),
@@ -895,10 +869,10 @@ public:
 #endif
 
   /// return a const reference to the video device parameters
-  const std::vector<ArVideoParams>& getVideoParams() const { return myVideoParams; }
+  const std::vector<MvrVideoParams>& getVideoParams() const { return myVideoParams; }
   
   /// return a const reference to the PTU/PTZ parameters
-  const std::vector<ArPTZParams>& getPTZParams() const { return myPTZParams; }
+  const std::vector<MvrPTZParams>& getPTZParams() const { return myPTZParams; }
 
 protected:
   static bool ourUseDefaultBehavior;
@@ -1229,10 +1203,10 @@ protected:
     int mtxboard = 0, int mtxunit = 0, int mtxgain = 0, int mtxthresh = 0, int mtxmax = 0);
   MVREXPORT bool parseSonarUnit(MvrArgumentBuilder *builder);
   MVREXPORT bool parseMTXSonarUnit(MvrArgumentBuilder *builder);
-	MVREXPORT const std::list<ArArgumentBuilder *> *getSonarUnits(void);
-	//MVREXPORT const std::list<ArArgumentBuilder *> *getMTXSonarUnits(void);
-  std::list<ArArgumentBuilder *> myGetSonarUnitList;
-  MvrRetFunctorC<const std::list<ArArgumentBuilder *> *, MvrRobotParams> mySonarUnitGetFunctor;
+	MVREXPORT const std::list<MvrArgumentBuilder *> *getSonarUnits(void);
+	//MVREXPORT const std::list<MvrArgumentBuilder *> *getMTXSonarUnits(void);
+  std::list<MvrArgumentBuilder *> myGetSonarUnitList;
+  MvrRetFunctorC<const std::list<MvrArgumentBuilder *> *, MvrRobotParams> mySonarUnitGetFunctor;
   MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> mySonarUnitSetFunctor;
 
 
@@ -1257,9 +1231,9 @@ protected:
   };
   MVREXPORT void internalSetIR(int num, int type, int cycles, int x, int y);
   MVREXPORT bool parseIRUnit(MvrArgumentBuilder *builder);
-  MVREXPORT const std::list<ArArgumentBuilder *> *getIRUnits(void);
-  std::list<ArArgumentBuilder *> myGetIRUnitList;
-  MvrRetFunctorC<const std::list<ArArgumentBuilder *> *, MvrRobotParams> myIRUnitGetFunctor;
+  MVREXPORT const std::list<MvrArgumentBuilder *> *getIRUnits(void);
+  std::list<MvrArgumentBuilder *> myGetIRUnitList;
+  MvrRetFunctorC<const std::list<MvrArgumentBuilder *> *, MvrRobotParams> myIRUnitGetFunctor;
   MvrRetFunctor1C<bool, MvrRobotParams, MvrArgumentBuilder *> myIRUnitSetFunctor;
 
   // GPS
@@ -1281,10 +1255,10 @@ protected:
 
 
   // PTZ/PTU parameters
-  std::vector<ArPTZParams> myPTZParams;
+  std::vector<MvrPTZParams> myPTZParams;
 
   // Video device parameters
-  std::vector<ArVideoParams> myVideoParams;  
+  std::vector<MvrVideoParams> myVideoParams;  
 
   MvrConfig *myCommercialConfig;
   bool myCommercialAddedConnectables;
@@ -1301,4 +1275,4 @@ protected:
   MvrRetFunctorC<bool, MvrRobotParams> myCommercialProcessFileCB;
 };
 
-#endif // ARROBOTPARAMS_H
+#endif // MVRROBOTPARAMS_H

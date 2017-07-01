@@ -1,51 +1,24 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
 #include "MvrMapObject.h"
 
-//#define ARDEBUG_MAP_OBJECT
+//#define MVRDEBUG_MAP_OBJECT
 #ifdef ARDEBUG_MAP_OBJECT
 #define IFDEBUG(code) {code;}
 #else
 #define IFDEBUG(code)
 #endif 
 
-MVREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
+MVREXPORT MvrMapObject *MvrMapObject::createMapObject(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() < 7) {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	             "MvrMapObject: 'Cairn:' insufficient arguments '%s'", 
                arg->getFullString());
     return NULL;
   } // end if enough args
 
   bool isSuccess = true;
-  ArMapObject *object = NULL;
+  MvrMapObject *object = NULL;
 
   // Strip the quotes out of the name
   arg->compressQuoted();
@@ -54,9 +27,9 @@ MVREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
   bool yOk = false;
   bool thOk = false;
 
-  ArPose pose;
-  ArPose fromPose;
-  ArPose toPose;
+  MvrPose pose;
+  MvrPose fromPose;
+  MvrPose toPose;
   bool hasFromTo = false;
  
   char *fileBuffer = NULL;
@@ -105,9 +78,9 @@ MVREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
     int fileBufferLen = strlen(fileArg) + 1;
     fileBuffer = new char[fileBufferLen];
   
-     if (!ArUtil::stripQuotes(fileBuffer, fileArg, fileBufferLen))
+     if (!MvrUtil::stripQuotes(fileBuffer, fileArg, fileBufferLen))
      {
-       ArLog::log(MvrLog::Terse, 
+       MvrLog::log(MvrLog::Terse, 
 	                "MvrMapObjects: 'Cairn:' couldn't strip quotes from fileName '%s'", 
 	                fileArg);
        isSuccess = false;
@@ -120,9 +93,9 @@ MVREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
     int nameBufferLen = strlen(nameArg) + 1;
     nameBuffer = new char[nameBufferLen];
   
-    if (!ArUtil::stripQuotes(nameBuffer, nameArg, nameBufferLen))
+    if (!MvrUtil::stripQuotes(nameBuffer, nameArg, nameBufferLen))
     {
-      ArLog::log(MvrLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 	               "MvrMapObjects: 'Cairn:' couldn't strip quotes from name '%s'", 
 	               nameArg);
       isSuccess = false;
@@ -132,7 +105,7 @@ MVREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
   
   if (isSuccess) { 
 
-    object = new ArMapObject(arg->getArg(0), 
+    object = new MvrMapObject(arg->getArg(0), 
                              pose, 
                              fileBuffer,
 			                       arg->getArg(5), 
@@ -161,8 +134,8 @@ MVREXPORT ArMapObject *ArMapObject::createMapObject(MvrArgumentBuilder *arg)
 } // end method createMapObject
 
 
-bool ArMapObject::setObjectDescription(MvrMapObject *object,
-                                       ArArgumentBuilder *arg)
+bool MvrMapObject::setObjectDescription(MvrMapObject *object,
+                                       MvrArgumentBuilder *arg)
 {
   if ((object == NULL) || (arg == NULL)) {
     return false;
@@ -179,9 +152,9 @@ bool ArMapObject::setObjectDescription(MvrMapObject *object,
    size_t descLen = strlen(arg->getArg(descArg)) + 1;
    char *descBuffer = new char[descLen];
 
-   if (!ArUtil::stripQuotes(descBuffer, arg->getArg(descArg), descLen))
+   if (!MvrUtil::stripQuotes(descBuffer, arg->getArg(descArg), descLen))
    {
-      ArLog::log(MvrLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 	        "MvrMap: 'Cairn:' couldn't strip quotes from desc '%s'", 
 	        arg->getArg(descArg));
       delete [] descBuffer;
@@ -195,14 +168,14 @@ bool ArMapObject::setObjectDescription(MvrMapObject *object,
 } // end method setObjectDescription
 
 
-MVREXPORT ArMapObject::ArMapObject(const char *type, 
-					                        ArPose pose, 
+MVREXPORT MvrMapObject::MvrMapObject(const char *type, 
+					                        MvrPose pose, 
                                   const char *description,
  		                              const char *iconName, 
                                   const char *name,
  		                              bool hasFromTo, 
-                                  ArPose fromPose, 
-                                  ArPose toPose) :
+                                  MvrPose fromPose, 
+                                  MvrPose toPose) :
   myType((type != NULL) ? type : ""),
   myBaseType(),
   myName((name != NULL) ? name : "" ),
@@ -230,26 +203,26 @@ MVREXPORT ArMapObject::ArMapObject(const char *type,
   } // end else pose
 
   IFDEBUG(
-  ArLog::log(MvrLog::Normal, 
+  MvrLog::log(MvrLog::Normal, 
              "MvrMapObject::ctor() created %s (%s)",
              myName.c_str(), myType.c_str());
   );
 
 } // end ctor
 
-MVREXPORT void ArMapObject::setFromTo(MvrPose fromPose, ArPose toPose)
+MVREXPORT void MvrMapObject::setFromTo(MvrPose fromPose, MvrPose toPose)
 {
     double angle = myPose.getTh();
-    double sa = ArMath::sin(angle);
-    double ca = ArMath::cos(angle);
+    double sa = MvrMath::sin(angle);
+    double ca = MvrMath::cos(angle);
     double fx = fromPose.getX();
     double fy = fromPose.getY();
     double tx = toPose.getX();
     double ty = toPose.getY();
-    ArPose P0((fx*ca - fy*sa), (fx*sa + fy*ca));
-    ArPose P1((tx*ca - fy*sa), (tx*sa + fy*ca));
-    ArPose P2((tx*ca - ty*sa), (tx*sa + ty*ca));
-    ArPose P3((fx*ca - ty*sa), (fx*sa + ty*ca));
+    MvrPose P0((fx*ca - fy*sa), (fx*sa + fy*ca));
+    MvrPose P1((tx*ca - fy*sa), (tx*sa + fy*ca));
+    MvrPose P2((tx*ca - ty*sa), (tx*sa + ty*ca));
+    MvrPose P3((fx*ca - ty*sa), (fx*sa + ty*ca));
     myFromToSegments.clear();
     myFromToSegments.push_back(MvrLineSegment(P0, P1));
     myFromToSegments.push_back(MvrLineSegment(P1, P2));
@@ -262,7 +235,7 @@ MVREXPORT void ArMapObject::setFromTo(MvrPose fromPose, ArPose toPose)
 }
 
 /// Copy constructor
-MVREXPORT ArMapObject::ArMapObject(const ArMapObject &mapObject) :
+MVREXPORT MvrMapObject::MvrMapObject(const MvrMapObject &mapObject) :
   myType(mapObject.myType),
   myBaseType(mapObject.myBaseType),
   myName(mapObject.myName),
@@ -279,7 +252,7 @@ MVREXPORT ArMapObject::ArMapObject(const ArMapObject &mapObject) :
 }
 
 
-MVREXPORT ArMapObject &ArMapObject::operator=(const ArMapObject &mapObject)
+MVREXPORT MvrMapObject &MvrMapObject::operator=(const MvrMapObject &mapObject)
 {
   if (&mapObject != this) {
 
@@ -301,15 +274,15 @@ MVREXPORT ArMapObject &ArMapObject::operator=(const ArMapObject &mapObject)
 } // end operator=
 
 /// Destructor
-MVREXPORT ArMapObject::~MvrMapObject() 
+MVREXPORT MvrMapObject::~MvrMapObject() 
 {
 }
 
 /// Gets the type of the object
-MVREXPORT const char *ArMapObject::getType(void) const { return myType.c_str(); }
+MVREXPORT const char *MvrMapObject::getType(void) const { return myType.c_str(); }
 
 
-MVREXPORT const char *ArMapObject::getBaseType(void) const 
+MVREXPORT const char *MvrMapObject::getBaseType(void) const 
 { 
   if (!myBaseType.empty()) {
     return myBaseType.c_str();
@@ -320,7 +293,7 @@ MVREXPORT const char *ArMapObject::getBaseType(void) const
 }
 
 /// Gets the pose of the object 
-MVREXPORT ArPose ArMapObject::getPose(void) const { return myPose; }
+MVREXPORT MvrPose MvrMapObject::getPose(void) const { return myPose; }
 
 /// Gets the fileName of the object (probably never used for maps)
 /**
@@ -330,13 +303,13 @@ MVREXPORT ArPose ArMapObject::getPose(void) const { return myPose; }
 * description attribute).
 * @deprecated 
 **/
-MVREXPORT const char *ArMapObject::getFileName(void) const { return myDescription.c_str(); }
+MVREXPORT const char *MvrMapObject::getFileName(void) const { return myDescription.c_str(); }
 
 /// Gets the icon string of the object 
-MVREXPORT const char *ArMapObject::getIconName(void) const { return myIconName.c_str(); }
+MVREXPORT const char *MvrMapObject::getIconName(void) const { return myIconName.c_str(); }
 
 /// Returns the numerical identifier of the object, when auto-numbering is on.
-MVREXPORT int ArMapObject::getId() const
+MVREXPORT int MvrMapObject::getId() const
 {
   // TODO: If this method is going to be called frequently, then the ID should be cached.
 
@@ -348,7 +321,7 @@ MVREXPORT int ArMapObject::getId() const
   }
   if (strstr(iconText, "ID=") == iconText) {
     const char *idText = &iconText[3];
-    if (!ArUtil::isStrEmpty(idText)) {
+    if (!MvrUtil::isStrEmpty(idText)) {
       return atoi(idText);
     }
   }
@@ -358,15 +331,15 @@ MVREXPORT int ArMapObject::getId() const
 
 
 /// Gets the name of the object (if any)
-MVREXPORT const char *ArMapObject::getName(void) const { return myName.c_str(); }
+MVREXPORT const char *MvrMapObject::getName(void) const { return myName.c_str(); }
 /// Gets the addition args of the object
-MVREXPORT bool ArMapObject::hasFromTo(void) const { return myHasFromTo; }
+MVREXPORT bool MvrMapObject::hasFromTo(void) const { return myHasFromTo; }
 /// Gets the from pose (could be for line or box, depending)
-MVREXPORT ArPose ArMapObject::getFromPose(void) const { return myFromPose; }
+MVREXPORT MvrPose MvrMapObject::getFromPose(void) const { return myFromPose; }
 /// Gets the to pose (could be for line or box, depending)
-MVREXPORT ArPose ArMapObject::getToPose(void) const { return myToPose; }
+MVREXPORT MvrPose MvrMapObject::getToPose(void) const { return myToPose; }
 
-MVREXPORT double ArMapObject::getFromToRotation(void) const
+MVREXPORT double MvrMapObject::getFromToRotation(void) const
 {
   if (myHasFromTo) {
     return myPose.getTh();
@@ -377,13 +350,13 @@ MVREXPORT double ArMapObject::getFromToRotation(void) const
 } // end method getFromToRotation
 
 
-MVREXPORT const char *ArMapObject::getDescription() const 
+MVREXPORT const char *MvrMapObject::getDescription() const 
 {
   return myDescription.c_str();
 }
 
 
-MVREXPORT void ArMapObject::setDescription(const char *description) 
+MVREXPORT void MvrMapObject::setDescription(const char *description) 
 {
   if (description != NULL) {
     myDescription = description;
@@ -394,33 +367,33 @@ MVREXPORT void ArMapObject::setDescription(const char *description)
 } 
 
 
-MVREXPORT void ArMapObject::log(const char *intro) const { 
+MVREXPORT void MvrMapObject::log(const char *intro) const { 
 
   std::string introString;
-  if (!ArUtil::isStrEmpty(intro)) {
+  if (!MvrUtil::isStrEmpty(intro)) {
     introString = intro;
     introString += " ";
   }
   introString += "Cairn:";
 
-  ArLog::log(MvrLog::Terse, 
+  MvrLog::log(MvrLog::Terse, 
  	           "%s%s",
              introString.c_str(),
              toString());
 }
 
 
-MVREXPORT std::list<ArLineSegment> ArMapObject::getFromToSegments(void)
+MVREXPORT std::list<MvrLineSegment> MvrMapObject::getFromToSegments(void)
 {
   return myFromToSegments;
 }
 
-MVREXPORT ArLineSegment ArMapObject::getFromToSegment(void)
+MVREXPORT MvrLineSegment MvrMapObject::getFromToSegment(void)
 {
   return myFromToSegment;
 }
 
-MVREXPORT ArPose ArMapObject::findCenter(void) const
+MVREXPORT MvrPose MvrMapObject::findCenter(void) const
 {
   if (!myHasFromTo) {
     return myPose;
@@ -431,10 +404,10 @@ MVREXPORT ArPose ArMapObject::findCenter(void) const
     double centerY = (myFromPose.getY() + myToPose.getY()) / 2.0;
 
     double angle = myPose.getTh();
-    double sa = ArMath::sin(angle);
-    double ca = ArMath::cos(angle);
+    double sa = MvrMath::sin(angle);
+    double ca = MvrMath::cos(angle);
 
-    ArPose centerPose(centerX * ca - centerY * sa,
+    MvrPose centerPose(centerX * ca - centerY * sa,
                       centerX * sa + centerY * ca); 
 
     return centerPose;
@@ -447,9 +420,9 @@ MVREXPORT ArPose ArMapObject::findCenter(void) const
 
 
 
-MVREXPORT const char *ArMapObject::toString(void) const
+MVREXPORT const char *MvrMapObject::toString(void) const
 {
-  // Since the ArMapObject is effectively immutable, this is okay to do...
+  // Since the MvrMapObject is effectively immutable, this is okay to do...
   if (myStringRepresentation.empty()) {
 
     // The "Cairn" intro is not included in the string representation 
@@ -491,7 +464,7 @@ MVREXPORT const char *ArMapObject::toString(void) const
 } // end method toString
 
 
-MVREXPORT bool ArMapObject::operator<(const ArMapObject& other) const
+MVREXPORT bool MvrMapObject::operator<(const MvrMapObject& other) const
 {
   if (!myHasFromTo) {
     
@@ -583,7 +556,7 @@ MVREXPORT bool ArMapObject::operator<(const ArMapObject& other) const
     return false;
   }
 
-  ArLog::log(MvrLog::Normal,
+  MvrLog::log(MvrLog::Normal,
              "MvrMapObject::operator<() two nearly identical objects cannot compare");
 
   IFDEBUG(log("this"));
@@ -595,14 +568,14 @@ MVREXPORT bool ArMapObject::operator<(const ArMapObject& other) const
 
 } // end operator<
 
-MVREXPORT  std::vector<ArPose> ArMapObject::getRegionVertices() const 
+MVREXPORT  std::vector<MvrPose> MvrMapObject::getRegionVertices() const 
 {
-  std::vector<ArPose> v;
+  std::vector<MvrPose> v;
   if(!hasFromTo())
     return v;  // return empty list
   const double a = getFromToRotation();
-  const double sa = ArMath::sin(a);
-  const double ca = ArMath::cos(a);
+  const double sa = MvrMath::sin(a);
+  const double ca = MvrMath::cos(a);
   const double fx = getFromPose().getX();
   const double fy = getFromPose().getY();
   const double tx = getToPose().getX();

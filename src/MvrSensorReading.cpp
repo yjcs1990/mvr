@@ -1,40 +1,14 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSensorReading.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
 /**
    @param xPos the x position of the sensor on the robot (mm)
    @param yPos the y position of the sensor on the robot (mm)
    @param thPos the heading of the sensor on the robot (deg)
 */
-ArSensorReading::ArSensorReading(double xPos, double yPos, double thPos)
+MvrSensorReading::MvrSensorReading(double xPos, double yPos, double thPos)
 {
   myRange = 5000;
   myCounterTaken = 0;
@@ -45,7 +19,7 @@ ArSensorReading::ArSensorReading(double xPos, double yPos, double thPos)
   myAdjusted = false;
 }
 
-MVREXPORT ArSensorReading::ArSensorReading(const ArSensorReading & reading)
+MVREXPORT MvrSensorReading::MvrSensorReading(const MvrSensorReading & reading)
 {
   myCounterTaken = reading.myCounterTaken;
   myReading = reading.myReading;
@@ -64,8 +38,8 @@ MVREXPORT ArSensorReading::ArSensorReading(const ArSensorReading & reading)
   myAdjusted = reading.myAdjusted;
 }
 
-MVREXPORT ArSensorReading &ArSensorReading::operator=(
-        const ArSensorReading &reading)
+MVREXPORT MvrSensorReading &MvrSensorReading::operator=(
+        const MvrSensorReading &reading)
 {
   if (this != &reading)
   {
@@ -90,7 +64,7 @@ MVREXPORT ArSensorReading &ArSensorReading::operator=(
 
 
 
-ArSensorReading::~MvrSensorReading()
+MvrSensorReading::~MvrSensorReading()
 {
 }
 
@@ -106,10 +80,10 @@ ArSensorReading::~MvrSensorReading()
    @param extraInt extra laser device-specific value associated with this
    reading (e.g. SICK LMS-200 reflectance)
 */
-MVREXPORT void ArSensorReading::newData(int range, ArPose robotPose,
-				       ArPose encoderPose, ArTransform trans, 
+MVREXPORT void MvrSensorReading::newData(int range, MvrPose robotPose,
+				       MvrPose encoderPose, MvrTransform trans, 
 				       unsigned int counter,
-				       ArTime timeTaken,
+				       MvrTime timeTaken,
 				       bool ignoreThisReading, int extraInt)
 {
   // TODO calculate the x and y position of the sensor
@@ -140,9 +114,9 @@ MVREXPORT void ArSensorReading::newData(int range, ArPose robotPose,
    @param extraInt extra laser device-specific value associated with this
    reading (e.g. SICK LMS-200 reflectance)
 */
-MVREXPORT void ArSensorReading::newData(int sx, int sy, ArPose robotPose,
-				       ArPose encoderPose, ArTransform trans, 
-				       unsigned int counter, ArTime timeTaken,
+MVREXPORT void MvrSensorReading::newData(int sx, int sy, MvrPose robotPose,
+				       MvrPose encoderPose, MvrTransform trans, 
+				       unsigned int counter, MvrTime timeTaken,
 				       bool ignoreThisReading, int extraInt)
 {
   // TODO calculate the x and y position of the sensor
@@ -168,7 +142,7 @@ MVREXPORT void ArSensorReading::newData(int sx, int sy, ArPose robotPose,
    @param thPos the heading of the sensor on the robot (deg)
    @param forceComputation recompute position even if new position is the same as current
 */
-MVREXPORT void ArSensorReading::resetSensorPosition(double xPos, double yPos, 
+MVREXPORT void MvrSensorReading::resetSensorPosition(double xPos, double yPos, 
 						   double thPos, 
 						   bool forceComputation)
 {
@@ -179,9 +153,9 @@ MVREXPORT void ArSensorReading::resetSensorPosition(double xPos, double yPos,
       
   mySensorPos.setPose(xPos, yPos, thPos);
   myDistToCenter = sqrt(xPos * xPos + yPos * yPos);
-  myAngleToCenter = ArMath::atan2(yPos, xPos);
-  mySensorCos = ArMath::cos(thPos);
-  mySensorSin = ArMath::sin(thPos);
+  myAngleToCenter = MvrMath::atan2(yPos, xPos);
+  mySensorCos = MvrMath::cos(thPos);
+  mySensorSin = MvrMath::sin(thPos);
   //printf("xpose %d ypose %d thpose %d disttoC %.1f angletoC %.1f\n",
   //xPos, yPos, thPos, myDistToCenter, myAngleToCenter);
 }
@@ -189,7 +163,7 @@ MVREXPORT void ArSensorReading::resetSensorPosition(double xPos, double yPos,
 /**
    @param trans the transform to apply to the reading and where the reading was taken
 */
-MVREXPORT void ArSensorReading::applyTransform(MvrTransform trans)
+MVREXPORT void MvrSensorReading::applyTransform(MvrTransform trans)
 {
   myReading = trans.doTransform(myReading);
   myReadingTaken = trans.doTransform(myReadingTaken);
@@ -198,7 +172,7 @@ MVREXPORT void ArSensorReading::applyTransform(MvrTransform trans)
 /**
    @param trans the transform to apply to the encoder pose taken
 */
-MVREXPORT void ArSensorReading::applyEncoderTransform(MvrTransform trans)
+MVREXPORT void MvrSensorReading::applyEncoderTransform(MvrTransform trans)
 {
   myEncoderPoseTaken = trans.doTransform(myEncoderPoseTaken);
 }

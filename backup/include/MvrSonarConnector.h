@@ -186,4 +186,4 @@ private:
   MvrConstFunctorC<MvrSonarConnector> myLogOptionsCB;
 };
 
-#endif // ARLASERCONNECTOR_H
+#endif // MVRLASERCONNECTOR_H

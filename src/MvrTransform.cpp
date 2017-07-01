@@ -1,37 +1,11 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrTransform.h"
 
-MVREXPORT void ArTransform::doTransform(std::list<ArPose *> *poseList)
+MVREXPORT void MvrTransform::doTransform(std::list<MvrPose *> *poseList)
 {
-  std::list<ArPose *>::iterator it;
-  ArPose *pose;
+  std::list<MvrPose *>::iterator it;
+  MvrPose *pose;
   
   for (it = poseList->begin(); it != poseList->end(); it++)
   {
@@ -41,10 +15,10 @@ MVREXPORT void ArTransform::doTransform(std::list<ArPose *> *poseList)
 
 }
 
-MVREXPORT void ArTransform::doTransform(std::list<ArPoseWithTime *> *poseList)
+MVREXPORT void MvrTransform::doTransform(std::list<MvrPoseWithTime *> *poseList)
 {
-  std::list<ArPoseWithTime *>::iterator it;
-  ArPoseWithTime *pose;
+  std::list<MvrPoseWithTime *>::iterator it;
+  MvrPoseWithTime *pose;
   
   for (it = poseList->begin(); it != poseList->end(); it++)
   {
@@ -57,11 +31,11 @@ MVREXPORT void ArTransform::doTransform(std::list<ArPoseWithTime *> *poseList)
 /**
    @param pose the coord system from which we transform to abs world coords
 */
-MVREXPORT void ArTransform::setTransform(MvrPose pose) 
+MVREXPORT void MvrTransform::setTransform(MvrPose pose) 
 { 
   myTh = pose.getTh();
-  myCos = ArMath::cos(-myTh);
-  mySin = ArMath::sin(-myTh);
+  myCos = MvrMath::cos(-myTh);
+  mySin = MvrMath::sin(-myTh);
   myX = pose.getX();
   myY = pose.getY();
 }
@@ -70,20 +44,20 @@ MVREXPORT void ArTransform::setTransform(MvrPose pose)
    @param pose1 transform this into pose2
    @param pose2 transform pose1 into this
 */
-MVREXPORT void ArTransform::setTransform(MvrPose pose1, ArPose pose2)
+MVREXPORT void MvrTransform::setTransform(MvrPose pose1, MvrPose pose2)
 {
-  myTh = ArMath::subAngle(pose2.getTh(), pose1.getTh());
-  myCos = ArMath::cos(-myTh);
-  mySin = ArMath::sin(-myTh);
+  myTh = MvrMath::subAngle(pose2.getTh(), pose1.getTh());
+  myCos = MvrMath::cos(-myTh);
+  mySin = MvrMath::sin(-myTh);
   myX = pose2.getX() - (myCos * pose1.getX() + mySin * pose1.getY());
   myY = pose2.getY() - (myCos * pose1.getY() - mySin * pose1.getX());
 }
 
-MVREXPORT void ArTransform::setTransformLowLevel(double x, double y, double th)
+MVREXPORT void MvrTransform::setTransformLowLevel(double x, double y, double th)
 {
   myTh = th;
-  myCos = ArMath::cos(-myTh);
-  mySin = ArMath::sin(-myTh);
+  myCos = MvrMath::cos(-myTh);
+  mySin = MvrMath::sin(-myTh);
   myX = x;
   myY = y;
 }

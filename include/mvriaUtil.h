@@ -1,32 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
-#ifndef ARIAUTIL_H
-#define ARIAUTIL_H
+#ifndef MVRIAUTIL_H
+#define MVRIAUTIL_H
 
 #define _GNU_SOURCE 1
 #include <string>
@@ -53,12 +26,12 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #endif // ifndef win32
 
 #include <time.h>
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrLog.h"
 #include "MvrFunctor.h"
 #include "MvrArgumentParser.h"
-//#include "ariaInternal.h"
-#include "ariaOSDef.h"
+//#include "mvriaInternal.h"
+#include "mvriaOSDef.h"
 
 class MvrLaser;
 class MvrBatteryMTX;
@@ -767,7 +740,7 @@ public:
 #ifdef WIN32
 	  return _finite(f);
 #else
-	  return finitef(f);
+	  return finite(f);
 #endif
   }
 
@@ -944,7 +917,7 @@ public:
   /** Adds the given pose to this one.
    *  @swigomit
    */
-	ArPose & operator+= ( const MvrPose & other)
+	MvrPose & operator+= ( const MvrPose & other)
   {
     myX += other.myX;
     myY += other.myY;
@@ -955,7 +928,7 @@ public:
 	/** Subtracts the given pose from this one.
      *  @swigomit
      */
-	ArPose & operator-= ( const MvrPose & other)
+	MvrPose & operator-= ( const MvrPose & other)
   {
     myX -= other.myX;
     myY -= other.myY;
@@ -1015,7 +988,7 @@ public:
   static bool compareY(const MvrPose& p1, const MvrPose &p2)
     { return (p1.getY() < p2.getY()); } 
 
-  bool isInsidePolygon(const std::vector<ArPose>& vertices) const
+  bool isInsidePolygon(const std::vector<MvrPose>& vertices) const
   {
     bool inside = false;
     const size_t n = vertices.size();
@@ -1921,7 +1894,7 @@ protected:
   MvrArgumentParser myParser;
   bool myIsDaemonized;
   bool myCloseStdErrAndStdOut;
-  MvrConstFunctorC<ArDaemonizer> myLogOptionsCB;
+  MvrConstFunctorC<MvrDaemonizer> myLogOptionsCB;
 };
 #endif // !win32 && !swig
 
@@ -2181,14 +2154,14 @@ protected:
 
     @ingroup UtilityClasses
 **/
-class MvrCallbackList : public MvrGenericCallbackList<ArFunctor *>
+class MvrCallbackList : public MvrGenericCallbackList<MvrFunctor *>
 {
 public:
   /// Constructor
   MvrCallbackList(const char *name = "", 
 			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
-    MvrGenericCallbackList<ArFunctor *>(name, logLevel, singleShot)
+    MvrGenericCallbackList<MvrFunctor *>(name, logLevel, singleShot)
     {
     }
   /// Destructor
@@ -2227,7 +2200,7 @@ public:
       }
       
       if(myLogging)
-	ArLog::log(myLogLevel, "%s: Ended calls", myName.c_str());
+	MvrLog::log(myLogLevel, "%s: Ended calls", myName.c_str());
       
       if (mySingleShot)
       {
@@ -2242,14 +2215,14 @@ protected:
 
 /** @copydoc MvrCallbackList */
 template<class P1>
-class MvrCallbackList1 : public MvrGenericCallbackList<ArFunctor1<P1> *>
+class MvrCallbackList1 : public MvrGenericCallbackList<MvrFunctor1<P1> *>
 {
 public:
   /// Constructor
   MvrCallbackList1(const char *name = "", 
 			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
-    MvrGenericCallbackList<ArFunctor1<P1> *>(name, logLevel, singleShot)
+    MvrGenericCallbackList<MvrFunctor1<P1> *>(name, logLevel, singleShot)
     {
     }
   /// Destructor
@@ -2259,61 +2232,61 @@ public:
   /// Calls the callback list
   void invoke(P1 p1)
     {
-      MvrGenericCallbackList<ArFunctor1<P1> *>::myDataMutex.lock();
+      MvrGenericCallbackList<MvrFunctor1<P1> *>::myDataMutex.lock();
       
       typename std::multimap<int, MvrFunctor1<P1> *>::iterator it;
       MvrFunctor1<P1> *functor;
       
-      if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
-	ArLog::log(
-		ArGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
+      if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
+	MvrLog::log(
+		MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, 
 		"%s: Starting calls to %d functors", 
-		ArGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(),
-    MvrGenericCallbackList<ArFunctor1<P1> *>::myList.size());
+		MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str(),
+    MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.size());
       
-      for (it = MvrGenericCallbackList<ArFunctor1<P1> *>::myList.begin(); 
-	   it != MvrGenericCallbackList<ArFunctor1<P1> *>::myList.end(); 
+      for (it = MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.begin(); 
+	   it != MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.end(); 
 	   it++)
       {
 	functor = (*it).second;
 	if (functor == NULL) 
 	  continue;
 	
-	if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
+	if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
 	{
 	  if (functor->getName() != NULL && functor->getName()[0] != '\0')
-	    MvrLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel,
+	    MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel,
 		       "%s: Calling functor '%s' at %d",
-		       MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(), 
+		       MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str(), 
 		       functor->getName(), -(*it).first);
 	  else
-	    MvrLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
+	    MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, 
 		       "%s: Calling unnamed functor at %d", 
-		       MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str(), 
+		       MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str(), 
 		       -(*it).first);
 	}
 	functor->invoke(p1);
       }
       
-      if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
-	ArLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, "%s: Ended calls", MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str());
+      if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
+	MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, "%s: Ended calls", MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str());
       
-      if (MvrGenericCallbackList<ArFunctor1<P1> *>::mySingleShot)
+      if (MvrGenericCallbackList<MvrFunctor1<P1> *>::mySingleShot)
       {
-	if(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogging)
-	  MvrLog::log(MvrGenericCallbackList<ArFunctor1<P1> *>::myLogLevel, 
+	if(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogging)
+	  MvrLog::log(MvrGenericCallbackList<MvrFunctor1<P1> *>::myLogLevel, 
 		     "%s: Clearing callbacks", 
-		     MvrGenericCallbackList<ArFunctor1<P1> *>::myName.c_str());
-	ArGenericCallbackList<ArFunctor1<P1> *>::myList.clear();
+		     MvrGenericCallbackList<MvrFunctor1<P1> *>::myName.c_str());
+	MvrGenericCallbackList<MvrFunctor1<P1> *>::myList.clear();
       }
-      MvrGenericCallbackList<ArFunctor1<P1> *>::myDataMutex.unlock();
+      MvrGenericCallbackList<MvrFunctor1<P1> *>::myDataMutex.unlock();
     }
 protected:
 };
 
 /** @copydoc MvrCallbackList */
 template<class P1, class P2>
-class MvrCallbackList2 : public MvrGenericCallbackList<ArFunctor2<P1, P2> *>
+class MvrCallbackList2 : public MvrGenericCallbackList<MvrFunctor2<P1, P2> *>
 {
 public:
   typedef MvrFunctor2<P1, P2> FunctorType;
@@ -2367,7 +2340,7 @@ public:
 
 /** @copydoc MvrCallbackList */
 template<class P1, class P2, class P3>
-class MvrCallbackList3 : public MvrGenericCallbackList<ArFunctor3<P1, P2, P3> *>
+class MvrCallbackList3 : public MvrGenericCallbackList<MvrFunctor3<P1, P2, P3> *>
 {
 public:
   typedef MvrFunctor3<P1, P2, P3> FunctorType;
@@ -2421,13 +2394,13 @@ public:
 
 /** @copydoc MvrCallbackList */
 template<class P1, class P2, class P3, class P4>
-class MvrCallbackList4 : public MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4>*>
+class MvrCallbackList4 : public MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4>*>
 {
 public:
   MvrCallbackList4(const char *name = "", 
 			  MvrLog::LogLevel logLevel = MvrLog::Verbose,
 			  bool singleShot = false) : 
-    MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>(name, logLevel, singleShot)
+    MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>(name, logLevel, singleShot)
     {
     }
   virtual ~MvrCallbackList4()
@@ -2436,12 +2409,12 @@ public:
   void invoke(P1 p1, P2 p2, P3 p3, P4 p4)
     {
       // references to members of parent class for clarity below
-      MvrMutex &mutex = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myDataMutex;
-      MvrLog::LogLevel &loglevel = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myLogLevel;
-      const char *name = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myName.c_str();
-	    std::multimap< int, MvrFunctor4<P1, P2, P3, P4>* > &list = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myList; 
-      bool &singleshot = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::mySingleShot;
-      bool &logging = MvrGenericCallbackList<ArFunctor4<P1, P2, P3, P4> *>::myLogging;
+      MvrMutex &mutex = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myDataMutex;
+      MvrLog::LogLevel &loglevel = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myLogLevel;
+      const char *name = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myName.c_str();
+	    std::multimap< int, MvrFunctor4<P1, P2, P3, P4>* > &list = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myList; 
+      bool &singleshot = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::mySingleShot;
+      bool &logging = MvrGenericCallbackList<MvrFunctor4<P1, P2, P3, P4> *>::myLogging;
       
       mutex.lock();
       
@@ -2483,7 +2456,7 @@ public:
 
 
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 #ifndef SWIG
 /// @internal
 class MvrLaserCreatorHelper
@@ -2492,49 +2465,49 @@ public:
   /// Creates an MvrLMS2xx
   static MvrLaser *createLMS2xx(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrLMS2xx
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateLMS2xxCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateLMS2xxCB(void);
   /// Creates an MvrUrg
   static MvrLaser *createUrg(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrUrg
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateUrgCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateUrgCB(void);
   /// Creates an MvrLMS1XX
   static MvrLaser *createLMS1XX(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrLMS1XX
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateLMS1XXCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateLMS1XXCB(void);
 
   /// Creates an MvrUrg using SCIP 2.0
   static MvrLaser *createUrg_2_0(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrUrg
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateUrg_2_0CB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateUrg_2_0CB(void);
   /// Creates an MvrS3Series
   static MvrLaser *createS3Series(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrS3Series
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateS3SeriesCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateS3SeriesCB(void);
   /// Creates an MvrLMS5XX
   static MvrLaser *createLMS5XX(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrLMS5XX
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateLMS5XXCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateLMS5XXCB(void);
   /// Creates an MvrTiM3XX
   static MvrLaser *createTiM3XX(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrTiM3XX
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM3XXCB(void);
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM551CB(void);
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM561CB(void);
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateTiM571CB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM3XXCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM551CB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM561CB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateTiM571CB(void);
   /// Creates an MvrSZSeries
   static MvrLaser *createSZSeries(int laserNumber, const char *logPrefix);
   /// Gets functor for creating an MvrSZSeries
-  static MvrRetFunctor2<ArLaser *, int, const char *> *getCreateSZSeriesCB(void);
+  static MvrRetFunctor2<MvrLaser *, int, const char *> *getCreateSZSeriesCB(void);
 
 protected:
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS2xxCB;
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourUrgCB;
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS1XXCB;
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourUrg_2_0CB;
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourS3SeriesCB;
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourLMS5XXCB;
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourTiM3XXCB;
-  static MvrGlobalRetFunctor2<ArLaser *, int, const char *> ourSZSeriesCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourLMS2xxCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourUrgCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourLMS1XXCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourUrg_2_0CB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourS3SeriesCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourLMS5XXCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourTiM3XXCB;
+  static MvrGlobalRetFunctor2<MvrLaser *, int, const char *> ourSZSeriesCB;
 };
 
 /// @internal
@@ -2544,10 +2517,10 @@ public:
   /// Creates an MvrBatteryMTX
   static MvrBatteryMTX *createBatteryMTX(int batteryNumber, const char *logPrefix);
   /// Gets functor for creating an MvrBatteryMTX
-  static MvrRetFunctor2<ArBatteryMTX *, int, const char *> *getCreateBatteryMTXCB(void);
+  static MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *getCreateBatteryMTXCB(void);
 
 protected:
-  static MvrGlobalRetFunctor2<ArBatteryMTX *, int, const char *> ourBatteryMTXCB;
+  static MvrGlobalRetFunctor2<MvrBatteryMTX *, int, const char *> ourBatteryMTXCB;
 };
 
 /// @internal
@@ -2557,10 +2530,10 @@ public:
   /// Creates an MvrLCDMTX
   static MvrLCDMTX *createLCDMTX(int lcdNumber, const char *logPrefix);
   /// Gets functor for creating an MvrLCDMTX
-  static MvrRetFunctor2<ArLCDMTX *, int, const char *> *getCreateLCDMTXCB(void);
+  static MvrRetFunctor2<MvrLCDMTX *, int, const char *> *getCreateLCDMTXCB(void);
 
 protected:
-  static MvrGlobalRetFunctor2<ArLCDMTX *, int, const char *> ourLCDMTXCB;
+  static MvrGlobalRetFunctor2<MvrLCDMTX *, int, const char *> ourLCDMTXCB;
 };
 
 /// @internal
@@ -2570,14 +2543,14 @@ public:
   /// Creates an MvrSonarMTX
   static MvrSonarMTX *createSonarMTX(int sonarNumber, const char *logPrefix);
   /// Gets functor for creating an MvrSonarMTX
-  static MvrRetFunctor2<ArSonarMTX *, int, const char *> *getCreateSonarMTXCB(void);
+  static MvrRetFunctor2<MvrSonarMTX *, int, const char *> *getCreateSonarMTXCB(void);
 
 protected:
-  static MvrGlobalRetFunctor2<ArSonarMTX *, int, const char *> ourSonarMTXCB;
+  static MvrGlobalRetFunctor2<MvrSonarMTX *, int, const char *> ourSonarMTXCB;
 };
 
 #endif // SWIG
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 #ifndef SWIG
 /// @internal
@@ -2588,21 +2561,21 @@ public:
   static MvrDeviceConnection *createSerialConnection(
 	  const char *port, const char *defaultInfo, const char *logPrefix);
   /// Gets functor for creating an MvrSerialConnection
-  static MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  static MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, 
 		       const char *> *getCreateSerialCB(void);
 
   /// Creates an MvrTcpConnection
   static MvrDeviceConnection *createTcpConnection(
 	  const char *port, const char *defaultInfo, const char *logPrefix);
   /// Gets functor for creating an MvrTcpConnection
-  static MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  static MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, 
 		       const char *> *getCreateTcpCB(void);
 
   /// Creates an MvrSerialConnection for RS422
   static MvrDeviceConnection *createSerial422Connection(
 	  const char *port, const char *defaultInfo, const char *logPrefix);
   /// Gets functor for creating an MvrSerialConnection
-  static MvrRetFunctor3<ArDeviceConnection *, const char *, const char *,
+  static MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *,
 		       const char *> *getCreateSerial422CB(void);
 
   /// Sets the success log level
@@ -2613,11 +2586,11 @@ protected:
   /// Internal Create MvrSerialConnection
   static MvrDeviceConnection *internalCreateSerialConnection(
 	  const char *port, const char *defaultInfo, const char *logPrefix, bool is422);
-  static MvrGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  static MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, 
 			     const char *> ourSerialCB;
-  static MvrGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *, 
+  static MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *, 
 			     const char *> ourTcpCB;
-  static MvrGlobalRetFunctor3<ArDeviceConnection *, const char *, const char *,
+  static MvrGlobalRetFunctor3<MvrDeviceConnection *, const char *, const char *,
 			     const char *> ourSerial422CB;
   static MvrLog::LogLevel ourSuccessLogLevel;
 };
@@ -2627,10 +2600,10 @@ protected:
 class MvrPoseUtil
 {
 public:
-  MVREXPORT static std::list<ArPose> findCornersFromRobotBounds(
+  MVREXPORT static std::list<MvrPose> findCornersFromRobotBounds(
 	  double radius, double widthLeft, double widthRight, 
 	  double lengthFront, double lengthRear, bool fastButUnsafe);
-  MVREXPORT static std::list<ArPose> breakUpDistanceEvenly(MvrPose start, MvrPose end, 
+  MVREXPORT static std::list<MvrPose> breakUpDistanceEvenly(MvrPose start, MvrPose end, 
 						 int resolution);
 };
 
@@ -2661,6 +2634,6 @@ protected:
   MvrTime myLastCheck;
 };
 
-#endif // ARIAUTIL_H
+#endif // MVRIAUTIL_H
 
 

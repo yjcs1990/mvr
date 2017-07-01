@@ -24,11 +24,11 @@ Adept MobileRobots for information about a commercial version of ARIA at
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#ifndef ARIA_H
-#define ARIA_H
+#ifndef MVRIA_H
+#define MVRIA_H
 
-#include "ariaOSDef.h"
-#include "ariaTypedefs.h"
+#include "mvriaOSDef.h"
+#include "mvriaTypedefs.h"
 #include "MvrSerialConnection.h"
 #include "MvrTcpConnection.h" //
 #include "MvrSimpleConnector.h"
@@ -39,7 +39,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobotPacketReceiver.h"
 #include "MvrRobotConfigPacketReader.h"
 #include "MvrRobotTypes.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include "MvrArgumentBuilder.h"
 #include "MvrArgumentParser.h"
 #include "MvrFileParser.h"
@@ -51,7 +51,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrJoyHandler.h"
 #include "MvrSyncTask.h"
 #include "MvrTaskState.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include "MvrSonarDevice.h"
 #include "MvrPriorityResolver.h"
 #include "MvrAction.h"
@@ -157,4 +157,4 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrRobotPacketReaderThread.h"
 #include "MvrHasFileName.h"
 
-#endif // ARIA_H
+#endif // MVRIA_H

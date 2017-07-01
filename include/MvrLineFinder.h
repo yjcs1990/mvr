@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRSICKLINEFINDER_H
+#define MVRSICKLINEFINDER_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARSICKLINEFINDER_H
-#define ARSICKLINEFINDER_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrRangeDevice.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include <vector>
 
 class MvrLineFinderSegment;
@@ -56,9 +30,9 @@ public:
   MVREXPORT std::map<int, MvrPose> *getNonLinePoints(void);
 #endif
   /// Finds the lines, then copies @b pointers to them them into a new set
-  MVREXPORT std::set<ArLineFinderSegment*> getLinesAsSet();
+  MVREXPORT std::set<MvrLineFinderSegment*> getLinesAsSet();
   /// Finds the lines, and then copies the points that AREN'T in the lines into a new set
-  MVREXPORT std::set<ArPose> getNonLinePointsAsSet();
+  MVREXPORT std::set<MvrPose> getNonLinePointsAsSet();
 
   /// Gets the robot pose at which the data from the range device (provided in
   /// constructor) was received
@@ -172,4 +146,4 @@ protected:
   double myAveDistFromLine;
 };
 
-#endif // ARSICKLINEFINDER_H
+#endif // MVRSICKLINEFINDER_H

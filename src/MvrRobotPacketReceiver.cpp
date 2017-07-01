@@ -1,36 +1,10 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrDeviceConnection.h"
 #include "MvrRobotPacketReceiver.h"
 #include "MvrLogFileConnection.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
 
 /**
@@ -43,7 +17,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    @param sync2 second byte of the header this receiver will receive, this 
    should be left as the default in nearly all cases, ie don't mess with it
 */
-MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(bool allocatePackets,
+MVREXPORT MvrRobotPacketReceiver::MvrRobotPacketReceiver(bool allocatePackets,
 						      unsigned char sync1,
 						      unsigned char sync2) : 
   myPacket(sync1, sync2)
@@ -68,8 +42,8 @@ MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(bool allocatePackets,
    @param sync2 second byte of the header this receiver will receive, this 
    should be left as the default in nearly all cases, ie don't mess with it
 */
-MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
-	ArDeviceConnection *deviceConnection, bool allocatePackets,
+MVREXPORT MvrRobotPacketReceiver::MvrRobotPacketReceiver(
+	MvrDeviceConnection *deviceConnection, bool allocatePackets,
 	unsigned char sync1, unsigned char sync2) :
   myPacket(sync1, sync2)
 {
@@ -95,8 +69,8 @@ MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
    @param tracking if true write log messages for packets received
    @param trackingLogName name to include for packets with tracking log messages
 */
-MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
-	ArDeviceConnection *deviceConnection, bool allocatePackets,
+MVREXPORT MvrRobotPacketReceiver::MvrRobotPacketReceiver(
+	MvrDeviceConnection *deviceConnection, bool allocatePackets,
 	unsigned char sync1, unsigned char sync2, bool tracking,
 	const char *trackingLogName) :
   myPacket(sync1, sync2),
@@ -110,18 +84,18 @@ MVREXPORT ArRobotPacketReceiver::ArRobotPacketReceiver(
   myPacketReceivedCallback = NULL;
 }
 
-MVREXPORT ArRobotPacketReceiver::~MvrRobotPacketReceiver() 
+MVREXPORT MvrRobotPacketReceiver::~MvrRobotPacketReceiver() 
 {
   
 }
 
-MVREXPORT void ArRobotPacketReceiver::setDeviceConnection(
-	ArDeviceConnection *deviceConnection)
+MVREXPORT void MvrRobotPacketReceiver::setDeviceConnection(
+	MvrDeviceConnection *deviceConnection)
 {
   myDeviceConn = deviceConnection;
 }
 
-MVREXPORT ArDeviceConnection *ArRobotPacketReceiver::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *MvrRobotPacketReceiver::getDeviceConnection(void)
 {
   return myDeviceConn;
 }
@@ -133,9 +107,9 @@ MVREXPORT ArDeviceConnection *ArRobotPacketReceiver::getDeviceConnection(void)
     must delete the packet. If allocatePackets is false then the packet object
     will be reused in the next call; the caller must not store or use that packet object.
  */
-MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWait)
+MVREXPORT MvrRobotPacket* MvrRobotPacketReceiver::receivePacket(unsigned int msWait)
 {
-  ArRobotPacket *packet;
+  MvrRobotPacket *packet;
   unsigned char c;
   char buf[256];
   int count = 0;
@@ -144,20 +118,20 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
   //unsigned int timeDone;
   //unsigned int curTime;
   long timeToRunFor;
-  ArTime timeDone;
-  ArTime lastDataRead;
-  ArTime packetReceived;
+  MvrTime timeDone;
+  MvrTime lastDataRead;
+  MvrTime packetReceived;
   int numRead;
   if (myAllocatePackets)
-    packet = new ArRobotPacket(mySync1, mySync2);
+    packet = new MvrRobotPacket(mySync1, mySync2);
   else
     packet = &myPacket;
 
   if (packet == NULL || myDeviceConn == NULL || 
-      myDeviceConn->getStatus() != ArDeviceConnection::STATUS_OPEN)
+      myDeviceConn->getStatus() != MvrDeviceConnection::STATUS_OPEN)
   {
     if (myTracking)
-      ArLog::log(MvrLog::Normal, "%s: receivePacket: connection not open", myTrackingLogName.c_str());
+      MvrLog::log(MvrLog::Normal, "%s: receivePacket: connection not open", myTrackingLogName.c_str());
     myDeviceConn->debugEndPacket(false, -10);
     if (myAllocatePackets)
       delete packet;
@@ -166,13 +140,13 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
   
   timeDone.setToNow();
   if (!timeDone.addMSec(msWait)) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrRobotPacketReceiver::receivePacket() error adding msecs (%i)",
                msWait);
   }
 
   // check for log file connection, return assembled packet
-  if (dynamic_cast<ArLogFileConnection *>(myDeviceConn))
+  if (dynamic_cast<MvrLogFileConnection *>(myDeviceConn))
   {
     packet->empty();
     packet->setLength(0);
@@ -202,7 +176,7 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
 					j +=3;
 				}
 
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "Recv Packet: %s packet = %s", 
 										myTrackingLogName.c_str(), obuf);
 
@@ -240,12 +214,12 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
               if (myAllocatePackets)
                 delete packet; 
               if (myTracking)
-                ArLog::log(MvrLog::Normal, "%s: waiting for sync1 (got 0x%x).", myTrackingLogName.c_str(), c);
+                MvrLog::log(MvrLog::Normal, "%s: waiting for sync1 (got 0x%x).", myTrackingLogName.c_str(), c);
               return NULL;
             }
           else
             {
-              //ArUtil::sleep(1);
+              //MvrUtil::sleep(1);
               continue;
             }
         }
@@ -259,7 +233,7 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
         if (c == mySync1) // move on, resetting packet
           {
             if (myTracking)
-              ArLog::log(MvrLog::Normal, "%s: got sync1 0x%x", myTrackingLogName.c_str(), c);
+              MvrLog::log(MvrLog::Normal, "%s: got sync1 0x%x", myTrackingLogName.c_str(), c);
             state = STATE_SYNC2;
             packet->empty();
             packet->setLength(0);
@@ -269,7 +243,7 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
           }
         else
 	      {
-          if(myTracking) ArLog::log(MvrLog::Normal, "%s: Not sync1 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync1);
+          if(myTracking) MvrLog::log(MvrLog::Normal, "%s: Not sync1 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync1);
 	      }
         break;
       case STATE_SYNC2:
@@ -277,14 +251,14 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
        if (c == mySync2) // move on, adding this byte
           {
             if (myTracking)
-              ArLog::log(MvrLog::Normal, "%s: got sync2 0x%x", myTrackingLogName.c_str(), c);
+              MvrLog::log(MvrLog::Normal, "%s: got sync2 0x%x", myTrackingLogName.c_str(), c);
 
             state = STATE_ACQUIRE_DATA;
             packet->uByteToBuf(c);
           }
         else // go back to beginning, packet hosed
           {
-	          if(myTracking) ArLog::log(MvrLog::Normal, "%s: Bad sync2 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync2);
+	          if(myTracking) MvrLog::log(MvrLog::Normal, "%s: Bad sync2 0x%x (expected 0x%x)\n", myTrackingLogName.c_str(), c, mySync2);
             state = STATE_SYNC1;
           }
         break;
@@ -298,7 +272,7 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
 	/** this case can't happen since c can't be over that so taking it out
         if (c > 255) 
           {
-            ArLog::log(MvrLog::Normal, "MvrRobotPacketReceiver::receivePacket: bad packet, more than 255 bytes");
+            MvrLog::log(MvrLog::Normal, "MvrRobotPacketReceiver::receivePacket: bad packet, more than 255 bytes");
             state = STATE_SYNC1;
             break;
           }
@@ -359,7 +333,7 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
 					j= j+3;
 				}
 
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "Recv Packet: %s packet = %s", 
 										myTrackingLogName.c_str(), obuf);
 
@@ -374,7 +348,7 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
                printf("Bad Input ");
                packet->printHex();
 	       */
-            ArLog::log(MvrLog::Normal, 
+            MvrLog::log(MvrLog::Normal, 
                        "MvrRobotPacketReceiver::receivePacket: bad packet, bad checksum");
             state = STATE_SYNC1;
 	    myDeviceConn->debugEndPacket(false, -50);
@@ -394,8 +368,8 @@ MVREXPORT ArRobotPacket* ArRobotPacketReceiver::receivePacket(unsigned int msWai
 
 }
 
-MVREXPORT void ArRobotPacketReceiver::setPacketReceivedCallback(
-	ArFunctor1<ArRobotPacket *> *functor)
+MVREXPORT void MvrRobotPacketReceiver::setPacketReceivedCallback(
+	MvrFunctor1<MvrRobotPacket *> *functor)
 {
   myPacketReceivedCallback = functor;
 }

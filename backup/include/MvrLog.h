@@ -158,13 +158,13 @@ protected:
 #ifndef MVRINTERFACE
   static char ourAramConfigLogLevel[1024];
   static double ourAramConfigLogSize;
-  static MvrGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
+  static MvrGlobalRetFunctor<bool> ourMvramConfigProcessFileCB;
   static bool ourUseAramBehavior;
   static double ourAramLogSize;
-  static std::string ourAramPrefix;
+  static std::string ourMvramPrefix;
 #endif
 
-  static bool ourAramDaemonized;
+  static bool ourMvramDaemonized;
   
   static MvrFunctor1<const char *> *ourFunctor;
 };

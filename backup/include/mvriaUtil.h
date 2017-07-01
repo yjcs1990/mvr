@@ -727,7 +727,7 @@ public:
 #ifdef WIN32
 	  return _finite(f);
 #else
-	  return finitef(f);
+	  return finite(f);
 #endif  //WIN32
   }
 

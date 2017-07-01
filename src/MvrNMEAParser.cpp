@@ -1,34 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
-
-
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrNMEAParser.h"
 
 #include <iostream>
@@ -37,7 +8,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 //#define DEBUG_ARNMEAPARSER 1
 
 #ifdef DEBUG_ARNMEAPARSER
-void ArNMEAParser_printBuf(FILE *fp, const char *data, int size) {  
+void MvrNMEAParser_printBuf(FILE *fp, const char *data, int size) {  
   for(int i = 0; i < size; ++i) {
     if(data[i] == '\n')
       fprintf(fp, "[LF]");
@@ -52,7 +23,7 @@ void ArNMEAParser_printBuf(FILE *fp, const char *data, int size) {
 }
 #endif
 
-MVREXPORT ArNMEAParser::ArNMEAParser(const char *name) :
+MVREXPORT MvrNMEAParser::MvrNMEAParser(const char *name) :
   myName(name),
   MaxNumFields(50),
   MaxFieldSize(128),
@@ -66,19 +37,19 @@ MVREXPORT ArNMEAParser::ArNMEAParser(const char *name) :
   memset(checksumBuf, 0, 3);
 }
 
-MVREXPORT void ArNMEAParser::addHandler(const char *message, ArNMEAParser::Handler *handler)
+MVREXPORT void MvrNMEAParser::addHandler(const char *message, MvrNMEAParser::Handler *handler)
 {
   myHandlers[message] = handler;
 }
 
-MVREXPORT void ArNMEAParser::removeHandler(const char *message)
+MVREXPORT void MvrNMEAParser::removeHandler(const char *message)
 {
   HandlerMap::iterator i = myHandlers.find(message);
   if(i != myHandlers.end()) myHandlers.erase(i);
 }
 
 
-void ArNMEAParser::nextField()
+void MvrNMEAParser::nextField()
 {
   currentMessage.push_back(currentField);
   currentField = "";
@@ -86,7 +57,7 @@ void ArNMEAParser::nextField()
     endMessage();
 }
 
-void ArNMEAParser::endMessage()
+void MvrNMEAParser::endMessage()
 {
   inMessage = false;
   inChecksum = false;
@@ -95,13 +66,13 @@ void ArNMEAParser::endMessage()
   currentMessage.clear();
 }
 
-void ArNMEAParser::beginChecksum()
+void MvrNMEAParser::beginChecksum()
 {
   checksumBufOffset = 0;
   inChecksum = true;
 }
 
-void ArNMEAParser::beginMessage()
+void MvrNMEAParser::beginMessage()
 {
   currentMessageStarted.setToNow();
   currentMessage.clear();
@@ -114,19 +85,19 @@ void ArNMEAParser::beginMessage()
 }
 
 
-MVREXPORT int ArNMEAParser::parse(MvrDeviceConnection *dev) 
+MVREXPORT int MvrNMEAParser::parse(MvrDeviceConnection *dev) 
 {
   int n = dev->read(myReadBuffer, sizeof(myReadBuffer));
 #ifdef DEBUG_ARNMEAPARSER
-  std::cerr << "\t[ArNMEAParser: read " << n << " bytes of data from device connection:\n\t";
-  ArNMEAParser_printBuf(stderr, myReadBuffer, n);
+  std::cerr << "\t[MvrNMEAParser: read " << n << " bytes of data from device connection:\n\t";
+  MvrNMEAParser_printBuf(stderr, myReadBuffer, n);
 #endif
   if(n < 0) return ParseError;
   if(n == 0) return ParseFinished;
   return parse(myReadBuffer, n);
 }
 
-MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
+MVREXPORT int MvrNMEAParser::parse(const char *buf, int n)
 {
   int result = 0;
   if (n < 0) 
@@ -140,9 +111,9 @@ MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
   }
 
 #ifdef DEBUG_ARNMEAPARSER
-  std::cerr << "\t[ArNMEAParser: given " << n << " bytes of data.]\n";
-  std::cerr << "\t[ArNMEAParser: parsing chunk \"";
-  ArNMEAParser_printBuf(stderr, buf, n);
+  std::cerr << "\t[MvrNMEAParser: given " << n << " bytes of data.]\n";
+  std::cerr << "\t[MvrNMEAParser: parsing chunk \"";
+  MvrNMEAParser_printBuf(stderr, buf, n);
   std::cerr << "\"]\n";
 #endif
 
@@ -177,7 +148,7 @@ MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
         if(!inChecksum)
         {
           // checksum should have preceded.
-          ArLog::log(MvrLog::Terse, "MvrNMEAParser: Missing checksum.");
+          MvrLog::log(MvrLog::Terse, "MvrNMEAParser: Missing checksum.");
           result |= ParseError;
           endMessage();
           continue;
@@ -200,7 +171,7 @@ MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
         // GL, GB, BD, HC, PG, etc.)
         msg.id = currentMessage[0].substr(2);
 #ifdef DEBUG_ARNMEAPARSER
-        fprintf(stderr, "\t[ArNMEAPArser: Input message has system prefix %s with message ID %s]\n", msg.prefix.c_str(), msg.id.c_str());
+        fprintf(stderr, "\t[MvrNMEAPArser: Input message has system prefix %s with message ID %s]\n", msg.prefix.c_str(), msg.id.c_str());
 #endif
         std::string lastprefix = myLastPrefix[msg.id];
         if(lastprefix != "" && lastprefix != msg.prefix)
@@ -208,13 +179,13 @@ MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
           const char *id = msg.id.c_str();
           const char *p = msg.prefix.c_str();
           const char *lp = lastprefix.c_str();
-          ArLog::log(MvrLog::Normal, "MvrNMEAParser: Warning: Got duplicate %s message with prefix %s (previous prefix was %s).  Data from %s%s will replace %s%s.", id, p, lp, p, id, lp, id);
+          MvrLog::log(MvrLog::Normal, "MvrNMEAParser: Warning: Got duplicate %s message with prefix %s (previous prefix was %s).  Data from %s%s will replace %s%s.", id, p, lp, p, id, lp, id);
         }
         HandlerMap::iterator h = myHandlers.find(msg.id);
         if (h != myHandlers.end()) 
         {
 #ifdef DEBUG_ARNMEAPARSER
-          fprintf(stderr, "\t[ArNMEAParser: Got complete message, calling handler for %s...]\n", msg.id.c_str());
+          fprintf(stderr, "\t[MvrNMEAParser: Got complete message, calling handler for %s...]\n", msg.id.c_str());
 #endif
           if(h->second)
           {
@@ -223,19 +194,19 @@ MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
           }
           else
           {
-            ArLog::log(MvrLog::Terse, "MvrNMEAParser Internal Error: NULL handler functor for message %s!\n", msg.id.c_str());
+            MvrLog::log(MvrLog::Terse, "MvrNMEAParser Internal Error: NULL handler functor for message %s!\n", msg.id.c_str());
           }
         }
 #ifdef DEBUG_ARNMEAPARSER
         else
         {
-          fprintf(stderr, "\t[ArNMEAParser: Have no message handler for %s (%s).]\n", msg.id.c_str(), currentMessage[0].c_str());
+          fprintf(stderr, "\t[MvrNMEAParser: Have no message handler for %s (%s).]\n", msg.id.c_str(), currentMessage[0].c_str());
         }
 #endif
       }
       else
       {
-        ArLog::log(MvrLog::Normal, "MvrNMEAParser: syntax error, \\n without \\r.");
+        MvrLog::log(MvrLog::Normal, "MvrNMEAParser: syntax error, \\n without \\r.");
         result |= ParseError;
       }
 
@@ -252,7 +223,7 @@ MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
         int checksumRec = (int) strtol(checksumBuf, NULL, 16);
         if (checksumRec != currentChecksum) 
         {
-          ArLog::log(MvrLog::Normal, "%s: Warning: Skipping message with incorrect checksum.", myName);
+          MvrLog::log(MvrLog::Normal, "%s: Warning: Skipping message with incorrect checksum.", myName);
 
           // reconstruct message to log:
           std::string nmeaText = "";
@@ -261,7 +232,7 @@ MVREXPORT int ArNMEAParser::parse(const char *buf, int n)
             if(i != currentMessage.begin()) nmeaText += ",";
             nmeaText += *i;
           }
-          ArLog::log(MvrLog::Normal, "%s: Message provided checksum \"%s\" = 0x%x (%d). Calculated checksum is 0x%x (%d).  NMEA message contents were: \"%s\"", myName, checksumBuf, checksumRec, checksumRec, currentChecksum, currentChecksum, nmeaText.c_str());
+          MvrLog::log(MvrLog::Normal, "%s: Message provided checksum \"%s\" = 0x%x (%d). Calculated checksum is 0x%x (%d).  NMEA message contents were: \"%s\"", myName, checksumBuf, checksumRec, checksumRec, currentChecksum, currentChecksum, nmeaText.c_str());
 
           // abort the message and start looking for the next one.
           result |= ParseError;

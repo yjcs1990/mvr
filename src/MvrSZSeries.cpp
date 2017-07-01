@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSZSeries.h"
 #include "MvrRobot.h"
 #include "MvrSerialConnection.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include <time.h>
 
 //#define TRACE
@@ -39,24 +13,24 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   #define IFDEBUG(code)
 #endif
 
-MVREXPORT ArSZSeriesPacket::ArSZSeriesPacket() :
-ArBasePacket(10000, 1, NULL, 1) {
+MVREXPORT MvrSZSeriesPacket::MvrSZSeriesPacket() :
+MvrBasePacket(10000, 1, NULL, 1) {
 
 }
 
-MVREXPORT ArSZSeriesPacket::~MvrSZSeriesPacket() {
+MVREXPORT MvrSZSeriesPacket::~MvrSZSeriesPacket() {
 
 }
 
-MVREXPORT ArTime ArSZSeriesPacket::getTimeReceived(void) {
+MVREXPORT MvrTime MvrSZSeriesPacket::getTimeReceived(void) {
 	return myTimeReceived;
 }
 
-MVREXPORT void ArSZSeriesPacket::setTimeReceived(MvrTime timeReceived) {
+MVREXPORT void MvrSZSeriesPacket::setTimeReceived(MvrTime timeReceived) {
 	myTimeReceived = timeReceived;
 }
 
-MVREXPORT void ArSZSeriesPacket::duplicatePacket(MvrSZSeriesPacket *packet) {
+MVREXPORT void MvrSZSeriesPacket::duplicatePacket(MvrSZSeriesPacket *packet) {
 	myLength = packet->getLength();
 	myReadLength = packet->getReadLength();
 	myTimeReceived = packet->getTimeReceived();
@@ -69,13 +43,13 @@ MVREXPORT void ArSZSeriesPacket::duplicatePacket(MvrSZSeriesPacket *packet) {
 	memcpy(myBuf, packet->getBuf(), myLength);
 }
 
-MVREXPORT void ArSZSeriesPacket::empty(void) {
+MVREXPORT void MvrSZSeriesPacket::empty(void) {
 	myLength = 0;
 	myReadLength = 0;
 }
 
 #if 0
-MVREXPORT void ArSZSeriesPacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void MvrSZSeriesPacket::uByteToBuf(MvrTypes::UByte val)
 {
 	char buf[1024];
 	sprintf(buf, "%u", val);
@@ -83,7 +57,7 @@ MVREXPORT void ArSZSeriesPacket::uByteToBuf(MvrTypes::UByte val)
 }
 #endif
 
-MVREXPORT void ArSZSeriesPacket::byteToBuf(MvrTypes::Byte val)
+MVREXPORT void MvrSZSeriesPacket::byteToBuf(MvrTypes::Byte val)
 {
 	char buf[1024];
 	if (val > 0)
@@ -94,9 +68,9 @@ MVREXPORT void ArSZSeriesPacket::byteToBuf(MvrTypes::Byte val)
 }
 
 
-MVREXPORT ArTypes::Byte ArSZSeriesPacket::bufToByte(void)
+MVREXPORT MvrTypes::Byte MvrSZSeriesPacket::bufToByte(void)
 {
-	ArTypes::Byte ret=0;
+	MvrTypes::Byte ret=0;
 
 
 	if (!isNextGood(1))
@@ -118,7 +92,7 @@ MVREXPORT ArTypes::Byte ArSZSeriesPacket::bufToByte(void)
 	return ret;
 }
 
-int ArSZSeriesPacket::deascii(char c)
+int MvrSZSeriesPacket::deascii(char c)
 {
 	if (c >= '0' && c <= '9')
 		return c - '0';
@@ -130,42 +104,42 @@ int ArSZSeriesPacket::deascii(char c)
 		return 0;
 }
 
-MVREXPORT ArSZSeriesPacketReceiver::ArSZSeriesPacketReceiver() {
+MVREXPORT MvrSZSeriesPacketReceiver::MvrSZSeriesPacketReceiver() {
 
 }
 
-MVREXPORT ArSZSeriesPacketReceiver::~MvrSZSeriesPacketReceiver() {
+MVREXPORT MvrSZSeriesPacketReceiver::~MvrSZSeriesPacketReceiver() {
 
 }
 
-MVREXPORT void ArSZSeriesPacketReceiver::setDeviceConnection(
-		ArDeviceConnection *conn) {
+MVREXPORT void MvrSZSeriesPacketReceiver::setDeviceConnection(
+		MvrDeviceConnection *conn) {
 	myConn = conn;
 }
 
-MVREXPORT ArDeviceConnection *ArSZSeriesPacketReceiver::getDeviceConnection(void) {
+MVREXPORT MvrDeviceConnection *MvrSZSeriesPacketReceiver::getDeviceConnection(void) {
 	return myConn;
 }
 
-ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
+MvrSZSeriesPacket *MvrSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		bool startMode) {
 
-	ArSZSeriesPacket *packet;
+	MvrSZSeriesPacket *packet;
 	unsigned char c;
 	long timeToRunFor;
-	ArTime timeDone;
-	ArTime lastDataRead;
-	ArTime packetReceived;
+	MvrTime timeDone;
+	MvrTime lastDataRead;
+	MvrTime packetReceived;
 	int i;
 
 	if (myConn == NULL || myConn->getStatus()
-			!= ArDeviceConnection::STATUS_OPEN) {
+			!= MvrDeviceConnection::STATUS_OPEN) {
 		return NULL;
 	}
 
 	timeDone.setToNow();
 	if (!timeDone.addMSec(msWait)) {
-		ArLog::log(MvrLog::Terse, "%s::receivePacket() error adding msecs (%i)",
+		MvrLog::log(MvrLog::Terse, "%s::receivePacket() error adding msecs (%i)",
 				myName, msWait);
 	}
 	//msWait = 100;
@@ -175,7 +149,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		if (timeToRunFor < 0)
 			timeToRunFor = 0;
 		/*
-		 ArLog::log(MvrLog::Terse,
+		 MvrLog::log(MvrLog::Terse,
 		 "%s::receivePacket() timeToRunFor = %d",
 		 myName, timeToRunFor);
 		 */
@@ -225,22 +199,22 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 			if ((myConn->read((char *) &c, 1, msWait)) > 0) {
 				if (c != 0x00) {
 					//printf("char = %x\n",c);
-					//ArLog::log(MvrLog::Terse,
+					//MvrLog::log(MvrLog::Terse,
 					 //                "MvrSZSeries::receivePacket() error reading first 4 bytes of header");
 					break;
 				}
 				if (i == 0) {
 					packetReceived = myConn->getTimeRead(0);
-					//ArTime previousTime = myPacket.getTimeReceived();
+					//MvrTime previousTime = myPacket.getTimeReceived();
 					myPacket.setTimeReceived(packetReceived);
-					//ArLog::log(MvrLog::Normal,
+					//MvrLog::log(MvrLog::Normal,
 					//		"ms since = %d",
 					//		packetReceived.mSecSince(previousTime));
 				}
 			} else {
 				/* don't log this if we are in starting mode, means laser is not connecting */
 				if (startMode)
-					ArLog::log(MvrLog::Terse,
+					MvrLog::log(MvrLog::Terse,
 							"%s::receivePacket() myConn->read error (header)",
 							myName);
 				return NULL;
@@ -255,13 +229,13 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		// next byte = 0x91  - command number
 		if ((myConn->read((char *) &c, 1, msWait)) > 0) {
 			if (c != 0x91) {
-				//ArLog::log(MvrLog::Terse,
+				//MvrLog::log(MvrLog::Terse,
 				//                 "MvrSZSeries::receivePacket() error data block number in header");
 				break;
 			}
 		} else {
-			ArLog::log(
-					ArLog::Terse,
+			MvrLog::log(
+					MvrLog::Terse,
 					"%s::receivePacket() myConn->read error (data block number)",
 					myName);
 			return NULL;
@@ -269,7 +243,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 		if (c != 0x91)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 			"%s::receivePacket() Invalid command ID (must be 0x91) = 0x%x",
 			myName, c);
 			continue;
@@ -284,13 +258,13 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		// as set in the Configurator
 		if ((myConn->read((char *) &c, 1, msWait)) > 0) {
 			if (c != 0x00) {
-				//ArLog::log(MvrLog::Terse,
+				//MvrLog::log(MvrLog::Terse,
 				//                 "MvrSZSeries::receivePacket() error data block number in header");
 				break;
 			}
 		} else {
-			ArLog::log(
-					ArLog::Terse,
+			MvrLog::log(
+					MvrLog::Terse,
 					"%s::receivePacket() myConn->read error (data block number)",
 					myName);
 			return NULL;
@@ -299,7 +273,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 		if (c != 0x00)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 			"%s::receivePacket() Communication ID error = %d",
 			myName, c);
 			continue;
@@ -314,7 +288,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 				temp[i] = c;
 				crcbuf[n++] = c;
 			} else {
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (length)",
 						myName);
 				return NULL;
@@ -333,14 +307,14 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		myPacket.setDataLength(datalen - 1);
 
 		/*
-		ArLog::Terse(
+		MvrLog::Terse(
 		"%s::receivePacket() Data Length = %d", myName, myPacket.getDataLength());
 		*/
 
 		myPacket.setNumReadings(myPacket.getDataLength() / 2);
 
 		/*
-		ArLog::Terse(
+		MvrLog::Terse(
 		"%s::receivePacket() Number of readings = %d", myName, myPacket.getNumReadings());
 		*/
 
@@ -349,8 +323,8 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		if ((myConn->read((char *) &c, 1, msWait)) > 0) {
 			myPacket.setScanFrequency(c);
 		} else {
-			ArLog::log(
-					ArLog::Terse,
+			MvrLog::log(
+					MvrLog::Terse,
 					"%s::receivePacket() myConn->read error (data block number)",
 					myName);
 			return NULL;
@@ -365,13 +339,13 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 		// trap if we failed the read
 		if (numRead < 0) {
-			ArLog::log(MvrLog::Terse, "%s::receivePacket() Failed read (%d)",
+			MvrLog::log(MvrLog::Terse, "%s::receivePacket() Failed read (%d)",
 					myName, numRead);
 			return NULL;
 		}
 
 		/*
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::receivePacket() Number of bytes read = %d, asked for = %d", myName,
 				numRead, myPacket.getDataLength());
 		*/
@@ -385,7 +359,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (crc)", myName);
 				return NULL;
 			}
@@ -403,8 +377,8 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 				numZeros = 0;
 
 			if (numZeros >= 4) {
-				ArLog::log(
-						ArLog::Terse,
+				MvrLog::log(
+						MvrLog::Terse,
 						"%s::receivePacket() myConn->read error (got 4 zeros in data)",
 						myName);
 				return NULL;
@@ -420,7 +394,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		
 		int t = myPacket.getDataLength() + n + 1;
 
-		ArLog::log(MvrLog::Normal,
+		MvrLog::log(MvrLog::Normal,
 		           "%s::receivePacket() DATA LEN  = %d  CRC byte1 = %x CRC byte2 = %x", myName, t, temp[0], temp[1]);
 		int y = n;
 		for (y = 0;y < t; y++) {
@@ -433,7 +407,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		sprintf(&buf[x], "%02x", (char *)temp[1]);
 		
 		
-		ArLog::log(MvrLog::Normal,
+		MvrLog::log(MvrLog::Normal,
 		           "%s::receivePacket() packet = %s", myName, buf);
 			*/
 		
@@ -447,7 +421,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		
 		if (myPrevCrc == crc) {
 	
-			ArLog::log(MvrLog::Verbose,
+			MvrLog::log(MvrLog::Verbose,
 					"CRC MATCH, current scan freq = %d, prev scan freq = %d",
 					myPacket.getScanFrequency(),
 					myPacket.getPrevScanFrequency());
@@ -462,7 +436,7 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 		
 		if (incrc != crc)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::receivePacket() CRC error (in = 0x%02x calculated = 0x%02x) ",
 					myName, incrc, crc);
 			return NULL;
@@ -471,11 +445,11 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 		myPacket.dataToBuf(&myReadBuf[0], myPacket.getNumReadings() * 2);
 		myPacket.resetRead();
-		packet = new ArSZSeriesPacket;
+		packet = new MvrSZSeriesPacket;
 		packet->duplicatePacket(&myPacket);
 
 		/*
-		ArLog::log(MvrLog::Normal,
+		MvrLog::log(MvrLog::Normal,
 		           "%s::receivePacket() returning packet %d %d", myName, packet->getNumReadings(), myPacket.getNumReadings());
 		*/
 
@@ -485,21 +459,21 @@ ArSZSeriesPacket *ArSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 
 	} while (timeDone.mSecTo() >= 0); // || !myStarting)
 
-	ArLog::log(MvrLog::Terse, "%s::receivePacket() Timeout on read", myName);
+	MvrLog::log(MvrLog::Terse, "%s::receivePacket() Timeout on read", myName);
 	return NULL;
 }
 
-MVREXPORT ArSZSeries::ArSZSeries(int laserNumber, const char *name) :
-			ArLaser(laserNumber, name, 16382),
-			mySensorInterpTask(this, &ArSZSeries::sensorInterp),
-			myAriaExitCB(this, &ArSZSeries::disconnect) {
+MVREXPORT MvrSZSeries::MvrSZSeries(int laserNumber, const char *name) :
+			MvrLaser(laserNumber, name, 16382),
+			mySensorInterpTask(this, &MvrSZSeries::sensorInterp),
+			myMvriaExitCB(this, &MvrSZSeries::disconnect) {
 
-	//ArLog::log(MvrLog::Normal, "%s: Sucessfully created", getName());
+	//MvrLog::log(MvrLog::Normal, "%s: Sucessfully created", getName());
 
 	clear();
-	myRawReadings = new std::list<ArSensorReading *>;
+	myRawReadings = new std::list<MvrSensorReading *>;
 
-	Aria::addExitCallback(&myAriaExitCB, -10);
+	Mvria::addExitCallback(&myMvriaExitCB, -10);
 
 	setInfoLogLevel(MvrLog::Normal);
 	//setInfoLogLevel(MvrLog::Terse);
@@ -530,9 +504,9 @@ MVREXPORT ArSZSeries::ArSZSeries(int laserNumber, const char *name) :
   laserAllowSetDegrees(-135, -135, -135, 135, 135, 135);
   laserAllowSetIncrement(0.5, 0.5, 0.5);
 
-	//myLogLevel = ArLog::Verbose;
-	//myLogLevel = ArLog::Terse;
-	myLogLevel = ArLog::Normal;
+	//myLogLevel = MvrLog::Verbose;
+	//myLogLevel = MvrLog::Terse;
+	myLogLevel = MvrLog::Normal;
 
 	setMinDistBetweenCurrent(0);
 	setMaxDistToKeepCumulative(4000);
@@ -547,27 +521,27 @@ MVREXPORT ArSZSeries::ArSZSeries(int laserNumber, const char *name) :
 	resetLastCumulativeCleanTime();
 
 	setCurrentDrawingData(
-			//new ArDrawingData("polyDots", ArColor(255, 204, 153), 75, // mm diameter of dots
-					new ArDrawingData("polyDots", ArColor(255,102,0), 75, // mm diameter of dots
+			//new MvrDrawingData("polyDots", MvrColor(255, 204, 153), 75, // mm diameter of dots
+					new MvrDrawingData("polyDots", MvrColor(255,102,0), 75, // mm diameter of dots
 					76), // layer above sonar
 					true);
 
 	setCumulativeDrawingData(
-			new ArDrawingData("polyDots", ArColor(255,153,0), 95, // mm diameter of dots
+			new MvrDrawingData("polyDots", MvrColor(255,153,0), 95, // mm diameter of dots
 					61), // layer below current range devices
 					true);
 
 }
 
-MVREXPORT ArSZSeries::~MvrSZSeries() {
-	Aria::remExitCallback(&myAriaExitCB);
+MVREXPORT MvrSZSeries::~MvrSZSeries() {
+	Mvria::remExitCallback(&myMvriaExitCB);
 	if (myRobot != NULL) {
 		myRobot->remRangeDevice(this);
 		myRobot->remLaser(this);
 		myRobot->remSensorInterpTask(&mySensorInterpTask);
 	}
 	if (myRawReadings != NULL) {
-		ArUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
+		MvrUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
 		myRawReadings->clear();
 		delete myRawReadings;
 		myRawReadings = NULL;
@@ -578,7 +552,7 @@ MVREXPORT ArSZSeries::~MvrSZSeries() {
 	unlockDevice();
 }
 
-void ArSZSeries::clear(void) {
+void MvrSZSeries::clear(void) {
 	myIsConnected = false;
 	myTryingToConnect = false;
 	myStartConnect = false;
@@ -586,53 +560,53 @@ void ArSZSeries::clear(void) {
 	myNumChans = 0;
 }
 
-MVREXPORT void ArSZSeries::laserSetName(const char *name) {
+MVREXPORT void MvrSZSeries::laserSetName(const char *name) {
 	myName = name;
 
 	myConnMutex.setLogNameVar("%s::myConnMutex", getName());
 	myPacketsMutex.setLogNameVar("%s::myPacketsMutex", getName());
 	myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-	myAriaExitCB.setNameVar("%s::exitCallback", getName());
+	myMvriaExitCB.setNameVar("%s::exitCallback", getName());
 
-	ArLaser::laserSetName( getName());
+	MvrLaser::laserSetName( getName());
 }
 
-MVREXPORT void ArSZSeries::setRobot(MvrRobot *robot) {
+MVREXPORT void MvrSZSeries::setRobot(MvrRobot *robot) {
 	myRobot = robot;
 
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask(&mySensorInterpTask);
 		myRobot->addSensorInterpTask("SZSeries", 90, &mySensorInterpTask);
 	}
-	ArLaser::setRobot(robot);
+	MvrLaser::setRobot(robot);
 }
 
-MVREXPORT bool ArSZSeries::asyncConnect(void) {
+MVREXPORT bool MvrSZSeries::asyncConnect(void) {
 	myStartConnect = true;
 	if (!getRunning())
 		runAsync();
 	return true;
 }
 
-MVREXPORT bool ArSZSeries::disconnect(void) {
+MVREXPORT bool MvrSZSeries::disconnect(void) {
 	if (!isConnected())
 		return true;
 
-	ArLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
+	MvrLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
 
 	laserDisconnectNormally();
 	return true;
 }
 
-void ArSZSeries::failedToConnect(void) {
+void MvrSZSeries::failedToConnect(void) {
 	lockDevice();
 	myTryingToConnect = true;
 	unlockDevice();
 	laserFailedConnect();
 }
 
-void ArSZSeries::sensorInterp(void) {
-	ArSZSeriesPacket *packet;
+void MvrSZSeries::sensorInterp(void) {
+	MvrSZSeriesPacket *packet;
 
 	while (1) {
 		myPacketsMutex.lock();
@@ -646,12 +620,12 @@ void ArSZSeries::sensorInterp(void) {
 
 		//set up the times and poses
 
-		ArTime time = packet->getTimeReceived();
+		MvrTime time = packet->getTimeReceived();
 		
-		ArPose pose;
+		MvrPose pose;
 		int ret;
 		int retEncoder;
-		ArPose encoderPose;
+		MvrPose encoderPose;
 		int dist;
 		int j;
 
@@ -660,7 +634,7 @@ void ArSZSeries::sensorInterp(void) {
 		// this value should be found more empirically... but we used 1/75
 		// hz for the lms2xx and it was fine, so here we'll use 1/50 hz for now
 		if (!time.addMSec(-30)) {
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::sensorInterp() error adding msecs (-30)", getName());
 		}
 
@@ -673,13 +647,13 @@ void ArSZSeries::sensorInterp(void) {
 				|| (retEncoder = myRobot->getEncoderPoseInterpPosition(time,
 						&encoderPose)) < 0)
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::sensorInterp() reading too old to process", getName());
 			delete packet;
 			continue;
 		}
 
-		ArTransform transform;
+		MvrTransform transform;
 		transform.setTransform(pose);
 
 		unsigned int counter = 0;
@@ -689,8 +663,8 @@ void ArSZSeries::sensorInterp(void) {
 		lockDevice();
 		myDataMutex.lock();
 
-		//std::list<ArSensorReading *>::reverse_iterator it;
-		ArSensorReading *reading;
+		//std::list<MvrSensorReading *>::reverse_iterator it;
+		MvrSensorReading *reading;
 
 		myNumChans = packet->getNumReadings();
 
@@ -705,7 +679,7 @@ void ArSZSeries::sensorInterp(void) {
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::sensorInterp() The number of readings is not correct = %d",
 					getName(), myNumChans);
 
@@ -720,13 +694,13 @@ void ArSZSeries::sensorInterp(void) {
 		// If we don't have any sensor readings created at all, make 'em all
 		if (myRawReadings->size() == 0) {
 			for (j = 0; j < eachNumberData; j++) {
-				myRawReadings->push_back(new ArSensorReading);
+				myRawReadings->push_back(new MvrSensorReading);
 			}
 		}
 
 		if (eachNumberData > myRawReadings->size())
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::sensorInterp() Bad data, in theory have %d readings but can only have 751... skipping this packet",
 					getName(), eachNumberData);
 
@@ -738,7 +712,7 @@ void ArSZSeries::sensorInterp(void) {
 			continue;
 		}
 
-		std::list<ArSensorReading *>::iterator it;
+		std::list<MvrSensorReading *>::iterator it;
 		double atDeg;
 		int onReading;
 
@@ -779,13 +753,13 @@ void ArSZSeries::sensorInterp(void) {
 			// note max distance is 16383 mm, if the measurement
 			// object is not there, distance will still be 16383
             /*
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 			"reading %d first half = 0x%x, second half = 0x%x dist =  %d",
 			readingIndex, buf[(readingIndex *2)+1], buf[readingIndex], dist);
             */
 
 			reading->resetSensorPosition(MvrMath::roundInt(mySensorPose.getX()),
-					ArMath::roundInt(mySensorPose.getY()), atDeg);
+					MvrMath::roundInt(mySensorPose.getY()), atDeg);
 			reading->newData(dist, pose, encoderPose, transform, counter, time,
 					ignore, 0); // no reflector yet
 
@@ -794,7 +768,7 @@ void ArSZSeries::sensorInterp(void) {
 			//					 time, ignore);
 		}
 /*
-		 ArLog::log(MvrLog::Normal,
+		 MvrLog::log(MvrLog::Normal,
 		 "Received: %s %s scan %d numReadings %d", 
 		 packet->getCommandType(), packet->getCommandName(), 
 		 myScanCounter, onReading);
@@ -803,8 +777,8 @@ void ArSZSeries::sensorInterp(void) {
 		myDataMutex.unlock();
 
 		/*
-		ArLog::log(
-				ArLog::Terse,
+		MvrLog::log(
+				MvrLog::Terse,
 				"%s::sensorInterp() Telegram number =  %d  ",
 				getName(),  packet->getTelegramNumByte2());
 		 */
@@ -815,14 +789,14 @@ void ArSZSeries::sensorInterp(void) {
 	}
 }
 
-MVREXPORT bool ArSZSeries::blockingConnect(void) {
+MVREXPORT bool MvrSZSeries::blockingConnect(void) {
 
 	if (!getRunning())
 		runAsync();
 
 	myConnMutex.lock();
 	if (myConn == NULL) {
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s: Could not connect because there is no connection defined",
 				getName());
 		myConnMutex.unlock();
@@ -838,15 +812,15 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 	laserCheckParams();
 
 	// PS 9/9/11 - add setting baud
-    ArSerialConnection *serConn = NULL;
-	serConn = dynamic_cast<ArSerialConnection *>(myConn);
+    MvrSerialConnection *serConn = NULL;
+	serConn = dynamic_cast<MvrSerialConnection *>(myConn);
 	if (serConn != NULL)
 		serConn->setBaud(atoi(getStartingBaudChoice()));
 
-	if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN
+	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN
 			&& !myConn->openSimple()) {
-		ArLog::log(
-				ArLog::Terse,
+		MvrLog::log(
+				MvrLog::Terse,
 				"%s: Could not connect because the connection was not open and could not open it",
 				getName());
 		myConnMutex.unlock();
@@ -869,18 +843,18 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 	//laserPullUnsetParamsFromRobot();
 	//laserCheckParams();
 
-	int size = ArMath::roundInt((270/.3) + 1);
-	ArLog::log(myInfoLogLevel,
+	int size = MvrMath::roundInt((270/.3) + 1);
+	MvrLog::log(myInfoLogLevel,
 			"%s::blockingConnect() Setting current buffer size to %d",
 			getName(), size);
 	setCurrentBufferSize(size);
 
-	ArTime timeDone;
+	MvrTime timeDone;
 	if (myPowerControlled)
 	{
 		if (!timeDone.addMSec(60 * 1000))
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::blockingConnect() error adding msecs (60 * 1000)",
 					getName());
 		}
@@ -889,16 +863,16 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 	{
 		if (!timeDone.addMSec(30 * 1000))
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::blockingConnect() error adding msecs (30 * 1000)",
 					getName());
 		}
 	}
 
 
-	ArSZSeriesPacket *packet;
+	MvrSZSeriesPacket *packet;
 
-	ArSZSeriesPacket sendPacket;
+	MvrSZSeriesPacket sendPacket;
 
 #if 0
 	sendPacket.empty();
@@ -911,7 +885,7 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 
 	if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1)
 	{
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::blockingConnect() Could not send Stop Continuous mode to laser", getName());
 		failedToConnect();
 		return false;
@@ -971,14 +945,14 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 	}
 	printf("\n");
 
-	//ArLog::log(MvrLog::Terse,
+	//MvrLog::log(MvrLog::Terse,
 	//		"%s::blockingConnect() write Buffer = %s", getName(), x);
 
 	); // end IFDEBUG
 
 	if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1)
 	{
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::blockingConnect() Could not send Start Continuous mode to laser", getName());
 		failedToConnect();
 		return false;
@@ -999,13 +973,13 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 			myIsConnected = true;
 			myTryingToConnect = false;
 			unlockDevice();
-			ArLog::log(MvrLog::Normal, "%s::blockingConnect() Connected to laser", getName());
+			MvrLog::log(MvrLog::Normal, "%s::blockingConnect() Connected to laser", getName());
 			laserConnect();
 			return true;
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal, "%s::blockingConnect() Did not get response to Start Continuous request",
+			MvrLog::log(MvrLog::Normal, "%s::blockingConnect() Did not get response to Start Continuous request",
 					getName());
 			delete packet;
 			packet = NULL;
@@ -1015,7 +989,7 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 
 
 
-	ArLog::log(MvrLog::Terse,
+	MvrLog::log(MvrLog::Terse,
 			"%s::blockingConnect()  Did not get scan data back from laser",
 			getName());
 	failedToConnect();
@@ -1023,9 +997,9 @@ MVREXPORT bool ArSZSeries::blockingConnect(void) {
 
 }
 
-MVREXPORT void * ArSZSeries::runThread(void *arg) {
+MVREXPORT void * MvrSZSeries::runThread(void *arg) {
 	//char buf[1024];
-	ArSZSeriesPacket *packet;
+	MvrSZSeriesPacket *packet;
 
 	while (getRunning())
 	{
@@ -1047,7 +1021,7 @@ MVREXPORT void * ArSZSeries::runThread(void *arg) {
 
 		if (!myIsConnected)
 		{
-			ArUtil::sleep(100);
+			MvrUtil::sleep(100);
 			continue;
 		}
 
@@ -1067,7 +1041,7 @@ MVREXPORT void * ArSZSeries::runThread(void *arg) {
 	// if we have a robot but it isn't running yet then don't have a
 	// connection failure
 	if (getRunning() && myIsConnected && laserCheckLostConnection() ) {
-		ArLog::log (MvrLog::Normal,
+		MvrLog::log (MvrLog::Normal,
 		            "%s::runThread()  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
 		            myLastReading.mSecSince() / 1000.0,
 		            getConnectionTimeoutSeconds() );
@@ -1076,9 +1050,9 @@ MVREXPORT void * ArSZSeries::runThread(void *arg) {
 		continue;
 	}
 
-		//ArUtil::sleep(1);
-		//ArUtil::sleep(2000);
-		//ArUtil::sleep(500);
+		//MvrUtil::sleep(1);
+		//MvrUtil::sleep(2000);
+		//MvrUtil::sleep(500);
 
 #if 0  // PS 10/20/11 - using code above to fix disconnect issues
 
@@ -1095,7 +1069,7 @@ MVREXPORT void * ArSZSeries::runThread(void *arg) {
 			myPackets.push_back(packet);
 			myPacketsMutex.unlock();
 
-			//ArLog::log(MvrLog::Terse, "myRobot = %s",myRobot);
+			//MvrLog::log(MvrLog::Terse, "myRobot = %s",myRobot);
 
 			//if (myRobot == NULL)
 			//sensorInterp();
@@ -1107,7 +1081,7 @@ MVREXPORT void * ArSZSeries::runThread(void *arg) {
 			// connection failure
 			if (laserCheckLostConnection())
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s:  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).",
 						getName(), myLastReading.mSecSince() / 1000.0,
 						getConnectionTimeoutSeconds());
@@ -1118,9 +1092,9 @@ MVREXPORT void * ArSZSeries::runThread(void *arg) {
 			}
 		}
 
-		ArUtil::sleep(1);
-		//ArUtil::sleep(2000);
-		//ArUtil::sleep(500);
+		MvrUtil::sleep(1);
+		//MvrUtil::sleep(2000);
+		//MvrUtil::sleep(500);
 		
 #endif
 		
@@ -1164,7 +1138,7 @@ crc_table[256] = { 0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5,
 		0x8fd9, 0x9ff8, 0x6e17, 0x7e36, 0x4e55, 0x5e74, 0x2e93, 0x3eb2,
 		0x0ed1, 0x1ef0 };
 
-unsigned short ArSZSeriesPacketReceiver::CRC16(unsigned char *Data, int length) {
+unsigned short MvrSZSeriesPacketReceiver::CRC16(unsigned char *Data, int length) {
 	unsigned short CRC_16 = 0x0000;
 	int i;
 

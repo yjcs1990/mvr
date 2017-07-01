@@ -1,64 +1,38 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrP2Arm.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include "MvrLog.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
-int ArP2Arm::NumJoints=6;
-const unsigned int ArP2Arm::ARMpac=0xa0;
-const unsigned int ArP2Arm::ARMINFOpac=0xa1;
-const unsigned char ArP2Arm::ComArmInfo=70;
-const unsigned char ArP2Arm::ComArmStats=71;
-const unsigned char ArP2Arm::ComArmInit=72;
-const unsigned char ArP2Arm::ComArmCheckArm=73;
-const unsigned char ArP2Arm::ComArmPower=74;
-const unsigned char ArP2Arm::ComArmHome=75;
-const unsigned char ArP2Arm::ComArmPark=76;
-const unsigned char ArP2Arm::ComArmPos=77;
-const unsigned char ArP2Arm::ComArmSpeed=78;
-const unsigned char ArP2Arm::ComArmStop=79;
-const unsigned char ArP2Arm::ComArmAutoPark=80;
-const unsigned char ArP2Arm::ComArmGripperPark=81;
-const int ArP2Arm::ArmJoint1=0x1;
-const int ArP2Arm::ArmJoint2=0x2;
-const int ArP2Arm::ArmJoint3=0x4;
-const int ArP2Arm::ArmJoint4=0x8;
-const int ArP2Arm::ArmJoint5=0x10;
-const int ArP2Arm::ArmJoint6=0x20;
-const int ArP2Arm::ArmGood=0x100;
-const int ArP2Arm::ArmInited=0x200;
-const int ArP2Arm::ArmPower=0x400;
-const int ArP2Arm::ArmHoming=0x800;
+int MvrP2Arm::NumJoints=6;
+const unsigned int MvrP2Arm::ARMpac=0xa0;
+const unsigned int MvrP2Arm::ARMINFOpac=0xa1;
+const unsigned char MvrP2Arm::ComArmInfo=70;
+const unsigned char MvrP2Arm::ComArmStats=71;
+const unsigned char MvrP2Arm::ComArmInit=72;
+const unsigned char MvrP2Arm::ComArmCheckArm=73;
+const unsigned char MvrP2Arm::ComArmPower=74;
+const unsigned char MvrP2Arm::ComArmHome=75;
+const unsigned char MvrP2Arm::ComArmPark=76;
+const unsigned char MvrP2Arm::ComArmPos=77;
+const unsigned char MvrP2Arm::ComArmSpeed=78;
+const unsigned char MvrP2Arm::ComArmStop=79;
+const unsigned char MvrP2Arm::ComArmAutoPark=80;
+const unsigned char MvrP2Arm::ComArmGripperPark=81;
+const int MvrP2Arm::ArmJoint1=0x1;
+const int MvrP2Arm::ArmJoint2=0x2;
+const int MvrP2Arm::ArmJoint3=0x4;
+const int MvrP2Arm::ArmJoint4=0x8;
+const int MvrP2Arm::ArmJoint5=0x10;
+const int MvrP2Arm::ArmJoint6=0x20;
+const int MvrP2Arm::ArmGood=0x100;
+const int MvrP2Arm::ArmInited=0x200;
+const int MvrP2Arm::ArmPower=0x400;
+const int MvrP2Arm::ArmHoming=0x800;
 
 
-MVREXPORT ArP2Arm::ArP2Arm() :
+MVREXPORT MvrP2Arm::MvrP2Arm() :
   myInited(false),
   myRobot(0),
   //  myModel(),
@@ -69,15 +43,15 @@ MVREXPORT ArP2Arm::ArP2Arm() :
   myLastStatus(0),
   myStatus(0),
   myCon(),
-  myAriaUninitCB(this, &ArP2Arm::uninit),
-  myArmPacketHandler(this, &ArP2Arm::armPacketHandler),
+  myMvriaUninitCB(this, &MvrP2Arm::uninit),
+  myArmPacketHandler(this, &MvrP2Arm::armPacketHandler),
   myPacketCB(0),
   myStoppedCB(0)
 {
   myArmPacketHandler.setName("MvrP2Arm");
 }
 
-MVREXPORT ArP2Arm::~MvrP2Arm()
+MVREXPORT MvrP2Arm::~MvrP2Arm()
 {
   //uninit();
   if (myRobot != NULL)
@@ -86,16 +60,16 @@ MVREXPORT ArP2Arm::~MvrP2Arm()
 
 /**
    Initialize the P2 Arm class. This must be called before anything else. The
-   setRobot() must be called to let ArP2Arm know what instance of an ArRobot
+   setRobot() must be called to let MvrP2Arm know what instance of an MvrRobot
    to use. It talks to the robot and makes sure that there is an arm on it
    and it is in a good condition. The AROS/P2OS arm servers take care of AUX
    port serial communications with the P2 Arm controller.
 */
-MVREXPORT ArP2Arm::State ArP2Arm::init()
+MVREXPORT MvrP2Arm::State MvrP2Arm::init()
 {
-  ArLog::log(MvrLog::Normal, "Initializing the arm.");
+  MvrLog::log(MvrLog::Normal, "Initializing the arm.");
 
-  ArTime now;
+  MvrTime now;
 
   if (myInited)
     return(ALREADY_INITED);
@@ -103,16 +77,16 @@ MVREXPORT ArP2Arm::State ArP2Arm::init()
   if (!myRobot || !myRobot->isRunning() || !myRobot->isConnected())
     return(ROBOT_NOT_SETUP);
 
-  Aria::addUninitCallBack(&myAriaUninitCB, ArListPos::FIRST);
-  ArLog::log(MvrLog::Verbose, "Adding the P2 Arm packet handler.");
-  myRobot->addPacketHandler(&myArmPacketHandler, ArListPos::FIRST);
+  Mvria::addUninitCallBack(&myMvriaUninitCB, MvrListPos::FIRST);
+  MvrLog::log(MvrLog::Verbose, "Adding the P2 Arm packet handler.");
+  myRobot->addPacketHandler(&myArmPacketHandler, MvrListPos::FIRST);
   now.setToNow();
   if (!comArmStats(StatusSingle))
     return(COMM_FAILED);
-  ArUtil::sleep(100);
+  MvrUtil::sleep(100);
   if (!comArmInfo())
     return(COMM_FAILED);
-  ArUtil::sleep(300);
+  MvrUtil::sleep(300);
 
   if (!now.isAfter(myLastStatusTime) || !now.isAfter(myLastInfoTime))
     return(COMM_FAILED);
@@ -128,9 +102,9 @@ MVREXPORT ArP2Arm::State ArP2Arm::init()
 /**
    Uninitialize the arm class. This simply asks the arm to park itself
    and cleans up its internal state. To completely uninitialize the P2 Arm
-   itself have the ArRobot disconnect from P2OS.
+   itself have the MvrRobot disconnect from P2OS.
 */
-MVREXPORT ArP2Arm::State ArP2Arm::uninit()
+MVREXPORT MvrP2Arm::State MvrP2Arm::uninit()
 {
   bool ret;
 
@@ -141,7 +115,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::uninit()
 
   myInited=false;
   myVersion="";
-  myStatusRequest=ArP2Arm::StatusOff;
+  myStatusRequest=MvrP2Arm::StatusOff;
   myLastStatus=0;
   myStatus=0;
   if (ret)
@@ -157,17 +131,17 @@ MVREXPORT ArP2Arm::State ArP2Arm::uninit()
    arm to settle down.
    @param doSleep if true, sleeps 2 seconds to wait for the arm to stop shaking
 */
-MVREXPORT ArP2Arm::State ArP2Arm::powerOn(bool doSleep)
+MVREXPORT MvrP2Arm::State MvrP2Arm::powerOn(bool doSleep)
 {
   if (isGood())
   {
-    ArLog::log(MvrLog::Normal, "MvrP2Arm::powerOn: Powering arm.");
+    MvrLog::log(MvrLog::Normal, "MvrP2Arm::powerOn: Powering arm.");
     if (!comArmPower(true))
       return(COMM_FAILED);
     // Sleep for 2 seconds to wait for the arm to stop shaking from the
     // effort of turning on
     if (doSleep)
-      ArUtil::sleep(2000);
+      MvrUtil::sleep(2000);
     return(SUCCESS);
   }
   else
@@ -178,14 +152,14 @@ MVREXPORT ArP2Arm::State ArP2Arm::powerOn(bool doSleep)
    Powers off the arm. This should only be called when the arm is in a good
    position to power off. Due to the design, it will go limp when the power
    is turned off. A more safe way to power off the arm is to use the
-   ArP2Arm::park() function. Which will home the arm, then power if off.
+   MvrP2Arm::park() function. Which will home the arm, then power if off.
    @see park
 */
-MVREXPORT ArP2Arm::State ArP2Arm::powerOff()
+MVREXPORT MvrP2Arm::State MvrP2Arm::powerOff()
 {
   if (isGood())
   {
-    ArLog::log(MvrLog::Normal, "MvrP2Arm::powerOff: Powering off arm.");
+    MvrLog::log(MvrLog::Normal, "MvrP2Arm::powerOff: Powering off arm.");
     if (comArmPower(false))
       return(SUCCESS);
     else
@@ -198,11 +172,11 @@ MVREXPORT ArP2Arm::State ArP2Arm::powerOff()
 /**
    Requests the arm info packet from P2OS and immediately returns. This packet
    will be sent during the next 100ms cycle of P2OS. Since there is a very
-   noticable time delay, the user should use the ArP2Arm::setPacketCB() to set
+   noticable time delay, the user should use the MvrP2Arm::setPacketCB() to set
    a callback so the user knows when the packet has been received.
    @see setPacketCB
 */
-MVREXPORT ArP2Arm::State ArP2Arm::requestInfo()
+MVREXPORT MvrP2Arm::State MvrP2Arm::requestInfo()
 {
   if (isGood())
   {
@@ -218,11 +192,11 @@ MVREXPORT ArP2Arm::State ArP2Arm::requestInfo()
 /**
    Requests the arm status packet from P2OS and immediately returns. This
    packet will be sent during the next 100ms cycle of P2OS. Since there is a
-   very noticable time delay, the user should use the ArP2Arm::setPacketCB() to
+   very noticable time delay, the user should use the MvrP2Arm::setPacketCB() to
    set a callback so the user knows when the packet has been received.
    @see setPacketCB
 */
-MVREXPORT ArP2Arm::State ArP2Arm::requestStatus(StatusType status)
+MVREXPORT MvrP2Arm::State MvrP2Arm::requestStatus(StatusType status)
 {
   if (isGood())
   {
@@ -240,19 +214,19 @@ MVREXPORT ArP2Arm::State ArP2Arm::requestStatus(StatusType status)
    initialization procedure takes about 700ms to complete and a little more
    time for the status information to be relayed back to the client. Since
    there is a very noticable time delay, the user should use the
-   ArP2Arm::setPacketCB() to set a callback so the user knows when the arm info
+   MvrP2Arm::setPacketCB() to set a callback so the user knows when the arm info
    packet has been received. Then wait about 800ms, and send a 
-   ArP2Arm::requestStatus() to get the results of the init request. While the
+   MvrP2Arm::requestStatus() to get the results of the init request. While the
    init is proceding, P2OS will ignore all arm related commands except
    requests for arm status and arm info packets.
 
-   ArP2Arm::checkArm() can be used to periodicly check to make sure that the
+   MvrP2Arm::checkArm() can be used to periodicly check to make sure that the
    arm controller is still alive and responding.
 
    @see checkArm
    @see setPacketCB
 */
-MVREXPORT ArP2Arm::State ArP2Arm::requestInit()
+MVREXPORT MvrP2Arm::State MvrP2Arm::requestInit()
 {
   if (isGood())
   {
@@ -274,9 +248,9 @@ MVREXPORT ArP2Arm::State ArP2Arm::requestInit()
    then checkArm() will wait the appropriate amoutn of time and check the
    status of the arm. If you wish to do the waiting else where the arm check
    sequence takes about 200ms, so the user should wait 300ms then send a
-   ArP2Arm::requestStatus() to get the results of the check arm request. Since
+   MvrP2Arm::requestStatus() to get the results of the check arm request. Since
    there is a very noticable time delay, the user should use the 
-   ArP2Arm::setPacketCB() to set a callback so the user knows when the packet
+   MvrP2Arm::setPacketCB() to set a callback so the user knows when the packet
    has been received.
 
    This can be usefull for telling if the arm is still alive. The arm
@@ -286,9 +260,9 @@ MVREXPORT ArP2Arm::State ArP2Arm::requestInit()
    @see requestInit
    @see setPacketCB
 */
-MVREXPORT ArP2Arm::State ArP2Arm::checkArm(bool waitForResponse)
+MVREXPORT MvrP2Arm::State MvrP2Arm::checkArm(bool waitForResponse)
 {
-  ArTime now;
+  MvrTime now;
 
   if (isGood())
   {
@@ -297,7 +271,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::checkArm(bool waitForResponse)
       return(COMM_FAILED);
     if (waitForResponse)
     {
-      ArUtil::sleep(300);
+      MvrUtil::sleep(300);
       if (!myLastInfoTime.isAfter(now))
 	return(COMM_FAILED);
       if (isGood())
@@ -314,14 +288,14 @@ MVREXPORT ArP2Arm::State ArP2Arm::checkArm(bool waitForResponse)
 
 /**
    Tells the arm to go to the home position. While the arm is homing, the
-   status byte will reflect it with the ArP2Arm::ArmHoming flag. If joint is set
+   status byte will reflect it with the MvrP2Arm::ArmHoming flag. If joint is set
    to -1, then all the joints will be homed at a safe speed. If a single joint
    is specified, that joint will be told to go to its home position at the
    current speed its set at.
 
    @param joint home only that joint
 */
-MVREXPORT ArP2Arm::State ArP2Arm::home(int joint)
+MVREXPORT MvrP2Arm::State MvrP2Arm::home(int joint)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -341,8 +315,8 @@ MVREXPORT ArP2Arm::State ArP2Arm::home(int joint)
    currently set speed will be used. The position is in degrees. Each joint
    has about a +-90 degree range, but they all differ due to the design.
 
-   See ArP2Arm::moveToTicks() for a description of how positions are defined.
-   See ArP2Arm::moveVel() for a description of how speeds are defined.
+   See MvrP2Arm::moveToTicks() for a description of how positions are defined.
+   See MvrP2Arm::moveVel() for a description of how speeds are defined.
 
    @param joint the joint to move
    @param pos the position in degrees to move to
@@ -351,7 +325,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::home(int joint)
    @see moveVel
 */
 
-MVREXPORT ArP2Arm::State ArP2Arm::moveTo(int joint, float pos,  unsigned char vel)
+MVREXPORT MvrP2Arm::State MvrP2Arm::moveTo(int joint, float pos,  unsigned char vel)
 {
   unsigned char ticks;
 
@@ -379,14 +353,14 @@ MVREXPORT ArP2Arm::State ArP2Arm::moveTo(int joint, float pos,  unsigned char ve
    mapped to the physical range of the servo. Due to the design of the arm,
    certain joints range are limited by the arm itself. P2OS will bound the
    position to physical range of each joint. This is a lower level of
-   controlling the arm position than using ArP2Arm::moveTo(). ArP2Arm::moveTo()
+   controlling the arm position than using MvrP2Arm::moveTo(). MvrP2Arm::moveTo()
    uses a conversion factor which converts degrees to ticks.
 
    @param joint the joint to move
    @param pos the position, in ticks, to move to
    @see moveTo
 */
-MVREXPORT ArP2Arm::State ArP2Arm::moveToTicks(int joint, unsigned char pos)
+MVREXPORT MvrP2Arm::State MvrP2Arm::moveToTicks(int joint, unsigned char pos)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -403,8 +377,8 @@ MVREXPORT ArP2Arm::State ArP2Arm::moveToTicks(int joint, unsigned char pos)
    Step the joint pos degrees from its current position at the given speed.
    If vel is 0, then the currently set speed will be used.
 
-   See ArP2Arm::moveToTicks() for a description of how positions are defined.
-   See ArP2Arm::moveVel() for a description of how speeds are defined.
+   See MvrP2Arm::moveToTicks() for a description of how positions are defined.
+   See MvrP2Arm::moveVel() for a description of how speeds are defined.
 
    @param joint the joint to move
    @param pos the position in degrees to step
@@ -412,7 +386,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::moveToTicks(int joint, unsigned char pos)
    @see moveTo
    @see moveVel
 */
-MVREXPORT ArP2Arm::State ArP2Arm::moveStep(int joint, float pos, unsigned char vel)
+MVREXPORT MvrP2Arm::State MvrP2Arm::moveStep(int joint, float pos, unsigned char vel)
 {
   unsigned char ticks;
 
@@ -440,14 +414,14 @@ MVREXPORT ArP2Arm::State ArP2Arm::moveStep(int joint, float pos, unsigned char v
    mapped to the physical range of the servo. Due to the design of the arm,
    certain joints range are limited by the arm itself. P2OS will bound the
    position to physical range of each joint. This is a lower level of
-   controlling the arm position than using ArP2Arm::moveTo(). ArP2Arm::moveStep()
+   controlling the arm position than using MvrP2Arm::moveTo(). MvrP2Arm::moveStep()
    uses a conversion factor which converts degrees to ticks.
 
    @param joint the joint to move
    @param pos the position, in ticks, to move to
    @see moveStep
 */
-MVREXPORT ArP2Arm::State ArP2Arm::moveStepTicks(int joint, signed char pos)
+MVREXPORT MvrP2Arm::State MvrP2Arm::moveStepTicks(int joint, signed char pos)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -472,7 +446,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::moveStepTicks(int joint, signed char pos)
    @param joint the joint to move
    @param vel the velocity to move at
 */
-MVREXPORT ArP2Arm::State ArP2Arm::moveVel(int joint, int vel)
+MVREXPORT MvrP2Arm::State MvrP2Arm::moveVel(int joint, int vel)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -491,7 +465,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::moveVel(int joint, int vel)
    Stop the arm from moving. This overrides all other actions except for the
    arms initilization sequence.
 */
-MVREXPORT ArP2Arm::State ArP2Arm::stop()
+MVREXPORT MvrP2Arm::State MvrP2Arm::stop()
 {
   if (!isGood())
     return(NOT_INITED);
@@ -502,7 +476,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::stop()
   return(SUCCESS);
 }
 
-MVREXPORT float ArP2Arm::getJointPos(int joint)
+MVREXPORT float MvrP2Arm::getJointPos(int joint)
 {
   float val;
 
@@ -513,7 +487,7 @@ MVREXPORT float ArP2Arm::getJointPos(int joint)
     return(0.0);
 }
 
-MVREXPORT unsigned char ArP2Arm::getJointPosTicks(int joint)
+MVREXPORT unsigned char MvrP2Arm::getJointPosTicks(int joint)
 {
   if (isGood() && (joint > 0) && (joint <= NumJoints))
     return(getJoint(joint)->myPos);
@@ -521,7 +495,7 @@ MVREXPORT unsigned char ArP2Arm::getJointPosTicks(int joint)
     return(0);
 }
 
-MVREXPORT P2ArmJoint * ArP2Arm::getJoint(int joint)
+MVREXPORT P2ArmJoint * MvrP2Arm::getJoint(int joint)
 {
   if ((joint > 0) && (joint <= NumJoints))
     return(&myJoints[joint-1]);
@@ -529,7 +503,7 @@ MVREXPORT P2ArmJoint * ArP2Arm::getJoint(int joint)
     return(0);
 }
 
-bool ArP2Arm::armPacketHandler(MvrRobotPacket *packet)
+bool MvrP2Arm::armPacketHandler(MvrRobotPacket *packet)
 {
   bool doWake;
   int i;
@@ -579,27 +553,27 @@ bool ArP2Arm::armPacketHandler(MvrRobotPacket *packet)
     return(false);
 }
 
-bool ArP2Arm::comArmInfo()
+bool MvrP2Arm::comArmInfo()
 {
   return(myRobot->com(ComArmInfo));
 }
 
-bool ArP2Arm::comArmStats(StatusType stats)
+bool MvrP2Arm::comArmStats(StatusType stats)
 {
   return(myRobot->comInt(ComArmStats, (int)stats));
 }
 
-bool ArP2Arm::comArmInit()
+bool MvrP2Arm::comArmInit()
 {
   return(myRobot->com(ComArmInit));
 }
 
-bool ArP2Arm::comArmCheckArm()
+bool MvrP2Arm::comArmCheckArm()
 {
   return(myRobot->com(ComArmCheckArm));
 }
 
-bool ArP2Arm::comArmPower(bool on)
+bool MvrP2Arm::comArmPower(bool on)
 {
   if (on)
     return(myRobot->comInt(ComArmPower, 1));
@@ -607,42 +581,42 @@ bool ArP2Arm::comArmPower(bool on)
     return(myRobot->comInt(ComArmPower, 0));
 }
 
-bool ArP2Arm::comArmHome(unsigned char joint)
+bool MvrP2Arm::comArmHome(unsigned char joint)
 {
   return(myRobot->comInt(ComArmHome, joint));
 }
 
-bool ArP2Arm::comArmPos(unsigned char joint, unsigned char pos)
+bool MvrP2Arm::comArmPos(unsigned char joint, unsigned char pos)
 {
   return(myRobot->com2Bytes(ComArmPos, joint, pos));
 }
 
-bool ArP2Arm::comArmSpeed(unsigned char joint, unsigned char speed)
+bool MvrP2Arm::comArmSpeed(unsigned char joint, unsigned char speed)
 {
   return(myRobot->com2Bytes(ComArmSpeed, joint, speed));
 }
 
-bool ArP2Arm::comArmStop(unsigned char joint)
+bool MvrP2Arm::comArmStop(unsigned char joint)
 {
   return(myRobot->comInt(ComArmStop, joint));
 }
 
-bool ArP2Arm::comArmPark()
+bool MvrP2Arm::comArmPark()
 {
   return(myRobot->com(ComArmPark));
 }
 
-bool ArP2Arm::comArmAutoPark(int waitSecs)
+bool MvrP2Arm::comArmAutoPark(int waitSecs)
 {
   return(myRobot->comInt(ComArmAutoPark, waitSecs));
 }
 
-bool ArP2Arm::comArmGripperPark(int waitSecs)
+bool MvrP2Arm::comArmGripperPark(int waitSecs)
 {
   return(myRobot->comInt(ComArmGripperPark, waitSecs));
 }
 
-MVREXPORT bool ArP2Arm::getMoving(int joint)
+MVREXPORT bool MvrP2Arm::getMoving(int joint)
 {
   if ((joint < 0) && (myStatus & 0xf))
     return(true);
@@ -652,7 +626,7 @@ MVREXPORT bool ArP2Arm::getMoving(int joint)
     return(false);
 }
 
-MVREXPORT bool ArP2Arm::isPowered()
+MVREXPORT bool MvrP2Arm::isPowered()
 {
   if (myStatus & ArmPower)
     return(true);
@@ -660,7 +634,7 @@ MVREXPORT bool ArP2Arm::isPowered()
     return(false);
 }
 
-MVREXPORT bool ArP2Arm::isGood()
+MVREXPORT bool MvrP2Arm::isGood()
 {
   if (myRobot && myRobot->isRunning() && myRobot->isConnected() &&
       myInited && (myStatus & ArmGood) && (myStatus & ArmInited))
@@ -669,7 +643,7 @@ MVREXPORT bool ArP2Arm::isGood()
     return(false);
 }
 
-MVREXPORT ArP2Arm::State ArP2Arm::park()
+MVREXPORT MvrP2Arm::State MvrP2Arm::park()
 {
   if (!isGood())
     return(NOT_INITED);
@@ -688,7 +662,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::park()
 
    @param waitSecs seconds to wait till parking the arm when idle
 */
-MVREXPORT ArP2Arm::State ArP2Arm::setAutoParkTimer(int waitSecs)
+MVREXPORT MvrP2Arm::State MvrP2Arm::setAutoParkTimer(int waitSecs)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -708,7 +682,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::setAutoParkTimer(int waitSecs)
 
    @param waitSecs seconds to wait till parking the gripper once it has begun to grip something
 */
-MVREXPORT ArP2Arm::State ArP2Arm::setGripperParkTimer(int waitSecs)
+MVREXPORT MvrP2Arm::State MvrP2Arm::setGripperParkTimer(int waitSecs)
 {
   if (!isGood())
     return(NOT_INITED);
@@ -719,7 +693,7 @@ MVREXPORT ArP2Arm::State ArP2Arm::setGripperParkTimer(int waitSecs)
     return(COMM_FAILED);
 }
 
-MVREXPORT bool ArP2Arm::convertDegToTicks(int joint, float pos,
+MVREXPORT bool MvrP2Arm::convertDegToTicks(int joint, float pos,
 				       unsigned char *ticks)
 {
   long val;
@@ -731,7 +705,7 @@ MVREXPORT bool ArP2Arm::convertDegToTicks(int joint, float pos,
     *ticks=(unsigned char)pos;
   else
   {
-    val=ArMath::roundInt(getJoint(joint)->myTicksPer90*(pos/90.0));
+    val=MvrMath::roundInt(getJoint(joint)->myTicksPer90*(pos/90.0));
     if ((joint >= 1) && (joint <= 3))
       val=-val;
     val+=getJoint(joint)->myCenter;
@@ -746,7 +720,7 @@ MVREXPORT bool ArP2Arm::convertDegToTicks(int joint, float pos,
   return(true);
 }
 
-MVREXPORT bool ArP2Arm::convertTicksToDeg(int joint, unsigned char pos,
+MVREXPORT bool MvrP2Arm::convertTicksToDeg(int joint, unsigned char pos,
 				       float *degrees)
 {
   long val;
@@ -758,7 +732,7 @@ MVREXPORT bool ArP2Arm::convertTicksToDeg(int joint, unsigned char pos,
     *degrees=pos;
   else
   {
-    val=ArMath::roundInt(90.0/getJoint(joint)->myTicksPer90*
+    val=MvrMath::roundInt(90.0/getJoint(joint)->myTicksPer90*
 			 (pos-getJoint(joint)->myCenter));
     if ((joint >= 1) && (joint <= 3))
       val=-val;

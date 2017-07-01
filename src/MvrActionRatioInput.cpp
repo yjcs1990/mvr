@@ -1,38 +1,12 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrActionRatioInput.h"
 #include "MvrRobot.h"
 
 /**
    @param name name of the action
 */
-MVREXPORT MvrActionRatioInput::ArActionRatioInput(const char *name) :
+MVREXPORT MvrActionRatioInput::MvrActionRatioInput(const char *name) :
     MvrAction(name, "RatioInputs vel and heading")
 {
   myTransRatio = 0;
@@ -275,7 +249,7 @@ MVREXPORT void MvrActionRatioInput::remFireCallback(MvrFunctor *functor)
 }
 
 MVREXPORT void MvrActionRatioInput::addActivateCallback(MvrFunctor *functor, 
-						ArListPos::Pos position)
+						MvrListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)
     myActivateCallbacks.push_front(functor);
@@ -292,7 +266,7 @@ MVREXPORT void MvrActionRatioInput::remActivateCallback(MvrFunctor *functor)
 }
 
 MVREXPORT void MvrActionRatioInput::addDeactivateCallback(MvrFunctor *functor, 
-						ArListPos::Pos position)
+						MvrListPos::Pos position)
 {
   if (position == MvrListPos::FIRST)
     myDeactivateCallbacks.push_front(functor);
@@ -310,7 +284,7 @@ MVREXPORT void MvrActionRatioInput::remDeactivateCallback(MvrFunctor *functor)
 
 MVREXPORT void MvrActionRatioInput::activate(void)
 {
-  std::list<ArFunctor *>::iterator it;
+  std::list<MvrFunctor *>::iterator it;
 
   if (!isActive())
   {
@@ -328,7 +302,7 @@ MVREXPORT void MvrActionRatioInput::activate(void)
 
 MVREXPORT void MvrActionRatioInput::deactivate(void)
 {
-  std::list<ArFunctor *>::iterator it;
+  std::list<MvrFunctor *>::iterator it;
 
   if (!isActive())
   {
@@ -344,16 +318,16 @@ MVREXPORT void MvrActionRatioInput::deactivate(void)
   MvrAction::deactivate();
 }
 
-MVREXPORT MvrActionDesired *ArActionRatioInput::fire(
-	ArActionDesired currentDesired)
+MVREXPORT MvrActionDesired *MvrActionRatioInput::fire(
+	MvrActionDesired currentDesired)
 {
   std::multimap<int, MvrFunctor *>::iterator it;
-  //ArLog::log(MvrLog::Normal, "Calling");
+  //MvrLog::log(MvrLog::Normal, "Calling");
   // call the callbacks that'll set our ratios
   for (it = myFireCallbacks.begin(); it != myFireCallbacks.end(); it++)
   {
     (*it).second->invoke();
-    /*ArLog::log(MvrLog::Normal, "Called %s now %g %g %g %g\n", 
+    /*MvrLog::log(MvrLog::Normal, "Called %s now %g %g %g %g\n", 
 	       (*it).second->getName(), 
 	       myTransRatio, myRotRatio, myThrottleRatio, myLatRatio);
     */

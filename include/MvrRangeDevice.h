@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRRANGEDEVICE_H
+#define MVRRANGEDEVICE_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARRANGEDEVICE_H
-#define ARRANGEDEVICE_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrRangeBuffer.h"
 #include "MvrSensorReading.h"
 #include "MvrDrawingData.h"
@@ -138,12 +112,12 @@ public:
   /** @brief Gets the current buffer of readings
    *  @swigomit See getCurrentBufferAsVector()
    */
-  virtual const std::list<ArPoseWithTime *> *getCurrentBuffer(void) const
+  virtual const std::list<MvrPoseWithTime *> *getCurrentBuffer(void) const
     { return myCurrentBuffer.getBuffer(); }
   /** @brief Gets the current buffer of readings
    *  @swigomit See getCumulativeBufferAsVector()
    */
-  virtual const std::list<ArPoseWithTime *> *getCumulativeBuffer(void) const
+  virtual const std::list<MvrPoseWithTime *> *getCumulativeBuffer(void) const
     { return myCumulativeBuffer.getBuffer(); }
 #endif // SWIG
 
@@ -154,22 +128,22 @@ public:
   virtual MvrRangeBuffer *getCumulativeRangeBuffer(void) 
     { return &myCumulativeBuffer; }
   /// Gets the current buffer of readings
-  virtual std::list<ArPoseWithTime *> *getCurrentBuffer(void) 
+  virtual std::list<MvrPoseWithTime *> *getCurrentBuffer(void) 
     { return myCurrentBuffer.getBuffer(); }
   /** @brief Gets the current buffer of readings as a vector
    *  @swignote The return type will be named 
    *   MvrPoseWithTimeVector instead of the std::vector template.
    */
-  virtual std::vector<ArPoseWithTime> *getCurrentBufferAsVector(void) 
+  virtual std::vector<MvrPoseWithTime> *getCurrentBufferAsVector(void) 
     { return myCurrentBuffer.getBufferAsVector(); }
   /// Gets the current buffer of readings
-  virtual std::list<ArPoseWithTime *> *getCumulativeBuffer(void) 
+  virtual std::list<MvrPoseWithTime *> *getCumulativeBuffer(void) 
     { return myCumulativeBuffer.getBuffer(); }
   /** @brief Gets the cumulative buffer of readings as a vector
    *  @swignote The return type will be named MvrPoseWithTimeVector
    *    instead of the std::vector template.
    */
-  virtual std::vector<ArPoseWithTime> *getCumulativeBufferAsVector(void) 
+  virtual std::vector<MvrPoseWithTime> *getCumulativeBufferAsVector(void) 
     { return myCumulativeBuffer.getBufferAsVector(); }
 
   /// Gets the raw unfiltered readings from the device
@@ -186,11 +160,11 @@ laser-like subclassses of MvrRangeDevice and MvrRangeDeviceThreaded
       Other kinds of range devices are sufficiently different from lasers that
       any "raw" information provided would usually require very different interpretation.
   **/
-  virtual const std::list<ArSensorReading *> *getRawReadings(void) const
+  virtual const std::list<MvrSensorReading *> *getRawReadings(void) const
     { return myRawReadings; }
 
   ///  Gets the raw unfiltered readings from the device into a vector 
-  MVREXPORT virtual std::vector<ArSensorReading> *getRawReadingsAsVector(void);
+  MVREXPORT virtual std::vector<MvrSensorReading> *getRawReadingsAsVector(void);
 
   /// Gets the raw unfiltered readings from the device (but pose takens are corrected)
   /** The raw readings are the full set of unfiltered readings from
@@ -206,11 +180,11 @@ laser-like subclassses of MvrRangeDevice and MvrRangeDeviceThreaded
       @note Only lasers provides this data currently.  Sonar, bumpers,
       etc. do not provide raw readings.
   **/
-  virtual const std::list<ArSensorReading *> *getAdjustedRawReadings(void) const
+  virtual const std::list<MvrSensorReading *> *getAdjustedRawReadings(void) const
     { return myAdjustedRawReadings; }
 
   ///  Gets the raw adjusted readings from the device into a vector 
-  MVREXPORT virtual std::vector<ArSensorReading> *getAdjustedRawReadingsAsVector(void);
+  MVREXPORT virtual std::vector<MvrSensorReading> *getAdjustedRawReadingsAsVector(void);
 
 
   /// Sets the maximum seconds to keep current readings around
@@ -405,8 +379,8 @@ protected:
     can't use this mechanism.
   **/
   MVREXPORT void adjustRawReadings(bool interlaced);
-  std::vector<ArSensorReading> myRawReadingsVector;
-  std::vector<ArSensorReading> myAdjustedRawReadingsVector;
+  std::vector<MvrSensorReading> myRawReadingsVector;
+  std::vector<MvrSensorReading> myAdjustedRawReadingsVector;
   std::string myName;
   MvrRobot *myRobot;
   unsigned int myMaxRange; 
@@ -426,9 +400,9 @@ protected:
   double myMaxInsertDistCumulativeSquared;
   MvrPose myMaxInsertDistCumulativePose;
 
-  MvrFunctorC<ArRangeDevice> myFilterCB;
-  std::list<ArSensorReading *> *myRawReadings;
-  std::list<ArSensorReading *> *myAdjustedRawReadings;
+  MvrFunctorC<MvrRangeDevice> myFilterCB;
+  std::list<MvrSensorReading *> *myRawReadings;
+  std::list<MvrSensorReading *> *myAdjustedRawReadings;
   MvrDrawingData *myCurrentDrawingData;
   bool myOwnCurrentDrawingData;
   MvrDrawingData *myCumulativeDrawingData;
@@ -437,4 +411,4 @@ protected:
   bool myIsLocationDependent;
 };
 
-#endif // ARRANGEDEVICE_H
+#endif // MVRRANGEDEVICE_H

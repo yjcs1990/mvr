@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrLaserConnector.h"
 #include "MvrRobot.h"
 #include "MvrLaser.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include "MvrSick.h"
 #include "MvrUrg.h"
 #include "MvrSimulatedLaser.h"
@@ -53,14 +27,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  lasers and such, this is also passed to all the lasers created as
  their infoLogLevel too
  */
-MVREXPORT MvrLaserConnector::ArLaserConnector(
-	ArArgumentParser *parser, MvrRobot *robot,
-	ArRobotConnector *robotConnector, bool autoParseArgs,
-	ArLog::LogLevel infoLogLevel,
-	ArRetFunctor1<bool, const char *> *turnOnPowerOutputCB,
-	ArRetFunctor1<bool, const char *> *turnOffPowerOutputCB) :
-  myParseArgsCB(this, &ArLaserConnector::parseArgs),
-  myLogOptionsCB(this, &ArLaserConnector::logOptions)
+MVREXPORT MvrLaserConnector::MvrLaserConnector(
+	MvrArgumentParser *parser, MvrRobot *robot,
+	MvrRobotConnector *robotConnector, bool autoParseArgs,
+	MvrLog::LogLevel infoLogLevel,
+	MvrRetFunctor1<bool, const char *> *turnOnPowerOutputCB,
+	MvrRetFunctor1<bool, const char *> *turnOffPowerOutputCB) :
+  myParseArgsCB(this, &MvrLaserConnector::parseArgs),
+  myLogOptionsCB(this, &MvrLaserConnector::logOptions)
 {
   myParser = parser;
   myOwnParser = false;
@@ -178,7 +152,7 @@ MVREXPORT bool MvrLaserConnector::parseArgs (MvrArgumentParser *parser)
 		    "-laserType%s", buf) ||
 		    !parser->checkParameterArgumentStringVar (&typeReallySet, &type,
 		        "-lt%s", buf)) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "MvrLaserConnector: Bad laser type given for laser number %d",
 			            i);
 			parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
@@ -188,22 +162,22 @@ MVREXPORT bool MvrLaserConnector::parseArgs (MvrArgumentParser *parser)
 		if (!typeReallySet)
 			continue;
 		if ( (it = myLasers.find (i)) != myLasers.end()) {
-			ArLog::log (MvrLog::Normal, "MvrLaserConnector: A laser already exists for laser number %d, replacing it with a new one of type %s",
+			MvrLog::log (MvrLog::Normal, "MvrLaserConnector: A laser already exists for laser number %d, replacing it with a new one of type %s",
 			            i, type);
 			laserData = (*it).second;
 			delete laserData;
 			myLasers.erase (i);
 		}
 		if (typeReallySet && type != NULL) {
-			ArLaser *laser = NULL;
+			MvrLaser *laser = NULL;
 			if ( (laser = Mvria::laserCreate (type, i, "MvrLaserConnector: ")) != NULL) {
-				ArLog::log (myInfoLogLevel,
+				MvrLog::log (myInfoLogLevel,
 				            "MvrLaserConnector: Created %s as laser %d from arguments",
 				            laser->getName(), i);
 				myLasers[i] = new LaserData (i, laser);
 				laser->setInfoLogLevel (myInfoLogLevel);
 			} else {
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "Unknown laser type %s for laser %d, choices are %s",
 				            type, i, Mvria::laserGetTypes());
 				parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
@@ -241,16 +215,16 @@ MVREXPORT bool MvrLaserConnector::parseArgs (MvrArgumentParser *parser)
 				  }
 				  continue;
 				}
-				ArLaser *laser = NULL;
+				MvrLaser *laser = NULL;
 				if ( (laser =
 				        Mvria::laserCreate (type, i, "MvrLaserConnector: ")) != NULL) {
-					ArLog::log (myInfoLogLevel,
+					MvrLog::log (myInfoLogLevel,
 					            "MvrLaserConnector: Created %s as laser %d from parameter file",
 					            laser->getName(), i);
 					myLasers[i] = new LaserData (i, laser);
 					laser->setInfoLogLevel (myInfoLogLevel);
 				} else {
-					ArLog::log (MvrLog::Normal,
+					MvrLog::log (MvrLog::Normal,
 					            "Unknown laser type %s for laser %d from the .p file, choices are %s",
 					            type, i, Mvria::laserGetTypes());
 					parser->setWasReallySetOnlyTrue (wasReallySetOnlyTrue);
@@ -573,7 +547,7 @@ bool MvrLaserConnector::internalConfigureLaser(
       return true;
     }
     MvrSick *sick = NULL;
-    if ((sick = dynamic_cast<ArSick *>(laser)) != NULL)
+    if ((sick = dynamic_cast<MvrSick *>(laser)) != NULL)
     {
       MvrLog::log(MvrLog::Normal, "Using old style sim laser for %s", 
 		 laser->getName());
@@ -647,13 +621,13 @@ bool MvrLaserConnector::internalConfigureLaser(
     if (!tcpConn->openSimple())
     { 
       if (laserData->myRemoteTcpPortReallySet)
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "Could not connect laser to remote host %s with given remote port %d.", 
 		   myRobotConnector->getRemoteHost(), 
 		   laserData->myRemoteTcpPort);
       else
 	/// TODO is this next line wrong?
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "Could not connect laser to remote host %s with default remote port %d.", 
 		   myRobotConnector->getRemoteHost(), 
 		   laserData->myRemoteTcpPort);
@@ -677,7 +651,7 @@ bool MvrLaserConnector::internalConfigureLaser(
       if (params->getLaserPortType(laserData->myNumber) != NULL &&
 	  params->getLaserPortType(laserData->myNumber)[0] != '\0')
       {	  
-	ArLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given, but no port type given so using the robot parameters port type");
+	MvrLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given, but no port type given so using the robot parameters port type");
 	if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		     params->getLaserPortType(laserData->myNumber), 
 		     laserData->myPort, portBuf, 
@@ -689,7 +663,7 @@ bool MvrLaserConnector::internalConfigureLaser(
       else if (laser->getDefaultPortType() != NULL && 
 	       laser->getDefaultPortType()[0] != '\0')
       {
-	ArLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given for laser %d (%s), but no port type given and no robot parameters port type so using the laser's default port type", laserData->myNumber, laser->getName());
+	MvrLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given for laser %d (%s), but no port type given and no robot parameters port type so using the laser's default port type", laserData->myNumber, laser->getName());
 	if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		     laser->getDefaultPortType(),
 		     laserData->myPort, portBuf, 
@@ -700,7 +674,7 @@ bool MvrLaserConnector::internalConfigureLaser(
       }
       else
       {
-	ArLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given for laser %d (%s), but no port type given, no robot parameters port type, and no laser default port type, so using serial",
+	MvrLog::log(MvrLog::Normal, "MvrLaserConnector: There is a port given for laser %d (%s), but no port type given, no robot parameters port type, and no laser default port type, so using serial",
 		   laserData->myNumber, laser->getName());
 	if ((laserData->myConn = Mvria::deviceConnectionCreate(
 		     "serial",
@@ -925,7 +899,7 @@ MVREXPORT void MvrLaserConnector::logLaserOptions(
    @internal
 **/
 MVREXPORT bool MvrLaserConnector::addLaser(
-	ArLaser *laser, int laserNumber)
+	MvrLaser *laser, int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
   LaserData *laserData = NULL;
@@ -947,11 +921,11 @@ MVREXPORT bool MvrLaserConnector::addLaser(
     else
     {
       if (laserData->myLaser != NULL)
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "MvrLaserConnector::addLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
 		   laserNumber, laserData->myLaser->getName(), laser->getName());
       else
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "MvrLaserConnector::addLaser: Already have laser for number #%d but a replacement laser of type %s was passed in", 
 		   laserNumber, laser->getName());
       delete laserData;
@@ -976,7 +950,7 @@ MVREXPORT bool MvrLaserConnector::addLaser(
 **/
 
 MVREXPORT bool MvrLaserConnector::addPlaceholderLaser(
-	ArLaser *placeholderLaser,
+	MvrLaser *placeholderLaser,
 	int laserNumber, bool takeOwnershipOfPlaceholder)
 {
   std::map<int, LaserData *>::iterator it;
@@ -1000,11 +974,11 @@ MVREXPORT bool MvrLaserConnector::addPlaceholderLaser(
     else
     {
       if (laserData->myLaser != NULL)
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "MvrLaserConnector::addPlaceholderLaser: Already have laser for number #%d of type %s but a replacement laser of type %s was passed in", 
 		   laserNumber, laserData->myLaser->getName(), placeholderLaser->getName());
       else
-	ArLog::log(MvrLog::Terse, 
+	MvrLog::log(MvrLog::Terse, 
 		   "MvrLaserConnector::addPlaceholderLaser: Already have laser for number #%d but a replacement laser of type %s was passed in", 
 		   laserNumber, placeholderLaser->getName());
       delete laserData;
@@ -1017,7 +991,7 @@ MVREXPORT bool MvrLaserConnector::addPlaceholderLaser(
   return true;
 }
 
-MVREXPORT MvrLaser *ArLaserConnector::getLaser(int laserNumber)
+MVREXPORT MvrLaser *MvrLaserConnector::getLaser(int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
   LaserData *laserData = NULL;
@@ -1034,7 +1008,7 @@ MVREXPORT MvrLaser *ArLaserConnector::getLaser(int laserNumber)
 }
 
 MVREXPORT bool MvrLaserConnector::replaceLaser(
-	ArLaser *laser, int laserNumber)
+	MvrLaser *laser, int laserNumber)
 {
   std::map<int, LaserData *>::iterator it;
   LaserData *laserData = NULL;
@@ -1244,7 +1218,7 @@ MVREXPORT bool MvrLaserConnector::connectLasers(
 	laserData = (*it).second;
 	myRobot->addLaser(laserData->myLaser, laserData->myNumber);
 	//myRobot->addRangeDevice(laserData->myLaser);
-	ArLog::log(MvrLog::Verbose, 
+	MvrLog::log(MvrLog::Verbose, 
 	    "MvrLaserConnector::connectLasers: Added %s to robot as laser %d", 
 		   laserData->myLaser->getName(), laserData->myNumber);
       }
@@ -1271,7 +1245,7 @@ MVREXPORT bool MvrLaserConnector::connectLasers(
     {
       if (laserData->myLaser == NULL)
       {
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "MvrLaserConnector::connectLasers: Could not connect to laser %d, no laser defined, stopping", 
 		   laserData->myNumber);
 	if (failedOnLaser != NULL)

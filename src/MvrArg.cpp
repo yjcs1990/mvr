@@ -1,36 +1,10 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrArg.h"
 #include "MvrLog.h"
 #include "MvrArgumentBuilder.h"
 
-MVREXPORT MvrArg::ArArg()
+MVREXPORT MvrArg::MvrArg()
 {
   myType = INVALID;
   myName = "";
@@ -38,7 +12,7 @@ MVREXPORT MvrArg::ArArg()
   clear();
 }
 
-MVREXPORT MvrArg::ArArg(const char * name, int *pointer, 
+MVREXPORT MvrArg::MvrArg(const char * name, int *pointer, 
 		      const char * description, int minInt, int maxInt) 
 { 
   myType = INT;
@@ -50,7 +24,7 @@ MVREXPORT MvrArg::ArArg(const char * name, int *pointer,
   myIntPointer = pointer;
 }
 
-MVREXPORT MvrArg::ArArg(const char * name, double *pointer,
+MVREXPORT MvrArg::MvrArg(const char * name, double *pointer,
 		      const char * description, double minDouble, 
 		      double maxDouble) 
 { 
@@ -63,7 +37,7 @@ MVREXPORT MvrArg::ArArg(const char * name, double *pointer,
   myDoublePointer = pointer;
 }
 
-MVREXPORT MvrArg::ArArg(const char * name, bool *pointer, 
+MVREXPORT MvrArg::MvrArg(const char * name, bool *pointer, 
 		      const char * description) 
 { 
   myType = BOOL;
@@ -73,7 +47,7 @@ MVREXPORT MvrArg::ArArg(const char * name, bool *pointer,
   myBoolPointer = pointer;
 }
 
-MVREXPORT MvrArg::ArArg(const char * name, MvrPose *pointer, 
+MVREXPORT MvrArg::MvrArg(const char * name, MvrPose *pointer, 
 		      const char * description) 
 { 
   myType = POSE;
@@ -83,7 +57,7 @@ MVREXPORT MvrArg::ArArg(const char * name, MvrPose *pointer,
   myPosePointer = pointer;
 }
 
-MVREXPORT MvrArg::ArArg(const char * name, char *pointer, 
+MVREXPORT MvrArg::MvrArg(const char * name, char *pointer, 
 		      const char * description, size_t maxStrLen) 
 { 
   myType = STRING;
@@ -110,9 +84,9 @@ MVREXPORT MvrArg::ArArg(const char * name, char *pointer,
    @param getFunctor since parameter files need to be written too,
    this get functor will get a list of strings to be written to the file
 **/
-MVREXPORT MvrArg::ArArg(const char *name, 
+MVREXPORT MvrArg::MvrArg(const char *name, 
 		      MvrRetFunctor1<bool, MvrArgumentBuilder *> *setFunctor, 
-	      MvrRetFunctor<const std::list<ArArgumentBuilder *> *> *getFunctor,
+	      MvrRetFunctor<const std::list<MvrArgumentBuilder *> *> *getFunctor,
 		      const char *description)
 {
   myType = FUNCTOR;
@@ -123,14 +97,14 @@ MVREXPORT MvrArg::ArArg(const char *name,
   myGetFunctor = getFunctor;
 }
 
-MVREXPORT MvrArg::ArArg(const char * description)
+MVREXPORT MvrArg::MvrArg(const char * description)
 { 
   myType = DESCRIPTION_HOLDER;
   myDescription = description;
   clear();
 }
 
-MVREXPORT MvrArg::ArArg(const MvrArg & arg) 
+MVREXPORT MvrArg::MvrArg(const MvrArg & arg) 
 {
   myType = arg.myType;
   myName = arg.myName;
@@ -151,7 +125,7 @@ MVREXPORT MvrArg::ArArg(const MvrArg & arg)
   myConfigPriority = arg.myConfigPriority;
 }
 
-MVREXPORT MvrArg &ArArg::operator=(const MvrArg & arg) 
+MVREXPORT MvrArg &MvrArg::operator=(const MvrArg & arg) 
 {
 	if (this != &arg) {
 		myType = arg.myType;
@@ -229,12 +203,12 @@ MVREXPORT double MvrArg::getMaxDouble(void) const
   return myMaxDouble;
 }
 
-MVREXPORT const char *ArArg::getName(void) const
+MVREXPORT const char *MvrArg::getName(void) const
 {
   return myName.c_str();
 }
 
-MVREXPORT const char *ArArg::getDescription(void) const
+MVREXPORT const char *MvrArg::getDescription(void) const
 {
   return myDescription.c_str();
 }
@@ -263,7 +237,7 @@ MVREXPORT bool MvrArg::getBool(void) const
     return false;
 }
 
-MVREXPORT const char *ArArg::getString(void) const
+MVREXPORT const char *MvrArg::getString(void) const
 {
   if (myStringPointer != NULL)
     return myStringPointer;
@@ -280,7 +254,7 @@ MVREXPORT MvrPose MvrArg::getPose(void) const
     return pose;
 }
 
-MVREXPORT const std::list<ArArgumentBuilder *> *ArArg::getArgsWithFunctor(void) const
+MVREXPORT const std::list<MvrArgumentBuilder *> *MvrArg::getArgsWithFunctor(void) const
 {
   if (myGetFunctor == NULL)
     return NULL;
@@ -387,8 +361,8 @@ MVREXPORT bool MvrArg::setArgWithFunctor(MvrArgumentBuilder *argument)
 
 MVREXPORT void MvrArg::log(void) const
 {
-  std::list<ArArgumentBuilder *>::const_iterator it;
-  const std::list<ArArgumentBuilder *> *argList;
+  std::list<MvrArgumentBuilder *>::const_iterator it;
+  const std::list<MvrArgumentBuilder *> *argList;
 
   switch (getType()) 
   {

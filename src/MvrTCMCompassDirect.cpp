@@ -1,58 +1,31 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrTCMCompassDirect.h"
 #include "MvrDeviceConnection.h"
 #include "MvrSerialConnection.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
-//#define DEBUG_ARTCMCOMPASSDIRECT 1
-//#define DEBUG_ARTCMCOMPASSDIRECT_STATS 1
+//#define DEBUG_MVRTCMCOMPASSDIRECT 1
+//#define DEBUG_MVRTCMCOMPASSDIRECT_STATS 1
 
-#if defined(DEBUG_ARTCMCOMPASSDIRECT) || defined(DEBUG_ARTCMCOMPASSDIRECT_STATS)
-void ArTCMCompassDirect_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
+#if defined(DEBUG_MVRTCMCOMPASSDIRECT) || defined(DEBUG_MVRTCMCOMPASSDIRECT_STATS)
+void MvrTCMCompassDirect_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
 #endif
 
-MVREXPORT ArTCMCompassDirect::ArTCMCompassDirect(MvrDeviceConnection *devCon) :
+MVREXPORT MvrTCMCompassDirect::MvrTCMCompassDirect(MvrDeviceConnection *devCon) :
   myDeviceConnection(devCon), myCreatedOwnDeviceConnection(false),
   myNMEAParser("MvrTCMCompassDirect"),
-  myHCHDMHandler(this, &ArTCMCompassDirect::handleHCHDM)
+  myHCHDMHandler(this, &MvrTCMCompassDirect::handleHCHDM)
 {
   myNMEAParser.addHandler("HCHDM", &myHCHDMHandler);
 }
 
-MVREXPORT ArTCMCompassDirect::ArTCMCompassDirect(const char *serialPortName) :
+MVREXPORT MvrTCMCompassDirect::MvrTCMCompassDirect(const char *serialPortName) :
   myCreatedOwnDeviceConnection(true),
   myNMEAParser("MvrTCMCompassDirect"),
-  myHCHDMHandler(this, &ArTCMCompassDirect::handleHCHDM)
+  myHCHDMHandler(this, &MvrTCMCompassDirect::handleHCHDM)
 {
-  ArSerialConnection *newSerialCon = new ArSerialConnection();
+  MvrSerialConnection *newSerialCon = new MvrSerialConnection();
   newSerialCon->setPort(serialPortName);
   newSerialCon->setBaud(9600);
   myDeviceConnection = newSerialCon;
@@ -60,15 +33,15 @@ MVREXPORT ArTCMCompassDirect::ArTCMCompassDirect(const char *serialPortName) :
 }
   
 
-MVREXPORT ArTCMCompassDirect::~MvrTCMCompassDirect() {
+MVREXPORT MvrTCMCompassDirect::~MvrTCMCompassDirect() {
   if(myCreatedOwnDeviceConnection && myDeviceConnection)
     delete myDeviceConnection;
 }
 
-bool ArTCMCompassDirect::sendTCMCommand(const char *fmt, ...)
+bool MvrTCMCompassDirect::sendTCMCommand(const char *fmt, ...)
 {
   if(!myDeviceConnection) return false;
-  if(myDeviceConnection->getStatus() != ArDeviceConnection::STATUS_OPEN) return false;
+  if(myDeviceConnection->getStatus() != MvrDeviceConnection::STATUS_OPEN) return false;
   va_list args;
   va_start(args, fmt);
   char buf[32];
@@ -77,27 +50,27 @@ bool ArTCMCompassDirect::sendTCMCommand(const char *fmt, ...)
   return myDeviceConnection->write(buf, strlen(buf));
 }
 
-MVREXPORT bool ArTCMCompassDirect::blockingConnect(unsigned long connectTimeout)
+MVREXPORT bool MvrTCMCompassDirect::blockingConnect(unsigned long connectTimeout)
 {
-  ArTime start;
+  MvrTime start;
   start.setToNow();
   if(!connect()) return false;
-  ArLog::log(MvrLog::Normal, "MvrTCMCompassDirect: Opened connection, waiting for initial data...");
+  MvrLog::log(MvrLog::Normal, "MvrTCMCompassDirect: Opened connection, waiting for initial data...");
   while((unsigned long)start.mSecSince() <= connectTimeout)
   {
     if(read(0) > 0)
       return true;
-    ArUtil::sleep(100);
+    MvrUtil::sleep(100);
   }
-  ArLog::log(MvrLog::Terse, "MvrTCMCompassDirect: Error: No response from compass after %dms.", connectTimeout);
+  MvrLog::log(MvrLog::Terse, "MvrTCMCompassDirect: Error: No response from compass after %dms.", connectTimeout);
   return false;
 }
 
 
-MVREXPORT bool ArTCMCompassDirect::connect()
+MVREXPORT bool MvrTCMCompassDirect::connect()
 {
   if(!myDeviceConnection) return false;
-  if(myDeviceConnection->getStatus() != ArDeviceConnection::STATUS_OPEN)
+  if(myDeviceConnection->getStatus() != MvrDeviceConnection::STATUS_OPEN)
   {
     if(!myDeviceConnection->openSimple()) return false;
   }
@@ -111,7 +84,7 @@ MVREXPORT bool ArTCMCompassDirect::connect()
   if(!sendTCMCommand("h\rsp=8\rsn=m\rsdo=n\rgo\r"))  
     return false;
 
-#ifdef DEBUG_ARTCMCOMPASSDIRECT
+#ifdef DEBUG_MVRTCMCOMPASSDIRECT
   char buf[640];
   memset(buf, 0, 640);
   myDeviceConnection->read(buf, 640, 2000);
@@ -123,46 +96,46 @@ MVREXPORT bool ArTCMCompassDirect::connect()
 
 
 
-MVREXPORT void ArTCMCompassDirect::commandUserCalibration()
+MVREXPORT void MvrTCMCompassDirect::commandUserCalibration()
 {
   sendTCMCommand("cc\rmpcal=e\rgo\r");
 }
 
-MVREXPORT void ArTCMCompassDirect::commandStopCalibration()
+MVREXPORT void MvrTCMCompassDirect::commandStopCalibration()
 {
   sendTCMCommand("h\rmpcal=d\rautocal=d\r");
 }
 
-MVREXPORT void ArTCMCompassDirect::commandContinuousPackets()
+MVREXPORT void MvrTCMCompassDirect::commandContinuousPackets()
 {
   sendTCMCommand("go\r");
 }
 
-MVREXPORT void ArTCMCompassDirect::commandOff()
+MVREXPORT void MvrTCMCompassDirect::commandOff()
 {
   sendTCMCommand("h\r");
 }
 
-MVREXPORT void ArTCMCompassDirect::commandOnePacket()
+MVREXPORT void MvrTCMCompassDirect::commandOnePacket()
 {
   sendTCMCommand("c?\r");
 }
 
-MVREXPORT void ArTCMCompassDirect::commandAutoCalibration()
+MVREXPORT void MvrTCMCompassDirect::commandAutoCalibration()
 {
   sendTCMCommand("h\rcc\rautocal=e\r");
 }
 
-MVREXPORT int ArTCMCompassDirect::read(unsigned int msWait)
+MVREXPORT int MvrTCMCompassDirect::read(unsigned int msWait)
 {
   return myNMEAParser.parse(myDeviceConnection);
 }
 
-void ArTCMCompassDirect::handleHCHDM(MvrNMEAParser::Message m)
+void MvrTCMCompassDirect::handleHCHDM(MvrNMEAParser::Message m)
 {
-  myHeading = ArMath::fixAngle(atof((*m.message)[1].c_str()));
-#ifdef DEBUG_ARTCMCOMPASSDIRECT 
-  printf("XXX ArTCMCompassDirect: recieved HCHDM message with compass heading %f.\n", myHeading);
+  myHeading = MvrMath::fixAngle(atof((*m.message)[1].c_str()));
+#ifdef DEBUG_MVRTCMCOMPASSDIRECT 
+  printf("XXX MvrTCMCompassDirect: recieved HCHDM message with compass heading %f.\n", myHeading);
 #endif
   myHaveHeading = true;
   incrementPacketCount();

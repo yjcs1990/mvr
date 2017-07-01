@@ -1,41 +1,15 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
-#include "ariaUtil.h"
+#include "mvriaOSDef.h"
+#include "mvriaUtil.h"
 #include "MvrSyncTask.h"
 #include "MvrLog.h"
 
 /**
-   New should never be called to create an ArSyncTask except to create the 
+   New should never be called to create an MvrSyncTask except to create the 
    root node.  Read the detailed documentation of the class for details.
 */
-MVREXPORT ArSyncTask::ArSyncTask(const char *name, ArFunctor *functor,
-				ArTaskState::State *state, ArSyncTask *parent)
+MVREXPORT MvrSyncTask::MvrSyncTask(const char *name, MvrFunctor *functor,
+				MvrTaskState::State *state, MvrSyncTask *parent)
 {
   myName = name;
   myStatePointer = state;
@@ -60,17 +34,17 @@ MVREXPORT ArSyncTask::ArSyncTask(const char *name, ArFunctor *functor,
    delete the whole tree just delete the top one... also note that if you
    delete a node, it will remove itself from its parents list.
 */
-MVREXPORT ArSyncTask::~MvrSyncTask()
+MVREXPORT MvrSyncTask::~MvrSyncTask()
 {
   myIsDeleting = true;
   if (myParent != NULL && !myParent->isDeleting())
     myParent->remove(this);
   
-  ArUtil::deleteSetPairs(myMultiMap.begin(), myMultiMap.end());  
+  MvrUtil::deleteSetPairs(myMultiMap.begin(), myMultiMap.end());  
   myMultiMap.clear();
 }
 
-MVREXPORT ArTaskState::State ArSyncTask::getState(void)
+MVREXPORT MvrTaskState::State MvrSyncTask::getState(void)
 {
   if (myStatePointer != NULL)
     return *myStatePointer;
@@ -78,7 +52,7 @@ MVREXPORT ArTaskState::State ArSyncTask::getState(void)
     return myState;
 }
 
-MVREXPORT void ArSyncTask::setState(MvrTaskState::State state)
+MVREXPORT void MvrSyncTask::setState(MvrTaskState::State state)
 {
   if (myStatePointer != NULL)
     *myStatePointer = state;
@@ -86,7 +60,7 @@ MVREXPORT void ArSyncTask::setState(MvrTaskState::State state)
     myState = state;
 }
 
-MVREXPORT std::string ArSyncTask::getName(void)
+MVREXPORT std::string MvrSyncTask::getName(void)
 {
   return myName;
 }
@@ -97,10 +71,10 @@ MVREXPORT std::string ArSyncTask::getName(void)
    @param functor The task functor pointer to search for. Must not be NULL.
    @return The task, if found.  If not found, NULL.
 */
-MVREXPORT ArSyncTask *ArSyncTask::find(MvrFunctor *functor)
+MVREXPORT MvrSyncTask *MvrSyncTask::find(MvrFunctor *functor)
 {
-  ArSyncTask *proc;
-  std::multimap<int, ArSyncTask *>::iterator it;
+  MvrSyncTask *proc;
+  std::multimap<int, MvrSyncTask *>::iterator it;
   
   if (myFunctor == functor)
     return this;
@@ -120,10 +94,10 @@ MVREXPORT ArSyncTask *ArSyncTask::find(MvrFunctor *functor)
    @param name The name of the child we are interested in finding
    @return The task, if found.  If not found, NULL.
 */
-MVREXPORT ArSyncTask *ArSyncTask::find(const char *name)
+MVREXPORT MvrSyncTask *MvrSyncTask::find(const char *name)
 {
-  ArSyncTask *proc;
-  std::multimap<int, ArSyncTask *>::iterator it;
+  MvrSyncTask *proc;
+  std::multimap<int, MvrSyncTask *>::iterator it;
   
   if (strcmp(myName.c_str(), name) == 0)
     return this;
@@ -143,10 +117,10 @@ MVREXPORT ArSyncTask *ArSyncTask::find(const char *name)
    @param name The name of the child we are interested in finding
    @return The task, if found.  If not found, NULL.
 */
-MVREXPORT ArSyncTask *ArSyncTask::findNonRecursive(const char * name)
+MVREXPORT MvrSyncTask *MvrSyncTask::findNonRecursive(const char * name)
 {
-  ArSyncTask *proc;
-  std::multimap<int, ArSyncTask *>::iterator it;
+  MvrSyncTask *proc;
+  std::multimap<int, MvrSyncTask *>::iterator it;
   
   for (it = myMultiMap.begin(); it != myMultiMap.end(); ++it)
   {
@@ -162,10 +136,10 @@ MVREXPORT ArSyncTask *ArSyncTask::findNonRecursive(const char * name)
    @param functor the functor we are interested in finding
    @return The task, if found.  If not found, NULL.
 */
-MVREXPORT ArSyncTask *ArSyncTask::findNonRecursive(MvrFunctor *functor)
+MVREXPORT MvrSyncTask *MvrSyncTask::findNonRecursive(MvrFunctor *functor)
 {
-  ArSyncTask *proc;
-  std::multimap<int, ArSyncTask *>::iterator it;
+  MvrSyncTask *proc;
+  std::multimap<int, MvrSyncTask *>::iterator it;
   
   for (it = myMultiMap.begin(); it != myMultiMap.end(); ++it)
   {
@@ -186,11 +160,11 @@ MVREXPORT ArSyncTask *ArSyncTask::findNonRecursive(MvrFunctor *functor)
    @param state Pointer to external variable to store task state in, or NULL to use a new
    internal variable instead.
 */
-MVREXPORT void ArSyncTask::addNewBranch(const char *nameOfNew, int position,
-				       ArTaskState::State *state)
+MVREXPORT void MvrSyncTask::addNewBranch(const char *nameOfNew, int position,
+				       MvrTaskState::State *state)
 {
-  ArSyncTask *proc = new ArSyncTask(nameOfNew, NULL, state, this);
-  myMultiMap.insert(std::pair<int, ArSyncTask *>(position, proc));
+  MvrSyncTask *proc = new MvrSyncTask(nameOfNew, NULL, state, this);
+  myMultiMap.insert(std::pair<int, MvrSyncTask *>(position, proc));
 }
 
 /**
@@ -201,22 +175,22 @@ MVREXPORT void ArSyncTask::addNewBranch(const char *nameOfNew, int position,
    @param position place in list to put the branch, things are run/printed in 
    the order of highest number to lowest number, no limit on numbers (other 
    than that it is an int).  ARIA uses 0 to 100 just as a convention.
-   @param functor ArFunctor which contains the functor to invoke when run is 
+   @param functor MvrFunctor which contains the functor to invoke when run is 
    called.
    @param state Pointer to external variable to store task state in, or NULL to
    use an internal variable instead.
 */
-MVREXPORT void ArSyncTask::addNewLeaf(const char *nameOfNew, int position, 
-				     ArFunctor *functor, 
-				     ArTaskState::State *state)
+MVREXPORT void MvrSyncTask::addNewLeaf(const char *nameOfNew, int position, 
+				     MvrFunctor *functor, 
+				     MvrTaskState::State *state)
 {
-  ArSyncTask *proc = new ArSyncTask(nameOfNew, functor, state, this);
-  myMultiMap.insert(std::pair<int, ArSyncTask *>(position, proc));
+  MvrSyncTask *proc = new MvrSyncTask(nameOfNew, functor, state, this);
+  myMultiMap.insert(std::pair<int, MvrSyncTask *>(position, proc));
 }
 
-MVREXPORT void ArSyncTask::remove(MvrSyncTask *proc)
+MVREXPORT void MvrSyncTask::remove(MvrSyncTask *proc)
 {
-  std::multimap<int, ArSyncTask *>::iterator it;
+  std::multimap<int, MvrSyncTask *>::iterator it;
   
   for (it = myMultiMap.begin(); it != myMultiMap.end(); it++)
   {
@@ -228,12 +202,12 @@ MVREXPORT void ArSyncTask::remove(MvrSyncTask *proc)
   }
 }
 
-MVREXPORT bool ArSyncTask::isDeleting(void)
+MVREXPORT bool MvrSyncTask::isDeleting(void)
 {
   return myIsDeleting;
 }
 
-MVREXPORT ArFunctor *ArSyncTask::getFunctor(void)
+MVREXPORT MvrFunctor *MvrSyncTask::getFunctor(void)
 {
   return myFunctor;
 }
@@ -243,27 +217,27 @@ MVREXPORT ArFunctor *ArSyncTask::getFunctor(void)
    a branch it goes through all of the children in the order of
    highest position to lowest position and calls run on them.
 **/
-MVREXPORT void ArSyncTask::run(void)
+MVREXPORT void MvrSyncTask::run(void)
 {
   myRunning = true;
 
-  std::multimap<int, ArSyncTask *>::reverse_iterator it;
-  ArTaskState::State state;
-  ArTime runTime;
+  std::multimap<int, MvrSyncTask *>::reverse_iterator it;
+  MvrTaskState::State state;
+  MvrTime runTime;
   int took;  
 
   state = getState();
   switch (state) 
   {
-  case ArTaskState::SUSPEND:
-  case ArTaskState::SUCCESS:
-  case ArTaskState::FAILURE:
+  case MvrTaskState::SUSPEND:
+  case MvrTaskState::SUCCESS:
+  case MvrTaskState::FAILURE:
     // The task isn't running so just return  
     myRunning = true;
     return;
-  case ArTaskState::INIT:
-  case ArTaskState::RESUME:
-  case ArTaskState::ACTIVE:
+  case MvrTaskState::INIT:
+  case MvrTaskState::RESUME:
+  case MvrTaskState::ACTIVE:
   default:
     break;
   }
@@ -276,7 +250,7 @@ MVREXPORT void ArSyncTask::run(void)
       myFunctor != NULL && myWarningTimeCB != NULL &&
       myWarningTimeCB->invokeR() > 0 && 
       (took = runTime.mSecSince()) > (signed int)myWarningTimeCB->invokeR())
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "Warning: Task '%s' took %d ms to run (longer than the %d warning time)",
 	       myName.c_str(), took, (signed int)myWarningTimeCB->invokeR());
   
@@ -294,9 +268,9 @@ MVREXPORT void ArSyncTask::run(void)
    task such that if it takes longer than this number of ms to run a
    warning message will be issued, sets this on the children too.
 **/
-MVREXPORT void ArSyncTask::setWarningTimeCB(MvrRetFunctor<unsigned int> *functor)
+MVREXPORT void MvrSyncTask::setWarningTimeCB(MvrRetFunctor<unsigned int> *functor)
 {
-  std::multimap<int, ArSyncTask *>::reverse_iterator it;
+  std::multimap<int, MvrSyncTask *>::reverse_iterator it;
   myWarningTimeCB = functor;
   for (it = myMultiMap.rbegin(); it != myMultiMap.rend(); it++)
     (*it).second->setWarningTimeCB(functor);
@@ -307,7 +281,7 @@ MVREXPORT void ArSyncTask::setWarningTimeCB(MvrRetFunctor<unsigned int> *functor
    task such that if it takes longer than this number of ms to run a
    warning message will be issued, sets this on the children too.
 **/
-MVREXPORT ArRetFunctor<unsigned int> *ArSyncTask::getWarningTimeCB(void)
+MVREXPORT MvrRetFunctor<unsigned int> *MvrSyncTask::getWarningTimeCB(void)
 {
   return myWarningTimeCB;
 }
@@ -316,9 +290,9 @@ MVREXPORT ArRetFunctor<unsigned int> *ArSyncTask::getWarningTimeCB(void)
    This sets a functor which will be called to see if we should warn
    this time through or not.
 **/
-MVREXPORT void ArSyncTask::setNoTimeWarningCB(MvrRetFunctor<bool> *functor)
+MVREXPORT void MvrSyncTask::setNoTimeWarningCB(MvrRetFunctor<bool> *functor)
 {
-  std::multimap<int, ArSyncTask *>::reverse_iterator it;
+  std::multimap<int, MvrSyncTask *>::reverse_iterator it;
   myNoTimeWarningCB = functor;
   for (it = myMultiMap.rbegin(); it != myMultiMap.rend(); it++)
     (*it).second->setNoTimeWarningCB(functor);
@@ -328,7 +302,7 @@ MVREXPORT void ArSyncTask::setNoTimeWarningCB(MvrRetFunctor<bool> *functor)
    This sets a functor which will be called to see if we should warn
    this time through or not.
 **/
-MVREXPORT ArRetFunctor<bool> *ArSyncTask::getNoTimeWarningCB(void)
+MVREXPORT MvrRetFunctor<bool> *MvrSyncTask::getNoTimeWarningCB(void)
 {
   return myNoTimeWarningCB;
 }
@@ -338,12 +312,12 @@ MVREXPORT ArRetFunctor<bool> *ArSyncTask::getNoTimeWarningCB(void)
    Prints the node... the defaulted depth parameter controls how far over to 
    print the data (how many tabs)... it recurses down all its children.
 */
-MVREXPORT void ArSyncTask::log(int depth)
+MVREXPORT void MvrSyncTask::log(int depth)
 {
   int i;
-  std::multimap<int, ArSyncTask *>::reverse_iterator it;
+  std::multimap<int, MvrSyncTask *>::reverse_iterator it;
   std::string str = "";
-  ArTaskState::State state;
+  MvrTaskState::State state;
   
   for (i = 0; i < depth; i++)
     str += "\t";
@@ -352,22 +326,22 @@ MVREXPORT void ArSyncTask::log(int depth)
   state = getState();
   switch (state) 
   {
-  case ArTaskState::INIT:
+  case MvrTaskState::INIT:
     str += "INIT, running)";
     break;
-  case ArTaskState::RESUME:
+  case MvrTaskState::RESUME:
     str += "RESUME, running)";
     break;
-  case ArTaskState::ACTIVE:
+  case MvrTaskState::ACTIVE:
     str += "ACTIVE, running)";
     break;
-  case ArTaskState::SUSPEND:
+  case MvrTaskState::SUSPEND:
     str += "SUSPEND, NOT running)";
     break;
-  case ArTaskState::SUCCESS:
+  case MvrTaskState::SUCCESS:
     str += "SUCCESS, NOT running)";
     break;
-  case ArTaskState::FAILURE:
+  case MvrTaskState::FAILURE:
     str += "FAILURE, NOT running)";
     break;
   default:
@@ -375,7 +349,7 @@ MVREXPORT void ArSyncTask::log(int depth)
     str += ", running)";
     break;
   }
-  ArLog::log(MvrLog::Terse, const_cast<char *>(str.c_str()));
+  MvrLog::log(MvrLog::Terse, const_cast<char *>(str.c_str()));
   for (it = myMultiMap.rbegin(); it != myMultiMap.rend(); it++)
     (*it).second->log(depth + 1);
   
@@ -383,7 +357,7 @@ MVREXPORT void ArSyncTask::log(int depth)
 
 
 /// Returns what this is running, if anything (recurses)
-MVREXPORT ArSyncTask *ArSyncTask::getRunning(void)
+MVREXPORT MvrSyncTask *MvrSyncTask::getRunning(void)
 {
   if (!myRunning)
     return NULL;
@@ -393,7 +367,7 @@ MVREXPORT ArSyncTask *ArSyncTask::getRunning(void)
     return this;
   else
   {
-    ArLog::log(MvrLog::Normal, "MvrSyncTask::getRunning: Tried to get running, but apparently nothing was running");
+    MvrLog::log(MvrLog::Normal, "MvrSyncTask::getRunning: Tried to get running, but apparently nothing was running");
     return NULL;
   }
 }

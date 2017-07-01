@@ -43,7 +43,7 @@ MVREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading, MvrPose posit
 /*
  * @param timeStamp the time we are interested in
  * @param position the pose to set to the given position
- * @param mostRecent the most recent data in the interpolation relevant to this call... for a return of 1 this is the near side it interpolated between, for a return of 0 or 1 this is the most recent data in the interpolation.... this is only useful if the return is 1, 0, or -1, and is mostly for use with ArRobot::applyEncoderOffset 
+ * @param mostRecent the most recent data in the interpolation relevant to this call... for a return of 1 this is the near side it interpolated between, for a return of 0 or 1 this is the most recent data in the interpolation.... this is only useful if the return is 1, 0, or -1, and is mostly for use with MvrRobot::applyEncoderOffset 
  * @return 1 its good interpolation, 0 its predicting, -1 its too far to 
  * predict, -2 its too old, -3 there's not enough data to predict
  */

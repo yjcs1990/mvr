@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrJoyHandler.h"
 #include "MvrLog.h"
 #include <errno.h>
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
 bool MvrJoyHandler::init(void)
 {
@@ -151,7 +125,7 @@ void MvrJoyHandler::getNewData(void)
       if ((tempDesc = MvrUtil::open("/dev/input/js0", O_RDWR | O_NONBLOCK)) > 0)
       {
 	myInitialized = true;
-	ArLog::log(MvrLog::Verbose, "MvrJoyHandler: Opened first joydev /dev/input/js0");
+	MvrLog::log(MvrLog::Verbose, "MvrJoyHandler: Opened first joydev /dev/input/js0");
 	close(myJoyDesc);
 	myJoyDesc = tempDesc;
 	myJoyNumber = 0;
@@ -183,7 +157,7 @@ void MvrJoyHandler::getNewData(void)
   }
   if (errno != EAGAIN)
   {
-    //ArLog::log(MvrLog::Terse, "MvrJoyHandler::getUnfiltered: Trouble reading data.");
+    //MvrLog::log(MvrLog::Terse, "MvrJoyHandler::getUnfiltered: Trouble reading data.");
   }
 #endif // ifdef linux 
 }

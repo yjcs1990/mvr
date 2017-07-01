@@ -1,49 +1,23 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
-#include "ariaInternal.h"
+#include "mvriaOSDef.h"
+#include "mvriaInternal.h"
 
 #include "MvrMapInterface.h"
 
 
-MVREXPORT const char *ArMapInfoInterface::MAP_INFO_NAME        = "MapInfo:"; 
-MVREXPORT const char *ArMapInfoInterface::META_INFO_NAME       = "MetaInfo:";
-MVREXPORT const char *ArMapInfoInterface::TASK_INFO_NAME       = "TaskInfo:";   
-MVREXPORT const char *ArMapInfoInterface::ROUTE_INFO_NAME      = "RouteInfo:"; 
-MVREXPORT const char *ArMapInfoInterface::SCHED_TASK_INFO_NAME = "SchedTaskInfo:";
-MVREXPORT const char *ArMapInfoInterface::SCHED_INFO_NAME      = "SchedInfo:"; 
-MVREXPORT const char *ArMapInfoInterface::CAIRN_INFO_NAME      = "CairnInfo:";  
-MVREXPORT const char *ArMapInfoInterface::CUSTOM_INFO_NAME     = "CustomInfo:";
+MVREXPORT const char *MvrMapInfoInterface::MAP_INFO_NAME        = "MapInfo:"; 
+MVREXPORT const char *MvrMapInfoInterface::META_INFO_NAME       = "MetaInfo:";
+MVREXPORT const char *MvrMapInfoInterface::TASK_INFO_NAME       = "TaskInfo:";   
+MVREXPORT const char *MvrMapInfoInterface::ROUTE_INFO_NAME      = "RouteInfo:"; 
+MVREXPORT const char *MvrMapInfoInterface::SCHED_TASK_INFO_NAME = "SchedTaskInfo:";
+MVREXPORT const char *MvrMapInfoInterface::SCHED_INFO_NAME      = "SchedInfo:"; 
+MVREXPORT const char *MvrMapInfoInterface::CAIRN_INFO_NAME      = "CairnInfo:";  
+MVREXPORT const char *MvrMapInfoInterface::CUSTOM_INFO_NAME     = "CustomInfo:";
 
-MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D = "2D-Map";
-MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_MULTI_SOURCES = "2D-Map-Ex";
-MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_EXTENDED  = "2D-Map-Ex2";
-MVREXPORT const char *ArMapInterface::MAP_CATEGORY_2D_COMPOSITE = "2D-Map-Ex3";
+MVREXPORT const char *MvrMapInterface::MAP_CATEGORY_2D = "2D-Map";
+MVREXPORT const char *MvrMapInterface::MAP_CATEGORY_2D_MULTI_SOURCES = "2D-Map-Ex";
+MVREXPORT const char *MvrMapInterface::MAP_CATEGORY_2D_EXTENDED  = "2D-Map-Ex2";
+MVREXPORT const char *MvrMapInterface::MAP_CATEGORY_2D_COMPOSITE = "2D-Map-Ex3";
 
 
 
@@ -120,9 +94,9 @@ MVREXPORT std::string MvrMapInterface::createRealFileName(const char *baseDirect
     directoryRaw[0] = '\0';
     char fileNamePart[2048];
     fileNamePart[0] = '\0';
-    if (!ArUtil::getDirectory(realFileName.c_str(), 
+    if (!MvrUtil::getDirectory(realFileName.c_str(), 
 					                    directoryRaw, sizeof(directoryRaw)) ||
-	      !ArUtil::getFileName(realFileName.c_str(), 
+	      !MvrUtil::getFileName(realFileName.c_str(), 
 			                       fileNamePart, sizeof(fileNamePart)))
     {
       MvrLog::log(MvrLog::Normal, 
@@ -142,7 +116,7 @@ MVREXPORT std::string MvrMapInterface::createRealFileName(const char *baseDirect
     {
       strcpy(directory, directoryRaw);
     }
-    else if (!ArUtil::matchCase(baseDirectory, 
+    else if (!MvrUtil::matchCase(baseDirectory, 
 				                        directoryRaw, 
                                 directory, 
 				                        sizeof(directory)))

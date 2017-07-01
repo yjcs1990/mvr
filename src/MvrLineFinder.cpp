@@ -1,36 +1,10 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrLineFinder.h"
 #include "MvrConfig.h"
 
-MVREXPORT MvrLineFinder::ArLineFinder(MvrRangeDevice *rangeDevice) 
+MVREXPORT MvrLineFinder::MvrLineFinder(MvrRangeDevice *rangeDevice) 
 {
   myRangeDevice = rangeDevice;
   myPrinting = false;
@@ -53,7 +27,7 @@ MVREXPORT MvrLineFinder::~MvrLineFinder()
 
 }
 
-MVREXPORT std::map<int, MvrLineFinderSegment *> *ArLineFinder::getLines(void)
+MVREXPORT std::map<int, MvrLineFinderSegment *> *MvrLineFinder::getLines(void)
 {
   // fill the laser readings into myPoints
   fillPointsFromLaser();
@@ -69,7 +43,7 @@ MVREXPORT std::map<int, MvrLineFinderSegment *> *ArLineFinder::getLines(void)
   return myLines;
 }
 
-MVREXPORT std::map<int, MvrPose> *ArLineFinder::getNonLinePoints(void)
+MVREXPORT std::map<int, MvrPose> *MvrLineFinder::getNonLinePoints(void)
 {
   std::map<int, MvrLineFinderSegment *>::iterator lineIt;
   MvrLineFinderSegment *segment;
@@ -101,9 +75,9 @@ MVREXPORT std::map<int, MvrPose> *ArLineFinder::getNonLinePoints(void)
 
 MVREXPORT void MvrLineFinder::fillPointsFromLaser(void)
 {
-  const std::list<ArSensorReading *> *readings;
-  std::list<ArSensorReading *>::const_iterator it;
-  std::list<ArSensorReading *>::const_reverse_iterator rit;
+  const std::list<MvrSensorReading *> *readings;
+  std::list<MvrSensorReading *>::const_iterator it;
+  std::list<MvrSensorReading *>::const_reverse_iterator rit;
   MvrSensorReading *reading;
   int pointCount = 0;
 
@@ -309,7 +283,7 @@ MVREXPORT bool MvrLineFinder::combineLines(void)
     if (start + 1 == len)
     {
       if (myPrinting)
-	ArLog::log(MvrLog::Normal, "inserted last one %g",
+	MvrLog::log(MvrLog::Normal, "inserted last one %g",
  	     MvrPose((*myLines)[start]->getX1(), 
 		    (*myLines)[start]->getY1()).findDistanceTo(
 		  MvrPose((*myLines)[start]->getX2(), (*myLines)[start]->getY2())));
@@ -323,7 +297,7 @@ MVREXPORT bool MvrLineFinder::combineLines(void)
     {
       
       if (myPrinting)
-	ArLog::log(MvrLog::Normal, "merged %g %g to %g", 
+	MvrLog::log(MvrLog::Normal, "merged %g %g to %g", 
 		   (*myLines)[start]->getLength(),
 		   (*myLines)[start+1]->getLength(),
 		   newLine->getLength());
@@ -335,7 +309,7 @@ MVREXPORT bool MvrLineFinder::combineLines(void)
     else
     {
       if (myPrinting)
-	ArLog::log(MvrLog::Normal, "inserted anyways %g", 
+	MvrLog::log(MvrLog::Normal, "inserted anyways %g", 
 		   (*myLines)[start]->getLength());
       (*newLines)[numNewLines] = new MvrLineFinderSegment(*((*myLines)[start]));
       numNewLines++;
@@ -364,9 +338,9 @@ MVREXPORT bool MvrLineFinder::combineLines(void)
   return combineLines();
 }
 
-MVREXPORT MvrLineFinderSegment *ArLineFinder::averageSegments(
-	ArLineFinderSegment *line1,
-	ArLineFinderSegment *line2)
+MVREXPORT MvrLineFinderSegment *MvrLineFinder::averageSegments(
+	MvrLineFinderSegment *line1,
+	MvrLineFinderSegment *line2)
 {
 
   // the angles can be myCombiningAngleTol diff but if its more than myCombiningAngleTol / 2
@@ -487,7 +461,7 @@ MVREXPORT MvrLineFinderSegment *ArLineFinder::averageSegments(
 	i != newLine->getEndPoint())
     {
       if (myPrinting)
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "Had a point %d that was to far from our line at %.0f (max %d)",
 		   i, dist, myValidMaxDistFromLine);
 
@@ -564,7 +538,7 @@ MVREXPORT void MvrLineFinder::filterLines(void)
 		(*myLines)[start]->getEndPoint2()) > myFilteringMinLineLength)
     {
       if (myPrinting)
-	ArLog::log(MvrLog::Normal, "kept %g (%d points)", 
+	MvrLog::log(MvrLog::Normal, "kept %g (%d points)", 
 		   (*myLines)[start]->getLength(),
 		   (*myLines)[start]->getNumPoints());
       (*newLines)[numNewLines] = new MvrLineFinderSegment(*((*myLines)[start]));
@@ -573,7 +547,7 @@ MVREXPORT void MvrLineFinder::filterLines(void)
     else
     {
       if (myPrinting)
-	ArLog::log(MvrLog::Normal, "Clipped %g (%d points)",
+	MvrLog::log(MvrLog::Normal, "Clipped %g (%d points)",
 		   (*myLines)[start]->getLength(),
 		   (*myLines)[start]->getNumPoints());
     }
@@ -707,10 +681,10 @@ MVREXPORT void MvrLineFinder::addToConfig(MvrConfig *config,
 
 }
 
-MVREXPORT std::set<ArLineFinderSegment*> MvrLineFinder::getLinesAsSet()
+MVREXPORT std::set<MvrLineFinderSegment*> MvrLineFinder::getLinesAsSet()
 {
   std::map<int, MvrLineFinderSegment*> *lines = getLines();
-  std::set<ArLineFinderSegment*> lineSegPtrs;
+  std::set<MvrLineFinderSegment*> lineSegPtrs;
   for(std::map<int, MvrLineFinderSegment*>::const_iterator i = lines->begin(); i != lines->end(); ++i)
   {
     lineSegPtrs.insert( (*i).second );
@@ -718,10 +692,10 @@ MVREXPORT std::set<ArLineFinderSegment*> MvrLineFinder::getLinesAsSet()
   return lineSegPtrs;
 }
 
-MVREXPORT std::set<ArPose> MvrLineFinder::getNonLinePointsAsSet()
+MVREXPORT std::set<MvrPose> MvrLineFinder::getNonLinePointsAsSet()
 {
   std::map<int, MvrPose> *pointsPtr = getNonLinePoints();
-  std::set<ArPose> points;
+  std::set<MvrPose> points;
   for(std::map<int, MvrPose>::const_iterator i = pointsPtr->begin(); i != pointsPtr->end(); ++i)
   {
     points.insert( (*i).second );

@@ -1,39 +1,13 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrCondition.h"
 #include "MvrLog.h"
 
 
-ArStrMap MvrCondition::ourStrMap;
+MvrStrMap MvrCondition::ourStrMap;
 
 
-MVREXPORT MvrCondition::ArCondition() :
+MVREXPORT MvrCondition::MvrCondition() :
   myFailedInit(false),
   myCond(),
   myCount(0)
@@ -42,7 +16,7 @@ MVREXPORT MvrCondition::ArCondition() :
   if (myCond == NULL)
   {
 	DWORD err = GetLastError(); // see http://msdn.microsoft.com/en-us/library/windows/desktop/ms681381(v=vs.85).aspx
-    MvrLog::log(MvrLog::Terse, "MvrCondition(%s)::ArCondition: Error %d trying to create the condition.", getLogName(), err);
+    MvrLog::log(MvrLog::Terse, "MvrCondition(%s)::MvrCondition: Error %d trying to create the condition.", getLogName(), err);
     myFailedInit=true;
   }
 
@@ -88,7 +62,7 @@ MVREXPORT int MvrCondition::broadcast()
     return(STATUS_FAILED_INIT);
   }
 
-  //ArLog::log(MvrLog::Normal, "broadcasting %s", getLogName());
+  //MvrLog::log(MvrLog::Normal, "broadcasting %s", getLogName());
   for (; myCount != 0; --myCount)
   {
     if (PulseEvent(myCond) == 0) // PulseEvent returns 09 on error according to http://msdn.microsoft.com/en-us/library/windows/desktop/ms684914(v=vs.85).aspx
@@ -146,7 +120,7 @@ MVREXPORT int MvrCondition::timedWait(unsigned int msecs)
   }
 }
 
-MVREXPORT const char *ArCondition::getError(int messageNumber) const
+MVREXPORT const char *MvrCondition::getError(int messageNumber) const
 {
   MvrStrMap::const_iterator it;
   if ((it = ourStrMap.find(messageNumber)) != ourStrMap.end())

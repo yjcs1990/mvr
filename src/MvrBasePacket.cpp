@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrBasePacket.h"
 #include "MvrLog.h"
 
@@ -38,7 +12,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 @param buf buffer packet uses, if NULL, instance will allocate memory
 @param footerLength length of the footer following the data
 */
-MVREXPORT MvrBasePacket::ArBasePacket(MvrTypes::UByte2 bufferSize, 
+MVREXPORT MvrBasePacket::MvrBasePacket(MvrTypes::UByte2 bufferSize, 
                                     MvrTypes::UByte2 headerLength,
                                     char * buf,
                                     MvrTypes::UByte2 footerLength) 
@@ -63,7 +37,7 @@ MVREXPORT MvrBasePacket::ArBasePacket(MvrTypes::UByte2 bufferSize,
 }
 
 
-MVREXPORT MvrBasePacket::ArBasePacket(const MvrBasePacket &other) :
+MVREXPORT MvrBasePacket::MvrBasePacket(const MvrBasePacket &other) :
   myHeaderLength(other.myHeaderLength),
   myFooterLength(other.myFooterLength),
   myMaxLength(other.myLength),
@@ -78,7 +52,7 @@ MVREXPORT MvrBasePacket::ArBasePacket(const MvrBasePacket &other) :
   }
 }
 
-MVREXPORT MvrBasePacket &ArBasePacket::operator=(const MvrBasePacket &other)
+MVREXPORT MvrBasePacket &MvrBasePacket::operator=(const MvrBasePacket &other)
 {
   if (this != &other) {
 
@@ -177,7 +151,7 @@ MVREXPORT void MvrBasePacket::resetRead(void)
   resetValid();
 }
 
-ArTypes::UByte2 MvrBasePacket::getDataLength(void) const { 
+MvrTypes::UByte2 MvrBasePacket::getDataLength(void) const { 
  
   // KMC 12/20/13 Do not allow negative values to be returned.  (They are basically 
   // converted to an erroneous positive value by the UByte2.)
@@ -265,12 +239,12 @@ MVREXPORT void MvrBasePacket::resetValid()
   myIsValid = true;
 }
 
-MVREXPORT const char *ArBasePacket::getBuf(void) const
+MVREXPORT const char *MvrBasePacket::getBuf(void) const
 {
   return myBuf;
 }
 
-MVREXPORT char *ArBasePacket::getBuf(void) 
+MVREXPORT char *MvrBasePacket::getBuf(void) 
 {
   return myBuf;
 }
@@ -642,7 +616,7 @@ MVREXPORT MvrTypes::UByte2 MvrBasePacket::bufToUByte2(void)
 MVREXPORT MvrTypes::UByte4 MvrBasePacket::bufToUByte4(void)
 {
   /// MPL 2013_10_23 this was Byte4 not UByte4
-  //ArTypes::Byte4 ret=0;
+  //MvrTypes::Byte4 ret=0;
   MvrTypes::UByte4 ret=0;
   unsigned char c1, c2, c3, c4;
 

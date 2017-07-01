@@ -1,42 +1,16 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrSimulatedLaser.h"
 #include "MvrRobot.h"
 
 
-MVREXPORT ArSimulatedLaser::ArSimulatedLaser(MvrLaser *laser) :
-  ArLaser(laser->getLaserNumber(),
+MVREXPORT MvrSimulatedLaser::MvrSimulatedLaser(MvrLaser *laser) :
+  MvrLaser(laser->getLaserNumber(),
 	  laser->getName(),
 	  laser->getAbsoluteMaxRange(),
 	  laser->isLocationDependent(),
 	  false),
-  mySimPacketHandler(this, &ArSimulatedLaser::simPacketHandler)
+  mySimPacketHandler(this, &MvrSimulatedLaser::simPacketHandler)
 {
   myLaser = laser;
   
@@ -120,24 +94,24 @@ MVREXPORT ArSimulatedLaser::ArSimulatedLaser(MvrLaser *laser) :
   myStartConnect = false;
   myIsConnected = false;
   myTryingToConnect = false;
-  myAssembleReadings = new std::list<ArSensorReading *>;
-  myCurrentReadings = new std::list<ArSensorReading *>;
+  myAssembleReadings = new std::list<MvrSensorReading *>;
+  myCurrentReadings = new std::list<MvrSensorReading *>;
   myRawReadings = myCurrentReadings;
   myIter = myAssembleReadings->begin();
   myDataCBList.setLogging(false);
   myReceivedData = false;
 }
 
-MVREXPORT ArSimulatedLaser::~MvrSimulatedLaser()
+MVREXPORT MvrSimulatedLaser::~MvrSimulatedLaser()
 {
 
 }
 
-MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
+MVREXPORT bool MvrSimulatedLaser::blockingConnect(void)
 {
   if (myLaserNumber != 1)
   {
-    ArLog::log(MvrLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
     laserFailedConnect();
     return false;
   }
@@ -150,7 +124,7 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
 
   if (myRobot == NULL)
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "%s: Cannot connect to simulated laser because it has no robot",
 	       getName());
     laserFailedConnect();
@@ -161,8 +135,8 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
   
   if (canSetDegrees())
   {
-    mySimBegin = ArUtil::findMin(getStartDegrees(), getEndDegrees());
-    mySimEnd = ArUtil::findMax(getStartDegrees(), getEndDegrees());
+    mySimBegin = MvrUtil::findMin(getStartDegrees(), getEndDegrees());
+    mySimEnd = MvrUtil::findMax(getStartDegrees(), getEndDegrees());
   }
   else if (canChooseDegrees())
   {
@@ -171,7 +145,7 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
   }
   else
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	   "%s: This laser type does not have field of view (start/end degrees) parameters configured, and does not have any defaults, cannot configure the simulated laser. Failing connection",
 	       getName());
     unlockDevice();
@@ -189,7 +163,7 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
   }
   else
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	   "%s: This laser type does not have increment (resolution) parameter configured, and does not have a default, cannot configure the simulated laser. Failing connection",
 	       getName());
     unlockDevice();
@@ -202,18 +176,18 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
 
   mySimPacketHandler.setName(getName());
   myRobot->remPacketHandler(&mySimPacketHandler);
-  myRobot->addPacketHandler(&mySimPacketHandler, ArListPos::LAST);
+  myRobot->addPacketHandler(&mySimPacketHandler, MvrListPos::LAST);
 
   bool failed = false;
   bool robotIsRunning = myRobot->isRunning();
 
   // return true if we could send all the commands
-  if (!failed && !myRobot->comInt(36, ArMath::roundInt(mySimBegin)))
+  if (!failed && !myRobot->comInt(36, MvrMath::roundInt(mySimBegin)))
     failed = true;
-  if (!failed && !myRobot->comInt(37, ArMath::roundInt(mySimEnd)))
+  if (!failed && !myRobot->comInt(37, MvrMath::roundInt(mySimEnd)))
     failed = true;
   if (!failed && !myRobot->comInt(38, 
-				  ArMath::roundInt(mySimIncrement * 100.0)))
+				  MvrMath::roundInt(mySimIncrement * 100.0)))
     failed = true;
   // Enable sending data, with extended info 
   ///@todo only choose extended info if reflector bits desired, also shorten range.
@@ -224,7 +198,7 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
 
   if (robotIsRunning)
   {
-    ArTime startWait;
+    MvrTime startWait;
     while (!failed && !myReceivedData)
     {
       if (startWait.secSince() >= 30)
@@ -232,13 +206,13 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
     }
     if (!failed && myReceivedData)
     {
-      ArLog::log(MvrLog::Verbose, "%s::blockingConnect: Got data back", 
+      MvrLog::log(MvrLog::Verbose, "%s::blockingConnect: Got data back", 
 		 getName());
     }
   }
   else
   {
-    ArLog::log(MvrLog::Normal, "%s::blockingConnect: Robot isn't running so can't wait for data", getName());
+    MvrLog::log(MvrLog::Normal, "%s::blockingConnect: Robot isn't running so can't wait for data", getName());
   }
 
 
@@ -248,7 +222,7 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
     myIsConnected = true;
     myTryingToConnect = false;
     //madeConnection();
-    ArLog::log(MvrLog::Terse, "%s: Connected to simulated laser.",
+    MvrLog::log(MvrLog::Terse, "%s: Connected to simulated laser.",
 	       getName());
     unlockDevice();
     laserConnect();
@@ -261,7 +235,7 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
     myIsConnected = false;
     myTryingToConnect = false;
     unlockDevice();
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Failed to connect to simulated laser.",
 	       getName());
     laserFailedConnect();
@@ -269,11 +243,11 @@ MVREXPORT bool ArSimulatedLaser::blockingConnect(void)
   }
 }
 
-MVREXPORT bool ArSimulatedLaser::asyncConnect(void)
+MVREXPORT bool MvrSimulatedLaser::asyncConnect(void)
 {
   if (myLaserNumber != 1)
   {
-    ArLog::log(MvrLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Cannot use the simulator with multiple lasers yet", getName());
     return false;
   }
 
@@ -284,20 +258,20 @@ MVREXPORT bool ArSimulatedLaser::asyncConnect(void)
   return true;
 }
 
-MVREXPORT bool ArSimulatedLaser::disconnect(void)
+MVREXPORT bool MvrSimulatedLaser::disconnect(void)
 {
   laserDisconnectNormally();  
   return true;
 }
 
-MVREXPORT bool ArSimulatedLaser::finishParams(void)
+MVREXPORT bool MvrSimulatedLaser::finishParams(void)
 {
   if (!getRunning())
     runAsync();
 
   if (!laserPullUnsetParamsFromRobot())
   {
-    ArLog::log(MvrLog::Normal, "%s: Couldn't pull params from robot",
+    MvrLog::log(MvrLog::Normal, "%s: Couldn't pull params from robot",
 	       getName());
     return false;
   }
@@ -305,7 +279,7 @@ MVREXPORT bool ArSimulatedLaser::finishParams(void)
   return laserCheckParams();
 }
 
-MVREXPORT bool ArSimulatedLaser::laserCheckParams(void)
+MVREXPORT bool MvrSimulatedLaser::laserCheckParams(void)
 {
   if (canSetDegrees() && (!myLaser->setStartDegrees(getStartDegrees()) || 
 			  !myLaser->setEndDegrees(getEndDegrees())))
@@ -347,7 +321,7 @@ MVREXPORT bool ArSimulatedLaser::laserCheckParams(void)
   return true;
 }
 
-MVREXPORT void *ArSimulatedLaser::runThread(void *arg)
+MVREXPORT void *MvrSimulatedLaser::runThread(void *arg)
 {
 
   while (getRunning())
@@ -364,21 +338,21 @@ MVREXPORT void *ArSimulatedLaser::runThread(void *arg)
       lockDevice();
       myTryingToConnect = false;
       unlockDevice();
-      ArUtil::sleep(100);
+      MvrUtil::sleep(100);
       continue;
     }
     unlockDevice();
 
     if (!myIsConnected)
     {
-      ArUtil::sleep(100);
+      MvrUtil::sleep(100);
       continue;
     }
 
     if (getConnectionTimeoutSeconds() > 0 && 
 	getLastReadingTime().secSince() > getConnectionTimeoutSeconds())
     {
-      ArLog::log(MvrLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 		 "%s:  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(), 
 		 myLastReading.mSecSince()/1000.0, 
 		 getConnectionTimeoutSeconds());
@@ -387,7 +361,7 @@ MVREXPORT void *ArSimulatedLaser::runThread(void *arg)
       continue;
     }
 
-    ArUtil::sleep(100);
+    MvrUtil::sleep(100);
     continue;
   }
 
@@ -395,20 +369,20 @@ MVREXPORT void *ArSimulatedLaser::runThread(void *arg)
 }
 
 /** @internal */
-MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
 {
-  std::list<ArFunctor *>::iterator it;
+  std::list<MvrFunctor *>::iterator it;
 
   unsigned int totalNumReadings;
   unsigned int readingNumber;
   double atDeg;
   unsigned int i;
-  ArSensorReading *reading;
-  std::list<ArSensorReading *>::iterator tempIt;
+  MvrSensorReading *reading;
+  std::list<MvrSensorReading *>::iterator tempIt;
   unsigned int newReadings;
   int range;
   int refl = 0;
-  ArPose encoderPose;
+  MvrPose encoderPose;
   //std::list<double>::iterator ignoreIt;  
   bool ignore;
 
@@ -445,7 +419,7 @@ MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
   // if we have too many readings in our list of raw readings, pop the extras
   while (myAssembleReadings->size() > totalNumReadings)
   {
-    ArLog::log(MvrLog::Terse, "MvrSimulatedLaser::simPacketHandler, too many readings, popping one.");
+    MvrLog::log(MvrLog::Terse, "MvrSimulatedLaser::simPacketHandler, too many readings, popping one.");
     tempIt = myAssembleReadings->begin();
     if (tempIt != myAssembleReadings->end())
       delete (*tempIt);
@@ -455,7 +429,7 @@ MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
   // If we don't have any sensor readings created at all, make 'em all now
   if (myAssembleReadings->size() == 0)
     for (i = 0; i < totalNumReadings; i++)
-      myAssembleReadings->push_back(new ArSensorReading);
+      myAssembleReadings->push_back(new MvrSensorReading);
   
   // Okay, we know where we're at, so get an iterator to the right spot, or 
   // make sure the one we keep around is in the right spot... if neither of
@@ -472,7 +446,7 @@ MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
       tempIt++;
       if (tempIt == myAssembleReadings->end() && (i + 1 != myTotalNumReadings))
       {
-	myAssembleReadings->push_back(new ArSensorReading);
+	myAssembleReadings->push_back(new MvrSensorReading);
 	//printf("@\n");
       }
       myIter++;
@@ -528,7 +502,7 @@ MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
       ignore = true;
     */
     reading->resetSensorPosition(MvrMath::roundInt(mySensorPose.getX()),
-				 ArMath::roundInt(mySensorPose.getY()),
+				 MvrMath::roundInt(mySensorPose.getY()),
 				 atDeg);
     //printf("dist %d\n", dist);
     reading->newData(range, mySimPacketStart, 
@@ -543,7 +517,7 @@ MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
 	myWhichReading + 1 != myTotalNumReadings)
     {
       printf("!\n");
-      myAssembleReadings->push_back(new ArSensorReading);
+      myAssembleReadings->push_back(new MvrSensorReading);
     }
     myIter++;
   }
@@ -553,7 +527,7 @@ MVREXPORT bool ArSimulatedLaser::simPacketHandler(MvrRobotPacket *packet)
   if (newReadings + readingNumber >= totalNumReadings)
   {
     //printf("Got all readings...\n");
-    // set ArRangeDevice buffer
+    // set MvrRangeDevice buffer
     myRawReadings = myAssembleReadings;
     // switch internal buffers
     myAssembleReadings = myCurrentReadings;

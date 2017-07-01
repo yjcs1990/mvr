@@ -1,47 +1,21 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include <list>
 #include "MvrThread.h"
 #include "MvrLog.h"
 #include "MvrSignalHandler.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
 
 static DWORD WINAPI run(void *arg)
 {
-  ArThread *t=(MvrThread*)arg;
+  MvrThread *t=(MvrThread*)arg;
   void *ret=NULL;
 
   if (t->getBlockAllSignals())
-    ArSignalHandler::blockCommonThisThread();
+    MvrSignalHandler::blockCommonThisThread();
 
-  if (dynamic_cast<ArRetFunctor<void*>*>(t->getFunc()))
+  if (dynamic_cast<MvrRetFunctor<void*>*>(t->getFunc()))
     ret=((MvrRetFunctor<void*>*)t->getFunc())->invokeR();
   else
     t->getFunc()->invoke();
@@ -49,9 +23,9 @@ static DWORD WINAPI run(void *arg)
   return((DWORD)ret);
 }
 
-void ArThread::init()
+void MvrThread::init()
 {
-  ArThread *main;
+  MvrThread *main;
   ThreadType pt;
   MapType::iterator iter;
 
@@ -63,7 +37,7 @@ void ArThread::init()
     ourThreadsMutex.unlock();
     return;
   }
-  main=new ArThread;
+  main=new MvrThread;
   main->myJoinable=true;
   main->myRunning=true;
   main->myThread=pt;
@@ -71,7 +45,7 @@ void ArThread::init()
   ourThreadsMutex.unlock();
 }
 
-MVREXPORT void ArThread::shutdown()
+MVREXPORT void MvrThread::shutdown()
 {
   ourThreadsMutex.lock();
 
@@ -82,7 +56,7 @@ MVREXPORT void ArThread::shutdown()
   // Do not use deleteSetPairs because this causes the ourThreads map 
   // to be updated recursively (because the destructor updates the map).
   //
-  std::list<ArThread *> threadList;
+  std::list<MvrThread *> threadList;
 
   for (MapType::iterator mapIter = ourThreads.begin(); 
        mapIter != ourThreads.end();
@@ -91,13 +65,13 @@ MVREXPORT void ArThread::shutdown()
       threadList.push_back(mapIter->second);
     }
   }
-  for (std::list<ArThread *>::iterator listIter = threadList.begin();
+  for (std::list<MvrThread *>::iterator listIter = threadList.begin();
       listIter != threadList.end();
       listIter++) {
     delete (*listIter);
   }
   if (!ourThreads.empty()) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrThread::shutdown() unexpected thread leftover");
   }
   ourThreadsMutex.unlock();
@@ -105,7 +79,7 @@ MVREXPORT void ArThread::shutdown()
 } // end method shutdown
 
 
-MVREXPORT ArThread::~MvrThread()
+MVREXPORT MvrThread::~MvrThread()
 {
   CloseHandle(myThreadHandle);
 
@@ -116,7 +90,7 @@ MVREXPORT ArThread::~MvrThread()
 }
 
 
-MVREXPORT ArThread * ArThread::self()
+MVREXPORT MvrThread * MvrThread::self()
 {
   ThreadType pt;
   MapType::iterator iter;
@@ -132,15 +106,15 @@ MVREXPORT ArThread * ArThread::self()
     return(NULL);
 }
 
-MVREXPORT ArThread::ThreadType ArThread::osSelf()
+MVREXPORT MvrThread::ThreadType MvrThread::osSelf()
 { 
   return GetCurrentThreadId();
 }
 
-MVREXPORT void ArThread::cancelAll()
+MVREXPORT void MvrThread::cancelAll()
 {
   DWORD ret=0;
-  std::map<HANDLE, ArThread *>::iterator iter;
+  std::map<HANDLE, MvrThread *>::iterator iter;
 
   ourThreadsMutex.lock();
   for (iter=ourThreadHandles.begin(); iter != ourThreadHandles.end(); ++iter)
@@ -151,12 +125,12 @@ MVREXPORT void ArThread::cancelAll()
 }
 
 
-MVREXPORT int ArThread::create(MvrFunctor *func, bool joinable,
+MVREXPORT int MvrThread::create(MvrFunctor *func, bool joinable,
                               bool lowerPriority)
 {
   // Log a warning (until desired behavior is determined)
   if (myThreadHandle != 0) {
-    ArLog::log(MvrLog::Terse, "MvrThread::create: Thread %s (ID %d) already created.",
+    MvrLog::log(MvrLog::Terse, "MvrThread::create: Thread %s (ID %d) already created.",
                (myName.empty() ? "[anonymous]" : myName.c_str()),
 		           myThread);
   }
@@ -172,25 +146,25 @@ MVREXPORT int ArThread::create(MvrFunctor *func, bool joinable,
   err=GetLastError();
   if (myThreadHandle == 0)
   {
-    ArLog::log(MvrLog::Terse, "MvrThread::create: Failed to create thread.");
+    MvrLog::log(MvrLog::Terse, "MvrThread::create: Failed to create thread.");
     return(STATUS_FAILED);
   }
   else
   {
     if (myName.size() == 0)
     {
-      ArLog::log(ourLogLevel, "Created anonymous thread with ID %d", 
+      MvrLog::log(ourLogLevel, "Created anonymous thread with ID %d", 
 		 myThread);
-      //ArLog::logBacktrace(MvrLog::Normal);
+      //MvrLog::logBacktrace(MvrLog::Normal);
     }
     else
     {
-      ArLog::log(ourLogLevel, "Created %s thread with ID %d", myName.c_str(),
+      MvrLog::log(ourLogLevel, "Created %s thread with ID %d", myName.c_str(),
 		 myThread);
     }
     ourThreadsMutex.lock();
     ourThreads.insert(MapType::value_type(myThread, this));
-	ourThreadHandles.insert(std::map<HANDLE, ArThread *>::value_type(myThreadHandle, this));
+	ourThreadHandles.insert(std::map<HANDLE, MvrThread *>::value_type(myThreadHandle, this));
     ourThreadsMutex.unlock();
     if (lowerPriority)
       SetThreadPriority(myThreadHandle, THREAD_PRIORITY_IDLE);
@@ -198,26 +172,26 @@ MVREXPORT int ArThread::create(MvrFunctor *func, bool joinable,
   }
 }
 
-MVREXPORT int ArThread::doJoin(void **iret)
+MVREXPORT int MvrThread::doJoin(void **iret)
 {
   DWORD ret;
 
   ret=WaitForSingleObject(myThreadHandle, INFINITE);
   if (ret == WAIT_FAILED)
   {
-    ArLog::log(MvrLog::Terse, "MvrThread::doJoin: Failed to join on thread.");
+    MvrLog::log(MvrLog::Terse, "MvrThread::doJoin: Failed to join on thread.");
     return(STATUS_FAILED);
   }
 
   return(0);
 }
 
-MVREXPORT int ArThread::detach()
+MVREXPORT int MvrThread::detach()
 {
   return(0);
 }
 
-MVREXPORT void ArThread::cancel()
+MVREXPORT void MvrThread::cancel()
 {
   DWORD ret=0;
 
@@ -228,40 +202,40 @@ MVREXPORT void ArThread::cancel()
   TerminateThread(myThreadHandle, ret);
 }
 
-MVREXPORT void ArThread::yieldProcessor()
+MVREXPORT void MvrThread::yieldProcessor()
 {
   Sleep(0);
 }
 
 
-MVREXPORT void ArThread::threadStarted(void)
+MVREXPORT void MvrThread::threadStarted(void)
 {
   myStarted = true;
   if (myName.size() == 0)
-    ArLog::log(ourLogLevel, "Anonymous thread (%d) is running",
+    MvrLog::log(ourLogLevel, "Anonymous thread (%d) is running",
 	             myThread);
   else
-    ArLog::log(ourLogLevel, "Thread %s (%d) is running", 
+    MvrLog::log(ourLogLevel, "Thread %s (%d) is running", 
 	             myName.c_str(), myThread);
 }
 
-MVREXPORT void ArThread::threadFinished(void)
+MVREXPORT void MvrThread::threadFinished(void)
 {
   myFinished = true;
   if (myName.size() == 0)
-    ArLog::log(ourLogLevel, "Anonymous thread (%d) is finished",
+    MvrLog::log(ourLogLevel, "Anonymous thread (%d) is finished",
 	             myThread);
   else
-    ArLog::log(ourLogLevel, "Thread %s (%d) is finished", 
+    MvrLog::log(ourLogLevel, "Thread %s (%d) is finished", 
 	             myName.c_str(), myThread);
 }
 
-MVREXPORT void ArThread::logThreadInfo(void)
+MVREXPORT void MvrThread::logThreadInfo(void)
 {
   if (myName.size() == 0)
-    ArLog::log(ourLogLevel, "Anonymous thread (%d) is running",
+    MvrLog::log(ourLogLevel, "Anonymous thread (%d) is running",
 	             myThread);
   else
-    ArLog::log(ourLogLevel, "Thread %s (%d) is running", 
+    MvrLog::log(ourLogLevel, "Thread %s (%d) is running", 
 	             myName.c_str(), myThread);
 }

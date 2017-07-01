@@ -1,39 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-/*  \file MvrMapObject.h
- *  \brief Contains the definition of the MvrMapObject class.
- *  \date 06/27/08
- *  \author K. Cunningham
-*/
-#ifndef ARMAPOBJECT_H
-#define ARMAPOBJECT_H
+#ifndef MVRMAPOBJECT_H
+#define MVRMAPOBJECT_H
  
-#include "ariaTypedefs.h"
-#include "ariaUtil.h"
+#include "mvriaTypedefs.h"
+#include "mvriaUtil.h"
 
 /// A point or region of interest in an Mvria map.
 /**
@@ -232,7 +201,7 @@ public:
    * changes).  It may not make much difference on a modern processor
    * though (its set up this way for safety).
   **/
-  MVREXPORT std::list<ArLineSegment> getFromToSegments(void);
+  MVREXPORT std::list<MvrLineSegment> getFromToSegments(void);
 
   /// Gets a line segment that goes from the from to the to
   /**
@@ -260,7 +229,7 @@ public:
    */
   bool isPointInside(const MvrPose& p) const { 
     if(!hasFromTo()) return false;
-    const std::vector<ArPose> v = getRegionVertices();
+    const std::vector<MvrPose> v = getRegionVertices();
     if(v.size() > 2)
       return p.isInsidePolygon(v);
     else
@@ -274,7 +243,7 @@ public:
    * an empty std::vector is returned.  The "Theta" components of the vertex
    * MvrPose objects is not set or used.
    */
-  MVREXPORT std::vector<ArPose> getRegionVertices() const;
+  MVREXPORT std::vector<MvrPose> getRegionVertices() const;
 
   // --------------------------------------------------------------------------
   // I/O Methods
@@ -352,7 +321,7 @@ protected:
   MvrPose myToPose;
 
   /// For rectangle objects, the line segments that comprise the perimeter (even if rotated)
-  std::list<ArLineSegment> myFromToSegments;
+  std::list<MvrLineSegment> myFromToSegments;
   /// For line objects, the line
   MvrLineSegment myFromToSegment;
   
@@ -391,5 +360,5 @@ struct MvrMapObjectCompare :
 
 #endif //ifndef SWIG
 
-#endif // ARMAPOBJECT_H
+#endif // MVRMAPOBJECT_H
 

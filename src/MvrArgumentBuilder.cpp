@@ -1,31 +1,5 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrArgumentBuilder.h"
 #include "MvrLog.h"
 #include <stdarg.h>
@@ -55,7 +29,7 @@ char * cppstrdup(const char *str)
  * is false and preserves the original behavior where each argument is a 
  * space-separated alphanumeric string.
 **/
-MVREXPORT MvrArgumentBuilder::ArArgumentBuilder(size_t argvLen, 
+MVREXPORT MvrArgumentBuilder::MvrArgumentBuilder(size_t argvLen, 
 					                                    char extraSpaceChar,
 					                                    bool ignoreNormalSpaces,
                                               bool isPreCompressQuotes)
@@ -72,7 +46,7 @@ MVREXPORT MvrArgumentBuilder::ArArgumentBuilder(size_t argvLen,
   myIsQuiet = false;
 }
 
-MVREXPORT MvrArgumentBuilder::ArArgumentBuilder(const MvrArgumentBuilder & builder)
+MVREXPORT MvrArgumentBuilder::MvrArgumentBuilder(const MvrArgumentBuilder & builder)
 {
   size_t i;
   myFullString = builder.myFullString;
@@ -90,7 +64,7 @@ MVREXPORT MvrArgumentBuilder::ArArgumentBuilder(const MvrArgumentBuilder & build
   myIsPreCompressQuotes = builder.myIsPreCompressQuotes;
 }
 
-MVREXPORT MvrArgumentBuilder &ArArgumentBuilder::operator=(const MvrArgumentBuilder & builder)
+MVREXPORT MvrArgumentBuilder &MvrArgumentBuilder::operator=(const MvrArgumentBuilder & builder)
 {
   if (this != &builder) {
 
@@ -141,7 +115,7 @@ MVREXPORT void MvrArgumentBuilder::removeArg(size_t which, bool isRebuildFullStr
   char *temp;
 
 	if (which < 0) {
-		ArLog::log(MvrLog::Terse, "MvrArgumentBuilder::removeArg: cannot remove arg at negative index (%i)",
+		MvrLog::log(MvrLog::Terse, "MvrArgumentBuilder::removeArg: cannot remove arg at negative index (%i)",
 							 which);
 		return;
 	}
@@ -572,12 +546,12 @@ MVREXPORT char** MvrArgumentBuilder::getArgv(void) const
   return myArgv;
 }
 
-MVREXPORT const char *ArArgumentBuilder::getFullString(void) const
+MVREXPORT const char *MvrArgumentBuilder::getFullString(void) const
 {
   return myFullString.c_str();
 }
 
-MVREXPORT const char *ArArgumentBuilder::getExtraString(void) const
+MVREXPORT const char *MvrArgumentBuilder::getExtraString(void) const
 {
   return myExtraString.c_str();
 }

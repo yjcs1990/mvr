@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRFUNCTOR_H
+#define MVRFUNCTOR_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARFUNCTOR_H
-#define ARFUNCTOR_H
-
-#include "ariaTypedefs.h"
-#include "ariaOSDef.h"
+#include "mvriaTypedefs.h"
+#include "mvriaOSDef.h"
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -374,7 +348,7 @@ public:
    For an overall description of functors, see MvrFunctor.
 
    @javanote To create the equivalent of MvrRetFunctor<bool>, you can 
-      subclass <code>ArRetFunctor_Bool</code> and override <code>invoke(bool)</code>
+      subclass <code>MvrRetFunctor_Bool</code> and override <code>invoke(bool)</code>
      
 */
 template<class Ret>
@@ -2516,7 +2490,7 @@ public:
      @param p4 default fourth parameter
      @param p5 default fifth parameter
  */
-ArFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
+MvrFunctor5C(T &obj, void (T::*func)(P1, P2, P3, P4, P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) :
   myObj(&obj), myFunc(func), myP1(p1), myP2(p2), myP3(p3), myP4(p4), myP5(p5) {}
 
   /// Constructor - supply function pointer
@@ -5403,6 +5377,6 @@ protected:
 
 
 
-#endif // ARFUNCTOR_H
+#endif // MVRFUNCTOR_H
 
 

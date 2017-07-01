@@ -1,30 +1,4 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrCommands.h"
 #include "MvrExport.h"
 #include "MvrAnalogGyro.h"
@@ -33,11 +7,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 /**
 **/
-MVREXPORT MvrAnalogGyro::ArAnalogGyro(MvrRobot *robot) : 
-  myHandleGyroPacketCB(this, &ArAnalogGyro::handleGyroPacket),
-  myEncoderCorrectCB(this, &ArAnalogGyro::encoderCorrect),
-  myStabilizingCB(this, &ArAnalogGyro::stabilizingCallback),
-  myUserTaskCB(this, &ArAnalogGyro::userTaskCallback)
+MVREXPORT MvrAnalogGyro::MvrAnalogGyro(MvrRobot *robot) : 
+  myHandleGyroPacketCB(this, &MvrAnalogGyro::handleGyroPacket),
+  myEncoderCorrectCB(this, &MvrAnalogGyro::encoderCorrect),
+  myStabilizingCB(this, &MvrAnalogGyro::stabilizingCallback),
+  myUserTaskCB(this, &MvrAnalogGyro::userTaskCallback)
 {
   myRobot = robot;
   myHandleGyroPacketCB.setName("MvrAnalogGyro");
@@ -179,7 +153,7 @@ MVREXPORT bool MvrAnalogGyro::handleGyroPacket(MvrRobotPacket *packet)
 
     // if we're not moving and the reading is small disregard it
     if ((fabs(myRobot->getVel()) < 2 && fabs(myRobot->getRotVel()) < 2) &&
-	ArMath::fabs(reading) < 2)      
+	MvrMath::fabs(reading) < 2)      
     {
       rate = 0;
     }
@@ -226,7 +200,7 @@ MVREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
   // if we didn't get a reading this take what we got at face value
   if (!myReadingThisCycle)
   {
-    //ArLog::log(MvrLog::Verbose, "MvrAnalogGyro: no inertial reading, using encoder");
+    //MvrLog::log(MvrLog::Verbose, "MvrAnalogGyro: no inertial reading, using encoder");
     myAccumulatedDelta += deltaPose.getTh();
     //printf("adding %f\n", myAccumulatedDelta);
     return deltaPose.getTh();

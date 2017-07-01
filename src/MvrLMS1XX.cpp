@@ -1,35 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrLMS1XX.h"
 #include "MvrRobot.h"
 #include "MvrSerialConnection.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 #include <time.h>
 
 //#define TRACE
@@ -39,8 +13,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
   #define IFDEBUG(code)
 #endif
 
-MVREXPORT MvrLMS1XXPacket::ArLMS1XXPacket() : 
-ArBasePacket(10000, 1, NULL, 1)
+MVREXPORT MvrLMS1XXPacket::MvrLMS1XXPacket() : 
+MvrBasePacket(10000, 1, NULL, 1)
 {
 	myFirstAdd = true;
 	myCommandType[0] = '\0';
@@ -52,12 +26,12 @@ MVREXPORT MvrLMS1XXPacket::~MvrLMS1XXPacket()
 
 }
 
-MVREXPORT const char *ArLMS1XXPacket::getCommandType(void)
+MVREXPORT const char *MvrLMS1XXPacket::getCommandType(void)
 {
 	return myCommandType;
 }
 
-MVREXPORT const char *ArLMS1XXPacket::getCommandName(void)
+MVREXPORT const char *MvrLMS1XXPacket::getCommandName(void)
 {
 	return myCommandName;
 }
@@ -176,7 +150,7 @@ MVREXPORT void MvrLMS1XXPacket::strToBuf(const char *str)
 
 	myFirstAdd = false;
 
-	ArTypes::UByte2 tempLen = strlen(str);
+	MvrTypes::UByte2 tempLen = strlen(str);
 
 	if (!hasWriteCapacity(tempLen)) {
 		return;
@@ -188,7 +162,7 @@ MVREXPORT void MvrLMS1XXPacket::strToBuf(const char *str)
 
 MVREXPORT MvrTypes::Byte MvrLMS1XXPacket::bufToByte(void)
 {
-	ArTypes::Byte ret=0;
+	MvrTypes::Byte ret=0;
 
 
 	if (!isNextGood(1))
@@ -212,7 +186,7 @@ MVREXPORT MvrTypes::Byte MvrLMS1XXPacket::bufToByte(void)
 
 MVREXPORT MvrTypes::Byte2 MvrLMS1XXPacket::bufToByte2(void)
 {
-	ArTypes::Byte2 ret=0;
+	MvrTypes::Byte2 ret=0;
 
 	if (!isNextGood(1))
 		return 0;
@@ -237,7 +211,7 @@ MVREXPORT MvrTypes::Byte2 MvrLMS1XXPacket::bufToByte2(void)
 
 MVREXPORT MvrTypes::Byte4 MvrLMS1XXPacket::bufToByte4(void)
 {
-	ArTypes::Byte4 ret=0;
+	MvrTypes::Byte4 ret=0;
 
 	if (!isNextGood(1))
 		return 0;
@@ -266,7 +240,7 @@ MVREXPORT MvrTypes::Byte4 MvrLMS1XXPacket::bufToByte4(void)
 
 MVREXPORT MvrTypes::UByte MvrLMS1XXPacket::bufToUByte(void)
 {
-	ArTypes::UByte ret=0;
+	MvrTypes::UByte ret=0;
 	if (!isNextGood(1))
 		return 0;
 
@@ -290,7 +264,7 @@ MVREXPORT MvrTypes::UByte2 MvrLMS1XXPacket::bufToUByte2(void)
 {
 	//printf("@ 1\n");
 
-	ArTypes::UByte2 ret=0;
+	MvrTypes::UByte2 ret=0;
 
 	if (!isNextGood(1))
 		return 0;
@@ -318,7 +292,7 @@ MVREXPORT MvrTypes::UByte2 MvrLMS1XXPacket::bufToUByte2(void)
 
 MVREXPORT MvrTypes::UByte4 MvrLMS1XXPacket::bufToUByte4(void)
 {
-	ArTypes::Byte4 ret=0;
+	MvrTypes::Byte4 ret=0;
 
 	if (!isNextGood(1))
 		return 0;
@@ -355,7 +329,7 @@ MVREXPORT void MvrLMS1XXPacket::bufToStr(char *buf, int len)
 {
 	if (buf == NULL)
 	{
-		ArLog::log(MvrLog::Normal, "MvrLMS1XXPacket::bufToStr(NULL, %d) cannot write to null address",
+		MvrLog::log(MvrLog::Normal, "MvrLMS1XXPacket::bufToStr(NULL, %d) cannot write to null address",
 				len);
 		return;
 	}
@@ -391,7 +365,7 @@ MVREXPORT void MvrLMS1XXPacket::bufToStr(char *buf, int len)
 			// string for debugging
 			myBuf[len - 1] = '\0';
 
-			ArLog::log(MvrLog::Normal, "MvrLMS1XXPacket::bufToStr(buf, %d) output buf is not large enough for packet string %s",
+			MvrLog::log(MvrLog::Normal, "MvrLMS1XXPacket::bufToStr(buf, %d) output buf is not large enough for packet string %s",
 					len, myBuf);
 
 			while (isNextGood(1) && myBuf[myReadLength] != ' ' &&
@@ -427,7 +401,7 @@ int MvrLMS1XXPacket::deascii(char c)
 		return 0;
 }
 
-MVREXPORT MvrLMS1XXPacketReceiver::ArLMS1XXPacketReceiver()
+MVREXPORT MvrLMS1XXPacketReceiver::MvrLMS1XXPacketReceiver()
 {
 	myState = STARTING;
 }
@@ -442,22 +416,22 @@ MVREXPORT void MvrLMS1XXPacketReceiver::setDeviceConnection(MvrDeviceConnection 
 	myConn = conn;
 }
 
-MVREXPORT MvrDeviceConnection *ArLMS1XXPacketReceiver::getDeviceConnection(void)
+MVREXPORT MvrDeviceConnection *MvrLMS1XXPacketReceiver::getDeviceConnection(void)
 {
 	return myConn;
 }
 
 
-ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
+MvrLMS1XXPacket *MvrLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 						      bool scandataShortcut,
 						      bool ignoreRemainders)
 {
-	ArLMS1XXPacket *packet;
+	MvrLMS1XXPacket *packet;
 	unsigned char c;
 	long timeToRunFor;
-	ArTime timeDone;
-	ArTime lastDataRead;
-	ArTime packetReceived;
+	MvrTime timeDone;
+	MvrTime lastDataRead;
+	MvrTime packetReceived;
 	int numRead;
 	int i;
 
@@ -472,7 +446,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 
 	timeDone.setToNow();
 	if (!timeDone.addMSec(msWait)) {
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::receivePacket() error adding msecs (%i)",
 				myName,msWait);
 	}
@@ -488,7 +462,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 		{
 			if ((numRead = myConn->read((char *)&c, 1, timeToRunFor)) <= 0) {
 
-				//ArLog::log(MvrLog::Terse,
+				//MvrLog::log(MvrLog::Terse,
 				//			"%s::receivePacket() Timeout on initial read - read timeout = (%d)",
 				//					myName, timeToRunFor);
 				return NULL;
@@ -510,7 +484,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
         			char l = ' ';
        				if(c >= ' ' && c <= '~')
           				l = c;
-				ArLog::log(MvrLog::Verbose,
+				MvrLog::log(MvrLog::Verbose,
 							"%s::receivePacket() Warning: Received invalid char during STARTING, looking for 0x02 got 0x%02x %c. Skipping.",
 									myName, c, l);
 			}
@@ -524,14 +498,14 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 			if (numRead < 0)
 			{
 				//printf("read failed \n");
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::receivePacket() Failed read (%d)",
 						myName,numRead);
 				myState = STARTING;
 				return NULL;
 			}
 			/*
-			ArLog::log(MvrLog::Normal, "%s::receivePacket() Read %d bytes",
+			MvrLog::log(MvrLog::Normal, "%s::receivePacket() Read %d bytes",
 					myName,numRead);
 			*/
 
@@ -564,7 +538,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 						sprintf(&x[idx++], "%c",(char *)myReadBuf[i]);
 				}
 
-					ArLog::log(MvrLog::Normal,
+					MvrLog::log(MvrLog::Normal,
 							"%s::receivePacket() Buffer with %d bytes = %s", myName, numRead, x);
 			}
              ); // end IFDEBUG
@@ -574,8 +548,8 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 			{
 				if (myReadBuf[i] == '\002')
 				{
-//					ArLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
-					ArLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
+//					MvrLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
+					MvrLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
 							myName);
 					myPacket.empty();
 					myPacket.setLength(0);
@@ -600,7 +574,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 
 					if (i == myReadCount + numRead - 1)
 					{
-						//ArLog::log(myLogLevel1XXPacketReceiver: Starting again");
+						//MvrLog::log(myLogLevel1XXPacketReceiver: Starting again");
 						myState = STARTING;
 					}
 					// if it isn't move the data up and start again
@@ -627,7 +601,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 			//printf("didn't get enough bytes\n");
 			myReadCount += numRead;
 			if (numRead != 0)
-				ArLog::log(myInfoLogLevel, "%s::receivePacket() Got %d bytes (but not end char), up to %d",
+				MvrLog::log(myInfoLogLevel, "%s::receivePacket() Got %d bytes (but not end char), up to %d",
 						myName, numRead, myReadCount);
 		}
 		else if (myState == REMAINDER)
@@ -635,7 +609,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 			//printf("In remainder ('%c' %d) \n", myReadBuf[0], myReadBuf[0]);
 			if (myReadBuf[0] != '\002')
 			{
-				ArLog::log(myInfoLogLevel,
+				MvrLog::log(myInfoLogLevel,
 						"%s::receivePacket() Remainder didn't start with \\002, starting over...",myName);
 				myState = STARTING;
 				continue;
@@ -672,7 +646,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 				//printf("%03d '%c' %d\n", i, myReadBuf[i], myReadBuf[i]);
 				if (myReadBuf[i] == '\002' && i != 0)
 				{
-					ArLog::log(myInfoLogLevel, "%s::receivePacket() Remainder found start of new packet...",
+					MvrLog::log(myInfoLogLevel, "%s::receivePacket() Remainder found start of new packet...",
 							myName, myReadCount);
 					myPacket.empty();
 					myPacket.setLength(0);
@@ -694,7 +668,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 					if (i == myReadCount - 1)
 					{
 						myState = STARTING;
-						ArLog::log(myInfoLogLevel,
+						MvrLog::log(myInfoLogLevel,
 								"%s::receivePacket() Remainder was one packet...",myName);
 					}
 					// if it isn't move the data up and start again
@@ -709,7 +683,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 						memmove(myReadBuf, &myReadBuf[i+1], myReadCount - i);
 						myReadCount = myReadCount - i - 1;
 						myState = REMAINDER;
-						ArLog::log(myInfoLogLevel,
+						MvrLog::log(myInfoLogLevel,
 								"%s::receivePacket() Remainder was more than one packet... (%d %d)", myName, myReadCount, i);
 					}
 					return packet;
@@ -717,14 +691,14 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 			}
 			// if we didn't find the end of the packet, then get the rest of the data
 			myState = DATA;
-			ArLog::log(myInfoLogLevel,
+			MvrLog::log(myInfoLogLevel,
 					"%s::receivePacket() Remainder didn't contain a whole packet...",myName);
 
 			continue;
 		}
 		else
 		{
-			ArLog::log(MvrLog::Terse, "%s::receivePacket() Bad state (%d)",
+			MvrLog::log(MvrLog::Terse, "%s::receivePacket() Bad state (%d)",
 					myName,myState);
 			myState = STARTING;
 		}
@@ -734,16 +708,16 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receivePacket(unsigned int msWait,
 }
 
 
-ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
+MvrLMS1XXPacket *MvrLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 						      bool scandataShortcut,
 						      bool ignoreRemainders)
 {
-	ArLMS1XXPacket *packet;
+	MvrLMS1XXPacket *packet;
 	unsigned char c;
 	long timeToRunFor;
-	ArTime timeDone;
-	ArTime lastDataRead;
-	ArTime packetReceived;
+	MvrTime timeDone;
+	MvrTime lastDataRead;
+	MvrTime packetReceived;
 	int numRead;
 	int i;
 
@@ -755,7 +729,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 
 	timeDone.setToNow();
 	if (!timeDone.addMSec(msWait)) {
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::receiveTiMPacket() error adding msecs (%i)",
 				myName,msWait);
 	}
@@ -786,7 +760,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::receiveTiMPacket() Failed single char read (%d) %02x %c",
 						myName,numRead, c, c);
 			}
@@ -800,14 +774,14 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 			if (numRead < 0)
 			{
 				//printf("read failed \n");
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::receivePacket() Failed read (%d)",
 						myName,numRead);
 				myState = STARTING;
 				return NULL;
 			}
 			/*
-			ArLog::log(MvrLog::Normal, "%s::receivePacket() Read %d bytes",
+			MvrLog::log(MvrLog::Normal, "%s::receivePacket() Read %d bytes",
 					myName,numRead);
 			*/
 
@@ -840,7 +814,7 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 						sprintf(&x[idx++], "%c",(char *)myReadBuf[i]);
 				}
 
-					ArLog::log(MvrLog::Normal,
+					MvrLog::log(MvrLog::Normal,
 							"%s::receivePacket() Buffer with %d bytes = %s", myName, numRead, x);
 			}
              ); // end IFDEBUG
@@ -850,8 +824,8 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 			{
 				if (myReadBuf[i] == '\002')
 				{
-//					ArLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
-					ArLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
+//					MvrLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
+					MvrLog::log(myInfoLogLevel, "%s::receivePacket() Data found start of new packet...",
 							myName);
 					myPacket.empty();
 					myPacket.setLength(0);
@@ -874,12 +848,12 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 					// if it's the end of the data just go back to the beginning
 					//printf("i=%d, myReadCount = %d, numRead = %d\n",i, myReadCount, numRead);
 
-					ArLog::log(myInfoLogLevel, "%s::receiveTiMPacket() i=%d, myReadCount = %d, numRead = %d",
+					MvrLog::log(myInfoLogLevel, "%s::receiveTiMPacket() i=%d, myReadCount = %d, numRead = %d",
 									myName, i, myReadCount, numRead);
 
 					if (i == myReadCount + numRead - 1)
 					{
-						ArLog::log(myInfoLogLevel, "%s::receiveTiMPacket() Starting again", myName);
+						MvrLog::log(myInfoLogLevel, "%s::receiveTiMPacket() Starting again", myName);
 						myState = STARTING;
 					}
 					// if it isn't move the data up and start again
@@ -895,12 +869,12 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 			//printf("didn't get enough bytes\n");
 			myReadCount += numRead;
 			if (numRead != 0)
-				ArLog::log(myInfoLogLevel, "%s::receivePacket() Got %d bytes (but not end char), up to %d",
+				MvrLog::log(myInfoLogLevel, "%s::receivePacket() Got %d bytes (but not end char), up to %d",
 						myName, numRead, myReadCount);
 		}
 		else
 		{
-			ArLog::log(MvrLog::Terse, "%s::receivePacket() Bad state (%d)",
+			MvrLog::log(MvrLog::Terse, "%s::receivePacket() Bad state (%d)",
 					myName,myState);
 			myState = STARTING;
 		}
@@ -910,11 +884,11 @@ ArLMS1XXPacket *ArLMS1XXPacketReceiver::receiveTiMPacket(unsigned int msWait,
 }
 
 
-MVREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
+MVREXPORT MvrLMS1XX::MvrLMS1XX(int laserNumber,
 		const char *name, LaserModel laserModel) :
-		ArLaser(laserNumber, name, 20000),
-		mySensorInterpTask(this, &ArLMS1XX::sensorInterp),
-		myAriaExitCB(this, &ArLMS1XX::disconnect)
+		MvrLaser(laserNumber, name, 20000),
+		mySensorInterpTask(this, &MvrLMS1XX::sensorInterp),
+		myMvriaExitCB(this, &MvrLMS1XX::disconnect)
 {
 
 	myLaserModel = laserModel;
@@ -925,9 +899,9 @@ MVREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
     myLaserModelFamily = TiM;
 
 	clear();
-	myRawReadings = new std::list<ArSensorReading *>;
+	myRawReadings = new std::list<MvrSensorReading *>;
 
-	Aria::addExitCallback(&myAriaExitCB, -10);
+	Mvria::addExitCallback(&myMvriaExitCB, -10);
 
 	setInfoLogLevel(MvrLog::Normal);
 
@@ -1098,14 +1072,14 @@ MVREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
   case MvrLMS1XX::LMS5XX:
 		setCurrentDrawingData(
 				new MvrDrawingData("polyDots",
-						ArColor(255, 20, 147),
+						MvrColor(255, 20, 147),
 						80,  // mm diameter of dots
 						75), // layer above sonar
 						true);
 
 		setCumulativeDrawingData(
 				new MvrDrawingData("polyDots",
-						ArColor(128, 128, 0),
+						MvrColor(128, 128, 0),
 						100, // mm diameter of dots
 						60), // layer below current range devices
 						true);
@@ -1116,14 +1090,14 @@ MVREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
 		// need to make different default dots for TiMs, 1xx, etc.
 		setCurrentDrawingData(
 				new MvrDrawingData("polyDots",
-						ArColor(0, 0, 255),
+						MvrColor(0, 0, 255),
 						80,  // mm diameter of dots
 						75), // layer above sonar
 						true);
 
 		setCumulativeDrawingData(
 				new MvrDrawingData("polyDots",
-						ArColor(125, 125, 125),
+						MvrColor(125, 125, 125),
 						100, // mm diameter of dots
 						60), // layer below current range devices
 						true);
@@ -1134,7 +1108,7 @@ MVREXPORT MvrLMS1XX::ArLMS1XX(int laserNumber,
 
 MVREXPORT MvrLMS1XX::~MvrLMS1XX()
 {
-	Aria::remExitCallback(&myAriaExitCB);
+	Mvria::remExitCallback(&myMvriaExitCB);
 	if (myRobot != NULL)
 	{
 		myRobot->remRangeDevice(this);
@@ -1143,7 +1117,7 @@ MVREXPORT MvrLMS1XX::~MvrLMS1XX()
 	}
 	if (myRawReadings != NULL)
 	{
-		ArUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
+		MvrUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
 		myRawReadings->clear();
 		delete myRawReadings;
 		myRawReadings = NULL;
@@ -1189,9 +1163,9 @@ MVREXPORT void MvrLMS1XX::laserSetName(const char *name)
 	myConnMutex.setLogNameVar("%s::myConnMutex", getName());
 	myPacketsMutex.setLogNameVar("%s::myPacketsMutex", getName());
 	myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-	myAriaExitCB.setNameVar("%s::exitCallback", getName());
+	myMvriaExitCB.setNameVar("%s::exitCallback", getName());
 
-	ArLaser::laserSetName(getName());
+	MvrLaser::laserSetName(getName());
 }
 
 MVREXPORT void MvrLMS1XX::setRobot(MvrRobot *robot)
@@ -1208,7 +1182,7 @@ MVREXPORT void MvrLMS1XX::setRobot(MvrRobot *robot)
 		//else
 		//	myRobot->addSensorInterpTask("lms1XX", 90, &mySensorInterpTask);
 	}
-	ArLaser::setRobot(robot);
+	MvrLaser::setRobot(robot);
 }
 
 
@@ -1226,7 +1200,7 @@ MVREXPORT bool MvrLMS1XX::disconnect(void)
 	if (!isConnected())
 		return true;
 
-	ArLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
+	MvrLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
 
 	laserDisconnectNormally();
 	return true;
@@ -1242,22 +1216,22 @@ void MvrLMS1XX::failedToConnect(void)
 
 void MvrLMS1XX::sensorInterp (void)
 {
-	ArLMS1XXPacket *packet;
-	ArTime startTime;
+	MvrLMS1XXPacket *packet;
+	MvrTime startTime;
 	bool printing = false;
 	//bool printing = true;
 
 	while (1) {
-		//ArTime packetMutexTime;
+		//MvrTime packetMutexTime;
 		myPacketsMutex.lock();
-		//ArLog::log(MvrLog::Normal, "%s: lock took = %ld",
+		//MvrLog::log(MvrLog::Normal, "%s: lock took = %ld",
 		//getName(), packetMutexTime.mSecSince());
 
 		if (myPackets.empty()) {
 			myPacketsMutex.unlock();
 			/*
 			if (printing)
-			ArLog::log(MvrLog::Normal, "%s: Function took = %ld",
+			MvrLog::log(MvrLog::Normal, "%s: Function took = %ld",
 			 getName(), startTime.mSecSince());
 			*/
 			return;
@@ -1270,7 +1244,7 @@ void MvrLMS1XX::sensorInterp (void)
 		// the first is processing, but that's fine
 		packet = myPackets.back();
 		myPackets.pop_back();
-		ArUtil::deleteSet (myPackets.begin(), myPackets.end());
+		MvrUtil::deleteSet (myPackets.begin(), myPackets.end());
 		myPackets.clear();
 		myPacketsMutex.unlock();
 		// if its not a reading packet just skip it
@@ -1282,14 +1256,14 @@ void MvrLMS1XX::sensorInterp (void)
 		}
 
 		//set up the times and poses
-		ArTime packetRecvTime;
+		MvrTime packetRecvTime;
 		/*
 		// PS 9/1/11 - put this down below and use received scan freq to caculate
 		// this value should be found more empirically... but we used 1/75
 		//hz for the lms2xx and it was fine, so here we'll use 1/50 hz for now
 		// MPL 9/26/11 moved the rest of it below since we must correct the time before finding the pose
 		if (!time.addMSec(-20)) {
-		ArLog::log(MvrLog::Normal,
+		MvrLog::log(MvrLog::Normal,
 		"%s::sensorInterp() error adding msecs (-20)",getName());
 		}
 		if (myRobot == NULL || !myRobot->isConnected())
@@ -1301,11 +1275,11 @@ void MvrLMS1XX::sensorInterp (void)
 		(retEncoder =
 		myRobot->getEncoderPoseInterpPosition(time, &encoderPose)) < 0)
 		{
-		ArLog::log(MvrLog::Normal, "%s::sensorInterp() reading too old to process", getName());
+		MvrLog::log(MvrLog::Normal, "%s::sensorInterp() reading too old to process", getName());
 		delete packet;
 		continue;
 		}
-		ArTransform transform;
+		MvrTransform transform;
 		transform.setTransform(pose);
 		*/
 		unsigned int counter = 0;
@@ -1317,7 +1291,7 @@ void MvrLMS1XX::sensorInterp (void)
 		int dist;
 		int refl;
 		//int onStep;
-		ArSensorReading *reading;
+		MvrSensorReading *reading;
 		// read the extra stuff
 		myVersionNumber = packet->bufToUByte2(); // first value after LMDscandata
 		myDeviceNumber = packet->bufToUByte2();
@@ -1343,7 +1317,7 @@ void MvrLMS1XX::sensorInterp (void)
 
 
 		if (myDeviceStatus1 != 0 || myDeviceStatus2 != 0)
-			ArLog::log (myLogLevel, "%s::sensorInterp() DeviceStatus %d %d",
+			MvrLog::log (myLogLevel, "%s::sensorInterp() DeviceStatus %d %d",
 			            getName(), myDeviceStatus1, myDeviceStatus2);
 
 
@@ -1351,7 +1325,7 @@ void MvrLMS1XX::sensorInterp (void)
 /*
 		if (myLaserModelFamily == TiM) {
 			if (!validateCheckSum(packet)) {
-				ArLog::log (MvrLog::Normal, "%s: Warning: Bad checksum... skipping this packet",
+				MvrLog::log (MvrLog::Normal, "%s: Warning: Bad checksum... skipping this packet",
 				            getName());
 
 				delete packet;
@@ -1362,11 +1336,11 @@ void MvrLMS1XX::sensorInterp (void)
 		}
 */
 
-		ArTime time = packet->getTimeReceived();
-		ArPose pose;
+		MvrTime time = packet->getTimeReceived();
+		MvrPose pose;
 		int ret;
 		int retEncoder;
-		ArPose encoderPose;
+		MvrPose encoderPose;
 
 		// PS 9/1/11 - cacl freq from input
 
@@ -1384,11 +1358,11 @@ void MvrLMS1XX::sensorInterp (void)
       freq = 1000.0/ ((double)myScanningFreq/100.0);
     }
 
-		//ArLog::log(MvrLog::Normal,
+		//MvrLog::log(MvrLog::Normal,
 		//	"%s::sensorInterp() freq = %d inputted freq = %d",getName(),freq,myScanningFreq);
 
 		if (!time.addMSec (-freq)) {
-			ArLog::log (MvrLog::Normal,
+			MvrLog::log (MvrLog::Normal,
 			            "%s::sensorInterp() error adding msecs (-%d)",getName(), freq);
 		}
 
@@ -1398,14 +1372,14 @@ void MvrLMS1XX::sensorInterp (void)
 		} else if ( (ret = myRobot->getPoseInterpPosition (time, &pose)) < 0 ||
 		            (retEncoder =
 		               myRobot->getEncoderPoseInterpPosition (time, &encoderPose)) < 0) {
-			ArLog::log (MvrLog::Normal, "%s::sensorInterp() reading too old to process", getName());
+			MvrLog::log (MvrLog::Normal, "%s::sensorInterp() reading too old to process", getName());
 			delete packet;
 			unlockDevice();
 			myDataMutex.unlock();
 			continue;
 		}
 
-		ArTransform transform;
+		MvrTransform transform;
 		transform.setTransform (pose);
 		/*
 		  printf("Received: %s %s ver %d devNum %d serNum %d scan %d sf %d mf %d\n",
@@ -1417,7 +1391,7 @@ void MvrLMS1XX::sensorInterp (void)
 		//printf("\tencoders %d\n", myNumberEncoders);
 
 		if (myNumberEncoders > 0)
-			ArLog::log (myLogLevel, "%s::sensorInterp() Encoders %d", getName(), myNumberEncoders);
+			MvrLog::log (myLogLevel, "%s::sensorInterp() Encoders %d", getName(), myNumberEncoders);
 
 		for (i = 0; i < myNumberEncoders; i++) {
 			packet->bufToUByte4();
@@ -1435,7 +1409,7 @@ void MvrLMS1XX::sensorInterp (void)
 
 
 		if (myNumChans16Bit > 1)
-			ArLog::log (myLogLevel, "%s::sensorInterp() NumChans16Bit %d", getName(), myNumChans16Bit);
+			MvrLog::log (myLogLevel, "%s::sensorInterp() NumChans16Bit %d", getName(), myNumChans16Bit);
 
 		char eachChanMeasured[1024];
 		int eachScalingFactor;
@@ -1443,7 +1417,7 @@ void MvrLMS1XX::sensorInterp (void)
 		double eachStartingAngle;
 		double eachAngularStepWidth;
 		int eachNumberData;
-		std::list<ArSensorReading *>::iterator it;
+		std::list<MvrSensorReading *>::iterator it;
 		double atDeg; // angle of reading transformed according to sensorPoseTh parameter
     double atDegLocal = 0; // angle of reading local to laser
 		int onReading;
@@ -1466,13 +1440,13 @@ void MvrLMS1XX::sensorInterp (void)
 				delete packet;
 				unlockDevice();
 				myDataMutex.unlock();
-				ArLog::log (MvrLog::Normal,
+				MvrLog::log (MvrLog::Normal,
 				            "%s::sensorInterp(): Could not process channel %s",
 				            getName(), eachChanMeasured);
 				continue;
 			}
 			if (printing)
-				ArLog::log (MvrLog::Normal, "%s: Processing 16bit %s (%d %d)",
+				MvrLog::log (MvrLog::Normal, "%s: Processing 16bit %s (%d %d)",
 				            getName(), eachChanMeasured,
 				            measuringDistance, measuringReflectance);
 
@@ -1487,7 +1461,7 @@ void MvrLMS1XX::sensorInterp (void)
 			eachAngularStepWidth = packet->bufToUByte2() / 10000.0; // angular distance between each reading
 			eachNumberData = packet->bufToUByte2(); // number of readings in this set
 			/*
-			ArLog::log(MvrLog::Terse, "%s: %s start %.1f step %.2f numReadings %d",
+			MvrLog::log(MvrLog::Terse, "%s: %s start %.1f step %.2f numReadings %d",
 			getName(), eachChanMeasured,
 			eachStartingAngle, eachAngularStepWidth, eachNumberData);
 			*/
@@ -1504,7 +1478,7 @@ void MvrLMS1XX::sensorInterp (void)
 					myRawReadings->push_back (new MvrSensorReading);
 
 			if (eachNumberData > myRawReadings->size()) {
-				ArLog::log (MvrLog::Terse, "%s::sensorInterp() Bad data, in theory have %d readings but can only have %d... skipping this packet\n",
+				MvrLog::log (MvrLog::Terse, "%s::sensorInterp() Bad data, in theory have %d readings but can only have %d... skipping this packet\n",
 				            getName(), myRawReadings->size(), eachNumberData);
 				//printf("%s\n", packet->getBuf());
 				delete packet;
@@ -1539,7 +1513,7 @@ void MvrLMS1XX::sensorInterp (void)
 				  start = MvrMath::subAngle(mySensorPose.getTh(), ( (eachNumberData - 1) * eachAngularStepWidth) / 2.0);
 					increment = eachAngularStepWidth;
 					/*
-						ArLog::log(MvrLog::Normal,
+						MvrLog::log(MvrLog::Normal,
 						"! start %g sensorPose %g eachstartingangle %g eachangularstepwidth %g eachNumberData %d",
 						start, mySensorPose.getTh(), eachStartingAngle, eachAngularStepWidth, eachNumberData);
 					*/
@@ -1606,7 +1580,7 @@ void MvrLMS1XX::sensorInterp (void)
 					if (dist < mindist) {
             // too close to be valid, ignore
 						ignore = true;
-						// set this to greater than max range, so that some ARAM
+						// set this to greater than max range, so that some MVRAM
 						// features work
 						dist = getMaxRange() + 1;
 					}
@@ -1630,7 +1604,7 @@ void MvrLMS1XX::sensorInterp (void)
 					refl = packet->bufToUByte2();
 					if (refl > 254 * 255) {
 						reading->setExtraInt (refl/255);
-						//ArLog::log (MvrLog::Normal, "%s: refl at %g of %d (raw %d)", getName(), atDeg, refl/255, refl);
+						//MvrLog::log (MvrLog::Normal, "%s: refl at %g of %d (raw %d)", getName(), atDeg, refl/255, refl);
 					}
 					// if the bit is dazzled we could set it to be ignored, but
 					// that'd be some later day
@@ -1639,7 +1613,7 @@ void MvrLMS1XX::sensorInterp (void)
 				}
 			}
 			/*
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 			"Received: %s %s scan %d numReadings %d",
 			packet->getCommandType(), packet->getCommandName(),
 			myScanCounter, onReading);
@@ -1654,7 +1628,7 @@ void MvrLMS1XX::sensorInterp (void)
 		// read the 8 bit channels, that's just reflectance for now
 		myNumChans8Bit = packet->bufToUByte2();
 		//myLogLevel,
-		//ArLog::log(MvrLog::Normal, "%s::sensorInterp() NumChans8Bit %d", getName(), myNumChans8Bit);
+		//MvrLog::log(MvrLog::Normal, "%s::sensorInterp() NumChans8Bit %d", getName(), myNumChans8Bit);
 		char eachChanMeasured8Bit[1024];
 
 		for (i = 0; i < myNumChans8Bit; i++) {
@@ -1688,14 +1662,14 @@ void MvrLMS1XX::sensorInterp (void)
 			if (myLaserModelFamily != TiM) {
 
 				if (strcasecmp (eachChanMeasured8Bit, "RSSI1") != 0) {
-					ArLog::log (MvrLog::Normal, "%s: Got unprocessable 8bit of %s", getName(),
+					MvrLog::log (MvrLog::Normal, "%s: Got unprocessable 8bit of %s", getName(),
 											eachChanMeasured8Bit);
 					continue;
 				}
 			}
 
 			if (printing)
-				ArLog::log (MvrLog::Normal, "%s: Processing 8bit %s", getName(),
+				MvrLog::log (MvrLog::Normal, "%s: Processing 8bit %s", getName(),
 				            eachChanMeasured8Bit);
 
 			for (atDeg = start,
@@ -1747,11 +1721,11 @@ void MvrLMS1XX::sensorInterp (void)
 			}
 		}
 		myDataMutex.unlock();
-		//ArTime test;
+		//MvrTime test;
 		laserProcessReadings();
 		unlockDevice();
 		if (printing)
-			ArLog::log (MvrLog::Normal, "%s: Packet took = %ld",
+			MvrLog::log (MvrLog::Normal, "%s: Packet took = %ld",
 			            getName(), packetRecvTime.mSecSince());
 		delete packet;
 	}
@@ -1762,10 +1736,10 @@ void MvrLMS1XX::sensorInterp (void)
 	*/
 }
 
-MVREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
-		ArTime timeout, MvrLMS1XXPacket *sendPacket, const char *recvName)
+MVREXPORT MvrLMS1XXPacket *MvrLMS1XX::sendAndRecv(
+		MvrTime timeout, MvrLMS1XXPacket *sendPacket, const char *recvName)
 {
-	ArLMS1XXPacket *packet;
+	MvrLMS1XXPacket *packet;
 
 
 
@@ -1791,7 +1765,7 @@ MVREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
 			sprintf(&x[idx++], "%c",(char *)sendPacket->getBuf()[i]);
 	}
 
-	ArLog::log(MvrLog::Terse,
+	MvrLog::log(MvrLog::Terse,
 			"%s::sendAndRecv() Buffer = %s", getName(), x);
 
     ); // end IFDEBUG
@@ -1802,7 +1776,7 @@ MVREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
 		// just ask for data
 		if ((myConn->write(sendPacket->getBuf(), sendPacket->getLength())) == -1)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::sendAndRecv() Could not send %s to laser", getName(), recvName);
 			return NULL;
 		}
@@ -1815,7 +1789,7 @@ MVREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
 			// PS 9/1/11 - need to make sure we have a packet
 			else if (packet != NULL)
 			{
-				ArLog::log(MvrLog::Normal, "%s::sendAndRecv() received %s %s, was expecting %s",
+				MvrLog::log(MvrLog::Normal, "%s::sendAndRecv() received %s %s, was expecting %s",
 						getName(),
 						packet->getCommandType(),
 						packet->getCommandName(),
@@ -1826,7 +1800,7 @@ MVREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
 			}
 			else
 			{
-				ArLog::log(MvrLog::Normal, "%s::sendAndRecv() call to receivePacket() failed  was expecting %s",
+				MvrLog::log(MvrLog::Normal, "%s::sendAndRecv() call to receivePacket() failed  was expecting %s",
 						getName(),
 						recvName);
 
@@ -1835,7 +1809,7 @@ MVREXPORT MvrLMS1XXPacket *ArLMS1XX::sendAndRecv(
 		}
 	}
 
-	ArLog::log(MvrLog::Normal,
+	MvrLog::log(MvrLog::Normal,
 			"%s::sendAndRecv() Did not get %s ack",
 			getName(), recvName);
 
@@ -1853,7 +1827,7 @@ MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 	myConnMutex.lock();
 	if (myConn == NULL)
 	{
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::blockingConnect() Could not connect because there is no connection defined",
 				getName());
 		myConnMutex.unlock();
@@ -1863,7 +1837,7 @@ MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 
   if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN)
 	{
-		if ((conn = dynamic_cast<ArSerialConnection *>(myConn)) != NULL)
+		if ((conn = dynamic_cast<MvrSerialConnection *>(myConn)) != NULL)
 		{
 			conn->setBaud(atoi(getStartingBaudChoice()));
       MvrLog::log(MvrLog::Normal, "%s: Will use serial connection %s at %d baud.", getName(), conn->getPort(), conn->getBaud());
@@ -1875,7 +1849,7 @@ MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 	if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN &&
 			!myConn->openSimple())
 	{
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::blockingConnect() Could not connect because the connection was not open and could not open it as %s %s", getName(), myConn->getPortType(), myConn->getPortName());
 		myConnMutex.unlock();
 		failedToConnect();
@@ -1898,7 +1872,7 @@ MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 		// powered off, we give it time
 		// to come up
 		case MvrLMS1XX::TiM3XX:
-			//ArUtil::sleep(10000);
+			//MvrUtil::sleep(10000);
 			myReceiver.setReadTimeout(50);
 		break;
 			
@@ -1919,7 +1893,7 @@ MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 	laserCheckParams();
 
 	int size = (270 / .25 + 1);
-	ArLog::log(myInfoLogLevel, "%s::blockingConnect() Setting current buffer size to %d",
+	MvrLog::log(myInfoLogLevel, "%s::blockingConnect() Setting current buffer size to %d",
 			getName(), size);
 	setCurrentBufferSize(size);
 
@@ -1949,7 +1923,7 @@ MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 	} // end switch laserModel
 
 
-	ArLog::log(MvrLog::Terse,
+	MvrLog::log(MvrLog::Terse,
 			"%s::blockingConnect() Could not connect to laser.", getName());
 	failedToConnect();
 	return false;
@@ -1962,23 +1936,23 @@ MVREXPORT bool MvrLMS1XX::blockingConnect(void)
 MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 {
 
-		ArTime timeDone;
+		MvrTime timeDone;
 		if (myPowerControlled) {
 			if (!timeDone.addMSec(60 * 1000)) {
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() error adding msecs (60 * 1000)");
 			}
 		}
 		else {
 			if (!timeDone.addMSec(30 * 1000)) {
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() error adding msecs (30 * 1000)");
 			}
 		}
 
-		ArLMS1XXPacket *packet;
+		MvrLMS1XXPacket *packet;
 
-		ArLMS1XXPacket sendPacket;
+		MvrLMS1XXPacket sendPacket;
 
 
 		// 1. Log in
@@ -2032,7 +2006,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 		sendPacket.byte4ToBuf(getIncrementChoiceDouble() * 10000); // angle resolution
 		//sendPacket.byte4ToBuf(.25 * 10000); // angle resolution
-		//ArLog::log(MvrLog::Normal,
+		//MvrLog::log(MvrLog::Normal,
 		//		"%s::lms5xxConnect() increment = %d", getName(), getIncrementChoiceDouble());
 
 
@@ -2043,7 +2017,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms5xxConnect() sending setscancfg: %s", getName(),
+		MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending setscancfg: %s", getName(),
 				sendPacket.getBuf());
 
 
@@ -2057,12 +2031,12 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 			if (val == 0)
 			{
-				ArLog::log(myLogLevel, "%s::lms5xxConnect() received setscancfg answer (%d)",
+				MvrLog::log(myLogLevel, "%s::lms5xxConnect() received setscancfg answer (%d)",
 						getName(), val);
 			}
 			else
 			{
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() received wrong status from setscancfg (%d), needs to be 0", getName(), val);
 				failedToConnect();
 				return false;
@@ -2071,7 +2045,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() ::sendAndRecv for send setscancfg failed", getName());
 			failedToConnect();
 			return false;
@@ -2084,18 +2058,18 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		sendPacket.strToBuf("LMPscancfg");
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms5xxConnect() sending scancfg: %s", getName(), sendPacket.getBuf());
+		MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending scancfg: %s", getName(), sendPacket.getBuf());
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "LMPscancfg")) != NULL)
 		{
-			ArLog::log(myLogLevel, "%s::lms5xxConnect() received scancfg answer", getName());
+			MvrLog::log(myLogLevel, "%s::lms5xxConnect() received scancfg answer", getName());
 
 			delete packet;
 			packet = NULL;
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() ::sendAndRecv for send scancfg failed", getName());
 			failedToConnect();
 			return false;
@@ -2123,18 +2097,18 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms5xxConnect() sending setdatetime: %s", getName(), sendPacket.getBuf());
+		MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending setdatetime: %s", getName(), sendPacket.getBuf());
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "LSPsetdatetime")) != NULL)
 		{
-			ArLog::log(myLogLevel, "%s::lms5xxConnect() received setdatetime answer", getName());
+			MvrLog::log(myLogLevel, "%s::lms5xxConnect() received setdatetime answer", getName());
 
 			delete packet;
 			packet = NULL;
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() ::sendAndRecv for send setdatetime failed", getName());
 			failedToConnect();
 			return false;
@@ -2179,18 +2153,18 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms5xxConnect() sending scandatacfg: %s", getName(), sendPacket.getBuf());
+		MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending scandatacfg: %s", getName(), sendPacket.getBuf());
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "LMDscandatacfg")) != NULL)
 		{
-			ArLog::log(myLogLevel, "%s::lms5xxConnect() received scandatacfg answer", getName());
+			MvrLog::log(myLogLevel, "%s::lms5xxConnect() received scandatacfg answer", getName());
 
 			delete packet;
 			packet = NULL;
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() ::sendAndRecv for send scandatacfg failed", getName());
 			failedToConnect();
 			return false;
@@ -2212,21 +2186,21 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms5xxConnect() sending outputRange: %s", getName(),
+		MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending outputRange: %s", getName(),
 				sendPacket.getBuf());
 
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "LMPoutputRange")) != NULL)
 		{
 
-			ArLog::log(myLogLevel, "%s::lms5xxConnect() received outputRange answer", getName());
+			MvrLog::log(myLogLevel, "%s::lms5xxConnect() received outputRange answer", getName());
 			delete packet;
 			packet = NULL;
 
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() ::sendAndRecv for send outputRange failed", getName());
 			failedToConnect();
 			return false;
@@ -2241,21 +2215,21 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 			sendPacket.finalizePacket();
 
-			ArLog::log(myLogLevel, "%s::lms5xxConnect() sending Echo Filter: %s", getName(),
+			MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending Echo Filter: %s", getName(),
 					sendPacket.getBuf());
 
 
 			if ((packet = sendAndRecv(timeDone, &sendPacket, "FREchoFilter")) != NULL)
 			{
 
-				ArLog::log(myLogLevel, "%s::lms5xxConnect() received Echo Filter answer", getName());
+				MvrLog::log(myLogLevel, "%s::lms5xxConnect() received Echo Filter answer", getName());
 				delete packet;
 				packet = NULL;
 
 			}
 			else
 			{
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() ::sendAndRecv for send Echo Filter failed", getName());
 				failedToConnect();
 				return false;
@@ -2267,7 +2241,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		sendPacket.strToBuf("mEEwriteall");
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms5xxConnect() sending writeall: %s", getName(),
+		MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending writeall: %s", getName(),
 				sendPacket.getBuf());
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "mEEwriteall")) != NULL)
@@ -2278,12 +2252,12 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 			packet = NULL;
 			if (val == 1)
 			{
-				ArLog::log(myLogLevel, "%s::lms5xxConnect() received writeall answer (%d)",
+				MvrLog::log(myLogLevel, "%s::lms5xxConnect() received writeall answer (%d)",
 						getName(), val);
 			}
 			else
 			{
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() received wrong status from writeall (%d), needs to be 1", getName(), val);
 				failedToConnect();
 				return false;
@@ -2291,14 +2265,14 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() ::sendAndRecv for send writeall failed", getName());
 			failedToConnect();
 			return false;
 		}
 
         // PS 8/22/11 - try a sleep per SICK because of issues with extra responses
-		ArUtil::sleep(3000);
+		MvrUtil::sleep(3000);
 
 		// Log out
 		sendPacket.empty();
@@ -2306,7 +2280,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		sendPacket.strToBuf("Run");
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms5xxConnect() sending Run: %s", getName(),
+		MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending Run: %s", getName(),
 				sendPacket.getBuf());
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "Run")) != NULL)
@@ -2317,12 +2291,12 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 			packet = NULL;
 			if (val == 1)
 			{
-				ArLog::log(myLogLevel, "%s::lms5xxConnect() received Run answer (%d)",
+				MvrLog::log(myLogLevel, "%s::lms5xxConnect() received Run answer (%d)",
 						getName(), val);
 			}
 			else
 			{
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() received wrong status from Run (%d), needs to be 1", getName(), val);
 				failedToConnect();
 				return false;
@@ -2330,7 +2304,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		}
 		else
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() ::sendAndRecv for send Run failed", getName());
 			failedToConnect();
 			return false;
@@ -2344,9 +2318,9 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		// PS 9/27/11 - loop thru for a 30 sec, then exit
 		//while (1)
 		
-		ArTime loopTimeDone;
+		MvrTime loopTimeDone;
 		if (!loopTimeDone.addMSec(30 * 1000)) {
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() error adding msecs (30 * 1000)");
 		}
 		
@@ -2357,7 +2331,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 			sendPacket.strToBuf("STlms");
 			sendPacket.finalizePacket();
 
-			ArLog::log(myLogLevel, "%s::lms5xxConnect() sending STlms: %s", getName(),
+			MvrLog::log(myLogLevel, "%s::lms5xxConnect() sending STlms: %s", getName(),
 					sendPacket.getBuf());
 
 			if ((packet = sendAndRecv(timeDone, &sendPacket, "STlms")) != NULL)
@@ -2368,13 +2342,13 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 				packet = NULL;
 				if (val == 7)
 				{
-					ArLog::log(myLogLevel, "%s::lms5xxConnect() received STlms answer (%d)",
+					MvrLog::log(myLogLevel, "%s::lms5xxConnect() received STlms answer (%d)",
 							getName(), val);
 					break;
 				}
 				else
 				{
-					ArLog::log(MvrLog::Normal,
+					MvrLog::log(MvrLog::Normal,
 							"%s::lms5xxConnect() wrong state received from STlms answer = (%d), needs to be 7", getName(), val);
 					// PS 9/27/11 - took out call to failedToConnect() as this is not necessary as the laser is 
 					// coming up during this loop and we actually are getting messages from the LMS500
@@ -2384,7 +2358,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 			}
 			else
 			{
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() ::sendAndRecv for send STlms failed", getName());
 				failedToConnect();
 				return false;
@@ -2393,7 +2367,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
         // PS 9/27/11 - fail the connect if we don't get the correct status back in 30 seconds
 		if (loopTimeDone.mSecTo() <= 0) {
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 						"%s::lms5xxConnect() timeout on STlms state changed never received a 7 status", getName());
 			
 			failedToConnect();
@@ -2427,7 +2401,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 				sprintf(&x[idx++], "%c",(char *)sendPacket.getBuf()[i]);
 		}
 
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 				"%s::lms5xxConnect() write Buffer = %s", getName(), x);
 
 		); // end IFDEBUG
@@ -2437,18 +2411,18 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 		// just ask for continuous data
 		if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1)
 		{
-			ArLog::log(MvrLog::Normal,
+			MvrLog::log(MvrLog::Normal,
 					"%s::lms5xxConnect() Could not send %s to laser", getName(), "LMDscandata");
 			failedToConnect();
 			return false;
 		}
 
-    		//ArLog::log(MvrLog::Normal, "Waiting for response...");
+    		//MvrLog::log(MvrLog::Normal, "Waiting for response...");
 		while (timeDone.mSecTo() > 0)
 		{
 			packet = myReceiver.receivePacket(1000);
 
-      			//ArLog::log(MvrLog::Normal, "Got packet %s %s", packet->getCommandType(), packet->getCommandName());
+      			//MvrLog::log(MvrLog::Normal, "Got packet %s %s", packet->getCommandType(), packet->getCommandName());
 
 			// PS 9/1/11 - fix a bug where we were just looking for the sSN LMDscandata
 			// but actually the LMS sends back a sEA LMDscandata first, so we need to
@@ -2473,7 +2447,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 					myIsConnected = true;
 					myTryingToConnect = false;
 					unlockDevice();
-					ArLog::log(MvrLog::Normal, "%s: Connected to laser", getName());
+					MvrLog::log(MvrLog::Normal, "%s: Connected to laser", getName());
 					laserConnect();
 					return true;
 				}
@@ -2482,7 +2456,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 
 					if (packet != NULL)
 					{
-						ArLog::log(MvrLog::Normal, "%s::lms5xxConnect() received %s %s (%d long) was expecting %s", getName(),
+						MvrLog::log(MvrLog::Normal, "%s::lms5xxConnect() received %s %s (%d long) was expecting %s", getName(),
 								packet->getCommandType(), packet->getCommandName(),
 								packet->getLength(),
 								"sSN LMDscandata");
@@ -2491,7 +2465,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 					}
 					else
 					{
-						ArLog::log(MvrLog::Normal, "%s::lms5xxConnect() call to receivePacket() failed was expecting %s",
+						MvrLog::log(MvrLog::Normal, "%s::lms5xxConnect() call to receivePacket() failed was expecting %s",
 								getName(),
 								"sSN LMDscandata");
 					}
@@ -2501,7 +2475,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 			{
 				if (packet != NULL)
 				{
-					ArLog::log(MvrLog::Normal, "%s::lms5xxConnect() received %s %s (%d long) was expecting %s", getName(),
+					MvrLog::log(MvrLog::Normal, "%s::lms5xxConnect() received %s %s (%d long) was expecting %s", getName(),
 							packet->getCommandType(), packet->getCommandName(),
 							packet->getLength(),
 							"sEA LMDscandata");
@@ -2510,7 +2484,7 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 				}
 				else
 				{
-					ArLog::log(MvrLog::Normal, "%s::lms5xxConnect() call to receivePacket() failed was expecting %s",
+					MvrLog::log(MvrLog::Normal, "%s::lms5xxConnect() call to receivePacket() failed was expecting %s",
 							getName(),
 							"sEA LMDscandata");
 				}
@@ -2524,23 +2498,23 @@ MVREXPORT bool MvrLMS1XX::lms5xxConnect(void)
 MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 {
 
-		ArTime timeDone;
+		MvrTime timeDone;
 		if (myPowerControlled) {
 			if (!timeDone.addMSec(60 * 1000)) {
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms1xxConnect() error adding msecs (60 * 1000)");
 			}
 		}
 		else {
 			if (!timeDone.addMSec(30 * 1000)) {
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::lms1xxConnect() error adding msecs (30 * 1000)");
 			}
 		}
 
-		ArLMS1XXPacket *packet;
+		MvrLMS1XXPacket *packet;
 
-		ArLMS1XXPacket sendPacket;
+		MvrLMS1XXPacket sendPacket;
 
 		sendPacket.empty();
 		sendPacket.strToBuf("sMN");
@@ -2559,12 +2533,12 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 
 			if (val == 1)
 			{
-				ArLog::log(myLogLevel, "%s::lms1xxConnect() Changed access mode (%d)",
+				MvrLog::log(myLogLevel, "%s::lms1xxConnect() Changed access mode (%d)",
 						getName(), val);
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::lms1xxConnect() Could not change access mode (%d)", getName(), val);
 				failedToConnect();
 				return false;
@@ -2588,7 +2562,7 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 
 		sendPacket.finalizePacket();
 
-		ArLog::log(MvrLog::Verbose, "%s::lms1xxConnect() mLMPsetscancfg: %s", getName(),
+		MvrLog::log(MvrLog::Verbose, "%s::lms1xxConnect() mLMPsetscancfg: %s", getName(),
 				sendPacket.getBuf());
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "mLMPsetscancfg")) != NULL)
@@ -2601,7 +2575,7 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 
 			if (val == 0)
 			{
-				ArLog::log(myLogLevel, "%s::lms1xxConnect() mLMPsetscancfg succeeded (%d)",
+				MvrLog::log(myLogLevel, "%s::lms1xxConnect() mLMPsetscancfg succeeded (%d)",
 						getName(), val);
 			}
 			else
@@ -2609,23 +2583,23 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
         // See LMS100 operating instruction manual section 10.2.9 for
         // mLMPsetscancfg answer packet documentation
 				if(val == 1)
-					ArLog::log(MvrLog::Terse, 
+					MvrLog::log(MvrLog::Terse, 
             "%s::lms1xxConnect() mLMPsetscancfg failed with error %d: Invalid scanning frequency (%d).", 
             getName(), val, 5000);
 				else if(val == 2)
-					ArLog::log(MvrLog::Terse, 
+					MvrLog::log(MvrLog::Terse, 
           "%s::lms1xxConnect() mLMPsetscancfg failed with error %d: Invalid resolution (increment) (%.2f degrees, sent value %d to laser).", 
           getName(), val, getIncrementChoiceDouble(), (int)(getIncrementChoiceDouble()*10000));
 				else if(val == 3)
-					ArLog::log(MvrLog::Terse, 
+					MvrLog::log(MvrLog::Terse, 
             "%s::lms1xxConnect() mLMPsetscancfg failed with error %d: Invalid scanning frequency (%d) AND invalid resolution (increment) (%.2f degrees, sent value %d to laser).", 
             getName(), val, 5000, getIncrementChoiceDouble(), (int)(getIncrementChoiceDouble()*10000));
 				else if(val == 4)
-					ArLog::log(MvrLog::Terse, 
+					MvrLog::log(MvrLog::Terse, 
             "%s:lms1xxConnect() mLMPsetscancfg failed with error %d: Invalid scan area (Sent %d %d to laser)", 
             getName(), val, -45*10000, 225*10000);
 				else
-					ArLog::log(MvrLog::Terse, 
+					MvrLog::log(MvrLog::Terse, 
             "%s:lms1xxConnect() mLMPsetscancfg failed with error %d: Unknown error", 
             getName(), val);
 
@@ -2658,11 +2632,11 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
     sendPacket.uByteToBuf(1); // send all scans
 		sendPacket.finalizePacket();
 
-		ArLog::log(myLogLevel, "%s::lms1xxConnect() scandatacfg: %s", getName(), sendPacket.getBuf());
+		MvrLog::log(myLogLevel, "%s::lms1xxConnect() scandatacfg: %s", getName(), sendPacket.getBuf());
 
 		if ((packet = sendAndRecv(timeDone, &sendPacket, "LMDscandatacfg")) != NULL)
 		{
-			ArLog::log(myLogLevel, "%s::lms1xxConnect() scandatacfg succeeded", getName());
+			MvrLog::log(myLogLevel, "%s::lms1xxConnect() scandatacfg succeeded", getName());
 
 			delete packet;
 			packet = NULL;
@@ -2686,12 +2660,12 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 			packet = NULL;
 			if (val == 1)
 			{
-				ArLog::log(myLogLevel, "%s::lms1xxConnect() Run succeeded (%d)",
+				MvrLog::log(myLogLevel, "%s::lms1xxConnect() Run succeeded (%d)",
 						getName(), val);
 			}
 			else
 			{
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 						"%s::lms1xxConnect() Could not run (%d)", getName(), val);
 				failedToConnect();
 				return false;
@@ -2738,12 +2712,12 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 		// just ask for continuous data
 		if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::lms1xxConnect() Could not send %s to laser", getName(), "LMDscandata");
 			failedToConnect();
 			return false;
 		}
-		ArTime t;
+		MvrTime t;
 		while (timeDone.mSecTo() > 0)
 		{
 			packet = myReceiver.receivePacket(1000);
@@ -2751,7 +2725,7 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 					strcasecmp(packet->getCommandType(), "sSN") == 0 &&
 					strcasecmp(packet->getCommandName(), "LMDscandata") == 0)
 			{
-				ArLog::log(MvrLog::Normal, "%s::lms1xxConnect() Took %f sec to get sSN LMDscandata packet from laser.\n", getName(), (double)(t.mSecSince())/1000.0);
+				MvrLog::log(MvrLog::Normal, "%s::lms1xxConnect() Took %f sec to get sSN LMDscandata packet from laser.\n", getName(), (double)(t.mSecSince())/1000.0);
 				delete packet;
 				packet = NULL;
 
@@ -2759,13 +2733,13 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 				myIsConnected = true;
 				myTryingToConnect = false;
 				unlockDevice();
-				ArLog::log(MvrLog::Normal, "%s::lms1xxConnect() Connected to laser", getName());
+				MvrLog::log(MvrLog::Normal, "%s::lms1xxConnect() Connected to laser", getName());
 				laserConnect();
 				return true;
 			}
 			else if (packet != NULL)
 			{
-				ArLog::log(MvrLog::Normal, "%s::lms1xxConnect() Got %s %s (%d long) while waiting for sSN LMDscandata", getName(),
+				MvrLog::log(MvrLog::Normal, "%s::lms1xxConnect() Got %s %s (%d long) while waiting for sSN LMDscandata", getName(),
 						packet->getCommandType(), packet->getCommandName(),
 						packet->getLength());
 				delete packet;
@@ -2779,23 +2753,23 @@ MVREXPORT bool MvrLMS1XX::lms1xxConnect(void)
 MVREXPORT bool MvrLMS1XX::timConnect(void)
 {
 
-		ArTime timeDone;
+		MvrTime timeDone;
 		if (myPowerControlled) {
 			if (!timeDone.addMSec(60 * 1000)) {
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::timConnect() error adding msecs (60 * 1000)");
 			}
 		}
 		else {
 			if (!timeDone.addMSec(30 * 1000)) {
-				ArLog::log(MvrLog::Normal,
+				MvrLog::log(MvrLog::Normal,
 						"%s::timConnect() error adding msecs (30 * 1000)");
 			}
 		}
 
-		ArLMS1XXPacket *packet;
+		MvrLMS1XXPacket *packet;
 
-		ArLMS1XXPacket sendPacket;
+		MvrLMS1XXPacket sendPacket;
 
 		// first send a stop
 
@@ -2808,18 +2782,18 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 		//printf("(%s)\n", sendPacket.getBuf());
 		// just ask for continuous data
 
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 					"%s::timConnect() Sending (STOP) sEN LMDscandata ", getName());
 
 		if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::timConnect() Could not send sEN LMDscandata to laser", getName());
 			failedToConnect();
 			return false;
 		}
 
-		ArUtil::sleep(1000);
+		MvrUtil::sleep(1000);
 
 		// now look for 1 packet
 
@@ -2831,12 +2805,12 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 		//printf("(%s)\n", sendPacket.getBuf());
 		// just ask for continuous data
 
-		ArLog::log(MvrLog::Terse,
+		MvrLog::log(MvrLog::Terse,
 					"%s::timConnect() Sending (Only one Telegram) sRN LMDscandata ", getName());
 
 		if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1)
 		{
-			ArLog::log(MvrLog::Terse,
+			MvrLog::log(MvrLog::Terse,
 					"%s::timConnect() Could not send sRN LMDscandata to laser", getName());
 			failedToConnect();
 			return false;
@@ -2846,7 +2820,7 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
     MvrLog::log(MvrLog::Normal, "%s::timConnect: Waiting for response...", getName());
 
 		// now get the response to the one telegram
-		ArTime t;
+		MvrTime t;
 		while (timeDone.mSecTo() > 0)
 		{
 
@@ -2860,7 +2834,7 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 					strcasecmp(packet->getCommandType(), "sRA") == 0 &&
 					strcasecmp(packet->getCommandName(), "LMDscandata") == 0)
 			{
-				ArLog::log(MvrLog::Normal, "%s::timConnect() Took %f sec to get sRA LMDscandata packet from laser.", getName(), (double)(t.mSecSince())/1000.0);
+				MvrLog::log(MvrLog::Normal, "%s::timConnect() Took %f sec to get sRA LMDscandata packet from laser.", getName(), (double)(t.mSecSince())/1000.0);
 				delete packet;
 				packet = NULL;
 
@@ -2872,12 +2846,12 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 				sendPacket.uByteToBuf(1);
 				sendPacket.finalizePacket();
 
-				ArLog::log(MvrLog::Terse,
+				MvrLog::log(MvrLog::Terse,
 							"%s::timConnect() Sending (send permanent) sEN LMDscandata ", getName());
 
 				if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1)
 				{
-					ArLog::log(MvrLog::Terse,
+					MvrLog::log(MvrLog::Terse,
 							"%s::timConnect() Could not send sEN LMDscandata to laser", getName());
 					failedToConnect();
 					return false;
@@ -2889,7 +2863,7 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 					strcasecmp(packet->getCommandType(), "sEA") == 0 &&
 					strcasecmp(packet->getCommandName(), "LMDscandata") == 0)
 				{
-					ArLog::log(MvrLog::Normal, "%s::timConnect() Took %f sec to get sEA LMDscandata packet from laser.", getName(), (double)(t.mSecSince())/1000.0);
+					MvrLog::log(MvrLog::Normal, "%s::timConnect() Took %f sec to get sEA LMDscandata packet from laser.", getName(), (double)(t.mSecSince())/1000.0);
 					delete packet;
 					packet = NULL;
 
@@ -2897,13 +2871,13 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 					myIsConnected = true;
 					myTryingToConnect = false;
 					unlockDevice();
-					ArLog::log(MvrLog::Normal, "%s::timConnect() Connected to laser", getName());
+					MvrLog::log(MvrLog::Normal, "%s::timConnect() Connected to laser", getName());
 					laserConnect();
 					return true;
 				}
 				else
 				{
-					ArLog::log(MvrLog::Terse,
+					MvrLog::log(MvrLog::Terse,
 							"%s::timConnect() Could not get sEA LMDscandata from laser", getName());
 					failedToConnect();
 					return false;
@@ -2911,7 +2885,7 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 			}
 			else if (packet != NULL)
 			{
-				ArLog::log(MvrLog::Normal, "%s::timConnect() Got unexpected %s %s (%d long) while waiting for sRA LMDscandata", getName(),
+				MvrLog::log(MvrLog::Normal, "%s::timConnect() Got unexpected %s %s (%d long) while waiting for sRA LMDscandata", getName(),
 						packet->getCommandType(), packet->getCommandName(),
 						packet->getLength());
 				delete packet;
@@ -2920,14 +2894,14 @@ MVREXPORT bool MvrLMS1XX::timConnect(void)
 			}
 			else if (packet == NULL) {
 				if ((myConn->write(sendPacket.getBuf(), sendPacket.getLength())) == -1) {
-					ArLog::log(MvrLog::Terse,
+					MvrLog::log(MvrLog::Terse,
 							"%s::timConnect() Could not send sRN LMDscandata to laser", getName());
 					failedToConnect();
 					return false;
 				}
 			}
 		}
-	ArLog::log(MvrLog::Normal,
+	MvrLog::log(MvrLog::Normal,
 						"%s::timConnect() Timout waiting for initial packet from TiM - failing connect", getName());
 	failedToConnect();
 	return false;
@@ -3013,9 +2987,9 @@ MVREXPORT void * MvrLMS1XX::runThread(void *arg)
     
     /// MPL no sleep here so it'll get back into that while as soon as it can
 
-    //ArUtil::sleep(1);
-    //ArUtil::sleep(2000);
-    //ArUtil::sleep(500);
+    //MvrUtil::sleep(1);
+    //MvrUtil::sleep(2000);
+    //MvrUtil::sleep(500);
   }
   return NULL;
 }
@@ -3039,7 +3013,7 @@ bool MvrLMS1XX::validateCheckSum(MvrLMS1XXPacket *packet)
   str[maxcopylen-1] = '\0';
 
   IFDEBUG(
-		ArLog::log(MvrLog::Normal,
+		MvrLog::log(MvrLog::Normal,
 		 "%s::validateCheckSum() packet contains %s", getName(), str);
   )
   

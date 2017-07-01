@@ -1,40 +1,14 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 #include "Mvria.h"
 #include "MvrSocket.h"
 #include "MvrSignalHandler.h"
 #include "MvrKeyHandler.h"
 #include "MvrJoyHandler.h"
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 #include "MvrModuleLoader.h"
 #include "MvrRobotJoyHandler.h"
 #include "MvrSystemStatus.h"
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 // to register PTZ types with PTZConnector:
 #include "MvrPTZConnector.h"
@@ -45,54 +19,54 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 
 
-ArGlobalFunctor1<int> Mvria::ourSignalHandlerCB(&Aria::signalHandlerCB);
-ArMutex Mvria::ourShuttingDownMutex;
+MvrGlobalFunctor1<int> Mvria::ourSignalHandlerCB(&Mvria::signalHandlerCB);
+MvrMutex Mvria::ourShuttingDownMutex;
 bool Mvria::ourShuttingDown=false;
 bool Mvria::ourExiting=false;
 std::string Mvria::ourDirectory="";
-std::list<ArFunctor*> Mvria::ourInitCBs;
-std::list<ArFunctor*> Mvria::ourUninitCBs;
-ArKeyHandler *Aria::ourKeyHandler = NULL;
-ArJoyHandler *Aria::ourJoyHandler = NULL;
+std::list<MvrFunctor*> Mvria::ourInitCBs;
+std::list<MvrFunctor*> Mvria::ourUninitCBs;
+MvrKeyHandler *Mvria::ourKeyHandler = NULL;
+MvrJoyHandler *Mvria::ourJoyHandler = NULL;
 bool Mvria::ourInited = false;
 bool Mvria::ourRunning = false;
-ArMutex Mvria::ourExitCallbacksMutex;
+MvrMutex Mvria::ourExitCallbacksMutex;
 std::multimap<int, MvrFunctor *> Mvria::ourExitCallbacks;
 bool Mvria::ourSigHandleExitNotShutdown = true;
 std::multimap<int, MvrRetFunctor<bool> *> Mvria::ourParseArgCBs;
-ArLog::LogLevel Mvria::ourParseArgsLogLevel = MvrLog::Verbose;
+MvrLog::LogLevel Mvria::ourParseArgsLogLevel = MvrLog::Verbose;
 std::multimap<int, MvrFunctor *> Mvria::ourLogOptionsCBs;
-ArLog::LogLevel Mvria::ourExitCallbacksLogLevel = MvrLog::Verbose;
-std::map<std::string, MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp> Mvria::ourDeviceConnectionCreatorMap;
+MvrLog::LogLevel Mvria::ourExitCallbacksLogLevel = MvrLog::Verbose;
+std::map<std::string, MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp> Mvria::ourDeviceConnectionCreatorMap;
 std::string Mvria::ourDeviceConnectionTypes;
 std::string Mvria::ourDeviceConnectionChoices = "Choices:";
 
-#ifndef ARINTERFACE
-std::list<ArRobot*> Mvria::ourRobots;
-ArConfig Mvria::ourConfig;
-ArRobotJoyHandler *Aria::ourRobotJoyHandler = NULL;
-ArStringInfoGroup Mvria::ourInfoGroup;
+#ifndef MVRINTERFACE
+std::list<MvrRobot*> Mvria::ourRobots;
+MvrConfig Mvria::ourConfig;
+MvrRobotJoyHandler *Mvria::ourRobotJoyHandler = NULL;
+MvrStringInfoGroup Mvria::ourInfoGroup;
 int Mvria::ourMaxNumLasers = 2;
 int Mvria::ourMaxNumSonarBoards = 1;
 int Mvria::ourMaxNumBatteries = 1;
 int Mvria::ourMaxNumLCDs = 1;
-std::map<std::string, MvrRetFunctor2<ArLaser *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourLaserCreatorMap;
+std::map<std::string, MvrRetFunctor2<MvrLaser *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourLaserCreatorMap;
 std::string Mvria::ourLaserTypes;
 std::string Mvria::ourLaserChoices = "Choices:";
-std::map<std::string, MvrRetFunctor2<ArBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourBatteryCreatorMap;
+std::map<std::string, MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourBatteryCreatorMap;
 std::string Mvria::ourBatteryTypes;
 std::string Mvria::ourBatteryChoices = "Choices:";
-std::map<std::string, MvrRetFunctor2<ArLCDMTX *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourLCDCreatorMap;
+std::map<std::string, MvrRetFunctor2<MvrLCDMTX *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourLCDCreatorMap;
 std::string Mvria::ourLCDTypes;
 std::string Mvria::ourLCDChoices = "Choices:";
-std::map<std::string, MvrRetFunctor2<ArSonarMTX *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourSonarCreatorMap;
+std::map<std::string, MvrRetFunctor2<MvrSonarMTX *, int, const char *> *, MvrStrCaseCmpOp> Mvria::ourSonarCreatorMap;
 std::string Mvria::ourSonarTypes;
 std::string Mvria::ourSonarChoices = "Choices:";
 
 size_t Mvria::ourMaxNumVideoDevices = 8;
 size_t Mvria::ourMaxNumPTZs = 8;
 
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 std::string Mvria::ourIdentifier = "generic";
 
@@ -100,7 +74,7 @@ std::string Mvria::ourIdentifier = "generic";
    This must be called first before any other Mvria functions.
    It initializes the thread layer and the signal handling method. For
    Windows it iniatializes the socket layer as well. This also sets the
-   directory Mvria is located in using ARIA environmental variable (or Mvria registry key on Windows).
+   directory Mvria is located in using MVRIA environmental variable (or Mvria registry key on Windows).
    For more about Mvria's directory see getDirectory() and setDirectory().
 
    For Linux the default signal handling method is to intercept OS signals
@@ -111,11 +85,11 @@ std::string Mvria::ourIdentifier = "generic";
 
    For Windows, there is no signal handling.
 
-   This method also adds the file /etc/Aria.args and the environment variable
-   ARIAARGS as locations for MvrArgumentParser to obtain default argument values
+   This method also adds the file /etc/Mvria.args and the environment variable
+   MVRIAARGS as locations for MvrArgumentParser to obtain default argument values
    from. 
 
-   @param method the method in which to handle signals. Defaulted to SIGHANDLE_SINGLE, or the method indicated by the ARIA_SIGHANDLE_METHOD environment variable (NONE, SINGLE or THREAD), if it exists. 
+   @param method the method in which to handle signals. Defaulted to SIGHANDLE_SINGLE, or the method indicated by the MVRIA_SIGHANDLE_METHOD environment variable (NONE, SINGLE or THREAD), if it exists. 
    @param initSockets specify whether or not to initialize the socket layer. This is only meaningfull for Windows. Defaulted to true.
 
    @param sigHandleExitNotShutdown if this is true and a signal
@@ -129,12 +103,12 @@ std::string Mvria::ourIdentifier = "generic";
 MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, 
 			 bool sigHandleExitNotShutdown)
 {
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   // get this here so that the program update can be accurate
   MvrSystemStatus::getUptime();
 #endif
 
-  std::list<ArFunctor*>::iterator iter;
+  std::list<MvrFunctor*>::iterator iter;
   std::string str;
   char buf[1024];
 
@@ -155,10 +129,10 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
 
   MvrThread::init();
 
-  char* overrideSigMethod = getenv("ARIA_SIGHANDLE_METHOD");
+  char* overrideSigMethod = getenv("MVRIA_SIGHANDLE_METHOD");
   if(overrideSigMethod)
   {
-    MvrLog::log(MvrLog::Terse, "Overriding signal handler method with %s from ARIA_SIGHANDLE_METHOD environment variable.", overrideSigMethod);
+    MvrLog::log(MvrLog::Terse, "Overriding signal handler method with %s from MVRIA_SIGHANDLE_METHOD environment variable.", overrideSigMethod);
     if(!strcmp(overrideSigMethod, "NONE"))
       method = SIGHANDLE_NONE;
     else if(!strcmp(overrideSigMethod, "SINGLE"))
@@ -190,23 +164,23 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
 
   if (ourDirectory.length() == 0)
   {
-    if (getenv("ARIA") != NULL)
+    if (getenv("MVRIA") != NULL)
     {
-      setDirectory(getenv("ARIA"));
+      setDirectory(getenv("MVRIA"));
     }
     else
     {
 #ifndef WIN32
-      MvrUtil::getStringFromFile("/etc/Aria", buf, sizeof(buf));
+      MvrUtil::getStringFromFile("/etc/Mvria", buf, sizeof(buf));
       str = buf;
 #else // WIN32
       if (MvrUtil::findFirstStringInRegistry(
-          "SOFTWARE\\MobileRobots\\Aria",
+          "SOFTWARE\\MobileRobots\\Mvria",
           "Install Directory", buf, 1024))
         str = buf;
       else
         if (MvrUtil::findFirstStringInRegistry(
-            "SOFTWARE\\ActivMedia Robotics\\Aria",
+            "SOFTWARE\\ActivMedia Robotics\\Mvria",
             "Install Directory", buf, 1024))
           str = buf;
         else
@@ -219,17 +193,17 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
         }
         else
         {
-  #ifndef ARINTERFACE
-    MvrLog::log(MvrLog::Terse, "NonCritical Error: ARIA could not find where it is located.");
+  #ifndef MVRINTERFACE
+    MvrLog::log(MvrLog::Terse, "NonCritical Error: MVRIA could not find where it is located.");
   #else
-    MvrLog::log(MvrLog::Verbose, "NonCritical Error: ARIA could not find where it is located.");
+    MvrLog::log(MvrLog::Verbose, "NonCritical Error: MVRIA could not find where it is located.");
   #endif
         }
       }
     }
   ourSigHandleExitNotShutdown = sigHandleExitNotShutdown;
   
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   Mvria::laserAddCreator("lms2xx", MvrLaserCreatorHelper::getCreateLMS2xxCB());
   Mvria::laserAddCreator("urg", MvrLaserCreatorHelper::getCreateUrgCB());
   Mvria::laserAddCreator("lms1XX", MvrLaserCreatorHelper::getCreateLMS1XXCB());
@@ -245,10 +219,10 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
   Mvria::batteryAddCreator("mtx", MvrBatteryMTXCreatorHelper::getCreateBatteryMTXCB());
   Mvria::lcdAddCreator("mtx", MvrLCDMTXCreatorHelper::getCreateLCDMTXCB());
   Mvria::sonarAddCreator("mtx", MvrSonarMTXCreatorHelper::getCreateSonarMTXCB());
-  //Aria::batteryAddCreator("mtxbatteryv1", MvrBatteryMTXCreatorHelper::getCreateBatteryMTXCB());
-  //Aria::lcdAddCreator("mtxlcdv1", MvrLCDMTXCreatorHelper::getCreateLCDMTXCB());
-  //Aria::sonarAddCreator("mtxsonarv1", MvrSonarMTXCreatorHelper::getCreateSonarMTXCB());
-	#endif // ARINTERFACE
+  //Mvria::batteryAddCreator("mtxbatteryv1", MvrBatteryMTXCreatorHelper::getCreateBatteryMTXCB());
+  //Mvria::lcdAddCreator("mtxlcdv1", MvrLCDMTXCreatorHelper::getCreateLCDMTXCB());
+  //Mvria::sonarAddCreator("mtxsonarv1", MvrSonarMTXCreatorHelper::getCreateSonarMTXCB());
+	#endif // MVRINTERFACE
 
   Mvria::deviceConnectionAddCreator(
 	  "serial", MvrDeviceConnectionCreatorHelper::getCreateSerialCB());
@@ -262,8 +236,8 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
   for (iter=ourInitCBs.begin(); iter !=  ourInitCBs.end(); ++iter)
     (*iter)->invoke();
 
-  MvrArgumentParser::addDefaultArgumentFile("/etc/Aria.args");
-  MvrArgumentParser::addDefaultArgumentEnv("ARIAARGS");
+  MvrArgumentParser::addDefaultArgumentFile("/etc/Mvria.args");
+  MvrArgumentParser::addDefaultArgumentEnv("MVRIAARGS");
   
   MvrVCC4::registerPTZType();
   MvrRVisionPTZ::registerPTZType();
@@ -279,14 +253,14 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
 */
 MVREXPORT void Mvria::uninit()
 {
-  std::list<ArFunctor*>::iterator iter;
+  std::list<MvrFunctor*>::iterator iter;
 
   for (iter=ourUninitCBs.begin(); iter != ourUninitCBs.end(); ++iter)
     (*iter)->invoke();
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
   MvrModuleLoader::closeAll();
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
   MvrSocket::shutdown();
   MvrThread::shutdown();
 }
@@ -321,7 +295,7 @@ MVREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position
 /**
    Use this function to clean up or uninitialize Mvria, in particular,
    to stop background threads.
-   (Note: If you want to shutdown ARIA cleanly at the
+   (Note: If you want to shutdown MVRIA cleanly at the
    end of your program or when exiting the program due to error, use 
    Mvria::exit() instead.)
    This calls stop() on all MvrThread's and MvrASyncTask's. It will
@@ -329,7 +303,7 @@ MVREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position
    that all the tasks will obey the MvrThread::myRunning variable and
    exit when it is false. Note, this only stop Mvria's background threads,
    it does not exit the program. 
-   If you want to shutdown ARIA cleanly at the
+   If you want to shutdown MVRIA cleanly at the
    end of your program or when exiting the program due to error, use 
    Mvria::exit() instead. 
    @sa Mvria::exit()
@@ -494,7 +468,7 @@ MVREXPORT void Mvria::exitOld(int exitCode)
   ::exit(exitCode);
 }
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 MVREXPORT void Mvria::addRobot(MvrRobot *robot)
 {
   ourRobots.push_back(robot);
@@ -510,10 +484,10 @@ MVREXPORT void Mvria::delRobot(MvrRobot *robot)
    @return NULL if there is no robot of that name, otherwise the robot with 
    that name
 */
-MVREXPORT MvrRobot *Aria::findRobot(char *name)
+MVREXPORT MvrRobot *Mvria::findRobot(char *name)
 {
   std::string rname;
-  std::list<ArRobot *>::iterator it;
+  std::list<MvrRobot *>::iterator it;
   if (name == NULL)
     return NULL;
 
@@ -527,12 +501,12 @@ MVREXPORT MvrRobot *Aria::findRobot(char *name)
 
 }
 
-MVREXPORT std::list<ArRobot*> * Mvria::getRobotList()
+MVREXPORT std::list<MvrRobot*> * Mvria::getRobotList()
 {
   return(&ourRobots);
 }
 
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 /** @internal */
 MVREXPORT void Mvria::signalHandlerCB(int sig)
@@ -562,15 +536,15 @@ MVREXPORT void Mvria::signalHandlerCB(int sig)
   MvrLog::log(MvrLog::Normal, "Mvria: Received signal '%s'. Shutting down.",
 	     MvrSignalHandler::nameSignal(sig));
 
-#ifndef ARINTERFACE
-  std::list<ArRobot*>::iterator iter;
+#ifndef MVRINTERFACE
+  std::list<MvrRobot*>::iterator iter;
   if ((sig == MvrSignalHandler::SigINT) || (sig == MvrSignalHandler::SigHUP) ||
       (sig == MvrSignalHandler::SigTERM))
   {
     for (iter=ourRobots.begin(); iter != ourRobots.end(); ++iter)
       (*iter)->stopRunning();
   }
-#endif //ARINTERFACE
+#endif //MvrINTERFACE
 
   // I'm disregarding this advice below since I can't seem to get
   // anything else to work well and haven't seen problems from it
@@ -584,9 +558,9 @@ MVREXPORT void Mvria::signalHandlerCB(int sig)
 }
 
 /**
-   This sets the directory that ARIA is located in, so ARIA can find param
+   This sets the directory that MVRIA is located in, so MVRIA can find param
    files and the like.  This can also be controlled by the environment variable
-   ARIA, which this is set to (if it exists) when Mvria::init is done.  So 
+   MVRIA, which this is set to (if it exists) when Mvria::init is done.  So 
    for setDirectory to be effective, it must be done after the Mvria::init.
    @param directory the directory Mvria is located in
    @see getDirectory
@@ -608,19 +582,19 @@ MVREXPORT void Mvria::setDirectory(const char *directory)
       ourDirectory += "/";
 #endif // win32
     }
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
     ourConfig.setBaseDirectory(ourDirectory.c_str());
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
   }
 }
 
 /**
-   This gets the directory that ARIA is located in, this is so ARIA can find 
+   This gets the directory that MVRIA is located in, this is so MVRIA can find 
    param files and the like.  
-   @return the directory ARIA is located in
+   @return the directory MVRIA is located in
    @see setDirectory
 */
-MVREXPORT const char *Aria::getDirectory(void)
+MVREXPORT const char *Mvria::getDirectory(void)
 {
   return ourDirectory.c_str();
 }
@@ -632,7 +606,7 @@ MVREXPORT void Mvria::setKeyHandler(MvrKeyHandler *keyHandler)
 }
 
 /// Gets the key handler if one has been set
-MVREXPORT MvrKeyHandler *Aria::getKeyHandler(void)
+MVREXPORT MvrKeyHandler *Mvria::getKeyHandler(void)
 {
   return ourKeyHandler;
 }
@@ -644,12 +618,12 @@ MVREXPORT void Mvria::setJoyHandler(MvrJoyHandler *joyHandler)
 }
 
 /// Gets the joy handler if one has been set
-MVREXPORT MvrJoyHandler *Aria::getJoyHandler(void)
+MVREXPORT MvrJoyHandler *Mvria::getJoyHandler(void)
 {
   return ourJoyHandler;
 }
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 /// Sets the robot joy handler, so that other classes can find it
 MVREXPORT void Mvria::setRobotJoyHandler(MvrRobotJoyHandler *robotJoyHandler)
 {
@@ -657,7 +631,7 @@ MVREXPORT void Mvria::setRobotJoyHandler(MvrRobotJoyHandler *robotJoyHandler)
 }
 
 /// Gets the robot joy handler if one has been set
-MVREXPORT MvrRobotJoyHandler *Aria::getRobotJoyHandler(void)
+MVREXPORT MvrRobotJoyHandler *Mvria::getRobotJoyHandler(void)
 {
   return ourRobotJoyHandler;
 }
@@ -665,7 +639,7 @@ MVREXPORT MvrRobotJoyHandler *Aria::getRobotJoyHandler(void)
 /**
    This gets the global config aria uses.
  **/
-MVREXPORT MvrConfig *Aria::getConfig(void)
+MVREXPORT MvrConfig *Mvria::getConfig(void)
 {
   return &ourConfig;
 }
@@ -673,7 +647,7 @@ MVREXPORT MvrConfig *Aria::getConfig(void)
 /**
    This gets the global string group aria uses.
  **/
-MVREXPORT MvrStringInfoGroup *Aria::getInfoGroup(void)
+MVREXPORT MvrStringInfoGroup *Mvria::getInfoGroup(void)
 {
   return &ourInfoGroup;
 }
@@ -748,10 +722,10 @@ MVREXPORT void Mvria::setMaxNumLCDs(int maxNumLCDs)
 }
 
 
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 /**
-   returns true if ARIA is initialized (Mvria::init() has been called) and has not been shut down by
+   returns true if MVRIA is initialized (Mvria::init() has been called) and has not been shut down by
    a call to Mvria::shutdown() or Mvria::exit() and an operating system signal has not occured (e.g. 
    external KILL signal)
 **/
@@ -782,11 +756,11 @@ MVREXPORT bool Mvria::parseArgs(void)
     if (!callback->invokeR())
     {
       if (callback->getName() != NULL && callback->getName()[0] != '\0')
-	ArLog::log(MvrLog::Terse,
+	MvrLog::log(MvrLog::Terse,
 		   "Mvria::parseArgs: Failed, parse arg functor '%s' (%d) returned false", 
 		   callback->getName(), (*it).first);
       else
-	ArLog::log(MvrLog::Terse,
+	MvrLog::log(MvrLog::Terse,
 		   "Mvria::parseArgs: Failed unnamed parse arg functor (%d) returned false", 
 		   (*it).first);
       return false;
@@ -834,7 +808,7 @@ MVREXPORT void Mvria::setExitCallbacksLogLevel(MvrLog::LogLevel level)
   ourExitCallbacksLogLevel = level;
 }
 
-#ifndef ARINTERFACE
+#ifndef MVRINTERFACE
 /**
    This adds a functor which can create a laser of a given type. 
 
@@ -848,7 +822,7 @@ MVREXPORT void Mvria::setExitCallbacksLogLevel(MvrLog::LogLevel level)
 **/
 MVREXPORT bool Mvria::laserAddCreator(
 	const char *laserType, 
-	ArRetFunctor2<ArLaser *, int, const char *> *creator)
+	MvrRetFunctor2<MvrLaser *, int, const char *> *creator)
 {
   if (ourLaserCreatorMap.find(laserType) != ourLaserCreatorMap.end())
   {
@@ -876,7 +850,7 @@ MVREXPORT bool Mvria::laserAddCreator(
    Gets a string that is the types of lasers that can be created
    separated by | characters.  Mostly for internal use by MvrLaserConnector.
 **/
-MVREXPORT const char *Aria::laserGetTypes(void)
+MVREXPORT const char *Mvria::laserGetTypes(void)
 {
   return ourLaserTypes.c_str();
 }
@@ -885,7 +859,7 @@ MVREXPORT const char *Aria::laserGetTypes(void)
    Gets a string that is the types of lasers that can be created
    separated by ;; characters.  Mostly for internal use by the config
 **/
-MVREXPORT const char *Aria::laserGetChoices(void)
+MVREXPORT const char *Mvria::laserGetChoices(void)
 {
   return ourLaserChoices.c_str();
 }
@@ -902,10 +876,10 @@ MVREXPORT const char *Aria::laserGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-MVREXPORT MvrLaser *Aria::laserCreate(const char *laserType, int laserNumber,
+MVREXPORT MvrLaser *Mvria::laserCreate(const char *laserType, int laserNumber,
 				    const char *logPrefix)
 {
-  std::map<std::string, MvrRetFunctor2<ArLaser *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrRetFunctor2<MvrLaser *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
   if ((it = ourLaserCreatorMap.find(laserType)) == ourLaserCreatorMap.end())
   {
     MvrLog::log(MvrLog::Normal, "%sCannot create a laser of type %s options are <%s>", logPrefix, laserType, laserGetTypes());
@@ -929,7 +903,7 @@ MVREXPORT MvrLaser *Aria::laserCreate(const char *laserType, int laserNumber,
 **/
 MVREXPORT bool Mvria::batteryAddCreator(
 	const char *batteryType, 
-	ArRetFunctor2<ArBatteryMTX *, int, const char *> *creator)
+	MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *creator)
 {
   if (ourBatteryCreatorMap.find(batteryType) != ourBatteryCreatorMap.end())
   {
@@ -957,7 +931,7 @@ MVREXPORT bool Mvria::batteryAddCreator(
    Gets a string that is the types of batteries that can be created
    separated by | characters.  Mostly for internal use by MvrBatteryConnector.
 **/
-MVREXPORT const char *Aria::batteryGetTypes(void)
+MVREXPORT const char *Mvria::batteryGetTypes(void)
 {
   return ourBatteryTypes.c_str();
 }
@@ -966,7 +940,7 @@ MVREXPORT const char *Aria::batteryGetTypes(void)
    Gets a string that is the types of batteries that can be created
    separated by ;; characters.  Mostly for internal use by the config.
 **/
-MVREXPORT const char *Aria::batteryGetChoices(void)
+MVREXPORT const char *Mvria::batteryGetChoices(void)
 {
   return ourBatteryChoices.c_str();
 }
@@ -983,10 +957,10 @@ MVREXPORT const char *Aria::batteryGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-MVREXPORT MvrBatteryMTX *Aria::batteryCreate(const char *batteryType, int batteryNumber,
+MVREXPORT MvrBatteryMTX *Mvria::batteryCreate(const char *batteryType, int batteryNumber,
 				    const char *logPrefix)
 {
-  std::map<std::string, MvrRetFunctor2<ArBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
   if ((it = ourBatteryCreatorMap.find(batteryType)) == ourBatteryCreatorMap.end())
   {
     MvrLog::log(MvrLog::Normal, "%sCannot create a battery of type %s options are <%s>", logPrefix, batteryType, batteryGetTypes());
@@ -1010,7 +984,7 @@ MVREXPORT MvrBatteryMTX *Aria::batteryCreate(const char *batteryType, int batter
 **/
 MVREXPORT bool Mvria::lcdAddCreator(
 	const char *lcdType, 
-	ArRetFunctor2<ArLCDMTX *, int, const char *> *creator)
+	MvrRetFunctor2<MvrLCDMTX *, int, const char *> *creator)
 {
   if (ourLCDCreatorMap.find(lcdType) != ourLCDCreatorMap.end())
   {
@@ -1040,7 +1014,7 @@ MVREXPORT bool Mvria::lcdAddCreator(
    Gets a string that is the types of batteries that can be created
    separated by | characters.  Mostly for internal use by MvrLCDConnector.
 **/
-MVREXPORT const char *Aria::lcdGetTypes(void)
+MVREXPORT const char *Mvria::lcdGetTypes(void)
 {
   return ourLCDTypes.c_str();
 }
@@ -1049,7 +1023,7 @@ MVREXPORT const char *Aria::lcdGetTypes(void)
    Gets a string that is the types of batteries that can be created
    separated by ;; characters.  Mostly for internal use by MvrLCDConnector.
 **/
-MVREXPORT const char *Aria::lcdGetChoices(void)
+MVREXPORT const char *Mvria::lcdGetChoices(void)
 {
   return ourLCDChoices.c_str();
 }
@@ -1066,10 +1040,10 @@ MVREXPORT const char *Aria::lcdGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-MVREXPORT MvrLCDMTX *Aria::lcdCreate(const char *lcdType, int lcdNumber,
+MVREXPORT MvrLCDMTX *Mvria::lcdCreate(const char *lcdType, int lcdNumber,
 				    const char *logPrefix)
 {
-  std::map<std::string, MvrRetFunctor2<ArLCDMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrRetFunctor2<MvrLCDMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
   if ((it = ourLCDCreatorMap.find(lcdType)) == ourLCDCreatorMap.end())
   {
     MvrLog::log(MvrLog::Normal, "%sCannot create a lcd of type %s options are <%s>", logPrefix, lcdType, lcdGetTypes());
@@ -1093,7 +1067,7 @@ MVREXPORT MvrLCDMTX *Aria::lcdCreate(const char *lcdType, int lcdNumber,
 **/
 MVREXPORT bool Mvria::sonarAddCreator(
 	const char *sonarType, 
-	ArRetFunctor2<ArSonarMTX *, int, const char *> *creator)
+	MvrRetFunctor2<MvrSonarMTX *, int, const char *> *creator)
 {
   if (ourSonarCreatorMap.find(sonarType) != ourSonarCreatorMap.end())
   {
@@ -1121,7 +1095,7 @@ MVREXPORT bool Mvria::sonarAddCreator(
    Gets a string that is the types of sonars that can be created
    separated by | characters.  Mostly for internal use by MvrSonarConnector.
 **/
-MVREXPORT const char *Aria::sonarGetTypes(void)
+MVREXPORT const char *Mvria::sonarGetTypes(void)
 {
   return ourSonarTypes.c_str();
 }
@@ -1130,7 +1104,7 @@ MVREXPORT const char *Aria::sonarGetTypes(void)
    Gets a string that is the types of sonars that can be created
    separated by ;; characters.  Mostly for internal use by the config.
 **/
-MVREXPORT const char *Aria::sonarGetChoices(void)
+MVREXPORT const char *Mvria::sonarGetChoices(void)
 {
   return ourSonarChoices.c_str();
 }
@@ -1147,10 +1121,10 @@ MVREXPORT const char *Aria::sonarGetChoices(void)
    @param logPrefix The prefix to use when logging 
 */
 
-MVREXPORT MvrSonarMTX *Aria::sonarCreate(const char *sonarType, int sonarNumber,
+MVREXPORT MvrSonarMTX *Mvria::sonarCreate(const char *sonarType, int sonarNumber,
 				    const char *logPrefix)
 {
-  std::map<std::string, MvrRetFunctor2<ArSonarMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrRetFunctor2<MvrSonarMTX *, int, const char *> *, MvrStrCaseCmpOp>::iterator it;
   if ((it = ourSonarCreatorMap.find(sonarType)) == ourSonarCreatorMap.end())
   {
     MvrLog::log(MvrLog::Normal, "%sCannot create a sonar of type %s options are <%s>", logPrefix, sonarType, sonarGetTypes());
@@ -1160,7 +1134,7 @@ MVREXPORT MvrSonarMTX *Aria::sonarCreate(const char *sonarType, int sonarNumber,
   return (*it).second->invokeR(sonarNumber, logPrefix);
 }
 
-#endif // ARINTERFACE
+#endif // MVRINTERFACE
 
 /**
    This adds a functor which can create a deviceConnection of a given
@@ -1179,7 +1153,7 @@ MVREXPORT MvrSonarMTX *Aria::sonarCreate(const char *sonarType, int sonarNumber,
 **/
 MVREXPORT bool Mvria::deviceConnectionAddCreator(
 	const char *deviceConnectionType, 
-	ArRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *creator)
+	MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *creator)
 {
   if (ourDeviceConnectionCreatorMap.find(deviceConnectionType) != ourDeviceConnectionCreatorMap.end())
   {
@@ -1207,7 +1181,7 @@ MVREXPORT bool Mvria::deviceConnectionAddCreator(
    Gets a string that is the types of device connections that can be created
    separated by | characters.  Mostly for internal use by MvrLaserConnector.
 **/
-MVREXPORT const char *Aria::deviceConnectionGetTypes(void)
+MVREXPORT const char *Mvria::deviceConnectionGetTypes(void)
 {
     return ourDeviceConnectionTypes.c_str();
 }
@@ -1216,7 +1190,7 @@ MVREXPORT const char *Aria::deviceConnectionGetTypes(void)
    Gets a string that is the types of device connections that can be created
    separated by ;; characters.  Mostly for internal use by the config.
 **/
-MVREXPORT const char *Aria::deviceConnectionGetChoices(void)
+MVREXPORT const char *Mvria::deviceConnectionGetChoices(void)
 {
     return ourDeviceConnectionChoices.c_str();
 }
@@ -1237,11 +1211,11 @@ MVREXPORT const char *Aria::deviceConnectionGetChoices(void)
    
    @param logPrefix The prefix to use when logging 
 */
-MVREXPORT MvrDeviceConnection *Aria::deviceConnectionCreate(
+MVREXPORT MvrDeviceConnection *Mvria::deviceConnectionCreate(
 	const char *deviceConnectionType, const char *port, 
 	const char *defaultInfo, const char *logPrefix)
 {
-  std::map<std::string, MvrRetFunctor3<ArDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp>::iterator it;
+  std::map<std::string, MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *, MvrStrCaseCmpOp>::iterator it;
 
   if ((it = ourDeviceConnectionCreatorMap.find(deviceConnectionType)) == ourDeviceConnectionCreatorMap.end())
   {
@@ -1258,7 +1232,7 @@ MVREXPORT  size_t Mvria::getMaxNumVideoDevices() { return ourMaxNumVideoDevices;
 MVREXPORT  void Mvria::setMaxNumPTZs(size_t n) { ourMaxNumVideoDevices = n; }
 MVREXPORT  size_t Mvria::getMaxNumPTZs() { return ourMaxNumVideoDevices; }
 
-MVREXPORT const char *Aria::getIdentifier(void)
+MVREXPORT const char *Mvria::getIdentifier(void)
 {
   return ourIdentifier.c_str();
 }

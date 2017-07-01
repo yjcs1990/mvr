@@ -1,36 +1,10 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrConfigGroup.h"
 #include "MvrArgumentBuilder.h"
 #include "MvrLog.h"
 
-MVREXPORT MvrConfigGroup::ArConfigGroup(const char *baseDirectory)
+MVREXPORT MvrConfigGroup::MvrConfigGroup(const char *baseDirectory)
 {
   if (baseDirectory != NULL)
     myBaseDirectory = baseDirectory;
@@ -56,7 +30,7 @@ MVREXPORT void MvrConfigGroup::remConfig(MvrConfig *config)
 MVREXPORT bool MvrConfigGroup::parseFile(const char *fileName, 
 				       bool continueOnError)
 {
-  std::list<ArConfig *>::iterator it;
+  std::list<MvrConfig *>::iterator it;
   bool ret = true;
 
   myLastFile = fileName;
@@ -92,7 +66,7 @@ MVREXPORT bool MvrConfigGroup::reloadFile(bool continueOnError)
 MVREXPORT bool MvrConfigGroup::writeFile(const char *fileName)
 {
   std::set<std::string> alreadyWritten;
-  std::list<ArConfig *>::iterator it;
+  std::list<MvrConfig *>::iterator it;
   bool ret = true;
   bool append = false;
   
@@ -125,7 +99,7 @@ MVREXPORT void MvrConfigGroup::setBaseDirectory(const char *baseDirectory)
   myBaseDirectory = baseDirectory;
 }
 
-MVREXPORT const char *ArConfigGroup::getBaseDirectory(void) const
+MVREXPORT const char *MvrConfigGroup::getBaseDirectory(void) const
 {
   return myBaseDirectory.c_str();
 }

@@ -1,37 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
-
 #include "MvrExport.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 
 #include "MvrCameraCollection.h"
 
-MVREXPORT MvrCameraCollection::ArCameraCollection() :
+MVREXPORT MvrCameraCollection::MvrCameraCollection() :
   myMutex(),
 	myCameraToInfoMap()
 {
@@ -247,7 +219,7 @@ MVREXPORT void MvrCameraCollection::getCameraNames(std::list<std::string> &outLi
 } // end method getCameraNames
 
 
-MVREXPORT const char *ArCameraCollection::getCameraType(const char *cameraName)
+MVREXPORT const char *MvrCameraCollection::getCameraType(const char *cameraName)
 {
   const char *type = NULL;
 
@@ -264,7 +236,7 @@ MVREXPORT const char *ArCameraCollection::getCameraType(const char *cameraName)
 } // end method getCameraType
 
 
-MVREXPORT const char *ArCameraCollection::getDisplayName(const char *cameraName)
+MVREXPORT const char *MvrCameraCollection::getDisplayName(const char *cameraName)
 {
   const char *displayName = NULL;
 
@@ -281,7 +253,7 @@ MVREXPORT const char *ArCameraCollection::getDisplayName(const char *cameraName)
 } // end method getDisplayName
 
 
-MVREXPORT const char *ArCameraCollection::getDisplayType(const char *cameraName)
+MVREXPORT const char *MvrCameraCollection::getDisplayType(const char *cameraName)
 {
   const char *displayType = NULL;
 
@@ -319,7 +291,7 @@ MVREXPORT void MvrCameraCollection::getCameraCommands(const char *cameraName,
 } // end method getCameraCommands
 
 
-MVREXPORT const char *ArCameraCollection::getCommandName(const char *cameraName,
+MVREXPORT const char *MvrCameraCollection::getCommandName(const char *cameraName,
 														                            const char *command)
 {
   const char *cameraCommandName = NULL;
@@ -541,7 +513,7 @@ MVREXPORT bool MvrCameraCollection::removeModifiedCB(MvrFunctor *functor)
 } // end method removeModifiedCB
 
 
-ArCameraCollection::CameraInfo *ArCameraCollection::findCameraInfo(const char *cameraName)
+MvrCameraCollection::CameraInfo *MvrCameraCollection::findCameraInfo(const char *cameraName)
 {
   if (cameraName == NULL) {
     return NULL;
@@ -561,7 +533,7 @@ ArCameraCollection::CameraInfo *ArCameraCollection::findCameraInfo(const char *c
 } // end method findCameraInfo
 
 
-ArCameraCollection::CommandInfo *ArCameraCollection::findCommandInfo
+MvrCameraCollection::CommandInfo *MvrCameraCollection::findCommandInfo
                                                         (const char *cameraName,
                                                          const char *commandName)
 {
@@ -583,7 +555,7 @@ ArCameraCollection::CommandInfo *ArCameraCollection::findCommandInfo
 
 } // end method findCommandInfo
 
-ArCameraCollection::ParamInfo *ArCameraCollection::findParamInfo
+MvrCameraCollection::ParamInfo *MvrCameraCollection::findParamInfo
                                                       (const char *cameraName,
                                                        const char *paramName)
 {
@@ -626,7 +598,7 @@ void MvrCameraCollection::notifyModifiedListeners()
 } // end method notifyModifiedListeners
 
 
-ArCameraCollection::CameraInfo::CameraInfo() :
+MvrCameraCollection::CameraInfo::CameraInfo() :
     myCameraName(),
     myCameraType(),
     myDisplayName(),
@@ -636,7 +608,7 @@ ArCameraCollection::CameraInfo::CameraInfo() :
 {
 }
 
-ArCameraCollection::CameraInfo::~CameraInfo()
+MvrCameraCollection::CameraInfo::~CameraInfo()
 {
   MvrUtil::deleteSetPairs(myCommandToInfoMap.begin(), 
                          myCommandToInfoMap.end());
@@ -644,25 +616,25 @@ ArCameraCollection::CameraInfo::~CameraInfo()
 }
 
 
-ArCameraCollection::CommandInfo::CommandInfo() :
+MvrCameraCollection::CommandInfo::CommandInfo() :
   myCommand(),
   myCameraCommandName(),
   myRequestInterval(-1)
 {
 }
 
-ArCameraCollection::CommandInfo::~CommandInfo()
+MvrCameraCollection::CommandInfo::~CommandInfo()
 {
 }
 
 
-ArCameraCollection::ParamInfo::ParamInfo() :
+MvrCameraCollection::ParamInfo::ParamInfo() :
   mySource(NULL),
   myParam()
 {
 }
 
-ArCameraCollection::ParamInfo::~ParamInfo()
+MvrCameraCollection::ParamInfo::~ParamInfo()
 {
 }
 

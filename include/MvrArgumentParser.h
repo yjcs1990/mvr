@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRARGUMENTPARSER_H
+#define MVRARGUMENTPARSER_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARARGUMENTPARSER_H
-#define ARARGUMENTPARSER_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrArgumentBuilder.h"
 
 /// Parse and store program command-line arguments for use by other ARIA classes.
@@ -38,13 +12,13 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    in a Windows MFC program.)
 
    It will also load default argument values if you call
-   loadDefaultArguments().   Mvria::init() adds the file /etc/Aria.args and the 
+   loadDefaultArguments().   Mvria::init() adds the file /etc/Mvria.args and the 
    environment variable ARIAARGS as locations for argument defaults, so 
    loadDefaultArguments() will always search those. You can
    use this mechanism to avoid needing to always supply command line parameters
    to all programs. For example, if you use different serial ports than the defaults
    for the robot and laser, you can put a -robotPort or -laserPort argument in 
-   /etc/Aria.args for all programs that call loadDefaultArguments() to use.
+   /etc/Mvria.args for all programs that call loadDefaultArguments() to use.
    You can add other files or environment variables
    to the list of default argument locations with
    addDefaultArgumentFile() and addDefaultArgumentEnv().
@@ -188,4 +162,4 @@ protected:
 };
 
 
-#endif // ARARGUMENTPARSER_H
+#endif // MVRARGUMENTPARSER_H

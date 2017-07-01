@@ -1,62 +1,36 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrRVisionPTZ.h"
 #include "MvrRobot.h"
 #include "MvrCommands.h"
 
-MVREXPORT ArRVisionPacket::ArRVisionPacket(MvrTypes::UByte2 bufferSize) :
-  ArBasePacket(bufferSize)
+MVREXPORT MvrRVisionPacket::MvrRVisionPacket(MvrTypes::UByte2 bufferSize) :
+  MvrBasePacket(bufferSize)
 {
 
 }
 
-MVREXPORT ArRVisionPacket::~MvrRVisionPacket()
+MVREXPORT MvrRVisionPacket::~MvrRVisionPacket()
 {
 
 }
 
-MVREXPORT void ArRVisionPacket::uByteToBuf(MvrTypes::UByte val)
+MVREXPORT void MvrRVisionPacket::uByteToBuf(MvrTypes::UByte val)
 {
   if (myLength + 1 > myMaxLength)
   {
-    ArLog::log(MvrLog::Terse, "MvrRVisionPacket::uByteToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrRVisionPacket::uByteToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = val;
   ++myLength;
 }
 
-MVREXPORT void ArRVisionPacket::byte2ToBuf(MvrTypes::Byte2 val)
+MVREXPORT void MvrRVisionPacket::byte2ToBuf(MvrTypes::Byte2 val)
 {
   if ((myLength + 4) > myMaxLength)
   {
-    ArLog::log(MvrLog::Terse, "MvrRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myBuf[myLength] = (val & 0xf000) >> 12;
@@ -79,14 +53,14 @@ MVREXPORT void ArRVisionPacket::byte2ToBuf(MvrTypes::Byte2 val)
    @param val the Byte2 to put into the packet
    @param pose the position in the packets array to put the value
 */
-MVREXPORT void ArRVisionPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
-					    ArTypes::UByte2 pose)
+MVREXPORT void MvrRVisionPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
+					    MvrTypes::UByte2 pose)
 {
-  ArTypes::Byte2 prevLength = myLength;
+  MvrTypes::Byte2 prevLength = myLength;
 
   if ((pose + 4) > myMaxLength)
   {
-    ArLog::log(MvrLog::Terse, "MvrRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
+    MvrLog::log(MvrLog::Terse, "MvrRVisionPacket::Byte2ToBuf: Trying to add beyond length of buffer.");
     return;
   }
   myLength = pose;
@@ -95,8 +69,8 @@ MVREXPORT void ArRVisionPacket::byte2ToBufAtPos(MvrTypes::Byte2 val,
 }
 
 
-MVREXPORT ArRVisionPTZ::ArRVisionPTZ(MvrRobot *robot) :
-  ArPTZ(NULL),
+MVREXPORT MvrRVisionPTZ::MvrRVisionPTZ(MvrRobot *robot) :
+  MvrPTZ(NULL),
   myPacket(255), 
   myZoomPacket(9),
   mySerialPort(MvrUtil::COM4)
@@ -113,7 +87,7 @@ MVREXPORT ArRVisionPTZ::ArRVisionPTZ(MvrRobot *robot) :
 
   myConn = NULL;
 
-  ArPTZ::setLimits(MAX_PAN, MIN_PAN, MAX_TILT, MIN_TILT, MAX_ZOOM, MIN_ZOOM);
+  MvrPTZ::setLimits(MAX_PAN, MIN_PAN, MAX_TILT, MIN_TILT, MAX_ZOOM, MIN_ZOOM);
     /*
   MVREXPORT virtual double getMaxPosPan(void) const { return MAX_PAN; }
   MVREXPORT virtual double getMaxNegPan(void) const { return MIN_PAN; }
@@ -125,11 +99,11 @@ MVREXPORT ArRVisionPTZ::ArRVisionPTZ(MvrRobot *robot) :
 
 }
 
-MVREXPORT ArRVisionPTZ::~MvrRVisionPTZ()
+MVREXPORT MvrRVisionPTZ::~MvrRVisionPTZ()
 {
 }
 
-void ArRVisionPTZ::initializePackets(void)
+void MvrRVisionPTZ::initializePackets(void)
 {
   myZoomPacket.empty();
   myZoomPacket.uByteToBuf(0x81);
@@ -161,23 +135,23 @@ void ArRVisionPTZ::initializePackets(void)
 }
 
 
-MVREXPORT bool ArRVisionPTZ::init(void)
+MVREXPORT bool MvrRVisionPTZ::init(void)
 {
   // send command to power on camera on seekur
   if(myRobot)
   {
-	  ArLog::log(MvrLog::Normal, "MvrRVisionPTZ: turning camera power on ...");
+	  MvrLog::log(MvrLog::Normal, "MvrRVisionPTZ: turning camera power on ...");
 	  myRobot->com2Bytes(116, 12, 1);
   }
   
   myConn = getDeviceConnection();
   if(!myConn)
   {
-     ArLog::log(MvrLog::Normal, "MvrRVisionPTZ: new connection to camera on %s...", mySerialPort);
-     ArSerialConnection *ser = new ArSerialConnection();
+     MvrLog::log(MvrLog::Normal, "MvrRVisionPTZ: new connection to camera on %s...", mySerialPort);
+     MvrSerialConnection *ser = new MvrSerialConnection();
      if(ser->open(mySerialPort) != 0)
      {
-	ArLog::log(MvrLog::Terse, "MvrRVisionPTZ: error opening %s for camera PTZ control, initialization failed.", mySerialPort);
+	MvrLog::log(MvrLog::Terse, "MvrRVisionPTZ: error opening %s for camera PTZ control, initialization failed.", mySerialPort);
         myConn = NULL;
         return false;
      }
@@ -197,7 +171,7 @@ MVREXPORT bool ArRVisionPTZ::init(void)
 
   if (!sendPacket(&myPacket))
   {
-    ArLog::log(MvrLog::Terse, "MvrRVisionPTZ: Error sending initialization packet to RVision camera!");
+    MvrLog::log(MvrLog::Terse, "MvrRVisionPTZ: Error sending initialization packet to RVision camera!");
     return false;
   }
   if (!panTilt(0, 0))
@@ -207,7 +181,7 @@ MVREXPORT bool ArRVisionPTZ::init(void)
   return true;
 }
 
-MVREXPORT bool ArRVisionPTZ::panTilt_i(double degreesPan, double degreesTilt)
+MVREXPORT bool MvrRVisionPTZ::panTilt_i(double degreesPan, double degreesTilt)
 {
   if (degreesPan > MAX_PAN)
     degreesPan = MAX_PAN;
@@ -226,32 +200,32 @@ MVREXPORT bool ArRVisionPTZ::panTilt_i(double degreesPan, double degreesTilt)
   return sendPacket(&myPanTiltPacket);
 }
 
-MVREXPORT bool ArRVisionPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
+MVREXPORT bool MvrRVisionPTZ::panTiltRel_i(double degreesPan, double degreesTilt)
 {
   return panTilt_i(myPan + degreesPan, myTilt + degreesTilt);
 }
 
-MVREXPORT bool ArRVisionPTZ::pan_i(double degrees)
+MVREXPORT bool MvrRVisionPTZ::pan_i(double degrees)
 {
   return panTilt_i(degrees, myTilt);
 }
 
-MVREXPORT bool ArRVisionPTZ::panRel_i(double degrees)
+MVREXPORT bool MvrRVisionPTZ::panRel_i(double degrees)
 {
   return panTiltRel_i(degrees, 0);
 }
 
-MVREXPORT bool ArRVisionPTZ::tilt_i(double degrees)
+MVREXPORT bool MvrRVisionPTZ::tilt_i(double degrees)
 {
   return panTilt_i(myPan, degrees);
 }
 
-MVREXPORT bool ArRVisionPTZ::tiltRel_i(double degrees)
+MVREXPORT bool MvrRVisionPTZ::tiltRel_i(double degrees)
 {
   return panTiltRel_i(0, degrees);
 }
 
-MVREXPORT bool ArRVisionPTZ::zoom(int zoomValue)
+MVREXPORT bool MvrRVisionPTZ::zoom(int zoomValue)
 {
   //printf("MvrRVision::zoom(%d)\n", zoomValue);
   if (zoomValue > MAX_ZOOM)
@@ -264,13 +238,13 @@ MVREXPORT bool ArRVisionPTZ::zoom(int zoomValue)
   return sendPacket(&myZoomPacket);
 }
 
-MVREXPORT bool ArRVisionPTZ::zoomRel(int zoomValue)
+MVREXPORT bool MvrRVisionPTZ::zoomRel(int zoomValue)
 {
   return zoom(myZoom + zoomValue);
 }
 
 /*
-MVREXPORT bool ArRVisionPTZ::packetHandler(MvrRobotPacket *packet)
+MVREXPORT bool MvrRVisionPTZ::packetHandler(MvrRobotPacket *packet)
 {
   if (packet->getID() != 0xE0)
     return false;
@@ -279,9 +253,9 @@ MVREXPORT bool ArRVisionPTZ::packetHandler(MvrRobotPacket *packet)
 }
 */
 
-#define ARRVISION_MAX_RESPONSE_BYTES 16
-//MVREXPORT bool ArRVisionPTZ::packetHandler(MvrBasePacket *packet)
-ArBasePacket * ArRVisionPTZ::readPacket(void)
+#define MVRRVISION_MAX_RESPONSE_BYTES 16
+//MVREXPORT bool MvrRVisionPTZ::packetHandler(MvrBasePacket *packet)
+MvrBasePacket * MvrRVisionPTZ::readPacket(void)
 {
   unsigned char data[ARRVISION_MAX_RESPONSE_BYTES];
   unsigned char byte;
@@ -326,17 +300,17 @@ ArBasePacket * ArRVisionPTZ::readPacket(void)
   return NULL;
 }
 
-ArPTZConnector::GlobalPTZCreateFunc ArRVisionPTZ::ourCreateFunc(&ArRVisionPTZ::create);
+MvrPTZConnector::GlobalPTZCreateFunc MvrRVisionPTZ::ourCreateFunc(&MvrRVisionPTZ::create);
 
-ArPTZ* ArRVisionPTZ::create(size_t index, ArPTZParams params, ArArgumentParser *parser, ArRobot *robot)
+MvrPTZ* MvrRVisionPTZ::create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot)
 {
-  ArRVisionPTZ *ptz = new ArRVisionPTZ(robot);
+  MvrRVisionPTZ *ptz = new MvrRVisionPTZ(robot);
   if(params.serialPort != "" && params.serialPort != "none")
 	  ptz->setPort(params.serialPort.c_str());
   return ptz;
 }
 
-void ArRVisionPTZ::registerPTZType()
+void MvrRVisionPTZ::registerPTZType()
 {
-  ArPTZConnector::registerPTZType("rvision", &ourCreateFunc);
+  MvrPTZConnector::registerPTZType("rvision", &ourCreateFunc);
 }

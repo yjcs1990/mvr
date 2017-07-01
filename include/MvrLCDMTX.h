@@ -1,33 +1,7 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRLCDMTX_H
+#define MVRLCDMTX_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARLCDMTX_H
-#define ARLCDMTX_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrRangeDevice.h"
 #include "MvrFunctor.h"
 #include "MvrRobot.h"
@@ -48,8 +22,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 This interface can be used to display text strings on the MTX LCD panel.
 One or more MvrLCDMTX objects are automatically created by
-ArRobotConnector (or MvrLCDConnector if used separately from
-ArRobotConnector) if connecting to an MTX robot, and a successful
+MvrRobotConnector (or MvrLCDConnector if used separately from
+MvrRobotConnector) if connecting to an MTX robot, and a successful
 connection to the LCD panel was also made. A pointer
 to the first MvrLCDMTX object can be obtained via MvrRobot::findLCD(),
 passing an index of 1.
@@ -64,8 +38,8 @@ public:
 	MVREXPORT MvrLCDMTX(
 		int lcdBoardNum = 0,
 		const char * name = "MTXLCD",
-		ArDeviceConnection *conn = NULL,
-		ArRobot *robot = NULL);
+		MvrDeviceConnection *conn = NULL,
+		MvrRobot *robot = NULL);
 	/// Destructor
 	MVREXPORT virtual ~MvrLCDMTX();
 
@@ -89,7 +63,7 @@ public:
 
 	MVREXPORT virtual bool blockingConnect(bool sendTracking, bool recvTracking,
 		int lcdNumber, MvrFunctor1<int> *onCallback,
-		ArFunctor1<int> *offCallback);
+		MvrFunctor1<int> *offCallback);
 	MVREXPORT virtual bool disconnect(void);
 	MVREXPORT virtual bool isConnected(void) { return myIsConnected; }
 	MVREXPORT virtual bool isTryingToConnect(void)
@@ -132,7 +106,7 @@ public:
 	/// Sets the numter of seconds without a response until connection assumed lost
 	MVREXPORT virtual void setConnectionTimeoutSeconds(double seconds)
 	{
-		ArLog::log(MvrLog::Normal,
+		MvrLog::log(MvrLog::Normal,
 			"%s::setConnectionTimeoutSeconds: Setting timeout to %g secs",
 			getName(), seconds);
 		myTimeoutSeconds = seconds;
@@ -147,7 +121,7 @@ public:
 	/// disconnect 
 	MVREXPORT void disconnectOnError(void);
 	/// Gets the time data was last receieved
-	ArTime getLastReadingTime(void) { return myLastReading; }
+	MvrTime getLastReadingTime(void) { return myLastReading; }
 	/// Gets the number of lcd readings received in the last second
 	MVREXPORT int getReadingCount(void);
 	// Function called in sensorInterp to indicate that a
@@ -250,7 +224,7 @@ protected:
 
 	MVREXPORT virtual void internalGotReading(void);
 
-	ArDeviceConnection *myConn;
+	MvrDeviceConnection *myConn;
 	std::string myName;
 	std::string myDefaultPortType;
 	std::string myDefaultTcpPort;
@@ -259,17 +233,17 @@ protected:
 	bool myRobotRunningAndConnected;
 	bool myConnFailOption;
 
-	ArTime myLastReading;
+	MvrTime myLastReading;
 
 	// packet count
 	time_t myTimeLastReading;
 	int myReadingCurrentCount;
 	int myReadingCount;
 
-	ArCallbackList myDisconnectOnErrorCBList;
+	MvrCallbackList myDisconnectOnErrorCBList;
 
-	ArRobot *myRobot;
-	ArFunctorC<ArLCDMTX> myProcessCB;
+	MvrRobot *myRobot;
+	MvrFunctorC<MvrLCDMTX> myProcessCB;
 
 	MVREXPORT virtual void lcdSetName(const char *name);
 	MVREXPORT virtual void * runThread(void *arg);
@@ -293,12 +267,12 @@ protected:
 	bool myRobotIdentifierChanged;
 
 	bool myOnCharger;
-	ArRobot::ChargeState myChargeState;
+	MvrRobot::ChargeState myChargeState;
 
 	int myBoardNum;
 	unsigned char myVersion;
 
-	ArLog::LogLevel myLogLevel;
+	MvrLog::LogLevel myLogLevel;
 
 	enum Headers {
 		HEADER1 = 0xfa,
@@ -307,18 +281,18 @@ protected:
 		//	old value HEADER2=0x5c
 	};
 
-	ArRobotPacketReceiver *myReceiver;
-	ArRobotPacketSender *mySender;
+	MvrRobotPacketReceiver *myReceiver;
+	MvrRobotPacketSender *mySender;
 
-	ArMutex myPacketsMutex;
-	ArMutex myDataMutex;
-	ArMutex myDeviceMutex;
+	MvrMutex myPacketsMutex;
+	MvrMutex myDataMutex;
+	MvrMutex myDeviceMutex;
 
-	ArLog::LogLevel myInfoLogLevel;
+	MvrLog::LogLevel myInfoLogLevel;
 
-	std::list<ArRobotPacket *> myPackets;
+	std::list<MvrRobotPacket *> myPackets;
 
-	ArTime myPrevLCDIntTime;
+	MvrTime myPrevLCDIntTime;
 
 	bool myRequestedSysInfoLCDPackets;
 	bool myRequestedCellInfoLCDPackets;
@@ -392,12 +366,12 @@ protected:
 
 	std::string myIpAddress;
 
-	ArFunctorC<ArLCDMTX> mySensorInterpTask;
-	ArRetFunctorC<bool, MvrLCDMTX> myAriaExitCB;
+	MvrFunctorC<MvrLCDMTX> mySensorInterpTask;
+	MvrRetFunctorC<bool, MvrLCDMTX> myMvriaExitCB;
 
 	static std::string ourFirmwareBaseDir;
 };
 
 
 
-#endif // ARLCDMTX_H
+#endif // MVRLCDMTX_H

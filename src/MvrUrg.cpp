@@ -1,45 +1,19 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrUrg.h"
 #include "MvrRobot.h"
 #include "MvrSerialConnection.h"
-#include "ariaInternal.h"
+#include "mvriaInternal.h"
 
-MVREXPORT ArUrg::ArUrg(int laserNumber, const char *name) :
-  ArLaser(laserNumber, name, 4095),
-  mySensorInterpTask(this, &ArUrg::sensorInterp),
-  myAriaExitCB(this, &ArUrg::disconnect)
+MVREXPORT MvrUrg::MvrUrg(int laserNumber, const char *name) :
+  MvrLaser(laserNumber, name, 4095),
+  mySensorInterpTask(this, &MvrUrg::sensorInterp),
+  myMvriaExitCB(this, &MvrUrg::disconnect)
 {
   clear();
   myRawReadings = NULL;
 
-  Aria::addExitCallback(&myAriaExitCB, -10);
+  Mvria::addExitCallback(&myMvriaExitCB, -10);
 
   laserSetName(getName());
 
@@ -76,13 +50,13 @@ MVREXPORT ArUrg::ArUrg(int laserNumber, const char *name) :
   resetLastCumulativeCleanTime();
 
   setCurrentDrawingData(
-	  new ArDrawingData("polyDots", 
-			    ArColor(0, 0xaa, 0xaa), 
+	  new MvrDrawingData("polyDots", 
+			    MvrColor(0, 0xaa, 0xaa), 
 			    70,  // mm diameter of dots
 			    77), true);
   setCumulativeDrawingData(
-	  new ArDrawingData("polyDots", 
-			    ArColor(0, 0x55, 0x55), 
+	  new MvrDrawingData("polyDots", 
+			    MvrColor(0, 0x55, 0x55), 
 			    100,  // mm diameter of dots
 			    62), true);
 
@@ -90,9 +64,9 @@ MVREXPORT ArUrg::ArUrg(int laserNumber, const char *name) :
   myLogMore = true;
 }
 
-MVREXPORT ArUrg::~MvrUrg()
+MVREXPORT MvrUrg::~MvrUrg()
 {
-  Aria::remExitCallback(&myAriaExitCB);
+  Mvria::remExitCallback(&myMvriaExitCB);
   if (myRobot != NULL)
   {
     myRobot->remRangeDevice(this);
@@ -101,7 +75,7 @@ MVREXPORT ArUrg::~MvrUrg()
   }
   if (myRawReadings != NULL)
   {
-    ArUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
+    MvrUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
     myRawReadings->clear(); 
     delete myRawReadings;
     myRawReadings = NULL;
@@ -112,19 +86,19 @@ MVREXPORT ArUrg::~MvrUrg()
   unlockDevice();
 }
 
-MVREXPORT void ArUrg::laserSetName(const char *name)
+MVREXPORT void MvrUrg::laserSetName(const char *name)
 {
   myName = name;
   
   myConnMutex.setLogNameVar("%s::myConnMutex", getName());
   myReadingMutex.setLogNameVar("%s::myReadingMutex", getName());
   myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-  myAriaExitCB.setNameVar("%s::exitCallback", getName());
+  myMvriaExitCB.setNameVar("%s::exitCallback", getName());
   
-  ArLaser::laserSetName(getName());
+  MvrLaser::laserSetName(getName());
 }
 
-MVREXPORT bool ArUrg::setParams(
+MVREXPORT bool MvrUrg::setParams(
 	double startingDegrees, double endingDegrees,
 	double incrementDegrees, bool flipped)
 {
@@ -132,7 +106,7 @@ MVREXPORT bool ArUrg::setParams(
       endingDegrees < -135.0 || startingDegrees > 135.0 || 
       incrementDegrees < 0.0)
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "%s::setParams: Bad params (starting %g ending %g clusterCount %g)",
 	       getName(), startingDegrees, endingDegrees, incrementDegrees);
     return false;
@@ -147,15 +121,15 @@ MVREXPORT bool ArUrg::setParams(
   endingStepRaw = -(endingDegrees - 135.0) / .3515625;
   startingStep = (int)ceil(MvrUtil::findMin(startingStepRaw, endingStepRaw));
   endingStep = (int)floor(MvrUtil::findMax(startingStepRaw, endingStepRaw));
-  clusterCount = ArMath::roundInt(incrementDegrees / .3515625);
+  clusterCount = MvrMath::roundInt(incrementDegrees / .3515625);
   
-  ArLog::log(MvrLog::Verbose, "%s: starting deg %.1f raw %.1f step %d ending deg %.1f raw %.1f step %d, cluster deg %f count %d flipped %d",
+  MvrLog::log(MvrLog::Verbose, "%s: starting deg %.1f raw %.1f step %d ending deg %.1f raw %.1f step %d, cluster deg %f count %d flipped %d",
 	     getName(), startingDegrees, startingStepRaw, startingStep, endingDegrees, endingStepRaw, endingStep, incrementDegrees, clusterCount, flipped);
   
   return setParamsBySteps(startingStep, endingStep, clusterCount, flipped);
 }
 
-MVREXPORT bool ArUrg::setParamsBySteps(int startingStep, int endingStep, 
+MVREXPORT bool MvrUrg::setParamsBySteps(int startingStep, int endingStep, 
 				      int clusterCount, bool flipped)
 {
   if (startingStep < 0 || startingStep > 768 || 
@@ -163,7 +137,7 @@ MVREXPORT bool ArUrg::setParamsBySteps(int startingStep, int endingStep,
       startingStep > endingStep || 
       clusterCount < 1)
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "%s::setParamsBySteps: Bad params (starting %d ending %d clusterCount %d)",
 	       getName(), startingStep, endingStep, clusterCount);
     return false;
@@ -182,16 +156,16 @@ MVREXPORT bool ArUrg::setParamsBySteps(int startingStep, int endingStep,
 
   if (myRawReadings != NULL)
   {
-    ArUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
+    MvrUtil::deleteSet(myRawReadings->begin(), myRawReadings->end());
     myRawReadings->clear();
     delete myRawReadings;
     myRawReadings = NULL;
   }
 
-  myRawReadings = new std::list<ArSensorReading *>;
+  myRawReadings = new std::list<MvrSensorReading *>;
   
 
-  ArSensorReading *reading;
+  MvrSensorReading *reading;
   int onStep;
   double angle;
 
@@ -201,16 +175,16 @@ MVREXPORT bool ArUrg::setParamsBySteps(int startingStep, int endingStep,
   {
     /// FLIPPED
     if (!myFlipped)
-      angle = ArMath::subAngle(MvrMath::subAngle(135, onStep * 0.3515625),
+      angle = MvrMath::subAngle(MvrMath::subAngle(135, onStep * 0.3515625),
 			       myClusterMiddleAngle);
     else
-      angle = ArMath::addAngle(MvrMath::addAngle(-135, onStep * 0.3515625), 
+      angle = MvrMath::addAngle(MvrMath::addAngle(-135, onStep * 0.3515625), 
 			       myClusterMiddleAngle);
 			       
-    reading = new ArSensorReading;
+    reading = new MvrSensorReading;
     reading->resetSensorPosition(MvrMath::roundInt(mySensorPose.getX()),
-				 ArMath::roundInt(mySensorPose.getY()),
-				 ArMath::addAngle(angle, 
+				 MvrMath::roundInt(mySensorPose.getY()),
+				 MvrMath::addAngle(angle, 
 						  mySensorPose.getTh()));
     myRawReadings->push_back(reading);
     //printf("%.1f ", reading->getSensorTh());
@@ -221,7 +195,7 @@ MVREXPORT bool ArUrg::setParamsBySteps(int startingStep, int endingStep,
   return true;
 }
 
-void ArUrg::clear(void)
+void MvrUrg::clear(void)
 {
   myIsConnected = false;
   myTryingToConnect = false;
@@ -235,30 +209,30 @@ void ArUrg::clear(void)
   myStat = "";
 }
 
-MVREXPORT void ArUrg::log(void)
+MVREXPORT void MvrUrg::log(void)
 {
-  ArLog::log(MvrLog::Normal, "URG %s:", getName());
-  ArLog::log(MvrLog::Normal, "Vendor information: %s", myVendor.c_str());
-  ArLog::log(MvrLog::Normal, "Product information: %s", myProduct.c_str());
-  ArLog::log(MvrLog::Normal, "Firmware version: %s", myFirmwareVersion.c_str());
-  ArLog::log(MvrLog::Normal, "Protocol Version: %s", myProtocolVersion.c_str());
-  ArLog::log(MvrLog::Normal, "Serial number: %s", mySerialNumber.c_str());
-  ArLog::log(MvrLog::Normal, "Stat: %s", myStat.c_str());
+  MvrLog::log(MvrLog::Normal, "URG %s:", getName());
+  MvrLog::log(MvrLog::Normal, "Vendor information: %s", myVendor.c_str());
+  MvrLog::log(MvrLog::Normal, "Product information: %s", myProduct.c_str());
+  MvrLog::log(MvrLog::Normal, "Firmware version: %s", myFirmwareVersion.c_str());
+  MvrLog::log(MvrLog::Normal, "Protocol Version: %s", myProtocolVersion.c_str());
+  MvrLog::log(MvrLog::Normal, "Serial number: %s", mySerialNumber.c_str());
+  MvrLog::log(MvrLog::Normal, "Stat: %s", myStat.c_str());
 }
 
-MVREXPORT void ArUrg::setRobot(MvrRobot *robot)
+MVREXPORT void MvrUrg::setRobot(MvrRobot *robot)
 {
   myRobot = robot;
   if (myRobot != NULL)
     myRobot->addSensorInterpTask("urg", 90, &mySensorInterpTask);
-  ArRangeDevice::setRobot(robot);
+  MvrRangeDevice::setRobot(robot);
 }
 
-bool ArUrg::writeLine(const char *str)
+bool MvrUrg::writeLine(const char *str)
 {
   if (myConn == NULL)
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Attempt to write string to null connection", getName());
     return false;
   }
@@ -274,17 +248,17 @@ bool ArUrg::writeLine(const char *str)
   return ret;
 }
 
-bool ArUrg::readLine(char *buf, unsigned int size, 
+bool MvrUrg::readLine(char *buf, unsigned int size, 
 		     unsigned int msWait)
 {
   if (myConn == NULL)
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Attempt to read line from null connection", getName());
     return false;
   }
 
-  ArTime started;
+  MvrTime started;
   started.setToNow();
 
   buf[0] = '\0';
@@ -303,7 +277,7 @@ bool ArUrg::readLine(char *buf, unsigned int size,
 	//buf[onChar+1] = '\0';
 	buf[onChar] = '\0';
 	if (myLogMore)
-	  ArLog::log(MvrLog::Normal, "%s: '%s'", getName(), buf);
+	  MvrLog::log(MvrLog::Normal, "%s: '%s'", getName(), buf);
 	myConnMutex.unlock();
 	return true;
       }
@@ -311,28 +285,28 @@ bool ArUrg::readLine(char *buf, unsigned int size,
     }
     if (ret < 0)
     {
-      ArLog::log(MvrLog::Normal, "%s: bad ret", getName());
+      MvrLog::log(MvrLog::Normal, "%s: bad ret", getName());
       myConnMutex.unlock();
       return false;
     }
     if (ret == 0)
-      ArUtil::sleep(1);
+      MvrUtil::sleep(1);
   }
   myConnMutex.unlock();
   return false;
 }
 
-bool ArUrg::sendCommandAndRecvStatus(
+bool MvrUrg::sendCommandAndRecvStatus(
 	const char *command, const char *commandDesc, 
 	char *buf, unsigned int size, unsigned int msWait)
 {
   //bool ret;
-  ArTime start;
+  MvrTime start;
 
   // send the command
   if (!writeLine(command))
   {
-    ArLog::log(MvrLog::Normal, "%s: Could not send %s", getName(), 
+    MvrLog::log(MvrLog::Normal, "%s: Could not send %s", getName(), 
 	       commandDesc);
     return false;
   }
@@ -340,7 +314,7 @@ bool ArUrg::sendCommandAndRecvStatus(
   // try and read the command back
   if (!readLine(buf, size, msWait))
   {
-    ArLog::log(MvrLog::Normal, "%s: Received no response to %s (in %d but really %d)", 
+    MvrLog::log(MvrLog::Normal, "%s: Received no response to %s (in %d but really %d)", 
 	       getName(), commandDesc, msWait, start.mSecSince());
     return false;
   }
@@ -348,7 +322,7 @@ bool ArUrg::sendCommandAndRecvStatus(
   // make sure the command back matches
   if (strcasecmp(buf, command) != 0)
   {
-    ArLog::log(MvrLog::Normal, "%s: Received bad echo to %s (command %s got back %s)", 
+    MvrLog::log(MvrLog::Normal, "%s: Received bad echo to %s (command %s got back %s)", 
 	       getName(), commandDesc, command, buf);
     return false;
   }
@@ -356,7 +330,7 @@ bool ArUrg::sendCommandAndRecvStatus(
   // get the status from that command back
   if (!readLine(buf, size, msWait))
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "%s: Did not receive status back from %s",
 	       getName(), commandDesc);
     return false;
@@ -365,7 +339,7 @@ bool ArUrg::sendCommandAndRecvStatus(
   return true;
 }
 
-MVREXPORT bool ArUrg::blockingConnect(void)
+MVREXPORT bool MvrUrg::blockingConnect(void)
 {
   if (!getRunning())
     runAsync();
@@ -373,7 +347,7 @@ MVREXPORT bool ArUrg::blockingConnect(void)
   myConnMutex.lock();
   if (myConn == NULL)
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Could not connect because there is no connection defined", 
 	       getName());
     myConnMutex.unlock();
@@ -381,16 +355,16 @@ MVREXPORT bool ArUrg::blockingConnect(void)
     return false;
   }
 
-  ArSerialConnection *serConn = NULL;
-  serConn = dynamic_cast<ArSerialConnection *>(myConn);
+  MvrSerialConnection *serConn = NULL;
+  serConn = dynamic_cast<MvrSerialConnection *>(myConn);
 
   if (serConn != NULL)
     serConn->setBaud(atoi(getStartingBaudChoice()));
 
-  if (myConn->getStatus() != ArDeviceConnection::STATUS_OPEN && 
+  if (myConn->getStatus() != MvrDeviceConnection::STATUS_OPEN && 
       !myConn->openSimple())
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
 	       "%s: Could not connect because the connection was not open and could not open it", 
 	       getName());
     myConnMutex.unlock();
@@ -408,7 +382,7 @@ MVREXPORT bool ArUrg::blockingConnect(void)
   
   setParams(getStartDegrees(), getEndDegrees(), getIncrement(), getFlipped());
   
-  ArUtil::sleep(100);
+  MvrUtil::sleep(100);
 
   bool connected = false;
 
@@ -421,7 +395,7 @@ MVREXPORT bool ArUrg::blockingConnect(void)
     myIsConnected = true;
     myTryingToConnect = false;
     unlockDevice();
-    ArLog::log(MvrLog::Normal, "%s: Connected to laser", getName());
+    MvrLog::log(MvrLog::Normal, "%s: Connected to laser", getName());
     laserConnect();
     return true;
   }
@@ -433,14 +407,14 @@ MVREXPORT bool ArUrg::blockingConnect(void)
 }
 
 
-bool ArUrg::internalConnect(void)
+bool MvrUrg::internalConnect(void)
 
 {
   bool ret = true;
   char buf[1024];
 
-  ArSerialConnection *serConn = NULL;
-  serConn = dynamic_cast<ArSerialConnection *>(myConn);
+  MvrSerialConnection *serConn = NULL;
+  serConn = dynamic_cast<MvrSerialConnection *>(myConn);
 
   bool alreadyAtAutobaud = false;
 
@@ -458,7 +432,7 @@ bool ArUrg::internalConnect(void)
     {
       alreadyAtAutobaud = true;
       serConn->setBaud(atoi(getAutoBaudChoice()));
-      ArUtil::sleep(100);
+      MvrUtil::sleep(100);
 
       if (!(ret = sendCommandAndRecvStatus(
 		"V", "version request after falling back to autobaudchoice", 
@@ -466,7 +440,7 @@ bool ArUrg::internalConnect(void)
 	  strcasecmp(buf, "0") != 0)      
       {
 	if (ret && strcasecmp(buf, "0") != 0)      
-	  ArLog::log(MvrLog::Normal, 
+	  MvrLog::log(MvrLog::Normal, 
 		     "%s::blockingConnect: Bad status on version response after falling back to autobaudchoice", 
 		     getName());
 	return false;
@@ -477,7 +451,7 @@ bool ArUrg::internalConnect(void)
     else
     {
       if (ret && strcasecmp(buf, "0") != 0)      
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "%s::blockingConnect: Bad status on version response (%s)",
 		   getName(), buf);
       return false;
@@ -495,12 +469,12 @@ bool ArUrg::internalConnect(void)
     if (!writeLine(buf))
       return false;
 
-    ArUtil::sleep(100);
+    MvrUtil::sleep(100);
 
     //serConn->setBaud(115200);
     serConn->setBaud(atoi(getAutoBaudChoice()));
     // wait a second for the baud to change...
-    ArUtil::sleep(100);
+    MvrUtil::sleep(100);
 
     // empty the buffer from the baud change
     while (readLine(buf, sizeof(buf), 100));
@@ -511,13 +485,13 @@ bool ArUrg::internalConnect(void)
 	strcasecmp(buf, "0") != 0)      
     {
       if (ret && strcasecmp(buf, "0") != 0)      
-	ArLog::log(MvrLog::Normal, 
+	MvrLog::log(MvrLog::Normal, 
 		   "%s::blockingConnect: Bad status on version response after switching to autobaudchoice", 
 		   getName());
       return false;
     }
 
-    ArLog::log(MvrLog::Normal, "%s: Switched to %s baud rate",
+    MvrLog::log(MvrLog::Normal, "%s: Switched to %s baud rate",
 	       getName(), getAutoBaudChoice());
   }
 
@@ -545,7 +519,7 @@ bool ArUrg::internalConnect(void)
   if (myVendor.empty() || myProduct.empty() || myFirmwareVersion.empty() || 
       myProtocolVersion.empty() || mySerialNumber.empty())
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "%s::blockingConnect: Missing information in version response",
 	       getName());
     return false;
@@ -555,7 +529,7 @@ bool ArUrg::internalConnect(void)
 
   myLogMore = true;
   //  myLogMore = false;
-  ArUtil::sleep(100);
+  MvrUtil::sleep(100);
   
   
   printf("myRequestString %s\n", myRequestString);
@@ -567,7 +541,7 @@ bool ArUrg::internalConnect(void)
       strcasecmp(buf, "0") != 0)
   {
     if (ret && strcasecmp(buf, "0") != 0) 
-      ArLog::log(MvrLog::Normal, 
+      MvrLog::log(MvrLog::Normal, 
 	 "%s::blockingConnect: Bad status on distance reading response (%c)",
 		 getName(), buf[0]);
     return false;
@@ -575,7 +549,7 @@ bool ArUrg::internalConnect(void)
   
   myLogMore = false;
 
-  ArTime started;
+  MvrTime started;
   started.setToNow();
   while (started.secSince() < 10 && readLine(buf, sizeof(buf), 10000))
   {
@@ -583,13 +557,13 @@ bool ArUrg::internalConnect(void)
       return true;
   }
 
-  ArLog::log(MvrLog::Normal, "%s::blockingConnect: Did not get distance reading back",
+  MvrLog::log(MvrLog::Normal, "%s::blockingConnect: Did not get distance reading back",
 	     getName(), buf[0]);
   return false;
 }
 
 
-MVREXPORT bool ArUrg::asyncConnect(void)
+MVREXPORT bool MvrUrg::asyncConnect(void)
 {
   myStartConnect = true;
   if (!getRunning())
@@ -597,12 +571,12 @@ MVREXPORT bool ArUrg::asyncConnect(void)
   return true;
 }
 
-MVREXPORT bool ArUrg::disconnect(void)
+MVREXPORT bool MvrUrg::disconnect(void)
 {
   if (!isConnected())
     return true;
 
-  ArLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
+  MvrLog::log(MvrLog::Normal, "%s: Disconnecting", getName());
 
   bool ret;
 
@@ -614,9 +588,9 @@ MVREXPORT bool ArUrg::disconnect(void)
 
 }
 
-void ArUrg::sensorInterp(void)
+void MvrUrg::sensorInterp(void)
 {
-  ArTime readingRequested;
+  MvrTime readingRequested;
   std::string reading;
   myReadingMutex.lock();
   if (myReading.empty())
@@ -630,11 +604,11 @@ void ArUrg::sensorInterp(void)
   myReading = "";
   myReadingMutex.unlock();
 
-  ArTime time = readingRequested;
-  ArPose pose;
+  MvrTime time = readingRequested;
+  MvrPose pose;
   int ret;
   int retEncoder;
-  ArPose encoderPose;
+  MvrPose encoderPose;
 
   //time.addMSec(-13);
   if (myRobot == NULL || !myRobot->isConnected())
@@ -646,11 +620,11 @@ void ArUrg::sensorInterp(void)
 	   (retEncoder = 
 	    myRobot->getEncoderPoseInterpPosition(time, &encoderPose)) < 0)
   {
-    ArLog::log(MvrLog::Normal, "%s: reading too old to process", getName());
+    MvrLog::log(MvrLog::Normal, "%s: reading too old to process", getName());
     return;
   }
 
-  ArTransform transform;
+  MvrTransform transform;
   transform.setTransform(pose);
 
   unsigned int counter = 0; 
@@ -669,8 +643,8 @@ void ArUrg::sensorInterp(void)
   int little;
   //int onStep;
 
-  std::list<ArSensorReading *>::reverse_iterator it;
-  ArSensorReading *sReading;
+  std::list<MvrSensorReading *>::reverse_iterator it;
+  MvrSensorReading *sReading;
 
   bool ignore;
   for (it = myRawReadings->rbegin(), i = 0; 
@@ -703,7 +677,7 @@ void ArUrg::sensorInterp(void)
   unlockDevice();
 }
 
-MVREXPORT void * ArUrg::runThread(void *arg)
+MVREXPORT void * MvrUrg::runThread(void *arg)
 {
   while (getRunning())
   {
@@ -725,7 +699,7 @@ MVREXPORT void * ArUrg::runThread(void *arg)
     
     if (!myIsConnected)
     {
-      ArUtil::sleep(100);
+      MvrUtil::sleep(100);
       continue;
     }
 
@@ -733,7 +707,7 @@ MVREXPORT void * ArUrg::runThread(void *arg)
     // connection failure
     if (laserCheckLostConnection())
     {
-      ArLog::log(MvrLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
 		 "%s:  Lost connection to the laser because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(), 
 		 myLastReading.mSecSince()/1000.0, 
 		 getConnectionTimeoutSeconds());
@@ -744,15 +718,15 @@ MVREXPORT void * ArUrg::runThread(void *arg)
 
     internalGetReading();
 
-    ArUtil::sleep(1);
+    MvrUtil::sleep(1);
 
   }
   return NULL;
 }
 
-bool ArUrg::internalGetReading(void)
+bool MvrUrg::internalGetReading(void)
 {
-  ArTime readingRequested;
+  MvrTime readingRequested;
   std::string reading;
   char buf[1024];
 
@@ -760,14 +734,14 @@ bool ArUrg::internalGetReading(void)
   readingRequested.setToNow();
   if (!writeLine(myRequestString))
   {
-    ArLog::log(MvrLog::Terse, "Could not send request distance reading to urg");
+    MvrLog::log(MvrLog::Terse, "Could not send request distance reading to urg");
     return false;
   }
   
   if (!readLine(buf, sizeof(buf), 10000) || 
       strcasecmp(buf, myRequestString) != 0)
   {
-    ArLog::log(MvrLog::Normal, "%s: Did not get distance reading response",
+    MvrLog::log(MvrLog::Normal, "%s: Did not get distance reading response",
 	       getName());
     return false;
   }
@@ -775,7 +749,7 @@ bool ArUrg::internalGetReading(void)
   if (!readLine(buf, sizeof(buf), 10000) || 
       strcasecmp(buf, "0") != 0)		  
   {
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
 	       "%s: Bad status on distance reading response (%c)",
 	       getName(), buf[0]);
     return false;
@@ -802,7 +776,7 @@ bool ArUrg::internalGetReading(void)
   return false;
 }
 
-void ArUrg::failedToConnect(void)
+void MvrUrg::failedToConnect(void)
 {
   lockDevice();
   myTryingToConnect = true;
@@ -810,7 +784,7 @@ void ArUrg::failedToConnect(void)
   laserFailedConnect();
 }
 
-bool ArUrg::laserCheckParams(void)
+bool MvrUrg::laserCheckParams(void)
 {
   laserSetAbsoluteMaxRange(4095);
   return true;

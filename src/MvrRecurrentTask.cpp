@@ -30,7 +30,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <pthread.h>
 #include <unistd.h>
 #endif
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrASyncTask.h"
 #include "MvrLog.h"
 #include "MvrRecurrentTask.h"

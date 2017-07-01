@@ -1,46 +1,20 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 #include "MvrLog.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include "MvrSoundsQueue.h"
 #include "MvrSoundPlayer.h"
 #include <assert.h>
 
 
 // For debugging:
-//#define ARSOUNDSQUEUE_DEBUG 1
+//#define MVRSOUNDSQUEUE_DEBUG 1
 
 
 #ifdef ARSOUNDSQUEUE_DEBUG
 #ifndef __PRETTY_FUNCTION__
 #define __PRETTY_FUNCTION__ __FUNCTION__
 #endif
-#define debuglog(msg) ArLog::log(MvrLog::Verbose, "%s: %s", __PRETTY_FUNCTION__, (msg));
+#define debuglog(msg) MvrLog::log(MvrLog::Verbose, "%s: %s", __PRETTY_FUNCTION__, (msg));
 #else
 #define debuglog(msg) {}
 #endif
@@ -49,22 +23,22 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 using namespace std;
 
 
-MVREXPORT ArSoundsQueue::Item::Item() :
+MVREXPORT MvrSoundsQueue::Item::Item() :
   data(""), type(OTHER), params(""), priority(0)
 {
 }
 
-MVREXPORT ArSoundsQueue::Item::Item(std::string _data, ItemType _type, std::string _params, int _priority, std::list<PlayItemFunctor*> _callbacks) : 
+MVREXPORT MvrSoundsQueue::Item::Item(std::string _data, ItemType _type, std::string _params, int _priority, std::list<PlayItemFunctor*> _callbacks) : 
       data(_data), type(_type), params(_params), priority(_priority), playCallbacks(_callbacks)
 {
 }
 
-MVREXPORT ArSoundsQueue::Item::Item(std::string _data, ItemType _type, std::string _params, int _priority) : 
+MVREXPORT MvrSoundsQueue::Item::Item(std::string _data, ItemType _type, std::string _params, int _priority) : 
   data(_data), type(_type), params(_params), priority(_priority)
 {
 }
 
-MVREXPORT ArSoundsQueue::Item::Item(const ArSoundsQueue::Item& toCopy) 
+MVREXPORT MvrSoundsQueue::Item::Item(const MvrSoundsQueue::Item& toCopy) 
 {
   data = toCopy.data;
   type = toCopy.type;
@@ -76,7 +50,7 @@ MVREXPORT ArSoundsQueue::Item::Item(const ArSoundsQueue::Item& toCopy)
   playbackConditionCallbacks = toCopy.playbackConditionCallbacks;
 }
 
-void ArSoundsQueue::Item::play()
+void MvrSoundsQueue::Item::play()
 {
   for(std::list<PlayItemFunctor*>::const_iterator i = playCallbacks.begin(); i != playCallbacks.end(); i++) 
   {
@@ -86,16 +60,16 @@ void ArSoundsQueue::Item::play()
   }
 }
 
-void ArSoundsQueue::Item::interrupt()
+void MvrSoundsQueue::Item::interrupt()
 {
-  for(std::list<ArFunctor*>::const_iterator i = interruptCallbacks.begin(); i != interruptCallbacks.end(); i++) 
+  for(std::list<MvrFunctor*>::const_iterator i = interruptCallbacks.begin(); i != interruptCallbacks.end(); i++) 
     if(*i) (*i)->invoke();
 }
 
 
-void ArSoundsQueue::Item::done()
+void MvrSoundsQueue::Item::done()
 {
-  for(std::list<ArFunctor*>::const_iterator i = doneCallbacks.begin(); i != doneCallbacks.end(); i++) 
+  for(std::list<MvrFunctor*>::const_iterator i = doneCallbacks.begin(); i != doneCallbacks.end(); i++) 
     if(*i) {
       (*i)->invoke();
     }
@@ -108,13 +82,13 @@ void ArSoundsQueue::Item::done()
  */
 class ItemComparator {
 protected:
-  ArSoundsQueue::Item myItem;
+  MvrSoundsQueue::Item myItem;
 public:
-  ItemComparator(string data = "", ArSoundsQueue::ItemType type = ArSoundsQueue::OTHER, string params = "", int priority = 0) : 
+  ItemComparator(string data = "", MvrSoundsQueue::ItemType type = MvrSoundsQueue::OTHER, string params = "", int priority = 0) : 
     myItem(data, type, params, priority)
   {}
   virtual ~ItemComparator() {}
-  virtual bool operator()(const ArSoundsQueue::Item& other)
+  virtual bool operator()(const MvrSoundsQueue::Item& other)
   {
     return (other == myItem && other.priority == myItem.priority);
   }
@@ -128,7 +102,7 @@ public:
   ItemComparator_OnlyData(string data) : 
     ItemComparator(data)
   {}
-  virtual bool operator()(const ArSoundsQueue::Item& other)
+  virtual bool operator()(const MvrSoundsQueue::Item& other)
   {
     return(other.data == myItem.data);
   }
@@ -139,10 +113,10 @@ public:
  */
 class ItemComparator_TypeAndData : public virtual ItemComparator {
 public:
-  ItemComparator_TypeAndData(string data, ArSoundsQueue::ItemType type) : 
+  ItemComparator_TypeAndData(string data, MvrSoundsQueue::ItemType type) : 
     ItemComparator(data, type)
   {}
-  virtual bool operator()(const ArSoundsQueue::Item& other)
+  virtual bool operator()(const MvrSoundsQueue::Item& other)
   {
     return(other.type == myItem.type && other.data == myItem.data);
   }
@@ -156,7 +130,7 @@ class ItemComparator_PriorityLessThan : public virtual ItemComparator {
 public:
   ItemComparator_PriorityLessThan(int priority) : myPriority(priority)
   {}
-  virtual bool operator()(const ArSoundsQueue::Item& other)
+  virtual bool operator()(const MvrSoundsQueue::Item& other)
   {
     return(other.priority < myPriority);
   }
@@ -166,12 +140,12 @@ public:
  * @internal
  */
 class ItemComparator_WithTypePriorityLessThan : public virtual ItemComparator {
-  ArSoundsQueue::ItemType myType;
+  MvrSoundsQueue::ItemType myType;
   int myPriority;
 public:
   ItemComparator_WithTypePriorityLessThan(MvrSoundsQueue::ItemType type, int priority) : myType(type), myPriority(priority)
   {}
-  virtual bool operator()(const ArSoundsQueue::Item& other)
+  virtual bool operator()(const MvrSoundsQueue::Item& other)
   {
     return(other.type == myType && other.priority < myPriority);
   }
@@ -182,11 +156,11 @@ public:
  * @internal
  */ 
 class ItemComparator_WithType : public virtual ItemComparator {
-  ArSoundsQueue::ItemType myType;
+  MvrSoundsQueue::ItemType myType;
 public:
   ItemComparator_WithType(MvrSoundsQueue::ItemType type) : myType(type)
   {}
-  virtual bool operator()(const ArSoundsQueue::Item& other)
+  virtual bool operator()(const MvrSoundsQueue::Item& other)
   {
     return(other.type == myType);
   }
@@ -195,7 +169,7 @@ public:
 /** @endcond INTERNAL_CLASSES */
 
 
-MVREXPORT ArSoundsQueue::ArSoundsQueue()  :
+MVREXPORT MvrSoundsQueue::MvrSoundsQueue()  :
   myInitialized(false),
   myPlayingSomething(false),
   myDefaultSpeakCB(0), myDefaultInterruptSpeechCB(0),
@@ -207,10 +181,10 @@ MVREXPORT ArSoundsQueue::ArSoundsQueue()  :
   myQueueMutex.setLogName("MvrSoundsQueue::myQueueMutex");
 }
 
-MVREXPORT ArSoundsQueue::ArSoundsQueue(MvrRetFunctor<bool> *speakInitCB, 
+MVREXPORT MvrSoundsQueue::MvrSoundsQueue(MvrRetFunctor<bool> *speakInitCB, 
 		    PlayItemFunctor *speakCB, 
         InterruptItemFunctor *interruptSpeechCB,
-        ArRetFunctor<bool> *playInitCB, 
+        MvrRetFunctor<bool> *playInitCB, 
         PlayItemFunctor *playCB,
         InterruptItemFunctor *interruptFileCB) :
   myInitialized(false), myPlayingSomething(false),
@@ -225,13 +199,13 @@ MVREXPORT ArSoundsQueue::ArSoundsQueue(MvrRetFunctor<bool> *speakInitCB,
   if(playInitCB)
     myInitCallbacks.push_back(playInitCB);
   if(playCB == 0)
-    myDefaultPlayFileCB = ArSoundPlayer::getPlayWavFileCallback();
+    myDefaultPlayFileCB = MvrSoundPlayer::getPlayWavFileCallback();
   if(interruptFileCB == 0)
-    myDefaultInterruptFileCB = ArSoundPlayer::getStopPlayingCallback();
+    myDefaultInterruptFileCB = MvrSoundPlayer::getStopPlayingCallback();
 }
 
-MVREXPORT ArSoundsQueue::ArSoundsQueue(MvrSpeechSynth* speechSynth, 
-		    ArRetFunctor<bool> *playInitCB,
+MVREXPORT MvrSoundsQueue::MvrSoundsQueue(MvrSpeechSynth* speechSynth, 
+		    MvrRetFunctor<bool> *playInitCB,
 		    PlayItemFunctor *playFileCB,
         InterruptItemFunctor *interruptFileCB) 
   : myInitialized(false), myPlayingSomething(false),
@@ -251,34 +225,34 @@ MVREXPORT ArSoundsQueue::ArSoundsQueue(MvrSpeechSynth* speechSynth,
   }
 }
 
-MVREXPORT ArSoundsQueue::~MvrSoundsQueue()
+MVREXPORT MvrSoundsQueue::~MvrSoundsQueue()
 {
 
 }
 
 
-void ArSoundsQueue::invokeCallbacks(const std::list<ArFunctor*>& lst)
+void MvrSoundsQueue::invokeCallbacks(const std::list<MvrFunctor*>& lst)
 {
-  for(std::list<ArFunctor*>::const_iterator i = lst.begin(); i != lst.end(); i++)
+  for(std::list<MvrFunctor*>::const_iterator i = lst.begin(); i != lst.end(); i++)
   {
     if(*i) (*i)->invoke();
-    else ArLog::log(MvrLog::Verbose, "MvrSoundsQueue: warning: skipped NULL callback (simple functor).");
+    else MvrLog::log(MvrLog::Verbose, "MvrSoundsQueue: warning: skipped NULL callback (simple functor).");
   }
 }
 
-void ArSoundsQueue::invokeCallbacks(const std::list<ArRetFunctor<bool>*>& lst)
+void MvrSoundsQueue::invokeCallbacks(const std::list<MvrRetFunctor<bool>*>& lst)
 {
-  for(std::list<ArRetFunctor<bool>*>::const_iterator i = lst.begin(); i != lst.end(); i++)
+  for(std::list<MvrRetFunctor<bool>*>::const_iterator i = lst.begin(); i != lst.end(); i++)
   {
     if(*i) (*i)->invokeR();
-    else ArLog::log(MvrLog::Verbose, "MvrSoundsQueue: warning: skipped NULL callback (bool ret. funct.).");
+    else MvrLog::log(MvrLog::Verbose, "MvrSoundsQueue: warning: skipped NULL callback (bool ret. funct.).");
   }
 }
 
 
 // This is the public method, but all we have to do is call the private push
 // method.
-MVREXPORT void ArSoundsQueue::addItem(ItemType type, const char* data, std::list<PlayItemFunctor*> callbacks, int priority, const char* params)
+MVREXPORT void MvrSoundsQueue::addItem(ItemType type, const char* data, std::list<PlayItemFunctor*> callbacks, int priority, const char* params)
 {
   assert(data);
   pushQueueItem(Item(data, type, params?params:"", priority, callbacks));
@@ -286,13 +260,13 @@ MVREXPORT void ArSoundsQueue::addItem(ItemType type, const char* data, std::list
 
 // This is the public method, but all we have to do is call the private push
 // method.
-MVREXPORT void ArSoundsQueue::addItem(MvrSoundsQueue::Item item)
+MVREXPORT void MvrSoundsQueue::addItem(MvrSoundsQueue::Item item)
 {
   pushQueueItem(item);
 }
 
 // Class-protected version.
-void ArSoundsQueue::pushQueueItem(MvrSoundsQueue::Item item)
+void MvrSoundsQueue::pushQueueItem(MvrSoundsQueue::Item item)
 {
   lock();
   pushQueueItem_NoLock(item);
@@ -301,29 +275,29 @@ void ArSoundsQueue::pushQueueItem(MvrSoundsQueue::Item item)
 
 // Class-protected version that does not lock (so caller can do it manually as
 // needed)
-void ArSoundsQueue::pushQueueItem_NoLock(MvrSoundsQueue::Item item)
+void MvrSoundsQueue::pushQueueItem_NoLock(MvrSoundsQueue::Item item)
 {
-  ArLog::log(MvrLog::Verbose, "MvrSoundsQueue: pushing \"%s\" with type=%d, priority=%d, params=\"%s\".", item.data.c_str(), item.type, item.priority, item.params.c_str());
+  MvrLog::log(MvrLog::Verbose, "MvrSoundsQueue: pushing \"%s\" with type=%d, priority=%d, params=\"%s\".", item.data.c_str(), item.type, item.priority, item.params.c_str());
   myQueue.push_back(item);
 }
 
-ArSoundsQueue::Item ArSoundsQueue::popQueueItem()
+MvrSoundsQueue::Item MvrSoundsQueue::popQueueItem()
 {
   lock();
-  ArSoundsQueue::Item item = *(myQueue.begin());
+  MvrSoundsQueue::Item item = *(myQueue.begin());
   myQueue.pop_front();
   unlock();
   return item;
 }
 
-ArSoundsQueue::Item ArSoundsQueue::popQueueItem_NoLock()
+MvrSoundsQueue::Item MvrSoundsQueue::popQueueItem_NoLock()
 {
-  ArSoundsQueue::Item item = *(myQueue.begin());
+  MvrSoundsQueue::Item item = *(myQueue.begin());
   myQueue.pop_front();
   return item;
 }
 
-MVREXPORT ArSoundsQueue::Item ArSoundsQueue::createDefaultSpeechItem(const char* speech)
+MVREXPORT MvrSoundsQueue::Item MvrSoundsQueue::createDefaultSpeechItem(const char* speech)
 {
   Item item;
   item.type = SPEECH;
@@ -338,7 +312,7 @@ MVREXPORT ArSoundsQueue::Item ArSoundsQueue::createDefaultSpeechItem(const char*
   return item;
 }
 
-MVREXPORT void ArSoundsQueue::speak(const char *str)
+MVREXPORT void MvrSoundsQueue::speak(const char *str)
 {
   if(myQueue.size() == 0)
     invokeCallbacks(myQueueNonemptyCallbacks);
@@ -347,7 +321,7 @@ MVREXPORT void ArSoundsQueue::speak(const char *str)
   pushQueueItem(item);
 }
 
-MVREXPORT void ArSoundsQueue::play(const char *str)
+MVREXPORT void MvrSoundsQueue::play(const char *str)
 {
   if(myQueue.size() == 0)
     invokeCallbacks(myQueueNonemptyCallbacks);
@@ -358,7 +332,7 @@ MVREXPORT void ArSoundsQueue::play(const char *str)
 
 #if !(defined(WIN32) && defined(_MANAGED)) // MS Managed C++ does not allow varargs
 
-MVREXPORT void ArSoundsQueue::speakf(const char *str, ...)
+MVREXPORT void MvrSoundsQueue::speakf(const char *str, ...)
 {
   if(myQueue.size() == 0)
     invokeCallbacks(myQueueNonemptyCallbacks);
@@ -381,7 +355,7 @@ MVREXPORT void ArSoundsQueue::speakf(const char *str, ...)
 }
 
 
-MVREXPORT void ArSoundsQueue::speakWithVoice(const char* voice, const char* str, ...)
+MVREXPORT void MvrSoundsQueue::speakWithVoice(const char* voice, const char* str, ...)
 {
   if(myQueue.size() == 0)
     invokeCallbacks(myQueueNonemptyCallbacks);
@@ -406,7 +380,7 @@ MVREXPORT void ArSoundsQueue::speakWithVoice(const char* voice, const char* str,
   unlock();
 }
 
-MVREXPORT void ArSoundsQueue::speakWithPriority(int priority, const char* str, ...)
+MVREXPORT void MvrSoundsQueue::speakWithPriority(int priority, const char* str, ...)
 {
   if(myQueue.size() == 0)
     invokeCallbacks(myQueueNonemptyCallbacks);
@@ -430,7 +404,7 @@ MVREXPORT void ArSoundsQueue::speakWithPriority(int priority, const char* str, .
 }
 
 
-MVREXPORT void ArSoundsQueue::playf(const char *str, ...)
+MVREXPORT void MvrSoundsQueue::playf(const char *str, ...)
 {
   if(myQueue.size() == 0)
     invokeCallbacks(myQueueNonemptyCallbacks);
@@ -451,14 +425,14 @@ MVREXPORT void ArSoundsQueue::playf(const char *str, ...)
 
 #endif // MS Managed C++
 
-MVREXPORT ArSoundsQueue::Item ArSoundsQueue::createDefaultFileItem(const char* filename)
+MVREXPORT MvrSoundsQueue::Item MvrSoundsQueue::createDefaultFileItem(const char* filename)
 {
   Item item;
   item.type = SOUND_FILE;
   if(myDefaultPlayFileCB)
     item.playCallbacks.push_back(myDefaultPlayFileCB);
   else
-    ArLog::log(MvrLog::Normal, "MvrSoundsQueue: Internal Warning: no default PlayFile callback.");
+    MvrLog::log(MvrLog::Normal, "MvrSoundsQueue: Internal Warning: no default PlayFile callback.");
   if(myDefaultInterruptFileCB)
     item.interruptCallbacks.push_back(myDefaultInterruptFileCB);
   if(filename)
@@ -470,7 +444,7 @@ MVREXPORT ArSoundsQueue::Item ArSoundsQueue::createDefaultFileItem(const char* f
 
 
 
-MVREXPORT void *ArSoundsQueue::runThread(void *arg)
+MVREXPORT void *MvrSoundsQueue::runThread(void *arg)
 {
   threadStarted();
   invokeCallbacks(myInitCallbacks);
@@ -491,12 +465,12 @@ MVREXPORT void *ArSoundsQueue::runThread(void *arg)
       myLastItem = popQueueItem_NoLock();
 
 #ifdef DEBUG
-      ArLog::log(MvrLog::Normal, "* DEBUG * ArSoundsQueue: Popped an item from the queue. There are %d condition callbacks for this item.", myLastItem.playbackConditionCallbacks.size());
+      MvrLog::log(MvrLog::Normal, "* DEBUG * MvrSoundsQueue: Popped an item from the queue. There are %d condition callbacks for this item.", myLastItem.playbackConditionCallbacks.size());
 #endif
 
       // Call some callbacks to tell them that play is about to begin
       invokeCallbacks(myStartPlaybackCBList);
-      std::list<ArFunctor1<ArSoundsQueue::Item> *>::iterator lIt;
+      std::list<MvrFunctor1<MvrSoundsQueue::Item> *>::iterator lIt;
       for (lIt = myStartItemPlaybackCBList.begin(); 
 	   lIt != myStartItemPlaybackCBList.end(); 
 	   lIt++)
@@ -512,15 +486,15 @@ MVREXPORT void *ArSoundsQueue::runThread(void *arg)
       {
         if( (*i) && (*i)->invokeR() == false) {
           if( (*i)->getName() && strlen((*i)->getName()) > 0 )
-            ArLog::log(MvrLog::Normal, "MvrSoundsQueue: the \"%s\" condition is preventing this item from playing. Skipping this item.", (*i)->getName());
+            MvrLog::log(MvrLog::Normal, "MvrSoundsQueue: the \"%s\" condition is preventing this item from playing. Skipping this item.", (*i)->getName());
           else
-            ArLog::log(MvrLog::Normal, "MvrSoundsQueue: an unnamed condition is preventing this item from playing. Skipping this item.");
+            MvrLog::log(MvrLog::Normal, "MvrSoundsQueue: an unnamed condition is preventing this item from playing. Skipping this item.");
           doPlayback = false;
           break;
         }
 #ifdef DEBUG
         else {
-          ArLog::log(MvrLog::Normal, "* DEBUG * ArSoundsQueue: Condition callback returned true.");
+          MvrLog::log(MvrLog::Normal, "* DEBUG * MvrSoundsQueue: Condition callback returned true.");
         }
 #endif
       }
@@ -533,13 +507,13 @@ MVREXPORT void *ArSoundsQueue::runThread(void *arg)
 
       // Play the item.
 #ifdef DEBUG
-        ArLog::log(MvrLog::Normal, "* DEBUG* Acting on item. type=%d", myLastItem.type);
+        MvrLog::log(MvrLog::Normal, "* DEBUG* Acting on item. type=%d", myLastItem.type);
 #endif
         myLastItem.play();
 
         // Sleep a bit for some "recover" time (especially for sound playback
         // processing)
-        ArUtil::sleep(200);
+        MvrUtil::sleep(200);
 
         lock();
         myPlayingSomething = false;
@@ -574,7 +548,7 @@ MVREXPORT void *ArSoundsQueue::runThread(void *arg)
     else
     {
       unlock();
-      ArUtil::sleep(20);
+      MvrUtil::sleep(20);
     }
   }
   threadFinished();
@@ -582,21 +556,21 @@ MVREXPORT void *ArSoundsQueue::runThread(void *arg)
 }
 
 
-MVREXPORT void ArSoundsQueue::pause()
+MVREXPORT void MvrSoundsQueue::pause()
 {
   lock();
   myPauseRequestCount++;
   unlock();
 }
 
-MVREXPORT void ArSoundsQueue::resume()
+MVREXPORT void MvrSoundsQueue::resume()
 {
-  ArLog::log(MvrLog::Verbose, "MvrSoundsQueue::resume: requested.");
+  MvrLog::log(MvrLog::Verbose, "MvrSoundsQueue::resume: requested.");
   lock();
   if(--myPauseRequestCount <= 0) 
   {
     myPauseRequestCount = 0;
-    ArLog::log(MvrLog::Verbose, "MvrSoundsQueue::resume: unpausing.");
+    MvrLog::log(MvrLog::Verbose, "MvrSoundsQueue::resume: unpausing.");
     unlock();
     myPausedCondition.signal();
   } else {
@@ -604,17 +578,17 @@ MVREXPORT void ArSoundsQueue::resume()
   }
 }
 
-MVREXPORT void ArSoundsQueue::stop()
+MVREXPORT void MvrSoundsQueue::stop()
 {
   stopRunning();
 }
 
-MVREXPORT bool ArSoundsQueue::isPaused()
+MVREXPORT bool MvrSoundsQueue::isPaused()
 {
   return (myPauseRequestCount > 0);
 }
 
-MVREXPORT void ArSoundsQueue::interrupt()
+MVREXPORT void MvrSoundsQueue::interrupt()
 {
   lock();
   // Don't try to interrupt the last item removed from the queue if
@@ -626,7 +600,7 @@ MVREXPORT void ArSoundsQueue::interrupt()
   unlock();
 }
 
-MVREXPORT void ArSoundsQueue::clearQueue() 
+MVREXPORT void MvrSoundsQueue::clearQueue() 
 {
   lock();
   myQueue.clear();
@@ -634,7 +608,7 @@ MVREXPORT void ArSoundsQueue::clearQueue()
   invokeCallbacks(myQueueEmptyCallbacks);
 }
 
-MVREXPORT set<int> ArSoundsQueue::findPendingItems(const char* item)
+MVREXPORT set<int> MvrSoundsQueue::findPendingItems(const char* item)
 {
   lock();
   set<int> found;
@@ -649,7 +623,7 @@ MVREXPORT set<int> ArSoundsQueue::findPendingItems(const char* item)
   return found;
 }
 
-MVREXPORT void ArSoundsQueue::removePendingItems(const char* item, ItemType type) 
+MVREXPORT void MvrSoundsQueue::removePendingItems(const char* item, ItemType type) 
 {
   lock();
   myQueue.remove_if<ItemComparator_TypeAndData>(ItemComparator_TypeAndData(item, type));
@@ -657,35 +631,35 @@ MVREXPORT void ArSoundsQueue::removePendingItems(const char* item, ItemType type
 }
 
 
-MVREXPORT void ArSoundsQueue::removePendingItems(const char* data)
+MVREXPORT void MvrSoundsQueue::removePendingItems(const char* data)
 {
   lock();
   myQueue.remove_if<ItemComparator_OnlyData>(ItemComparator_OnlyData(data));
   unlock();
 }
 
-MVREXPORT void ArSoundsQueue::removePendingItems(int priority) 
+MVREXPORT void MvrSoundsQueue::removePendingItems(int priority) 
 {
   lock();
   myQueue.remove_if<ItemComparator_PriorityLessThan>(ItemComparator_PriorityLessThan(priority));
   unlock();
 }
 
-MVREXPORT void ArSoundsQueue::removePendingItems(int priority, ItemType type)
+MVREXPORT void MvrSoundsQueue::removePendingItems(int priority, ItemType type)
 {
   lock();
   myQueue.remove_if<ItemComparator_WithTypePriorityLessThan>(ItemComparator_WithTypePriorityLessThan(type, priority));
   unlock();
 }
 
-MVREXPORT void ArSoundsQueue::removePendingItems(ItemType type)
+MVREXPORT void MvrSoundsQueue::removePendingItems(ItemType type)
 {
   lock();
   myQueue.remove_if<ItemComparator_WithType>(ItemComparator_WithType(type));
   unlock();
 }
 
-MVREXPORT void ArSoundsQueue::removeItems(int priority) 
+MVREXPORT void MvrSoundsQueue::removeItems(int priority) 
 {
 
   lock();
@@ -698,7 +672,7 @@ MVREXPORT void ArSoundsQueue::removeItems(int priority)
 }
 
 
-MVREXPORT void ArSoundsQueue::removeItems(Item item) 
+MVREXPORT void MvrSoundsQueue::removeItems(Item item) 
 {
 
   lock();
@@ -712,7 +686,7 @@ MVREXPORT void ArSoundsQueue::removeItems(Item item)
 }
 
 
-MVREXPORT string ArSoundsQueue::nextItem(ItemType type)
+MVREXPORT string MvrSoundsQueue::nextItem(ItemType type)
 {
   lock();
   for(list<Item>::const_iterator i = myQueue.begin(); i != myQueue.end(); i++)
@@ -727,7 +701,7 @@ MVREXPORT string ArSoundsQueue::nextItem(ItemType type)
   return "";
 }
 
-MVREXPORT string ArSoundsQueue::nextItem(int priority)
+MVREXPORT string MvrSoundsQueue::nextItem(int priority)
 {
   lock();
   for(list<Item>::const_iterator i = myQueue.begin(); i != myQueue.end(); i++)
@@ -742,7 +716,7 @@ MVREXPORT string ArSoundsQueue::nextItem(int priority)
   return "";
 }
 
-MVREXPORT string ArSoundsQueue::nextItem(ItemType type, int priority)
+MVREXPORT string MvrSoundsQueue::nextItem(ItemType type, int priority)
 {
   lock();
   for(list<Item>::const_iterator i = myQueue.begin(); i != myQueue.end(); i++)

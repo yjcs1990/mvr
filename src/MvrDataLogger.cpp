@@ -1,30 +1,4 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#include "ariaOSDef.h"
+#include "mvriaOSDef.h"
 #include "MvrExport.h"
 #include "MvrRobot.h"
 #include "MvrConfig.h"
@@ -42,11 +16,11 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
    separate this by runs you need to do it on your own by removing or
    moving the file)
  **/
-MVREXPORT MvrDataLogger::ArDataLogger(MvrRobot *robot, const char *fileName) :
-  myAddStringFunctor(this, &ArDataLogger::addString),
-  myConnectCB(this, &ArDataLogger::connectCallback),
-  myProcessFileCB(this, &ArDataLogger::processFile),
-  myUserTaskCB(this, &ArDataLogger::userTask)
+MVREXPORT MvrDataLogger::MvrDataLogger(MvrRobot *robot, const char *fileName) :
+  myAddStringFunctor(this, &MvrDataLogger::addString),
+  myConnectCB(this, &MvrDataLogger::connectCallback),
+  myProcessFileCB(this, &MvrDataLogger::processFile),
+  myUserTaskCB(this, &MvrDataLogger::userTask)
 {
   myMutex.setLogName("MvrDataLogger::myMutex");
   myRobot = robot;
@@ -355,12 +329,12 @@ MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer,
     {
       if ((myFile = MvrUtil::fopen(myPermanentFileName.c_str(), "a")) != NULL)
       {
-	ArLog::log(MvrLog::Normal, "Opened data log file '%s'", 
+	MvrLog::log(MvrLog::Normal, "Opened data log file '%s'", 
 		   myPermanentFileName.c_str());
       }
       else
       {
-	ArLog::log(MvrLog::Normal, "Could not open data log file '%s'", 
+	MvrLog::log(MvrLog::Normal, "Could not open data log file '%s'", 
 		   myPermanentFileName.c_str());
 	myMutex.unlock();
 	return true;
@@ -372,12 +346,12 @@ MVREXPORT bool MvrDataLogger::processFile(char *errorBuffer,
       if ((myFile = MvrUtil::fopen(myConfigFileName, "w")) != NULL)
       {
 	strcpy(myOpenedFileName, myConfigFileName);
-	ArLog::log(MvrLog::Normal, "Opened data log file '%s'", 
+	MvrLog::log(MvrLog::Normal, "Opened data log file '%s'", 
 		   myOpenedFileName);
       }
       else
       {
-	ArLog::log(MvrLog::Normal, "Could not open data log file '%s'", 
+	MvrLog::log(MvrLog::Normal, "Could not open data log file '%s'", 
 		   myConfigFileName);
 	myMutex.unlock();
 	if (errorBuffer != NULL)
@@ -660,7 +634,7 @@ MVREXPORT void MvrDataLogger::userTask(void)
 
 MVREXPORT void MvrDataLogger::addString(
 	const char *name, MvrTypes::UByte2 maxLength,
-	ArFunctor2<char *, MvrTypes::UByte2> *functor)
+	MvrFunctor2<char *, MvrTypes::UByte2> *functor)
 {
   MvrTypes::UByte2 len;
 

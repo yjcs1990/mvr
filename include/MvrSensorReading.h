@@ -1,34 +1,8 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRSENSORREADING_H
+#define MVRSENSORREADING_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-#ifndef ARSENSORREADING_H
-#define ARSENSORREADING_H
-
-#include "ariaTypedefs.h"
-#include "ariaUtil.h"
+#include "mvriaTypedefs.h"
+#include "mvriaUtil.h"
 #include "MvrTransform.h"
 
 /// Used to convert and store data from  and/or about a range sensor
@@ -205,18 +179,18 @@ coordinate system.
     @param extraInt extra device-specific data. @see getExtraInt()
 */
   MVREXPORT void newData(int range, MvrPose robotPose, MvrPose encoderPose,
-			ArTransform trans, unsigned int counter, 
-			ArTime timeTaken, bool ignoreThisReading = false,
+			MvrTransform trans, unsigned int counter, 
+			MvrTime timeTaken, bool ignoreThisReading = false,
 			int extraInt = 0);
 
   /**
     @copydoc newData(int, MvrPose, MvrPose, MvrTransform, unsigned int, MvrTime, bool, int)
   */
   MVREXPORT void newData(int sx, int sy, MvrPose robotPose,
-			ArPose encoderPose,
-			ArTransform trans, 
+			MvrPose encoderPose,
+			MvrTransform trans, 
 			unsigned int counter,
-			ArTime timeTaken,
+			MvrTime timeTaken,
 			bool ignoreThisReading = false,
 			int extraInt = 0);
 
@@ -264,4 +238,4 @@ protected:
   bool myAdjusted;
 };
 
-#endif
+#endif  // MVRSENSORREADING_H

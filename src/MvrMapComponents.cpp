@@ -1,29 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 #include "MvrMapComponents.h"
 
@@ -38,8 +12,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrMapUtils.h"
 #include "MvrMD5Calculator.h"
 
-//#define ARDEBUG_MAP_COMPONENTS
-#ifdef ARDEBUG_MAP_COMPONENTS
+//#define MVRDEBUG_MAP_COMPONENTS
+#ifdef MVRDEBUG_MAP_COMPONENTS
 #define IFDEBUG(code) {code;}
 #else
 #define IFDEBUG(code)
@@ -49,18 +23,18 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 // MvrMapScan
 // ---------------------------------------------------------------------------- 
 
-const char *ArMapScan::EOL_CHARS = "";
+const char *MvrMapScan::EOL_CHARS = "";
 
-MVREXPORT MvrMapScan::ArMapScan(const char *scanType) :
+MVREXPORT MvrMapScan::MvrMapScan(const char *scanType) :
 
-  myScanType(!ArUtil::isStrEmpty(scanType) ? scanType : ""),
+  myScanType(!MvrUtil::isStrEmpty(scanType) ? scanType : ""),
   myIsSummaryScan(isSummaryScanType(scanType)),
   myLogPrefix(),
   myKeywordPrefix(),
   myPointsKeyword(),
   myLinesKeyword(),
   myTimeChanged(),
-  myDisplayString(!ArUtil::isStrEmpty(scanType) ? scanType : ""),
+  myDisplayString(!MvrUtil::isStrEmpty(scanType) ? scanType : ""),
   myNumPoints(0),
   myNumLines(0),
   myResolution(0),
@@ -75,22 +49,22 @@ MVREXPORT MvrMapScan::ArMapScan(const char *scanType) :
   myPoints(),
   myLines(),
 
-  myMinPosCB(this, &ArMapScan::handleMinPos),
-  myMaxPosCB(this, &ArMapScan::handleMaxPos),
-  myIsSortedPointsCB(this, &ArMapScan::handleIsSortedPoints),
-  myNumPointsCB(this, &ArMapScan::handleNumPoints),
+  myMinPosCB(this, &MvrMapScan::handleMinPos),
+  myMaxPosCB(this, &MvrMapScan::handleMaxPos),
+  myIsSortedPointsCB(this, &MvrMapScan::handleIsSortedPoints),
+  myNumPointsCB(this, &MvrMapScan::handleNumPoints),
 
-  myLineMinPosCB(this, &ArMapScan::handleLineMinPos),
-  myLineMaxPosCB(this, &ArMapScan::handleLineMaxPos),
-  myIsSortedLinesCB(this, &ArMapScan::handleIsSortedLines),
-  myNumLinesCB(this, &ArMapScan::handleNumLines),
+  myLineMinPosCB(this, &MvrMapScan::handleLineMinPos),
+  myLineMaxPosCB(this, &MvrMapScan::handleLineMaxPos),
+  myIsSortedLinesCB(this, &MvrMapScan::handleIsSortedLines),
+  myNumLinesCB(this, &MvrMapScan::handleNumLines),
 
-  myResolutionCB(this, &ArMapScan::handleResolution),
-  myDisplayStringCB(this, &ArMapScan::handleDisplayString),
-  //myDataCB(this, &ArMapScan::handleData),
-  //myLinesCB(this, &ArMapScan::handleLines),
-  myPointCB(this, &ArMapScan::handlePoint),
-  myLineCB(this, &ArMapScan::handleLine)
+  myResolutionCB(this, &MvrMapScan::handleResolution),
+  myDisplayStringCB(this, &MvrMapScan::handleDisplayString),
+  //myDataCB(this, &MvrMapScan::handleData),
+  //myLinesCB(this, &MvrMapScan::handleLines),
+  myPointCB(this, &MvrMapScan::handlePoint),
+  myLineCB(this, &MvrMapScan::handleLine)
 {
 
   if (isDefaultScanType(myScanType.c_str()) ||
@@ -114,7 +88,7 @@ MVREXPORT MvrMapScan::ArMapScan(const char *scanType) :
 } // end constructor
 
 
-MVREXPORT MvrMapScan::ArMapScan(const MvrMapScan &other) :
+MVREXPORT MvrMapScan::MvrMapScan(const MvrMapScan &other) :
   myScanType(other.myScanType),
   myIsSummaryScan(other.myIsSummaryScan),
   myLogPrefix(other.myLogPrefix),
@@ -137,22 +111,22 @@ MVREXPORT MvrMapScan::ArMapScan(const MvrMapScan &other) :
 
   // Not entirely sure what to do with these in a copy ctor situation...
   // but this seems safest
-  myMinPosCB(this, &ArMapScan::handleMinPos),
-  myMaxPosCB(this, &ArMapScan::handleMaxPos),
-  myIsSortedPointsCB(this, &ArMapScan::handleIsSortedPoints),
-  myNumPointsCB(this, &ArMapScan::handleNumPoints),
+  myMinPosCB(this, &MvrMapScan::handleMinPos),
+  myMaxPosCB(this, &MvrMapScan::handleMaxPos),
+  myIsSortedPointsCB(this, &MvrMapScan::handleIsSortedPoints),
+  myNumPointsCB(this, &MvrMapScan::handleNumPoints),
 
-  myLineMinPosCB(this, &ArMapScan::handleLineMinPos),
-  myLineMaxPosCB(this, &ArMapScan::handleLineMaxPos),
-  myIsSortedLinesCB(this, &ArMapScan::handleIsSortedLines),
-  myNumLinesCB(this, &ArMapScan::handleNumLines),
+  myLineMinPosCB(this, &MvrMapScan::handleLineMinPos),
+  myLineMaxPosCB(this, &MvrMapScan::handleLineMaxPos),
+  myIsSortedLinesCB(this, &MvrMapScan::handleIsSortedLines),
+  myNumLinesCB(this, &MvrMapScan::handleNumLines),
 
-  myResolutionCB(this, &ArMapScan::handleResolution),
-  myDisplayStringCB(this, &ArMapScan::handleDisplayString),
-  //myDataCB(this, &ArMapScan::handleData),
-  //myLinesCB(this, &ArMapScan::handleLines),
-  myPointCB(this, &ArMapScan::handlePoint),
-  myLineCB(this, &ArMapScan::handleLine)
+  myResolutionCB(this, &MvrMapScan::handleResolution),
+  myDisplayStringCB(this, &MvrMapScan::handleDisplayString),
+  //myDataCB(this, &MvrMapScan::handleData),
+  //myLinesCB(this, &MvrMapScan::handleLines),
+  myPointCB(this, &MvrMapScan::handlePoint),
+  myLineCB(this, &MvrMapScan::handleLine)
 {
 
   if (!myIsSummaryScan) {
@@ -163,7 +137,7 @@ MVREXPORT MvrMapScan::ArMapScan(const MvrMapScan &other) :
   }
   if (myNumLines != other.myNumLines) {
     MvrLog::log(MvrLog::Normal,
-              "%sArMapScan copy constructor adjusted numLines from %i to %i",
+              "%sMvrMapScan copy constructor adjusted numLines from %i to %i",
               myLogPrefix.c_str(),
               other.myNumLines,
               myNumLines);
@@ -177,7 +151,7 @@ MVREXPORT MvrMapScan::ArMapScan(const MvrMapScan &other) :
   }
   if (myNumPoints != other.myNumPoints) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan copy constructor adjusted numPoints from %i to %i",
+               "%sMvrMapScan copy constructor adjusted numPoints from %i to %i",
                myLogPrefix.c_str(),
                other.myNumPoints,
                myNumPoints);
@@ -186,7 +160,7 @@ MVREXPORT MvrMapScan::ArMapScan(const MvrMapScan &other) :
 } // end copy constructor
 
 
-MVREXPORT MvrMapScan &ArMapScan::operator=(const MvrMapScan &other) 
+MVREXPORT MvrMapScan &MvrMapScan::operator=(const MvrMapScan &other) 
 {
   if (&other != this) {
   
@@ -211,7 +185,7 @@ MVREXPORT MvrMapScan &ArMapScan::operator=(const MvrMapScan &other)
     }
     if (myNumLines != other.myNumLines) {
       MvrLog::log(MvrLog::Normal,
-                "%sArMapScan operator= adjusted numLines from %i to %i",
+                "%sMvrMapScan operator= adjusted numLines from %i to %i",
                 myLogPrefix.c_str(),
                 other.myNumLines,
                 myNumLines);
@@ -225,7 +199,7 @@ MVREXPORT MvrMapScan &ArMapScan::operator=(const MvrMapScan &other)
     }
     if (myNumPoints != other.myNumPoints) {
       MvrLog::log(MvrLog::Normal,
-                "%sArMapScan operator= adjusted numPoints from %i to %i",
+                "%sMvrMapScan operator= adjusted numPoints from %i to %i",
                 myLogPrefix.c_str(),
                 other.myNumPoints,
                 myNumPoints);
@@ -266,12 +240,12 @@ MVREXPORT bool MvrMapScan::addToFileParser(MvrFileParser *fileParser)
       !addHandlerToFileParser(fileParser, "Display:", &myDisplayStringCB))
        {
     MvrLog::log(MvrLog::Terse, 
-               "%sArMapScan::addToFileParser: could not add handlers",
+               "%sMvrMapScan::addToFileParser: could not add handlers",
                myLogPrefix.c_str());
     return false;
   }  
   MvrLog::log(MvrLog::Verbose,
-             "%sArMapScan::addToFileParser() successfully added handlers",
+             "%sMvrMapScan::addToFileParser() successfully added handlers",
              myLogPrefix.c_str());
 
   return true;
@@ -361,17 +335,17 @@ MVREXPORT void MvrMapScan::clear()
 
 } // end method clear
 
-MVREXPORT const char *ArMapScan::getDisplayString(const char *scanType)
+MVREXPORT const char *MvrMapScan::getDisplayString(const char *scanType)
 {
   return myDisplayString.c_str();
 }
 
-MVREXPORT std::vector<ArPose> *ArMapScan::getPoints(const char *scanType)
+MVREXPORT std::vector<MvrPose> *MvrMapScan::getPoints(const char *scanType)
 {
   return &myPoints;
 }
 
-MVREXPORT std::vector<ArLineSegment> *ArMapScan::getLines(const char *scanType)
+MVREXPORT std::vector<MvrLineSegment> *MvrMapScan::getLines(const char *scanType)
 {
   return &myLines;
 }
@@ -422,7 +396,7 @@ MVREXPORT bool MvrMapScan::isSortedLines(const char *scanType) const
 }
 
 
-MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
+MVREXPORT void MvrMapScan::setPoints(const std::vector<MvrPose> *points,
                                    const char *scanType,
                                    bool isSorted,
                                    MvrMapChangeDetails *changeDetails)
@@ -432,11 +406,11 @@ MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
     myIsSortedPoints = true;
   }
 
-  const std::vector<ArPose> *newPoints = points;
-  std::vector<ArPose> *pointsCopy = NULL;
+  const std::vector<MvrPose> *newPoints = points;
+  std::vector<MvrPose> *pointsCopy = NULL;
 
   if (!isSorted && (points != NULL)) {
-	  pointsCopy = new std::vector<ArPose>(*points);
+	  pointsCopy = new std::vector<MvrPose>(*points);
 	  std::sort(pointsCopy->begin(), pointsCopy->end());
     newPoints = pointsCopy;
   }
@@ -461,7 +435,7 @@ MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
                                     (MvrMapChangeDetails::ADDITIONS, scanType)->begin()));
 
       MvrLog::log(MvrLog::Normal,
-                 "%sArMapScan::setPoints() %i points were deleted, %i added",
+                 "%sMvrMapScan::setPoints() %i points were deleted, %i added",
                  myLogPrefix.c_str(),
                  changeDetails->getChangedPoints
                                     (MvrMapChangeDetails::DELETIONS, scanType)->size(),
@@ -471,7 +445,7 @@ MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
       long int elapsed = timeToDiff.mSecSince();
 
       MvrLog::log(MvrLog::Normal,
-                "%sArMapScan::setPoints() took %i msecs to find changes in %i points for %s",
+                "%sMvrMapScan::setPoints() took %i msecs to find changes in %i points for %s",
                 myLogPrefix.c_str(),
                 elapsed,
                 myNumPoints,
@@ -499,7 +473,7 @@ MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
     double minX = INT_MAX;
     double minY = INT_MAX;
 
-    for (std::vector<ArPose>::const_iterator it = newPoints->begin(); 
+    for (std::vector<MvrPose>::const_iterator it = newPoints->begin(); 
          it != newPoints->end(); 
          it++)
     {
@@ -521,7 +495,7 @@ MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
     if (myNumPoints != (int) myPoints.size()) {
 
       MvrLog::log(MvrLog::Normal,
-                 "%sArMapScan::setPoints() point count changed from %i to %i",
+                 "%sMvrMapScan::setPoints() point count changed from %i to %i",
                  myLogPrefix.c_str(),
                  myNumPoints,
                  myPoints.size());
@@ -534,7 +508,7 @@ MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
     long int elapsed = timeToCopy.mSecSince();
 
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::setPoints() took %i msecs to find min/max of %i points",
+               "%sMvrMapScan::setPoints() took %i msecs to find min/max of %i points",
                myLogPrefix.c_str(),
                elapsed,
                myNumPoints);
@@ -602,7 +576,7 @@ MVREXPORT void MvrMapScan::setPoints(const std::vector<ArPose> *points,
 } // end method setPoints
 
 
-MVREXPORT void MvrMapScan::setLines(const std::vector<ArLineSegment> *lines,
+MVREXPORT void MvrMapScan::setLines(const std::vector<MvrLineSegment> *lines,
                                   const char *scanType,
                                   bool isSorted,
                                   MvrMapChangeDetails *changeDetails)
@@ -612,11 +586,11 @@ MVREXPORT void MvrMapScan::setLines(const std::vector<ArLineSegment> *lines,
     myIsSortedLines = true;
   }
  
-  const std::vector<ArLineSegment> *newLines = lines;
-  std::vector<ArLineSegment> *linesCopy = NULL;
+  const std::vector<MvrLineSegment> *newLines = lines;
+  std::vector<MvrLineSegment> *linesCopy = NULL;
 
   if (!isSorted && (lines != NULL)) {
-	  linesCopy = new std::vector<ArLineSegment>(*lines);
+	  linesCopy = new std::vector<MvrLineSegment>(*lines);
 	  std::sort(linesCopy->begin(), linesCopy->end());
     newLines = linesCopy;
   }
@@ -640,7 +614,7 @@ MVREXPORT void MvrMapScan::setLines(const std::vector<ArLineSegment> *lines,
                                     (MvrMapChangeDetails::ADDITIONS, scanType)->begin()));
 
       MvrLog::log(MvrLog::Normal,
-                 "%sArMapScan::setLines() %i lines were deleted, %i added",
+                 "%sMvrMapScan::setLines() %i lines were deleted, %i added",
                  myLogPrefix.c_str(),
                  changeDetails->getChangedLineSegments
                                     (MvrMapChangeDetails::DELETIONS, scanType)->size(),
@@ -671,7 +645,7 @@ MVREXPORT void MvrMapScan::setLines(const std::vector<ArLineSegment> *lines,
     double minX = INT_MAX;
     double minY = INT_MAX;
 
-    for (std::vector<ArLineSegment>::const_iterator it = newLines->begin(); 
+    for (std::vector<MvrLineSegment>::const_iterator it = newLines->begin(); 
          it != newLines->end(); 
          it++)
     {
@@ -703,7 +677,7 @@ MVREXPORT void MvrMapScan::setLines(const std::vector<ArLineSegment> *lines,
    
     if (myNumLines != (int) myLines.size()) {
       MvrLog::log(MvrLog::Normal,
-                 "%sArMapScan::setLines() line count changed from %i to %i",
+                 "%sMvrMapScan::setLines() line count changed from %i to %i",
                  myLogPrefix.c_str(),
                  myNumLines,
                  myLines.size());
@@ -716,7 +690,7 @@ MVREXPORT void MvrMapScan::setLines(const std::vector<ArLineSegment> *lines,
     long int elapsed = timeToCopy.mSecSince();
 
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::setLines() took %i msecs to find min/max of %i lines",
+               "%sMvrMapScan::setLines() took %i msecs to find min/max of %i lines",
                myLogPrefix.c_str(),
                elapsed,
                myNumLines);
@@ -821,7 +795,7 @@ MVREXPORT void MvrMapScan::setResolution(int resolution,
 
 
 MVREXPORT void MvrMapScan::writePointsToFunctor
-		                         (MvrFunctor2<int, std::vector<ArPose> *> *functor,
+		                         (MvrFunctor2<int, std::vector<MvrPose> *> *functor,
                               const char *scanType,
                               MvrFunctor1<const char *> *keywordFunctor)
 {
@@ -837,7 +811,7 @@ MVREXPORT void MvrMapScan::writePointsToFunctor
 
 
 MVREXPORT void MvrMapScan::writeLinesToFunctor
-	                           (MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
+	                           (MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
                               const char *scanType,
                               MvrFunctor1<const char *> *keywordFunctor)
 {
@@ -931,7 +905,7 @@ MVREXPORT void MvrMapScan::writePointsToFunctor
     // Write the map data points in text format....
     char buf[10000];
     
-    for (std::vector<ArPose>::const_iterator pointIt = myPoints.begin(); 
+    for (std::vector<MvrPose>::const_iterator pointIt = myPoints.begin(); 
          pointIt != myPoints.end();
          pointIt++)
     {
@@ -944,7 +918,7 @@ MVREXPORT void MvrMapScan::writePointsToFunctor
   } 
   else { // not fast write
 
-    for (std::vector<ArPose>::const_iterator pointIt = myPoints.begin(); 
+    for (std::vector<MvrPose>::const_iterator pointIt = myPoints.begin(); 
          pointIt != myPoints.end();
          pointIt++)
     {
@@ -970,7 +944,7 @@ MVREXPORT void MvrMapScan::writeLinesToFunctor
 
 MVREXPORT void MvrMapScan::writeLinesToFunctor
                                 (MvrFunctor1<const char *> *functor, 
-                                 const std::vector<ArLineSegment> &lines,
+                                 const std::vector<MvrLineSegment> &lines,
                                  const char *endOfLineChars,
                                  const char *scanType)
 {
@@ -994,7 +968,7 @@ MVREXPORT void MvrMapScan::writeLinesToFunctor
     // Write the map data points in text format....
     char buf[10000];
 
-    for (std::vector<ArLineSegment>::const_iterator lineIt = lines.begin(); 
+    for (std::vector<MvrLineSegment>::const_iterator lineIt = lines.begin(); 
       lineIt != lines.end();
       lineIt++)
     {
@@ -1008,7 +982,7 @@ MVREXPORT void MvrMapScan::writeLinesToFunctor
   }
   else { // slow write
 
-    for (std::vector<ArLineSegment>::const_iterator lineIt = lines.begin(); 
+    for (std::vector<MvrLineSegment>::const_iterator lineIt = lines.begin(); 
          lineIt != lines.end();
          lineIt++)
     {
@@ -1135,7 +1109,7 @@ MVREXPORT bool MvrMapScan::readDataPoint( char *line)
 
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readDataPoint error parsing x (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readDataPoint error parsing x (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1149,7 +1123,7 @@ MVREXPORT bool MvrMapScan::readDataPoint( char *line)
   
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readDataPoint error parsing first whitespace (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readDataPoint error parsing first whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1163,7 +1137,7 @@ MVREXPORT bool MvrMapScan::readDataPoint( char *line)
   
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readDataPoint error parsing y (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readDataPoint error parsing y (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1200,7 +1174,7 @@ MVREXPORT bool MvrMapScan::readLineSegment( char *line)
 
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readLineSegment error parsing x1 (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readLineSegment error parsing x1 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1214,7 +1188,7 @@ MVREXPORT bool MvrMapScan::readLineSegment( char *line)
   
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readLineSegment error parsing first whitespace (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readLineSegment error parsing first whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1228,7 +1202,7 @@ MVREXPORT bool MvrMapScan::readLineSegment( char *line)
   
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readLineSegment error parsing y1 (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readLineSegment error parsing y1 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1242,7 +1216,7 @@ MVREXPORT bool MvrMapScan::readLineSegment( char *line)
   
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readLineSegment error parsing second whitespace (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readLineSegment error parsing second whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1256,7 +1230,7 @@ MVREXPORT bool MvrMapScan::readLineSegment( char *line)
 
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readLineSegment error parsing x2 (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readLineSegment error parsing x2 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1270,7 +1244,7 @@ MVREXPORT bool MvrMapScan::readLineSegment( char *line)
   
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readLineSegment error parsing third whitespace (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readLineSegment error parsing third whitespace (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1284,7 +1258,7 @@ MVREXPORT bool MvrMapScan::readLineSegment( char *line)
 
   if (!isSuccess) {
     MvrLog::log(MvrLog::Normal,
-               "%sArMapScan::readLineSegment error parsing y2 (startIndex = %i, lineLen = %i) in '%s'",
+               "%sMvrMapScan::readLineSegment error parsing y2 (startIndex = %i, lineLen = %i) in '%s'",
                myLogPrefix.c_str(), startIndex, lineLen, line);
     return false;
   }
@@ -1431,7 +1405,7 @@ MVREXPORT bool MvrMapScan::unite(MvrMapScan *other,
 
     if (other->getPoints() != NULL) {
       myPoints.reserve(myNumPoints);
-      for (std::vector<ArPose>::iterator iter = other->getPoints()->begin();
+      for (std::vector<MvrPose>::iterator iter = other->getPoints()->begin();
            iter != other->getPoints()->end();
            iter++) {
         myPoints.push_back(*iter);
@@ -1445,7 +1419,7 @@ MVREXPORT bool MvrMapScan::unite(MvrMapScan *other,
     
     if (other->getLines() != NULL) {
       myLines.reserve(myNumLines);
-      for (std::vector<ArLineSegment>::iterator iter = other->getLines()->begin();
+      for (std::vector<MvrLineSegment>::iterator iter = other->getLines()->begin();
            iter != other->getLines()->end();
            iter++) {
         myLines.push_back(*iter);
@@ -1489,7 +1463,7 @@ bool MvrMapScan::handleNumPoints(MvrArgumentBuilder *arg)
       // myNumPoints = 0;
 
       MvrLog::log(MvrLog::Normal,
-                 "%sArMapScan::handleNumPoints() set num points to %i",
+                 "%sMvrMapScan::handleNumPoints() set num points to %i",
                  myLogPrefix.c_str(),
                  numPoints);
   
@@ -1513,7 +1487,7 @@ bool MvrMapScan::handleNumPoints(MvrArgumentBuilder *arg)
 
   // If this is reached, then an error has occurred...  
   MvrLog::log(MvrLog::Terse, 
-	           "%sArMapScan: '%sNumPoints:' bad argument, should be one integer (number of data points)",
+	           "%sMvrMapScan: '%sNumPoints:' bad argument, should be one integer (number of data points)",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str());
   
@@ -1575,7 +1549,7 @@ bool MvrMapScan::parsePose(MvrArgumentBuilder *arg,
   } // end if correct arg count
 
   MvrLog::log(MvrLog::Terse, 
- 	           "%sArMapScan: '%s%s' bad arguments, should be two integers x y",
+ 	           "%sMvrMapScan: '%s%s' bad arguments, should be two integers x y",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str(),
              keyword);
@@ -1617,7 +1591,7 @@ bool MvrMapScan::handleNumLines(MvrArgumentBuilder *arg)
 
   // If this is reached, then an error has occurred...  
   MvrLog::log(MvrLog::Terse, 
-	           "%sArMapScan: '%sNumLines:' bad argument, should be one integer (number of data points)",
+	           "%sMvrMapScan: '%sNumLines:' bad argument, should be one integer (number of data points)",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str());
   
@@ -1638,7 +1612,7 @@ bool MvrMapScan::handleIsSortedLines(MvrArgumentBuilder *arg)
   } // end if correct arg count
     
   MvrLog::log(MvrLog::Terse, 
- 	           "%sArMapScan: '%sLinesAreSorted' bad arguments, should be a boolean",
+ 	           "%sMvrMapScan: '%sLinesAreSorted' bad arguments, should be a boolean",
              myLogPrefix.c_str(),
              myKeywordPrefix.c_str());
   return false;
@@ -1681,14 +1655,14 @@ bool MvrMapScan::handleDisplayString(MvrArgumentBuilder *arg)
         myDisplayString = displayBuffer;
 
         MvrLog::log(MvrLog::Normal, 
-                  "%sArMapScan: '%sDisplay' setting display '%s'",
+                  "%sMvrMapScan: '%sDisplay' setting display '%s'",
                   myLogPrefix.c_str(),
                   myKeywordPrefix.c_str(),
                   myDisplayString.c_str());
      }
      else {
       MvrLog::log(MvrLog::Terse, 
-	                "%sArMapScan: '%sDisplay:' couldn't strip quotes from '%s'", 
+	                "%sMvrMapScan: '%sDisplay:' couldn't strip quotes from '%s'", 
                   myLogPrefix.c_str(),
                   myKeywordPrefix.c_str(),
 	                displayArg);
@@ -1702,7 +1676,7 @@ bool MvrMapScan::handleDisplayString(MvrArgumentBuilder *arg)
   }
   else {
     MvrLog::log(MvrLog::Terse, 
-	            "%sArMapScan: '%sDisplay:' insufficient args '%s'", 
+	            "%sMvrMapScan: '%sDisplay:' insufficient args '%s'", 
               myLogPrefix.c_str(),
               myKeywordPrefix.c_str(),
 	            arg->getFullString());
@@ -1794,22 +1768,22 @@ bool MvrMapScan::addHandlerToFileParser
 } // end method addHandlerToFileParser
   
   
-MVREXPORT const char *ArMapScan::getScanType() const
+MVREXPORT const char *MvrMapScan::getScanType() const
 {
   return myScanType.c_str();
 }
 
-MVREXPORT const char *ArMapScan::getPointsKeyword() const
+MVREXPORT const char *MvrMapScan::getPointsKeyword() const
 {
   return myPointsKeyword.c_str();
 }
 
-MVREXPORT const char *ArMapScan::getLinesKeyword() const
+MVREXPORT const char *MvrMapScan::getLinesKeyword() const
 {
   return myLinesKeyword.c_str();
 }
   
-const char *ArMapScan::getKeywordPrefix() const
+const char *MvrMapScan::getKeywordPrefix() const
 {
   return myKeywordPrefix.c_str();
 }
@@ -1820,27 +1794,27 @@ const char *ArMapScan::getKeywordPrefix() const
 // ---------------------------------------------------------------------------- 
 
 
-const char *ArMapObjects::DEFAULT_KEYWORD = "Cairn:";
+const char *MvrMapObjects::DEFAULT_KEYWORD = "Cairn:";
 
 
-MVREXPORT MvrMapObjects::ArMapObjects(const char *keyword) :
+MVREXPORT MvrMapObjects::MvrMapObjects(const char *keyword) :
   myTimeChanged(),
   myIsSortedObjects(false),
   myKeyword((keyword != NULL) ? keyword : DEFAULT_KEYWORD),
   myMapObjects(),
-  myMapObjectCB(this, &ArMapObjects::handleMapObject)
+  myMapObjectCB(this, &MvrMapObjects::handleMapObject)
 {
 }
 
 
-MVREXPORT MvrMapObjects::ArMapObjects(const MvrMapObjects &other) :
+MVREXPORT MvrMapObjects::MvrMapObjects(const MvrMapObjects &other) :
   myTimeChanged(other.myTimeChanged),
   myIsSortedObjects(other.myIsSortedObjects),
   myKeyword(other.myKeyword),
   myMapObjects(),
-  myMapObjectCB(this, &ArMapObjects::handleMapObject)
+  myMapObjectCB(this, &MvrMapObjects::handleMapObject)
 {
-  for (std::list<ArMapObject *>::const_iterator it = other.myMapObjects.begin(); 
+  for (std::list<MvrMapObject *>::const_iterator it = other.myMapObjects.begin(); 
        it != other.myMapObjects.end(); 
        it++)
   {
@@ -1850,7 +1824,7 @@ MVREXPORT MvrMapObjects::ArMapObjects(const MvrMapObjects &other) :
 } // end copy ctor
 
 
-MVREXPORT MvrMapObjects &ArMapObjects::operator=(const MvrMapObjects &other)
+MVREXPORT MvrMapObjects &MvrMapObjects::operator=(const MvrMapObjects &other)
 {
   if (&other != this) {
 
@@ -1862,7 +1836,7 @@ MVREXPORT MvrMapObjects &ArMapObjects::operator=(const MvrMapObjects &other)
   
     myKeyword = other.myKeyword;
 
-    for (std::list<ArMapObject *>::const_iterator it = other.myMapObjects.begin(); 
+    for (std::list<MvrMapObject *>::const_iterator it = other.myMapObjects.begin(); 
          it != other.myMapObjects.end(); 
          it++)
     {
@@ -1928,11 +1902,11 @@ MVREXPORT void MvrMapObjects::clear()
 } // end method clear
 
 
-MVREXPORT MvrMapObject *ArMapObjects::findFirstMapObject(const char *name, 
+MVREXPORT MvrMapObject *MvrMapObjects::findFirstMapObject(const char *name, 
 														                           const char *type,
                                                        bool isIncludeWithHeading)
 {
-  for (std::list<ArMapObject *>::iterator objIt = getMapObjects()->begin(); 
+  for (std::list<MvrMapObject *>::iterator objIt = getMapObjects()->begin(); 
        objIt != getMapObjects()->end(); 
        objIt++)
   {
@@ -1956,11 +1930,11 @@ MVREXPORT MvrMapObject *ArMapObjects::findFirstMapObject(const char *name,
 } // end method findFirstMapObject
 
 
-MVREXPORT MvrMapObject *ArMapObjects::findMapObject(const char *name, 
+MVREXPORT MvrMapObject *MvrMapObjects::findMapObject(const char *name, 
 				                                          const char *type,
                                                   bool isIncludeWithHeading)
 {
-  std::list<ArMapObject *>::iterator objIt;
+  std::list<MvrMapObject *>::iterator objIt;
   MvrMapObject* obj = NULL;
 
   for (objIt = getMapObjects()->begin(); 
@@ -2001,13 +1975,13 @@ MVREXPORT MvrMapObject *ArMapObjects::findMapObject(const char *name,
    @param isIncludeWithHeading also match "WithHeading" versions of @a type
    ("<i>type</i>WithHeading")
  **/
-MVREXPORT std::list<ArMapObject *> MvrMapObjects::findMapObjectsOfType
+MVREXPORT std::list<MvrMapObject *> MvrMapObjects::findMapObjectsOfType
                                                   (const char *type,
                                                    bool isIncludeWithHeading)
 {
-  std::list<ArMapObject *> ret;
+  std::list<MvrMapObject *> ret;
 
-  for (std::list<ArMapObject *>::iterator objIt = myMapObjects.begin(); 
+  for (std::list<MvrMapObject *>::iterator objIt = myMapObjects.begin(); 
        objIt != myMapObjects.end(); 
        objIt++)
   {
@@ -2026,7 +2000,7 @@ MVREXPORT std::list<ArMapObject *> MvrMapObjects::findMapObjectsOfType
   return ret;
 } // end method findMapObjectsOfType
 
-MVREXPORT std::list<ArMapObject *> *ArMapObjects::getMapObjects(void)
+MVREXPORT std::list<MvrMapObject *> *MvrMapObjects::getMapObjects(void)
 {
   // Think this should be done in getMapObjects....
   if (!myIsSortedObjects) {
@@ -2038,12 +2012,12 @@ MVREXPORT std::list<ArMapObject *> *ArMapObjects::getMapObjects(void)
 } // end method getMapObjects
 
 
-void MvrMapObjects::sortMapObjects(std::list<ArMapObject *> *mapObjects)
+void MvrMapObjects::sortMapObjects(std::list<MvrMapObject *> *mapObjects)
 {
   MvrMapObjectCompare compare;
 
-  std::vector<ArMapObject *> tempObjects;
-  for (std::list<ArMapObject *>::iterator iter1 = mapObjects->begin();
+  std::vector<MvrMapObject *> tempObjects;
+  for (std::list<MvrMapObject *>::iterator iter1 = mapObjects->begin();
         iter1 != mapObjects->end();
         iter1++) {
     tempObjects.push_back(*iter1);    
@@ -2051,7 +2025,7 @@ void MvrMapObjects::sortMapObjects(std::list<ArMapObject *> *mapObjects)
 	std::sort(tempObjects.begin(), tempObjects.end(), compare);
 
   mapObjects->clear();
-  for (std::vector<ArMapObject *>::iterator iter2 = tempObjects.begin();
+  for (std::vector<MvrMapObject *>::iterator iter2 = tempObjects.begin();
         iter2 != tempObjects.end();
         iter2++) {
     mapObjects->push_back(*iter2);    
@@ -2060,7 +2034,7 @@ void MvrMapObjects::sortMapObjects(std::list<ArMapObject *> *mapObjects)
 } // end method sortMapObjects
 
 
-MVREXPORT void MvrMapObjects::setMapObjects(const std::list<ArMapObject *> *mapObjects,
+MVREXPORT void MvrMapObjects::setMapObjects(const std::list<MvrMapObject *> *mapObjects,
                                           bool isSortedObjects,
                                           MvrMapChangeDetails *changeDetails) 
 {
@@ -2073,12 +2047,12 @@ MVREXPORT void MvrMapObjects::setMapObjects(const std::list<ArMapObject *> *mapO
     myIsSortedObjects = true;
   }
 
-  const std::list<ArMapObject *> *newMapObjects = mapObjects;
-  std::list<ArMapObject *> *mapObjectsCopy = NULL;
+  const std::list<MvrMapObject *> *newMapObjects = mapObjects;
+  std::list<MvrMapObject *> *mapObjectsCopy = NULL;
   
   if ((mapObjects != NULL) &&
       (!isSortedObjects || (mapObjects == &myMapObjects))) {
-    mapObjectsCopy =  new std::list<ArMapObject *>(*mapObjects);
+    mapObjectsCopy =  new std::list<MvrMapObject *>(*mapObjects);
 	  sortMapObjects(mapObjectsCopy);
     newMapObjects = mapObjectsCopy;
   }
@@ -2091,14 +2065,14 @@ MVREXPORT void MvrMapObjects::setMapObjects(const std::list<ArMapObject *> *mapO
   }
 
 
-  std::list<ArMapObject *> origMapObjects = myMapObjects;
-  //ArUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
+  std::list<MvrMapObject *> origMapObjects = myMapObjects;
+  //MvrUtil::deleteSet(myMapObjects.begin(), myMapObjects.end());
   myMapObjects.clear();
 //  myMapObjectsChanged.setToNow();
 
   if (newMapObjects != NULL) {
 
-    for (std::list<ArMapObject *>::const_iterator it = newMapObjects->begin(); 
+    for (std::list<MvrMapObject *>::const_iterator it = newMapObjects->begin(); 
         it != newMapObjects->end(); 
         it++)
     {
@@ -2149,7 +2123,7 @@ MVREXPORT void MvrMapObjects::writeObjectListToFunctor(MvrFunctor1<const char *>
   // TODO: Ideally it would probably be nice to cache this string in the object...
   // Is this possible with the two different types of keywords?
 
-  for (std::list<ArMapObject*>::iterator mapObjectIt = myMapObjects.begin(); 
+  for (std::list<MvrMapObject*>::iterator mapObjectIt = myMapObjects.begin(); 
        mapObjectIt != myMapObjects.end(); 
        mapObjectIt++)
   {
@@ -2173,7 +2147,7 @@ bool MvrMapObjects::handleMapObject(MvrArgumentBuilder *arg)
   }
   myMapObjects.push_back(object);
 //  object->log(myKeyword.c_str());
-  //arg->log();
+  //Mvrg->log();
   return true;
 
 } // end method handleMapObject
@@ -2238,7 +2212,7 @@ void MvrMapInfo::setDefaultInfoNames()
 
 
 
-ArMapInfo::ArMapInfoData::ArMapInfoData(MvrMapInfo *parent,
+MvrMapInfo::MvrMapInfoData::MvrMapInfoData(MvrMapInfo *parent,
                                         const char *keyword,
                                         int type) :
   myParent(parent),
@@ -2250,13 +2224,13 @@ ArMapInfo::ArMapInfoData::ArMapInfoData(MvrMapInfo *parent,
   if (myParent != NULL) {
     myInfoCB = new MvrRetFunctor1C<bool, MvrMapInfo, MvrArgumentBuilder *>
 							                                (parent,
-							                                 &ArMapInfo::handleInfo,
+							                                 &MvrMapInfo::handleInfo,
 								                               NULL);
   }
 
 }
 
-ArMapInfo::ArMapInfoData::ArMapInfoData(MvrMapInfo *parent,
+MvrMapInfo::MvrMapInfoData::MvrMapInfoData(MvrMapInfo *parent,
                                         const MvrMapInfoData &other) :
   myParent(parent),
   myType(other.myType),
@@ -2267,10 +2241,10 @@ ArMapInfo::ArMapInfoData::ArMapInfoData(MvrMapInfo *parent,
   if (myParent != NULL) {
     myInfoCB = new MvrRetFunctor1C<bool, MvrMapInfo, MvrArgumentBuilder *>
 							                                (parent,
-							                                 &ArMapInfo::handleInfo,
+							                                 &MvrMapInfo::handleInfo,
 								                               NULL);
   }
-  for (std::list<ArArgumentBuilder *>::const_iterator iter = other.myInfo.begin();
+  for (std::list<MvrArgumentBuilder *>::const_iterator iter = other.myInfo.begin();
         iter != other.myInfo.end();
         iter++) {
     MvrArgumentBuilder *arg = *iter;
@@ -2282,7 +2256,7 @@ ArMapInfo::ArMapInfoData::ArMapInfoData(MvrMapInfo *parent,
 } // end pseudo-copy-constructor
 
 
-ArMapInfo::ArMapInfoData &ArMapInfo::ArMapInfoData::operator=(const MvrMapInfoData &other) 
+MvrMapInfo::MvrMapInfoData &MvrMapInfo::MvrMapInfoData::operator=(const MvrMapInfoData &other) 
 {
   if (this != &other) {
     // Don't change parents
@@ -2292,7 +2266,7 @@ ArMapInfo::ArMapInfoData &ArMapInfo::ArMapInfoData::operator=(const MvrMapInfoDa
     MvrUtil::deleteSet(myInfo.begin(), myInfo.end());
     myInfo.clear();
 
-    for (std::list<ArArgumentBuilder *>::const_iterator iter = other.myInfo.begin();
+    for (std::list<MvrArgumentBuilder *>::const_iterator iter = other.myInfo.begin();
          iter != other.myInfo.end();
          iter++) {
       MvrArgumentBuilder *arg = *iter;
@@ -2306,7 +2280,7 @@ ArMapInfo::ArMapInfoData &ArMapInfo::ArMapInfoData::operator=(const MvrMapInfoDa
   return *this;
 }
 
-ArMapInfo::ArMapInfoData::~MvrMapInfoData()
+MvrMapInfo::MvrMapInfoData::~MvrMapInfoData()
 {
   MvrUtil::deleteSet(myInfo.begin(), myInfo.end());
   myInfo.clear();
@@ -2317,7 +2291,7 @@ ArMapInfo::ArMapInfoData::~MvrMapInfoData()
 
 
 
-MVREXPORT MvrMapInfo::ArMapInfo(const char **infoNameList,
+MVREXPORT MvrMapInfo::MvrMapInfo(const char **infoNameList,
                               size_t infoNameCount,
                               const char *keywordPrefix) :
   MvrMapInfoInterface(),
@@ -2367,7 +2341,7 @@ MVREXPORT MvrMapInfo::ArMapInfo(const char **infoNameList,
 
 
 
-MVREXPORT MvrMapInfo::ArMapInfo(const MvrMapInfo &other) :
+MVREXPORT MvrMapInfo::MvrMapInfo(const MvrMapInfo &other) :
   MvrMapInfoInterface(),
   myTimeChanged(other.myTimeChanged),
   myNumInfos(other.myNumInfos), 
@@ -2390,7 +2364,7 @@ MVREXPORT MvrMapInfo::ArMapInfo(const MvrMapInfo &other) :
 } // end copy ctor
 
 
-MVREXPORT MvrMapInfo &ArMapInfo::operator=(const MvrMapInfo &other)
+MVREXPORT MvrMapInfo &MvrMapInfo::operator=(const MvrMapInfo &other)
 {
   if (&other != this) {
 
@@ -2508,7 +2482,7 @@ MVREXPORT void MvrMapInfo::clear()
 } // end method clear
 
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getInfo(int infoType)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMapInfo::getInfo(int infoType)
 {
   std::string infoName;
   std::map<int, std::string>::iterator iter1 = myInfoTypeToNameMap.find(infoType);
@@ -2518,7 +2492,7 @@ MVREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getInfo(int infoType)
   return getInfo(infoName.c_str());
 
 }
-MVREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getInfo(const char *infoName)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMapInfo::getInfo(const char *infoName)
 {
   MvrMapInfoData *data = findData(infoName);
 
@@ -2532,7 +2506,7 @@ MVREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getInfo(const char *infoNam
 } // end method getInfo
 
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMapInfo::getMapInfo(void)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMapInfo::getMapInfo(void)
 {
   return getInfo(MAP_INFO_NAME);
 }
@@ -2569,7 +2543,7 @@ void MvrMapInfo::createMultiSet(const char *infoName,
   }
 
   // TODO Will need to know position in order to propagate changes. ???
-  for (std::list<ArArgumentBuilder *>::iterator infoIt = data->myInfo.begin();
+  for (std::list<MvrArgumentBuilder *>::iterator infoIt = data->myInfo.begin();
        infoIt != data->myInfo.end();
        infoIt++) {
 
@@ -2593,7 +2567,7 @@ void MvrMapInfo::createMultiSet(const char *infoName,
 } // end method createMultiSet
 
 
-MVREXPORT MvrMapInfo::ArMapInfoData *ArMapInfo::findData(const char *infoName)
+MVREXPORT MvrMapInfo::MvrMapInfoData *MvrMapInfo::findData(const char *infoName)
 {
   if (MvrUtil::isStrEmpty(infoName)) {
     return NULL;
@@ -2611,7 +2585,7 @@ MVREXPORT MvrMapInfo::ArMapInfoData *ArMapInfo::findData(const char *infoName)
 
 } // end method findData
 
-MVREXPORT MvrMapInfo::ArMapInfoData *ArMapInfo::findDataByKeyword(const char *keyword)
+MVREXPORT MvrMapInfo::MvrMapInfoData *MvrMapInfo::findDataByKeyword(const char *keyword)
 {
   if (MvrUtil::isStrEmpty(keyword)) {
     return NULL;
@@ -2625,7 +2599,7 @@ MVREXPORT MvrMapInfo::ArMapInfoData *ArMapInfo::findDataByKeyword(const char *ke
 } // end method findDataByKeyword
 
 MVREXPORT bool MvrMapInfo::setInfo(int infoType,
-						                     const std::list<ArArgumentBuilder *> *infoList,
+						                     const std::list<MvrArgumentBuilder *> *infoList,
                                  MvrMapChangeDetails *changeDetails)
 
 {
@@ -2634,7 +2608,7 @@ MVREXPORT bool MvrMapInfo::setInfo(int infoType,
 
 
 MVREXPORT bool MvrMapInfo::setInfo(const char *infoName,
-                                 const std::list<ArArgumentBuilder *> *infoList,
+                                 const std::list<MvrArgumentBuilder *> *infoList,
                                  MvrMapChangeDetails *changeDetails)
 
 {
@@ -2666,7 +2640,7 @@ MVREXPORT bool MvrMapInfo::setInfo(const char *infoName,
 
   if (infoList != NULL) {
 
-    for (std::list<ArArgumentBuilder *>::const_iterator it = infoList->begin(); 
+    for (std::list<MvrArgumentBuilder *>::const_iterator it = infoList->begin(); 
         it != infoList->end(); 
         it++)
     {
@@ -2699,7 +2673,7 @@ MVREXPORT bool MvrMapInfo::setInfo(const char *infoName,
 } // end method setInfo
 
 
-MVREXPORT bool MvrMapInfo::setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
+MVREXPORT bool MvrMapInfo::setMapInfo(const std::list<MvrArgumentBuilder *> *mapInfo,
                                     MvrMapChangeDetails *changeDetails)
 {
   return setInfo(MAP_INFO_NAME, mapInfo, changeDetails);
@@ -2720,7 +2694,7 @@ MVREXPORT void MvrMapInfo::writeInfoToFunctor
     if (data == NULL) {
       continue;
     }
-    for (std::list<ArArgumentBuilder *>::iterator infoIt = data->myInfo.begin();
+    for (std::list<MvrArgumentBuilder *>::iterator infoIt = data->myInfo.begin();
          infoIt != data->myInfo.end();
          infoIt++) {
 
@@ -2736,7 +2710,7 @@ MVREXPORT void MvrMapInfo::writeInfoToFunctor
 } // end method writeInfoToFunctor
 
 
-MVREXPORT const char *ArMapInfo::getInfoName(int infoType)
+MVREXPORT const char *MvrMapInfo::getInfoName(int infoType)
 {
   std::map<int, std::string>::iterator iter = myInfoTypeToNameMap.find(infoType);
   if (iter != myInfoTypeToNameMap.end()) {
@@ -2772,29 +2746,29 @@ bool MvrMapInfo::handleInfo(MvrArgumentBuilder *arg)
 
 // -----------------------------------------------------------------------------
 
-const char *ArMapSupplement::EOL_CHARS = "";
+const char *MvrMapSupplement::EOL_CHARS = "";
 
-MVREXPORT MvrMapSupplement::ArMapSupplement() :
+MVREXPORT MvrMapSupplement::MvrMapSupplement() :
   myTimeChanged(),
   myHasOriginLatLongAlt(false),
   myOriginLatLong(),
   myOriginAltitude(0),
-  myOriginLatLongAltCB(this, &ArMapSupplement::handleOriginLatLongAlt)
+  myOriginLatLongAltCB(this, &MvrMapSupplement::handleOriginLatLongAlt)
 {
 }
 
-MVREXPORT MvrMapSupplement::ArMapSupplement(const MvrMapSupplement &other) :
+MVREXPORT MvrMapSupplement::MvrMapSupplement(const MvrMapSupplement &other) :
   myTimeChanged(other.myTimeChanged),
   myHasOriginLatLongAlt(other.myHasOriginLatLongAlt),
   myOriginLatLong(other.myOriginLatLong),
   myOriginAltitude(other.myOriginAltitude),
 
-  myOriginLatLongAltCB(this, &ArMapSupplement::handleOriginLatLongAlt)
+  myOriginLatLongAltCB(this, &MvrMapSupplement::handleOriginLatLongAlt)
 {
 }
 
 
-MVREXPORT MvrMapSupplement &ArMapSupplement::operator=(const MvrMapSupplement &other) 
+MVREXPORT MvrMapSupplement &MvrMapSupplement::operator=(const MvrMapSupplement &other) 
 {
   if (&other != this) {
     myTimeChanged = other.myTimeChanged;
@@ -2817,11 +2791,11 @@ MVREXPORT bool MvrMapSupplement::addToFileParser(MvrFileParser *fileParser)
   }
   if (!fileParser->addHandler("OriginLatLongAlt:", &myOriginLatLongAltCB))
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
                "MvrMapSupplement::addToFileParser: could not add handlers");
     return false;
   }  
-  ArLog::log(MvrLog::Verbose,
+  MvrLog::log(MvrLog::Verbose,
              "MvrMapSupplement::addToFileParser() successfully added handlers");
 
   return true;
@@ -2829,7 +2803,7 @@ MVREXPORT bool MvrMapSupplement::addToFileParser(MvrFileParser *fileParser)
 } // end method addToFileParser
 
 
-MVREXPORT bool ArMapSupplement::remFromFileParser(MvrFileParser *fileParser)
+MVREXPORT bool MvrMapSupplement::remFromFileParser(MvrFileParser *fileParser)
 {
  if (fileParser == NULL) {
     return false;
@@ -2841,13 +2815,13 @@ MVREXPORT bool ArMapSupplement::remFromFileParser(MvrFileParser *fileParser)
 } // end method remFromFileParser
 
 
-MVREXPORT ArTime ArMapSupplement::getTimeChanged() const
+MVREXPORT MvrTime MvrMapSupplement::getTimeChanged() const
 {
   return myTimeChanged;
 }
   
 
-MVREXPORT void ArMapSupplement::clear()
+MVREXPORT void MvrMapSupplement::clear()
 {
   myTimeChanged.setToNow();
 
@@ -2859,50 +2833,50 @@ MVREXPORT void ArMapSupplement::clear()
 
 
 /// Gets if this map has an OriginLatLong or not
-MVREXPORT bool ArMapSupplement::hasOriginLatLongAlt()
+MVREXPORT bool MvrMapSupplement::hasOriginLatLongAlt()
 {
   return myHasOriginLatLongAlt;
 }
 
 /// Returns the latitude/longitude origin of the map; valid only if hasOriginLatLongAlt returns true
-MVREXPORT ArPose ArMapSupplement::getOriginLatLong()
+MVREXPORT MvrPose MvrMapSupplement::getOriginLatLong()
 {
   return myOriginLatLong;
 }
 
 /// Returns the altitude of the origin; valid only if hasOriginLatLongAlt returns true
-MVREXPORT double ArMapSupplement::getOriginAltitude()
+MVREXPORT double MvrMapSupplement::getOriginAltitude()
 {
   return myOriginAltitude;
 }
 
 
-MVREXPORT void ArMapSupplement::setOriginLatLongAlt(bool hasOriginLatLongAlt,
-                                             const ArPose &originLatLong,
+MVREXPORT void MvrMapSupplement::setOriginLatLongAlt(bool hasOriginLatLongAlt,
+                                             const MvrPose &originLatLong,
                                              double altitude,
-                                             ArMapChangeDetails *changeDetails)
+                                             MvrMapChangeDetails *changeDetails)
 {
 
 
   if ((myHasOriginLatLongAlt == hasOriginLatLongAlt) &&
       (myOriginLatLong == originLatLong) &&
-      (fabs(myOriginAltitude - altitude) < ArMath::epsilon())) {
+      (fabs(myOriginAltitude - altitude) < MvrMath::epsilon())) {
     return;
   }
 
-  ArMapFileLineSet origLines;
+  MvrMapFileLineSet origLines;
 
   if (changeDetails != NULL) {
-    ArMapFileLineSetWriter origWriter(changeDetails->getChangedSupplementLines
+    MvrMapFileLineSetWriter origWriter(changeDetails->getChangedSupplementLines
                                   (MvrMapChangeDetails::DELETIONS));
 
     if (myHasOriginLatLongAlt) {
-      ArUtil::functorPrintf(&origWriter, "OriginLatLongAlt: %f %f %f%s", 
+      MvrUtil::functorPrintf(&origWriter, "OriginLatLongAlt: %f %f %f%s", 
 			                      myOriginLatLong.getX(), myOriginLatLong.getY(),
 			                      myOriginAltitude, EOL_CHARS);
     }
     else {
-      ArUtil::functorPrintf(&origWriter, "OriginLatLongAlt:%s", 
+      MvrUtil::functorPrintf(&origWriter, "OriginLatLongAlt:%s", 
 			                      EOL_CHARS);
     }
   }
@@ -2911,16 +2885,16 @@ MVREXPORT void ArMapSupplement::setOriginLatLongAlt(bool hasOriginLatLongAlt,
   myOriginAltitude = altitude;
 
   if (changeDetails != NULL) {
-    ArMapFileLineSetWriter newWriter(changeDetails->getChangedSupplementLines
+    MvrMapFileLineSetWriter newWriter(changeDetails->getChangedSupplementLines
                                   (MvrMapChangeDetails::ADDITIONS));
 
     if (myHasOriginLatLongAlt) {
-      ArUtil::functorPrintf(&newWriter, "OriginLatLongAlt: %f %f %f%s", 
+      MvrUtil::functorPrintf(&newWriter, "OriginLatLongAlt: %f %f %f%s", 
 			                      myOriginLatLong.getX(), myOriginLatLong.getY(),
 			                      myOriginAltitude, EOL_CHARS);
     }
     else { 
-      ArUtil::functorPrintf(&newWriter, "OriginLatLongAlt:%s", 
+      MvrUtil::functorPrintf(&newWriter, "OriginLatLongAlt:%s", 
 			                      EOL_CHARS);
 
     }
@@ -2928,13 +2902,13 @@ MVREXPORT void ArMapSupplement::setOriginLatLongAlt(bool hasOriginLatLongAlt,
 }
 
 
-MVREXPORT void ArMapSupplement::writeSupplementToFunctor
+MVREXPORT void MvrMapSupplement::writeSupplementToFunctor
                               (MvrFunctor1<const char *> *functor, 
 			                         const char *endOfLineChars)
 {
  
   if (myHasOriginLatLongAlt) {
-    ArUtil::functorPrintf(functor, "OriginLatLongAlt: %f %f %f%s", 
+    MvrUtil::functorPrintf(functor, "OriginLatLongAlt: %f %f %f%s", 
                           myOriginLatLong.getX(), myOriginLatLong.getY(),
                           myOriginAltitude, endOfLineChars);
   }
@@ -2942,7 +2916,7 @@ MVREXPORT void ArMapSupplement::writeSupplementToFunctor
 } // end method writeSupplementToFunctor
 
 
-bool ArMapSupplement::handleOriginLatLongAlt(MvrArgumentBuilder *arg)
+bool MvrMapSupplement::handleOriginLatLongAlt(MvrArgumentBuilder *arg)
 {
   if (arg->getArgc() >= 3) {
  
@@ -2973,7 +2947,7 @@ bool ArMapSupplement::handleOriginLatLongAlt(MvrArgumentBuilder *arg)
 
   }
 
-  ArLog::log(MvrLog::Verbose, 
+  MvrLog::log(MvrLog::Verbose, 
 	           "MvrMap::handleOriginLatLongAlt: line wrong, should be x, y, altitude point (in lat long altitude) as doulbles but is %s", arg->getFullString());
 
   return false;
@@ -2986,12 +2960,12 @@ bool ArMapSupplement::handleOriginLatLongAlt(MvrArgumentBuilder *arg)
 // ---------------------------------------------------------------------------- 
 // ---------------------------------------------------------------------------- 
 // -----------------------------------------------------------------------------
-// ArMapSimple
+// MvrMapSimple
 // -----------------------------------------------------------------------------
 
 // TODO: Should these constants be somewhere else?
 /**
-const char *ArMapSimple::ourDefaultInactiveInfoNames[INFO_COUNT] =
+const char *MvrMapSimple::ourDefaultInactiveInfoNames[INFO_COUNT] =
 { 
   "_MapInfo:",
   "_MetaInfo:",
@@ -3004,11 +2978,11 @@ const char *ArMapSimple::ourDefaultInactiveInfoNames[INFO_COUNT] =
 };
 **/
 
-int ArMapSimple::ourTempFileNumber = 0;
+int MvrMapSimple::ourTempFileNumber = 0;
 
-ArMutex ArMapSimple::ourTempFileNumberMutex;
+MvrMutex MvrMapSimple::ourTempFileNumberMutex;
 
-MVREXPORT int ArMapSimple::getNextFileNumber()
+MVREXPORT int MvrMapSimple::getNextFileNumber()
 {
   ourTempFileNumberMutex.lock();
   ourTempFileNumber++;
@@ -3019,17 +2993,17 @@ MVREXPORT int ArMapSimple::getNextFileNumber()
 
 } // end method getNextFileNumber
   
-MVREXPORT void ArMapSimple::invokeCallbackList(std::list<ArFunctor*> *cbList)
+MVREXPORT void MvrMapSimple::invokeCallbackList(std::list<MvrFunctor*> *cbList)
 {
   if (cbList == NULL) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::invokeCallbackList failed because list is null");
     return;
   }
-  for (std::list<ArFunctor*>::iterator iter = cbList->begin();
+  for (std::list<MvrFunctor*>::iterator iter = cbList->begin();
        iter != cbList->end();
        iter++) {
-    ArFunctor *cb = *iter;
+    MvrFunctor *cb = *iter;
     if (cb == NULL) {
       continue;
     }
@@ -3037,45 +3011,45 @@ MVREXPORT void ArMapSimple::invokeCallbackList(std::list<ArFunctor*> *cbList)
   } 
 } // end method invokeCallbackList
   
-MVREXPORT void ArMapSimple::addToCallbackList(MvrFunctor *functor,
-                                             ArListPos::Pos position,
-                                             std::list<ArFunctor*> *cbList)
+MVREXPORT void MvrMapSimple::addToCallbackList(MvrFunctor *functor,
+                                             MvrListPos::Pos position,
+                                             std::list<MvrFunctor*> *cbList)
 {
   if (functor == NULL) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::addToCallbackList cannot add null functor");
     return;
   }
   if (cbList == NULL) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::addToCallbackList cannot add functor to null list");
     return;
   }
 
   switch (position) {
-  case ArListPos::FIRST:
+  case MvrListPos::FIRST:
     cbList->push_front(functor);
     break;
-  case ArListPos::LAST:
+  case MvrListPos::LAST:
     cbList->push_back(functor);
     break;
   default:
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::addToCallbackList invalid position (%i)",
                position);
   } // end switch
 } // end method addToCallbackList
 
-MVREXPORT void ArMapSimple::remFromCallbackList(MvrFunctor *functor,
-                                               std::list<ArFunctor*> *cbList)
+MVREXPORT void MvrMapSimple::remFromCallbackList(MvrFunctor *functor,
+                                               std::list<MvrFunctor*> *cbList)
 {
   if (functor == NULL) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::remFromCallbackList cannot remove null functor");
     return;
   }
   if (cbList == NULL) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::addToCallbackList cannot remove functor to null list");
     return;
   }
@@ -3083,7 +3057,7 @@ MVREXPORT void ArMapSimple::remFromCallbackList(MvrFunctor *functor,
 
 } // end method remFromCallbackList
 
-MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
+MVREXPORT MvrMapSimple::MvrMapSimple(const char *baseDirectory,
                                   const char *tempDirectory,
                                   const char *overrideMutexName)  :
   myMutex(),
@@ -3091,7 +3065,7 @@ MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
   myMapCategoryList(),
   myMapCategory(),
 
-  myChecksumCalculator(new ArMD5Calculator()),
+  myChecksumCalculator(new MvrMD5Calculator()),
 
   myBaseDirectory((baseDirectory != NULL) ? baseDirectory : ""),
   myFileName(),
@@ -3110,15 +3084,15 @@ MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
   myIgnoreEmptyFileName(false), // ignoreEmptyFileName),
   myIgnoreCase(false),
 
-  myMapChangedHelper(new ArMapChangedHelper()),
+  myMapChangedHelper(new MvrMapChangedHelper()),
 
   myLoadingGotMapCategory(false),
   myLoadingDataStarted(false),
   myLoadingLinesAndDataStarted(false),
 
-  myMapInfo(new ArMapInfo()),
-  myMapObjects(new ArMapObjects()),
-  myMapSupplement(new ArMapSupplement()),
+  myMapInfo(new MvrMapInfo()),
+  myMapObjects(new MvrMapObjects()),
+  myMapSupplement(new MvrMapSupplement()),
 
   myScanTypeList(),
   myTypeToScanMap(),
@@ -3128,11 +3102,11 @@ MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
   myLoadingScan(NULL),
 
   // Use special keywords for the inactive elements.
-  myInactiveInfo(new ArMapInfo(NULL, 0, "_")), 
+  myInactiveInfo(new MvrMapInfo(NULL, 0, "_")), 
 
-  myInactiveObjects(new ArMapObjects("_Cairn:")), 
+  myInactiveObjects(new MvrMapObjects("_Cairn:")), 
 
-  myChildObjects(new ArMapObjects("ChildCairn:")), 
+  myChildObjects(new MvrMapObjects("ChildCairn:")), 
 
   myMapObjectNameToParamsMap(), 
   myRemainderList(),
@@ -3142,10 +3116,10 @@ MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
   myTimeMapScanChanged(),
   myTimeMapSupplementChanged(),
 
-  myMapCategoryCB(this, &ArMapSimple::handleMapCategory),
-  mySourcesCB(this, &ArMapSimple::handleSources),
-  myDataIntroCB(this, &ArMapSimple::handleDataIntro),
-  myRemCB(this, &ArMapSimple::handleRemainder),
+  myMapCategoryCB(this, &MvrMapSimple::handleMapCategory),
+  mySourcesCB(this, &MvrMapSimple::handleSources),
+  myDataIntroCB(this, &MvrMapSimple::handleDataIntro),
+  myRemCB(this, &MvrMapSimple::handleRemainder),
 
 
   myIsQuiet(false),
@@ -3161,8 +3135,8 @@ MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
     //myMutex.setLog(true);
   }
 
-  ArUtil::appendSlash(myTempDirectory);
-  ArUtil::fixSlashes(myTempDirectory);
+  MvrUtil::appendSlash(myTempDirectory);
+  MvrUtil::fixSlashes(myTempDirectory);
 
 
   myMapCategoryList.push_back(MAP_CATEGORY_2D);
@@ -3173,10 +3147,10 @@ MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
   myMapCategory = MAP_CATEGORY_2D;
 
   // Create the default scan for the sick laser.  
-  ArMapScan *mapScan = new ArMapScan(ARMAP_DEFAULT_SCAN_TYPE);
+  MvrMapScan *mapScan = new MvrMapScan(MVRMAP_DEFAULT_SCAN_TYPE);
   // TODO This needs to be a constant!!
-  myScanTypeList.push_back(ARMAP_DEFAULT_SCAN_TYPE);
-  myTypeToScanMap[ARMAP_DEFAULT_SCAN_TYPE] = mapScan;
+  myScanTypeList.push_back(MVRMAP_DEFAULT_SCAN_TYPE);
+  myTypeToScanMap[MVRMAP_DEFAULT_SCAN_TYPE] = mapScan;
 
   /***
   std::list<std::string> inactiveInfoNames = createInactiveInfoNames
@@ -3187,12 +3161,12 @@ MVREXPORT ArMapSimple::ArMapSimple(const char *baseDirectory,
   reset();
 }  
 
-MVREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
+MVREXPORT MvrMapSimple::MvrMapSimple(const MvrMapSimple &other) :
   myMutex(),
   myMapCategoryList(other.myMapCategoryList),
   myMapCategory(other.myMapCategory),
   myChecksumCalculator((other.myChecksumCalculator != NULL) ? 
-                      new ArMD5Calculator() :
+                      new MvrMD5Calculator() :
                       NULL),
 
   myBaseDirectory(other.myBaseDirectory),
@@ -3212,7 +3186,7 @@ MVREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
   myIgnoreEmptyFileName(other.myIgnoreEmptyFileName),
   myIgnoreCase(other.myIgnoreCase),
 
-  myMapChangedHelper(new ArMapChangedHelper()), // Do not want to copy the other one
+  myMapChangedHelper(new MvrMapChangedHelper()), // Do not want to copy the other one
 
   // things for our config
   //myConfigProcessedBefore(other.myConfigProcessedBefore),
@@ -3222,9 +3196,9 @@ MVREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
   myLoadingDataStarted(other.myLoadingDataStarted), 
   myLoadingLinesAndDataStarted(other.myLoadingLinesAndDataStarted), 
 
-  myMapInfo(new ArMapInfo(*other.myMapInfo)),
-  myMapObjects(new ArMapObjects(*other.myMapObjects)),
-  myMapSupplement(new ArMapSupplement(*other.myMapSupplement)),
+  myMapInfo(new MvrMapInfo(*other.myMapInfo)),
+  myMapObjects(new MvrMapObjects(*other.myMapObjects)),
+  myMapSupplement(new MvrMapSupplement(*other.myMapSupplement)),
   myScanTypeList(other.myScanTypeList),
   myTypeToScanMap(),
   mySummaryScan(NULL),
@@ -3233,10 +3207,10 @@ MVREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
   myLoadingDataTag(),
   myLoadingScan(NULL),
 
-  myInactiveInfo(new ArMapInfo(*other.myInactiveInfo)),
-  myInactiveObjects(new ArMapObjects(*other.myInactiveObjects)),
+  myInactiveInfo(new MvrMapInfo(*other.myInactiveInfo)),
+  myInactiveObjects(new MvrMapObjects(*other.myInactiveObjects)),
 
-  myChildObjects(new ArMapObjects(*other.myChildObjects)),
+  myChildObjects(new MvrMapObjects(*other.myChildObjects)),
 
   myMapObjectNameToParamsMap(), // since this is a cache, ok not to copy
   myRemainderList(),
@@ -3247,10 +3221,10 @@ MVREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
   myTimeMapSupplementChanged(other.myTimeMapSupplementChanged),
 
   // callbacks
-  myMapCategoryCB(this, &ArMapSimple::handleMapCategory),
-  mySourcesCB(this, &ArMapSimple::handleSources),
-  myDataIntroCB(this, &ArMapSimple::handleDataIntro),
-  myRemCB(this, &ArMapSimple::handleRemainder),
+  myMapCategoryCB(this, &MvrMapSimple::handleMapCategory),
+  mySourcesCB(this, &MvrMapSimple::handleSources),
+  myDataIntroCB(this, &MvrMapSimple::handleDataIntro),
+  myRemCB(this, &MvrMapSimple::handleRemainder),
 
   myIsQuiet(false),
   myIsReadInProgress(false),
@@ -3265,11 +3239,11 @@ MVREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
             other.myTypeToScanMap.begin();
        iter != other.myTypeToScanMap.end();
        iter++) {
-    myTypeToScanMap[iter->first] = new ArMapScan(*(iter->second));
+    myTypeToScanMap[iter->first] = new MvrMapScan(*(iter->second));
   }
 
   if (other.mySummaryScan != NULL) {
-    mySummaryScan = new ArMapScan(*other.mySummaryScan);
+    mySummaryScan = new MvrMapScan(*other.mySummaryScan);
   }  // end if other has summary
 
  //strncpy(myConfigMapName, other.myConfigMapName, MAX_MAP_NAME_LENGTH);
@@ -3280,7 +3254,7 @@ MVREXPORT ArMapSimple::ArMapSimple(const ArMapSimple &other) :
 } // end copy ctor
 
 
-MVREXPORT ArMapSimple &ArMapSimple::operator=(const ArMapSimple &other)
+MVREXPORT MvrMapSimple &MvrMapSimple::operator=(const MvrMapSimple &other)
 {
   if (&other != this) {
 
@@ -3295,7 +3269,7 @@ MVREXPORT ArMapSimple &ArMapSimple::operator=(const ArMapSimple &other)
     delete myChecksumCalculator;
     myChecksumCalculator = NULL;
     if (other.myChecksumCalculator != NULL) {
-      myChecksumCalculator = new ArMD5Calculator();
+      myChecksumCalculator = new MvrMD5Calculator();
     }
 
     myBaseDirectory     = other.myBaseDirectory;
@@ -3337,23 +3311,23 @@ MVREXPORT ArMapSimple &ArMapSimple::operator=(const ArMapSimple &other)
 
     myScanTypeList = other.myScanTypeList;
     
-    ArUtil::deleteSetPairs(myTypeToScanMap.begin(), myTypeToScanMap.end());
+    MvrUtil::deleteSetPairs(myTypeToScanMap.begin(), myTypeToScanMap.end());
     myTypeToScanMap.clear();
 
     for (MvrTypeToScanMap::const_iterator iter = 
               other.myTypeToScanMap.begin();
          iter != other.myTypeToScanMap.end();
          iter++) {
-      myTypeToScanMap[iter->first] = new ArMapScan(*(iter->second));
+      myTypeToScanMap[iter->first] = new MvrMapScan(*(iter->second));
     }
     if (other.mySummaryScan != NULL) {
-      mySummaryScan = new ArMapScan(*other.mySummaryScan);
+      mySummaryScan = new MvrMapScan(*other.mySummaryScan);
     }  // end if other has summary
 
     myLoadingDataTag = other.myLoadingDataTag;
     myLoadingScan = NULL;
     if (other.myLoadingScan != NULL) {
-      ArTypeToScanMap::iterator scanIter = 
+      MvrTypeToScanMap::iterator scanIter = 
         myTypeToScanMap.find(other.myLoadingScan->getScanType());
       if (scanIter != myTypeToScanMap.end()) {
         myLoadingScan = scanIter->second;
@@ -3367,20 +3341,20 @@ MVREXPORT ArMapSimple &ArMapSimple::operator=(const ArMapSimple &other)
 
     // Since the myMapObjectNameToParamsMap is a cache, there's no
     // real need to copy the other one
-    ArUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
+    MvrUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
                            myMapObjectNameToParamsMap.end());
     myMapObjectNameToParamsMap.clear();
 
-    ArUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
+    MvrUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
     myRemainderList.clear();
-    for (std::list<ArArgumentBuilder *>::const_iterator remIter = other.myRemainderList.begin();
+    for (std::list<MvrArgumentBuilder *>::const_iterator remIter = other.myRemainderList.begin();
          remIter != other.myRemainderList.end();
          remIter++) {
-      ArArgumentBuilder *arg = *remIter;
+      MvrArgumentBuilder *arg = *remIter;
       if (arg == NULL) {
         continue; // Should never happen
       }
-      myRemainderList.push_back(new ArArgumentBuilder(*arg));
+      myRemainderList.push_back(new MvrArgumentBuilder(*arg));
     }
 
     // The various time flags represent the last time that mapChanged()
@@ -3412,12 +3386,12 @@ MVREXPORT ArMapSimple &ArMapSimple::operator=(const ArMapSimple &other)
 } // end operator=
 
 
-MVREXPORT ArMapSimple::~MvrMapSimple(void)
+MVREXPORT MvrMapSimple::~MvrMapSimple(void)
 { 
 
   if (myIsReadInProgress) {
 
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::dtor() map file is being read");
     myIsCancelRead = true;
     if (myLoadingParser != NULL) {
@@ -3426,10 +3400,10 @@ MVREXPORT ArMapSimple::~MvrMapSimple(void)
 
     // Wait a little while to see if the file read can be cancelled
     for (int i = 0; ((i < 20) && (myIsReadInProgress)); i++) {
-      ArUtil::sleep(5);
+      MvrUtil::sleep(5);
     }
     if (myIsReadInProgress) {
-      ArLog::log(MvrLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "MvrMapSimple::dtor() map file is still being read");
     }
 
@@ -3454,7 +3428,7 @@ MVREXPORT ArMapSimple::~MvrMapSimple(void)
   // const, so don't myMapSupplement = NULL;
  
   myScanTypeList.clear();
-  ArUtil::deleteSetPairs(myTypeToScanMap.begin(),
+  MvrUtil::deleteSetPairs(myTypeToScanMap.begin(),
                          myTypeToScanMap.end());
   myTypeToScanMap.clear();
 
@@ -3475,22 +3449,22 @@ MVREXPORT ArMapSimple::~MvrMapSimple(void)
   delete myChildObjects;
   // const, so don't myChildObjects = NULL;
 
-  ArUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
+  MvrUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
                          myMapObjectNameToParamsMap.end());
   myMapObjectNameToParamsMap.clear();
 
-  ArUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
+  MvrUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
   myRemainderList.clear();
         
 } // end dtor 
   
 
-MVREXPORT ArMapInterface *ArMapSimple::clone()
+MVREXPORT MvrMapInterface *MvrMapSimple::clone()
 {
-  return new ArMapSimple(*this);
+  return new MvrMapSimple(*this);
 }
 
-MVREXPORT bool ArMapSimple::set(MvrMapInterface *other)
+MVREXPORT bool MvrMapSimple::set(MvrMapInterface *other)
 {
   if (other == NULL) {
     return false;
@@ -3574,25 +3548,25 @@ MVREXPORT bool ArMapSimple::set(MvrMapInterface *other)
         
   // Since the myMapObjectNameToParamsMap is a cache, there's no
   // real need to copy the other one
-  ArUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
+  MvrUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
                          myMapObjectNameToParamsMap.end());
   myMapObjectNameToParamsMap.clear();
 
 
-  ArUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
+  MvrUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
   myRemainderList.clear();
 
-  std::list<ArArgumentBuilder *> *otherRemainderList = other->getRemainder();
+  std::list<MvrArgumentBuilder *> *otherRemainderList = other->getRemainder();
 
   if (otherRemainderList != NULL) {
-    for (std::list<ArArgumentBuilder *>::const_iterator remIter = otherRemainderList->begin();
+    for (std::list<MvrArgumentBuilder *>::const_iterator remIter = otherRemainderList->begin();
           remIter != otherRemainderList->end();
           remIter++) {
-      ArArgumentBuilder *arg = *remIter;
+      MvrArgumentBuilder *arg = *remIter;
       if (arg == NULL) {
         continue; // Should never happen
       }
-      myRemainderList.push_back(new ArArgumentBuilder(*arg));
+      myRemainderList.push_back(new MvrArgumentBuilder(*arg));
     } // end for each remainder
   } // end if remainder list not null
 
@@ -3608,12 +3582,12 @@ MVREXPORT bool ArMapSimple::set(MvrMapInterface *other)
 
 
 
-MVREXPORT void ArMapSimple::clear()
+MVREXPORT void MvrMapSimple::clear()
 {
   lock();  // ???
 
   myFileName = "";
-  myMapId = ArMapId();
+  myMapId = MvrMapId();
   myMapId.log("MvrMapSimple::clear");
 
   myMapInfo->clear();
@@ -3624,7 +3598,7 @@ MVREXPORT void ArMapSimple::clear()
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
-    ArMapScan *scan = iter->second;
+    MvrMapScan *scan = iter->second;
     if (scan != NULL) {
       scan->clear();
     }
@@ -3634,11 +3608,11 @@ MVREXPORT void ArMapSimple::clear()
   myInactiveObjects->clear();
   myChildObjects->clear();
 
-  ArUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
+  MvrUtil::deleteSetPairs(myMapObjectNameToParamsMap.begin(),
                          myMapObjectNameToParamsMap.end());
   myMapObjectNameToParamsMap.clear();
 
-  ArUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
+  MvrUtil::deleteSet(myRemainderList.begin(), myRemainderList.end());
   myRemainderList.clear();
 
   reset(); 
@@ -3649,24 +3623,24 @@ MVREXPORT void ArMapSimple::clear()
 
 } // end method clear
   
-MVREXPORT std::list<std::string> ArMapSimple::getScanTypes() const
+MVREXPORT std::list<std::string> MvrMapSimple::getScanTypes() const
 {
   return myScanTypeList;
 }
 
-MVREXPORT bool ArMapSimple::setScanTypes(const std::list<std::string> &scanTypeList)
+MVREXPORT bool MvrMapSimple::setScanTypes(const std::list<std::string> &scanTypeList)
 {
   return createScans(scanTypeList);
 
 } // end method setScanTypes
 
 
-MVREXPORT struct stat ArMapSimple::getReadFileStat() const
+MVREXPORT struct stat MvrMapSimple::getReadFileStat() const
 {
   return myReadFileStat;
 }
 
-MVREXPORT void ArMapSimple::reset()
+MVREXPORT void MvrMapSimple::reset()
 {
 
   myLoadingGotMapCategory = false; 
@@ -3679,7 +3653,7 @@ MVREXPORT void ArMapSimple::reset()
     delete myLoadingParser;
     myLoadingParser = NULL;
   }
-  myLoadingParser = new ArFileParser("./",  // base directory
+  myLoadingParser = new MvrFileParser("./",  // base directory
                                      true); // precompress quotes
 
 
@@ -3697,7 +3671,7 @@ MVREXPORT void ArMapSimple::reset()
        iter++) {
 
     if (!myLoadingParser->addHandler((*iter).c_str(), &myMapCategoryCB)) {
-      ArLog::log(MvrLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
                  "MvrMapSimple::reset() could not add map category handler for %s",
                  (*iter).c_str());
     }
@@ -3706,23 +3680,23 @@ MVREXPORT void ArMapSimple::reset()
 } // end method reset
   
   
-MVREXPORT bool ArMapSimple::refresh()
+MVREXPORT bool MvrMapSimple::refresh()
 {
-  ArLog::log(MvrLog::Terse, 
+  MvrLog::log(MvrLog::Terse, 
              "MvrMapSimple::refresh() not implemented");
   return true;
 }
 
-MVREXPORT void ArMapSimple::updateMapFileInfo(const char *realFileName)
+MVREXPORT void MvrMapSimple::updateMapFileInfo(const char *realFileName)
 {
   stat(realFileName, &myReadFileStat);
 
   if (myChecksumCalculator != NULL) {
 
-    myMapId = ArMapId(myMapId.getSourceName(),
+    myMapId = MvrMapId(myMapId.getSourceName(),
                       myMapId.getFileName(),
                       myChecksumCalculator->getDigest(),
-                      ArMD5Calculator::DIGEST_LENGTH,
+                      MvrMD5Calculator::DIGEST_LENGTH,
                       myReadFileStat.st_size,
                       myReadFileStat.st_mtime);
 
@@ -3732,7 +3706,7 @@ MVREXPORT void ArMapSimple::updateMapFileInfo(const char *realFileName)
   } 
   else { // checksums turned off
 
-    myMapId = ArMapId(myMapId.getSourceName(),
+    myMapId = MvrMapId(myMapId.getSourceName(),
                       myMapId.getFileName(),
                       NULL,
                       0,
@@ -3743,11 +3717,11 @@ MVREXPORT void ArMapSimple::updateMapFileInfo(const char *realFileName)
     
   myMapId.log("MvrMapSimple::updateMapFileInfo");
 
-  // TODO ArMapRegistry::getIt()->registerMap(realFileName, myMapId);
+  // TODO MvrMapRegistry::getIt()->registerMap(realFileName, myMapId);
 
 } // end method updateMapFileInfo
 
-MVREXPORT const char *ArMapSimple::getMapCategory()
+MVREXPORT const char *MvrMapSimple::getMapCategory()
 {
   if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_MULTI_SOURCES) == 0) {
 
@@ -3768,7 +3742,7 @@ MVREXPORT const char *ArMapSimple::getMapCategory()
 } // end method getMapCategory
 
 
-MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
+MVREXPORT void MvrMapSimple::updateMapCategory(const char *updatedInfoName)
 {
   // The isDowngradeCategory flag indicates whether the map category can 
   // be downgraded (e.g. from 2D-Map-Ex2 to 2D-Map) when the map doesn't 
@@ -3799,7 +3773,7 @@ MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
 
     if (mapInfoContains("GroupType")) {
       if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_COMPOSITE) != 0) {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrMapSimple::updateMapCategory() changing category to %s from %s because %s found",
                    MAP_CATEGORY_2D_COMPOSITE,
                    myMapCategory.c_str(),
@@ -3831,7 +3805,7 @@ MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
     if ((getInfo(extendedInfoNames[i]) != NULL) && 
         (!getInfo(extendedInfoNames[i])->empty())) {
       if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_EXTENDED) != 0) {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                     "MvrMapSimple::updateMapCategory() changing category to %s from %s because %s found",
                     MAP_CATEGORY_2D_EXTENDED,
                     myMapCategory.c_str(),
@@ -3852,7 +3826,7 @@ MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
     if (mapInfoContains("MvrgDesc")) {
       if ((strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_COMPOSITE) != 0) &&
           (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_EXTENDED) != 0)) {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                   "MvrMapSimple::updateMapCategory() changing category to %s from %s because %s found",
                   MAP_CATEGORY_2D_EXTENDED,
                   myMapCategory.c_str(),
@@ -3877,7 +3851,7 @@ MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
   if (scanTypeList.size() > 1) {
 
     if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_MULTI_SOURCES) != 0) {
-      ArLog::log(MvrLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                   "MvrMapSimple::updateMapCategory() changing category to %s from %s because %i scan types",
                   MAP_CATEGORY_2D_MULTI_SOURCES,
                   myMapCategory.c_str(),
@@ -3896,7 +3870,7 @@ MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
     if (!isDefaultScanType(scanType) && 
         (strcasecmp(scanType, "SickLaser") != 0)) {
       if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D_MULTI_SOURCES) != 0) {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                     "MvrMapSimple::updateMapCategory() changing category to %s from %s because scan type is %s",
                     MAP_CATEGORY_2D_MULTI_SOURCES,
                     myMapCategory.c_str(),
@@ -3909,7 +3883,7 @@ MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
   
 
   if (strcasecmp(myMapCategory.c_str(), MAP_CATEGORY_2D) != 0) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                 "MvrMapSimple::updateMapCategory() changing category to %s from %s because no special cases found",
                 MAP_CATEGORY_2D,
                 myMapCategory.c_str());
@@ -3921,20 +3895,20 @@ MVREXPORT void ArMapSimple::updateMapCategory(const char *updatedInfoName)
 } // end method updateMapCategory
 
 
-MVREXPORT bool ArMapSimple::mapInfoContains(const char *arg0Text) 
+MVREXPORT bool MvrMapSimple::mapInfoContains(const char *arg0Text) 
 {
   if (MvrUtil::isStrEmpty(arg0Text)) {
     return false;
   }
 
-  std::list<ArArgumentBuilder*> *mapInfoList = getInfo(MAP_INFO_NAME);
+  std::list<MvrArgumentBuilder*> *mapInfoList = getInfo(MAP_INFO_NAME);
   if (mapInfoList != NULL) {
 
-    for (std::list<ArArgumentBuilder*>::const_iterator iter = mapInfoList->begin();
+    for (std::list<MvrArgumentBuilder*>::const_iterator iter = mapInfoList->begin();
         iter != mapInfoList->end();
         iter++) {
       
-      ArArgumentBuilder *arg = *iter;
+      MvrArgumentBuilder *arg = *iter;
       if ((arg == NULL) || (arg->getArgc() < 1) || (arg->getArg(0) == NULL)) {
         continue;
       }
@@ -3950,33 +3924,33 @@ MVREXPORT bool ArMapSimple::mapInfoContains(const char *arg0Text)
 } // end method mapInfoContains
 
 
-MVREXPORT void ArMapSimple::addPreWriteFileCB(MvrFunctor *functor,
-                                             ArListPos::Pos position)
+MVREXPORT void MvrMapSimple::addPreWriteFileCB(MvrFunctor *functor,
+                                             MvrListPos::Pos position)
 {
   addToCallbackList(functor, position, &myPreWriteCBList);
 
 } // end method addPreWriteFileCB
 
-MVREXPORT void ArMapSimple::remPreWriteFileCB(MvrFunctor *functor)
+MVREXPORT void MvrMapSimple::remPreWriteFileCB(MvrFunctor *functor)
 {
   remFromCallbackList(functor, &myPreWriteCBList);
 
 } // end method remPreWriteFileCB
 
-MVREXPORT void ArMapSimple::addPostWriteFileCB(MvrFunctor *functor,
-                                              ArListPos::Pos position)
+MVREXPORT void MvrMapSimple::addPostWriteFileCB(MvrFunctor *functor,
+                                              MvrListPos::Pos position)
 {
   addToCallbackList(functor, position, &myPostWriteCBList);
 
 } // end method addPostWriteFileCB
 
-MVREXPORT void ArMapSimple::remPostWriteFileCB(MvrFunctor *functor)
+MVREXPORT void MvrMapSimple::remPostWriteFileCB(MvrFunctor *functor)
 {
   remFromCallbackList(functor, &myPostWriteCBList);
 
 } // end method remPostWriteFileCB
 
-MVREXPORT bool ArMapSimple::readFile(const char *fileName, 
+MVREXPORT bool MvrMapSimple::readFile(const char *fileName, 
 			                              char *errorBuffer, 
                                     size_t errorBufferLen,
                                     unsigned char *md5DigestBuffer,
@@ -3984,13 +3958,13 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
 {
 
   if (MvrUtil::isStrEmpty(fileName)) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::readFile() cannot read empty file name");
     return false;
   }
 
   IFDEBUG(
-  ArLog::log(MvrLog::Normal, 
+  MvrLog::log(MvrLog::Normal, 
              "MvrMapSimple::readFile() reading %s",
              fileName);
   );
@@ -4011,7 +3985,7 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
-    ArMapScan *scan = iter->second;
+    MvrMapScan *scan = iter->second;
     if (scan != NULL) {
       scan->clear();
     }
@@ -4036,16 +4010,16 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
 
   std::string realFileName = createRealFileName(fileName);
 
-  ArLog::log(MvrLog::Normal, 
+  MvrLog::log(MvrLog::Normal, 
              "Opening map file %s, given %s", 
              realFileName.c_str(), fileName);
 
 
   // Open file in binary mode to avoid conversion of CRLF in windows. 
   // This is necessary so that a consistent checksum value is obtained.
-  if ((file = ArUtil::fopen(realFileName.c_str(), "rb")) == NULL)
+  if ((file = MvrUtil::fopen(realFileName.c_str(), "rb")) == NULL)
   {
-    ArLog::log(MvrLog::Terse, "Cannot open file '%s'", realFileName.c_str());
+    MvrLog::log(MvrLog::Terse, "Cannot open file '%s'", realFileName.c_str());
     // TODO This used to put the config param name into the error buffer
     if (errorBuffer != NULL) {
       snprintf(errorBuffer, errorBufferLen, 
@@ -4057,9 +4031,9 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
     return false;
   }
 
-  ArFunctor1<const char *> *parseFunctor = NULL;
+  MvrFunctor1<const char *> *parseFunctor = NULL;
 
-  ArTime parseTime;
+  MvrTime parseTime;
   parseTime.setToNow();
 
   if (myChecksumCalculator != NULL) {
@@ -4108,7 +4082,7 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
         errorBuffer[errorBufferLen - 1] = '\0';
       }
       //unlock();
-      ArLog::log(MvrLog::Terse, "Could not load map file '%s'", fileName);
+      MvrLog::log(MvrLog::Terse, "Could not load map file '%s'", fileName);
 
       isSuccess = false;
     }
@@ -4127,7 +4101,7 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
     }
 
     //unlock();
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
                "Could not load map file '%s' it was not a recognized map format",              fileName);
     isSuccess = false;
   }
@@ -4158,7 +4132,7 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
       }
       if (isLineDataTag && !readLineSegment(line))
       {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrMapSimple::readFile() error reading line data '%s'",
                    line);
         continue;
@@ -4177,14 +4151,14 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
 
       if (myLoadingScan != NULL) {
 
-        ArLog::log(MvrLog::Verbose,
+        MvrLog::log(MvrLog::Verbose,
                    "MvrMapSimple::readFile() found scan type %s for data tag %s (is line = %i)",
                    myLoadingScan->getScanType(),
                    myLoadingDataTag.c_str(),
                    isLineDataTag);
       }
       else {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrMapSimple::readFile() cannot find scan for data tag %s (is line = %i)",
                    myLoadingDataTag.c_str(),
                    isLineDataTag);
@@ -4193,7 +4167,7 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
     else { // else must be end of file
 
       isEndOfFile = true;
-      ArLog::log(MvrLog::Verbose,
+      MvrLog::log(MvrLog::Verbose,
                  "MvrMapSimple::readFile() end of file found");
 
     } // end else end of file
@@ -4206,11 +4180,11 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
 
   int elapsed = parseTime.mSecSince();
 
-  ArLog::log(MvrLog::Normal, 
+  MvrLog::log(MvrLog::Normal, 
              "MvrMapSimple::readFile() %s took %i msecs to read map of %i points",
              realFileName.c_str(),
              elapsed,
-             getNumPoints(ARMAP_SUMMARY_SCAN_TYPE));	
+             getNumPoints(MVRMAP_SUMMARY_SCAN_TYPE));	
 
   fclose(file);
 
@@ -4224,7 +4198,7 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
       if (md5DigestBuffer != NULL) {
         memset(md5DigestBuffer, 0, md5DigestBufferLen);
         memcpy(md5DigestBuffer, myChecksumCalculator->getDigest(), 
-              ArUtil::findMin(md5DigestBufferLen, ArMD5Calculator::DIGEST_LENGTH));
+              MvrUtil::findMin(md5DigestBufferLen, MvrMD5Calculator::DIGEST_LENGTH));
       }
 
       myLoadingParser->setPreParseFunctor(NULL);
@@ -4234,10 +4208,10 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
       // move the stuff over from reading to new
       myFileName = fileName;
     
-      ArLog::log(myMapChangedHelper->getMapChangedLogLevel(), 
+      MvrLog::log(myMapChangedHelper->getMapChangedLogLevel(), 
                 "MvrMapSimple:: Calling mapChanged()");	
       mapChanged();
-      ArLog::log(myMapChangedHelper->getMapChangedLogLevel(), 
+      MvrLog::log(myMapChangedHelper->getMapChangedLogLevel(), 
                 "MvrMapSimple:: Finished mapChanged()");
 
     }
@@ -4251,10 +4225,10 @@ MVREXPORT bool ArMapSimple::readFile(const char *fileName,
 } // end method readFile
 
 
-MVREXPORT bool ArMapSimple::isDataTag(const char *line) 
+MVREXPORT bool MvrMapSimple::isDataTag(const char *line) 
 {
   // Pre: Line is not null
-  ArDataTagToScanTypeMap::iterator typeIter =  
+  MvrDataTagToScanTypeMap::iterator typeIter =  
             myDataTagToScanTypeMap.find(line);
 
   if (typeIter != myDataTagToScanTypeMap.end()) {
@@ -4266,31 +4240,31 @@ MVREXPORT bool ArMapSimple::isDataTag(const char *line)
 } // end method isDataTag
 
 
-MVREXPORT ArMapScan *ArMapSimple::findScanWithDataKeyword
+MVREXPORT MvrMapScan *MvrMapSimple::findScanWithDataKeyword
                                      (const char *loadingDataTag,
                                       bool *isLineDataTagOut)
 {
-  //ArLog::log(MvrLog::Normal,
+  //MvrLog::log(MvrLog::Normal,
   //           "MvrMapSimple::findScanWithDataKeyword() looking for scan with tag %s",
   //           loadingDataTag);
 
   if (MvrUtil::isStrEmpty(loadingDataTag)) {
     return NULL;
   }
-  ArDataTagToScanTypeMap::iterator typeIter =  
+  MvrDataTagToScanTypeMap::iterator typeIter =  
             myDataTagToScanTypeMap.find(loadingDataTag);
   if (typeIter == myDataTagToScanTypeMap.end()) {
     return NULL;
   }
 
-  ArTypeToScanMap::iterator scanIter =
+  MvrTypeToScanMap::iterator scanIter =
             myTypeToScanMap.find(typeIter->second);
 
   if (scanIter == myTypeToScanMap.end()) {
     return NULL;
   }
 
-  ArMapScan *mapScan = scanIter->second;
+  MvrMapScan *mapScan = scanIter->second;
   if (mapScan == NULL) {
     return NULL;
   }
@@ -4298,7 +4272,7 @@ MVREXPORT ArMapScan *ArMapSimple::findScanWithDataKeyword
   bool isLineDataTag = (MvrUtil::strcasecmp(loadingDataTag,
                                            mapScan->getLinesKeyword()) == 0);
  
-  //ArLog::log(MvrLog::Normal,
+  //MvrLog::log(MvrLog::Normal,
   //           "MvrMapSimple::findScanWithDataKeyword() found scan for tag %s, isLineData = %i",
   //           loadingDataTag,
   //           isLineDataTag);
@@ -4320,7 +4294,7 @@ MVREXPORT ArMapScan *ArMapSimple::findScanWithDataKeyword
 } // end method findScanWithDataKeyword
 
 
-MVREXPORT bool ArMapSimple::writeFile(const char *fileName, 
+MVREXPORT bool MvrMapSimple::writeFile(const char *fileName, 
                                      bool internalCall,
                                      unsigned char *md5DigestBuffer,
                                      size_t md5DigestBufferLen,
@@ -4332,7 +4306,7 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
 
   // Calling updateMapCategory here just in case the file is being 
   // written because the associated info has changed (as in the case
-  // of AramMapInfoMinder).
+  // of MvramMapInfoMinder).
   updateMapCategory();
 
   invokeCallbackList(&myPreWriteCBList);
@@ -4352,15 +4326,15 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
 // Hoping that this is highly temporary...
 #ifdef WIN32
     snprintf(tempFileName, tempFileNameLen,
-             "%sArMap.%d.%d", 
+             "%sMvrMap.%d.%d", 
              myTempDirectory.c_str(), _getpid(), fileNumber);
 #else // linux
     snprintf(tempFileName, tempFileNameLen,
-             "%sArMap.%d.%d", 
+             "%sMvrMap.%d.%d", 
              myTempDirectory.c_str(), getpid(), fileNumber);
 #endif  // end else linux
 
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "Writing map %s to temp file %s\n",
                fileName,
                tempFileName);
@@ -4379,11 +4353,11 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
   // Open file in binary mode to avoid conversion of CRLF in windows. 
   // This is necessary so that a consistent checksum value is obtained.
 
-  if ((file = ArUtil::fopen(writeFileName.c_str(), "wb")) == NULL)
+  if ((file = MvrUtil::fopen(writeFileName.c_str(), "wb")) == NULL)
   {
     bool isFileSuccess = false;
 
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
                "MvrMap: Cannot open file '%s' for writing",
 	             writeFileName.c_str());
   
@@ -4397,16 +4371,16 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
   } // end if error opening file for writing
 
 
-  ArTime writeTime;
+  MvrTime writeTime;
   writeTime.setToNow();
 
-  ArFunctor1<const char *> *writeFunctor = NULL;
+  MvrFunctor1<const char *> *writeFunctor = NULL;
 
-  ArGlobalFunctor2<const char *, FILE *> functor(&ArUtil::writeToFile, "", file);
+  MvrGlobalFunctor2<const char *, FILE *> functor(&MvrUtil::writeToFile, "", file);
 
   
   if (myChecksumCalculator != NULL) { 
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
                "MvrMapSimple::writeFile() recalculating checksum");
 
     myChecksumCalculator->reset();
@@ -4424,7 +4398,7 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
     
   int elapsed = writeTime.mSecSince();
 
-  ArLog::log(MvrLog::Normal, 
+  MvrLog::log(MvrLog::Normal, 
              "MvrMapSimple::writeFile() took %i msecs to write map of %i points",
              elapsed,
              getNumPoints());	
@@ -4462,7 +4436,7 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
   
     if (ret != 0) {
 
-      ArLog::log(MvrLog::Terse, 
+      MvrLog::log(MvrLog::Terse, 
                  "Error saving map file %s.  Temp file cannot be moved. (%s)", 
                  fileName,
                  systemBuf);
@@ -4481,10 +4455,10 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
 
   if (fileTimestamp != -1) {
 
-    ArLog::log(MvrLog::Normal, 
+    MvrLog::log(MvrLog::Normal, 
                "MvrMapSimple::writeFile() setting time of %s",
                realFileName.c_str());	
-    bool isTimeChanged = ArUtil::changeFileTimestamp(realFileName.c_str(), 
+    bool isTimeChanged = MvrUtil::changeFileTimestamp(realFileName.c_str(), 
                                                      fileTimestamp);
 
   }
@@ -4502,12 +4476,12 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
   if (myChecksumCalculator != NULL) {
 
     if (md5DigestBuffer != NULL) {
-      if (md5DigestBufferLen != ArMD5Calculator::DIGEST_LENGTH) {
+      if (md5DigestBufferLen != MvrMD5Calculator::DIGEST_LENGTH) {
         // log warning
       }
       memset(md5DigestBuffer, 0, md5DigestBufferLen);
       memcpy(md5DigestBuffer, myChecksumCalculator->getDigest(), 
-            ArUtil::findMin(md5DigestBufferLen, ArMD5Calculator::DIGEST_LENGTH));
+            MvrUtil::findMin(md5DigestBufferLen, MvrMD5Calculator::DIGEST_LENGTH));
     }
 
     // Reset to NULL before the functor leaves the scope of this method.
@@ -4517,7 +4491,7 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
     
   invokeCallbackList(&myPostWriteCBList);
 
-  ArLog::log(MvrLog::Normal, "Saved map file %s", fileName);
+  MvrLog::log(MvrLog::Normal, "Saved map file %s", fileName);
   if (!internalCall)
     unlock();
 
@@ -4527,22 +4501,22 @@ MVREXPORT bool ArMapSimple::writeFile(const char *fileName,
 } // end method writeFile
 
 
-MVREXPORT bool ArMapSimple::calculateChecksum(unsigned char *md5DigestBuffer,
+MVREXPORT bool MvrMapSimple::calculateChecksum(unsigned char *md5DigestBuffer,
                                              size_t md5DigestBufferLen)
 {
 
   if ((md5DigestBuffer == NULL) || 
-      (md5DigestBufferLen < ArMD5Calculator::DIGEST_LENGTH)) {
+      (md5DigestBufferLen < MvrMD5Calculator::DIGEST_LENGTH)) {
     return false;
   }
 
   lock();
   
   bool isLocalCalculator = false;
-  ArMD5Calculator *calculator = myChecksumCalculator;
+  MvrMD5Calculator *calculator = myChecksumCalculator;
   if (calculator == NULL) {
     isLocalCalculator = true;
-    calculator = new ArMD5Calculator();
+    calculator = new MvrMD5Calculator();
   }
 
   memset(md5DigestBuffer, 0, md5DigestBufferLen);
@@ -4551,7 +4525,7 @@ MVREXPORT bool ArMapSimple::calculateChecksum(unsigned char *md5DigestBuffer,
   writeToFunctor(calculator->getFunctor(), "\n");
 
   memcpy(md5DigestBuffer, calculator->getDigest(), 
-         ArMD5Calculator::DIGEST_LENGTH);
+         MvrMD5Calculator::DIGEST_LENGTH);
 
   if (isLocalCalculator) {
     delete calculator;
@@ -4564,49 +4538,49 @@ MVREXPORT bool ArMapSimple::calculateChecksum(unsigned char *md5DigestBuffer,
 } // end method calculateChecksum
 
 
-MVREXPORT const char *ArMapSimple::getBaseDirectory(void) const
+MVREXPORT const char *MvrMapSimple::getBaseDirectory(void) const
 { 
   return myBaseDirectory.c_str();
 
 } // end method getBaseDirectory
 
 
-MVREXPORT const char *ArMapSimple::getFileName(void) const 
+MVREXPORT const char *MvrMapSimple::getFileName(void) const 
 {
   return myFileName.c_str();
 
 } // end method getFileName
 
 
-void ArMapSimple::setIgnoreEmptyFileName(bool ignore)
+void MvrMapSimple::setIgnoreEmptyFileName(bool ignore)
 { 
   myIgnoreEmptyFileName = ignore;
 
 } // end method setIgnoreEmptyFileName
 
 
-bool ArMapSimple::getIgnoreEmptyFileName(void)
+bool MvrMapSimple::getIgnoreEmptyFileName(void)
 { 
   return myIgnoreEmptyFileName;
 
 } // end method getIgnoreEmptyFileName
 
 
-void ArMapSimple::setIgnoreCase(bool ignoreCase)
+void MvrMapSimple::setIgnoreCase(bool ignoreCase)
 { 
   myIgnoreCase = ignoreCase;
 
 } // end method setIgnoreCase
 
 
-bool ArMapSimple::getIgnoreCase(void) 
+bool MvrMapSimple::getIgnoreCase(void) 
 { 
   return myIgnoreCase;
 
 } // end method getIgnoreCase
 
 
-MVREXPORT void ArMapSimple::setBaseDirectory(const char *baseDirectory)
+MVREXPORT void MvrMapSimple::setBaseDirectory(const char *baseDirectory)
 { 
   if (baseDirectory != NULL) {
     myBaseDirectory = baseDirectory;
@@ -4617,7 +4591,7 @@ MVREXPORT void ArMapSimple::setBaseDirectory(const char *baseDirectory)
 
 } // end method setBaseDirectory
 
-MVREXPORT const char *ArMapSimple::getTempDirectory(void) const
+MVREXPORT const char *MvrMapSimple::getTempDirectory(void) const
 {
   if (myIsWriteToTempFile) {
     return myTempDirectory.c_str();
@@ -4627,7 +4601,7 @@ MVREXPORT const char *ArMapSimple::getTempDirectory(void) const
   }
 }
 
-MVREXPORT void ArMapSimple::setTempDirectory(const char *tempDirectory)
+MVREXPORT void MvrMapSimple::setTempDirectory(const char *tempDirectory)
 {
   if (tempDirectory != NULL) {
     myIsWriteToTempFile = true;
@@ -4640,7 +4614,7 @@ MVREXPORT void ArMapSimple::setTempDirectory(const char *tempDirectory)
 }
 
 
-MVREXPORT void ArMapSimple::setSourceFileName(const char *sourceName,
+MVREXPORT void MvrMapSimple::setSourceFileName(const char *sourceName,
                                              const char *fileName,
                                              bool isInternalCall)
 {
@@ -4664,7 +4638,7 @@ MVREXPORT void ArMapSimple::setSourceFileName(const char *sourceName,
                                            realFileName.length() - (dirLen + 1));
       }
 
-      ArLog::log(MvrLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "MvrMapSimple::setSourceFileName(%s, %s) stripped base dir = %s",
                  sourceName,
                  fileName,
@@ -4681,7 +4655,7 @@ MVREXPORT void ArMapSimple::setSourceFileName(const char *sourceName,
 } // end method setSourceFileName
 
 
-MVREXPORT bool ArMapSimple::getMapId(MvrMapId *mapIdOut,
+MVREXPORT bool MvrMapSimple::getMapId(MvrMapId *mapIdOut,
                                     bool isInternalCall)
 {
   if (mapIdOut != NULL) {
@@ -4695,7 +4669,7 @@ MVREXPORT bool ArMapSimple::getMapId(MvrMapId *mapIdOut,
     return true;
   }
   else {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::getMapId() null map ID param");
   }
   return false;
@@ -4703,26 +4677,26 @@ MVREXPORT bool ArMapSimple::getMapId(MvrMapId *mapIdOut,
 } // end method getMapId
   
   
-MVREXPORT ArArgumentBuilder *ArMapSimple::findMapObjectParams
+MVREXPORT MvrArgumentBuilder *MvrMapSimple::findMapObjectParams
                                            (const char *mapObjectName)
 {
   if (MvrUtil::isStrEmpty(mapObjectName)) {
     return NULL;
   }
 
-  ArArgumentBuilder *params = NULL;
+  MvrArgumentBuilder *params = NULL;
 
-  std::map<std::string, ArArgumentBuilder *, ArStrCaseCmpOp>::iterator iter =
+  std::map<std::string, MvrArgumentBuilder *, MvrStrCaseCmpOp>::iterator iter =
      myMapObjectNameToParamsMap.find(mapObjectName);
 
   if (iter == myMapObjectNameToParamsMap.end()) {
     
-    std::list<ArArgumentBuilder*> *cairnInfoList = getInfo(CAIRN_INFO_NAME);
+    std::list<MvrArgumentBuilder*> *cairnInfoList = getInfo(CAIRN_INFO_NAME);
 
     if (cairnInfoList != NULL) {
 
-      ArArgumentBuilder *paramInfo = NULL;
-      std::list<ArArgumentBuilder *>::iterator infoIter = 
+      MvrArgumentBuilder *paramInfo = NULL;
+      std::list<MvrArgumentBuilder *>::iterator infoIter = 
                                           findMapObjectParamInfo(mapObjectName,
                                                                  *cairnInfoList);
       if (infoIter != cairnInfoList->end()) {
@@ -4730,7 +4704,7 @@ MVREXPORT ArArgumentBuilder *ArMapSimple::findMapObjectParams
       }
       if (paramInfo != NULL) {
 
-        params = new ArArgumentBuilder(*paramInfo);
+        params = new MvrArgumentBuilder(*paramInfo);
         params->compressQuoted(true);
 
         if (params->getArgc() >= 2) {
@@ -4753,8 +4727,8 @@ MVREXPORT ArArgumentBuilder *ArMapSimple::findMapObjectParams
 } // end method findMapObjectParams
 
 /**
-  ArMapObject *obj = myMap->findMapObject(objName);
-  const ArArgumentBuilder *args = myMap->findMapObjectParams(objName);
+  MvrMapObject *obj = myMap->findMapObject(objName);
+  const MvrArgumentBuilder *args = myMap->findMapObjectParams(objName);
 
   bool ok = true;
   int someNum = 0;
@@ -4766,7 +4740,7 @@ MVREXPORT ArArgumentBuilder *ArMapSimple::findMapObjectParams
 
   if (ok) {
 
-    ArArgumentBuilder newArgs;
+    MvrArgumentBuilder newArgs;
     char buf[128]
     snprintf(buf, sizeof(buf), "%i", someNum + 1);
     newArgs.add(buf);
@@ -4785,45 +4759,45 @@ MVREXPORT ArArgumentBuilder *ArMapSimple::findMapObjectParams
   
 **/
 
-MVREXPORT bool ArMapSimple::setMapObjectParams(const char *mapObjectName,
-                                              ArArgumentBuilder *params,
-                                              ArMapChangeDetails *changeDetails)
+MVREXPORT bool MvrMapSimple::setMapObjectParams(const char *mapObjectName,
+                                              MvrArgumentBuilder *params,
+                                              MvrMapChangeDetails *changeDetails)
 {
   if (MvrUtil::isStrEmpty(mapObjectName)) {
     return false;
   }
   
-  std::list<ArArgumentBuilder*> *cairnInfoList = getInfo(CAIRN_INFO_NAME);
+  std::list<MvrArgumentBuilder*> *cairnInfoList = getInfo(CAIRN_INFO_NAME);
   if (cairnInfoList == NULL) {
     return false;
   }
   
-  ArMapFileLineSet origLines;
+  MvrMapFileLineSet origLines;
 
   if (changeDetails != NULL) {
     myMapInfo->createMultiSet(CAIRN_INFO_NAME, &origLines, changeDetails);
   }
 
-  std::map<std::string, ArArgumentBuilder *, ArStrCaseCmpOp>::iterator iter =
+  std::map<std::string, MvrArgumentBuilder *, MvrStrCaseCmpOp>::iterator iter =
      myMapObjectNameToParamsMap.find(mapObjectName);
 
   if (iter != myMapObjectNameToParamsMap.end()) {
-    ArArgumentBuilder *oldParams = iter->second;
+    MvrArgumentBuilder *oldParams = iter->second;
     myMapObjectNameToParamsMap.erase(iter);
     delete oldParams;
   }
   
   if (params != NULL) {
-    myMapObjectNameToParamsMap[mapObjectName] = new ArArgumentBuilder(*params);
+    myMapObjectNameToParamsMap[mapObjectName] = new MvrArgumentBuilder(*params);
   }
 
 
-  std::list<ArArgumentBuilder *>::iterator infoIter = 
+  std::list<MvrArgumentBuilder *>::iterator infoIter = 
                                      findMapObjectParamInfo
                                         (mapObjectName,
                                          *cairnInfoList);
   if (infoIter != cairnInfoList->end()) {
-    ArArgumentBuilder *oldInfo = *infoIter;
+    MvrArgumentBuilder *oldInfo = *infoIter;
     cairnInfoList->erase(infoIter);
     delete oldInfo;
   }
@@ -4836,19 +4810,19 @@ MVREXPORT bool ArMapSimple::setMapObjectParams(const char *mapObjectName,
     quotedMapObjectName += mapObjectName;
     quotedMapObjectName += "\"";
 
-    ArArgumentBuilder *newInfo = new ArArgumentBuilder();
+    MvrArgumentBuilder *newInfo = new MvrArgumentBuilder();
     newInfo->add("Params");
     newInfo->add(quotedMapObjectName.c_str());
     newInfo->add(params->getFullString());
 
     // This little alphabetization of the CairnInfo list is done just to 
-    // make the ArMapChangeDetails processing better. (i.e. It's in sync
+    // make the MvrMapChangeDetails processing better. (i.e. It's in sync
     // with the editor.)
     bool isInserted = false;
     for (infoIter = cairnInfoList->begin(); 
          infoIter != cairnInfoList->end(); 
          infoIter++) {
-      ArArgumentBuilder *curArg = *infoIter;
+      MvrArgumentBuilder *curArg = *infoIter;
       
       if ((curArg == NULL) || (curArg->getArgc() < 2)) {
         continue;
@@ -4871,20 +4845,20 @@ MVREXPORT bool ArMapSimple::setMapObjectParams(const char *mapObjectName,
   
   if (changeDetails != NULL) {
 
-    ArMapFileLineSet newLines;
+    MvrMapFileLineSet newLines;
     myMapInfo->createMultiSet(CAIRN_INFO_NAME, &newLines, changeDetails);
 
-    bool isSuccess = ArMapFileLineSet::calculateChanges
+    bool isSuccess = MvrMapFileLineSet::calculateChanges
                         (origLines,
                          newLines,
                          changeDetails->getChangedInfoLines
                                           (CAIRN_INFO_NAME,
-                                           ArMapChangeDetails::DELETIONS),
+                                           MvrMapChangeDetails::DELETIONS),
                          changeDetails->getChangedInfoLines
                                           (CAIRN_INFO_NAME,
-                                           ArMapChangeDetails::ADDITIONS));
+                                           MvrMapChangeDetails::ADDITIONS));
     if (!isSuccess) {
-      ArLog::log(MvrLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "MvrMapInfo::setInfo() error calculating changes");
     }
   } // end if changeDetails
@@ -4894,28 +4868,28 @@ MVREXPORT bool ArMapSimple::setMapObjectParams(const char *mapObjectName,
 } // end method setMapObjectParams
 
 
-std::list<ArArgumentBuilder *>::iterator ArMapSimple::findMapObjectParamInfo
+std::list<MvrArgumentBuilder *>::iterator MvrMapSimple::findMapObjectParamInfo
              (const char *mapObjectName,
-              std::list<ArArgumentBuilder*> &cairnInfoList)
+              std::list<MvrArgumentBuilder*> &cairnInfoList)
 {
   // If the map object has parameters, then it must have a name.
   if (MvrUtil::isStrEmpty(mapObjectName)) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::findMapObjectParamInfo() cannot find empty map object name");
     return cairnInfoList.end();
   }
 
-  for (std::list<ArArgumentBuilder*>::iterator iter = cairnInfoList.begin();
+  for (std::list<MvrArgumentBuilder*>::iterator iter = cairnInfoList.begin();
        iter != cairnInfoList.end();
        iter++) {
 
-    ArArgumentBuilder *arg = *iter;
+    MvrArgumentBuilder *arg = *iter;
     // The first arg in the CairnInfo line is the type of info (e.g. Params)
     // and the second arg name of the map object...
     if ((arg == NULL) || 
         (arg->getArgc() < 2) || 
         (MvrUtil::isStrEmpty(arg->getArg(1)))) {
-      ArLog::log(MvrLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "MvramMapInfoMinder::findObjectParams() skipping: %s",
                  ((arg != NULL) ? arg->getFullString(): "NULL"));
       continue;
@@ -4933,28 +4907,28 @@ std::list<ArArgumentBuilder *>::iterator ArMapSimple::findMapObjectParamInfo
   
 
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMapSimple::getRemainder()
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMapSimple::getRemainder()
 {
   return &myRemainderList;
 }
 
-MVREXPORT void ArMapSimple::setQuiet(bool isQuiet)
+MVREXPORT void MvrMapSimple::setQuiet(bool isQuiet)
 { 
   myIsQuiet = isQuiet;
 
 } // end method setQuiet
 	
 
-MVREXPORT void ArMapSimple::mapChanged(void)
+MVREXPORT void MvrMapSimple::mapChanged(void)
 { 
-  ArTime maxScanTimeChanged = findMaxMapScanTimeChanged();
-//  ArLog::log(level, "MvrMap: Calling mapChanged callbacks");
+  MvrTime maxScanTimeChanged = findMaxMapScanTimeChanged();
+//  MvrLog::log(level, "MvrMap: Calling mapChanged callbacks");
   if (!myTimeMapInfoChanged.isAt(myMapInfo->getTimeChanged()) ||
       !myTimeMapObjectsChanged.isAt(myMapObjects->getTimeChanged()) ||
       !myTimeMapSupplementChanged.isAt(myMapSupplement->getTimeChanged()) ||
       !myTimeMapScanChanged.isAt(maxScanTimeChanged)) {
     
-    ArLog::log(myMapChangedHelper->getMapChangedLogLevel(),
+    MvrLog::log(myMapChangedHelper->getMapChangedLogLevel(),
 	       "MvrMapSimple::mapChanged() msecs-objects: %i, msecs-points: %i, msecs-mapInfo: %i msecs-supplement: %i",
 	       myTimeMapObjectsChanged.isAt(myMapObjects->getTimeChanged()),
 	       !myTimeMapScanChanged.isAt(maxScanTimeChanged),
@@ -4976,12 +4950,12 @@ MVREXPORT void ArMapSimple::mapChanged(void)
     
     myMapChangedHelper->invokeMapChangedCallbacks();
     
-    ArLog::log(myMapChangedHelper->getMapChangedLogLevel(),
+    MvrLog::log(myMapChangedHelper->getMapChangedLogLevel(),
 	       "MvrMapSimple: Done calling mapChanged callbacks");
   }
   else { // nothing changed
     
-    ArLog::log(MvrLog::Verbose,
+    MvrLog::log(MvrLog::Verbose,
 	       "MvrMapSimple::mapChanged(): Map was not changed");
     
   } // end else nothing changed
@@ -4994,7 +4968,7 @@ MVREXPORT void ArMapSimple::mapChanged(void)
 } // end method mapChanged
 
       
-MVREXPORT void ArMapSimple::updateSummaryScan()
+MVREXPORT void MvrMapSimple::updateSummaryScan()
 { 
   if (mySummaryScan != NULL) {
     
@@ -5009,16 +4983,16 @@ MVREXPORT void ArMapSimple::updateSummaryScan()
 }
 
 
-MVREXPORT ArTime ArMapSimple::findMaxMapScanTimeChanged()
+MVREXPORT MvrTime MvrMapSimple::findMaxMapScanTimeChanged()
 {
-  ArTime maxMapScanTimeChanged;
+  MvrTime maxMapScanTimeChanged;
   bool isFirst = true;
 
   for (MvrTypeToScanMap::iterator iter = 
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
-    ArMapScan *scan = iter->second;
+    MvrMapScan *scan = iter->second;
     if (scan != NULL) {
       if (isFirst || 
           (scan->getTimeChanged().isAfter(maxMapScanTimeChanged))) {
@@ -5034,7 +5008,7 @@ MVREXPORT ArTime ArMapSimple::findMaxMapScanTimeChanged()
 } // end method findMaxMapScanTimeChanged
 
 
-MVREXPORT void ArMapSimple::addMapChangedCB(MvrFunctor *functor, 
+MVREXPORT void MvrMapSimple::addMapChangedCB(MvrFunctor *functor, 
 					   int position)
 { 
   myMapChangedHelper->addMapChangedCB(functor, position);
@@ -5042,93 +5016,93 @@ MVREXPORT void ArMapSimple::addMapChangedCB(MvrFunctor *functor,
 } // end method addMapChangedCB
 
 
-MVREXPORT void ArMapSimple::remMapChangedCB(MvrFunctor *functor)
+MVREXPORT void MvrMapSimple::remMapChangedCB(MvrFunctor *functor)
 { 
   myMapChangedHelper->remMapChangedCB(functor);
 
 } // end method remMapChangedCB
 
 
-MVREXPORT void ArMapSimple::addPreMapChangedCB(MvrFunctor *functor,
+MVREXPORT void MvrMapSimple::addPreMapChangedCB(MvrFunctor *functor,
                                               int position)
 { 
   myMapChangedHelper->addPreMapChangedCB(functor, position);
 } // end method addPreMapChangedCB
 
 
-MVREXPORT void ArMapSimple::remPreMapChangedCB(MvrFunctor *functor)
+MVREXPORT void MvrMapSimple::remPreMapChangedCB(MvrFunctor *functor)
 { 
   myMapChangedHelper->remPreMapChangedCB(functor);
 
 } // end method remPreMapChangedCB
 
 
-MVREXPORT void ArMapSimple::setMapChangedLogLevel(MvrLog::LogLevel level)
+MVREXPORT void MvrMapSimple::setMapChangedLogLevel(MvrLog::LogLevel level)
 { 
   myMapChangedHelper->setMapChangedLogLevel(level);
 
 } // end method setMapChangedLogLevel
 
-MVREXPORT ArLog::LogLevel ArMapSimple::getMapChangedLogLevel(void)
+MVREXPORT MvrLog::LogLevel MvrMapSimple::getMapChangedLogLevel(void)
 { 
   return myMapChangedHelper->getMapChangedLogLevel();
 
 } // end method getMapChangedLogLevel
 
 
-MVREXPORT int ArMapSimple::lock()
+MVREXPORT int MvrMapSimple::lock()
 { 
   return myMutex.lock();
 
 } // end method lock
 
-MVREXPORT int ArMapSimple::tryLock()
+MVREXPORT int MvrMapSimple::tryLock()
 { 
   return myMutex.tryLock();
 
 } // end method tryLock
 
-MVREXPORT int ArMapSimple::unlock()
+MVREXPORT int MvrMapSimple::unlock()
 { 
   return myMutex.unlock();
 
 } // end method unlock
 
 // ---------------------------------------------------------------------------
-// ArMapInfoInterface
+// MvrMapInfoInterface
 // ---------------------------------------------------------------------------
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMapSimple::getInfo(const char *infoName)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMapSimple::getInfo(const char *infoName)
 { 
   return myMapInfo->getInfo(infoName);
 
 } // end method getInfo
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMapSimple::getInfo(int infoType)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMapSimple::getInfo(int infoType)
 { 
   return myMapInfo->getInfo(infoType);
 
 } // end method getInfo
 
-MVREXPORT std::list<ArArgumentBuilder *> *ArMapSimple::getMapInfo(void)
+MVREXPORT std::list<MvrArgumentBuilder *> *MvrMapSimple::getMapInfo(void)
 { 
   return myMapInfo->getInfo(MvrMapInfo::MAP_INFO_NAME);
 
 } // end method getMapInfo
 
-MVREXPORT int ArMapSimple::getInfoCount() const 
+MVREXPORT int MvrMapSimple::getInfoCount() const 
 {
   return myMapInfo->getInfoCount();
 }
 
-MVREXPORT std::list<std::string> ArMapSimple::getInfoNames() const
+MVREXPORT std::list<std::string> MvrMapSimple::getInfoNames() const
 {
   return myMapInfo->getInfoNames();
 }
 
-MVREXPORT bool ArMapSimple::setInfo(const char *infoName,
-						                       const std::list<ArArgumentBuilder *> *infoList,
-                                   ArMapChangeDetails *changeDetails)
+MVREXPORT bool MvrMapSimple::setInfo(const char *infoName,
+						                       const std::list<MvrArgumentBuilder *> *infoList,
+                                   MvrMapChangeDetails *changeDetails)
 { 
   bool b = myMapInfo->setInfo(infoName, infoList, changeDetails);
 
@@ -5138,9 +5112,9 @@ MVREXPORT bool ArMapSimple::setInfo(const char *infoName,
 
 } // end method setInfo
 
-MVREXPORT bool ArMapSimple::setInfo(int infoType,
-						                       const std::list<ArArgumentBuilder *> *infoList,
-                                   ArMapChangeDetails *changeDetails)
+MVREXPORT bool MvrMapSimple::setInfo(int infoType,
+						                       const std::list<MvrArgumentBuilder *> *infoList,
+                                   MvrMapChangeDetails *changeDetails)
 { 
   bool b = myMapInfo->setInfo(infoType, infoList, changeDetails);
   
@@ -5150,8 +5124,8 @@ MVREXPORT bool ArMapSimple::setInfo(int infoType,
 
 } // end method setInfo
 
-MVREXPORT bool ArMapSimple::setMapInfo(const std::list<ArArgumentBuilder *> *mapInfo,
-                                      ArMapChangeDetails *changeDetails)
+MVREXPORT bool MvrMapSimple::setMapInfo(const std::list<MvrArgumentBuilder *> *mapInfo,
+                                      MvrMapChangeDetails *changeDetails)
 { 
   bool b = myMapInfo->setInfo(MvrMapInfo::MAP_INFO_NAME, mapInfo, changeDetails);
 
@@ -5162,7 +5136,7 @@ MVREXPORT bool ArMapSimple::setMapInfo(const std::list<ArArgumentBuilder *> *map
 } // end method setMapInfo
 
 
-MVREXPORT void ArMapSimple::writeInfoToFunctor
+MVREXPORT void MvrMapSimple::writeInfoToFunctor
 				(MvrFunctor1<const char *> *functor, 
 			        const char *endOfLineChars)
 { 
@@ -5171,17 +5145,17 @@ MVREXPORT void ArMapSimple::writeInfoToFunctor
 } // end method writeInfoToFunctor
 
 
-MVREXPORT const char *ArMapSimple::getInfoName(int infoType)
+MVREXPORT const char *MvrMapSimple::getInfoName(int infoType)
 { 
   return myMapInfo->getInfoName(infoType);
 
 } // end method getInfoName
 
 // ---------------------------------------------------------------------------
-// ArMapObjectsInterface
+// MvrMapObjectsInterface
 // ---------------------------------------------------------------------------
 
-MVREXPORT ArMapObject *ArMapSimple::findFirstMapObject(const char *name, 
+MVREXPORT MvrMapObject *MvrMapSimple::findFirstMapObject(const char *name, 
                                                       const char *type,
                                                       bool isIncludeWithHeading)
 { 
@@ -5190,7 +5164,7 @@ MVREXPORT ArMapObject *ArMapSimple::findFirstMapObject(const char *name,
 } // end method findFirstMapObject
 
 
-MVREXPORT ArMapObject *ArMapSimple::findMapObject(const char *name, 
+MVREXPORT MvrMapObject *MvrMapSimple::findMapObject(const char *name, 
 				                                         const char *type,
                                                  bool isIncludeWithHeading)
 { 
@@ -5198,7 +5172,7 @@ MVREXPORT ArMapObject *ArMapSimple::findMapObject(const char *name,
 
 } // end method findMapObject
 
-MVREXPORT std::list<ArMapObject *> ArMapSimple::findMapObjectsOfType
+MVREXPORT std::list<MvrMapObject *> MvrMapSimple::findMapObjectsOfType
                                                 (const char *type,
                                                  bool isIncludeWithHeading)
 {
@@ -5206,17 +5180,17 @@ MVREXPORT std::list<ArMapObject *> ArMapSimple::findMapObjectsOfType
 }
 
 
-MVREXPORT std::list<ArMapObject *> *ArMapSimple::getMapObjects(void)
+MVREXPORT std::list<MvrMapObject *> *MvrMapSimple::getMapObjects(void)
 { 
   return myMapObjects->getMapObjects();
 
 } // end method getMapObjects
 
 
-MVREXPORT void ArMapSimple::setMapObjects
-                             (const std::list<ArMapObject *> *mapObjects,
+MVREXPORT void MvrMapSimple::setMapObjects
+                             (const std::list<MvrMapObject *> *mapObjects,
                               bool isSortedObjects, 
-                              ArMapChangeDetails *changeDetails)
+                              MvrMapChangeDetails *changeDetails)
 {
   
   myMapObjects->setMapObjects(mapObjects, isSortedObjects, changeDetails);
@@ -5224,7 +5198,7 @@ MVREXPORT void ArMapSimple::setMapObjects
 } // end method setMapObjects
 
 
-MVREXPORT void ArMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *functor, 
+MVREXPORT void MvrMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *functor, 
 			                                           const char *endOfLineChars,
                                                  bool isOverrideAsSingleScan,
                                                  const char *maxCategory)
@@ -5249,7 +5223,7 @@ MVREXPORT void ArMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *fun
     category = MAP_CATEGORY_2D;
   }
 
-  ArUtil::functorPrintf(functor, "%s%s", 
+  MvrUtil::functorPrintf(functor, "%s%s", 
                         category.c_str(),
                         endOfLineChars);
 
@@ -5263,7 +5237,7 @@ MVREXPORT void ArMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *fun
          iter != myScanTypeList.end();
          iter++) {
       const char *scanType = (*iter).c_str();
-      ArMapScanInterface *mapScan = getScan(scanType);
+      MvrMapScanInterface *mapScan = getScan(scanType);
       if (mapScan != NULL) {
         mapScan->writeScanToFunctor(functor, endOfLineChars, scanType);
       }
@@ -5271,11 +5245,11 @@ MVREXPORT void ArMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *fun
   }
   else { // else send single scan
 
-    ArMapScanInterface *mapScan = getScan(ARMAP_SUMMARY_SCAN_TYPE);
+    MvrMapScanInterface *mapScan = getScan(MVRMAP_SUMMARY_SCAN_TYPE);
     if (mapScan != NULL) {
       mapScan->writeScanToFunctor(functor, 
                                   endOfLineChars, 
-                                  ARMAP_SUMMARY_SCAN_TYPE);
+                                  MVRMAP_SUMMARY_SCAN_TYPE);
     }
   } // end else just send single scan 
 
@@ -5288,7 +5262,7 @@ MVREXPORT void ArMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *fun
 } // end method writeObjectsToFunctor
 
 
-MVREXPORT void ArMapSimple::writeObjectListToFunctor(MvrFunctor1<const char *> *functor, 
+MVREXPORT void MvrMapSimple::writeObjectListToFunctor(MvrFunctor1<const char *> *functor, 
 			                                              const char *endOfLineChars)
 { 
   myMapObjects->writeObjectListToFunctor(functor, endOfLineChars);
@@ -5299,19 +5273,19 @@ MVREXPORT void ArMapSimple::writeObjectListToFunctor(MvrFunctor1<const char *> *
 
 
 // ---------------------------------------------------------------------------
-// ArMapScanInterface
+// MvrMapScanInterface
 // ---------------------------------------------------------------------------
 
-MVREXPORT const char *ArMapSimple::getDisplayString(const char *scanType)
+MVREXPORT const char *MvrMapSimple::getDisplayString(const char *scanType)
 {
   if (isSummaryScanType(scanType)) {
     // TODO Could return a special "Summary" string instead...
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::getDisplayString() summary display is not supported");
     return "";
   }
 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getDisplayString(scanType);
   }
@@ -5320,15 +5294,15 @@ MVREXPORT const char *ArMapSimple::getDisplayString(const char *scanType)
 } // end method getDisplayString
 
 
-MVREXPORT std::vector<ArPose> *ArMapSimple::getPoints(const char *scanType)
+MVREXPORT std::vector<MvrPose> *MvrMapSimple::getPoints(const char *scanType)
 {
   if (isSummaryScanType(scanType)) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::getPoints() summary of points is not supported");
     return NULL;
   }
 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getPoints(scanType);
   }
@@ -5337,15 +5311,15 @@ MVREXPORT std::vector<ArPose> *ArMapSimple::getPoints(const char *scanType)
 } // end method getPoints
 
 
-MVREXPORT std::vector<ArLineSegment> *ArMapSimple::getLines(const char *scanType)
+MVREXPORT std::vector<MvrLineSegment> *MvrMapSimple::getLines(const char *scanType)
 { 
   if (isSummaryScanType(scanType)) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                "MvrMapSimple::getLines() summary of lines is not supported");
     return NULL;
   }
   
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getLines(scanType);
   }
@@ -5354,29 +5328,29 @@ MVREXPORT std::vector<ArLineSegment> *ArMapSimple::getLines(const char *scanType
 } // end method getLines
 
 
-MVREXPORT ArPose ArMapSimple::getMinPose(const char *scanType)
+MVREXPORT MvrPose MvrMapSimple::getMinPose(const char *scanType)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getMinPose(scanType);
   }
-  return ArPose();
+  return MvrPose();
 
 } // end method getMinPose
 
-MVREXPORT ArPose ArMapSimple::getMaxPose(const char *scanType)
+MVREXPORT MvrPose MvrMapSimple::getMaxPose(const char *scanType)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getMaxPose(scanType);
   }
-  return ArPose();
+  return MvrPose();
 
 } // end method getMaxPose
 
-MVREXPORT int ArMapSimple::getNumPoints(const char *scanType)
+MVREXPORT int MvrMapSimple::getNumPoints(const char *scanType)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getNumPoints(scanType);
   }
@@ -5384,29 +5358,29 @@ MVREXPORT int ArMapSimple::getNumPoints(const char *scanType)
 
 } // end method getNumPoints
 
-MVREXPORT ArPose ArMapSimple::getLineMinPose(const char *scanType)
+MVREXPORT MvrPose MvrMapSimple::getLineMinPose(const char *scanType)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getLineMinPose(scanType);
   }
-  return ArPose();
+  return MvrPose();
 
 } // end method getLineMinPose
 
-MVREXPORT ArPose ArMapSimple::getLineMaxPose(const char *scanType)
+MVREXPORT MvrPose MvrMapSimple::getLineMaxPose(const char *scanType)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getLineMaxPose(scanType);
   }
-  return ArPose();
+  return MvrPose();
 
 } // end method getLineMaxPose
 
-MVREXPORT int ArMapSimple::getNumLines(const char *scanType)
+MVREXPORT int MvrMapSimple::getNumLines(const char *scanType)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getNumLines(scanType);
   }
@@ -5414,9 +5388,9 @@ MVREXPORT int ArMapSimple::getNumLines(const char *scanType)
 
 } // end method getNumLines
 
-MVREXPORT int ArMapSimple::getResolution(const char *scanType)
+MVREXPORT int MvrMapSimple::getResolution(const char *scanType)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->getResolution(scanType);
   }
@@ -5426,30 +5400,30 @@ MVREXPORT int ArMapSimple::getResolution(const char *scanType)
 
 
 
-MVREXPORT bool ArMapSimple::isSortedPoints(const char *scanType) const
+MVREXPORT bool MvrMapSimple::isSortedPoints(const char *scanType) const
 {
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->isSortedPoints(scanType);
   }
   return false;
 }
 
-MVREXPORT bool ArMapSimple::isSortedLines(const char *scanType) const
+MVREXPORT bool MvrMapSimple::isSortedLines(const char *scanType) const
 {
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     return mapScan->isSortedLines(scanType);
   }
   return false;
 }
 
-MVREXPORT void ArMapSimple::setPoints(const std::vector<ArPose> *points,
+MVREXPORT void MvrMapSimple::setPoints(const std::vector<MvrPose> *points,
                                      const char *scanType,
                                      bool isSorted,
-                                     ArMapChangeDetails *changeDetails)
+                                     MvrMapChangeDetails *changeDetails)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     mapScan->setPoints(points, 
                        scanType,
@@ -5459,12 +5433,12 @@ MVREXPORT void ArMapSimple::setPoints(const std::vector<ArPose> *points,
 
 } // end method setPoints
 
-MVREXPORT void ArMapSimple::setLines(const std::vector<ArLineSegment> *lines,
+MVREXPORT void MvrMapSimple::setLines(const std::vector<MvrLineSegment> *lines,
                                     const char *scanType,
                                     bool isSorted,
-                                    ArMapChangeDetails *changeDetails)
+                                    MvrMapChangeDetails *changeDetails)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     mapScan->setLines(lines, 
                       scanType,
@@ -5474,11 +5448,11 @@ MVREXPORT void ArMapSimple::setLines(const std::vector<ArLineSegment> *lines,
 
 } // end method setLines
 
-MVREXPORT void ArMapSimple::setResolution(int resolution,
+MVREXPORT void MvrMapSimple::setResolution(int resolution,
                                          const char *scanType,
-                                         ArMapChangeDetails *changeDetails)
+                                         MvrMapChangeDetails *changeDetails)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     mapScan->setResolution(resolution, 
                            scanType,
@@ -5489,11 +5463,11 @@ MVREXPORT void ArMapSimple::setResolution(int resolution,
 
 
 
-MVREXPORT void ArMapSimple::writeScanToFunctor(MvrFunctor1<const char *> *functor, 
+MVREXPORT void MvrMapSimple::writeScanToFunctor(MvrFunctor1<const char *> *functor, 
 			                                        const char *endOfLineChars,
                                               const char *scanType)
 {
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     mapScan->writeScanToFunctor(functor, endOfLineChars, scanType);
   }
@@ -5501,24 +5475,24 @@ MVREXPORT void ArMapSimple::writeScanToFunctor(MvrFunctor1<const char *> *functo
 } // end method writeScanToFunctor
 
 
-MVREXPORT void ArMapSimple::writePointsToFunctor
-		(MvrFunctor2<int, std::vector<ArPose> *> *functor,
+MVREXPORT void MvrMapSimple::writePointsToFunctor
+		(MvrFunctor2<int, std::vector<MvrPose> *> *functor,
      const char *scanType,
-     ArFunctor1<const char *> *keywordFunctor)
+     MvrFunctor1<const char *> *keywordFunctor)
 {
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     mapScan->writePointsToFunctor(functor, scanType, keywordFunctor);
   }
 
 } // end method writePointsToFunctor
 
-MVREXPORT void ArMapSimple::writeLinesToFunctor
-	(MvrFunctor2<int, std::vector<ArLineSegment> *> *functor,
+MVREXPORT void MvrMapSimple::writeLinesToFunctor
+	(MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
    const char *scanType,
-   ArFunctor1<const char *> *keywordFunctor)
+   MvrFunctor1<const char *> *keywordFunctor)
 { 
-  ArMapScanInterface *mapScan = getScan(scanType);
+  MvrMapScanInterface *mapScan = getScan(scanType);
   if (mapScan != NULL) {
     mapScan->writeLinesToFunctor(functor, scanType, keywordFunctor);
   }
@@ -5526,7 +5500,7 @@ MVREXPORT void ArMapSimple::writeLinesToFunctor
 } // end method writeLinesToFunctor
 
 
-MVREXPORT bool ArMapSimple::readDataPoint( char *line)
+MVREXPORT bool MvrMapSimple::readDataPoint( char *line)
 {
   // TODO Locking?
   if (myLoadingScan != NULL) {
@@ -5536,13 +5510,13 @@ MVREXPORT bool ArMapSimple::readDataPoint( char *line)
 
 } // end method readDataPoint
 
-MVREXPORT bool ArMapSimple::readLineSegment( char *line)
+MVREXPORT bool MvrMapSimple::readLineSegment( char *line)
 {
   if (myLoadingScan != NULL) {
     return myLoadingScan->readLineSegment(line);
   }
   else {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::readLineSegment() NULL loading scan for '%s'",
                line);
   }
@@ -5551,7 +5525,7 @@ MVREXPORT bool ArMapSimple::readLineSegment( char *line)
 } // end method readLineSegment
 
 
-MVREXPORT void ArMapSimple::loadDataPoint(double x, double y)
+MVREXPORT void MvrMapSimple::loadDataPoint(double x, double y)
 {
   if (myLoadingScan != NULL) {
     myLoadingScan->loadDataPoint(x, y);
@@ -5560,7 +5534,7 @@ MVREXPORT void ArMapSimple::loadDataPoint(double x, double y)
 } // end method loadDataPoint
 
 
-MVREXPORT void ArMapSimple::loadLineSegment(double x1, double y1, double x2, double y2)
+MVREXPORT void MvrMapSimple::loadLineSegment(double x1, double y1, double x2, double y2)
 {
   if (myLoadingScan != NULL) {
     myLoadingScan->loadLineSegment(x1, y1, x2, y2);
@@ -5568,10 +5542,10 @@ MVREXPORT void ArMapSimple::loadLineSegment(double x1, double y1, double x2, dou
 } // end method loadLineSegment
 
 
-MVREXPORT bool ArMapSimple::addToFileParser(MvrFileParser *fileParser)
+MVREXPORT bool MvrMapSimple::addToFileParser(MvrFileParser *fileParser)
 {
   if (myTypeToScanMap.empty()) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::addToFileParser() error: no scans in map");
     return false;
   }
@@ -5579,7 +5553,7 @@ MVREXPORT bool ArMapSimple::addToFileParser(MvrFileParser *fileParser)
 
   for (MvrTypeToScanMap::iterator iter = myTypeToScanMap.begin();
        iter != myTypeToScanMap.end(); iter++) {
-    ArMapScan *mapScan = iter->second;
+    MvrMapScan *mapScan = iter->second;
     if (mapScan != NULL) {
       isAdded = mapScan->addToFileParser(fileParser) && isAdded;
     }
@@ -5587,7 +5561,7 @@ MVREXPORT bool ArMapSimple::addToFileParser(MvrFileParser *fileParser)
   return isAdded; 
 }
 
-MVREXPORT bool ArMapSimple::remFromFileParser(MvrFileParser *fileParser)
+MVREXPORT bool MvrMapSimple::remFromFileParser(MvrFileParser *fileParser)
 {
   if (myTypeToScanMap.empty()) {
     return false;
@@ -5596,7 +5570,7 @@ MVREXPORT bool ArMapSimple::remFromFileParser(MvrFileParser *fileParser)
 
   for (MvrTypeToScanMap::iterator iter = myTypeToScanMap.begin();
        iter != myTypeToScanMap.end(); iter++) {
-    ArMapScan *mapScan = iter->second;
+    MvrMapScan *mapScan = iter->second;
     if (mapScan != NULL) {
       isRemoved = mapScan->remFromFileParser(fileParser) && isRemoved;
     }
@@ -5605,19 +5579,19 @@ MVREXPORT bool ArMapSimple::remFromFileParser(MvrFileParser *fileParser)
 }
 
 
-MVREXPORT void ArMapSimple::writeScanTypesToFunctor
+MVREXPORT void MvrMapSimple::writeScanTypesToFunctor
                                 (MvrFunctor1<const char *> *functor, 
 			                           const char *endOfLineChars)
 {
   bool hasSourceList = false;
   if (!myScanTypeList.empty()) {
-    hasSourceList = !ArUtil::isStrEmpty(myScanTypeList.front().c_str());
+    hasSourceList = !MvrUtil::isStrEmpty(myScanTypeList.front().c_str());
   }
   if (hasSourceList) {
   
     std::string sourceString = "Sources:";
 
-    //ArUtil::functorPrintf(functor, "Sources:%s", "");
+    //MvrUtil::functorPrintf(functor, "Sources:%s", "");
     
     for (std::list<std::string>::iterator iter = myScanTypeList.begin(); 
          iter != myScanTypeList.end(); 
@@ -5627,40 +5601,40 @@ MVREXPORT void ArMapSimple::writeScanTypesToFunctor
       sourceString += " ";
       sourceString += scanType;
 
-     // ArUtil::functorPrintf(functor, " %s%s", scanType, "");
+     // MvrUtil::functorPrintf(functor, " %s%s", scanType, "");
       
     } // end for each scan type
     
-    ArUtil::functorPrintf(functor, "%s%s", sourceString.c_str(), endOfLineChars);
+    MvrUtil::functorPrintf(functor, "%s%s", sourceString.c_str(), endOfLineChars);
 
   } // end if source list
 
 } // end method writeScanTypesToFunctor
 
 
-MVREXPORT bool ArMapSimple::hasOriginLatLongAlt()
+MVREXPORT bool MvrMapSimple::hasOriginLatLongAlt()
 { 
   return myMapSupplement->hasOriginLatLongAlt();
 
 } // end method hasOriginLatLongAlt
 
-MVREXPORT ArPose ArMapSimple::getOriginLatLong()
+MVREXPORT MvrPose MvrMapSimple::getOriginLatLong()
 { 
   return myMapSupplement->getOriginLatLong();
 
 } // end method getOriginLatLong
 
-MVREXPORT double ArMapSimple::getOriginAltitude()
+MVREXPORT double MvrMapSimple::getOriginAltitude()
 { 
   return myMapSupplement->getOriginAltitude();
 
 } // end method getOriginAltitude
 
-MVREXPORT void ArMapSimple::setOriginLatLongAlt
+MVREXPORT void MvrMapSimple::setOriginLatLongAlt
                                   (bool hasOriginLatLong,
-                                   const ArPose &originLatLong,
+                                   const MvrPose &originLatLong,
                                    double originAltitude,
-                                   ArMapChangeDetails *changeDetails)
+                                   MvrMapChangeDetails *changeDetails)
 {
   myMapSupplement->setOriginLatLongAlt(hasOriginLatLong, 
                                        originLatLong, 
@@ -5668,7 +5642,7 @@ MVREXPORT void ArMapSimple::setOriginLatLongAlt
                                        changeDetails);
 } // end method setOriginLatLongAlt
 
-MVREXPORT void ArMapSimple::writeSupplementToFunctor(MvrFunctor1<const char *> *functor, 
+MVREXPORT void MvrMapSimple::writeSupplementToFunctor(MvrFunctor1<const char *> *functor, 
 			                                              const char *endOfLineChars)
 {
   myMapSupplement->writeSupplementToFunctor(functor, 
@@ -5681,11 +5655,11 @@ MVREXPORT void ArMapSimple::writeSupplementToFunctor(MvrFunctor1<const char *> *
 
 // ---------------------------------------------------------------------------
 
-MVREXPORT void ArMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor, 
+MVREXPORT void MvrMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor, 
 			                                    const char *endOfLineChars)
 { 
   // Write the header information and Cairn objects...
-  ArUtil::functorPrintf(functor, "%s%s", 
+  MvrUtil::functorPrintf(functor, "%s%s", 
                         getMapCategory(),
                         endOfLineChars);
 
@@ -5696,7 +5670,7 @@ MVREXPORT void ArMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor,
   for (iter = myScanTypeList.begin(); iter != myScanTypeList.end(); iter++) {
 
     const char *scanType = (*iter).c_str();
-    ArMapScan *mapScan = getScan(scanType);
+    MvrMapScan *mapScan = getScan(scanType);
 
     if (mapScan != NULL) {
       mapScan->writeScanToFunctor(functor, endOfLineChars, scanType);
@@ -5718,14 +5692,14 @@ MVREXPORT void ArMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor,
   // Write out any unrecognized (remainder) lines -- just to try to prevent them
   // from being accidentally lost
 
-  for (std::list<ArArgumentBuilder*>::const_iterator remIter = myRemainderList.begin();
+  for (std::list<MvrArgumentBuilder*>::const_iterator remIter = myRemainderList.begin();
        remIter != myRemainderList.end();
        remIter++) {
-    ArArgumentBuilder *remArg = *remIter;
+    MvrArgumentBuilder *remArg = *remIter;
     if (remArg == NULL) {
       continue;
     }
-    ArUtil::functorPrintf(functor, "%s%s", 
+    MvrUtil::functorPrintf(functor, "%s%s", 
                           remArg->getFullString(),
                           endOfLineChars);
 
@@ -5736,7 +5710,7 @@ MVREXPORT void ArMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor,
   for (iter = myScanTypeList.begin(); iter != myScanTypeList.end(); iter++) {
 
     const char *scanType = (*iter).c_str();
-    ArMapScan *mapScan = getScan(scanType);
+    MvrMapScan *mapScan = getScan(scanType);
     
     if (mapScan != NULL) {
       mapScan->writeLinesToFunctor(functor, endOfLineChars, scanType);
@@ -5747,7 +5721,7 @@ MVREXPORT void ArMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor,
   for (iter = myScanTypeList.begin(); iter != myScanTypeList.end(); iter++) {
 
     const char *scanType = (*iter).c_str();
-    ArMapScan *mapScan = getScan(scanType);
+    MvrMapScan *mapScan = getScan(scanType);
     
     if (mapScan != NULL) {
       mapScan->writePointsToFunctor(functor, endOfLineChars, scanType);
@@ -5757,28 +5731,28 @@ MVREXPORT void ArMapSimple::writeToFunctor(MvrFunctor1<const char *> *functor,
 } // end method writeToFunctor
 
 
-MVREXPORT ArMapInfoInterface *ArMapSimple::getInactiveInfo()
+MVREXPORT MvrMapInfoInterface *MvrMapSimple::getInactiveInfo()
 {
   return myInactiveInfo;
 }
 
-MVREXPORT ArMapObjectsInterface *ArMapSimple::getInactiveObjects()
+MVREXPORT MvrMapObjectsInterface *MvrMapSimple::getInactiveObjects()
 {
   return myInactiveObjects;
 }
 
-MVREXPORT ArMapObjectsInterface *ArMapSimple::getChildObjects()
+MVREXPORT MvrMapObjectsInterface *MvrMapSimple::getChildObjects()
 {
   return myChildObjects;
 }
 
-MVREXPORT bool ArMapSimple::parseLine(char *line)
+MVREXPORT bool MvrMapSimple::parseLine(char *line)
 { 
   return myLoadingParser->parseLine(line);
 
 } // end method parseLine
 
-MVREXPORT void ArMapSimple::parsingComplete(void)
+MVREXPORT void MvrMapSimple::parsingComplete(void)
 { 
   lock();
   mapChanged();
@@ -5787,31 +5761,31 @@ MVREXPORT void ArMapSimple::parsingComplete(void)
 } // end method parsingComplete
 
 
-MVREXPORT bool ArMapSimple::isLoadingDataStarted()
+MVREXPORT bool MvrMapSimple::isLoadingDataStarted()
 { 
   return myLoadingDataStarted;
 
 } // end method  isLoadingDataStarted
 
 
-MVREXPORT bool ArMapSimple::isLoadingLinesAndDataStarted()
+MVREXPORT bool MvrMapSimple::isLoadingLinesAndDataStarted()
 { 
   return myLoadingLinesAndDataStarted;
 
 } // end method isLoadingLinesAndDataStarted
             
 
-std::string ArMapSimple::createRealFileName(const char *fileName)
+std::string MvrMapSimple::createRealFileName(const char *fileName)
 { 
-  return ArMapInterface::createRealFileName(myBaseDirectory.c_str(),
+  return MvrMapInterface::createRealFileName(myBaseDirectory.c_str(),
                                             fileName,
                                             myIgnoreCase);
 
 } // end method createRealFileName
 
-bool ArMapSimple::handleMapCategory(MvrArgumentBuilder *arg)
+bool MvrMapSimple::handleMapCategory(MvrArgumentBuilder *arg)
 { 
-  ArLog::log(MvrLog::Verbose, 
+  MvrLog::log(MvrLog::Verbose, 
              "MvrMapSimple::handleMapCategory() read category %s",
              arg->getExtraString());
 
@@ -5827,7 +5801,7 @@ bool ArMapSimple::handleMapCategory(MvrArgumentBuilder *arg)
       // Add a handler for unrecognized lines...
       !myLoadingParser->addHandler(NULL, &myRemCB)) 
   {
-    ArLog::log(MvrLog::Terse, 
+    MvrLog::log(MvrLog::Terse, 
                "MvrMapSimple::handleMapCategory: could not add handlers");
     return false;
   }  
@@ -5850,7 +5824,7 @@ bool ArMapSimple::handleMapCategory(MvrArgumentBuilder *arg)
   } // end for each category
 
   if (myMapCategory.empty()) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::handleMapCategory() error finding category for %s",
                arg->getExtraString());
     arg->getExtraString();
@@ -5863,20 +5837,20 @@ bool ArMapSimple::handleMapCategory(MvrArgumentBuilder *arg)
 } // end method handleMapCategory
   
   
-bool ArMapSimple::handleSources(MvrArgumentBuilder *arg)
+bool MvrMapSimple::handleSources(MvrArgumentBuilder *arg)
 {
   
   std::list<std::string> scanTypeList;
 
   for (size_t i = 0; i < arg->getArgc(); i++) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::handleSources() source #%i = %s",
                i, arg->getArg(i));
     scanTypeList.push_back(arg->getArg(i));
   }
 
   if (scanTypeList.empty()) {
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
               "MvrMapSimple::handleSources() at least one source must be specified");
     return false;
   }
@@ -5892,10 +5866,10 @@ bool ArMapSimple::handleSources(MvrArgumentBuilder *arg)
 } // end method handleSources
 
 
-bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
+bool MvrMapSimple::createScans(const std::list<std::string> &scanTypeList)
 {
   if (scanTypeList.empty()) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::createScans() scan type list must be non-empty");
 
     return false;
@@ -5906,7 +5880,7 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
   // Perform some simple validations on the scan type list...
   if (scanTypeList.size() > 1) {
 
-    std::map<std::string, bool, ArStrCaseCmpOp> typeToExistsMap;
+    std::map<std::string, bool, MvrStrCaseCmpOp> typeToExistsMap;
 
     // Make sure that none of the scan types are empty
     for (std::list<std::string>::const_iterator iter1 = scanTypeList.begin();
@@ -5915,17 +5889,17 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
       const char *scanType = (*iter1).c_str();
       if (MvrUtil::isStrEmpty(scanType)) {
         isListValid = false;
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrMapSimple::createScans() empty scan name is valid only when there is one scan type");
         break;
       }
     
       // Make sure that there are no duplicates...
-      std::map<std::string, bool, ArStrCaseCmpOp>::iterator tIter = 
+      std::map<std::string, bool, MvrStrCaseCmpOp>::iterator tIter = 
                                                 typeToExistsMap.find(scanType);
       if (tIter != typeToExistsMap.end()) {
         isListValid = false;
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrMapSimple::createScans() duplicate scan names are not allowed (%s)",
                    scanType);
         break;
@@ -5938,7 +5912,7 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
 
   if (!isListValid) {
 
-    ArLog::log(MvrLog::Terse,
+    MvrLog::log(MvrLog::Terse,
                 "MvrMapSimple error setting up map for multiple scan types");
     return false;
 
@@ -5949,17 +5923,17 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
   mySummaryScan = NULL;
 
   myScanTypeList.clear();
-  ArUtil::deleteSetPairs(myTypeToScanMap.begin(), myTypeToScanMap.end());
+  MvrUtil::deleteSetPairs(myTypeToScanMap.begin(), myTypeToScanMap.end());
   myTypeToScanMap.clear();
 
-  ArMapScan *mapScan = NULL;
+  MvrMapScan *mapScan = NULL;
 
   for (std::list<std::string>::const_iterator iter = scanTypeList.begin();
        iter != scanTypeList.end();
        iter++) {
     std::string scanType = *iter;
 
-    mapScan = new ArMapScan(scanType.c_str());
+    mapScan = new MvrMapScan(scanType.c_str());
   
     myScanTypeList.push_back(scanType);
     myTypeToScanMap[scanType] = mapScan;
@@ -5967,22 +5941,22 @@ bool ArMapSimple::createScans(const std::list<std::string> &scanTypeList)
   } // end for each scan type
 
   if (myScanTypeList.size() > 1) {
-    mySummaryScan = new ArMapScan(ARMAP_SUMMARY_SCAN_TYPE);
+    mySummaryScan = new MvrMapScan(MVRMAP_SUMMARY_SCAN_TYPE);
   }
   return true;
 
 } // end method createScans
 
 
-bool ArMapSimple::addScansToParser()
+bool MvrMapSimple::addScansToParser()
 {
   if (myLoadingParser == NULL) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::addScansToParser() error, loading parser is null");
     return false;
   }
   if (myTypeToScanMap.empty()) {
-    ArLog::log(MvrLog::Normal,
+    MvrLog::log(MvrLog::Normal,
                "MvrMapSimple::addScansToParser() error, no maps scans");
     return false;
   }
@@ -5993,40 +5967,40 @@ bool ArMapSimple::addScansToParser()
        iter != myTypeToScanMap.end();
        iter++) {
 
-    ArMapScan *mapScan = iter->second;
+    MvrMapScan *mapScan = iter->second;
     if (mapScan == NULL) {
       continue;
     }
     if (!mapScan->addToFileParser(myLoadingParser)) {
-      ArLog::log(MvrLog::Normal,
+      MvrLog::log(MvrLog::Normal,
                  "MvrMapSimple::addScansToParser() error, could not add scan for %s",
                  iter->first.c_str());
       isLoaded = false;
       continue;
     }
 
-    ArLog::log(MvrLog::Verbose,
+    MvrLog::log(MvrLog::Verbose,
                "MvrMapSimple::addScansToParser() adding for type %s points keyword %s lines keyword %s",
                mapScan->getScanType(),
                mapScan->getPointsKeyword(),
                mapScan->getLinesKeyword());
     
-    if (!ArUtil::isStrEmpty(mapScan->getPointsKeyword())) {
+    if (!MvrUtil::isStrEmpty(mapScan->getPointsKeyword())) {
       
       myDataTagToScanTypeMap[mapScan->getPointsKeyword()] = iter->first;
       if (!myLoadingParser->addHandler(mapScan->getPointsKeyword(), 
                                        &myDataIntroCB)) {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrMapSimple::addScansToParser() error, could not handler for %s",
                    mapScan->getPointsKeyword());
         isLoaded = false;
       }
     }
-    if (!ArUtil::isStrEmpty(mapScan->getLinesKeyword())) {
+    if (!MvrUtil::isStrEmpty(mapScan->getLinesKeyword())) {
       myDataTagToScanTypeMap[mapScan->getLinesKeyword()] = iter->first;
       if (!myLoadingParser->addHandler(mapScan->getLinesKeyword(), 
                                        &myDataIntroCB)) {
-        ArLog::log(MvrLog::Normal,
+        MvrLog::log(MvrLog::Normal,
                    "MvrMapSimple::addScansToParser() error, could not handler for %s",
                    mapScan->getLinesKeyword());
         isLoaded = false;
@@ -6039,7 +6013,7 @@ bool ArMapSimple::addScansToParser()
 } // end method addScansToParser
 
 
-bool ArMapSimple::remScansFromParser(bool isRemovePointsAndLinesKeywords)
+bool MvrMapSimple::remScansFromParser(bool isRemovePointsAndLinesKeywords)
 {
   if (myLoadingParser == NULL) {
     return false;
@@ -6053,7 +6027,7 @@ bool ArMapSimple::remScansFromParser(bool isRemovePointsAndLinesKeywords)
           myTypeToScanMap.begin();
        iter != myTypeToScanMap.end();
        iter++) {
-    ArMapScan *mapScan = iter->second;
+    MvrMapScan *mapScan = iter->second;
     if (mapScan == NULL) {
       continue;
     }
@@ -6063,13 +6037,13 @@ bool ArMapSimple::remScansFromParser(bool isRemovePointsAndLinesKeywords)
     }
    
     if (isRemovePointsAndLinesKeywords) {
-      if (!ArUtil::isStrEmpty(mapScan->getPointsKeyword())) {
+      if (!MvrUtil::isStrEmpty(mapScan->getPointsKeyword())) {
         if (!myLoadingParser->remHandler(mapScan->getPointsKeyword(), 
                                         &myDataIntroCB)) {
           isRemoved = false;
         }
       }
-      if (!ArUtil::isStrEmpty(mapScan->getLinesKeyword())) {
+      if (!MvrUtil::isStrEmpty(mapScan->getLinesKeyword())) {
         if (!myLoadingParser->remHandler(mapScan->getLinesKeyword(), 
                                         &myDataIntroCB)) {
           isRemoved = false;
@@ -6083,7 +6057,7 @@ bool ArMapSimple::remScansFromParser(bool isRemovePointsAndLinesKeywords)
 } // end method remScansFromParser
 
 
-bool ArMapSimple::handleDataIntro(MvrArgumentBuilder *arg)
+bool MvrMapSimple::handleDataIntro(MvrArgumentBuilder *arg)
 {
   remScansFromParser(false);
 
@@ -6104,7 +6078,7 @@ bool ArMapSimple::handleDataIntro(MvrArgumentBuilder *arg)
   // an extended one, then update the map's category.
   updateMapCategory();
   
-  ArLog::log(MvrLog::Verbose,
+  MvrLog::log(MvrLog::Verbose,
              "MvrMapSimple::handleDataIntro %s",
              arg->getExtraString());
 
@@ -6138,38 +6112,38 @@ bool ArMapSimple::handleDataIntro(MvrArgumentBuilder *arg)
 } // end method handleDataIntro
 
 
-bool ArMapSimple::handleRemainder(MvrArgumentBuilder *arg)
+bool MvrMapSimple::handleRemainder(MvrArgumentBuilder *arg)
 {
   if (arg != NULL) {
-    myRemainderList.push_back(new ArArgumentBuilder(*arg));
+    myRemainderList.push_back(new MvrArgumentBuilder(*arg));
   }
   return true;
 
 } // end method handleRemainder
 
 
-bool ArMapSimple::setInactiveInfo(const char *infoName,
-						                               const std::list<ArArgumentBuilder *> *infoList,
-                                           ArMapChangeDetails *changeDetails)
+bool MvrMapSimple::setInactiveInfo(const char *infoName,
+						                               const std::list<MvrArgumentBuilder *> *infoList,
+                                           MvrMapChangeDetails *changeDetails)
 { 
   return myInactiveInfo->setInfo(infoName, infoList, changeDetails);
 
 } // end method setInactiveInfo
 
-void ArMapSimple::setInactiveObjects
-                             (const std::list<ArMapObject *> *mapObjects,
+void MvrMapSimple::setInactiveObjects
+                             (const std::list<MvrMapObject *> *mapObjects,
                               bool isSortedObjects, 
-                              ArMapChangeDetails *changeDetails)
+                              MvrMapChangeDetails *changeDetails)
 { 
   myInactiveObjects->setMapObjects(mapObjects, isSortedObjects, changeDetails);
 
 } // end method setInactiveObjects
  
 
-void ArMapSimple::setChildObjects
-                             (const std::list<ArMapObject *> *mapObjects,
+void MvrMapSimple::setChildObjects
+                             (const std::list<MvrMapObject *> *mapObjects,
                               bool isSortedObjects, 
-                              ArMapChangeDetails *changeDetails)
+                              MvrMapChangeDetails *changeDetails)
 { 
   myChildObjects->setMapObjects(mapObjects, isSortedObjects, changeDetails);
 
@@ -6177,7 +6151,7 @@ void ArMapSimple::setChildObjects
 
 
 
-MVREXPORT ArMapScan *ArMapSimple::getScan(const char *scanType) const
+MVREXPORT MvrMapScan *MvrMapSimple::getScan(const char *scanType) const
 {
   // The summary scan type is a special designation that allows the user
   // to return the total number of points in the map, the bounding box of
@@ -6189,14 +6163,14 @@ MVREXPORT ArMapScan *ArMapSimple::getScan(const char *scanType) const
       return mySummaryScan;
     }
     else {
-      scanType = ARMAP_DEFAULT_SCAN_TYPE;
+      scanType = MVRMAP_DEFAULT_SCAN_TYPE;
     }
   } // end if summary scan type
 
-  ArTypeToScanMap::const_iterator iter = myTypeToScanMap.find(scanType);
+  MvrTypeToScanMap::const_iterator iter = myTypeToScanMap.find(scanType);
   
   // If the specified scan type was not found, then see if the special 
-  // ARMAP_DEFAULT_SCAN_TYPE was specified.  If so, this is equivalent to the
+  // MVRMAP_DEFAULT_SCAN_TYPE was specified.  If so, this is equivalent to the
   // first scan in the scan list.
   if ((iter == myTypeToScanMap.end()) &&
       (isDefaultScanType(scanType)) &&

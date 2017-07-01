@@ -1,36 +1,9 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
+#ifndef MVRGPS_H
+#define MVRGPS_H
 
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
-#ifndef ARGPS_H
-#define ARGPS_H
-
-#include "ariaTypedefs.h"
+#include "mvriaTypedefs.h"
 #include "MvrFunctor.h"
-#include "ariaUtil.h"
+#include "mvriaUtil.h"
 #include "MvrMutex.h"
 #include "MvrNMEAParser.h"
 #include "MvrGPSCoords.h"
@@ -67,7 +40,7 @@ class MvrDeviceConnection; // for pointer in MvrGPS
  *  It is important to do this in a robot task, or the robot task cycle will be
  *  blocked and cause problems.
  *  @code
- *    MvrRetFunctor1C<ArGPS, int, unsigned int> gpsReadFunc(myGPS, &ArGPS::readWithLock, 10);
+ *    MvrRetFunctor1C<MvrGPS, int, unsigned int> gpsReadFunc(myGPS, &MvrGPS::readWithLock, 10);
  *    myRobot->addSensorInterpretationTask("GPS read", 100, &gpsReadFunc);
  *  @endcode
  *
@@ -523,35 +496,35 @@ protected:
     /* GPS message handlers */
 
     void handleGPRMC(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPRMCHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myGPRMCHandler;
 
     void handleGPGGA(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGGAHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myGPGGAHandler;
 
     void handlePGRME(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myPGRMEHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myPGRMEHandler;
 
     void handlePGRMZ(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myPGRMZHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myPGRMZHandler;
 
     void handleHCHDx(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myHCHDxHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myHCHDxHandler;
 
     void handleGPGSA(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGSAHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myGPGSAHandler;
 
     void handleGPGSV(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGSVHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myGPGSVHandler;
 
     /* For calculating SNR averages based on multiple GPGSV messages. */
     unsigned int mySNRSum;
     unsigned short mySNRNum;
 
     void handleGPMSS(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPMSSHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myGPMSSHandler;
 
     void handleGPGST(MvrNMEAParser::Message msg);
-    MvrFunctor1C<ArGPS, MvrNMEAParser::Message> myGPGSTHandler;
+    MvrFunctor1C<MvrGPS, MvrNMEAParser::Message> myGPGSTHandler;
 
     /* Set an MvrTime object using a time read from a string as decimal seconds (SSS.SS) */
     bool readTimeFromString(const std::string& s, MvrTime* time) const;
@@ -626,4 +599,4 @@ private:
 #endif
 };
 
-#endif // ifdef ARGPS_H
+#endif // ifdef MVRGPS_H

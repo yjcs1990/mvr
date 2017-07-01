@@ -1,7 +1,7 @@
 /**************************************************************************************************
  > Project Name : MVR - mobile vacuum robot
  > File Name    : MvrDPPTU.h
- > Description  : Interface to Directed Perception pan/tilt unit, implementing and extending the ArPTZ interface
+ > Description  : Interface to Directed Perception pan/tilt unit, implementing and extending the MvrPTZ interface
  > Author       : Yu Jie
  > Create Time  : 2017年05月23日
  > Modify Time  : 2017年05月23日

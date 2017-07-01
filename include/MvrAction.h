@@ -1,5 +1,5 @@
-#ifndef ARACTION_H
-#define ARACTION_H
+#ifndef MVRACTION_H
+#define MVRACTION_H
 
 #include "mvriaTypedefs.h"
 #include "MvrArg.h"
@@ -9,7 +9,7 @@
 
 class MvrRobot;
 
-/** @brief Base class for actions
+/* @brief Base class for actions
   
     @ref actions Actions are objects queried for desired behavior by
     MvrActionResolver to determine robot movement commands.
@@ -20,17 +20,12 @@ class MvrRobot;
     must also call MvrAction::setRobot() so that the MvrRobot pointer
     is stored by MvrAction.
 
-    Several predefined action objects are also included in ARIA,
+    Several predefined action objects are also included in MVRIA,
     they are listed here as MvrActions's subclasses.
 
     If an action is not active (it has been deactivated), then
     it will be ignored by the action resolver. 
     Actions may be grouped using MvrActionGroup, and activated/deactivated as a group. For example, MvrMode, and MvrServerMode (from MvrNetworking), activate/deactivate action groups when switching modes.
-
-    @see @ref actions description in the ARIA overview.
-    @see MvrActionGroup
-    @see MvrResolver
-    @see MvrRobot
 
     @ingroup ActionClasses
     @ingroup OptionalClasses
@@ -114,4 +109,4 @@ protected:
 };
 
 
-#endif //ARACTION_H
+#endif //MVRACTION_H

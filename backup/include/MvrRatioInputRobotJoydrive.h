@@ -12,9 +12,9 @@
 #include "mvriaTypedefs.h"
 #include "MvrActionRatioInput.h"
 
-class ArRobotPacket;
-class ArRobot;
-class ArRobotJoyHandler;
+class MvrRobotPacket;
+class MvrRobot;
+class MvrRobotJoyHandler;
 
 /*
    This class connects the joystick data obtained from  the robot's built
