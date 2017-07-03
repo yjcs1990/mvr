@@ -189,5 +189,5 @@ INCLUDE_DIRECTORIES(
 #     )
 
 
-ADD_EXECUTABLE(interpolationTest tests/interpolationTest.cpp)
-target_link_libraries(interpolationTest ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(testThread tests/testThread.cpp)
+target_link_libraries(testThread ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)

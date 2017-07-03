@@ -13,7 +13,7 @@ public:
 };
 
 TestThread::TestThread(int number, MvrMutex &mutex) :
-  myNum(num),
+  myNum(number),
   myMutex(mutex)
 {
 
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   mutex.setLogName("mutex");
 
   MvrMutex::setLockWarningTime(1);
-  MvrMutex::setUnLockWarningTime(1);;
+  MvrMutex::setUnlockWarningTime(5);
 
   TestThread thread1(1, mutex), thread2(2, mutex), thread3(3, mutex), thread4(4, mutex);
 
@@ -71,22 +71,40 @@ int main(int argc, char **argv)
   thread2.create();
   thread3.create();
 
-  printf("main    thread name=\"%s\", OS handle=%lu, OS pointer=0x%x\n", MvrThread::getThisThreadName(), MvrThread::getThisOSThread(), (unsigned int*) MvrThread::getThisThread());
-  printf("thread1 thread name=\"%s\", OS handle=%lu, OS pointer=0x%x\n", thread1.getThreadName(), thread1.getOSThread(), (unsigned int) thread1.getThread());
-  printf("thread2 thread name=\"%s\", OS handle=%lu, OS pointer=0x%x\n", thread2.getThreadName(), thread2.getOSThread(), (unsigned int) thread2.getThread());
-  printf("thread3 thread name=\"%s\", OS handle=%lu, OS pointer=0x%x\n", thread3.getThreadName(), thread3.getOSThread(), (unsigned int) thread3.getThread());
-  printf("thread4 (not created yet) thread name=\"%s\", OS handle=%lu, OS pointer=0x%x\n", thread4.getThreadName(), thread4.getOSThread(), (unsigned int) thread4.getThread());
+  printf("main    thread name=\"%s\", OS handle=%lu, OS pointer=0x%p\n", MvrThread::getThisThreadName(), MvrThread::getThisOSThread(), const_cast<const long unsigned int*>(MvrThread::getThisThread()));
+  printf("thread1 thread name=\"%s\", OS handle=%lu, OS pointer=0x%p\n", thread1.getThreadName(), thread1.getOSThread(),  const_cast<const long unsigned int*>(thread1.getThread()));
+  printf("thread2 thread name=\"%s\", OS handle=%lu, OS pointer=0x%p\n", thread2.getThreadName(), thread2.getOSThread(),  const_cast<const long unsigned int*>(thread2.getThread()));
+  printf("thread3 thread name=\"%s\", OS handle=%lu, OS pointer=0x%p\n", thread3.getThreadName(), thread3.getOSThread(),  const_cast<const long unsigned int*>(thread3.getThread()));
+  printf("thread4 (not created yet) thread name=\"%s\", OS handle=%lu, OS pointer=0x%p\n", thread4.getThreadName(), thread4.getOSThread(),const_cast<const long unsigned int*>(thread4.getThread()));
 
 #ifndef MINGW
-  if (MvrThread::getThisOSThread() == thread1.getThisOSThread() ||
-      MvrThread::getThisOSThread() == thread2.getThisOSThread() ||
-      MvrThread::getThisOSThread() == thread3.getThisOSThread() ||
-      MvrThread::getThisOSThread() == thread4.getThisOSThread() ||
-      thread1::getThisOSThread() == thread2.getThisOSThread() ||
-      thread1::getThisOSThread() == thread3.getThisOSThread() ||
-      thread1::getThisOSThread() == thread4.getThisOSThread() ||
-      thread2::getThisOSThread() == thread1.getThisOSThread() ||)
-#endif  // MINGW
+  if(MvrThread::getThisOSThread() == thread1.getOSThread() ||
+     MvrThread::getThisOSThread() == thread2.getOSThread() ||
+     MvrThread::getThisOSThread() == thread3.getOSThread() ||
+     MvrThread::getThisOSThread() == thread4.getOSThread() ||
+     thread1.getOSThread() == thread2.getOSThread() ||
+     thread1.getOSThread() == thread3.getOSThread() ||
+     thread1.getOSThread() == thread4.getOSThread() ||
+     thread2.getOSThread() == thread1.getOSThread() ||
+     thread2.getOSThread() == thread3.getOSThread() ||
+     thread2.getOSThread() == thread4.getOSThread() ||
+     thread3.getOSThread() == thread1.getOSThread() ||
+     thread3.getOSThread() == thread2.getOSThread() ||
+     thread3.getOSThread() == thread4.getOSThread() ||
+     thread4.getOSThread() == thread1.getOSThread() ||
+     thread4.getOSThread() == thread2.getOSThread() ||
+     thread4.getOSThread() == thread3.getOSThread() )
+  {
+    puts("error, some thread IDs are the same!");
+    return 5;
+  }
+#endif
 
-  return 0;
+puts("run thread 4 in main thread");
+  thread4.runInThisThread();
+
+puts("exit");
+  Mvria::exit(0);
+
+  return(0);
 }

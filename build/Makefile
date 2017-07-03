@@ -102,41 +102,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named interpolationTest
+# Target rules for targets named testThread
 
 # Build rule for target.
-interpolationTest: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 interpolationTest
-.PHONY : interpolationTest
+testThread: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testThread
+.PHONY : testThread
 
 # fast build rule for target.
-interpolationTest/fast:
-	$(MAKE) -f CMakeFiles/interpolationTest.dir/build.make CMakeFiles/interpolationTest.dir/build
-.PHONY : interpolationTest/fast
+testThread/fast:
+	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/build
+.PHONY : testThread/fast
 
-tests/interpolationTest.o: tests/interpolationTest.cpp.o
-.PHONY : tests/interpolationTest.o
+tests/testThread.o: tests/testThread.cpp.o
+.PHONY : tests/testThread.o
 
 # target to build an object file
-tests/interpolationTest.cpp.o:
-	$(MAKE) -f CMakeFiles/interpolationTest.dir/build.make CMakeFiles/interpolationTest.dir/tests/interpolationTest.cpp.o
-.PHONY : tests/interpolationTest.cpp.o
+tests/testThread.cpp.o:
+	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/tests/testThread.cpp.o
+.PHONY : tests/testThread.cpp.o
 
-tests/interpolationTest.i: tests/interpolationTest.cpp.i
-.PHONY : tests/interpolationTest.i
+tests/testThread.i: tests/testThread.cpp.i
+.PHONY : tests/testThread.i
 
 # target to preprocess a source file
-tests/interpolationTest.cpp.i:
-	$(MAKE) -f CMakeFiles/interpolationTest.dir/build.make CMakeFiles/interpolationTest.dir/tests/interpolationTest.cpp.i
-.PHONY : tests/interpolationTest.cpp.i
+tests/testThread.cpp.i:
+	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/tests/testThread.cpp.i
+.PHONY : tests/testThread.cpp.i
 
-tests/interpolationTest.s: tests/interpolationTest.cpp.s
-.PHONY : tests/interpolationTest.s
+tests/testThread.s: tests/testThread.cpp.s
+.PHONY : tests/testThread.s
 
 # target to generate assembly for a file
-tests/interpolationTest.cpp.s:
-	$(MAKE) -f CMakeFiles/interpolationTest.dir/build.make CMakeFiles/interpolationTest.dir/tests/interpolationTest.cpp.s
-.PHONY : tests/interpolationTest.cpp.s
+tests/testThread.cpp.s:
+	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/tests/testThread.cpp.s
+.PHONY : tests/testThread.cpp.s
 
 # Help Target
 help:
@@ -145,11 +145,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... interpolationTest"
 	@echo "... rebuild_cache"
-	@echo "... tests/interpolationTest.o"
-	@echo "... tests/interpolationTest.i"
-	@echo "... tests/interpolationTest.s"
+	@echo "... testThread"
+	@echo "... tests/testThread.o"
+	@echo "... tests/testThread.i"
+	@echo "... tests/testThread.s"
 .PHONY : help
 
 

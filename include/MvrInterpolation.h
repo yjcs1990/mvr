@@ -1,12 +1,35 @@
 #ifndef MVRINTERPOLATION_H
 #define MVRINTERPOLATION_H
-
+#include "mvriaOSDef.h"
+#include "mvriaUtil.h"
+/// A class for time readings and measuring durations
 /** 
-    Store a buffer of positions (MvrPose objects) with associated timestamps, can
-    be queried to interpolate (or optionally extrapolate) a pose for any arbitrary
-    timestamp.  
-**/
+    This class is for timing durations or time between events.
+    The time values it stores are relative to an abritrary starting time; it
+    does not correspond to "real world" or "wall clock" time in any way,
+    so DON'T use this for keeping track of what time it is, 
+    just for timestamps and relative timing (e.g. "this loop needs to sleep another 100 ms").
 
+    The recommended methods to use are setToNow() to reset the time,
+    mSecSince() to obtain the number of milliseconds elapsed since it was
+    last reset (or secSince() if you don't need millisecond precision), and
+    mSecSince(MvrTime) or secSince(MvrTime) to find the difference between 
+    two MvrTime objects.
+
+    On systems where it is supported this will use a monotonic clock,
+    this is an ever increasing system that is not dependent on what
+    the time of day is set to.  Normally for linux gettimeofday is
+    used, but if the time is changed forwards or backwards then bad
+    things can happen.  Windows uses a time since bootup, which
+    functions the same as the monotonic clock anyways.  You can use
+    MvrTime::usingMonotonicClock() to see if this is being used.  Note
+    that an MvrTime will have had to have been set to for this to be a
+    good value... Mvria::init does this however, so that should not be
+    an issue.  It looks like the monotonic clocks won't work on linux
+    kernels before 2.6.
+
+  @ingroup UtilityClasses
+*/
 class MvrInterpolation
 {
 public:
