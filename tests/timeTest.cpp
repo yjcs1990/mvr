@@ -2,7 +2,7 @@
 
 int main(void)
 {
-  // Mvria::init();
+  Mvria::init();
 
-  MvrLog::log(MvrLog::Normal, "\nTesting MvrTime with large values:");
+  MvrLog::log(MvrLog::Terse, "\nTesting MvrTime with large values:");
 }

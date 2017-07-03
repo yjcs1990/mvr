@@ -87,25 +87,25 @@ public:
   } StatusType;
 
   /// Bit for joint 1 in arm status byte
-  MVREXPORT static const int MvrmJoint1;
+  MVREXPORT static const int ArmJoint1;
   /// Bit for joint 2 in arm status byte
-  MVREXPORT static const int MvrmJoint2;
+  MVREXPORT static const int ArmJoint2;
   /// Bit for joint 3 in arm status byte
-  MVREXPORT static const int MvrmJoint3;
+  MVREXPORT static const int ArmJoint3;
   /// Bit for joint 4 in arm status byte
-  MVREXPORT static const int MvrmJoint4;
+  MVREXPORT static const int ArmJoint4;
   /// Bit for joint 5 in arm status byte
-  MVREXPORT static const int MvrmJoint5;
+  MVREXPORT static const int ArmJoint5;
   /// Bit for joint 6 in arm status byte
-  MVREXPORT static const int MvrmJoint6;
+  MVREXPORT static const int ArmJoint6;
   /// Bit for arm good state in arm status byte
-  MVREXPORT static const int MvrmGood;
+  MVREXPORT static const int ArmGood;
   /// Bit for arm initialized in arm status byte
-  MVREXPORT static const int MvrmInited;
+  MVREXPORT static const int ArmInited;
   /// Bit for arm powered on in arm status byte
-  MVREXPORT static const int MvrmPower;
+  MVREXPORT static const int ArmPower;
   /// Bit for arm homing in arm status byte
-  MVREXPORT static const int MvrmHoming;
+  MVREXPORT static const int ArmHoming;
   /// Number of joints that the arm has
   MVREXPORT static int NumJoints;
 

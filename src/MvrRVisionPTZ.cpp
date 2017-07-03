@@ -257,13 +257,13 @@ MVREXPORT bool MvrRVisionPTZ::packetHandler(MvrRobotPacket *packet)
 //MVREXPORT bool MvrRVisionPTZ::packetHandler(MvrBasePacket *packet)
 MvrBasePacket * MvrRVisionPTZ::readPacket(void)
 {
-  unsigned char data[ARRVISION_MAX_RESPONSE_BYTES];
+  unsigned char data[MVRRVISION_MAX_RESPONSE_BYTES];
   unsigned char byte;
   int num;
-  memset(data, 0, ARRVISION_MAX_RESPONSE_BYTES);
-  for (num=0; num <= ARRVISION_MAX_RESPONSE_BYTES+1; num++) {
+  memset(data, 0, MVRRVISION_MAX_RESPONSE_BYTES);
+  for (num=0; num <= MVRRVISION_MAX_RESPONSE_BYTES+1; num++) {
     if (myConn->read((char *) &byte, 1,1) <= 0 ||
-	num == ARRVISION_MAX_RESPONSE_BYTES+1) {
+	num == MVRRVISION_MAX_RESPONSE_BYTES+1) {
       return NULL;
     }
     else if (byte == 0x90) {
@@ -276,7 +276,7 @@ MvrBasePacket * MvrRVisionPTZ::readPacket(void)
     }
   }
   // we got the header
-  for (num=1; num <= ARRVISION_MAX_RESPONSE_BYTES; num++) {
+  for (num=1; num <= MVRRVISION_MAX_RESPONSE_BYTES; num++) {
     if (myConn->read((char *) &byte, 1, 1) <= 0) {
       // there are no more bytes, so check the last byte for the footer
       if (data[num-1] != 0xFF) {

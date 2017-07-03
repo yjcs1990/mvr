@@ -44,8 +44,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 // constructor: start up thread, leave it ready for go()
 
-MVREXPORT 
-ArRecurrentTask::ArRecurrentTask()
+MVREXPORT  MvrRecurrentTask::MvrRecurrentTask()
 {
   setThreadName("MvrRecurrentTask");
   running = go_req = killed = false;
@@ -54,7 +53,7 @@ ArRecurrentTask::ArRecurrentTask()
 
 
 MVREXPORT 
-ArRecurrentTask::~MvrRecurrentTask()
+MvrRecurrentTask::~MvrRecurrentTask()
 {
   kill();
 }
@@ -66,7 +65,7 @@ ArRecurrentTask::~MvrRecurrentTask()
 //   the next request
 
 MVREXPORT void *
-ArRecurrentTask::runThread(void *ptr) 
+MvrRecurrentTask::runThread(void *ptr) 
 {
   threadStarted();
 #ifndef WIN32
@@ -107,7 +106,7 @@ ArRecurrentTask::runThread(void *ptr)
   return NULL;
 }
 
-MVREXPORT void ArRecurrentTask::go()
+MVREXPORT void MvrRecurrentTask::go()
 {
   lock();
   go_req = true;
@@ -116,7 +115,7 @@ MVREXPORT void ArRecurrentTask::go()
   unlock();
 }
 
-MVREXPORT int ArRecurrentTask::done()
+MVREXPORT int MvrRecurrentTask::done()
 {
   lock();
   bool is_running = running;
@@ -127,7 +126,7 @@ MVREXPORT int ArRecurrentTask::done()
   else return 1;
 }
 
-MVREXPORT void ArRecurrentTask::reset()
+MVREXPORT void MvrRecurrentTask::reset()
 {
   lock();
   go_req = false;
@@ -143,7 +142,7 @@ MVREXPORT void ArRecurrentTask::reset()
     unlock();
 }
 
-MVREXPORT void ArRecurrentTask::kill()
+MVREXPORT void MvrRecurrentTask::kill()
 {
   lock();
   go_req = false;

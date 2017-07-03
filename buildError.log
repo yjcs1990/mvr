@@ -1,0 +1,141 @@
+src/MvrCondition.cpp:167:2: warning: #warning posix realtime timer not available so using gettimeofday instead of clock_gettime [-Wcpp]
+ #warning posix realtime timer not available so using gettimeofday instead of clock_gettime
+  ^
+src/MvrConfigArg.cpp: In static member function ‘static std::list<std::basic_string<char> > MvrConfigArg::splitParentPathName(const char*, char)’:
+src/MvrConfigArg.cpp:2080:39: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int c = 0; c < builder.getArgc(); c++) {
+                                       ^
+src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::parseArgument(MvrArgumentBuilder*, char*, size_t, const char*, bool, bool*)’:
+src/MvrConfigArg.cpp:2396:12: warning: unused variable ‘childCount’ [-Wunused-variable]
+        int childCount = arg->getArgInt(0, &ok);
+            ^
+src/MvrConfig.cpp: In member function ‘bool MvrConfig::parseArgument(MvrArgumentBuilder*, char*, size_t)’:
+src/MvrConfig.cpp:1437:59: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+               for (int i = 0; i < matchParam->getArgCount(); i++) {
+                                                           ^
+src/MvrConfig.cpp:1467:58: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+              for (int i = 0; i < matchParam->getArgCount(); i++) {
+                                                          ^
+src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeArguments(FILE*, char*, int, int, bool, const char*, int) const’:
+src/MvrConfigArg.cpp:2562:9: warning: unused variable ‘nextChar’ [-Wunused-variable]
+     int nextChar = snprintf(lineBuf, lineBufSize, "; ");
+         ^
+src/MvrConfig.cpp:1406:23: warning: unused variable ‘parseParam’ [-Wunused-variable]
+         MvrConfigArg *parseParam = NULL;
+                       ^
+src/MvrConfigArg.cpp:2746:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (strlen(lineBuf) >= startCommentColumn) {
+                          ^
+src/MvrConfig.cpp: In member function ‘bool MvrConfig::parseText(const std::list<std::basic_string<char> >&, bool, bool*, bool*, char*, size_t, std::list<std::basic_string<char> >*, MvrPriority::Priority, MvrPriority::Priority, MvrConfigArg::RestartLevel*)’:
+src/MvrConfig.cpp:2001:29: warning: format not a string literal and no format arguments [-Wformat-security]
+              curLine.c_str());
+                             ^
+src/MvrConfig.cpp:2001:29: warning: format not a string literal and no format arguments [-Wformat-security]
+src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeValue(MvrSocket*, const char*) const’:
+src/MvrConfigArg.cpp:3291:37: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int c = 0; c < getArgCount(); c++) {
+                                     ^
+src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeInfo(MvrSocket*, const char*) const’:
+src/MvrConfigArg.cpp:3348:26: warning: format not a string literal and no format arguments [-Wformat-security]
+              priorityName);
+                          ^
+src/MvrConfigArg.cpp:3348:26: warning: format not a string literal and no format arguments [-Wformat-security]
+src/MvrConfig.cpp: In member function ‘bool MvrConfig::parseResourceFile(const char*, bool, char*, size_t, std::list<std::basic_string<char> >*)’:
+src/MvrConfig.cpp:2111:8: warning: unused variable ‘isSuccess’ [-Wunused-variable]
+   bool isSuccess = true;
+        ^
+src/MvrConfigArg.cpp:3424:37: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int c = 0; c < getArgCount(); c++) {
+                                     ^
+src/MvrConfig.cpp: In member function ‘void MvrConfig::writeSection(MvrConfigSection*, FILE*, std::set<std::basic_string<char> >*, bool, MvrPriority::Priority, MvrPriority::Priority)’:
+src/MvrConfig.cpp:2426:8: warning: variable ‘commented’ set but not used [-Wunused-but-set-variable]
+   bool commented = false;
+        ^
+src/MvrConfigArg.cpp: In static member function ‘static bool MvrConfigArg::parseResourceArgText(const char*, char*, size_t)’:
+src/MvrConfigArg.cpp:3756:9: warning: unused variable ‘isStripped’ [-Wunused-variable]
+    bool isStripped = MvrUtil::stripQuotes(bufOut, &otherBuf[k], bufLen); 
+         ^
+src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeResource(FILE*, char*, int, char, const char*, const char*) const’:
+src/MvrConfigArg.cpp:3826:14: warning: unused variable ‘isChildSuccess’ [-Wunused-variable]
+         bool isChildSuccess = childArg->writeResource(file,
+              ^
+src/MvrConfig.cpp: In member function ‘MvrConfigArg* MvrConfigSection::findParam(const std::list<std::basic_string<char> >&, bool)’:
+src/MvrConfig.cpp:3469:12: warning: statement has no effect [-Wunused-value]
+   for (iter; iter != paramNamePath.end(); iter++) {
+            ^
+src/MvrDataLogger.cpp: In member function ‘bool MvrDataLogger::processFile(char*, size_t)’:
+src/MvrDataLogger.cpp:386:63: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+     fprintf(myFile, "\t%015s\t%5s", "ChargeStateName", "csNum");
+                                                               ^
+src/MvrDataLogger.cpp:399:60: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+     fprintf(myFile, "\t%010s\t%010s\t%010s", "X", "Y", "Th");
+                                                            ^
+src/MvrDataLogger.cpp:399:60: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+src/MvrDataLogger.cpp:399:60: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+src/MvrDataLogger.cpp:401:69: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+     fprintf(myFile, "\t%010s\t%010s\t%010s", "encX", "encY", "encTh");
+                                                                     ^
+src/MvrDataLogger.cpp:401:69: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+src/MvrDataLogger.cpp:401:69: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+src/MvrDataLogger.cpp:404:41: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+      "corrEncX", "corrEncY", "corrEncTh");
+                                         ^
+src/MvrDataLogger.cpp:404:41: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+src/MvrDataLogger.cpp:404:41: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+src/MvrDataLogger.cpp:407:53: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+     fprintf(myFile, "\t%010s\t%010s", "encL", "encR");
+                                                     ^
+src/MvrDataLogger.cpp:407:53: warning: '0' flag used with ‘%s’ gnu_printf format [-Wformat=]
+src/MvrRobot.cpp: In member function ‘int MvrRobot::getClosestSonarNumber(double, double) const’:
+src/MvrRobot.cpp:5890:36: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+       else if (sonar->getRange() < closestReading)
+                                    ^
+src/MvrRobotConfigPacketReader.cpp: In member function ‘std::string MvrRobotConfigPacketReader::buildString() const’:
+src/MvrRobotConfigPacketReader.cpp:321:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i, j;
+       ^
+In file included from src/MvrRobotPacketReceiver.cpp:4:0:
+include/MvrRobotPacketReceiver.h: In constructor ‘MvrRobotPacketReceiver::MvrRobotPacketReceiver(MvrDeviceConnection*, bool, unsigned char, unsigned char, bool, const char*)’:
+include/MvrRobotPacketReceiver.h:72:18: warning: ‘MvrRobotPacketReceiver::myPacket’ will be initialized after [-Wreorder]
+   MvrRobotPacket myPacket;
+                  ^
+include/MvrRobotPacketReceiver.h:68:7: warning:   ‘bool MvrRobotPacketReceiver::myTracking’ [-Wreorder]
+  bool myTracking;
+       ^
+src/MvrRobotPacketReceiver.cpp:72:11: warning:   when initialized here [-Wreorder]
+ MVREXPORT MvrRobotPacketReceiver::MvrRobotPacketReceiver(
+           ^
+src/MvrRobotPacketSender.cpp: In member function ‘bool MvrRobotPacketSender::comStrN(unsigned char, const char*, int)’:
+src/MvrRobotPacketSender.cpp:244:8: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+   bool ret = true;
+        ^
+src/MvrRobotParams.cpp: In member function ‘void MvrRobotParams::processSonarCommercial(MvrConfig*)’:
+src/MvrRobotParams.cpp:1579:54: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int jj = 0; jj < argFromConfig->getArgCount(); jj++)
+                                                      ^
+src/MvrSocket.cpp: In member function ‘bool MvrSocket::getSockName()’:
+src/MvrSocket.cpp:659:30: warning: format not a string literal and no format arguments [-Wformat-security]
+     printf(myErrorStr.c_str());
+                              ^
+src/MvrSocket.cpp: In member function ‘void MvrSocket::doStringEcho()’:
+src/MvrSocket.cpp:1150:10: warning: variable ‘to’ set but not used [-Wunused-but-set-variable]
+   size_t to;
+          ^
+src/MvrSocket.cpp: In member function ‘void MvrSocket::separateHost(const char*, int, char*, size_t, int*)’:
+src/MvrSocket.cpp:1208:55: warning: format not a string literal and no format arguments [-Wformat-security]
+     snprintf(useHost, useHostSize, separator.getArg(0));
+                                                       ^
+src/MvrSocket.cpp:1208:55: warning: format not a string literal and no format arguments [-Wformat-security]
+src/MvrSocket.cpp:1216:57: warning: format not a string literal and no format arguments [-Wformat-security]
+       snprintf(useHost, useHostSize, separator.getArg(0));
+                                                         ^
+src/MvrSocket.cpp:1216:57: warning: format not a string literal and no format arguments [-Wformat-security]
+make: *** 没有规则可以创建“all”需要的目标“examples/demo”。 停止。
+make: *** 正在等待未完成的任务....
+src/mvriaUtil.cpp: In static member function ‘static int MvrUtil::strcasequotecmp(const string&, const string&)’:
+src/mvriaUtil.cpp:785:25: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  while (x < str1.length()) {
+                         ^
+src/mvriaUtil.cpp:792:25: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  while (x < str2.length()) {
+                         ^

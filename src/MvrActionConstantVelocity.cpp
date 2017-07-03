@@ -10,7 +10,7 @@ MVREXPORT MvrActionConstantVelocity::MvrActionConstantVelocity(const char *name,
 						   double velocity) :
   MvrAction(name, "Sets the robot to travel straight at a constant velocity.")
 {
-  setNextMvrgument(MvrArg("velocity", &myVelocity, 
+  setNextArgument(MvrArg("velocity", &myVelocity, 
 			"The velocity to make the robot travel at. (mm/sec)"));
   myVelocity = velocity;  
 }

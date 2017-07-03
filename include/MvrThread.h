@@ -3,9 +3,9 @@
 
 
 #include <map>
-#if !defined(WIN32) || defined(MINGW)
+// #if !defined(WIN32) || defined(MINGW)
 #include <pthread.h>
-#endif
+// #endif
 #include "mvriaTypedefs.h"
 #include "MvrMutex.h"
 #include "MvrFunctor.h"

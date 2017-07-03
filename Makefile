@@ -41,38 +41,39 @@ else
 endif
 
 
-ifndef JAVAC
-ifdef JAVA_BIN
-JAVAC:=$(JAVA_BIN)/javac
-else
-JAVAC:=javac
-endif #ifdef JAVA_BIN
-endif #ifndef JAVAC
+# ifndef JAVAC
+# ifdef JAVA_BIN
+# JAVAC:=$(JAVA_BIN)/javac
+# else
+# JAVAC:=javac
+# endif #ifdef JAVA_BIN
+# endif #ifndef JAVAC
 
-ifndef JAR
-ifdef JAVA_BIN
-JAR:=$(JAVA_BIN)/jar
-else
-JAR:=jar
-endif #ifdef JAVA_BIN
-endif #ifndef JAR
+# ifndef JAR
+# ifdef JAVA_BIN
+# JAR:=$(JAVA_BIN)/jar
+# else
+# JAR:=jar
+# endif #ifdef JAVA_BIN
+# endif #ifndef JAR
 
-ifndef JAVA_INCLUDE
-JAVA_INCLUDE:=/usr/lib/jvm/default-java/include
-endif
+# ifndef JAVA_INCLUDE
+# JAVA_INCLUDE:=/usr/lib/jvm/default-java/include
+# endif
 
 ####
 #### Mvria build variables
 ####
 
 # Default targets to build in the default rule:
-TARGETS:=lib/libMvria.so examples/demo$(binsuffix)
+# TARGETS:=lib/libMvria.so examples/demo$(binsuffix)
 
 # Default static libraries and examples:
-STATIC_TARGETS:=lib/libMvria.a examples/demoStatic$(binsuffix)
+# STATIC_TARGETS:=lib/libMvria.a examples/demoStatic$(binsuffix)
 
 # Lots of targets, to build in the everything rule:
-ALL_TARGETS:=lib/libMvria.so utils examples tests docs params lib/libMvrNetworking.so swig arnetworking_docs arnetworking_wrappers clib/libMvrNetworking.a $(STATIC_TARGETS)
+# ALL_TARGETS:=lib/libMvria.so utils examples tests docs params lib/libMvrNetworking.so swig arnetworking_docs arnetworking_wrappers clib/libMvrNetworking.a $(STATIC_TARGETS)
+# ALL_TARGETS:=lib/libMvria.so utils examples tests docs params lib/libMvrNetworking.so swig arnetworking_docs arnetworking_wrappers clib/libMvrNetworking.a $(STATIC_TARGETS)
 
 CFILES:= \
 	MvrAction.cpp \

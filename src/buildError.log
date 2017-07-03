@@ -1,0 +1,6 @@
+make[1]: *** 没有规则可以创建“all”需要的目标“examples/demo”。 停止。
+make[1]: *** 正在等待未完成的任务....
+obj/MvrLog.o：在函数‘MvrLog::logErrorFromOS(MvrLog::LogLevel, char const*, ...)’中：
+/backup/project/mvr/src/MvrLog.cpp:210: 警告： `sys_errlist' is deprecated; use `strerror' or `strerror_r' instead
+/backup/project/mvr/src/MvrLog.cpp:209: 警告： `sys_nerr' is deprecated; use `strerror' or `strerror_r' instead
+make: *** [all] 错误 2

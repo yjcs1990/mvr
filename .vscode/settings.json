@@ -49,5 +49,6 @@
         "**/build/**",
         "**/cmake-build-debug/**",
         "**/lib/**"
+        "**/backup/**"
   ]
 }
