@@ -174,9 +174,7 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
       MvrUtil::getStringFromFile("/etc/Mvria", buf, sizeof(buf));
       str = buf;
 #else // WIN32
-      if (MvrUtil::findFirstStringInRegistry(
-          "SOFTWARE\\MobileRobots\\Mvria",
-          "Install Directory", buf, 1024))
+      if (MvrUtil::findFirstStringInRegistry("SOFTWARE\\MobileRobots\\Mvria", "Install Directory", buf, 1024))
         str = buf;
       else
         if (MvrUtil::findFirstStringInRegistry(
@@ -186,10 +184,10 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
         else
           str = "";
         
-  #endif // WIN32
+#endif // WIN32
         if (str.length() > 0)
         {
-    setDirectory(str.c_str());
+          setDirectory(str.c_str());
         }
         else
         {

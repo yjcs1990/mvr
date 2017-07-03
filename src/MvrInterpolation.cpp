@@ -1,5 +1,6 @@
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
+#include "mvriaUtil.h"
 #include "MvrInterpolation.h"
 
 MVREXPORT MvrInterpolation::MvrInterpolation(size_t numberOfReadings)
@@ -16,8 +17,7 @@ MVREXPORT MvrInterpolation::~MvrInterpolation()
 
 }
 
-MVREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading, 
-					  MvrPose position)
+MVREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading, MvrPose position)
 {
   myDataMutex.lock();
   if (myTimes.size() >= mySize)
@@ -42,8 +42,7 @@ MVREXPORT bool MvrInterpolation::addReading(MvrTime timeOfReading,
    
 **/
 
-MVREXPORT int MvrInterpolation::getPose(
-	MvrTime timeStamp, MvrPose *position, MvrPoseWithTime *mostRecent)
+MVREXPORT int MvrInterpolation::getPose(MvrTime timeStamp, MvrPose *position, MvrPoseWithTime *mostRecent)
 {
   std::list<MvrTime>::iterator tit;
   std::list<MvrPose>::iterator pit;

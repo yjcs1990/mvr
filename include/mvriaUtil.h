@@ -44,9 +44,7 @@ class MvrDeviceConnection;
 #endif // of M_PI, windows has a function call instead of a define
 
 /// Contains various utility functions, including cross-platform wrappers around common system functions.
-/** @ingroup UtilityClasses
-    @ingroup ImportantClasses
-*/
+
 class MvrUtil
 {
 public:
@@ -91,7 +89,7 @@ public:
     {
       for (; begin != end; ++begin)
       {
-	delete (*begin);
+	      delete (*begin);
       }
     }
 
@@ -366,7 +364,8 @@ public:
    * @param ok an output bool * set to true if the time is successfully parsed;
    * false, otherwise
    * @param toToday true to find the time on the current day, false to find the time on 1/1/70
-   * @return time_t if toToday is true then its the parsed time on the current day, if toToday is false then its the parsed time on 1/1/70
+   * @return time_t if toToday is true then its the parsed time on the current day, 
+     if toToday is false then its the parsed time on 1/1/70
    * 1/1/70
   **/
   MVREXPORT static time_t parseTime(const char *str, bool *ok = NULL, bool toToday = true);
@@ -379,18 +378,13 @@ public:
    *  @param timep Pointer to current time (Unix time_t; seconds since epoch) 
    *  @param result The result of calling platform localtime function is copied into this struct, so it must have been allocated.
    *  @return false on error (e.g. invalid input), otherwise true.
-   *
-   *  Example:
-   *  @code
-   *  struct tm t;
-   *  MvrUtil::localtime(time(NULL), &t);
-   *  MvrLog::log("Current month is %d.\n", t.tm_mon);
-   *  @endcode
+
    */
   MVREXPORT static bool localtime(const time_t *timep, struct tm *result);
 
    
-  /** Call MvrUtil::localtime(const time_t*, struct tm *) with the current time obtained by calling
+  /*
+   * Call MvrUtil::localtime(const time_t*, struct tm *) with the current time obtained by calling
    * time(NULL).
    *  @return false on error (e.g. invalid input), otherwise true.
    */
@@ -455,10 +449,8 @@ public:
 			   bool forceHex = false);
 
 protected:
-//#ifndef WIN32
   /// this splits up a file name (it isn't exported since it'd crash with dlls)
   static std::list<std::string> splitFileName(const char *fileName);
-//#endif
 
 private:
 
@@ -475,10 +467,9 @@ private:
 #endif
 };
 
-/** Common math operations
-    @ingroup UtilityClasses
-    @ingroup easy
-*/
+/*
+ * Common math operations
+ */
 class MvrMath
 {
 private:
@@ -501,9 +492,6 @@ public:
      @param ang1 first angle
      @param ang2 second angle, added to first
      @return sum of the angles, in range [-180,180]
-     @see subAngle
-     @see fixAngle 
-     @ingroup easy
   */
   static double addAngle(double ang1, double ang2) 
     { return fixAngle(ang1 + ang2); }
@@ -513,9 +501,6 @@ public:
      @param ang1 first angle
      @param ang2 second angle, subtracted from first angle
      @return resulting angle, in range [-180,180]
-     @see addAngle
-     @see fixAngle
-     @ingroup easy
   */
   static double subAngle(double ang1, double ang2) 
     { return fixAngle(ang1 - ang2); }
@@ -524,9 +509,6 @@ public:
   /**
      @param angle the angle to fix
      @return the angle in range (-180,180]
-     @see addAngle
-     @see subAngle
-     @ingroup easy
   */
   static double fixAngle(double angle) 
     {

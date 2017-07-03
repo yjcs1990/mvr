@@ -7,7 +7,7 @@
 
 /// Used to convert and store data from  and/or about a range sensor
 /** This class holds sensor information and a sensor reading position and other
-  data
+    data
     (X,Y location of the reading (typically in robot's global coordinate system) plus a counter and timestamp for that reading,
     position of the robot when the reading was taken, and other information).
 

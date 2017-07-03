@@ -28,7 +28,7 @@ FILE * MvrLog::ourFP=0;
 int MvrLog::ourCharsLogged = 0;
 std::string MvrLog::ourFileName;
 int MvrLog::ourColbertStream = -1;
-bool MvrLog::ourLoggingTime = false;
+bool MvrLog::ourLoggingTime = true;
 bool MvrLog::ourAlsoPrint = false;
 MVREXPORT void (* MvrLog::colbertPrint)(int i, const char *str);
 
