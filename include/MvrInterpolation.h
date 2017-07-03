@@ -1,6 +1,6 @@
 #ifndef MVRINTERPOLATION_H
 #define MVRINTERPOLATION_H
-#include "mvriaUtil.h"
+
 /** 
     Store a buffer of positions (MvrPose objects) with associated timestamps, can
     be queried to interpolate (or optionally extrapolate) a pose for any arbitrary

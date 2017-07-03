@@ -8,7 +8,6 @@ build/*
 /build
 cmake-build-debug/
 *.[oa]
-*.so
 *.i
 *.cpp~
 *.h~
