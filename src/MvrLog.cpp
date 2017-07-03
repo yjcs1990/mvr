@@ -125,8 +125,7 @@ MVREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
 
 #ifndef MVRINTERFACE
   // check this down here instead of up in the if ourFP so that the log filled shows up after the printf
-  if (ourUseAramBehavior && ourFP && ourAramLogSize > 0 && 
-      ourCharsLogged > ourAramLogSize)
+  if (ourUseAramBehavior && ourFP && ourAramLogSize > 0 && ourCharsLogged > ourAramLogSize)
   {
     filledAramLog();
   }

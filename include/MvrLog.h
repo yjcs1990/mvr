@@ -34,7 +34,7 @@ public:
     None ///< Disable logging
   } LogType;
   typedef enum {
-    Terse, ///< Use terse logging
+    Terse,  ///< Use terse logging
     Normal, ///< Use normal logging
     Verbose ///< Use verbose logging
   } LogLevel;
