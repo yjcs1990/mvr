@@ -102,41 +102,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named testSerial
+# Target rules for targets named testFileParser
 
 # Build rule for target.
-testSerial: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testSerial
-.PHONY : testSerial
+testFileParser: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testFileParser
+.PHONY : testFileParser
 
 # fast build rule for target.
-testSerial/fast:
-	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/build
-.PHONY : testSerial/fast
+testFileParser/fast:
+	$(MAKE) -f CMakeFiles/testFileParser.dir/build.make CMakeFiles/testFileParser.dir/build
+.PHONY : testFileParser/fast
 
-tests/testSerial.o: tests/testSerial.cpp.o
-.PHONY : tests/testSerial.o
+tests/testFileParser.o: tests/testFileParser.cpp.o
+.PHONY : tests/testFileParser.o
 
 # target to build an object file
-tests/testSerial.cpp.o:
-	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/tests/testSerial.cpp.o
-.PHONY : tests/testSerial.cpp.o
+tests/testFileParser.cpp.o:
+	$(MAKE) -f CMakeFiles/testFileParser.dir/build.make CMakeFiles/testFileParser.dir/tests/testFileParser.cpp.o
+.PHONY : tests/testFileParser.cpp.o
 
-tests/testSerial.i: tests/testSerial.cpp.i
-.PHONY : tests/testSerial.i
+tests/testFileParser.i: tests/testFileParser.cpp.i
+.PHONY : tests/testFileParser.i
 
 # target to preprocess a source file
-tests/testSerial.cpp.i:
-	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/tests/testSerial.cpp.i
-.PHONY : tests/testSerial.cpp.i
+tests/testFileParser.cpp.i:
+	$(MAKE) -f CMakeFiles/testFileParser.dir/build.make CMakeFiles/testFileParser.dir/tests/testFileParser.cpp.i
+.PHONY : tests/testFileParser.cpp.i
 
-tests/testSerial.s: tests/testSerial.cpp.s
-.PHONY : tests/testSerial.s
+tests/testFileParser.s: tests/testFileParser.cpp.s
+.PHONY : tests/testFileParser.s
 
 # target to generate assembly for a file
-tests/testSerial.cpp.s:
-	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/tests/testSerial.cpp.s
-.PHONY : tests/testSerial.cpp.s
+tests/testFileParser.cpp.s:
+	$(MAKE) -f CMakeFiles/testFileParser.dir/build.make CMakeFiles/testFileParser.dir/tests/testFileParser.cpp.s
+.PHONY : tests/testFileParser.cpp.s
 
 # Help Target
 help:
@@ -146,10 +146,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... testSerial"
-	@echo "... tests/testSerial.o"
-	@echo "... tests/testSerial.i"
-	@echo "... tests/testSerial.s"
+	@echo "... testFileParser"
+	@echo "... tests/testFileParser.o"
+	@echo "... tests/testFileParser.i"
+	@echo "... tests/testFileParser.s"
 .PHONY : help
 
 

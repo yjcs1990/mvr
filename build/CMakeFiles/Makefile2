@@ -56,38 +56,38 @@ CMAKE_SOURCE_DIR = /backup/project/mvr
 CMAKE_BINARY_DIR = /backup/project/mvr/build
 
 #=============================================================================
-# Target rules for target CMakeFiles/testSerial.dir
+# Target rules for target CMakeFiles/testFileParser.dir
 
 # All Build rule for target.
-CMakeFiles/testSerial.dir/all:
-	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/depend
-	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/build
+CMakeFiles/testFileParser.dir/all:
+	$(MAKE) -f CMakeFiles/testFileParser.dir/build.make CMakeFiles/testFileParser.dir/depend
+	$(MAKE) -f CMakeFiles/testFileParser.dir/build.make CMakeFiles/testFileParser.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /backup/project/mvr/build/CMakeFiles  1
-	@echo "Built target testSerial"
-.PHONY : CMakeFiles/testSerial.dir/all
+	@echo "Built target testFileParser"
+.PHONY : CMakeFiles/testFileParser.dir/all
 
 # Include target in all.
-all: CMakeFiles/testSerial.dir/all
+all: CMakeFiles/testFileParser.dir/all
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/testSerial.dir/rule: cmake_check_build_system
+CMakeFiles/testFileParser.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles 1
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testSerial.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testFileParser.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles 0
-.PHONY : CMakeFiles/testSerial.dir/rule
+.PHONY : CMakeFiles/testFileParser.dir/rule
 
 # Convenience name for target.
-testSerial: CMakeFiles/testSerial.dir/rule
-.PHONY : testSerial
+testFileParser: CMakeFiles/testFileParser.dir/rule
+.PHONY : testFileParser
 
 # clean rule for target.
-CMakeFiles/testSerial.dir/clean:
-	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/clean
-.PHONY : CMakeFiles/testSerial.dir/clean
+CMakeFiles/testFileParser.dir/clean:
+	$(MAKE) -f CMakeFiles/testFileParser.dir/build.make CMakeFiles/testFileParser.dir/clean
+.PHONY : CMakeFiles/testFileParser.dir/clean
 
 # clean rule for target.
-clean: CMakeFiles/testSerial.dir/clean
+clean: CMakeFiles/testFileParser.dir/clean
 .PHONY : clean
 
 #=============================================================================
