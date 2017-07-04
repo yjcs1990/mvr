@@ -1,1 +1,1 @@
-/backup/project/mvr/build/CMakeFiles/testSerial2.dir
+/backup/project/mvr/build/CMakeFiles/testSerial.dir

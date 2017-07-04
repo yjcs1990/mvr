@@ -39,7 +39,7 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
 
 # The top-level source directory on which CMake was run.
 CMAKE_SOURCE_DIR = /backup/project/mvr
@@ -53,7 +53,7 @@ CMAKE_BINARY_DIR = /backup/project/mvr/build
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake-gui -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -102,41 +102,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named testSerial2
+# Target rules for targets named testSerial
 
 # Build rule for target.
-testSerial2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testSerial2
-.PHONY : testSerial2
+testSerial: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testSerial
+.PHONY : testSerial
 
 # fast build rule for target.
-testSerial2/fast:
-	$(MAKE) -f CMakeFiles/testSerial2.dir/build.make CMakeFiles/testSerial2.dir/build
-.PHONY : testSerial2/fast
+testSerial/fast:
+	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/build
+.PHONY : testSerial/fast
 
-tests/testSerial2.o: tests/testSerial2.cpp.o
-.PHONY : tests/testSerial2.o
+tests/testSerial.o: tests/testSerial.cpp.o
+.PHONY : tests/testSerial.o
 
 # target to build an object file
-tests/testSerial2.cpp.o:
-	$(MAKE) -f CMakeFiles/testSerial2.dir/build.make CMakeFiles/testSerial2.dir/tests/testSerial2.cpp.o
-.PHONY : tests/testSerial2.cpp.o
+tests/testSerial.cpp.o:
+	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/tests/testSerial.cpp.o
+.PHONY : tests/testSerial.cpp.o
 
-tests/testSerial2.i: tests/testSerial2.cpp.i
-.PHONY : tests/testSerial2.i
+tests/testSerial.i: tests/testSerial.cpp.i
+.PHONY : tests/testSerial.i
 
 # target to preprocess a source file
-tests/testSerial2.cpp.i:
-	$(MAKE) -f CMakeFiles/testSerial2.dir/build.make CMakeFiles/testSerial2.dir/tests/testSerial2.cpp.i
-.PHONY : tests/testSerial2.cpp.i
+tests/testSerial.cpp.i:
+	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/tests/testSerial.cpp.i
+.PHONY : tests/testSerial.cpp.i
 
-tests/testSerial2.s: tests/testSerial2.cpp.s
-.PHONY : tests/testSerial2.s
+tests/testSerial.s: tests/testSerial.cpp.s
+.PHONY : tests/testSerial.s
 
 # target to generate assembly for a file
-tests/testSerial2.cpp.s:
-	$(MAKE) -f CMakeFiles/testSerial2.dir/build.make CMakeFiles/testSerial2.dir/tests/testSerial2.cpp.s
-.PHONY : tests/testSerial2.cpp.s
+tests/testSerial.cpp.s:
+	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/tests/testSerial.cpp.s
+.PHONY : tests/testSerial.cpp.s
 
 # Help Target
 help:
@@ -146,10 +146,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... testSerial2"
-	@echo "... tests/testSerial2.o"
-	@echo "... tests/testSerial2.i"
-	@echo "... tests/testSerial2.s"
+	@echo "... testSerial"
+	@echo "... tests/testSerial.o"
+	@echo "... tests/testSerial.i"
+	@echo "... tests/testSerial.s"
 .PHONY : help
 
 

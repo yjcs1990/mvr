@@ -47,7 +47,7 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
 
 # The top-level source directory on which CMake was run.
 CMAKE_SOURCE_DIR = /backup/project/mvr
@@ -56,38 +56,38 @@ CMAKE_SOURCE_DIR = /backup/project/mvr
 CMAKE_BINARY_DIR = /backup/project/mvr/build
 
 #=============================================================================
-# Target rules for target CMakeFiles/testSerial2.dir
+# Target rules for target CMakeFiles/testSerial.dir
 
 # All Build rule for target.
-CMakeFiles/testSerial2.dir/all:
-	$(MAKE) -f CMakeFiles/testSerial2.dir/build.make CMakeFiles/testSerial2.dir/depend
-	$(MAKE) -f CMakeFiles/testSerial2.dir/build.make CMakeFiles/testSerial2.dir/build
+CMakeFiles/testSerial.dir/all:
+	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/depend
+	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /backup/project/mvr/build/CMakeFiles  1
-	@echo "Built target testSerial2"
-.PHONY : CMakeFiles/testSerial2.dir/all
+	@echo "Built target testSerial"
+.PHONY : CMakeFiles/testSerial.dir/all
 
 # Include target in all.
-all: CMakeFiles/testSerial2.dir/all
+all: CMakeFiles/testSerial.dir/all
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/testSerial2.dir/rule: cmake_check_build_system
+CMakeFiles/testSerial.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles 1
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testSerial2.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testSerial.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles 0
-.PHONY : CMakeFiles/testSerial2.dir/rule
+.PHONY : CMakeFiles/testSerial.dir/rule
 
 # Convenience name for target.
-testSerial2: CMakeFiles/testSerial2.dir/rule
-.PHONY : testSerial2
+testSerial: CMakeFiles/testSerial.dir/rule
+.PHONY : testSerial
 
 # clean rule for target.
-CMakeFiles/testSerial2.dir/clean:
-	$(MAKE) -f CMakeFiles/testSerial2.dir/build.make CMakeFiles/testSerial2.dir/clean
-.PHONY : CMakeFiles/testSerial2.dir/clean
+CMakeFiles/testSerial.dir/clean:
+	$(MAKE) -f CMakeFiles/testSerial.dir/build.make CMakeFiles/testSerial.dir/clean
+.PHONY : CMakeFiles/testSerial.dir/clean
 
 # clean rule for target.
-clean: CMakeFiles/testSerial2.dir/clean
+clean: CMakeFiles/testSerial.dir/clean
 .PHONY : clean
 
 #=============================================================================

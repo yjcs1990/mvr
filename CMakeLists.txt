@@ -189,5 +189,5 @@ INCLUDE_DIRECTORIES(
 #     )
 
 
-ADD_EXECUTABLE(testSerial2 tests/testSerial2.cpp)
-target_link_libraries(testSerial2 ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(testSerial tests/testSerial.cpp)
+target_link_libraries(testSerial ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)

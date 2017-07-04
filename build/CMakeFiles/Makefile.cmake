@@ -41,5 +41,5 @@ SET(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 SET(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/testSerial2.dir/DependInfo.cmake"
+  "CMakeFiles/testSerial.dir/DependInfo.cmake"
   )

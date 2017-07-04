@@ -84,9 +84,6 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete,
   myParams = new MvrRobotGeneric("");
   processParamFile();
 
-  /// MPL 20130509 making this default to true, so that things that
-  /// use loopOnce and not one of the run calls can work (the run
-  /// calls set this to whatever it should be anyway)
   myRunningNonThreaded = true;
 
   myMotorPacketCB.setName("MvrRobot::motorPacket");
