@@ -513,13 +513,13 @@ public:
   static double fixAngle(double angle) 
     {
       if (angle >= 360)
-	angle = angle - 360.0 * (double)((int)angle / 360);
+	      angle = angle - 360.0 * (double)((int)angle / 360);
       if (angle < -360)
-	angle = angle + 360.0 * (double)((int)angle / -360);
+	      angle = angle + 360.0 * (double)((int)angle / -360);
       if (angle <= -180)
-	angle = + 180.0 + (angle + 180.0);
+	      angle = + 180.0 + (angle + 180.0);
       if (angle > 180)
-	angle = - 180.0 + (angle - 180.0);
+	      angle = - 180.0 + (angle - 180.0);
       return angle;
     } 
   

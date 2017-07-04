@@ -102,41 +102,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named testThread
+# Target rules for targets named testTcpConnection
 
 # Build rule for target.
-testThread: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testThread
-.PHONY : testThread
+testTcpConnection: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testTcpConnection
+.PHONY : testTcpConnection
 
 # fast build rule for target.
-testThread/fast:
-	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/build
-.PHONY : testThread/fast
+testTcpConnection/fast:
+	$(MAKE) -f CMakeFiles/testTcpConnection.dir/build.make CMakeFiles/testTcpConnection.dir/build
+.PHONY : testTcpConnection/fast
 
-tests/testThread.o: tests/testThread.cpp.o
-.PHONY : tests/testThread.o
+tests/testTcpConnection.o: tests/testTcpConnection.cpp.o
+.PHONY : tests/testTcpConnection.o
 
 # target to build an object file
-tests/testThread.cpp.o:
-	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/tests/testThread.cpp.o
-.PHONY : tests/testThread.cpp.o
+tests/testTcpConnection.cpp.o:
+	$(MAKE) -f CMakeFiles/testTcpConnection.dir/build.make CMakeFiles/testTcpConnection.dir/tests/testTcpConnection.cpp.o
+.PHONY : tests/testTcpConnection.cpp.o
 
-tests/testThread.i: tests/testThread.cpp.i
-.PHONY : tests/testThread.i
+tests/testTcpConnection.i: tests/testTcpConnection.cpp.i
+.PHONY : tests/testTcpConnection.i
 
 # target to preprocess a source file
-tests/testThread.cpp.i:
-	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/tests/testThread.cpp.i
-.PHONY : tests/testThread.cpp.i
+tests/testTcpConnection.cpp.i:
+	$(MAKE) -f CMakeFiles/testTcpConnection.dir/build.make CMakeFiles/testTcpConnection.dir/tests/testTcpConnection.cpp.i
+.PHONY : tests/testTcpConnection.cpp.i
 
-tests/testThread.s: tests/testThread.cpp.s
-.PHONY : tests/testThread.s
+tests/testTcpConnection.s: tests/testTcpConnection.cpp.s
+.PHONY : tests/testTcpConnection.s
 
 # target to generate assembly for a file
-tests/testThread.cpp.s:
-	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/tests/testThread.cpp.s
-.PHONY : tests/testThread.cpp.s
+tests/testTcpConnection.cpp.s:
+	$(MAKE) -f CMakeFiles/testTcpConnection.dir/build.make CMakeFiles/testTcpConnection.dir/tests/testTcpConnection.cpp.s
+.PHONY : tests/testTcpConnection.cpp.s
 
 # Help Target
 help:
@@ -146,10 +146,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... testThread"
-	@echo "... tests/testThread.o"
-	@echo "... tests/testThread.i"
-	@echo "... tests/testThread.s"
+	@echo "... testTcpConnection"
+	@echo "... tests/testTcpConnection.o"
+	@echo "... tests/testTcpConnection.i"
+	@echo "... tests/testTcpConnection.s"
 .PHONY : help
 
 

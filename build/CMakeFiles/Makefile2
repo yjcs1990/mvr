@@ -56,38 +56,38 @@ CMAKE_SOURCE_DIR = /backup/project/mvr
 CMAKE_BINARY_DIR = /backup/project/mvr/build
 
 #=============================================================================
-# Target rules for target CMakeFiles/testThread.dir
+# Target rules for target CMakeFiles/testTcpConnection.dir
 
 # All Build rule for target.
-CMakeFiles/testThread.dir/all:
-	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/depend
-	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/build
+CMakeFiles/testTcpConnection.dir/all:
+	$(MAKE) -f CMakeFiles/testTcpConnection.dir/build.make CMakeFiles/testTcpConnection.dir/depend
+	$(MAKE) -f CMakeFiles/testTcpConnection.dir/build.make CMakeFiles/testTcpConnection.dir/build
 	$(CMAKE_COMMAND) -E cmake_progress_report /backup/project/mvr/build/CMakeFiles  1
-	@echo "Built target testThread"
-.PHONY : CMakeFiles/testThread.dir/all
+	@echo "Built target testTcpConnection"
+.PHONY : CMakeFiles/testTcpConnection.dir/all
 
 # Include target in all.
-all: CMakeFiles/testThread.dir/all
+all: CMakeFiles/testTcpConnection.dir/all
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/testThread.dir/rule: cmake_check_build_system
+CMakeFiles/testTcpConnection.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles 1
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testThread.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testTcpConnection.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/build/CMakeFiles 0
-.PHONY : CMakeFiles/testThread.dir/rule
+.PHONY : CMakeFiles/testTcpConnection.dir/rule
 
 # Convenience name for target.
-testThread: CMakeFiles/testThread.dir/rule
-.PHONY : testThread
+testTcpConnection: CMakeFiles/testTcpConnection.dir/rule
+.PHONY : testTcpConnection
 
 # clean rule for target.
-CMakeFiles/testThread.dir/clean:
-	$(MAKE) -f CMakeFiles/testThread.dir/build.make CMakeFiles/testThread.dir/clean
-.PHONY : CMakeFiles/testThread.dir/clean
+CMakeFiles/testTcpConnection.dir/clean:
+	$(MAKE) -f CMakeFiles/testTcpConnection.dir/build.make CMakeFiles/testTcpConnection.dir/clean
+.PHONY : CMakeFiles/testTcpConnection.dir/clean
 
 # clean rule for target.
-clean: CMakeFiles/testThread.dir/clean
+clean: CMakeFiles/testTcpConnection.dir/clean
 .PHONY : clean
 
 #=============================================================================

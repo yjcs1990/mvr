@@ -189,5 +189,5 @@ INCLUDE_DIRECTORIES(
 #     )
 
 
-ADD_EXECUTABLE(testThread tests/testThread.cpp)
-target_link_libraries(testThread ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(testTcpConnection tests/testTcpConnection.cpp)
+target_link_libraries(testTcpConnection ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
