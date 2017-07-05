@@ -189,5 +189,5 @@ INCLUDE_DIRECTORIES(
 #     )
 
 
-ADD_EXECUTABLE(testConfigSection tests/testConfigSection.cpp)
-target_link_libraries(testConfigSection ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(testFunctor tests/testFunctor.cpp)
+target_link_libraries(testFunctor ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)

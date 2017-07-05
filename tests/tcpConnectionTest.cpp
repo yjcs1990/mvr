@@ -11,7 +11,7 @@ int main(int argc, char **argv)
   MvrTcpConnection tcpCon;
 
   printf("Opening TCP connection to %s...\n", host);
-  int status = tcpCon.open(host);
+  int status = tcpCon.open(host,80);
   if(status != 0)
   {
     printf("Failed to connect via TCP to %s: %s.\n", host, tcpCon.getOpenMessage(status));
