@@ -102,41 +102,41 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named testMutexLockWarning
+# Target rules for targets named testConfigSection
 
 # Build rule for target.
-testMutexLockWarning: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testMutexLockWarning
-.PHONY : testMutexLockWarning
+testConfigSection: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 testConfigSection
+.PHONY : testConfigSection
 
 # fast build rule for target.
-testMutexLockWarning/fast:
-	$(MAKE) -f CMakeFiles/testMutexLockWarning.dir/build.make CMakeFiles/testMutexLockWarning.dir/build
-.PHONY : testMutexLockWarning/fast
+testConfigSection/fast:
+	$(MAKE) -f CMakeFiles/testConfigSection.dir/build.make CMakeFiles/testConfigSection.dir/build
+.PHONY : testConfigSection/fast
 
-tests/testMutexLockWarning.o: tests/testMutexLockWarning.cpp.o
-.PHONY : tests/testMutexLockWarning.o
+tests/testConfigSection.o: tests/testConfigSection.cpp.o
+.PHONY : tests/testConfigSection.o
 
 # target to build an object file
-tests/testMutexLockWarning.cpp.o:
-	$(MAKE) -f CMakeFiles/testMutexLockWarning.dir/build.make CMakeFiles/testMutexLockWarning.dir/tests/testMutexLockWarning.cpp.o
-.PHONY : tests/testMutexLockWarning.cpp.o
+tests/testConfigSection.cpp.o:
+	$(MAKE) -f CMakeFiles/testConfigSection.dir/build.make CMakeFiles/testConfigSection.dir/tests/testConfigSection.cpp.o
+.PHONY : tests/testConfigSection.cpp.o
 
-tests/testMutexLockWarning.i: tests/testMutexLockWarning.cpp.i
-.PHONY : tests/testMutexLockWarning.i
+tests/testConfigSection.i: tests/testConfigSection.cpp.i
+.PHONY : tests/testConfigSection.i
 
 # target to preprocess a source file
-tests/testMutexLockWarning.cpp.i:
-	$(MAKE) -f CMakeFiles/testMutexLockWarning.dir/build.make CMakeFiles/testMutexLockWarning.dir/tests/testMutexLockWarning.cpp.i
-.PHONY : tests/testMutexLockWarning.cpp.i
+tests/testConfigSection.cpp.i:
+	$(MAKE) -f CMakeFiles/testConfigSection.dir/build.make CMakeFiles/testConfigSection.dir/tests/testConfigSection.cpp.i
+.PHONY : tests/testConfigSection.cpp.i
 
-tests/testMutexLockWarning.s: tests/testMutexLockWarning.cpp.s
-.PHONY : tests/testMutexLockWarning.s
+tests/testConfigSection.s: tests/testConfigSection.cpp.s
+.PHONY : tests/testConfigSection.s
 
 # target to generate assembly for a file
-tests/testMutexLockWarning.cpp.s:
-	$(MAKE) -f CMakeFiles/testMutexLockWarning.dir/build.make CMakeFiles/testMutexLockWarning.dir/tests/testMutexLockWarning.cpp.s
-.PHONY : tests/testMutexLockWarning.cpp.s
+tests/testConfigSection.cpp.s:
+	$(MAKE) -f CMakeFiles/testConfigSection.dir/build.make CMakeFiles/testConfigSection.dir/tests/testConfigSection.cpp.s
+.PHONY : tests/testConfigSection.cpp.s
 
 # Help Target
 help:
@@ -146,10 +146,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... testMutexLockWarning"
-	@echo "... tests/testMutexLockWarning.o"
-	@echo "... tests/testMutexLockWarning.i"
-	@echo "... tests/testMutexLockWarning.s"
+	@echo "... testConfigSection"
+	@echo "... tests/testConfigSection.o"
+	@echo "... tests/testConfigSection.i"
+	@echo "... tests/testConfigSection.s"
 .PHONY : help
 
 

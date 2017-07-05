@@ -189,5 +189,5 @@ INCLUDE_DIRECTORIES(
 #     )
 
 
-ADD_EXECUTABLE(testMutexLockWarning tests/testMutexLockWarning.cpp)
-target_link_libraries(testMutexLockWarning ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(testConfigSection tests/testConfigSection.cpp)
+target_link_libraries(testConfigSection ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
