@@ -1,5 +1,31 @@
-#ifndef MVRROBOTPARAMS_H
-#define MVRROBOTPARAMS_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARROBOTPARAMS_H
+#define ARROBOTPARAMS_H
 
 #include "mvriaTypedefs.h"
 #include "MvrConfig.h"
@@ -10,7 +36,7 @@
 /// Stores a set of video device parameters read from one of the video sections of a robot parameter file.
 /// @internal
 /// @swigomit
-class MvrVideoParams
+class ArVideoParams
 {
 public:
 	std::string type;
@@ -24,7 +50,7 @@ public:
 	std::string address;
 	int tcpPort; bool tcpPortSet;
 	bool inverted; bool invertedSet;
-	MvrVideoParams() :
+	ArVideoParams() :
 		type("unknown"),
 		connect(false),
 		connectSet(false),
@@ -44,7 +70,7 @@ public:
 	/// @a other is not a missing/null/empty value (exactly how
 	///"empty/null/missing/default" is represented depends on the specific
 	///parameter, see parameter documentation and definition of merge() method in MvrRobotParams.cpp)
-	MVREXPORT void merge(const MvrVideoParams& other);
+	MVREXPORT void merge(const ArVideoParams& other);
 	void setType(const std::string& t) { type = t; }
 	void setConnect(bool c) { connect = c; connectSet = true; }
 	void setImageSize(int w, int h) { imageWidth = w; imageHeight = h; }
@@ -664,7 +690,7 @@ public:
       return myNumSonarUnits;
     }
 
-  /// TODO discuss boardNum here?
+  /// MPL TODO discuss boardNum here?
   /// Returns if the sonar of the given number is valid
   bool haveSonar(int boardNum) const
     {
@@ -869,7 +895,7 @@ public:
 #endif
 
   /// return a const reference to the video device parameters
-  const std::vector<MvrVideoParams>& getVideoParams() const { return myVideoParams; }
+  const std::vector<ArVideoParams>& getVideoParams() const { return myVideoParams; }
   
   /// return a const reference to the PTU/PTZ parameters
   const std::vector<MvrPTZParams>& getPTZParams() const { return myPTZParams; }
@@ -1258,7 +1284,7 @@ protected:
   std::vector<MvrPTZParams> myPTZParams;
 
   // Video device parameters
-  std::vector<MvrVideoParams> myVideoParams;  
+  std::vector<ArVideoParams> myVideoParams;  
 
   MvrConfig *myCommercialConfig;
   bool myCommercialAddedConnectables;
@@ -1275,4 +1301,4 @@ protected:
   MvrRetFunctorC<bool, MvrRobotParams> myCommercialProcessFileCB;
 };
 
-#endif // MVRROBOTPARAMS_H
+#endif // ARROBOTPARAMS_H

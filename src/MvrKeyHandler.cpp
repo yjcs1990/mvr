@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrKeyHandler.h"
@@ -16,20 +42,20 @@
    false, ie not to wait... you probably only want to block if you are
    using checkKeys yourself like after you start a robot run or in its
    own thread or something along those lines
-   @param addMvriaExitCB true to add an aria exit cb to restore the keys 
+   @param addMvrExitCB true to add an mvria exit cb to restore the keys 
    @param stream the FILE * pointer to use, if this is NULL (the default)
    then use stdin, otherwise use this...
    @param takeKeysInConstructor whether to take the keys when created or not
    (default is true)
 **/
-MVREXPORT MvrKeyHandler::MvrKeyHandler(bool blocking, bool addMvriaExitCB, 
+MVREXPORT MvrKeyHandler::MvrKeyHandler(bool blocking, bool addMvrExitCB, 
 				    FILE *stream, 
 				    bool takeKeysInConstructor) :
-  myMvriaExitCB(this, &MvrKeyHandler::restore)
+  myMvrExitCB(this, &MvrKeyHandler::restore)
 {
-  myMvriaExitCB.setName("MvrKeyHandlerExit");
-  if (addMvriaExitCB)
-    Mvria::addExitCallback(&myMvriaExitCB);
+  myMvrExitCB.setName("MvrKeyHandlerExit");
+  if (addMvrExitCB)
+    Mvria::addExitCallback(&myMvrExitCB);
 
   myStream = stream;
   myTookKeys = false;
@@ -40,7 +66,7 @@ MVREXPORT MvrKeyHandler::MvrKeyHandler(bool blocking, bool addMvriaExitCB,
 
 MVREXPORT MvrKeyHandler::~MvrKeyHandler()
 {
-  Mvria::remExitCallback(&myMvriaExitCB);
+  Mvria::remExitCallback(&myMvrExitCB);
   restore();
 }
 

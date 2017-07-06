@@ -1,5 +1,31 @@
-#ifndef MVRCOMMANDS_H
-#define MVRCOMMANDS_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARCOMMANDS_H
+#define ARCOMMANDS_H
 
 /// A class containing names for most robot microcontroller system commands
 /**
@@ -136,12 +162,12 @@ public:
   SIM_LRF_SET_RES = 233,  ///< int Set the number of degrees between laser readings (in combination with FOV, determines the number of readings per sweep) (normally 1)
   SIM_CTRL = 236,         ///< int,..., Send a simulator meta-command (an operation on the simulator itself). The initial 2-byte integer argument selects the operation. See simulator documentation.
   SIM_STAT = 237,         ///< none, Request that the simulator reply with a SIMSTAT (0x62) packet. You must have a packet handler registered with MvrRobot to receive its output. See simulator documentation.
-  SIM_MESSAGE = 238,      ///< string, Display a log message in the simulator. Mvrgument is a length-prefixed ASCII byte string.
-  SIM_EXIT = 239          ///< int, Exit the simulator. Mvrgument is the exit code (use 0 for a "normal" exit).
+  SIM_MESSAGE = 238,      ///< string, Display a log message in the simulator. Argument is a length-prefixed ASCII byte string.
+  SIM_EXIT = 239          ///< int, Exit the simulator. Argument is the exit code (use 0 for a "normal" exit).
   };
   
 };
 
-#endif // MVRCOMMANDS_H
+#endif // ARCOMMANDS_H
 
 

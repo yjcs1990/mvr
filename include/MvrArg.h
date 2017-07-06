@@ -1,5 +1,31 @@
-#ifndef MVRARG_H
-#define MVRARG_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARARG_H
+#define ARARG_H
 
 #include "mvriaTypedefs.h"
 #include "mvriaUtil.h"
@@ -7,7 +33,7 @@
 
 class MvrArgumentBuilder;
 
-/// Mvrgument class, mostly for actions, could be used for other things
+/// Argument class, mostly for actions, could be used for other things
 /** 
     This is designed to be easy to add another type to the arguments... 
     All you have to do to do so, is add an enum to the Type enum, add a 
@@ -27,8 +53,8 @@ public:
     STRING, ///< String argument
     BOOL, ///< Boolean argument
     POSE, ///< MvrPose argument
-    FUNCTOR, ///< Mvrgument that handles things with functors
-    DESCRIPTION_HOLDER, ///< Mvrgument that just holds a description
+    FUNCTOR, ///< Argument that handles things with functors
+    DESCRIPTION_HOLDER, ///< Argument that just holds a description
     
     LAST_TYPE = DESCRIPTION_HOLDER  ///< Last value in the enumeration
   } Type;
@@ -144,4 +170,4 @@ protected:
   MvrRetFunctor<const std::list<MvrArgumentBuilder *> *> *myGetFunctor;
 };
 
-#endif // MVRARG_H
+#endif // ARARGUMENT_H

@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "mvriaOSDef.h"
 #include "MvrCommands.h"
 #include "MvrExport.h"
@@ -28,9 +54,9 @@ MVREXPORT MvrAnalogGyro::MvrAnalogGyro(MvrRobot *robot) :
   myLastAverage = 0;
   // nominal values
   myGyroSigma = .01;
-  myInertialVarianceModel = 0.001;
-  myRotVarianceModel = .25; // deg2/deg
-  myTransVarianceModel = 4.0; // deg2/meter
+  myInertialVmvrianceModel = 0.001;
+  myRotVmvrianceModel = .25; // deg2/deg
+  myTransVmvrianceModel = 4.0; // deg2/meter
   myAccumulatedDelta = 0;
   myIsActive = true;
   myHaveGottenData = false;
@@ -86,7 +112,7 @@ MVREXPORT void MvrAnalogGyro::stabilizingCallback(void)
       MvrLog::log(MvrLog::Normal, "Stabilizing microcontroller gyro");
     myRobot->setStabilizingTime(2000);
     // only set this if it isn't already set (since this now comes in
-    // the config packet so its variable per connection/robot)
+    // the config packet so its vmvriable per connection/robot)
     if (myRobot->getOdometryDelay() == 0)
       myRobot->setOdometryDelay(25);
   }
@@ -180,9 +206,9 @@ MVREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
 {
   MvrPose ret;
 
-  // variables
-  double inertialVariance;
-  double encoderVariance;
+  // vmvriables
+  double inertialVmvriance;
+  double encoderVmvriance;
 
   double robotDeltaTh;
   double inertialDeltaTh;
@@ -206,20 +232,20 @@ MVREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
     return deltaPose.getTh();
   }
 
-  //added this fix
+  // 6/20/05 MPL added this fix
   robotDeltaTh = MvrMath::fixAngle(myAccumulatedDelta + deltaPose.getTh());
   //printf("using %f %f %f\n", robotDeltaTh, myAccumulatedDelta, deltaPose.getTh());
 
-  inertialVariance = (myGyroSigma * myGyroSigma * 10);
+  inertialVmvriance = (myGyroSigma * myGyroSigma * 10);
   // was: deltaPose.getTime().mSecSince(myLastAsked)/10.0);
 
 
   //printf("@ %10f %10f %10f %10f\n", multiplier, MvrMath::subAngle(thisTh, lastTh), thisTh, lastTh);
   inertialDeltaTh = MvrMath::subAngle(myHeading, myLastHeading);
 
-  inertialVariance += fabs(inertialDeltaTh) * myInertialVarianceModel;
-  encoderVariance = (fabs(deltaPose.getTh()) * myRotVarianceModel +
-		     deltaPose.findDistanceTo(zero) * myTransVarianceModel);
+  inertialVmvriance += fabs(inertialDeltaTh) * myInertialVmvrianceModel;
+  encoderVmvriance = (fabs(deltaPose.getTh()) * myRotVmvrianceModel +
+		     deltaPose.findDistanceTo(zero) * myTransVmvrianceModel);
   
   
   if (myLogAnomalies)
@@ -241,18 +267,18 @@ MVREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
 
 
   //don't divide by 0, or close to it
-  if (fabs(inertialVariance + encoderVariance) < .00000001)
+  if (fabs(inertialVmvriance + encoderVmvriance) < .00000001)
     deltaTh = 0;
   // if we get no encoder readings, but we get gyro readings, just
-  // believe the gyro
+  // believe the gyro (this case is new 6/20/05 MPL)
   else if (fabs(robotDeltaTh) < 1 && fabs(inertialDeltaTh) > 2)
     deltaTh = MvrMath::fixAngle(inertialDeltaTh);
   else
     deltaTh = MvrMath::fixAngle(
 	    (robotDeltaTh * 
-	     (inertialVariance / (inertialVariance + encoderVariance))) +
+	     (inertialVmvriance / (inertialVmvriance + encoderVmvriance))) +
 	    (inertialDeltaTh *
-	     (encoderVariance / (inertialVariance + encoderVariance))));
+	     (encoderVmvriance / (inertialVmvriance + encoderVmvriance))));
 
   // now we need to compensate for the readings we got when we didn't
   // have gyro readings

@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrBatteryMTX.h"
@@ -8,9 +34,9 @@
 #include "mvriaInternal.h"
 #include <time.h>
 
-//#define MVRBATTERYMTXDEBUG
+//#define ARBATTERYMTXDEBUG
 
-#if (defined(MVRBATTERYMTXDEBUG))
+#if (defined(ARBATTERYMTXDEBUG))
 #define IFDEBUG(code) {code;}
 #else
 #define IFDEBUG(code)
@@ -24,7 +50,7 @@ MVREXPORT MvrBatteryMTX::MvrBatteryMTX (int batteryBoardNum, const char *name,
 	myConn (conn),
 	myName (name),
 	myBoardNum (batteryBoardNum),
-	myMvriaExitCB (this, &MvrBatteryMTX::disconnect)
+	myMvrExitCB (this, &MvrBatteryMTX::disconnect)
 {
 
 	myInfoLogLevel = MvrLog::Normal;
@@ -42,7 +68,7 @@ MVREXPORT MvrBatteryMTX::MvrBatteryMTX (int batteryBoardNum, const char *name,
 		MvrLog::log (MvrLog::Verbose, "%s::MvrBatteryMTX Battery board %d params",
 		            getName(), myBoardNum);
 	}
-	Mvria::addExitCallback (&myMvriaExitCB, -10);
+	Mvria::addExitCallback (&myMvrExitCB, -10);
 	//myLogLevel = MvrLog::Verbose;
 	//myLogLevel = MvrLog::Terse;
 	myLogLevel = MvrLog::Normal;
@@ -62,7 +88,7 @@ MVREXPORT MvrBatteryMTX::~MvrBatteryMTX()
 	if (myRobot != NULL) {
 		myRobot->remSensorInterpTask (&myProcessCB);
 	}
-  Mvria::remExitCallback(&myMvriaExitCB);
+  Mvria::remExitCallback(&myMvrExitCB);
 }
 
 MVREXPORT int MvrBatteryMTX::getAsyncConnectState()
@@ -162,7 +188,7 @@ MVREXPORT void MvrBatteryMTX::batterySetName (const char *name)
 	myDeviceMutex.setLogNameVar ("%s::myDeviceMutex", getName());
 	myPacketsMutex.setLogNameVar ("%s::myPacketsMutex", getName());
 	myDataMutex.setLogNameVar ("%s::myDataMutex", getName());
-	myMvriaExitCB.setNameVar ("%s::exitCallback", getName());
+	myMvrExitCB.setNameVar ("%s::exitCallback", getName());
   myDisconnectOnErrorCBList.setNameVar(
 	  "%s::myDisconnectOnErrorCBList", myName.c_str());
 
@@ -366,6 +392,18 @@ void MvrBatteryMTX::interpBasicInfo(void)
     myRobot->setIsChargerPowerGood((myStatusFlags & STATUS_CHARGER_ON));
   }
 
+  /* MPL This isn't working correctly right now since there's an issue
+   * with firmware (or hardware).  Taking it out for now before the
+   * clicking it can cause when stuck drives anyone crazy.
+
+  if (myStatusFlags & STATUS_ON_BUTTON_PRESSED)
+  {
+    MvrLog::log(MvrLog::Normal, 
+	       "BatteryMTX(%d) enabling motors because on button pressed",
+	       myBoardNum);
+    myRobot->enableMotors();
+  }
+  */
 
   // process the status info
   if ((myStatusFlags & STATUS_BATTERY_POWERING_OFF) && 
@@ -645,7 +683,23 @@ while (getRunning() )
 }
 		// if we have a robot but it isn't running yet then don't have a
 		// connection failure
-				//MvrUtil::sleep(1);
+		/* MPL PS TODO This should lose connection if we
+		   haven't heard from it in long enough... but this is
+		   loosing connection anytime we lose one packet
+		   (which'll always happen sometimes on serial).
+		if (getRunning() && myIsConnected) {
+			//MvrLog::log (MvrLog::Normal,
+			//            "%s::runThread()  Lost connection to the battery because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
+			//            myLastReading.mSecSince() / 1000.0,
+			//            getConnectionTimeoutSeconds() );
+			MvrLog::log (MvrLog::Normal,
+			            "%s::runThread()  Lost connection to the battery because of error %d %d", getName(), getRunning(), myIsConnected);
+			myIsConnected = false;
+			//laserDisconnectOnError();
+			continue;
+		}
+		*/
+		//MvrUtil::sleep(1);
 		//MvrUtil::sleep(2000);
 		//MvrUtil::sleep(500);
 	

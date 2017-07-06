@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 /* 
  * Contains utility classes for the MvrMap class.
  *
@@ -7,7 +33,7 @@
  * These are primarily related to tracking changes to the map and include
  * the following:
  *
- *  - MvrMapId : The unique identifier for an Mvria map.
+ *  - MvrMapId : The unique identifier for an Mvr map.
  *
  *  - MvrMapFileLine : The data regarding a text line in a map file; this  
  *    includes the line number and text.  
@@ -20,17 +46,17 @@
  *    deleted.
  *
  *  - MvrMapChangeDetails : A collection of MvrMapFileLineSets that describes 
- *    all of the changes that were made to an Mvria map.
+ *    all of the changes that were made to an Mvr map.
  *
  *  - MvrMapFileLineSetWriter : An output functor that is used to populate an
  *    MvrMapFileLineSet.
  *
  *  - MvrMapChangedHelper : A collection of callbacks and methods to invoke 
- *    them after the Mvria map has been changed.
+ *    them after the Mvr map has been changed.
  */
 
-#ifndef MVRMAPUTILS_H
-#define MVRMAPUTILS_H
+#ifndef ARMAPUTILS_H
+#define ARMAPUTILS_H
 
 #include <algorithm>
 #include <functional>
@@ -50,10 +76,10 @@ class MvrBasePacket;
 // MvrMapId
 // ============================================================================
 
-/// Enapsulates the data used to uniquely identify an Mvria map
+/// Enapsulates the data used to uniquely identify an Mvr map
 /**
  * MvrMapId is a small helper class that contains all of the information 
- * needed to uniquely identify an Mvria map.  In addition to the standard
+ * needed to uniquely identify an Mvr map.  In addition to the standard
  * file attributes (such as filename, size, and timestamps), it 
  * contains the name of the originating source robot or server.  It 
  * also contains the checksum of the file contents.  This checksum is
@@ -403,7 +429,7 @@ public:
                                const MvrMapFileLineGroup & line2);
   friend struct MvrMapFileLineGroupCompare;
 
-  /// Writes the group to the Mvria log.
+  /// Writes the group to the Mvr log.
   void log();
 
 public: // users may access class members directly
@@ -468,9 +494,9 @@ struct MvrMapFileLineGroupLineNumCompare :
 /// A set of map file line groups.
 /**
  * MvrMapFileLineSet is a container of MvrMapFileLineGroup objects -- i.e. a 
- * set of parent/child text lines in an Mvria map.  The class has been 
+ * set of parent/child text lines in an Mvr map.  The class has been 
  * defined to enable comparisons of map file versions.  Each section of 
- * an Mvria map is written to an MvrMapFileLineSet and then the standard
+ * an Mvr map is written to an MvrMapFileLineSet and then the standard
  * algorithm set_difference can be used to determine changes within a 
  * section.  The static method MvrMapFileLineSet::calculateChanges()
  * performs this comparison.
@@ -529,7 +555,7 @@ public:
   /// Searches the set for the given parent line.
   MVREXPORT iterator find(const MvrMapFileLine &groupParent);
 
-  /// Writes the set to the Mvria output log.
+  /// Writes the set to the Mvr output log.
   MVREXPORT void log(const char *prefix);
 
 }; // end class MvrMapFileLineSet
@@ -539,10 +565,10 @@ public:
 // MvrMapChangeDetails
 // ============================================================================
 
-/// Helper class used to track changes to an Mvria map.
+/// Helper class used to track changes to an Mvr map.
 /**
  * MvrMapChangeDetails is a simple helper class that is used to track changes
- * to an Mvria map.  These changes are determined based on set comparisons 
+ * to an Mvr map.  These changes are determined based on set comparisons 
  * (and thus everything in the map must be ordered in a repeatable manner).
  *
  * The class itself provides very little functionality.  It is basically 
@@ -550,7 +576,7 @@ public:
  * application. The methods return pointers to the internal data members 
  * which may be directly manipulated.  There is no error checking, 
  * thread-safety, etc.  The class's use and scope is expected to be very 
- * limited (to the Mvria map and related classes).
+ * limited (to the Mvr map and related classes).
  * @swigomit
  * @internal
 **/
@@ -559,8 +585,8 @@ class MvrMapChangeDetails
 public:
 
 	enum MapLineChangeType {
-		DELETIONS,  ///< Lines that have been deleted from the Mvria map
-		ADDITIONS,  ///< Lines that have been added to the Mvria map 
+		DELETIONS,  ///< Lines that have been deleted from the Mvr map
+		ADDITIONS,  ///< Lines that have been added to the Mvr map 
     LAST_CHANGE_TYPE = ADDITIONS  ///< Last value in the enumeration
 	};
 
@@ -717,7 +743,7 @@ public:
   /// Creates a map of args that are considered to be a "child" of another arg.
   MVREXPORT void createChildArgMap();
 
-  /// Writes the change details to the Mvria log.
+  /// Writes the change details to the Mvr log.
   MVREXPORT void log();
 
   /// Locks the change details for multithreaded access.
@@ -778,7 +804,7 @@ protected:
 /// Functor that populates a specified MvrMapFileLineSet.
 /**
  * MvrMapFileLineSetWriter is used to create an MvrMapFileLineSet, using the 
- * normal Mvria map writeToFunctor mechanism.
+ * normal Mvr map writeToFunctor mechanism.
  * @swigomit
  * @internal
 **/
@@ -931,5 +957,5 @@ class MvrMapChangedHelper
  
 #endif // ifndef SWIG
 
-#endif // MVRMAPUTILS_H
+#endif // ARMAPUTILS_H
 

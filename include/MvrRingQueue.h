@@ -31,7 +31,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 #include <iostream>
 #include <list>
-#include <ariaTypedefs.h>
+#include <mvriaTypedefs.h>
 
 /** @brief An expanding ring queue. 
  *

@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrRobotConnector.h"
@@ -52,7 +78,7 @@ MVREXPORT MvrRobotConnector::MvrRobotConnector(
   myRemoteHost = NULL;
   myRobotPort = NULL;
   myRemoteRobotTcpPort = 8101;
-  myRobotBaud = 115200;
+  myRobotBaud = 9600;
   myRemoteIsSim = false;
   myRemoteIsNotSim = false;
   myRobotLogPacketsReceived = false;
@@ -345,11 +371,12 @@ MVREXPORT bool MvrRobotConnector::setupRobot(MvrRobot *robot)
     // we could get to the sim, so set the robots device connection to the sim
     if (myRemoteHost != NULL)
     {
-      MvrLog::log(MvrLog::Normal, "Connected to remote host %s through tcp.\n", myRemoteHost);
+      MvrLog::log(MvrLog::Normal, "Connected to remote host %s through tcp.\n", 
+		 myRemoteHost);
       if (myRemoteIsSim)
-	      myUsingSim = true;
+	myUsingSim = true;
       else
-	      myUsingSim = false;
+	myUsingSim = false;
     }
     else
     {
@@ -371,7 +398,9 @@ MVREXPORT bool MvrRobotConnector::setupRobot(MvrRobot *robot)
 
     myRobotSerConn.setPort(myRobotPort);
     myRobotSerConn.setBaud(myRobotBaud);
-    MvrLog::log(MvrLog::Normal, "Could not connect to simulator, connecting to robot through serial port %s.", myRobotSerConn.getPort());
+    MvrLog::log(MvrLog::Normal,
+	       "Could not connect to simulator, connecting to robot through serial port %s.", 
+	       myRobotSerConn.getPort());
     robot->setDeviceConnection(&myRobotSerConn);
     myUsingSim = false;
   }
@@ -459,13 +488,9 @@ assert(mySonarConnector);
 MVREXPORT bool MvrRobotConnector::connectRobot(MvrRobot *robot)
 {
   if (!setupRobot(robot))
-  {
     return false;
-  }
   else
-  {
     return robot->blockingConnect();
-  }
 }
 
 MVREXPORT const char *MvrRobotConnector::getRemoteHost(void) const

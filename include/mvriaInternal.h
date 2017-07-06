@@ -1,5 +1,31 @@
-#ifndef MVRIAINTERNAL_H
-#define MVRIAINTERNAL_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARIAINTERNAL_H
+#define ARIAINTERNAL_H
 
 
 #include "MvrMutex.h"
@@ -32,7 +58,7 @@ public:
     SIGHANDLE_NONE ///< Do no signal handling
   } SigHandleMethod;
 
-	/// Initialize Mvria global data struture and perform OS-specific initialization, including adding OS signal handlers on Linux, initializing sockets library on Windows, etc.
+	/// Initialize Mvr global data struture and perform OS-specific initialization, including adding OS signal handlers on Linux, initializing sockets library on Windows, etc.
   MVREXPORT static void init(SigHandleMethod method = SIGHANDLE_THREAD,
 			    bool initSockets = true, 
 			    bool sigHandleExitNotShutdown = true);
@@ -40,20 +66,20 @@ public:
   /// Performs OS-specific deinitialization, used by shutdown() and exit().
   MVREXPORT static void uninit();
 
-  /// Adds a callback to call when Mvria is initialized using init()
+  /// Adds a callback to call when Mvr is initialized using init()
   MVREXPORT static void addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position);
 
-  /// Adds a callback to call when Mvria is uninititialized using uninit()
+  /// Adds a callback to call when Mvr is uninititialized using uninit()
   MVREXPORT static void addUninitCallBack(MvrFunctor *cb,
 					 MvrListPos::Pos position);
 
-  /// Shutdown all Mvria processes/threads
+  /// Shutdown all Mvr processes/threads
   MVREXPORT static void shutdown();
 
-  /// Shutdown all Mvria processes/threads, call exit callbacks, and exit the program
+  /// Shutdown all Mvr processes/threads, call exit callbacks, and exit the program
   MVREXPORT static void exit(int exitCode = 0);
 
-  /// Sees if Mvria is still running (mostly for the thread in main)
+  /// Sees if Mvr is still running (mostly for the thread in main)
   MVREXPORT static bool getRunning(void);
 
   /// Sets the directory that ARIA resides in, to override default
@@ -89,7 +115,7 @@ public:
   /// Sets the log level for the exit callbacks
   MVREXPORT static void setExitCallbacksLogLevel(MvrLog::LogLevel level);
 
-  /// Force an exit of all Mvria processes/threads (the old way)
+  /// Force an exit of all Mvr processes/threads (the old way)
   MVREXPORT static void exitOld(int exitCode = 0);
 
   /// Internal, the callback for the signal handling
@@ -108,7 +134,7 @@ public:
   /// Adds a callback for when we log options
   MVREXPORT static void addLogOptionsCB(MvrFunctor *functor, int position = 50);
 
-  /// Adds a type of deviceConnection for Mvria to be able to create
+  /// Adds a type of deviceConnection for Mvr to be able to create
   MVREXPORT static bool deviceConnectionAddCreator(
 	  const char *deviceConnectionType, 
 	  MvrRetFunctor3<MvrDeviceConnection *, const char *, const char *, const char *> *creator);
@@ -180,7 +206,7 @@ public:
 	  const char *laserType, int laserNumber,
 	  const char *prefix = "Mvria::laserCreate");
 
-  /// Adds a type of laser for Mvria to be able to create
+  /// Adds a type of laser for Mvr to be able to create
   MVREXPORT static bool laserAddCreator(
 	  const char *laserType, 
 	  MvrRetFunctor2<MvrLaser *, int, const char *> *creator);
@@ -196,7 +222,7 @@ public:
 	  const char *batteryType, int batteryNumber,
 	  const char *prefix = "Mvria::batteryCreate");
 
-  /// Adds a type of battery for Mvria to be able to create
+  /// Adds a type of battery for Mvr to be able to create
   MVREXPORT static bool batteryAddCreator(
 	  const char *batteryType, 
 	  MvrRetFunctor2<MvrBatteryMTX *, int, const char *> *creator);
@@ -211,7 +237,7 @@ public:
 	  const char *lcdType, int lcdNumber,
 	  const char *prefix = "Mvria::lcdCreate");
 
-  /// Adds a type of lcd for Mvria to be able to create
+  /// Adds a type of lcd for Mvr to be able to create
   MVREXPORT static bool lcdAddCreator(
 	  const char *lcdType, 
 	  MvrRetFunctor2<MvrLCDMTX *, int, const char *> *creator);
@@ -226,7 +252,7 @@ public:
 	  const char *sonarType, int sonarNumber,
 	  const char *prefix = "Mvria::sonarCreate");
 
-  /// Adds a type of sonar for Mvria to be able to create
+  /// Adds a type of sonar for Mvr to be able to create
   MVREXPORT static bool sonarAddCreator(
 	  const char *sonarType, 
 	  MvrRetFunctor2<MvrSonarMTX *, int, const char *> *creator);
@@ -236,9 +262,9 @@ public:
   /// Gets a list of the possible sonar types (for use in the config)
   MVREXPORT static const char *sonarGetChoices(void);
   
-  /// Set maximum limit on video devices (used by MvrVideo library)
+  /// Set maximum limit on video devices (used by ArVideo library)
   MVREXPORT static void setMaxNumVideoDevices(size_t n); 
-  /// Get maximum limit on video devices (used by MvrVideo library)
+  /// Get maximum limit on video devices (used by ArVideo library)
   MVREXPORT static size_t getMaxNumVideoDevices(); 
  
   /// Set maximum limit on PTZ or PTU devices, used by MvrPTZConnector. Call before connecting to PTZ devices with MvrPTZConnector. 
@@ -247,9 +273,9 @@ public:
   MVREXPORT static size_t getMaxNumPTZs();  
 #endif // MVRINTERFACE
 
-  /// Gets the identifier (for humans) used for this instance of Mvria
+  /// Gets the identifier (for humans) used for this instance of Mvr
   MVREXPORT static const char *getIdentifier(void);
-  /// Sets the identifier (for humans) used for this instance of Mvria
+  /// Sets the identifier (for humans) used for this instance of Mvr
   MVREXPORT static void setIdentifier(const char *identifier);
 
 
@@ -305,4 +331,4 @@ protected:
 };
 
 
-#endif // MVRIAINTERNAL_H
+#endif // ARIAINTERNAL_H

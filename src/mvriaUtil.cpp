@@ -1,3 +1,30 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
 #define _GNU_SOURCE 1 // for isnormal() and other newer (non-ansi) C functions
 
 #include "MvrExport.h"
@@ -146,7 +173,7 @@ available, and the current running Linux kernel supports the monotonic clock,
 then the clock_gettime() function is used with the CLOCK_MONOTONIC option 
 (this is an accurate clock that is robust against e.g. changes to the
 system time, etc.). Otherwise, gettimeofday() is used instead. Programs using ARIA
-on Linux must therefore link to the librt library (with -lrt) as well as libMvria.  On Windows, the
+on Linux must therefore link to the librt library (with -lrt) as well as libMvr.  On Windows, the
 timeGetTime() function is used from the winmm library -- this means programs
 using ARIA on Windows must be linked to the winmm.lib library as well as ARIA.
    @return millisecond time
@@ -994,7 +1021,7 @@ MVREXPORT void MvrUtil::writeToFile(const char *str, FILE *file)
    The file can contain spaces or tabs, but a '\\r'
    or '\\n' will be treated as the end of the string, and the string
    cannot have more characters than the value given by strLen.  This is mostly for internal use
-   with Linux to determine the Mvria directory from a file in /etc, but
+   with Linux to determine the Mvr directory from a file in /etc, but
    will work with Linux or Windows. 
 
    @param fileName name of the file in which to look
@@ -1760,6 +1787,7 @@ MVREXPORT bool MvrUtil::matchCase(const char *baseDir,
                  fileName);
       closedir(dir);
 
+      // KMC NEED TO DETERMINE WHICH IS CORRECT.
       // The following change appears to be necessary for maps, but is still
       // undergoing testing....
       //   Just return the given ".". (This is necessary to find maps in the local 
@@ -2688,6 +2716,7 @@ MVREXPORT std::list<MvrPose> MvrPoseUtil::findCornersFromRobotBounds(
 
   return ret;
 
+  /// MPL this code worked, but didn't give us good corners when the width/length got nuts
 #if 0
   if (fastButUnsafe)
   {

@@ -1,5 +1,31 @@
-#ifndef MVRRVISIONPTZ_H
-#define MVRRVISIONPTZ_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARRVISIONPTZ_H
+#define ARRVISIONPTZ_H
 
 #include "mvriaTypedefs.h"
 #include "MvrBasePacket.h"
@@ -9,6 +35,7 @@
 /** There are only two functioning ways to put things into this packet,
  * uByteToBuf() and byte2ToBuf;  You
  *  MUST use thse, if you use anything else your commands won't work.  
+ *  @since 2.7.0
 */
 class MvrRVisionPacket: public MvrBasePacket
 {
@@ -31,6 +58,7 @@ public:
    (the RVision is normally on COM3 on Seekur and Seekur Jr. robots) and
    use the setDeviceConnection() method to associate the serial connection
    with the MvrRVisionPTZ object.
+	@since 2.7.0
 */
 
 class MvrRVisionPTZ : public MvrPTZ
@@ -42,6 +70,7 @@ public:
   MVREXPORT virtual bool init(void);
   MVREXPORT virtual const char *getTypeName() { return "rvision"; }
   /// Set serial port
+  /// @since 2.7.6
   void setPort(const char *port)
   {
 	  mySerialPort = port;
@@ -94,6 +123,7 @@ public:
   };
   
   /// called automatically by Mvria::init()
+  ///@since 2.7.6
   ///@internal
 #ifndef SWIG
   static void registerPTZType();
@@ -113,9 +143,11 @@ protected:
   MvrRVisionPacket myInquiryPacket;
   const char *mySerialPort;
 
+  ///@since 2.7.6
   static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
+  ///@since 2.7.6
   static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 
 };
 
-#endif // MVRRVISIONPTZ_H
+#endif // ARRVISIONPTZ_H

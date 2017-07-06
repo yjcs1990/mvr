@@ -1,16 +1,42 @@
 /*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+/*
  * 
  * 
  *
- * Mvria maps are implemented by a collection of classes and interfaces.  The 
+ * Mvr maps are implemented by a collection of classes and interfaces.  The 
  * most important is the MvrMapInterface, which is defined in MvrMapInterface.h
- * and specifies the methods that all Mvria maps must provide.  
+ * and specifies the methods that all Mvr maps must provide.  
  * 
  * This file contains the top-level concrete implementation of the 
  * MvrMapInterface.  MvrMap is basically the map that is used by the robot 
  * to navigate its environment.  In addition to implementing the methods of 
- * MvrMapInterface, MvrMap also provides a means of hooking into the Mvria config.  
- * When the map file name is specified in the Mvria config and is changed during 
+ * MvrMapInterface, MvrMap also provides a means of hooking into the Mvr config.  
+ * When the map file name is specified in the Mvr config and is changed during 
  * runtime, MvrMap loads the new file and notifies all listeners that the map 
  * has been changed.
  * 
@@ -31,7 +57,7 @@
  *     actually contains references to two MvrMapSimple objects.  One is
  *     permanent and is the map object that is used by the robot.  The other
  *     is transient and is the map object that is currently being read from 
- *     a file following an Mvria configuration update.  If the file is 
+ *     a file following an Mvr configuration update.  If the file is 
  *     successfully read, then the loading MvrMapSimple object is copied to 
  *     the main permanent one and mapChanged notifications are sent to
  *     registered listeners.
@@ -72,8 +98,8 @@
  * @see MvrMapScan
  * @see MvrMapSupplement
 **/
-#ifndef MVRMAP_H
-#define MVRMAP_H
+#ifndef ARMAP_H
+#define ARMAP_H
  
 #include "mvriaTypedefs.h"
 #include "mvriaUtil.h"
@@ -86,19 +112,19 @@
 #include "MvrArgumentBuilder.h"
 #include "MvrMutex.h"
 
-#include "MvrGPSCoords.h" // for MvrLLACoords
+#include "MvrGPSCoords.h" // for ArLLACoords
 
 #include <vector>
 
 class MvrFileParser;
 
-/// A map of a two-dimensional space the robot can navigate within, and which can be updated via the Mvria config
+/// A map of a two-dimensional space the robot can navigate within, and which can be updated via the Mvr config
 /**
 * MvrMap contains data that represents the operating space of the robot, and can
 * be used for space searching, localizing, navigating etc.  MobileRobots' ARNL
 * and SONARNL localization and navigation libraries use MvrMap objects.
 * MvrMap also provides methods to read and write the map from and to a file,
-* along with a mechanism for setting the map file via the global Mvria config.
+* along with a mechanism for setting the map file via the global Mvr config.
 * 
 * Types of data stored in a map include sensable obstacles (e.g. walls and 
 * furniture in a room) that are represented either as a collection of data 
@@ -108,13 +134,13 @@ class MvrFileParser;
 * advanced applications, the sensable obstacle data can be categorized according
 * to the type of scan or sensor; see MvrMapScanInterface for more information.
 * 
-* In addition to the obstacle data, the Mvria map may contain goals, forbidden
+* In addition to the obstacle data, the Mvr map may contain goals, forbidden
 * areas, and other points and regions of interest (a.k.a. "map objects").  
 * Advanced applications can extend the set of predefined map object types.
 * See @ref MapObjects for more information.
 *
 * If the application needs to be aware of any changes that are made to the 
-* Mvria map at runtime, then it should install "mapChanged" callbacks on the map.
+* Mvr map at runtime, then it should install "mapChanged" callbacks on the map.
 * If the map file is re-read while the robot is running, then the callbacks 
 * are automatically invoked.  If the application makes other changes to the 
 * map by calling any of the set methods, then it should call mapChanged() when
@@ -264,53 +290,53 @@ public:
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   MVREXPORT virtual const char *getDisplayString
-                                 (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+                                 (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual std::vector<MvrPose> *getPoints
-                         (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+                         (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedPoints(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual MvrPose getMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual bool isSortedPoints(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
 
   MVREXPORT virtual void setPoints(const std::vector<MvrPose> *points,
-                                  const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
+                                  const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
                                   bool isSortedPoints = false,
                                   MvrMapChangeDetails *changeDetails = NULL);
 
   MVREXPORT virtual std::vector<MvrLineSegment> *getLines
-                         (const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+                         (const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
-  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual int getNumLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
-  MVREXPORT virtual bool isSortedLines(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE) const;
+  MVREXPORT virtual MvrPose getLineMinPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual MvrPose getLineMaxPose(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getNumLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual bool isSortedLines(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE) const;
    
   MVREXPORT virtual void setLines(const std::vector<MvrLineSegment> *lines,
-                                 const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
+                                 const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
                                  bool isSortedLines = false,
                                  MvrMapChangeDetails *changeDetails = NULL);
   
-  MVREXPORT virtual int getResolution(const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+  MVREXPORT virtual int getResolution(const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void setResolution(int resolution,
-                                      const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
+                                      const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
                                       MvrMapChangeDetails *changeDetails = NULL);
  
   MVREXPORT virtual void writeScanToFunctor
                               (MvrFunctor1<const char *> *functor, 
 			                         const char *endOfLineChars,
-                               const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE);
+                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE);
 
   MVREXPORT virtual void writePointsToFunctor
                               (MvrFunctor2<int, std::vector<MvrPose> *> *functor,
-                               const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
+                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
                                MvrFunctor1<const char *> *keywordFunctor = NULL);
 
    MVREXPORT virtual void writeLinesToFunctor
  		                          (MvrFunctor2<int, std::vector<MvrLineSegment> *> *functor,
-                               const char *scanType = MVRMAP_DEFAULT_SCAN_TYPE,
+                               const char *scanType = ARMAP_DEFAULT_SCAN_TYPE,
                                MvrFunctor1<const char *> *keywordFunctor = NULL);
   
    MVREXPORT virtual bool addToFileParser(MvrFileParser *fileParser);
@@ -322,7 +348,7 @@ public:
 
    MVREXPORT virtual bool readLineSegment( char *line);
  
-   /** Public for MvrQClientMapProducer **/
+   /** Public for ArQClientMapProducer **/
  
    MVREXPORT virtual void loadDataPoint(double x, double y);
    MVREXPORT virtual void loadLineSegment(double x1, double y1, double x2, double y2);
@@ -401,8 +427,8 @@ public:
   }
 
 
-  MvrLLACoords getOriginLLA() {
-    return MvrLLACoords(getOriginLatLon(), getOriginAltitude());
+  ArLLACoords getOriginLLA() {
+    return ArLLACoords(getOriginLatLon(), getOriginAltitude());
   }
 
 
@@ -607,7 +633,7 @@ public:
 
  protected:
  
-   /// Processes changes to the Mvria configuration; loads a new map file if necessary
+   /// Processes changes to the Mvr configuration; loads a new map file if necessary
    bool processFile(char *errorBuffer, size_t errorBufferLen);
  
  protected:
@@ -622,16 +648,16 @@ public:
    /// File statistics for the map file
    struct stat myReadFileStat;
 
-   /// Name of the Mvria config parameter that specifies the map file name
+   /// Name of the Mvr config parameter that specifies the map file name
    std::string myConfigParam;
-   /// Whether to ignore (not process) an empty Mvria config parameter
+   /// Whether to ignore (not process) an empty Mvr config parameter
    bool myIgnoreEmptyFileName;
    /// Whether to ignore case when comparing map file names
    bool myIgnoreCase;
  
-   /// Whether the Mvria config has already been processed at least once
+   /// Whether the Mvr config has already been processed at least once
    bool myConfigProcessedBefore;
-   /// The name of the map file specified in the Mvria config parameter
+   /// The name of the map file specified in the Mvr config parameter
    char myConfigMapName[MAX_MAP_NAME_LENGTH];
    /// Whether we want to force loading the map for some reasing
    bool myForceMapLoad;
@@ -644,12 +670,12 @@ public:
    /// Whether to run in "quiet mode", i.e. logging less information
    bool myIsQuiet;
   
-   /// Callback that processes changes to the Mvria config.
+   /// Callback that processes changes to the Mvr config.
    MvrRetFunctor2C<bool, MvrMap, char *, size_t> myProcessFileCB;
  
 }; // end class MvrMap
 
  
-#endif // MVRMAP_H
+#endif // ARMAP_H
  
  

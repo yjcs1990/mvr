@@ -1,3 +1,30 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrLog.h"
@@ -16,7 +43,7 @@
 #include <execinfo.h>
 #endif
 
-#if defined(_ATL_VER) || defined(MVRIA_MSVC_ATL_VER)
+#if defined(_ATL_VER) || defined(ARIA_MSVC_ATL_VER)
 #include <atlbase.h>
 #define HAVEATL 1
 #endif // ifdef _ATL_VER
@@ -28,7 +55,7 @@ FILE * MvrLog::ourFP=0;
 int MvrLog::ourCharsLogged = 0;
 std::string MvrLog::ourFileName;
 int MvrLog::ourColbertStream = -1;
-bool MvrLog::ourLoggingTime = true;
+bool MvrLog::ourLoggingTime = false;
 bool MvrLog::ourAlsoPrint = false;
 MVREXPORT void (* MvrLog::colbertPrint)(int i, const char *str);
 
@@ -44,11 +71,11 @@ char MvrLog::ourAramConfigLogLevel[1024] = "Normal";
 double MvrLog::ourAramConfigLogSize = 10;
 bool MvrLog::ourUseAramBehavior = false;
 double MvrLog::ourAramLogSize = 0;
-MvrGlobalRetFunctor<bool> MvrLog::ourMvramConfigProcessFileCB(
+MvrGlobalRetFunctor<bool> MvrLog::ourAramConfigProcessFileCB(
 	&MvrLog::aramProcessFile);
-std::string MvrLog::ourMvramPrefix = "";
+std::string MvrLog::ourAramPrefix = "";
 #endif
-bool MvrLog::ourMvramDaemonized = false;
+bool MvrLog::ourAramDaemonized = false;
 
 MvrFunctor1<const char *> *MvrLog::ourFunctor;
 
@@ -125,7 +152,8 @@ MVREXPORT void MvrLog::log(LogLevel level, const char *str, ...)
 
 #ifndef MVRINTERFACE
   // check this down here instead of up in the if ourFP so that the log filled shows up after the printf
-  if (ourUseAramBehavior && ourFP && ourAramLogSize > 0 && ourCharsLogged > ourAramLogSize)
+  if (ourUseAramBehavior && ourFP && ourAramLogSize > 0 && 
+      ourCharsLogged > ourAramLogSize)
   {
     filledAramLog();
   }
@@ -460,9 +488,9 @@ MVREXPORT bool MvrLog::init(LogType type, LogLevel level, const char *fileName,
   ourType=type;
   ourLevel=level;
 
-  // environment variable overrides level
+  // environment vmvriable overrides level
   {
-    char* lev = getenv("MVRLOG_LEVEL");
+    char* lev = getenv("ARLOG_LEVEL");
     if(lev)
     {
       switch(toupper(lev[0]))
@@ -689,12 +717,12 @@ MVREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLeve
 			      double defaultSize, bool daemonized)
 {
   if (prefix == NULL || prefix[0] == '\0')
-    ourMvramPrefix = "";
+    ourAramPrefix = "";
   else
   {
-    ourMvramPrefix = prefix;
+    ourAramPrefix = prefix;
     if (prefix[strlen(prefix) - 1] != '/')
-      ourMvramPrefix += "/";
+      ourAramPrefix += "/";
   }
   
   std::string section = "Log Config";
@@ -709,8 +737,8 @@ MVREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLeve
 	  section.c_str(), MvrPriority::TRIVIAL);
 
   ourUseAramBehavior = true;
-  ourMvramConfigProcessFileCB.setName("MvrLogMvram");
-  Mvria::getConfig()->addProcessFileCB(&ourMvramConfigProcessFileCB, 210);
+  ourAramConfigProcessFileCB.setName("MvrLogAram");
+  Mvria::getConfig()->addProcessFileCB(&ourAramConfigProcessFileCB, 210);
 
   if (defaultLevel == MvrLog::Terse)
     sprintf(ourAramConfigLogLevel, "Terse");
@@ -719,13 +747,13 @@ MVREXPORT void MvrLog::aramInit(const char *prefix, MvrLog::LogLevel defaultLeve
   if (defaultLevel == MvrLog::Verbose)
     sprintf(ourAramConfigLogLevel, "Verbose");
 
-  ourMvramDaemonized = daemonized;
+  ourAramDaemonized = daemonized;
 
   char buf[2048];
-  snprintf(buf, sizeof(buf), "%slog1.txt", ourMvramPrefix.c_str());
+  snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
   MvrLog::init(MvrLog::File, defaultLevel, buf, true, !daemonized, true);
 
-  if (ourMvramDaemonized)
+  if (ourAramDaemonized)
   {
 
     if (dup2(fileno(ourFP), fileno(stderr)) < 0)
@@ -790,11 +818,11 @@ MVREXPORT void MvrLog::filledAramLog(void)
   for (i = 5; i > 0; i--)
   {
     snprintf(buf, sizeof(buf), "mv %slog%d.txt %slog%d.txt", 
-	     ourMvramPrefix.c_str(), i, ourMvramPrefix.c_str(), i+1);
+	     ourAramPrefix.c_str(), i, ourAramPrefix.c_str(), i+1);
     system(buf);
   }
 
-  snprintf(buf, sizeof(buf), "%slog1.txt", ourMvramPrefix.c_str());
+  snprintf(buf, sizeof(buf), "%slog1.txt", ourAramPrefix.c_str());
   if ((ourFP = MvrUtil::fopen(ourFileName.c_str(), "w")) == NULL)
   {
     ourType = StdOut;
@@ -804,7 +832,7 @@ MVREXPORT void MvrLog::filledAramLog(void)
   }
   ourCharsLogged = 0;
 
-  if (ourMvramDaemonized)
+  if (ourAramDaemonized)
   {
 
     if (dup2(fileno(ourFP), fileno(stderr)) < 0)
@@ -855,7 +883,7 @@ MVREXPORT void MvrLog::invokeFunctor(const char *message)
 
 MVREXPORT void MvrLog::checkFileSize(void)
 {
-  if (ourMvramDaemonized)
+  if (ourAramDaemonized)
   {
     long size;
     size = MvrUtil::sizeFile(ourFileName);

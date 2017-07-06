@@ -40,7 +40,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
  * @sa MvrSoundsQueue
  *
  * @note Uses an external program to play WAV files on Linux. If an environment
- * variable named PLAY_WAV is set, that program is used, otherwise, 'play' from
+ * vmvriable named PLAY_WAV is set, that program is used, otherwise, 'play' from
  * the 'sox' toolset is used.  PLAY_WAV must contain one word (the command; no arguments)
  * A call to playWavFile() will return immediately after
  * 'play' has finished, even though Linux may still be playing back the sound data. In general,
@@ -67,7 +67,7 @@ class MvrSoundPlayer
  public:
   /** Play a WAV (Windows RIFF) file 
     * @note Uses an external program to play WAV files on Linux. If an environment
-    * variable named PLAY_WAV is set, that program is used, otherwise, 'play' from
+    * vmvriable named PLAY_WAV is set, that program is used, otherwise, 'play' from
     * the 'sox' toolset is used. See detailed note in the overview for this
     * cass.
     * @param filename Name of the file to play

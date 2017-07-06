@@ -6,7 +6,7 @@ src/MvrConfigArg.cpp:2080:39: warning: comparison between signed and unsigned in
    for (int c = 0; c < builder.getArgc(); c++) {
                                        ^
 src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::parseArgument(MvrArgumentBuilder*, char*, size_t, const char*, bool, bool*)’:
-src/MvrConfigArg.cpp:2396:12: warning: unused variable ‘childCount’ [-Wunused-variable]
+src/MvrConfigArg.cpp:2396:12: warning: unused vmvriable ‘childCount’ [-Wunused-vmvriable]
         int childCount = arg->getArgInt(0, &ok);
             ^
 src/MvrConfig.cpp: In member function ‘bool MvrConfig::parseArgument(MvrArgumentBuilder*, char*, size_t)’:
@@ -17,10 +17,10 @@ src/MvrConfig.cpp:1467:58: warning: comparison between signed and unsigned integ
               for (int i = 0; i < matchParam->getArgCount(); i++) {
                                                           ^
 src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeArguments(FILE*, char*, int, int, bool, const char*, int) const’:
-src/MvrConfigArg.cpp:2562:9: warning: unused variable ‘nextChar’ [-Wunused-variable]
+src/MvrConfigArg.cpp:2562:9: warning: unused vmvriable ‘nextChar’ [-Wunused-vmvriable]
      int nextChar = snprintf(lineBuf, lineBufSize, "; ");
          ^
-src/MvrConfig.cpp:1406:23: warning: unused variable ‘parseParam’ [-Wunused-variable]
+src/MvrConfig.cpp:1406:23: warning: unused vmvriable ‘parseParam’ [-Wunused-vmvriable]
          MvrConfigArg *parseParam = NULL;
                        ^
 src/MvrConfigArg.cpp:2746:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
@@ -41,22 +41,22 @@ src/MvrConfigArg.cpp:3348:26: warning: format not a string literal and no format
                           ^
 src/MvrConfigArg.cpp:3348:26: warning: format not a string literal and no format arguments [-Wformat-security]
 src/MvrConfig.cpp: In member function ‘bool MvrConfig::parseResourceFile(const char*, bool, char*, size_t, std::list<std::basic_string<char> >*)’:
-src/MvrConfig.cpp:2111:8: warning: unused variable ‘isSuccess’ [-Wunused-variable]
+src/MvrConfig.cpp:2111:8: warning: unused vmvriable ‘isSuccess’ [-Wunused-vmvriable]
    bool isSuccess = true;
         ^
 src/MvrConfigArg.cpp:3424:37: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
      for (int c = 0; c < getArgCount(); c++) {
                                      ^
 src/MvrConfig.cpp: In member function ‘void MvrConfig::writeSection(MvrConfigSection*, FILE*, std::set<std::basic_string<char> >*, bool, MvrPriority::Priority, MvrPriority::Priority)’:
-src/MvrConfig.cpp:2426:8: warning: variable ‘commented’ set but not used [-Wunused-but-set-variable]
+src/MvrConfig.cpp:2426:8: warning: vmvriable ‘commented’ set but not used [-Wunused-but-set-vmvriable]
    bool commented = false;
         ^
 src/MvrConfigArg.cpp: In static member function ‘static bool MvrConfigArg::parseResourceArgText(const char*, char*, size_t)’:
-src/MvrConfigArg.cpp:3756:9: warning: unused variable ‘isStripped’ [-Wunused-variable]
+src/MvrConfigArg.cpp:3756:9: warning: unused vmvriable ‘isStripped’ [-Wunused-vmvriable]
     bool isStripped = MvrUtil::stripQuotes(bufOut, &otherBuf[k], bufLen); 
          ^
 src/MvrConfigArg.cpp: In member function ‘bool MvrConfigArg::writeResource(FILE*, char*, int, char, const char*, const char*) const’:
-src/MvrConfigArg.cpp:3826:14: warning: unused variable ‘isChildSuccess’ [-Wunused-variable]
+src/MvrConfigArg.cpp:3826:14: warning: unused vmvriable ‘isChildSuccess’ [-Wunused-vmvriable]
          bool isChildSuccess = childArg->writeResource(file,
               ^
 src/MvrConfig.cpp: In member function ‘MvrConfigArg* MvrConfigSection::findParam(const std::list<std::basic_string<char> >&, bool)’:
@@ -91,7 +91,7 @@ src/MvrRobot.cpp:5890:36: warning: comparison between signed and unsigned intege
        else if (sonar->getRange() < closestReading)
                                     ^
 src/MvrRobotConfigPacketReader.cpp: In member function ‘std::string MvrRobotConfigPacketReader::buildString() const’:
-src/MvrRobotConfigPacketReader.cpp:321:7: warning: unused variable ‘i’ [-Wunused-variable]
+src/MvrRobotConfigPacketReader.cpp:321:7: warning: unused vmvriable ‘i’ [-Wunused-vmvriable]
    int i, j;
        ^
 In file included from src/MvrRobotPacketReceiver.cpp:4:0:
@@ -106,7 +106,7 @@ src/MvrRobotPacketReceiver.cpp:72:11: warning:   when initialized here [-Wreorde
  MVREXPORT MvrRobotPacketReceiver::MvrRobotPacketReceiver(
            ^
 src/MvrRobotPacketSender.cpp: In member function ‘bool MvrRobotPacketSender::comStrN(unsigned char, const char*, int)’:
-src/MvrRobotPacketSender.cpp:244:8: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+src/MvrRobotPacketSender.cpp:244:8: warning: vmvriable ‘ret’ set but not used [-Wunused-but-set-vmvriable]
    bool ret = true;
         ^
 src/MvrRobotParams.cpp: In member function ‘void MvrRobotParams::processSonarCommercial(MvrConfig*)’:
@@ -118,7 +118,7 @@ src/MvrSocket.cpp:659:30: warning: format not a string literal and no format arg
      printf(myErrorStr.c_str());
                               ^
 src/MvrSocket.cpp: In member function ‘void MvrSocket::doStringEcho()’:
-src/MvrSocket.cpp:1150:10: warning: variable ‘to’ set but not used [-Wunused-but-set-variable]
+src/MvrSocket.cpp:1150:10: warning: vmvriable ‘to’ set but not used [-Wunused-but-set-vmvriable]
    size_t to;
           ^
 src/MvrSocket.cpp: In member function ‘void MvrSocket::separateHost(const char*, int, char*, size_t, int*)’:

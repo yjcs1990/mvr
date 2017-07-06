@@ -18,7 +18,7 @@ int main(int argc, char **argv)
   
   MvrArgumentParser parser(&argc, argv);
   parser.loadDefaultArguments();
-  MvrRobot robot;
+  MvrRobot robot("Mvr");
 
   // Connect to the robot, get some initial data from it such as type and name,
   // and then load parameter files for this robot.

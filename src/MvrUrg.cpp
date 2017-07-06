@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrUrg.h"
@@ -8,12 +34,12 @@
 MVREXPORT MvrUrg::MvrUrg(int laserNumber, const char *name) :
   MvrLaser(laserNumber, name, 4095),
   mySensorInterpTask(this, &MvrUrg::sensorInterp),
-  myMvriaExitCB(this, &MvrUrg::disconnect)
+  myMvrExitCB(this, &MvrUrg::disconnect)
 {
   clear();
   myRawReadings = NULL;
 
-  Mvria::addExitCallback(&myMvriaExitCB, -10);
+  Mvria::addExitCallback(&myMvrExitCB, -10);
 
   laserSetName(getName());
 
@@ -66,7 +92,7 @@ MVREXPORT MvrUrg::MvrUrg(int laserNumber, const char *name) :
 
 MVREXPORT MvrUrg::~MvrUrg()
 {
-  Mvria::remExitCallback(&myMvriaExitCB);
+  Mvria::remExitCallback(&myMvrExitCB);
   if (myRobot != NULL)
   {
     myRobot->remRangeDevice(this);
@@ -93,7 +119,7 @@ MVREXPORT void MvrUrg::laserSetName(const char *name)
   myConnMutex.setLogNameVar("%s::myConnMutex", getName());
   myReadingMutex.setLogNameVar("%s::myReadingMutex", getName());
   myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-  myMvriaExitCB.setNameVar("%s::exitCallback", getName());
+  myMvrExitCB.setNameVar("%s::exitCallback", getName());
   
   MvrLaser::laserSetName(getName());
 }
@@ -497,6 +523,7 @@ bool MvrUrg::internalConnect(void)
 
   while (readLine(buf, sizeof(buf), 10000))
   {
+    /// MPL put this in instead of the following because of the
     /// behavior change of readline
     if (strlen(buf) == 0)
       break;

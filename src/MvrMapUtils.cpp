@@ -1,5 +1,31 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
+
 #include "MvrMapUtils.h"
 
 #include "mvriaUtil.h"
@@ -9,7 +35,7 @@
 
 #include <iterator>
 
-//#define MVRDEBUG_MAPUTILS
+//#define ARDEBUG_MAPUTILS
 #ifdef ARDEBUG_MAPUTILS
 #define IFDEBUG(code) {code;}
 #else
@@ -191,6 +217,12 @@ MVREXPORT bool MvrMapId::isSameFile(const MvrMapId &other) const
     return false;
   }
 
+  // If both timestamps are specified, then they must be identical...
+  // KMC 8/29/13 Is this true?  Running CS and sim, had a scenario
+  // where everything was the same except the timestamps. Presumably
+  // sim wrote file even though nothing had changed. I think that 
+  // the file name, size and checksum comparison is probably sufficient 
+  // for this purpose.
   /***
   if ((myTimestamp != other.myTimestamp) &&
       (isValidTimestamp()) &&
@@ -729,9 +761,9 @@ MVREXPORT bool MvrMapFileLineSet::calculateChanges(MvrMapFileLineSet &origLines,
 
 void MvrMapChangeDetails::createChildArgMap()
 {
-  myInfoNameToMapOfChildArgsMap["MapInfo:"]["MvrgDesc"] = true;
+  myInfoNameToMapOfChildArgsMap["MapInfo:"]["ArgDesc"] = true;
 
-  myInfoNameToMapOfChildArgsMap["TaskInfo:"]["MvrgDesc"] = true;
+  myInfoNameToMapOfChildArgsMap["TaskInfo:"]["ArgDesc"] = true;
 
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["Task"] = true;
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["GoalTask"] = true;
@@ -742,7 +774,7 @@ void MvrMapChangeDetails::createChildArgMap()
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["_everyBefore"] = true;
   myInfoNameToMapOfChildArgsMap["RouteInfo:"]["_everyAfter"] = true;
 
-  myInfoNameToMapOfChildArgsMap["SchedTaskInfo:"]["MvrgDesc"] = true;
+  myInfoNameToMapOfChildArgsMap["SchedTaskInfo:"]["ArgDesc"] = true;
 
   myInfoNameToMapOfChildArgsMap["SchedInfo:"]["Route"] = true;
   myInfoNameToMapOfChildArgsMap["SchedInfo:"]["SchedTask"] = true;

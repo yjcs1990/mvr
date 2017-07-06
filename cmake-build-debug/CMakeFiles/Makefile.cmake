@@ -48,4 +48,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/simpleConnect.dir/DependInfo.cmake"
+  "CMakeFiles/Mvria.dir/DependInfo.cmake"
   )

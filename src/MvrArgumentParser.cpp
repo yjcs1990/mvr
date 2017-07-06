@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrArgumentBuilder.h"
@@ -79,6 +105,7 @@ MVREXPORT bool MvrArgumentParser::checkArgument(const char *argument)
 	strcasecmp(extraHyphen.c_str(), getArgv()[i]) == 0)
     {
       removeArg(i);
+      // MPL took this out so you could add the same arg multiple times
       //checkArgument(argument);
       return true;
     }
@@ -260,7 +287,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentBool(const char *argumen
     else
     {
       MvrLog::log(MvrLog::Normal, 
-		"Mvrgument given to %s was not a bool (true, false, 1, 0) it was the string %s",
+		"Argument given to %s was not a bool (true, false, 1, 0) it was the string %s",
 		 argument, param);
       return false;
     }
@@ -358,7 +385,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentInteger(
     else
     {
       MvrLog::log(MvrLog::Normal, 
-		"Mvrgument given to %s was not an integer it was the string %s",
+		"Argument given to %s was not an integer it was the string %s",
 		 argument, param);
       return false;
     }
@@ -433,7 +460,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentFloat(
     float floatVal = strtod(param, &endPtr);
     if(endPtr == param)
     {
-      MvrLog::log(MvrLog::Normal, "Mvrgument given with %s was not a valid number", argument);
+      MvrLog::log(MvrLog::Normal, "Argument given with %s was not a valid number", argument);
       return false;
     }
     else
@@ -510,7 +537,7 @@ MVREXPORT bool MvrArgumentParser::checkParameterArgumentDouble(
     double doubleVal = strtod(param, &endPtr);
     if(endPtr == param)
     {
-      MvrLog::log(MvrLog::Normal, "Mvrgument given with %s was not a valid number", argument);
+      MvrLog::log(MvrLog::Normal, "Argument given with %s was not a valid number", argument);
       return false;
     }
     else
@@ -659,7 +686,7 @@ MVREXPORT void MvrArgumentParser::log(void) const
   size_t i;
   MvrLog::log(MvrLog::Terse, "Num arguments: %d", getArgc());
   for (i = 0; i < getArgc(); ++i)
-    MvrLog::log(MvrLog::Terse, "Mvrg %d: %s", i, getArgv()[i]);
+    MvrLog::log(MvrLog::Terse, "Arg %d: %s", i, getArgv()[i]);
 }
 
 MVREXPORT const char *MvrArgumentParser::getStartingArguments(void) const
@@ -698,7 +725,7 @@ MVREXPORT void MvrArgumentParser::addDefaultArgumentAsIs(
 
 /**
  * Search all locations for argument defaults and parse them.
- * These locations may be environment variables to read argument varues
+ * These locations may be environment vmvriables to read argument varues
  * from, or files to read. 
  * @sa addDefaultArgumentLocation
  *
@@ -729,7 +756,7 @@ MVREXPORT void MvrArgumentParser::loadDefaultArguments(int position)
        it++, bIt++)
   {
     str = (*it).c_str();
-    // see if its an environmental variable
+    // see if its an environmental vmvriable
     if (!(*bIt) && (argumentsPtr = getenv(str)) != NULL)
     {
       MvrArgumentBuilder compressed;
@@ -737,22 +764,28 @@ MVREXPORT void MvrArgumentParser::loadDefaultArguments(int position)
       compressed.compressQuoted(true);
       myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(), 
                               position);
-      MvrLog::log(MvrLog::Normal, "Added arguments from environmental variable '%s'", str);
+      MvrLog::log(MvrLog::Normal, 
+		 "Added arguments from environmental vmvriable '%s'", str);
     }
     // see if we have a file
-    else if ((*bIt) && MvrUtil::getStringFromFile(str, arguments, sizeof(arguments)))
+    else if ((*bIt) && 
+	     MvrUtil::getStringFromFile(str, arguments, sizeof(arguments)))
     {
       MvrArgumentBuilder compressed;
       compressed.addPlain(arguments);
       compressed.compressQuoted(true);
-      myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(), position);
-      MvrLog::log(MvrLog::Normal, "Added arguments from file '%s'", str);
+      myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(), 
+                              position);
+      MvrLog::log(MvrLog::Normal, "Added arguments from file '%s'", 
+		 str);
     }
     // the file or env didn't exit
     // this'll return true otherwise it'll return false)
     else
     {
-      MvrLog::log(MvrLog::Verbose, "Could not load from environmental variable or file '%s'", str);
+      MvrLog::log(MvrLog::Verbose, 
+		 "Could not load from environmental vmvriable or file '%s'", 
+		 str);
     }
   }
 }
@@ -769,9 +802,9 @@ MVREXPORT void MvrArgumentParser::addDefaultArgumentFile(const char *file)
 
 
 /**
-   This adds an environment variable to the list of default argument
+   This adds an environment vmvriable to the list of default argument
    locations.
-   @param env Name of the environment variable 
+   @param env Name of the environment vmvriable 
  **/
 MVREXPORT void MvrArgumentParser::addDefaultArgumentEnv(const char *env)
 {
@@ -785,7 +818,7 @@ MVREXPORT void MvrArgumentParser::logDefaultArgumentLocations(void)
   std::list<bool>::iterator bIt;
 
   MvrLog::log(MvrLog::Normal, 
-	     "Default argument files or environmental variables:");
+	     "Default argument files or environmental vmvriables:");
   for (it = ourDefaultArgumentLocs.begin(), 
         bIt = ourDefaultArgumentLocIsFile.begin();
        it != ourDefaultArgumentLocs.end(); 

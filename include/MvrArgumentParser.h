@@ -1,33 +1,59 @@
-#ifndef MVRARGUMENTPARSER_H
-#define MVRARGUMENTPARSER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARARGUMENTPARSER_H
+#define ARARGUMENTPARSER_H
 
 #include "mvriaTypedefs.h"
 #include "MvrArgumentBuilder.h"
 
 /// Parse and store program command-line arguments for use by other ARIA classes.
 /**
-   This class is made for parsing arguments from the argv and argc variables
+   This class is made for parsing arguments from the argv and argc vmvriables
    passed into a program's main() function by the operating system, from
    an MvrArgumentBuilder object, or just from a string (e.g. provided by WinMain() 
    in a Windows MFC program.)
 
    It will also load default argument values if you call
-   loadDefaultArguments().   Mvria::init() adds the file /etc/Mvria.args and the 
-   environment variable ARIAARGS as locations for argument defaults, so 
+   loadDefaultArguments().   Mvria::init() adds the file /etc/Mvr.args and the 
+   environment vmvriable ARIAARGS as locations for argument defaults, so 
    loadDefaultArguments() will always search those. You can
    use this mechanism to avoid needing to always supply command line parameters
    to all programs. For example, if you use different serial ports than the defaults
    for the robot and laser, you can put a -robotPort or -laserPort argument in 
-   /etc/Mvria.args for all programs that call loadDefaultArguments() to use.
-   You can add other files or environment variables
+   /etc/Mvr.args for all programs that call loadDefaultArguments() to use.
+   You can add other files or environment vmvriables
    to the list of default argument locations with
    addDefaultArgumentFile() and addDefaultArgumentEnv().
 
    Note that the wasReallySet behavior has changed.  It used to set
-   the variable to false or to true, now it will only set it to false
+   the vmvriable to false or to true, now it will only set it to false
    if 'setWasReallySetOnlyTrue' is set to false.  By default that is
    set to false, but you can just set it to true after you make the
-   parser with no ill effects since all of the built in Mvria parsers
+   parser with no ill effects since all of the built in Mvr parsers
    will play nicely with this value, setting it to true or false while
    they parse but then setting it to whatever it was when they
    started.  This change in behavior is so that checking for two
@@ -79,7 +105,7 @@ public:
   /// spaces or what not)
   MVREXPORT void addDefaultArgumentAsIs(const char *argument, 
 				       int position = -1);
-  /// Adds args from default files and environmental variables
+  /// Adds args from default files and environmental vmvriables
   MVREXPORT void loadDefaultArguments(int positon = 1);
   /// Checks for the help strings and warns about unparsed arguments
   MVREXPORT bool checkHelpAndWarnUnparsed(unsigned int numArgsOkay = 0);
@@ -104,9 +130,9 @@ public:
   MVREXPORT const char *getStartingArguments(void) const;
   /// Internal function to remove an argument that was parsed
   MVREXPORT void removeArg(size_t which);
-  /// Adds another file or environmental variable to the list of defaults
+  /// Adds another file or environmental vmvriable to the list of defaults
   MVREXPORT static void addDefaultArgumentFile(const char *file);
-  /// Adds another file or environmental variable to the list of defaults
+  /// Adds another file or environmental vmvriable to the list of defaults
   MVREXPORT static void addDefaultArgumentEnv(const char *env);
   /// Logs the default argument locations
   MVREXPORT static void logDefaultArgumentLocations(void);
@@ -162,4 +188,4 @@ protected:
 };
 
 
-#endif // MVRARGUMENTPARSER_H
+#endif // ARARGUMENTPARSER_H

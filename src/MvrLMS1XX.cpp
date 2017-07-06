@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrLMS1XX.h"
@@ -888,7 +914,7 @@ MVREXPORT MvrLMS1XX::MvrLMS1XX(int laserNumber,
 		const char *name, LaserModel laserModel) :
 		MvrLaser(laserNumber, name, 20000),
 		mySensorInterpTask(this, &MvrLMS1XX::sensorInterp),
-		myMvriaExitCB(this, &MvrLMS1XX::disconnect)
+		myMvrExitCB(this, &MvrLMS1XX::disconnect)
 {
 
 	myLaserModel = laserModel;
@@ -901,7 +927,7 @@ MVREXPORT MvrLMS1XX::MvrLMS1XX(int laserNumber,
 	clear();
 	myRawReadings = new std::list<MvrSensorReading *>;
 
-	Mvria::addExitCallback(&myMvriaExitCB, -10);
+	Mvria::addExitCallback(&myMvrExitCB, -10);
 
 	setInfoLogLevel(MvrLog::Normal);
 
@@ -1108,7 +1134,7 @@ MVREXPORT MvrLMS1XX::MvrLMS1XX(int laserNumber,
 
 MVREXPORT MvrLMS1XX::~MvrLMS1XX()
 {
-	Mvria::remExitCallback(&myMvriaExitCB);
+	Mvria::remExitCallback(&myMvrExitCB);
 	if (myRobot != NULL)
 	{
 		myRobot->remRangeDevice(this);
@@ -1163,7 +1189,7 @@ MVREXPORT void MvrLMS1XX::laserSetName(const char *name)
 	myConnMutex.setLogNameVar("%s::myConnMutex", getName());
 	myPacketsMutex.setLogNameVar("%s::myPacketsMutex", getName());
 	myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-	myMvriaExitCB.setNameVar("%s::exitCallback", getName());
+	myMvrExitCB.setNameVar("%s::exitCallback", getName());
 
 	MvrLaser::laserSetName(getName());
 }
@@ -1261,6 +1287,7 @@ void MvrLMS1XX::sensorInterp (void)
 		// PS 9/1/11 - put this down below and use received scan freq to caculate
 		// this value should be found more empirically... but we used 1/75
 		//hz for the lms2xx and it was fine, so here we'll use 1/50 hz for now
+		// MPL 9/26/11 moved the rest of it below since we must correct the time before finding the pose
 		if (!time.addMSec(-20)) {
 		MvrLog::log(MvrLog::Normal,
 		"%s::sensorInterp() error adding msecs (-20)",getName());
@@ -1526,6 +1553,7 @@ void MvrLMS1XX::sensorInterp (void)
 			     it = myRawReadings->begin(),
 			     onReading = 0;
 			     onReading < eachNumberData;
+			     // MPL trying to fix bug with negative readings
 			     //atDeg += increment,
 			     atDeg = MvrMath::addAngle(atDeg, increment),
            atDegLocal = MvrMath::addAngle(atDegLocal, eachAngularStepWidth),
@@ -1565,6 +1593,7 @@ void MvrLMS1XX::sensorInterp (void)
 					// slopes in, so this check should be those readings well
 					// within the sensor).  Further note that shiny/black things
 					// within the minimum range will sometimes report closer than
+					// they are... 9/21/2010 MPL
 					//if (dist == 0)
 					// try not doing this for 500?????
 					int mindist;
@@ -1577,7 +1606,7 @@ void MvrLMS1XX::sensorInterp (void)
 					if (dist < mindist) {
             // too close to be valid, ignore
 						ignore = true;
-						// set this to greater than max range, so that some MVRAM
+						// set this to greater than max range, so that some ARAM
 						// features work
 						dist = getMaxRange() + 1;
 					}
@@ -2954,7 +2983,10 @@ MVREXPORT void * MvrLMS1XX::runThread(void *arg)
       continue;
       }
     */
-
+    
+    /// MPL made this 500 since otherwise it will not get a packet
+    /// sometimes, then go out and have to sleep and come back in and
+    /// wind up with a remainder that caused the timing problems
     while (getRunning() && myIsConnected &&
 	   (packet = myReceiver.receivePacket(500, true, true)) != NULL)
     {
@@ -2979,6 +3011,7 @@ MVREXPORT void * MvrLMS1XX::runThread(void *arg)
       continue;
     }
     
+    /// MPL no sleep here so it'll get back into that while as soon as it can
 
     //MvrUtil::sleep(1);
     //MvrUtil::sleep(2000);

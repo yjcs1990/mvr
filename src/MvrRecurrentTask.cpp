@@ -44,7 +44,8 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 
 // constructor: start up thread, leave it ready for go()
 
-MVREXPORT  MvrRecurrentTask::MvrRecurrentTask()
+MVREXPORT 
+MvrRecurrentTask::MvrRecurrentTask()
 {
   setThreadName("MvrRecurrentTask");
   running = go_req = killed = false;

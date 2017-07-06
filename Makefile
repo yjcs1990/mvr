@@ -11,7 +11,7 @@ CXX:=g++
 endif
 
 ####
-#### General variables
+#### General vmvriables
 ####
 
 CFILEEXT:=cpp
@@ -62,7 +62,7 @@ endif
 # endif
 
 ####
-#### Mvria build variables
+#### Mvria build vmvriables
 ####
 
 # Default targets to build in the default rule:
@@ -144,7 +144,7 @@ CFILES:= \
 
 
 ####
-#### Utility variables. No need to touch these.
+#### Utility vmvriables. No need to touch these.
 ####
 
 OTFILES:=$(patsubst %.$(CFILEEXT),%.o,$(CFILES))
@@ -585,7 +585,7 @@ dist-install: install
 
 # Install rule.  This can be used by users or ARIA developers; in the latter
 # case it also installs various files needed to make a release distribution.
-# Override installation locations with INSTALL_DIR environment variable.
+# Override installation locations with INSTALL_DIR environment vmvriable.
 # Things are installed group-writable so as to be hacked upon.
 install: all arnetworking_all
 	@echo      	--------------------------------------
@@ -615,7 +615,7 @@ install: all arnetworking_all
 		echo       ARIA has been installed in $(DESTDIR)$(INSTALL_DIR). ;\
 		echo ;\
 		echo       To be able to use the ARIA libraries, you must now add $(DESTDIR)$(INSTALL_DIR)/lib ;\
-		echo       to your LD_LIBRARY_PATH environment variable, or to the /etc/ld.so.conf system file, ;\
+		echo       to your LD_LIBRARY_PATH environment vmvriable, or to the /etc/ld.so.conf system file, ;\
 		echo       then run \'ldconfig\';\
 		echo     	 ------------------------------------------------------------------------------------ ;\
 	fi

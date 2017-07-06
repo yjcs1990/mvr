@@ -1,5 +1,31 @@
-#ifndef MVRCONFIGARG_H
-#define MVRCONFIGARG_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARCONFIGARG_H
+#define ARCONFIGARG_H
 
 #include <map>
 
@@ -11,11 +37,11 @@ class MvrArgumentBuilder;
 class MvrFileParser;
 class MvrSocket;
 
-/// Mvrgument class for MvrConfig
+/// Argument class for MvrConfig
 /** 
     MvrConfigArg stores information about a parameter (name, description, type),
-    and a pointer to the variable that will actually store the value. This
-    variable is normally stored and used by whatever class or module has added the
+    and a pointer to the vmvriable that will actually store the value. This
+    vmvriable is normally stored and used by whatever class or module has added the
     parameter to MvrConfig.  (In addition, there are some special types of
     MvrConfigArg that behave differently such as the "holder" types and separator,
     these are used internally or in special cases.)
@@ -28,21 +54,21 @@ class MvrSocket;
     @endcode
 
     Where: <tt>config</tt> is a pointer to an MvrConfig object or subclass (e.g.  use
-    <tt>MvrConfig* config = Mvria::getConfig()</tt> to use the global Mvria MvrConfig
+    <tt>MvrConfig* config = Mvria::getConfig()</tt> to use the global Mvr MvrConfig
     object);
-    <tt>myTarget</tt> is a variable (e.g. int) that is a class member whose instance will not
+    <tt>myTarget</tt> is a vmvriable (e.g. int) that is a class member whose instance will not
     be destroyed before the end of the program, or which will remove the parameter
     from MvrConfig before being destroyed (the pointer to <tt>myTarget</tt> that is stored
     in MvrConfig must not become invalid.)  The MvrConfigArg object passed to
     addParam() will be copied and stored in MvrConfig.  The type of the target
-    variable (<tt>myTarget</tt>) determines the type of the parameter.
+    vmvriable (<tt>myTarget</tt>) determines the type of the parameter.
 
 
     @swignote Swig cannot determine the correct constructor to use
      based on most target langugages types, so you must use subclasses
      defined for various types. Or, use the constructor that accepts 
      functors for dealing with arguments.  Also, Swig cannot use pointers
-     to change variables, so you must create MvrConfigArg objects, passing
+     to change vmvriables, so you must create MvrConfigArg objects, passing
      in default values, and retain references to those objects,
      in addition to passing them to MvrConfig, and read new values from those
      objects if MvrConfig changes; or pass functors to MvrConfigArg instead
@@ -76,8 +102,8 @@ public:
     DOUBLE, ///< Double argument
     STRING, ///< String argument
     BOOL, ///< Boolean argument
-    FUNCTOR, ///< Mvrgument that handles things with functors
-    DESCRIPTION_HOLDER, ///< Mvrgument that just holds a description
+    FUNCTOR, ///< Argument that handles things with functors
+    DESCRIPTION_HOLDER, ///< Argument that just holds a description
     STRING_HOLDER, ///< this one is for holding strings and reading them in and writing them out but not really letting them get sent anywhere (its for unknown config parameters (so they don't get lost if a feature is turned off)
     SEPARATOR, ///< Empty argument that merely acts as a separator within a (large) section.
     CPPSTRING, ///< Pointer to std::string, use like STRING.
@@ -404,6 +430,10 @@ public:
   /// Returns the total number of descendent args (children, grandchildren, etc). Valid only for LIST type; otherwise returns 0.
   MVREXPORT size_t getDescendantArgCount() const;
 
+  // KMC 7/9/12 Right now, the returned args will not have the parent set to this arg.
+  // I suspect that this may present an implementation issue later but am not sure.
+  // Perhaps the addition of an iterator would suffice.
+  //
   /// Returns a list of all child args in this arg.  Valid only for LIST type; otherwise returns an empty list.
   MVREXPORT std::list<MvrConfigArg> getArgs(bool *ok = NULL) const;
 
@@ -702,6 +732,8 @@ private:
   void setParent(MvrConfigArg *parentArg);
 
 
+// KMC 7/11/12 Changed from protected to private so future changes are less
+// of a concern
 // protected:
 private:
 
@@ -758,6 +790,7 @@ private:
     // string data
     char *myStringPointer;
     size_t myMaxStrLen;
+    // KMC own string change
     // Not seeing the functional difference between this and myOwnPointedTo 
     // (which was previously applied to all but strings)
     // bool myUsingOwnedString;
@@ -854,4 +887,4 @@ private:
 
 }; // end class MvrConfigArg
 
-#endif // MVRCONFIGARG_H
+#endif // ARCONFIGARG_H

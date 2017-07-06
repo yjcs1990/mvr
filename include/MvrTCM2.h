@@ -1,5 +1,31 @@
-#ifndef MVRTCM2_H
-#define MVRTCM2_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARTCM2_H
+#define ARTCM2_H
 
 #include "mvriaUtil.h"
 #include "MvrFunctor.h"
@@ -7,9 +33,9 @@
 
 
 #ifdef WIN32
-#define MVRTCM2_DEFAULT_SERIAL_PORT "COM4"
+#define ARTCM2_DEFAULT_SERIAL_PORT "COM4"
 #else
-#define MVRTCM2_DEFAULT_SERIAL_PORT "/dev/ttyS3"
+#define ARTCM2_DEFAULT_SERIAL_PORT "/dev/ttyS3"
 #endif
 
 
@@ -22,8 +48,18 @@
  * This is an abstract interface. To create a compass interface object,
  * instantiate a subclass or use MvrCompassConnector.
 
-  @ingroup OptionalClasses
+    @ingroup OptionalClasses
   @ingroup DeviceClasses
+ *
+ * @note The compass returns a heading relative to magnetic north, which varies
+ * depending on your location in the Earth's magnetic field (declination also
+ * varies slowly over time as the Earth's magnetic field changes).  To find true
+ * north, you must apply an offset, or declination. For example, on 
+ * June 1, 2007, the magnetic declination of MobileRobots' location 
+ * of Amherst, NH, USA was 15 1/6 degrees West, so a value of approx. 
+ * -15.166666 would have to be applied. You can look up declination values for 
+ * various locations on Earth at 
+ * http://www.ngdc.noaa.gov/seg/geomag/jsp/Declination.jsp
  */
 class MvrTCM2
 {
@@ -214,4 +250,4 @@ public:
   MVREXPORT bool connect(MvrTCM2*) const;
 };
 
-#endif // MVRTCM2_H
+#endif // ARTCM2_H

@@ -1,14 +1,40 @@
-#ifndef MVRP2ARM_H
-#define MVRP2ARM_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARP2ARM_H
+#define ARP2ARM_H
 
 #include "MvrRobot.h"
 #include "mvriaTypedefs.h"
 #include "MvrSerialConnection.h"
 #include "mvriaOSDef.h"
 
-// P2 Mvrm classes: MvrP2Arm for control and MvrP2ArmJoints for P2 Mvrm joint data
+// P2 Arm classes: MvrP2Arm for control and MvrP2ArmJoints for P2 Arm joint data
 
-/// P2 Mvrm joint info
+/// P2 Arm joint info
 class P2ArmJoint
 {
 public:
@@ -26,32 +52,32 @@ public:
 };
 
 /**
-   MvrP2Arm is the interface to the AROS/P2OS-based Pioneer 2 Mvrm servers,
+   MvrP2Arm is the interface to the AROS/P2OS-based Pioneer 2 Arm servers,
    by means of which the robot microcontroller firmware can control the
-   original 5-DOF Pioneer 2 Mvrm manipulator.
-   The P2 Mvrm is attached to the robot's microcontroller via an auxiliary
+   original 5-DOF Pioneer 2 Arm manipulator.
+   The P2 Arm is attached to the robot's microcontroller via an auxiliary
    serial port.
 
-   To use MvrmP2, you must first set up an MvrRobot and have it connect
+   To use ArmP2, you must first set up an MvrRobot and have it connect
    with the robot. The MvrRobot needs to be run so that it reads and writes
    packets to and from server. The easiest way is MvrRobot::runAsync()
    which runs the MvrRobot in its own thread.
 
    Then call MvrP2Arm::setRobot() with MvrRobot, and finally initialized
-   with MvrmP2::init().  Once initialized, use the various MvrP2Arm
-   methods to power the P2 Mvrm servos, move joints, and so on.
+   with ArmP2::init().  Once initialized, use the various MvrP2Arm
+   methods to power the P2 Arm servos, move joints, and so on.
 
-   For simple examples on how to use MvrP2Arm, look in the Mvria/examples
+   For simple examples on how to use MvrP2Arm, look in the Mvr/examples
    directory for P2ArmSimple.cpp and P2ArmJoydrive.cpp.
 
-   For additional information about the original 5-DOF Pioneer 2 Mvrm,
+   For additional information about the original 5-DOF Pioneer 2 Arm,
    see the robot operations manual and the arm manual, available at
    <a href="http://robots.mobilerobots.com">http://robots.mobilerobots.com</a>.
 
    @ingroup DeviceClasses
    @ingroup OptionalClasses
 **/
-/// Mvrm Control class
+/// Arm Control class
 class MvrP2Arm
 {
 public:
@@ -220,7 +246,7 @@ public:
 
 protected:
 
-  // MVROS/P2OS parameters
+  // AROS/P2OS parameters
   static const unsigned int ARMpac;
   static const unsigned int ARMINFOpac;
   static const unsigned char ComArmInfo;
@@ -253,7 +279,7 @@ protected:
 
   bool myInited;
   MvrRobot *myRobot;
-  //  MvrmP2Model myModel;
+  //  ArmP2Model myModel;
   MvrTime myLastStatusTime;
   MvrTime myLastInfoTime;
   std::string myVersion;
@@ -261,7 +287,7 @@ protected:
   MvrTypes::UByte2 myLastStatus;
   MvrTypes::UByte2 myStatus;
   MvrSerialConnection myCon;
-  MvrRetFunctorC<State, MvrP2Arm> myMvriaUninitCB;
+  MvrRetFunctorC<State, MvrP2Arm> myMvrUninitCB;
   MvrRetFunctor1C<bool, MvrP2Arm, MvrRobotPacket*> myArmPacketHandler;
   MvrFunctor1<PacketType> *myPacketCB;
   MvrFunctor *myStoppedCB;

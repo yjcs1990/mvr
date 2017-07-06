@@ -1,5 +1,32 @@
-#ifndef MVRGPS_H
-#define MVRGPS_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
+#ifndef ARGPS_H
+#define ARGPS_H
 
 #include "mvriaTypedefs.h"
 #include "MvrFunctor.h"
@@ -69,7 +96,7 @@ class MvrDeviceConnection; // for pointer in MvrGPS
  *  @note MvrGPS only provides access to the data reported by a GPS. The position
  *  reported by a GPS is in degrees on the surface of the earth (WGS84 datum), not in the
  *  cartesian coordinate system used by the robot odometry or MvrMap. You can use 
- *  the subclasses of Mvr3DPoint (MvrLLACoords, etc) to convert between different
+ *  the subclasses of Ar3DPoint (ArLLACoords, etc) to convert between different
  *  geographical coordinate systems, which may help you match GPS coordinates to
  *  the robot pose coordinate system.
 
@@ -261,7 +288,7 @@ public:
     double getLongitude() const { return myData.longitude; }
 
     /// @return latitude, longitude and altitude
-    MvrLLACoords getLLA() const { return MvrLLACoords(myData.latitude, myData.longitude, myData.altitude); }
+    ArLLACoords getLLA() const { return ArLLACoords(myData.latitude, myData.longitude, myData.altitude); }
 
     /// @return latitude and longitude in an MvrPose object. Theta will be 0.
     MvrPose getPose() const { return MvrPose(myData.latitude, myData.longitude); }
@@ -530,8 +557,9 @@ protected:
     bool readTimeFromString(const std::string& s, MvrTime* time) const;
 
     /** Parse a GPRMC message (in @a msg) and place results in provided
-     * variables. (Can be used by subclasses to store results of GPRMC differently
+     * vmvriables. (Can be used by subclasses to store results of GPRMC differently
      * than normal.)
+     * @since Mvr 2.7.2
      */
     void parseGPRMC(const MvrNMEAParser::Message &msg, double &latitudeResult, double &longitudeResult, bool &qualityFlagResult, bool &gotPosition, MvrTime &timeGotPositionResult, MvrTime &gpsTimestampResult, bool &gotSpeedResult, double &speedResult);
 
@@ -541,6 +569,7 @@ protected:
 class MvrRobotPacket;
 class MvrRobot;
 
+/// @since Mvr 2.7.4
 class MvrSimulatedGPS : public virtual MvrGPS
 {
   bool myHaveDummyPosition;
@@ -597,4 +626,4 @@ private:
 #endif
 };
 
-#endif // ifdef MVRGPS_H
+#endif // ifdef ARGPS_H

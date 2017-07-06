@@ -1,5 +1,31 @@
-#ifndef MVRPTZ_H
-#define MVRPTZ_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARPTZ_H
+#define ARPTZ_H
 
 #include "mvriaTypedefs.h"
 #include "MvrFunctor.h"
@@ -318,6 +344,7 @@ protected:
   int myMinZoom;
 
   /// Subclasses call this to set extents (limits) returned by getMaxPosPan(), getMaxNegPan(), getMaxPosTilt(), getMaxNegTilt(), getMaxZoom(), and getMinZoom().
+  /// @since 2.7.6
   void setLimits(double maxPosPan, double maxNegPan,      double maxPosTilt, double maxNegTilt, int maxZoom = 0, int minZoom = 0)
   {
     myMaxPosPan = maxPosPan;
@@ -333,6 +360,8 @@ protected:
   /// applied and no call should be made to any pan/tilt or max/min limit accessor
   /// method that does not end in _i, or inversion will be applied again,
   /// reversing it.
+  /// @since 2.7.6
+  //@{
   MVREXPORT virtual bool pan_i (double degrees) = 0;
   MVREXPORT virtual bool panRel_i(double degrees) = 0;
   MVREXPORT virtual bool tilt_i(double degrees) = 0;
@@ -341,7 +370,8 @@ protected:
   MVREXPORT virtual bool panTiltRel_i(double degreesPan, double degreesTilt) = 0;
   MVREXPORT virtual double getPan_i(void) const = 0;
   MVREXPORT virtual double getTilt_i(void) const = 0;
+  //@}
 
 };
 
-#endif // MVRPTZ_H
+#endif // ARPTZ_H

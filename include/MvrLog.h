@@ -1,5 +1,31 @@
-#ifndef MVRLOG_H
-#define MVRLOG_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARLOG_H
+#define ARLOG_H
 
 #ifndef WIN32
 #include <stdio.h>
@@ -13,7 +39,7 @@ class MvrConfig;
 
 /// Logging utility class
 /**
-   MvrLog is a utility class to log all messages from Mvria to a choosen
+   MvrLog is a utility class to log all messages from Mvr to a choosen
    destintation. Messages can be logged to stdout, stderr, a file, and
    turned off completely. Logging by default is set to stdout. The level
    of logging can be changed as well. Allowed levels are Terse, Normal,
@@ -34,13 +60,13 @@ public:
     None ///< Disable logging
   } LogType;
   typedef enum {
-    Terse,  ///< Use terse logging
+    Terse, ///< Use terse logging
     Normal, ///< Use normal logging
     Verbose ///< Use verbose logging
   } LogLevel;
 
 #ifndef SWIG
-  /** @brief Log a message, with formatting and variable number of arguments
+  /** @brief Log a message, with formatting and vmvriable number of arguments
    *  @swignote In Java and Python, this function only takes one 
    *    string argument. Use Java or Python's native facities
    *    for constructing a formatted string, e.g. the % and + string
@@ -154,13 +180,13 @@ protected:
 #ifndef MVRINTERFACE
   static char ourAramConfigLogLevel[1024];
   static double ourAramConfigLogSize;
-  static MvrGlobalRetFunctor<bool> ourMvramConfigProcessFileCB;
+  static MvrGlobalRetFunctor<bool> ourAramConfigProcessFileCB;
   static bool ourUseAramBehavior;
   static double ourAramLogSize;
-  static std::string ourMvramPrefix;
+  static std::string ourAramPrefix;
 #endif
 
-  static bool ourMvramDaemonized;
+  static bool ourAramDaemonized;
   
   static MvrFunctor1<const char *> *ourFunctor;
 

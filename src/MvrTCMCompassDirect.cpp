@@ -1,3 +1,30 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrTCMCompassDirect.h"
@@ -5,10 +32,10 @@
 #include "MvrSerialConnection.h"
 #include "mvriaUtil.h"
 
-//#define DEBUG_MVRTCMCOMPASSDIRECT 1
-//#define DEBUG_MVRTCMCOMPASSDIRECT_STATS 1
+//#define DEBUG_ARTCMCOMPASSDIRECT 1
+//#define DEBUG_ARTCMCOMPASSDIRECT_STATS 1
 
-#if defined(DEBUG_MVRTCMCOMPASSDIRECT) || defined(DEBUG_MVRTCMCOMPASSDIRECT_STATS)
+#if defined(DEBUG_ARTCMCOMPASSDIRECT) || defined(DEBUG_ARTCMCOMPASSDIRECT_STATS)
 void MvrTCMCompassDirect_printTransUnprintable( const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      printf("[0x%X]", data[i] & 0xff);    }    else    {      putchar(data[i]);    }  }}
 #endif
 
@@ -84,7 +111,7 @@ MVREXPORT bool MvrTCMCompassDirect::connect()
   if(!sendTCMCommand("h\rsp=8\rsn=m\rsdo=n\rgo\r"))  
     return false;
 
-#ifdef DEBUG_MVRTCMCOMPASSDIRECT
+#ifdef DEBUG_ARTCMCOMPASSDIRECT
   char buf[640];
   memset(buf, 0, 640);
   myDeviceConnection->read(buf, 640, 2000);
@@ -134,7 +161,7 @@ MVREXPORT int MvrTCMCompassDirect::read(unsigned int msWait)
 void MvrTCMCompassDirect::handleHCHDM(MvrNMEAParser::Message m)
 {
   myHeading = MvrMath::fixAngle(atof((*m.message)[1].c_str()));
-#ifdef DEBUG_MVRTCMCOMPASSDIRECT 
+#ifdef DEBUG_ARTCMCOMPASSDIRECT 
   printf("XXX MvrTCMCompassDirect: recieved HCHDM message with compass heading %f.\n", myHeading);
 #endif
   myHaveHeading = true;

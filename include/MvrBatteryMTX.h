@@ -1,5 +1,31 @@
-#ifndef MVRBATTERYMTX_H
-#define MVRBATTERYMTX_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARBATTERYMTX_H
+#define ARBATTERYMTX_H
 
 #include "mvriaTypedefs.h"
 #include "MvrRangeDevice.h"
@@ -19,6 +45,9 @@
 //
 
 
+/** 
+    @since 2.8.0
+*/
 class MvrBatteryMTX : public MvrASyncTask
 {
 public:
@@ -300,7 +329,7 @@ public:
     STATUS_BALANCING_ENGAGED=0x0004,
     STATUS_CHARGER_ON=0x0008,
     STATUS_BATTERY_POWERING_OFF=0x0010,
-    /// adding the rest of these since I need one of 'em
+    /// MPL adding the rest of these since I need one of 'em
     STATUS_MASTER_SWITCH_ON=0x0020,
     STATUS_CHARGE_SWITCH_ON=0x0040,
     STATUS_COMMANDED_SHUTDOWN=0x0080,
@@ -523,10 +552,10 @@ enum Sizes {
 	// end basic info
 	
   MvrFunctorC<MvrBatteryMTX> mySensorInterpTask;
-  MvrRetFunctorC<bool, MvrBatteryMTX> myMvriaExitCB;
+  MvrRetFunctorC<bool, MvrBatteryMTX> myMvrExitCB;
 
 };
 
 
 
-#endif // MVRBATTERYMTX_H
+#endif // ARBATTERYMTX_H

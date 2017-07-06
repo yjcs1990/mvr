@@ -1,5 +1,31 @@
-#ifndef MVRRANGEDEVICELASER_H
-#define MVRRANGEDEVICELASER_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARRANGEDEVICELASER_H
+#define ARRANGEDEVICELASER_H
 
 #include "mvriaTypedefs.h"
 #include "MvrRangeDeviceThreaded.h"
@@ -68,17 +94,18 @@ other similar functions are used by MvrLaserConnector to test if a parameter
    (and call the reading callbacks).  The internal* calls are all
    internal to the base class and shouldn't have to be used by
    inheriting classes.  After you have created a new laser type you
-   can add it to Mvria by using the Mvria::laserAddCreator call and then
+   can add it to Mvr by using the Mvria::laserAddCreator call and then
    it will work like any of the built in laser types (see the
    documentation for that function for what the creator needs to do,
-   and an example is MvrLaserCreatorHelper in the ariaUtil.h/cpp
+   and an example is MvrLaserCreatorHelper in the mvriaUtil.h/cpp
    files).  Similiarly if you need a new connection type (ie not
    serial or tcp) you implement them and then use
    Mvria::deviceConnectionAddCreator call to add new types so they too
-   will then be treated the same as the built in Mvria ones
-   (MvrDeviceConnectionCreatorHelper in ariaUtil.h/cpp file is the
+   will then be treated the same as the built in Mvr ones
+   (MvrDeviceConnectionCreatorHelper in mvriaUtil.h/cpp file is the
    example for that one).
 
+   @since 2.7.0
    @ingroup ImportantClasses
    @ingroup DeviceClasses
 **/
@@ -746,4 +773,4 @@ protected:
   static bool ourUseSimpleNaming;
 };
 
-#endif // MVRRANGEDEVICELASER_H
+#endif // ARRANGEDEVICELASER_H

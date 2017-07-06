@@ -36,14 +36,14 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "mvriaInternal.h"
 
 
-MvrNetServer::MvrNetServer(bool addMvriaExitCB, bool doNotAddShutdownServer,
+MvrNetServer::MvrNetServer(bool addMvrExitCB, bool doNotAddShutdownServer,
 			 const char *name, MvrNetServer *childServer) :
   myTaskCB(this, &MvrNetServer::runOnce),
   myHelpCB(this, &MvrNetServer::internalHelp),
   myEchoCB(this, &MvrNetServer::internalEcho),
   myQuitCB(this, &MvrNetServer::internalQuit),
   myShutdownServerCB(this, &MvrNetServer::internalShutdownServer),
-  myMvriaExitCB(this, &MvrNetServer::close)
+  myMvrExitCB(this, &MvrNetServer::close)
 {
   if (name != NULL)
     myName = name;
@@ -62,15 +62,17 @@ MvrNetServer::MvrNetServer(bool addMvriaExitCB, bool doNotAddShutdownServer,
   addCommand("help", &myHelpCB, "gives the listing of available commands");
   addCommand("echo", &myEchoCB, "with no args gets echo, with args sets echo");
   addCommand("quit", &myQuitCB, "closes this connection to the server");
+  // MPL 2013_06_10 letting folks take out shutdownServer since it
+  // can do no good and much ill
   if (!doNotAddShutdownServer)
     addCommand("shutdownServer", &myShutdownServerCB, "shuts down the server");
 
   myMutex.setLogName((myName + "::myMutex").c_str());
   myNextCycleSendsMutex.setLogName((myName + "::myNextCycleSendsMutex").c_str());
   
-  myMvriaExitCB.setName((myName + "::ariaExit").c_str());
-  if (addMvriaExitCB)
-    Mvria::addExitCallback(&myMvriaExitCB, 40);
+  myMvrExitCB.setName((myName + "::mvriaExit").c_str());
+  if (addMvrExitCB)
+    Mvria::addExitCallback(&myMvrExitCB, 40);
 }
 
 MvrNetServer::~MvrNetServer()
@@ -536,7 +538,7 @@ MVREXPORT void MvrNetServer::runOnce(void)
       // argument
       args = new MvrArgumentBuilder;
       args->addPlain(str);
-      //Mvrgs->log();
+      //args->log();
       parseCommandOnSocket(args, socket);
       delete args;
       args = NULL;

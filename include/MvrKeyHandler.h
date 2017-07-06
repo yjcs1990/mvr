@@ -1,6 +1,31 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
 
-#ifndef MVRKEYHANDLER_H
-#define MVRKEYHANDLER_H
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARKEYHANDLER_H
+#define ARKEYHANDLER_H
 
 #include "mvriaTypedefs.h"
 #include "MvrFunctor.h"
@@ -43,7 +68,7 @@ class MvrKeyHandler
 public:
   /// This object will take over key capture when constructed, and release
   /// key capture when destroyed.
-  MVREXPORT MvrKeyHandler(bool blocking = false, bool addMvriaExitCB = true, 
+  MVREXPORT MvrKeyHandler(bool blocking = false, bool addMvrExitCB = true, 
 			FILE *stream = NULL, 
 			bool takeKeysInConstructor = true);
 
@@ -121,7 +146,7 @@ protected:
   bool myBlocking;
   
   bool myRestored;
-  MvrFunctorC<MvrKeyHandler> myMvriaExitCB;
+  MvrFunctorC<MvrKeyHandler> myMvrExitCB;
 #ifndef WIN32
   struct termios myOriginalTermios;
 #endif
@@ -131,4 +156,4 @@ protected:
 };
 
 
-#endif // MVRKEYHANDLER_H
+#endif // ARKEYHANDLER_H

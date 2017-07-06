@@ -1,5 +1,31 @@
-#ifndef MVRDPPTU_H
-#define MVRDPPTU_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARDPPTU_H
+#define ARDPPTU_H
 
 #include "mvriaTypedefs.h"
 #include "MvrRobot.h"
@@ -119,8 +145,8 @@ class MvrDPPTU : public MvrPTZ
 public:
   enum DeviceType {
     PANTILT_DEFAULT, ///< Automatically detect correct settings
-    PANTILT_PTUD47, ///< Force settings for PTU-D47  
-    PANTILT_PTUD46 ///< Force settings for PTU-D46  
+    PANTILT_PTUD47, ///< Force settings for PTU-D47 @since 2.7.0
+    PANTILT_PTUD46 ///< Force settings for PTU-D46  @since 2.7.5
   };
 
   enum Axis {
@@ -322,6 +348,7 @@ public:
   MVREXPORT bool tiltSlewRel(double deg) { return tiltSlew(myTiltSlew+deg); }
 
   /// called automatically by Mvria::init()
+  ///@since 2.7.6
   ///@internal
 #ifndef SWIG
   static void registerPTZType();
@@ -423,9 +450,11 @@ protected:
   bool myGotPanRes;
   bool myGotTiltRes;
 
+  ///@since 2.7.6
   static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
+  ///@since 2.7.6
   static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 };
 
-#endif // MVRDPPTU_H
+#endif // ARDPPTU_H
 

@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrSZSeries.h"
@@ -466,14 +492,14 @@ MvrSZSeriesPacket *MvrSZSeriesPacketReceiver::receivePacket(unsigned int msWait,
 MVREXPORT MvrSZSeries::MvrSZSeries(int laserNumber, const char *name) :
 			MvrLaser(laserNumber, name, 16382),
 			mySensorInterpTask(this, &MvrSZSeries::sensorInterp),
-			myMvriaExitCB(this, &MvrSZSeries::disconnect) {
+			myMvrExitCB(this, &MvrSZSeries::disconnect) {
 
 	//MvrLog::log(MvrLog::Normal, "%s: Sucessfully created", getName());
 
 	clear();
 	myRawReadings = new std::list<MvrSensorReading *>;
 
-	Mvria::addExitCallback(&myMvriaExitCB, -10);
+	Mvria::addExitCallback(&myMvrExitCB, -10);
 
 	setInfoLogLevel(MvrLog::Normal);
 	//setInfoLogLevel(MvrLog::Terse);
@@ -534,7 +560,7 @@ MVREXPORT MvrSZSeries::MvrSZSeries(int laserNumber, const char *name) :
 }
 
 MVREXPORT MvrSZSeries::~MvrSZSeries() {
-	Mvria::remExitCallback(&myMvriaExitCB);
+	Mvria::remExitCallback(&myMvrExitCB);
 	if (myRobot != NULL) {
 		myRobot->remRangeDevice(this);
 		myRobot->remLaser(this);
@@ -566,7 +592,7 @@ MVREXPORT void MvrSZSeries::laserSetName(const char *name) {
 	myConnMutex.setLogNameVar("%s::myConnMutex", getName());
 	myPacketsMutex.setLogNameVar("%s::myPacketsMutex", getName());
 	myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-	myMvriaExitCB.setNameVar("%s::exitCallback", getName());
+	myMvrExitCB.setNameVar("%s::exitCallback", getName());
 
 	MvrLaser::laserSetName( getName());
 }
@@ -1054,9 +1080,11 @@ MVREXPORT void * MvrSZSeries::runThread(void *arg) {
 		//MvrUtil::sleep(2000);
 		//MvrUtil::sleep(500);
 
-#if 0
+#if 0  // PS 10/20/11 - using code above to fix disconnect issues
 
+		// PS 7/5/11 - change msWait from 50 to 5000
 
+		// MPL 7/12/11 Changed mswait to 500 (which is bad enough,
 		// especially since receive packet doesn't use it quite right at
 		// this time)
 		while (getRunning() && myIsConnected && (packet
@@ -1072,6 +1100,7 @@ MVREXPORT void * MvrSZSeries::runThread(void *arg) {
 			//if (myRobot == NULL)
 			//sensorInterp();
 
+			/// MPL TODO see if this gets called if the laser goes
 			/// away... it looks like it may not (since the receivePacket may just return nothing)
 
 			// if we have a robot but it isn't running yet then don't have a

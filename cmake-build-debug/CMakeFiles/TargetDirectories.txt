@@ -1,3 +1,4 @@
 /backup/project/mvr/cmake-build-debug/CMakeFiles/rebuild_cache.dir
 /backup/project/mvr/cmake-build-debug/CMakeFiles/edit_cache.dir
 /backup/project/mvr/cmake-build-debug/CMakeFiles/simpleConnect.dir
+/backup/project/mvr/cmake-build-debug/CMakeFiles/Mvria.dir

@@ -1,5 +1,31 @@
-#ifndef MVRTYPEDEFS_H
-#define MVRTYPEDEFS_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU Ge#neral Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARTYPEDEFS_H
+#define ARTYPEDEFS_H
 
 #include <time.h>
 #include <string>
@@ -10,11 +36,11 @@
 
 
 #ifndef SWIG
-#if !defined(MVRIA_STATIC) && !defined(MVREXPORT) && !defined(MINGW)
+#if !defined(ARIA_STATIC) && !defined(MVREXPORT) && !defined(MINGW)
 #define MVREXPORT _declspec(dllimport)
-#elif !defined(MVREXPORT) // MVRIA_STATIC
+#elif !defined(MVREXPORT) // ARIA_STATIC
 #define MVREXPORT
-#endif // MVRIA_STATIC
+#endif // ARIA_STATIC
 #else
 #define MVREXPORT
 #endif
@@ -47,7 +73,7 @@ public:
   } Pos;
 };
 
-/// Contains platform independent sized variable types
+/// Contains platform independent sized vmvriable types
 class MvrTypes
 {
 public:
@@ -71,4 +97,4 @@ public:
 };
 
 
-#endif  //MVRTYPEDEFS_H
+#endif

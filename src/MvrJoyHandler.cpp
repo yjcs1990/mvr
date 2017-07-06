@@ -1,9 +1,37 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "mvriaOSDef.h"
 #include "MvrExport.h"
 #include "MvrJoyHandler.h"
 #include "mvriaUtil.h"
+
 #include "MvrLog.h"
 #include <errno.h>
+
 
 bool MvrJoyHandler::init(void)
 {
@@ -30,7 +58,7 @@ bool MvrJoyHandler::init(void)
       }
     }
   }
-  
+
   if ((myUseOld && myOldJoyDesc != NULL) || (!myUseOld && myJoyDesc > 0))
   {
     myPhysMax = 255;
@@ -39,8 +67,8 @@ bool MvrJoyHandler::init(void)
     endCal();
     getData();
     return true;
-  } 
-  else 
+  }
+  else
   {
     myJoyNumber = -1;
     myPhysMax = 255;
@@ -69,8 +97,8 @@ void MvrJoyHandler::getOldData(void)
 {
 #ifdef linux
   int x, y;
-  if (myOldJoyDesc == NULL || !myInitialized || 
-      fread(&myJoyData, 1, JS_RETURN, myOldJoyDesc) != JS_RETURN) 
+  if (myOldJoyDesc == NULL || !myInitialized ||
+      fread(&myJoyData, 1, JS_RETURN, myOldJoyDesc) != JS_RETURN)
   {
     myAxes[1] = 0;
     myAxes[2] = 0;
@@ -79,10 +107,10 @@ void MvrJoyHandler::getOldData(void)
     myButtons[2] = false;
     myButtons[3] = false;
     myButtons[4] = false;
-  } 
-  else 
+  }
+  else
   {
-    x = myJoyData.x - 128; 
+    x = myJoyData.x - 128;
     y =  - (myJoyData.y - 128);
     if (x > myMaxX)
       myMaxX = x;
@@ -159,8 +187,9 @@ void MvrJoyHandler::getNewData(void)
   {
     //MvrLog::log(MvrLog::Terse, "MvrJoyHandler::getUnfiltered: Trouble reading data.");
   }
-#endif // ifdef linux 
+#endif // ifdef linux
 }
+
 
 /**
    @param useOSCal if this is set then the joystick will just rely on
@@ -207,8 +236,8 @@ MVREXPORT bool MvrJoyHandler::getUseOSCal(void)
 }
 
 /**
-   Starts the calibration, which resets all the min and max variables as well
-   as the center variables.
+   Starts the calibration, which resets all the min and max vmvriables as well
+   as the center vmvriables.
    @see endCal */
 MVREXPORT void MvrJoyHandler::startCal(void)
 {
@@ -261,7 +290,7 @@ MVREXPORT void MvrJoyHandler::setStats(int maxX, int minX, int maxY, int minY,
 }
 
 /**
-   @swignote   Use the version of this method returning MvrJoyVec3i
+   @swignote   Use the version of this method returning ArJoyVec3i
 */
 MVREXPORT void MvrJoyHandler::getSpeeds(int *x, int *y, int *z)
 {
@@ -284,7 +313,7 @@ MVREXPORT void MvrJoyHandler::getSpeeds(int *x, int *y, int *z)
    will be within the range [-1 * y given in setSpeeds(), y given in setSpeeds()]
    @param z pointer to an integer in which to store the z value, which
    will be within the range [-1 * z given in setSpeeds(), z given in setSpeeds()]
-   @java   Use the version of this method returning MvrJoyVec3i
+   @java   Use the version of this method returning ArJoyVec3i
    @python returns a tuple of (x, y, z) instead
 **/
 
@@ -340,7 +369,7 @@ MVREXPORT void MvrJoyHandler::getAdjusted(int *x, int *y, int *z)
     Will be within the range [-1.0, 1.0]
 
    @python Returns a tuple of (x, y, z) instead
-   @java   Use the version of this method returning MvrJoyVec3f
+   @java   Use the version of this method returning ArJoyVec3f
    @python Returns a tuple of (x, y, z) instead
 **/
 
@@ -386,7 +415,7 @@ MVREXPORT void MvrJoyHandler::getDoubles(double *x, double *y, double *z)
    @param x pointer to an integer in which to store x value
    @param y pointer to an integer in which to store y value
    @param z pointer to an integer in which to store z value
-   @java   Use the version of this method returning MvrJoyVec3i
+   @java   Use the version of this method returning ArJoyVec3i
    @python Returns a tuple of (x, y, z) instead
 */
 MVREXPORT void MvrJoyHandler::getUnfiltered(int *x, int* y, int *z)

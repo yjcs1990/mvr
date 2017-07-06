@@ -1,42 +1,64 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
+// MvrThread.cc -- Thread classes
+
+
 #include "mvriaOSDef.h"
+#include <errno.h>
+#include <list>
+#include "MvrThread.h"
+#include "MvrLog.h"
+
+
 #include <sched.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "mvriaOSDef.h"
-#include "MvrThread.h"
-#include "MvrLog.h"
 #include "MvrSignalHandler.h"
-#include <list>
-#include <errno.h>
 
 #ifndef MINGW
 #include <sys/syscall.h>
 #endif
 
-MvrMutex MvrThread::ourThreadsMutex;
-MvrThread::MapType MvrThread::ourThreads;
-#if defined(WIN32) && !defined(MINGW)
-std::map<HANDLE, MvrThread *> MvrThread::ourThreadHandles;
-#endif
-MVREXPORT MvrLog::LogLevel MvrThread::ourLogLevel = MvrLog::Verbose; // todo, instead of MVREXPORT move accessors into .cpp?
-std::string MvrThread::ourUnknownThreadName = "unknown";
-
 
 static void * run(void *arg)
 {
-  MvrThread *t=(MvrThread*)arg;
-  void *ret=NULL;
+    MvrThread *t=(MvrThread*)arg;
+    void *ret=NULL;
 
-  if (t->getBlockAllSignals())
-    MvrSignalHandler::blockCommonThisThread();
+    if (t->getBlockAllSignals())
+        MvrSignalHandler::blockCommonThisThread();
 
-  if (dynamic_cast<MvrRetFunctor<void*>*>(t->getFunc()))
-    ret=((MvrRetFunctor<void*>*)t->getFunc())->invokeR();
-  else
-    t->getFunc()->invoke();
+    if (dynamic_cast<MvrRetFunctor<void*>*>(t->getFunc()))
+        ret=((MvrRetFunctor<void*>*)t->getFunc())->invokeR();
+    else
+        t->getFunc()->invoke();
 
-  return(ret);
+    return(ret);
 }
 
 
@@ -49,64 +71,64 @@ static void * run(void *arg)
 */
 void MvrThread::init()
 {
-  MvrThread *main;
-  ThreadType pt;
+    MvrThread *main;
+    ThreadType pt;
 
-  pt=pthread_self();
+    pt=pthread_self();
 
-  ourThreadsMutex.setLogName("MvrThread::ourThreadsMutex");
+    ourThreadsMutex.setLogName("MvrThread::ourThreadsMutex");
 
-  ourThreadsMutex.lock();
-  if (ourThreads.size())
-  {
+    ourThreadsMutex.lock();
+    if (ourThreads.size())
+    {
+        ourThreadsMutex.unlock();
+        return;
+    }
+    main=new MvrThread;
+    main->myJoinable=true;
+    main->myRunning=true;
+    main->myThread=pt;
+    addThreadToMap(pt, main); // Recursive lock!
+    //ourThreads.insert(MapType::value_type(pt, main));
     ourThreadsMutex.unlock();
-    return;
-  }
-  main=new MvrThread;
-  main->myJoinable=true;
-  main->myRunning=true;
-  main->myThread=pt;
-  addThreadToMap(pt, main); // Recursive lock!
-  //ourThreads.insert(MapType::value_type(pt, main));
-  ourThreadsMutex.unlock();
 }
 
 
 MVREXPORT void MvrThread::shutdown()
 {
-  /*** This is the _WIN code.  Something similar (or identical?) should
-   *** probably be implemented here.
+    /*** This is the _WIN code.  Something similar (or identical?) should
+     *** probably be implemented here.
 
-  ourThreadsMutex.lock();
+    ourThreadsMutex.lock();
 
-  // At this point, the ourThreads map should only contain the main thread 
-  // that was created in init (presuming that joinAll was called, from 
-  // the main thread).
-  // 
-  // Do not use deleteSetPairs because this causes the ourThreads map 
-  // to be updated recursively (because the destructor updates the map).
-  //
-  std::list<MvrThread *> threadList;
+    // At this point, the ourThreads map should only contain the main thread
+    // that was created in init (presuming that joinAll was called, from
+    // the main thread).
+    //
+    // Do not use deleteSetPairs because this causes the ourThreads map
+    // to be updated recursively (because the destructor updates the map).
+    //
+    std::list<MvrThread *> threadList;
 
-  for (MapType::iterator mapIter = ourThreads.begin(); 
-       mapIter != ourThreads.end();
-       mapIter++) {
-    if (mapIter->second != NULL) {
-      threadList.push_back(mapIter->second);
+    for (MapType::iterator mapIter = ourThreads.begin();
+         mapIter != ourThreads.end();
+         mapIter++) {
+      if (mapIter->second != NULL) {
+        threadList.push_back(mapIter->second);
+      }
     }
-  }
-  for (std::list<MvrThread *>::iterator listIter = threadList.begin();
-      listIter != threadList.end();
-      listIter++) {
-    delete (*listIter);
-  }
-  if (!ourThreads.empty()) {
-    MvrLog::log(MvrLog::Normal,
-               "MvrThread::shutdown() unexpected thread leftover");
-  }
-  ourThreadsMutex.unlock();
+    for (std::list<MvrThread *>::iterator listIter = threadList.begin();
+        listIter != threadList.end();
+        listIter++) {
+      delete (*listIter);
+    }
+    if (!ourThreads.empty()) {
+      MvrLog::log(MvrLog::Normal,
+                 "MvrThread::shutdown() unexpected thread leftover");
+    }
+    ourThreadsMutex.unlock();
 
-  ***/
+    ***/
 
 } // end method shutdown
 
@@ -124,21 +146,21 @@ MVREXPORT void MvrThread::shutdown()
 */
 MvrThread * MvrThread::self()
 {
-   return findThreadInMap(pthread_self());
-   /*
-  ThreadType pt;
-  MapType::iterator iter;
+    return findThreadInMap(pthread_self());
+    /*
+   ThreadType pt;
+   MapType::iterator iter;
 
-  ourThreadsMutex.lock();
-  pt=pthread_self();
-  iter=ourThreads.find(pt);
-  ourThreadsMutex.unlock();
+   ourThreadsMutex.lock();
+   pt=pthread_self();
+   iter=ourThreads.find(pt);
+   ourThreadsMutex.unlock();
 
-  if (iter != ourThreads.end())
-    return((*iter).second);
-  else
-    return(NULL);
-*/
+   if (iter != ourThreads.end())
+     return((*iter).second);
+   else
+     return(NULL);
+ */
 }
 
 /**
@@ -147,186 +169,195 @@ MvrThread * MvrThread::self()
 **/
 MvrThread::ThreadType MvrThread::osSelf()
 {
-  return pthread_self();
+    return pthread_self();
 }
 
 void MvrThread::cancelAll()
 {
-  MapType::iterator iter;
+    MapType::iterator iter;
 
-  ourThreadsMutex.lock();
-  for (iter=ourThreads.begin(); iter != ourThreads.end(); ++iter)
-  {
-    pthread_cancel((*iter).first);
-    (*iter).second->stopRunning();
-  }
-  ourThreads.clear();
-  ourThreadsMutex.unlock();
+    ourThreadsMutex.lock();
+    for (iter=ourThreads.begin(); iter != ourThreads.end(); ++iter)
+    {
+        pthread_cancel((*iter).first);
+        (*iter).second->stopRunning();
+    }
+    ourThreads.clear();
+    ourThreadsMutex.unlock();
 }
 
 int MvrThread::create(MvrFunctor *func, bool joinable, bool lowerPriority)
 {
-  int ret;
-  pthread_attr_t attr;
+    int ret;
+    pthread_attr_t attr;
 
-  pthread_attr_init(&attr);
-  if (joinable)
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-  else
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-  myJoinable=joinable;
-  myFunc=func;
-  myRunning=true;
-  if (myBlockAllSignals)
-  {
-    MvrSignalHandler::blockCommonThisThread();
-  }
-  if ((ret=pthread_create(&myThread, &attr, &run, this)) != 0)
-  {
-    pthread_attr_destroy(&attr);
-    if (ret == EAGAIN)
+    pthread_attr_init(&attr);
+    if (joinable)
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    else
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    myJoinable=joinable;
+    myFunc=func;
+    myRunning=true;
+    if (myBlockAllSignals)
     {
-      MvrLog::log(MvrLog::Terse, "MvrThread::create: Error in create, not enough system resources in pthread_create() (EAGAIN)");
-      return(STATUS_NORESOURCE);
+        MvrSignalHandler::blockCommonThisThread();
     }
-    else if(ret == ENOMEM)
+    if ((ret=pthread_create(&myThread, &attr, &run, this)) != 0)
     {
-      MvrLog::log(MvrLog::Terse, "MvrThread::create: Error in create, not enough system resources in pthread_create() (ENOMEM)");
-      return(STATUS_NORESOURCE);
+        pthread_attr_destroy(&attr);
+        if (ret == EAGAIN)
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::create: Error in create, not enough system resources in pthread_create() (EAGAIN)");
+            return(STATUS_NORESOURCE);
+        }
+        else if(ret == ENOMEM)
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::create: Error in create, not enough system resources in pthread_create() (ENOMEM)");
+            return(STATUS_NORESOURCE);
+        }
+        else
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::create: Unknown error in create.");
+            return(STATUS_FAILED);
+        }
     }
     else
     {
-      MvrLog::log(MvrLog::Terse, "MvrThread::create: Unknown error in create.");
-      return(STATUS_FAILED);
+        if (myName.size() == 0)
+        {
+            MvrLog::log(ourLogLevel, "Created anonymous thread with ID %d",
+                       myThread);
+            //MvrLog::logBacktrace(MvrLog::Normal);
+        }
+        else
+        {
+            MvrLog::log(ourLogLevel, "Created %s thread with ID %d", myName.c_str(),
+                       myThread);
+        }
+        addThreadToMap(myThread, this);
+        /*
+        ourThreadsMutex.lock();
+        ourThreads.insert(MapType::value_type(myThread, this));
+        ourThreadsMutex.unlock();
+        */
+        pthread_attr_destroy(&attr);
+        return(0);
     }
-  }
-  else
-  {
-    if (myName.size() == 0)
-    {
-      MvrLog::log(ourLogLevel, "Created anonymous thread with ID %d", 
-		 myThread);
-      //MvrLog::logBacktrace(MvrLog::Normal);
-    }
-    else
-    {
-      MvrLog::log(ourLogLevel, "Created %s thread with ID %d", myName.c_str(),
-		 myThread);
-    }
-	addThreadToMap(myThread, this);
-	/*
-    ourThreadsMutex.lock();
-    ourThreads.insert(MapType::value_type(myThread, this));
-    ourThreadsMutex.unlock();
-	*/
-    pthread_attr_destroy(&attr);
-    return(0);
-  }
 }
 
 int MvrThread::doJoin(void **iret)
 {
-  int ret;
-  if ((ret=pthread_join(myThread, iret)) != 0)
-  {
-    if (ret == ESRCH)
+    int ret;
+    if ((ret=pthread_join(myThread, iret)) != 0)
     {
-      MvrLog::log(MvrLog::Terse, "MvrThread::join: Error in join: No such thread found");
-      return(STATUS_NO_SUCH_THREAD);
+        if (ret == ESRCH)
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::join: Error in join: No such thread found");
+            return(STATUS_NO_SUCH_THREAD);
+        }
+        else if (ret == EINVAL)
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::join: Error in join: Thread is detached or another thread is waiting");
+            return(STATUS_INVALID);
+        }
+        else if (ret == EDEADLK)
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::join: Error in join: Trying to join on self");
+            return(STATUS_JOIN_SELF);
+        }
     }
-    else if (ret == EINVAL)
-    {
-      MvrLog::log(MvrLog::Terse, "MvrThread::join: Error in join: Thread is detached or another thread is waiting");
-      return(STATUS_INVALID);
-    }
-    else if (ret == EDEADLK)
-    {
-      MvrLog::log(MvrLog::Terse, "MvrThread::join: Error in join: Trying to join on self");
-      return(STATUS_JOIN_SELF);
-    }
-  }
 
-  return(0);
+    return(0);
 }
 
 int MvrThread::detach()
 {
-  int ret;
+    int ret;
 
-  if ((ret=pthread_detach(myThread)) != 0)
-  {
-    if (ret == ESRCH)
+    if ((ret=pthread_detach(myThread)) != 0)
     {
-      MvrLog::log(MvrLog::Terse, "MvrThread::detach: Error in detach: No such thread found");
-      return(STATUS_NO_SUCH_THREAD);
+        if (ret == ESRCH)
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::detach: Error in detach: No such thread found");
+            return(STATUS_NO_SUCH_THREAD);
+        }
+        else if (ret == EINVAL)
+        {
+            MvrLog::log(MvrLog::Terse, "MvrThread::detach: Error in detach: MvrThread is already detached");
+            return(STATUS_ALREADY_DETATCHED);
+        }
     }
-    else if (ret == EINVAL)
-    {
-      MvrLog::log(MvrLog::Terse, "MvrThread::detach: Error in detach: MvrThread is already detached");
-      return(STATUS_ALREADY_DETATCHED);
-    }
-  }
 
-  myJoinable=false;
-  return(0);
+    myJoinable=false;
+    return(0);
 }
 
 void MvrThread::cancel()
 {
-  removeThreadFromMap(myThread);
-  /*
-  ourThreadsMutex.lock();
-  ourThreads.erase(myThread);
-  ourThreadsMutex.unlock();
-  */
-  pthread_cancel(myThread);
+    removeThreadFromMap(myThread);
+    /*
+    ourThreadsMutex.lock();
+    ourThreads.erase(myThread);
+    ourThreadsMutex.unlock();
+    */
+    pthread_cancel(myThread);
 }
 
 void MvrThread::yieldProcessor()
 {
-  sched_yield();
+    sched_yield();
 }
 
 MVREXPORT void MvrThread::threadStarted(void)
 {
-  myStarted = true;
-  myPID = getpid();
-  //myTID = gettid();
+    myStarted = true;
+    myPID = getpid();
+    // MPL 12/3/2012 gettid isn't implemented, but there's a hack with syscall
+    //myTID = gettid();
 #ifdef MINGW
-  myTID = -1;
+    myTID = -1;
 #else
-  myTID = (pid_t) syscall(SYS_gettid);
+    myTID = (pid_t) syscall(SYS_gettid);
 #endif
-  if (myName.size() == 0)
-    MvrLog::log(ourLogLevel, "Anonymous thread (%d) is running with pid %d tid %d",
-	       myThread, myPID, myTID);
-  else
-    MvrLog::log(ourLogLevel, "Thread %s (%d) is running with pid %d tid %d",
-	       myName.c_str(), myThread, myPID, myTID);
+    if (myName.size() == 0)
+        MvrLog::log(ourLogLevel, "Anonymous thread (%d) is running with pid %d tid %d",
+                   myThread, myPID, myTID);
+    else
+        MvrLog::log(ourLogLevel, "Thread %s (%d) is running with pid %d tid %d",
+                   myName.c_str(), myThread, myPID, myTID);
 }
 
 MVREXPORT void MvrThread::threadFinished(void)
 {
-  myFinished = true;
-  //myPID = getpid();
-  if (myName.size() == 0)
-    MvrLog::log(ourLogLevel, "Anonymous thread (%d) with pid %d tid %d has finished",
-	       myThread, myPID, myTID);
-  else
-    MvrLog::log(ourLogLevel, "Thread %s (%d) with pid %d tid %d has finished",
-	       myName.c_str(), myThread, myPID, myTID);
+    myFinished = true;
+    /// 12/3/2012 MPL Taking this out since it should be set already
+    //myPID = getpid();
+    if (myName.size() == 0)
+        MvrLog::log(ourLogLevel, "Anonymous thread (%d) with pid %d tid %d has finished",
+                   myThread, myPID, myTID);
+    else
+        MvrLog::log(ourLogLevel, "Thread %s (%d) with pid %d tid %d has finished",
+                   myName.c_str(), myThread, myPID, myTID);
 }
 
 MVREXPORT void MvrThread::logThreadInfo(void)
 {
-  if (myName.size() == 0)
-    MvrLog::log(ourLogLevel, "Anonymous thread (%d) is running with pid %d tid %d",
-	       myThread, myPID, myTID);
-  else
-    MvrLog::log(ourLogLevel, "Thread %s (%d) is running with pid %d %d",
-	       myName.c_str(), myThread, myPID, myTID);
+    if (myName.size() == 0)
+        MvrLog::log(ourLogLevel, "Anonymous thread (%d) is running with pid %d tid %d",
+                   myThread, myPID, myTID);
+    else
+        MvrLog::log(ourLogLevel, "Thread %s (%d) is running with pid %d %d",
+                   myName.c_str(), myThread, myPID, myTID);
 }
 
+MvrMutex MvrThread::ourThreadsMutex;
+MvrThread::MapType MvrThread::ourThreads;
+#if defined(WIN32) && !defined(MINGW)
+std::map<HANDLE, MvrThread *> MvrThread::ourThreadHandles;
+#endif
+MVREXPORT MvrLog::LogLevel MvrThread::ourLogLevel = MvrLog::Verbose; // todo, instead of MVREXPORT move accessors into .cpp?
+std::string MvrThread::ourUnknownThreadName = "unknown";
 
 MVREXPORT void MvrThread::stopAll()
 {
@@ -352,6 +383,14 @@ MVREXPORT void MvrThread::joinAll()
   }
   ourThreads.clear();
 
+  // KMC I think that the insert was there because "thread" still exists
+  // but the entire map was cleared.
+
+  // MPL BUG I'm not to sure why this insert was here, as far as I can
+  // tell all it would do is make it so you could join the threads
+  // then start them all up again, but I don't see much utility in
+  // that so I'm not going to worry about it now
+ 
   if (thread != NULL) {
 	addThreadToMap(thread->myThread, thread); // Note: Recursive lock of ourThreadsMutex!
     //ourThreads.insert(MapType::value_type(thread->myThread, thread));

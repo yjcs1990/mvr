@@ -1,5 +1,32 @@
-#ifndef MVRIAUTIL_H
-#define MVRIAUTIL_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+
+#ifndef ARIAUTIL_H
+#define ARIAUTIL_H
 
 #define _GNU_SOURCE 1
 #include <string>
@@ -44,7 +71,9 @@ class MvrDeviceConnection;
 #endif // of M_PI, windows has a function call instead of a define
 
 /// Contains various utility functions, including cross-platform wrappers around common system functions.
-
+/** @ingroup UtilityClasses
+    @ingroup ImportantClasses
+*/
 class MvrUtil
 {
 public:
@@ -89,7 +118,7 @@ public:
     {
       for (; begin != end; ++begin)
       {
-	      delete (*begin);
+	delete (*begin);
       }
     }
 
@@ -364,8 +393,7 @@ public:
    * @param ok an output bool * set to true if the time is successfully parsed;
    * false, otherwise
    * @param toToday true to find the time on the current day, false to find the time on 1/1/70
-   * @return time_t if toToday is true then its the parsed time on the current day, 
-     if toToday is false then its the parsed time on 1/1/70
+   * @return time_t if toToday is true then its the parsed time on the current day, if toToday is false then its the parsed time on 1/1/70
    * 1/1/70
   **/
   MVREXPORT static time_t parseTime(const char *str, bool *ok = NULL, bool toToday = true);
@@ -378,13 +406,18 @@ public:
    *  @param timep Pointer to current time (Unix time_t; seconds since epoch) 
    *  @param result The result of calling platform localtime function is copied into this struct, so it must have been allocated.
    *  @return false on error (e.g. invalid input), otherwise true.
-
+   *
+   *  Example:
+   *  @code
+   *  struct tm t;
+   *  MvrUtil::localtime(time(NULL), &t);
+   *  MvrLog::log("Current month is %d.\n", t.tm_mon);
+   *  @endcode
    */
   MVREXPORT static bool localtime(const time_t *timep, struct tm *result);
 
    
-  /*
-   * Call MvrUtil::localtime(const time_t*, struct tm *) with the current time obtained by calling
+  /** Call MvrUtil::localtime(const time_t*, struct tm *) with the current time obtained by calling
    * time(NULL).
    *  @return false on error (e.g. invalid input), otherwise true.
    */
@@ -449,8 +482,10 @@ public:
 			   bool forceHex = false);
 
 protected:
+//#ifndef WIN32
   /// this splits up a file name (it isn't exported since it'd crash with dlls)
   static std::list<std::string> splitFileName(const char *fileName);
+//#endif
 
 private:
 
@@ -467,9 +502,10 @@ private:
 #endif
 };
 
-/*
- * Common math operations
- */
+/** Common math operations
+    @ingroup UtilityClasses
+    @ingroup easy
+*/
 class MvrMath
 {
 private:
@@ -492,6 +528,9 @@ public:
      @param ang1 first angle
      @param ang2 second angle, added to first
      @return sum of the angles, in range [-180,180]
+     @see subAngle
+     @see fixAngle 
+     @ingroup easy
   */
   static double addAngle(double ang1, double ang2) 
     { return fixAngle(ang1 + ang2); }
@@ -501,6 +540,9 @@ public:
      @param ang1 first angle
      @param ang2 second angle, subtracted from first angle
      @return resulting angle, in range [-180,180]
+     @see addAngle
+     @see fixAngle
+     @ingroup easy
   */
   static double subAngle(double ang1, double ang2) 
     { return fixAngle(ang1 - ang2); }
@@ -509,17 +551,20 @@ public:
   /**
      @param angle the angle to fix
      @return the angle in range (-180,180]
+     @see addAngle
+     @see subAngle
+     @ingroup easy
   */
   static double fixAngle(double angle) 
     {
       if (angle >= 360)
-	      angle = angle - 360.0 * (double)((int)angle / 360);
+	angle = angle - 360.0 * (double)((int)angle / 360);
       if (angle < -360)
-	      angle = angle + 360.0 * (double)((int)angle / -360);
+	angle = angle + 360.0 * (double)((int)angle / -360);
       if (angle <= -180)
-	      angle = + 180.0 + (angle + 180.0);
+	angle = + 180.0 + (angle + 180.0);
       if (angle > 180)
-	      angle = - 180.0 + (angle - 180.0);
+	angle = - 180.0 + (angle - 180.0);
       return angle;
     } 
   
@@ -722,7 +767,7 @@ public:
 #ifdef WIN32
 	  return _finite(f);
 #else
-	  return finite(f);
+	  return finitef(f);
 #endif
   }
 
@@ -2616,6 +2661,6 @@ protected:
   MvrTime myLastCheck;
 };
 
-#endif // MVRIAUTIL_H
+#endif // ARIAUTIL_H
 
 

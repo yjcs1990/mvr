@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrConfigArg.h"
@@ -6,15 +32,16 @@
 #include "MvrFileParser.h"
 #include "MvrSocket.h"
 
-//#define MVRDEBUG_CONFIGARG
+//#define ARDEBUG_CONFIGARG
 
-#if (defined(MVRDEBUG_CONFIGARG))
-//#if (defined(_DEBUG) && defined(MVRDEBUG_CONFIGARG))
+#if (defined(ARDEBUG_CONFIGARG))
+//#if (defined(_DEBUG) && defined(ARDEBUG_CONFIGARG))
 #define IFDEBUG(code) {code;}
 #else
 #define IFDEBUG(code)
 #endif 
 
+// KMC 7/16/12 Changed from 2 to 3 just to nicely align with description holder
 //
 int MvrConfigArg::ourIndentSpaceCount = 3;
 
@@ -295,6 +322,7 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, char *str,
 
   if (maxStrLen == 0)
   {
+    // KMC own string change
     // myData.myStringData.myUsingOwnedString = true;
     myOwnPointedTo = true;
 
@@ -325,6 +353,7 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char * name, const char *str,
   clear(true, STRING);
   set(STRING, name, description);
 
+  // KMC own string change
   // myData.myStringData.myUsingOwnedString = true;
   myOwnPointedTo = true;
   delete myData.myStringData.myString;
@@ -424,7 +453,7 @@ MVREXPORT MvrConfigArg::MvrConfigArg(Type type)
 */
 MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, const char *str)
 {
-  /*
+  /* MPL Taking this out
   MvrLog::log(MvrLog::Normal,
              "MvrConfigArg::ctor() STRING_HOLDER %s : %s",
              ((name != NULL) ? name : ""),
@@ -434,6 +463,7 @@ MVREXPORT MvrConfigArg::MvrConfigArg(const char *name, const char *str)
   clear(true, STRING_HOLDER);
   set(STRING_HOLDER, name, "");
   
+  // KMC own string change
   // myData.myStringData.myUsingOwnedString = true;
   myOwnPointedTo = true;
 
@@ -615,6 +645,7 @@ void MvrConfigArg::copy(const MvrConfigArg &arg,
       myData.myStringData.myString = arg.myData.myStringData.myString;
       **/
 
+      // KMC own string change
       myOwnPointedTo = arg.myOwnPointedTo;
       // myData.myStringData.myUsingOwnedString = arg.myData.myStringData.myUsingOwnedString || isDetach;
       //if (myData.myStringData.myUsingOwnedString) {
@@ -721,6 +752,9 @@ void MvrConfigArg::copy(const MvrConfigArg &arg,
   }; // end switch arg type
 
 
+
+  // KMC 7/9/12 I think that this should change based on the type... i.e. it's not
+  // necessary to set all of them anymore.
 
   myConfigPriority = arg.myConfigPriority;
   myIgnoreBounds = arg.myIgnoreBounds;
@@ -948,6 +982,7 @@ void MvrConfigArg::clear(bool initial,
 
     myData.myStringData.myStringPointer = NULL;
     myData.myStringData.myMaxStrLen = 0;
+    // KMC own string change
     // myData.myStringData.myUsingOwnedString = false;
     myOwnPointedTo = false;
 
@@ -1176,6 +1211,7 @@ MVREXPORT bool MvrConfigArg::setInt(int val, char *errorBuffer,
     return false;
   }
 
+  // KMC 7/9/12 If the "doNotSet" flag is true, then why is the myValueSet flag
   // set to true?
 
   myValueSet = true;
@@ -1400,6 +1436,7 @@ MVREXPORT const char *MvrConfigArg::getString(bool *ok) const
   }
 
   if ((myType == STRING) || (myType == STRING_HOLDER)) {
+    // KMC own string change
     // if (myData.myStringData.myUsingOwnedString) {
     if (myOwnPointedTo) {
       if (myData.myStringData.myString != NULL) {
@@ -1415,6 +1452,7 @@ MVREXPORT const char *MvrConfigArg::getString(bool *ok) const
     return getCppString().c_str();
   }
 
+  // KMC 7/9/12 Are we sure we want to return NULL and not ""?
   return NULL;
 }
 
@@ -1437,6 +1475,7 @@ MVREXPORT bool MvrConfigArg::setString(const char *str, char *errorBuffer,
   myValueSet = true;
   size_t len;
 
+  // KMC own string change
   // if (myData.myStringData.myUsingOwnedString)
   if (myOwnPointedTo)
   {
@@ -1617,6 +1656,7 @@ MVREXPORT bool MvrConfigArg::addArg(const MvrConfigArg &arg)
       }
     }
     else if (existingChildArg->getType() == STRING_HOLDER) {
+      // KMC Replace the existing child arg with the new arg, but keep its value.
       MvrArgumentBuilder holderBuilder;
       holderBuilder.add(existingChildArg->getString());
 
@@ -2187,9 +2227,12 @@ MVREXPORT bool MvrConfigArg::parseArgument(
 
   switch (getType()) {
 
+    // MPL added the string holder on 2/27 to get rid of the
+    // unknown type message
   case DESCRIPTION_HOLDER:
   case SEPARATOR:
   case STRING_HOLDER:
+  // KMC 4/17/13 Not entirely sure about the LIST_HOLDER but it 
   // seems consistent with the others
   case LIST_HOLDER: 
     {
@@ -2204,6 +2247,7 @@ MVREXPORT bool MvrConfigArg::parseArgument(
       if (ok) {
         ok = setInt(valInt, errorBuffer, errorBufferLen);
 
+        // KMC 8/5/13 Think that these checks should be in the "if ok" block.
   	    if (origInt != getInt() && changed != NULL && !mySuppressChanges)
         {
           if (printing)
@@ -2219,6 +2263,7 @@ MVREXPORT bool MvrConfigArg::parseArgument(
                              logPrefix, getName(), valInt));
         }
         else { // error setting int 
+          // KMC 7/11/12 Why isn't this condition worthy of the error buffer?
           // And should it really be verbose??  Seems like a potential problem.
           MvrLog::log(MvrLog::Verbose, 
                      "%sCould not set parameter '%s' to '%d'",
@@ -2352,6 +2397,7 @@ MVREXPORT bool MvrConfigArg::parseArgument(
                    logPrefix,
                    getName(), getString());
 
+        // KMC 7/11/12 Looks like this intentionally won't overwrite an existing error
         // message (but other types do).  Why the inconsistency?
         if (errorBuffer != NULL && errorBuffer[0] == '\0')
           snprintf(errorBuffer, errorBufferLen, 
@@ -2368,6 +2414,11 @@ MVREXPORT bool MvrConfigArg::parseArgument(
                   "%sReceived LIST arg '%s' with '%s'",   
                   logPrefix, getName(), arg->getFullString());
 
+      // MPL 9/6/12 for KMC The child count doesn't seem to do
+      // anything here, if it does something elsewhere or it does
+      // something later please set up something to set the changed
+      // bool poitner like the other entries in here.
+      
        int childCount = arg->getArgInt(0, &ok);
        if (ok) {
       
@@ -2386,6 +2437,9 @@ MVREXPORT bool MvrConfigArg::parseArgument(
     {
       ok = setArgWithFunctor(arg);
       
+      // MPL 9/6/12 we can't really tell if functor arguments
+      // changed but we shouldn't be using them anymore... so just
+      // assume that it's changed 
       if (changed != NULL)
       {
         *changed = true;
@@ -2407,6 +2461,9 @@ MVREXPORT bool MvrConfigArg::parseArgument(
                    logPrefix,
                    getName(), arg->getFullString());
         
+        // KMC 7/11/12: This comment implies that the error buffer is being passed
+        // to setArgWithFunctor (but this does not seem to be happening). Why?
+        //
         // if it didn't put in an error message make one
         if (errorBuffer != NULL && errorBuffer[0] == '\0') {
           snprintf(errorBuffer, errorBufferLen, 
@@ -2453,6 +2510,7 @@ MVREXPORT bool MvrConfigArg::parseArgument(
       // did not set retFlag to false.
       //
       MvrLog::log(MvrLog::Verbose, 
+                 // KMC 7/11/12 Is the section information really necessary?  
                  "%sWarning: Don't know the argument type for '%s' in section, got string '%s'", //, in section '%s'.", 
                  logPrefix, arg->getExtraString(), arg->getFullString());
                  // , mySection.c_str());
@@ -2652,6 +2710,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
       // ????
     }
     break;
+    // KMC 7/11/12: Seems like it must be possible to work this 
     // into the existing framework, maybe return later
   //case FUNCTOR:
   //  {
@@ -2693,17 +2752,31 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
     sprintf(startLine, "; %%s");
     //sprintf(startLine, "; %%s");
   }
-  else {
+  else { // KMC if (getType() != MvrConfigArg::STRING_HOLDER)
     sprintf(startLine, "%%-%ds;", startCommentColumn);
   }
   
+
+   // KMC 8/3/12 IMPORTANT NOTE:  While it would be extremely nice 
+   // to prevent buffer overruns by using snprintf instead of sprintf,
+   // it is currently ill-advised.  On Linux, the two methods behave
+   // differently when the line buffer is used as both the target buffer
+   // and as formatting input (as in all the prints below). It yields 
+   // the desired results with sprintf, but substitutes an empty string
+   // for the formatting input with snprintf.  This, in turn, causes
+   // the output config data to be garbage. (On Windows, there is no 
+   // problem.)  
 
   // if our line is already longer then where we want to go put in
   // an extra space
   if (strlen(lineBuf) >= startCommentColumn) {
     sprintf(lineBuf, "%s ;", lineBuf);
   }
-
+  // if its not then just put the start in
+  // KMC 1/22/13 Added the test for isStrEmpty.  For unknown reasons, if
+  // the lineBuf is empty, then the sprintf results in garbage being 
+  // printed.  (See Bug 12735).  If, however, the empty string is directly
+  // passed -- as in the else clause below -- then there isn't a problem.
   else if (!MvrUtil::isStrEmpty(lineBuf)) {
     sprintf(lineBuf, startLine, lineBuf);
   }
@@ -2712,6 +2785,7 @@ MVREXPORT bool MvrConfigArg::writeArguments(FILE *file,
   } 
 
 
+  // KMC I think that this might be an issue.  If the comment
   // should appear right after the bounds.  Otherwise, 
   writeBounds(lineBuf, lineBufSize, logPrefix);
 
@@ -2820,7 +2894,7 @@ MVREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
   MvrConfigArg configArg;
   bool ok = true;
 
-  // This is a redundant check. The MVRCL command handler should have verified the count
+  // This is a redundant check. The ARCL command handler should have verified the count
   // before calling this method and will display a better error message.
   if (args.getArgc() <=  SOCKET_INDEX_OF_TYPE) {
     if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
@@ -2995,6 +3069,7 @@ MVREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
       if (!ok) {
         if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
           snprintf(errorBuffer, errorBufferLen,
+                   // KMC 8/9/13 Did not fix "an" just in case client is already relying on message
 	                 "type was double, but default value was '%s' when it should be an double",
 	                 args.getArg(SOCKET_INDEX_OF_VALUE));
         }
@@ -3098,6 +3173,7 @@ MVREXPORT bool MvrConfigArg::parseSocket(const MvrArgumentBuilder &args,
       if (!ok) {
         if ((errorBuffer != NULL) && (errorBufferLen > 0)) {
           snprintf(errorBuffer, errorBufferLen,
+                   // KMC 8/9/13 Did not fix "an" just in case client is already relying on message
 	                 "type was bool, but default value was '%s' when it should be an bool",
 	                 args.getArg(SOCKET_INDEX_OF_VALUE));
         }
@@ -3743,6 +3819,7 @@ MVREXPORT bool MvrConfigArg::writeResource(FILE *file,
     return false;
   }
 
+  // KMC 5/15/13 Do not write string holders until they are better handled.
   if (getType() == STRING_HOLDER) {
     return true;
   }
@@ -3979,12 +4056,27 @@ MVREXPORT bool MvrConfigArg::writeMultiLineComment(const char *comment,
                "MvrConfigArg::writeMultiLineComment() invalid input");
     return false;
   }
+  // KMC 7/11/12 It seems like this could be made more efficient.
+  // And should also check for bounds on the lineBuf.
+  //
   MvrArgumentBuilder descr;
-  descr.setQuiet(true); 
+  descr.setQuiet(true); // KMC TODO Add flag myIsQuiet);
   descr.addPlain(comment);
 
   for (unsigned int i = 0; i < descr.getArgc(); i++)
   {
+     // KMC 8/3/12 IMPORTANT NOTE:  While it would be extremely nice 
+     // to prevent buffer overruns by using snprintf instead of sprintf,
+     // it is currently ill-advised.  On Linux, the two methods behave
+     // differently when the line buffer is used as both the target buffer
+     // and as formatting input (as in all the prints below). It yields 
+     // the desired results with sprintf, but substitutes an empty string
+     // for the formatting input with snprintf.  This, in turn, causes
+     // the output config data to be garbage. (On Windows, there is no 
+     // problem.)  
+  
+    // see if we're over, if we are write this line out and start
+    // the next one
     if (strlen(lineBuf) + strlen(descr.getArg(i)) > 78)
     {
       fprintf(file, "%s\n", lineBuf);
@@ -4029,7 +4121,15 @@ MVREXPORT bool MvrConfigArg::writeBounds(char *line,
     return false;
    }
  
-
+   // KMC 8/3/12 IMPORTANT NOTE:  While it would be extremely nice 
+   // to prevent buffer overruns by using snprintf instead of sprintf,
+   // it is currently ill-advised.  On Linux, the two methods behave
+   // differently when the line buffer is used as both the target buffer
+   // and as formatting input (as in all the prints below). It yields 
+   // the desired results with sprintf, but substitutes an empty string
+   // for the formatting input with snprintf.  This, in turn, causes
+   // the output config data to be garbage. (On Windows, there is no 
+   // problem.)  
 
    switch (getType()) {
     
@@ -4045,6 +4145,7 @@ MVREXPORT bool MvrConfigArg::writeBounds(char *line,
         }
         else { // no max, just write min
           sprintf(line, 
+                  // KMC 7/11/12 Corrected misspelling, will this be a problem?
                   "%s minimum %d, ", 
                   line, 
                   getMinInt());
@@ -4077,6 +4178,7 @@ MVREXPORT bool MvrConfigArg::writeBounds(char *line,
         }
       }
       else if (hasMaxBound()) {
+        // KMC 7/11/12 Made case consistent, problem?
         sprintf(line,
                 "%s maximum %g, ", 
                 line, 
@@ -4105,7 +4207,7 @@ MVREXPORT void MvrConfigArg::log(bool verbose,
   const std::list<MvrArgumentBuilder *> *argList = NULL;
   std::string intType;
 
-  // Mvrbitrarily capping at 11 tabs
+  // Arbitrarily capping at 11 tabs
   char indent[12];
   int i = 0;
   for (; ((i < indentCount) && (i < 12 - 1)); i++) {
@@ -4227,6 +4329,7 @@ MVREXPORT void MvrConfigArg::log(bool verbose,
                indent,
 	       getArgCount(), "list");
 
+    // KMC 7/10/12 Should the children only be logged if verbose is set to true?
 
     break;
 
@@ -4270,7 +4373,7 @@ MVREXPORT void MvrConfigArg::log(bool verbose,
 	 iter != myData.myListData.myChildArgList->end();
 	 iter++, c++) {
       MvrLog::log(MvrLog::Terse, 
-		 "%sChild Mvrg #%i:",
+		 "%sChild Arg #%i:",
 		 indent,
 		 c);
       (*iter).log(verbose, indentCount + 1);
@@ -4537,6 +4640,8 @@ MVREXPORT bool MvrConfigArg::hasMinBound() const
     //  isMinValid = (myData.myIntData.myMinInt != SHRT_MIN);
     //  break;
     //case INT_UNSIGNED_SHORT:
+    //  // KMC 7/13/12 Wondering whether this should just always be true
+    //  // (i.e. always min 0 at least).  Same with uchar
     //  isMinValid = (myData.myIntData.myMinInt != 0);
     //  break;
     //case INT_UNSIGNED_CHAR:
@@ -4617,6 +4722,9 @@ MVREXPORT bool MvrConfigArg::hasExternalDataReference() const
   case STRING:
   case STRING_HOLDER:
   case CPPSTRING:
+    // KMC 7/13/12 Not sure why the myOwnPointedTo attribute does
+    // not apply to strings ??
+    // KMC own string change
     // b = !myData.myStringData.myUsingOwnedString;
     b = !myOwnPointedTo;
     break;

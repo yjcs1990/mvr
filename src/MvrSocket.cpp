@@ -1,8 +1,33 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrSocket.h"
 #include "MvrLog.h"
-
 #include <errno.h>
 #include <stdio.h>
 #include <netdb.h>
@@ -12,7 +37,7 @@
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 
-// We're always initialized in Linux
+/// We're always initialized in Linux
 bool MvrSocket::ourInitialized=true;
 
 
@@ -22,12 +47,12 @@ bool MvrSocket::ourInitialized=true;
    call the static function MvrSocket::init() and call MvrSocket::shutdown()
    when it exits. For programs that use Mvria::init() and Mvria::uninit()
    calling the MvrSocket::init() and MvrSocket::shutdown() is unnecessary. The
-   Mvria initialization functions take care of this. These functions do nothing
+   Mvr initialization functions take care of this. These functions do nothing
    in Linux.
 */
 bool MvrSocket::init()
 {
-  return(true);
+    return(true);
 }
 
 /**
@@ -36,7 +61,7 @@ bool MvrSocket::init()
    call the static function MvrSocket::init() and call MvrSocket::shutdown()
    when it exits. For programs that use Mvria::init() and Mvria::uninit()
    calling the MvrSocket::init() and MvrSocket::shutdown() is unnecessary. The
-   Mvria initialization functions take care of this. These functions do nothing
+   Mvr initialization functions take care of this. These functions do nothing
    in Linux.
 */
 void MvrSocket::shutdown()
@@ -44,15 +69,15 @@ void MvrSocket::shutdown()
 }
 
 MvrSocket::MvrSocket() :
-  myType(Unknown),
-  myError(NoErr),
-  myErrorStr(),
-  myDoClose(true),
-  myFD(-1),
-  myNonBlocking(false),
-  mySin()
+        myType(Unknown),
+        myError(NoErr),
+        myErrorStr(),
+        myDoClose(true),
+        myFD(-1),
+        myNonBlocking(false),
+        mySin()
 {
-  internalInit();
+    internalInit();
 }
 
 /**
@@ -62,462 +87,479 @@ MvrSocket::MvrSocket() :
    @param type protocol type to use
 */
 MvrSocket::MvrSocket(const char *host, int port, Type type) :
-  myType(type),
-  myError(NoErr),
-  myErrorStr(),
-  myDoClose(true),
-  myFD(-1),
-  myNonBlocking(false),
-  mySin()
+        myType(type),
+        myError(NoErr),
+        myErrorStr(),
+        myDoClose(true),
+        myFD(-1),
+        myNonBlocking(false),
+        mySin()
 {
-  internalInit();
-  connect(host, port, type);
+    internalInit();
+    connect(host, port, type);
 }
 
 MvrSocket::MvrSocket(int port, bool doClose, Type type) :
-  myType(type),
-  myError(NoErr),
-  myErrorStr(),
-  myDoClose(doClose),
-  myFD(-1),
-  myNonBlocking(false),
-  mySin()
+        myType(type),
+        myError(NoErr),
+        myErrorStr(),
+        myDoClose(doClose),
+        myFD(-1),
+        myNonBlocking(false),
+        mySin()
 {
-  internalInit();
-  open(port, type);
+    internalInit();
+    open(port, type);
 }
 
 MvrSocket::~MvrSocket()
 {
-  close();
+    close();
 }
 
 bool MvrSocket::hostAddr(const char *host, struct in_addr &addr)
 {
-  struct hostent *hp;
-  if (!(hp=gethostbyname(host)))
-  {
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::hostAddr: gethostbyname failed");
-    memset(&addr, 0, sizeof(in_addr));
-    return(false);
-  }
-  else
-  {
-    bcopy(hp->h_addr, &addr, hp->h_length);
-    return(true);
-  }
+    struct hostent *hp;
+    if (!(hp=gethostbyname(host)))
+    {
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::hostAddr: gethostbyname failed");
+        memset(&addr, 0, sizeof(in_addr));
+        return(false);
+    }
+    else
+    {
+        bcopy(hp->h_addr, &addr, hp->h_length);
+        return(true);
+    }
 }
 
 bool MvrSocket::addrHost(struct in_addr &addr, char *host)
 {
-  struct hostent *hp;
+    struct hostent *hp;
 
-  hp=gethostbyaddr((char*)&addr.s_addr, sizeof(addr.s_addr), AF_INET);
-  if (hp)
-    strcpy(host, hp->h_name);
-  else
-    strcpy(host, inet_ntoa(addr));
+    hp=gethostbyaddr((char*)&addr.s_addr, sizeof(addr.s_addr), AF_INET);
+    if (hp)
+        strcpy(host, hp->h_name);
+    else
+        strcpy(host, inet_ntoa(addr));
 
-  return(true);
+    return(true);
 }
 
 std::string MvrSocket::getHostName()
 {
-  char localhost[maxHostNameLen()];
+    char localhost[maxHostNameLen()];
 
-  if (gethostname(localhost, sizeof(localhost)) == 1)
-    return("");
-  else
-    return(localhost);
+    if (gethostname(localhost, sizeof(localhost)) == 1)
+        return("");
+    else
+        return(localhost);
 }
 
 bool MvrSocket::connect(const char *host, int port, Type type,
-		       const char *openOnIP)
+                       const char *openOnIP)
 {
-  char localhost[maxHostNameLen()];
-  myError=NoErr;
-  myErrorStr.clear();
-  if (!host)
-  {
-    if (gethostname(localhost, sizeof(localhost)) == 1)
+    char localhost[maxHostNameLen()];
+    myError=NoErr;
+    myErrorStr.clear();
+    if (!host)
     {
-      myError=ConBadHost;
-      myErrorStr="Failure to locate host '";
-      myErrorStr+=localhost;
-      myErrorStr+="'";
-      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: gethostname failed");
-      return(false);
+        if (gethostname(localhost, sizeof(localhost)) == 1)
+        {
+            myError=ConBadHost;
+            myErrorStr="Failure to locate host '";
+            myErrorStr+=localhost;
+            myErrorStr+="'";
+            MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: gethostname failed");
+            return(false);
+        }
+        host=localhost;
     }
-    host=localhost;
-  }
 
-  bzero(&mySin, sizeof(mySin));
+    bzero(&mySin, sizeof(mySin));
+    // MPL taking out this next code line from the if since it makes
+    // everything we can't resolve try to connect to localhost
+    // &&  !hostAddr("localhost", mySin.sin_addr))
 
-  char useHost[1024];
-  int usePort;
-  separateHost(host, port, useHost, sizeof(useHost), &usePort);
+    char useHost[1024];
+    int usePort;
+    separateHost(host, port, useHost, sizeof(useHost), &usePort);
 
-  if (!hostAddr(useHost, mySin.sin_addr))
-    return(false);
-  setRawIPString();
-  mySin.sin_family=AF_INET;
-  mySin.sin_port=hostToNetOrder(usePort);
+    if (!hostAddr(useHost, mySin.sin_addr))
+        return(false);
+    setRawIPString();
+    mySin.sin_family=AF_INET;
+    mySin.sin_port=hostToNetOrder(usePort);
 
-  if ((type == TCP) && ((myFD=socket(AF_INET, SOCK_STREAM, 0)) < 0))
-  {
-    myError=NetFail;
-    myErrorStr="Failure to make TCP socket";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make tcp socket");
-    return(false);
-  }
-  else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
-  {
-    myError=NetFail;
-    myErrorStr="Failure to make UDP socket";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make udp socket");
-    return(false);
-  }
-
-  MvrUtil::setFileCloseOnExec(myFD);
-
-  if (openOnIP != NULL)
-  {
-    struct sockaddr_in outSin;
-    if (!hostAddr(openOnIP, outSin.sin_addr))
+    if ((type == TCP) && ((myFD=socket(AF_INET, SOCK_STREAM, 0)) < 0))
     {
-      myError = NameLookup;
-      myErrorStr = "Name lookup failed";
-      MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
-      return(false); 
+        myError=NetFail;
+        myErrorStr="Failure to make TCP socket";
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make tcp socket");
+        return(false);
     }
-    outSin.sin_family=AF_INET;
-    outSin.sin_port=hostToNetOrder(0);
-    if (bind(myFD, (struct sockaddr *)&outSin, sizeof(outSin)) < 0)
+    else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
     {
-      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: Failure to bind socket to port %d", 0);
-      return(false);
+        myError=NetFail;
+        myErrorStr="Failure to make UDP socket";
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: could not make udp socket");
+        return(false);
     }
-  }
 
-  myType=type;
+    MvrUtil::setFileCloseOnExec(myFD);
 
-  if (::connect(myFD, (struct sockaddr *)&mySin,
-		sizeof(struct sockaddr_in)) < 0)
-  {
-    myErrorStr="Failure to connect socket";
-    switch (errno)
+    if (openOnIP != NULL)
     {
-    case ECONNREFUSED:
-      myError=ConRefused;
-      myErrorStr+="; Connection refused";
-      break;
-    case ENETUNREACH:
-      myError=ConNoRoute;
-      myErrorStr+="; No route to host";
-      break;
-    default:
-      myError=NetFail;
-      break;
+        struct sockaddr_in outSin;
+        if (!hostAddr(openOnIP, outSin.sin_addr))
+        {
+            myError = NameLookup;
+            myErrorStr = "Name lookup failed";
+            MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
+            return(false);
+        }
+        outSin.sin_family=AF_INET;
+        outSin.sin_port=hostToNetOrder(0);
+        if (bind(myFD, (struct sockaddr *)&outSin, sizeof(outSin)) < 0)
+        {
+            MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connect: Failure to bind socket to port %d", 0);
+            return(false);
+        }
     }
-    MvrLog::logErrorFromOS(MvrLog::Verbose, "MvrSocket::connect: could not connect");
 
-    ::close(myFD);
-    myFD = -1;
-    return(false);
-  }
+    myType=type;
 
-  return(true);
+    if (::connect(myFD, (struct sockaddr *)&mySin,
+                  sizeof(struct sockaddr_in)) < 0)
+    {
+        myErrorStr="Failure to connect socket";
+        switch (errno)
+        {
+            case ECONNREFUSED:
+                myError=ConRefused;
+                myErrorStr+="; Connection refused";
+                break;
+            case ENETUNREACH:
+                myError=ConNoRoute;
+                myErrorStr+="; No route to host";
+                break;
+            default:
+                myError=NetFail;
+                break;
+        }
+        MvrLog::logErrorFromOS(MvrLog::Verbose, "MvrSocket::connect: could not connect");
+
+        ::close(myFD);
+        myFD = -1;
+        return(false);
+    }
+
+    return(true);
 }
 
 /** @return false and set error code and description string on failure  */
 bool MvrSocket::open(int port, Type type, const char *openOnIP)
 {
-  int ret;
-  char localhost[maxHostNameLen()];
+    int ret;
+    char localhost[maxHostNameLen()];
 
-  myError=NoErr;
-  myErrorStr.clear();
-  if ((type == TCP) && ((myFD=socket(AF_INET, SOCK_STREAM, 0)) < 0))
-  {
-    myErrorStr="Failure to make TCP socket";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create tcp socket");
-    return(false);
-  }
-  else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
-  {
-    myErrorStr="Failure to make UDP socket";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create udp socket");
-    return(false);
-  }
-
-  MvrUtil::setFileCloseOnExec(myFD);
-
-  setLinger(0);
-  setReuseAddress();
-
-  myType=type;
-
-   bzero(&mySin, sizeof(mySin));
-
-  if (openOnIP != NULL)
-  {
-    
-    if (!hostAddr(openOnIP, mySin.sin_addr))
+    myError=NoErr;
+    myErrorStr.clear();
+    if ((type == TCP) && ((myFD=socket(AF_INET, SOCK_STREAM, 0)) < 0))
     {
-      MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
-      myError = NameLookup;
-      myErrorStr = "Name lookup failed";
-      ::close(myFD);
-      myFD = -1;
-      return(false); 
+        myErrorStr="Failure to make TCP socket";
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create tcp socket");
+        return(false);
+    }
+    else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
+    {
+        myErrorStr="Failure to make UDP socket";
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not create udp socket");
+        return(false);
+    }
+
+    MvrUtil::setFileCloseOnExec(myFD);
+
+    setLinger(0);
+    setReuseAddress();
+
+    myType=type;
+
+    /* MPL removed this since with what I Took out down below months ago
+    if (gethostname(localhost, sizeof(localhost)) == 1)
+    {
+      myErrorStr="Failure to locate localhost";
+      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: gethostname failed");
+      return(false);
+    }
+    */
+    bzero(&mySin, sizeof(mySin));
+    /* MPL took this out since it was just overriding it with the
+       INADDR_ANY anyways and it could cause slowdowns if a machine wasn't
+       configured so lookups are quick
+    if (!hostAddr(localhost, mySin.sin_addr) &&
+        !hostAddr("localhost", mySin.sin_addr))
+      return(false); */
+
+    if (openOnIP != NULL)
+    {
+
+        if (!hostAddr(openOnIP, mySin.sin_addr))
+        {
+            MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open on", openOnIP);
+            myError = NameLookup;
+            myErrorStr = "Name lookup failed";
+            ::close(myFD);
+            myFD = -1;
+            return(false);
+        }
+        else
+        {
+            //printf("Opening on %s\n", openOnIP);
+        }
     }
     else
     {
-      //printf("Opening on %s\n", openOnIP);
+        mySin.sin_addr.s_addr=htonl(INADDR_ANY);
     }
-  }
-  else
-  {
-    mySin.sin_addr.s_addr=htonl(INADDR_ANY);
-  }
 
-  setRawIPString();
-  mySin.sin_family=AF_INET;
-  mySin.sin_port=hostToNetOrder(port);
+    setRawIPString();
+    mySin.sin_family=AF_INET;
+    mySin.sin_port=hostToNetOrder(port);
 
-  if ((ret=bind(myFD, (struct sockaddr *)&mySin, sizeof(mySin))) < 0)
-  {
-    myError = NetFail;
-    myErrorStr="Failure to bind socket to port ";
-    sprintf(localhost, "%d", port);
-    myErrorStr+=localhost;
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not bind");
-    ::close(myFD);
-    myFD = -1;
-    return(false);
-  }
+    if ((ret=bind(myFD, (struct sockaddr *)&mySin, sizeof(mySin))) < 0)
+    {
+        myError = NetFail;
+        myErrorStr="Failure to bind socket to port ";
+        sprintf(localhost, "%d", port);
+        myErrorStr+=localhost;
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not bind");
+        ::close(myFD);
+        myFD = -1;
+        return(false);
+    }
 
-  if ((type == TCP) && (listen(myFD, 5) < 0))
-  {
-    myError = NetFail;
-    myErrorStr="Failure to listen on socket";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not listen");
-    ::close(myFD);
-    myFD = -1;
-    return(false);
-  }
+    if ((type == TCP) && (listen(myFD, 5) < 0))
+    {
+        myError = NetFail;
+        myErrorStr="Failure to listen on socket";
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: could not listen");
+        ::close(myFD);
+        myFD = -1;
+        return(false);
+    }
 
-  myLastStringReadTime.setToNow();
-  return(true);
+    myLastStringReadTime.setToNow();
+    return(true);
 }
 
 /** @return false and set error code and description string on failure  */
 bool MvrSocket::create(Type type)
 {
-  myError = NoErr;
-  myErrorStr.clear();
+    myError = NoErr;
+    myErrorStr.clear();
 
-  if ((type == TCP) && ((myFD=socket(AF_INET, SOCK_STREAM, 0)) < 0))
-  {
-    myError = NetFail;
-    myErrorStr="Failure to make TCP socket";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create tcp socket");
-    return(false);
-  }
-  else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
-  {
-    myError = NetFail;
-    myErrorStr="Failure to make UDP socket";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create udp socket");
-    return(false);
-  }
+    if ((type == TCP) && ((myFD=socket(AF_INET, SOCK_STREAM, 0)) < 0))
+    {
+        myError = NetFail;
+        myErrorStr="Failure to make TCP socket";
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create tcp socket");
+        return(false);
+    }
+    else if ((type == UDP) && ((myFD=socket(AF_INET, SOCK_DGRAM, 0)) < 0))
+    {
+        myError = NetFail;
+        myErrorStr="Failure to make UDP socket";
+        MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::create: could not create udp socket");
+        return(false);
+    }
 
-  MvrUtil::setFileCloseOnExec(myFD);
+    MvrUtil::setFileCloseOnExec(myFD);
 
-  myType=type;
+    myType=type;
 
-  if (getSockName())
-    return(true);
-  else
-    return(false);
+    if (getSockName())
+        return(true);
+    else
+        return(false);
 }
 
 /** @return false on error */
 bool MvrSocket::findValidPort(int startPort, const char *openOnIP)
 {
-  //char localhost[maxHostNameLen()];
+    //char localhost[maxHostNameLen()];
 
-  /*
-  if (gethostname(localhost, sizeof(localhost)) == 1)
-  {
-    myErrorStr="Failure to locate localhost";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::findValidPort: gethostname failed");
-    return(false);
-  }
-  */
-
-  for (int i=0; i+startPort < 65000; ++i)
-  {
-    bzero(&mySin, sizeof(mySin));
     /*
-    if (!hostAddr(localhost, mySin.sin_addr) && 
-	!hostAddr("localhost", mySin.sin_addr))
+    if (gethostname(localhost, sizeof(localhost)) == 1)
+    {
+      myErrorStr="Failure to locate localhost";
+      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::findValidPort: gethostname failed");
       return(false);
+    }
     */
-    setRawIPString();
-    
-    if (openOnIP != NULL)
-    {
-      
-      if (!hostAddr(openOnIP, mySin.sin_addr))
-      {
-	MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open udp on", openOnIP);
-	return(false); 
-      }
-      else
-      {
-	//printf("Opening on %s\n", openOnIP);
-      }
-    }
-    else
-    {
-      mySin.sin_addr.s_addr=htonl(INADDR_ANY);
-    }
-    
-    mySin.sin_family=AF_INET;
-    mySin.sin_port=hostToNetOrder(startPort+i);
 
-    if (bind(myFD, (struct sockaddr *)&mySin, sizeof(mySin)) == 0)
-      break;
-  }
+    for (int i=0; i+startPort < 65000; ++i)
+    {
+        bzero(&mySin, sizeof(mySin));
+        /*
+        if (!hostAddr(localhost, mySin.sin_addr) &&
+        !hostAddr("localhost", mySin.sin_addr))
+          return(false);
+        */
+        setRawIPString();
 
-  return(true);
+        if (openOnIP != NULL)
+        {
+
+            if (!hostAddr(openOnIP, mySin.sin_addr))
+            {
+                MvrLog::log(MvrLog::Normal, "Couldn't find ip of %s to open udp on", openOnIP);
+                return(false);
+            }
+            else
+            {
+                //printf("Opening on %s\n", openOnIP);
+            }
+        }
+        else
+        {
+            mySin.sin_addr.s_addr=htonl(INADDR_ANY);
+        }
+
+        mySin.sin_family=AF_INET;
+        mySin.sin_port=hostToNetOrder(startPort+i);
+
+        if (bind(myFD, (struct sockaddr *)&mySin, sizeof(mySin)) == 0)
+            break;
+    }
+
+    return(true);
 }
 
 /** @return false and set error code and description string on failure */
 bool MvrSocket::connectTo(const char *host, int port)
 {
-  char localhost[maxHostNameLen()];
-  myError = NoErr;
-  myErrorStr.clear();
-  if (myFD < 0)
-    return(false);
+    char localhost[maxHostNameLen()];
+    myError = NoErr;
+    myErrorStr.clear();
+    if (myFD < 0)
+        return(false);
 
-  if (!host)
-  {
-    if (gethostname(localhost, sizeof(localhost)) == 1)
+    if (!host)
     {
-      myErrorStr="Failure to locate host '";
-      myErrorStr+=localhost;
-      myErrorStr+="'";
-      MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connectTo: gethostname failed");
-      return(false);
+        if (gethostname(localhost, sizeof(localhost)) == 1)
+        {
+            myErrorStr="Failure to locate host '";
+            myErrorStr+=localhost;
+            myErrorStr+="'";
+            MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::connectTo: gethostname failed");
+            return(false);
+        }
+        host=localhost;
     }
-    host=localhost;
-  }
 
-  char useHost[1024];
-  int usePort;
-  separateHost(host, port, useHost, sizeof(useHost), &usePort);
+    char useHost[1024];
+    int usePort;
+    separateHost(host, port, useHost, sizeof(useHost), &usePort);
 
-  bzero(&mySin, sizeof(mySin));
-  if (!hostAddr(useHost, mySin.sin_addr))
-    return(false);
-  setRawIPString();
-  mySin.sin_family=AF_INET;
-  mySin.sin_port=hostToNetOrder(usePort);
+    bzero(&mySin, sizeof(mySin));
+    if (!hostAddr(useHost, mySin.sin_addr))
+        return(false);
+    setRawIPString();
+    mySin.sin_family=AF_INET;
+    mySin.sin_port=hostToNetOrder(usePort);
 
-  myLastStringReadTime.setToNow();
-  return(connectTo(&mySin));
+    myLastStringReadTime.setToNow();
+    return(connectTo(&mySin));
 }
 
 /** @return false and set error code and description string on failure */
 bool MvrSocket::connectTo(struct sockaddr_in *sin)
 {
-  myError = NoErr;
-  myErrorStr.clear();
-  if (::connect(myFD, (struct sockaddr *)sin,
-		sizeof(struct sockaddr_in)) < 0)
-  {
-    myErrorStr="Failure to connect socket";
-    myError = ConRefused;
-    MvrLog::logErrorFromOS(MvrLog::Normal, 
-			  "MvrSocket::connectTo: connect failed");
-    return(0);
-  }
+    myError = NoErr;
+    myErrorStr.clear();
+    if (::connect(myFD, (struct sockaddr *)sin,
+                  sizeof(struct sockaddr_in)) < 0)
+    {
+        myErrorStr="Failure to connect socket";
+        myError = ConRefused;
+        MvrLog::logErrorFromOS(MvrLog::Normal,
+                              "MvrSocket::connectTo: connect failed");
+        return(0);
+    }
 
-  myLastStringReadTime.setToNow();
-  return(1);
+    myLastStringReadTime.setToNow();
+    return(1);
 }
 
 
 bool MvrSocket::close()
 {
-  if (myFD == -1)
-    return true;
-  MvrLog::log(MvrLog::Verbose, "Closing socket");
-  if (myCloseFunctor != NULL)
-    myCloseFunctor->invoke();
-  if (myDoClose && ::close(myFD))
-  {
-    myFD=-1;
-    return(false);
-  }
-  else
-  {
-    myFD=-1;
-    return(true);
-  }
+    if (myFD == -1)
+        return true;
+    MvrLog::log(MvrLog::Verbose, "Closing socket");
+    if (myCloseFunctor != NULL)
+        myCloseFunctor->invoke();
+    if (myDoClose && ::close(myFD))
+    {
+        myFD=-1;
+        return(false);
+    }
+    else
+    {
+        myFD=-1;
+        return(true);
+    }
 }
 
 /** @return false and set error code and description string on failure. */
 bool MvrSocket::setLinger(int time)
 {
-  struct linger lin;
-  myError = NoErr;
-  myErrorStr.clear();
+    struct linger lin;
+    myError = NoErr;
+    myErrorStr.clear();
 
-  if (time)
-  {
-    lin.l_onoff=1;
-    lin.l_linger=time;
-  }
-  else
-  {
-    lin.l_onoff=0;
-    lin.l_linger=time;
-  }
+    if (time)
+    {
+        lin.l_onoff=1;
+        lin.l_linger=time;
+    }
+    else
+    {
+        lin.l_onoff=0;
+        lin.l_linger=time;
+    }
 
-  if (setsockopt(myFD, SOL_SOCKET, SO_LINGER, &lin, sizeof(lin)) != 0)
-  {
-    myErrorStr="Failure to setsockopt LINGER";
-    myError = NetFail;
-    MvrLog::logErrorFromOS(MvrLog::Normal, 
-			  "MvrSocket::setLinger: setsockopt failed");
-    return(false);
-  }
-  else
-    return(true);
+    if (setsockopt(myFD, SOL_SOCKET, SO_LINGER, &lin, sizeof(lin)) != 0)
+    {
+        myErrorStr="Failure to setsockopt LINGER";
+        myError = NetFail;
+        MvrLog::logErrorFromOS(MvrLog::Normal,
+                              "MvrSocket::setLinger: setsockopt failed");
+        return(false);
+    }
+    else
+        return(true);
 }
 
 /** @return false and set error code and description string on failure. */
 bool MvrSocket::setBroadcast()
 {
-  myError = NoErr;
-  myErrorStr.clear();
-  if (setsockopt(myFD, SOL_SOCKET, SO_BROADCAST, NULL, 0) != 0)
-  {
-    myErrorStr="Failure to setsockopt BROADCAST";
-    myError = NetFail;
-    MvrLog::logErrorFromOS(MvrLog::Normal, 
-			  "MvrSocket::setBroadcast: setsockopt failed");
-    return(false);
-  }
-  else
-    return(true);
+    myError = NoErr;
+    myErrorStr.clear();
+    if (setsockopt(myFD, SOL_SOCKET, SO_BROADCAST, NULL, 0) != 0)
+    {
+        myErrorStr="Failure to setsockopt BROADCAST";
+        myError = NetFail;
+        MvrLog::logErrorFromOS(MvrLog::Normal,
+                              "MvrSocket::setBroadcast: setsockopt failed");
+        return(false);
+    }
+    else
+        return(true);
 }
 
-/** @return false and set error code and description string on failure. 
+/** @return false and set error code and description string on failure.
     @internal
     @note MvrSocket always sets the reuse-address option in open(), so calling this function is normally unneccesary.
      (This apparently needs to be done after the socket is created before
@@ -525,66 +567,66 @@ bool MvrSocket::setBroadcast()
 */
 bool MvrSocket::setReuseAddress()
 {
-  int opt=1;
-  myError = NoErr;
-  myErrorStr.clear();
-  if (setsockopt(myFD, SOL_SOCKET, SO_REUSEADDR,
-		 (char*)&opt, sizeof(opt)) != 0)
-  {
-    myErrorStr="Failure to setsockopt REUSEADDR";
-    myError = NetFail;
-    MvrLog::logErrorFromOS(MvrLog::Normal, 
-			  "MvrSocket::setReuseAddress: setsockopt failed");
-    return(false);
-  }
-  else
-    return(true);
+    int opt=1;
+    myError = NoErr;
+    myErrorStr.clear();
+    if (setsockopt(myFD, SOL_SOCKET, SO_REUSEADDR,
+                   (char*)&opt, sizeof(opt)) != 0)
+    {
+        myErrorStr="Failure to setsockopt REUSEADDR";
+        myError = NetFail;
+        MvrLog::logErrorFromOS(MvrLog::Normal,
+                              "MvrSocket::setReuseAddress: setsockopt failed");
+        return(false);
+    }
+    else
+        return(true);
 }
 
 /** @return false and set error code and description string on failure.  */
 bool MvrSocket::setNonBlock()
 {
-  myError = NoErr;
-  myErrorStr.clear();
-  if (fcntl(myFD, F_SETFL, O_NONBLOCK) != 0)
-  {
-    myErrorStr="Failure to fcntl O_NONBLOCK";
-    myError = NetFail;
-    MvrLog::logErrorFromOS(MvrLog::Normal, 
-			  "MvrSocket::setNonBlock: fcntl failed");
-    return(false);
-  }
-  else
-  {
-    myNonBlocking = true;
-    return(true);
-  }
+    myError = NoErr;
+    myErrorStr.clear();
+    if (fcntl(myFD, F_SETFL, O_NONBLOCK) != 0)
+    {
+        myErrorStr="Failure to fcntl O_NONBLOCK";
+        myError = NetFail;
+        MvrLog::logErrorFromOS(MvrLog::Normal,
+                              "MvrSocket::setNonBlock: fcntl failed");
+        return(false);
+    }
+    else
+    {
+        myNonBlocking = true;
+        return(true);
+    }
 }
 
 /**
    Copy socket structures. Copy from one Socket to another will still have
    the first socket close the file descripter when it is destructed.
- @return false and set error code and description string on failure.  
+ @return false and set error code and description string on failure.
 */
 bool MvrSocket::copy(int fd, bool doclose)
 {
-  socklen_t len;
+    socklen_t len;
 
-  myFD=fd;
-  myDoClose=doclose;
-  myType=Unknown;
+    myFD=fd;
+    myDoClose=doclose;
+    myType=Unknown;
 
-  len=sizeof(struct sockaddr_in);
-  if (getsockname(myFD, (struct sockaddr*)&mySin, &len))
-  {
-    myErrorStr="Failed to getsockname on fd ";
-    myError = NetFail;
-    MvrLog::logErrorFromOS(MvrLog::Normal, 
-			  "MvrSocket::copy: getsockname failed");
-    return(false);
-  }
-  else
-    return(true);
+    len=sizeof(struct sockaddr_in);
+    if (getsockname(myFD, (struct sockaddr*)&mySin, &len))
+    {
+        myErrorStr="Failed to getsockname on fd ";
+        myError = NetFail;
+        MvrLog::logErrorFromOS(MvrLog::Normal,
+                              "MvrSocket::copy: getsockname failed");
+        return(false);
+    }
+    else
+        return(true);
 }
 
 /**
@@ -596,74 +638,74 @@ bool MvrSocket::copy(int fd, bool doclose)
  **/
 bool MvrSocket::accept(MvrSocket *sock)
 {
-  socklen_t len;
-  //unsigned char *bytes;
-  
-  myError = NoErr;
-  myErrorStr.clear();
+    socklen_t len;
+    //unsigned char *bytes;
 
-  len=sizeof(struct sockaddr_in);
-  sock->myFD=::accept(myFD, (struct sockaddr*)&(sock->mySin), &len);
-  sock->myType=myType;
-  sock->setRawIPString();
-  /*
-  bytes = (unsigned char *)sock->inAddr();
-  sprintf(sock->myIPString, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], 
-	
-  bytes[3]);
-  */
-  if ((sock->myFD < 0 && !myNonBlocking) || 
-      (sock->myFD < 0 && errno != EWOULDBLOCK && myNonBlocking))
-  {
-    myErrorStr="Failed to accept on socket";
-    myError = ConRefused;
-    MvrLog::logErrorFromOS(MvrLog::Terse, 
-			  "MvrSocket::accept: accept failed");
-    return(false);
-  }
+    myError = NoErr;
+    myErrorStr.clear();
 
-  return(true);
+    len=sizeof(struct sockaddr_in);
+    sock->myFD=::accept(myFD, (struct sockaddr*)&(sock->mySin), &len);
+    sock->myType=myType;
+    sock->setRawIPString();
+    /*
+    bytes = (unsigned char *)sock->inAddr();
+    sprintf(sock->myIPString, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2],
+
+    bytes[3]);
+    */
+    if ((sock->myFD < 0 && !myNonBlocking) ||
+        (sock->myFD < 0 && errno != EWOULDBLOCK && myNonBlocking))
+    {
+        myErrorStr="Failed to accept on socket";
+        myError = ConRefused;
+        MvrLog::logErrorFromOS(MvrLog::Terse,
+                              "MvrSocket::accept: accept failed");
+        return(false);
+    }
+
+    return(true);
 }
 
 void MvrSocket::inToA(struct in_addr *addr, char *buff)
 {
-  strcpy(buff, inet_ntoa(*addr));
+    strcpy(buff, inet_ntoa(*addr));
 }
 
 bool MvrSocket::getSockName()
 {
-  socklen_t size;
-  myError = NoErr;
-  myErrorStr.clear();
-  if (myFD < 0)
-  {
-    myErrorStr="Trying to get socket name on an unopened socket";
-    myError = NetFail;
-    printf(myErrorStr.c_str());
-    return(false);
-  }
+    socklen_t size;
+    myError = NoErr;
+    myErrorStr.clear();
+    if (myFD < 0)
+    {
+        myErrorStr="Trying to get socket name on an unopened socket";
+        myError = NetFail;
+        printf(myErrorStr.c_str());
+        return(false);
+    }
 
-  size=sizeof(mySin);
-  if (getsockname(myFD, (struct sockaddr *)&mySin, &size) != 0)
-  {
-    myErrorStr="Error getting socket name";
-    myError = NetFail;
-    MvrLog::logErrorFromOS(MvrLog::Normal, 
-			  "MvrSocket::getSockName: getSockName failed");
-    return(false);
-  }
+    size=sizeof(mySin);
+    if (getsockname(myFD, (struct sockaddr *)&mySin, &size) != 0)
+    {
+        myErrorStr="Error getting socket name";
+        myError = NetFail;
+        MvrLog::logErrorFromOS(MvrLog::Normal,
+                              "MvrSocket::getSockName: getSockName failed");
+        return(false);
+    }
 
-  return(true);
+    return(true);
 }
 
 unsigned int MvrSocket::hostToNetOrder(int i)
 {
-  return(htons(i));
+    return(htons(i));
 }
 
 unsigned int MvrSocket::netToHostOrder(int i)
 {
-  return(ntohs(i));
+    return(ntohs(i));
 }
 
 /** If this socket is a TCP socket, then set the TCP_NODELAY flag,
@@ -671,18 +713,16 @@ unsigned int MvrSocket::netToHostOrder(int i)
  *  data is ready to send to fill a TCP frame, rather then sending the
  *  packet immediately).
  *  @param flag true to turn on NoDelay, false to turn it off.
- *  @return true of the flag was successfully set, false if there was an 
+ *  @return true of the flag was successfully set, false if there was an
  *    error or this socket is not a TCP socket.
  */
 bool MvrSocket::setNoDelay(bool flag)
 {
-  if(myType != TCP) return false;
-  int f = flag?1:0;
-  int r = setsockopt(myFD, IPPROTO_TCP, TCP_NODELAY, (char*)&f, sizeof(f));
-  return (r != -1);
+    if(myType != TCP) return false;
+    int f = flag?1:0;
+    int r = setsockopt(myFD, IPPROTO_TCP, TCP_NODELAY, (char*)&f, sizeof(f));
+    return (r != -1);
 }
-
-
 
 MVREXPORT const char *MvrSocket::toString(Type t)
 {

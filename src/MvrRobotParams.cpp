@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 
 
@@ -62,7 +88,7 @@ MVREXPORT MvrRobotParams::MvrRobotParams() :
   myRearBumpers = false;
   myNumRearBumpers = 5;
   myNumSonarUnits = 0;
-  // TODO why do we need these counts?
+  // MPL TODO why do we need these counts?
   mySonarBoardCount = 0;
   myBatteryMTXBoardCount = 0;
   myLCDMTXBoardCount = 0;
@@ -306,7 +332,7 @@ void MvrRobotParams::internalAddToConfigDefault(void)
   for(size_t i = 0; i < Mvria::getMaxNumPTZs(); ++i)
     addPTZToConfig(i, this);
 
-  /* Parameters used by MvrVideo library */
+  /* Parameters used by ArVideo library */
   myVideoParams.resize(Mvria::getMaxNumVideoDevices());
   for(size_t i = 0; i < Mvria::getMaxNumVideoDevices(); ++i)
     addVideoToConfig(i, this);
@@ -601,7 +627,7 @@ MVREXPORT void MvrRobotParams::addBatteryToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  // TODO remove this since it's redundant (it's set in the constructor)
+  // MPL TODO remove this since it's redundant (it's set in the constructor)
   //batteryMTXBoardData->myBatteryMTXBoardAutoConn = false;
 
 }
@@ -630,7 +656,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(
   LCDMTXBoardData *lcdMTXBoardData = new LCDMTXBoardData;
   myLCDMTXBoards[lcdNumber] = lcdMTXBoardData;
 
-  /// TODO what's this for?
+  /// MPL TODO what's this for?
   myLCDMTXBoardCount++;
 
   std::string displayHintPlain = "Visible:LCDAutoConnect=true";
@@ -638,7 +664,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(
 
   std::string displayHintCustom;
 
-  /// TODO remove, this is already set in the constructor
+  /// MPL TODO remove, this is already set in the constructor
   //lcdMTXBoardData->myLCDMTXBoardAutoConn = false;
   displayHintCustom = "Checkbox&&Visible:Generation!=Legacy";
 
@@ -653,7 +679,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(
                 tempDescBuf),
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintCustom.c_str(), restartLevel);
-  /// TODO remove, this is already set in the constructor
+  /// MPL TODO remove, this is already set in the constructor
   //lcdMTXBoardData->myLCDMTXBoardConnFailOption = false
 
   config->addParam(
@@ -741,10 +767,10 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
   SonarMTXBoardData *sonarMTXBoardData = new SonarMTXBoardData;
   mySonarMTXBoards[sonarBoardNumber] = sonarMTXBoardData;
 
-  ///   TODO what's this do?
+  /// MPL TODO what's this do?
   mySonarMTXBoardCount++;
 
-  ///   TODO remove this next line (it's in the constructor
+  /// MPL TODO remove this next line (it's in the constructor
   //sonarMTXBoardData->mySonarMTXBoardAutoConn = false;
   displayHintCustom = "Checkbox&&Visible:Generation!=Legacy";
 
@@ -809,7 +835,7 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  ///   Remove this, it's in the constructor
+  /// MPL Remove this, it's in the constructor
   //  sonarMTXBoardData->mySonarDelay = 1;
   config->addParam(
 	  MvrConfigArg("SonarDelay", 
@@ -818,7 +844,7 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  ///   Remove this sonar gain, it's in the constructor
+  /// MPL Remove this sonar gain, it's in the constructor
   //sonarMTXBoardData->mySonarGain = 5;
   config->addParam(
 	  MvrConfigArg("SonarGain", 
@@ -827,7 +853,7 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  //   TODO remove (moved this to constructor)
+  // MPL TODO remove (moved this to constructor)
   //strcpy(&sonarMTXBoardData->mySonarThreshold[0],"3000|1500|2000");
   config->addParam(
 	  MvrConfigArg("SonarDetectionThreshold", 
@@ -1363,7 +1389,7 @@ MVREXPORT bool MvrRobotParams::commercialProcessFile(void)
 {
   myRobotLength = myRobotLengthFront + myRobotLengthRear;
 
-  //   CONFIG TODO process the sonar
+  // MPL CONFIG TODO process the sonar
 
   if (myCommercialAddedConnectables && !myCommercialProcessedSonar)
   {
@@ -1594,17 +1620,17 @@ void MvrRobotParams::processSonarCommercial(MvrConfig *config)
 }
 
 
-MVREXPORT void MvrVideoParams::merge(const MvrVideoParams& other)
+MVREXPORT void ArVideoParams::merge(const ArVideoParams& other)
 {
-//  printf("MvrVideoParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
+//  printf("ArVideoParams::merge: other.type=%s, this.type=%s.\n", other.type.c_str(), type.c_str());
   if(other.type != "unknown" && other.type != "none" && other.type != "")
   {
-    //printf("MvrVideoParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
+    //printf("ArVideoParams::merge: replacing this type %s with other %s\n", type.c_str(), other.type.c_str());
     type = other.type;
   }
   if(other.connectSet)
   {
- //   printf("MvrVideoParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
+ //   printf("ArVideoParams::merge: replacing this connect %d with other %d. other.connectSet=%d, this.connectSet=%d\n", connect, other.connect, other.connectSet, connectSet);
     connect = other.connect;
     connectSet = true;
   }
@@ -1632,10 +1658,10 @@ MVREXPORT void MvrVideoParams::merge(const MvrVideoParams& other)
   {
     analogSignalFormat = other.analogSignalFormat;
   }
-  //printf("MvrVideoParams::merge: this address is %s, other address is %s\n", address.c_str(), other.address.c_str());
+  //printf("ArVideoParams::merge: this address is %s, other address is %s\n", address.c_str(), other.address.c_str());
   if(other.address != "none" && other.address != "")
   {
-	  //printf("MvrVideoParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
+	  //printf("ArVideoParams::merge: replacing this address %s with other %s\n", address.c_str(), other.address.c_str());
     address = other.address;
   }
   if(other.tcpPortSet)
@@ -1645,7 +1671,7 @@ MVREXPORT void MvrVideoParams::merge(const MvrVideoParams& other)
   }
   if(other.invertedSet)
   {
-    //printf("MvrVideoParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
+    //printf("ArVideoParams::merge: replacing this inverted %d with other %d\n", inverted, other.inverted);
     inverted = other.inverted;
     invertedSet = true;
   }

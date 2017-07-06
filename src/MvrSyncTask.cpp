@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "mvriaUtil.h"
@@ -157,8 +183,8 @@ MVREXPORT MvrSyncTask *MvrSyncTask::findNonRecursive(MvrFunctor *functor)
    @param position place in list to put the branch, things are run/printed in 
    the order of highest number to lowest number, no limit on numbers (other 
    than that it is an int).  ARIA uses 0 to 100 just as a convention.
-   @param state Pointer to external variable to store task state in, or NULL to use a new
-   internal variable instead.
+   @param state Pointer to external vmvriable to store task state in, or NULL to use a new
+   internal vmvriable instead.
 */
 MVREXPORT void MvrSyncTask::addNewBranch(const char *nameOfNew, int position,
 				       MvrTaskState::State *state)
@@ -177,8 +203,8 @@ MVREXPORT void MvrSyncTask::addNewBranch(const char *nameOfNew, int position,
    than that it is an int).  ARIA uses 0 to 100 just as a convention.
    @param functor MvrFunctor which contains the functor to invoke when run is 
    called.
-   @param state Pointer to external variable to store task state in, or NULL to
-   use an internal variable instead.
+   @param state Pointer to external vmvriable to store task state in, or NULL to
+   use an internal vmvriable instead.
 */
 MVREXPORT void MvrSyncTask::addNewLeaf(const char *nameOfNew, int position, 
 				     MvrFunctor *functor, 

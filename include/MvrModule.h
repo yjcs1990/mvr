@@ -1,5 +1,31 @@
-#ifndef MVRMODULE_H
-#define MVRMODULE_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARMODULE_H
+#define ARMODULE_H
 
 
 #include "mvriaTypedefs.h"
@@ -38,7 +64,7 @@
    linking in that code. To be able to staticly link .cpp files which contain
    an MvrModule, the ARIA_STATIC preprocessor symbol should be defined. This will cause
    the ARDEF_MODULE() to do nothing. If it defined its normal functions and
-   variables, the linker would fail to staticly link in multiple modules
+   vmvriables, the linker would fail to staticly link in multiple modules
    since they all have symbols with the same name.
 
    Refer to MvrModuleLoader to see how to load an MvrModule into a program.
@@ -88,59 +114,59 @@ protected:
 
 #ifdef ARIA_STATIC
 
-#define MVRDEF_MODULE(mod)
+#define ARDEF_MODULE(mod)
 
 #else
 
 #ifdef WIN32
 
-#define MVRDEF_MODULE(mod) \
+#define ARDEF_MODULE(mod) \
 extern "C" {\
-static MvrModule *__MvriaModule_##mod = &mod; \
+static MvrModule *__MvrModule_##mod = &mod; \
 _declspec(dllexport) bool \
-ariaInitModule(MvrRobot *robot, void *argument = NULL) \
+mvriaInitModule(MvrRobot *robot, void *argument = NULL) \
 { \
-  if (__MvriaModule_##mod) \
+  if (__MvrModule_##mod) \
   { \
-    __MvriaModule__->setRobot(robot); \
-    return(__MvriaModule_##mod->init(robot, argument)); \
+    __MvrModule__->setRobot(robot); \
+    return(__MvrModule_##mod->init(robot, argument)); \
   } \
   else \
     return(false); \
 } \
-_declspec(dllexport) bool ariaExitModule() \
+_declspec(dllexport) bool mvriaExitModule() \
 { \
-  if (__MvriaModule_##mod) \
-    return(__MvriaModule_##mod->exit()); \
+  if (__MvrModule_##mod) \
+    return(__MvrModule_##mod->exit()); \
   return(false); \
 } \
 }
 #else // WIN32
 
-#define MVRDEF_MODULE(mod) \
-static MvrModule *__MvriaModule_##mod = &mod; \
+#define ARDEF_MODULE(mod) \
+static MvrModule *__MvrModule_##mod = &mod; \
 extern "C" {\
-bool ariaInitModule(MvrRobot *robot, void *argument = NULL) \
+bool mvriaInitModule(MvrRobot *robot, void *argument = NULL) \
 { \
-  if (__MvriaModule_##mod) \
+  if (__MvrModule_##mod) \
   { \
-    __MvriaModule_##mod->setRobot(robot); \
-    return(__MvriaModule_##mod->init(robot, argument)); \
+    __MvrModule_##mod->setRobot(robot); \
+    return(__MvrModule_##mod->init(robot, argument)); \
   } \
   else \
     return(false); \
 } \
-bool ariaExitModule() \
+bool mvriaExitModule() \
 { \
-  if (__MvriaModule_##mod) \
-    return(__MvriaModule_##mod->exit()); \
+  if (__MvrModule_##mod) \
+    return(__MvrModule_##mod->exit()); \
   return(false); \
 } \
 }
 
 #endif // WIN32
 
-#endif // MVRIA_STATIC
+#endif // ARIA_STATIC
 
 
-#endif // MVRMODULE_H
+#endif // ARMODULE_H

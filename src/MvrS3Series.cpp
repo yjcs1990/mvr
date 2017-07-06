@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrS3Series.h"
@@ -368,6 +394,7 @@ MvrS3SeriesPacket *MvrS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 				"%s::receivePacket() Telegram number =  %d  ",
 				myName,  myPacket.getTelegramNumByte2());
 		 */
+		/// MPL this timeout was 5000, but I've made it 200
 		/// since the number of readings could be bogus and we
 		/// don't want to go 5 seconds with no readings
 		int numRead = myConn->read((char *) &myReadBuf[0],
@@ -542,7 +569,7 @@ MvrS3SeriesPacket *MvrS3SeriesPacketReceiver::receivePacket(unsigned int msWait,
 MVREXPORT MvrS3Series::MvrS3Series(int laserNumber, const char *name) :
 			MvrLaser(laserNumber, name, 20000),
 			mySensorInterpTask(this, &MvrS3Series::sensorInterp),
-			myMvriaExitCB(this, &MvrS3Series::disconnect),
+			myMvrExitCB(this, &MvrS3Series::disconnect),
 			myPacketHandlerCB(this, &MvrS3Series::packetHandler) {
 
 	//MvrLog::log(MvrLog::Normal, "%s: Sucessfully created", getName());
@@ -554,7 +581,7 @@ MVREXPORT MvrS3Series::MvrS3Series(int laserNumber, const char *name) :
 
 	myIsMonitoringDataAvailable = false;
 
-	Mvria::addExitCallback(&myMvriaExitCB, -10);
+	Mvria::addExitCallback(&myMvrExitCB, -10);
 
 	setInfoLogLevel(MvrLog::Normal);
 	//setInfoLogLevel(MvrLog::Terse);
@@ -647,7 +674,7 @@ MVREXPORT MvrS3Series::MvrS3Series(int laserNumber, const char *name) :
 }
 
 MVREXPORT MvrS3Series::~MvrS3Series() {
-	Mvria::remExitCallback(&myMvriaExitCB);
+	Mvria::remExitCallback(&myMvrExitCB);
 	if (myRobot != NULL) {
 		myRobot->remRangeDevice(this);
 		myRobot->remLaser(this);
@@ -681,7 +708,7 @@ MVREXPORT void MvrS3Series::laserSetName(const char *name) {
 	mySafetyDebuggingTimeMutex.setLogNameVar("%s::mySafetyDebuggingTimeMutex", 
 					     getName());
 	myDataMutex.setLogNameVar("%s::myDataMutex", getName());
-	myMvriaExitCB.setNameVar("%s::exitCallback", getName());
+	myMvrExitCB.setNameVar("%s::exitCallback", getName());
 
 	MvrLaser::laserSetName( getName());
 }
@@ -738,20 +765,23 @@ void MvrS3Series::sensorInterp(void) {
 		     myName.c_str(), 
 		     myRobot->getVel());
 
+	/// MPL 2013_07_24 testing (added)
 	lockDevice();
 
+	/// MPL 2013_07_24 testing (added)
 	adjustRawReadings(false);
 
 	while (1) {
 		myPacketsMutex.lock();
 		if (myPackets.empty()) {
 			myPacketsMutex.unlock();
+			/// MPL 2013_07_24 testing (added)
 			unlockDevice();
 			return;
 		}
 		packet = myPackets.front();
 		myPackets.pop_front();
-		// this was some code to only use the latest laser
+		// MPL this was some code to only use the latest laser
 		// packet, but that leaked memory because the
 		// deleteSet wasn't there, just reverting to the old
 		// way (the two lines above this comment)
@@ -790,6 +820,34 @@ void MvrS3Series::sensorInterp(void) {
 				            "%s::sensorInterp() packet = %s ", getName(), obuf);
 #endif
 
+				/* MPL 2013_07_19 moving this into the part that gets a packet so that it's not subjected to the normal cycle time
+		// if the monitoring data is available - send it down the firmware
+
+		if (packet->getMonitoringDataAvailable()) {
+
+			myIsMonitoringDataAvailable = true;
+			myMonitoringData = packet->getMonitoringDataByte1();
+
+			myRobot->comInt(217, packet->getMonitoringDataByte1());  
+
+		}
+		else {
+			myIsMonitoringDataAvailable = false;
+		}
+				*/
+
+		// this value should be found more empirically... but we used 1/75
+		// hz for the lms2xx and it was fine, so here we'll use 1/50 hz for now
+		// PS 7/9/11 - not sure what this is doing????
+
+		// MPL 2013_06_03 - the S300 and the S3000 work
+		// differently for timing...  on the S300 the data is
+		// supposed to be real time (SICK seems to disagree
+		// with themselves on this point), so assume no delay
+		// (don't change the receive time)... but on the S3000
+		// there's a delay of one scan (30ms) so add that if
+		// the number of readings means it's an S3000
+
 		bool interpolateReadings = false;
 		if (packet->getNumReadings() == 381) /// S3000
 		{
@@ -813,6 +871,8 @@ void MvrS3Series::sensorInterp(void) {
 		  }
 		}
 
+		// MPL this was from debugging the intermittent lost
+		// issue thatl ooked like a timing problem
 		//MvrLog::log(MvrLog::Normal, "%s packet %lld mSec old", getName(), time.mSecSince());
 		
 		if (myRobot == NULL || !myRobot->isConnected())
@@ -849,6 +909,7 @@ void MvrS3Series::sensorInterp(void) {
 		if (myRobot != NULL)
 			counter = myRobot->getCounter();
 
+		/// MPL 2013_07_24 testing (commented out)
 		//lockDevice();
 		myDataMutex.lock();
 
@@ -873,7 +934,9 @@ void MvrS3Series::sensorInterp(void) {
 					"%s::sensorInterp(): Warning: The number of readings is not correct = %d",
 					getName(), myNumChans);
 
+			// PS 12/6/12 - need to unlock
 			myDataMutex.unlock();
+			/// MPL 2013_07_24 testing (commented out)
 			//unlockDevice();
 
 			delete packet;
@@ -891,7 +954,9 @@ void MvrS3Series::sensorInterp(void) {
 					"%s::sensorInterp() Bad data, in theory have %d readings but can only have 541... skipping this packet",
 					getName(), eachNumberData);
 
+			// PS 12/6/12 - need to unlock and delete packet
 			myDataMutex.unlock();
+			/// MPL 2013_07_24 testing (commented out)
 			//unlockDevice();
 			delete packet;
 
@@ -1080,9 +1145,11 @@ void MvrS3Series::sensorInterp(void) {
 		 */
 
 		laserProcessReadings();
+		/// MPL 2013_07_24 testing (commented out)
 		//unlockDevice();
 		delete packet;
 	}
+	/// MPL 2013_07_24 testing (added)
 	unlockDevice();
 }
 
@@ -1134,6 +1201,9 @@ MVREXPORT bool MvrS3Series::blockingConnect(void) {
 	myTryingToConnect = true;
 	unlockDevice();
 
+	// PS 9/9/11 - moved up top
+	//laserPullUnsetParamsFromRobot();
+	//laserCheckParams();
 
 	int size = MvrMath::roundInt((270 / .25) + 1);
 	MvrLog::log(myInfoLogLevel,
@@ -1144,6 +1214,7 @@ MVREXPORT bool MvrS3Series::blockingConnect(void) {
 	MvrTime timeDone;
 	if (myPowerControlled)
 	{
+	        // MPL 11/28/2012 making this timeout shorter
 	        //if (!timeDone.addMSec(60 * 1000))
 		if (!timeDone.addMSec(5 * 1000))
 		{
@@ -1154,6 +1225,7 @@ MVREXPORT bool MvrS3Series::blockingConnect(void) {
 	}
 	else
 	{
+	        // MPL 11/28/2012 making this timeout shorter 
 	        //if (!timeDone.addMSec(30 * 1000))
 		if (!timeDone.addMSec(5 * 1000))
 		{
@@ -1269,6 +1341,15 @@ while (getRunning() )
 	while (getRunning() && myIsConnected &&
 	       (packet = myReceiver.receivePacket (500, false) ) != NULL) {
 
+	        // MPL 2013_07_09 moved this from the process packet
+	        // so that we don't trigger a safety warning if the
+	        // cycle takes too long...  it's possible there should
+	        // be some mutex around this monitoring data but it's
+	        // chars/bools so hopefully it'll be OK TODO verify
+
+	        // if the monitoring data is available - send it down to
+	        // the firmware
+
 	        if (packet->getMonitoringDataAvailable()) {
 
 		  mySafetyDebuggingTimeMutex.lock();
@@ -1285,7 +1366,9 @@ while (getRunning() )
 		    myMonitoringData = packet->getMonitoringDataByte1();
 		  else
 		    myMonitoringData = 0;
-
+		  // MPL taking out the locking since the
+		  // MvrRobotPacketSender has it's own mutex to make
+		  // sure we don't munge the packets
 
 		  //myRobot->lock();
 		  if (!mySendFakeMonitoringData)
@@ -1337,15 +1420,20 @@ while (getRunning() )
 		continue;
 	}
 	
+	/// MPL no sleep here so it'll get back into that while as soon as it can
 	
 	//MvrUtil::sleep(1);
 	//MvrUtil::sleep(2000);
 	//MvrUtil::sleep(500);
 	
-#if 0
+#if 0 // PS 10/12/11 - fixing disconnects
 	
 	
+	// PS 7/5/11 - change msWait from 50 to 5000
 	
+	// MPL 7/12/11 Changed mswait to 500 (which is bad enough,
+	// especially since receive packet doesn't use it quite right at
+	// this time)
 	while (getRunning() && myIsConnected && (packet
 	        = myReceiver.receivePacket (500, false) ) != NULL) {
 	        
@@ -1358,6 +1446,8 @@ while (getRunning() )
 		//if (myRobot == NULL)
 		//sensorInterp();
 		
+		/// MPL TODO see if this gets called if the laser goes
+		/// away... it looks like it may not (since the receivePacket may just return nothing)
 		
 		// if we have a robot but it isn't running yet then don't have a
 		// connection failure

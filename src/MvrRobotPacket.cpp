@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrRobotPacket.h"
@@ -9,7 +35,8 @@
    @param sync2 second byte of the header of this packet, this should be left
    as the default in nearly all cases, ie don't mess with it
  */
-MVREXPORT MvrRobotPacket::MvrRobotPacket(unsigned char sync1, unsigned char sync2) :
+MVREXPORT MvrRobotPacket::MvrRobotPacket(unsigned char sync1,
+				      unsigned char sync2) :
     MvrBasePacket(265, 4, NULL, 2)
 {
   mySync1 = sync1;
@@ -32,10 +59,9 @@ MVREXPORT MvrRobotPacket &MvrRobotPacket::operator=(const MvrRobotPacket &other)
     mySync2 = other.mySync2;
     myTimeReceived = other.myTimeReceived;
 
-    if (myMaxLength != other.myMaxLength) 
-    {
+    if (myMaxLength != other.myMaxLength) {
       if (myOwnMyBuf && myBuf != NULL)
-	      delete [] myBuf;
+	delete [] myBuf;
       myOwnMyBuf = true;
       myBuf = NULL;
       if (other.myMaxLength > 0) {
@@ -95,33 +121,30 @@ MVREXPORT MvrTypes::Byte2 MvrRobotPacket::calcCheckSum(void)
   int c = 0;
 
   i = 3;
-  n = myBuf[2];
-  // while (n > 1) {
-  //   c += ((unsigned char)myBuf[i]<<8) | (unsigned char)myBuf[i+1];
-  //   c = c & 0xffff;
-  //   n -= 2;
-  //   i += 2;
-  // }
-  // if (n > 0) 
-  //   c = c ^ (int)((unsigned char) myBuf[i]);
-  for (i = n; i > 0; i--)
-    c ^= myBuf[i];
+  n = myBuf[2] - 2;
+  while (n > 1) {
+    c += ((unsigned char)myBuf[i]<<8) | (unsigned char)myBuf[i+1];
+    c = c & 0xffff;
+    n -= 2;
+    i += 2;
+  }
+  if (n > 0) 
+    c = c ^ (int)((unsigned char) myBuf[i]);
   return c;
 }
 
 MVREXPORT bool MvrRobotPacket::verifyCheckSum(void) 
 {
   MvrTypes::Byte2 chksum;
-  // unsigned char c1, c2;
+  unsigned char c1, c2;
 
   if (myLength - 2 < myHeaderLength)
     return false;
-  // printf("myLength %d\n",myLength);
-  // c2 = myBuf[myLength - 2];
-  // c1 = myBuf[myLength - 1];
-  chksum = myBuf[myLength - 2];
-  // printf("chksum %x\n", chksum);
-  // printf("calcCheckSum() %x\n", calcCheckSum());
+
+  c2 = myBuf[myLength - 2];
+  c1 = myBuf[myLength - 1];
+  chksum = (c1 & 0xff) | (c2 << 8);
+
   if (chksum == calcCheckSum()) {
     return true;
   } else {
@@ -145,7 +168,7 @@ MVREXPORT void MvrRobotPacket::log()
   int i;
   MvrLog::log(MvrLog::Normal, "Robot Packet: (length = %i)", myLength);
   for (i = 0; i < myLength; i++)
-    MvrLog::log(MvrLog::Terse, "  [%03i] % 5d\t0d%x\t%c\t%s", i,
+    MvrLog::log(MvrLog::Terse, "  [%03i] % 5d\t0x%x\t%c\t%s", i,
         (unsigned char) myBuf[i],
         (unsigned char) myBuf[i],
         (myBuf[i] >= ' ' && myBuf[i] <= '~') ? (unsigned char) myBuf[i] : ' ',

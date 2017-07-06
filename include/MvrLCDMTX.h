@@ -1,5 +1,31 @@
-#ifndef MVRLCDMTX_H
-#define MVRLCDMTX_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARLCDMTX_H
+#define ARLCDMTX_H
 
 #include "mvriaTypedefs.h"
 #include "MvrRangeDevice.h"
@@ -28,6 +54,8 @@ connection to the LCD panel was also made. A pointer
 to the first MvrLCDMTX object can be obtained via MvrRobot::findLCD(),
 passing an index of 1.
 
+@since 2.8.0
+@ingroup MTX
 */
 class MvrLCDMTX : public MvrASyncTask
 {
@@ -365,11 +393,11 @@ protected:
 	std::string myIpAddress;
 
 	MvrFunctorC<MvrLCDMTX> mySensorInterpTask;
-	MvrRetFunctorC<bool, MvrLCDMTX> myMvriaExitCB;
+	MvrRetFunctorC<bool, MvrLCDMTX> myMvrExitCB;
 
 	static std::string ourFirmwareBaseDir;
 };
 
 
 
-#endif // MVRLCDMTX_H
+#endif // ARLCDMTX_H

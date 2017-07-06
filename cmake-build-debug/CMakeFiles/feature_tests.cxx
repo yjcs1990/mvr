@@ -384,21 +384,21 @@
 #else
 "0"
 #endif
-"cxx_variable_templates\n"
+"cxx_vmvriable_templates\n"
 "CXX_FEATURE:"
 #if (__GNUC__ * 100 + __GNUC_MINOR__) >= 404 && (__cplusplus >= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) && __GXX_EXPERIMENTAL_CXX0X__))
 "1"
 #else
 "0"
 #endif
-"cxx_variadic_macros\n"
+"cxx_vmvriadic_macros\n"
 "CXX_FEATURE:"
 #if (__GNUC__ * 100 + __GNUC_MINOR__) >= 404 && (__cplusplus >= 201103L || (defined(__GXX_EXPERIMENTAL_CXX0X__) && __GXX_EXPERIMENTAL_CXX0X__))
 "1"
 #else
 "0"
 #endif
-"cxx_variadic_templates\n"
+"cxx_vmvriadic_templates\n"
 
 };
 

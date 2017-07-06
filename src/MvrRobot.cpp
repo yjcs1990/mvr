@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include <time.h>
@@ -45,7 +71,7 @@
    will probalby ever use this value, since if they are doing that
    then overriding will probably be more useful, but there it is.
 
-   @param addMvriaExitCallback If true (default), add callback to global Mvria class
+   @param addMvrExitCallback If true (default), add callback to global Mvr class
     to stop running the processing loop and disconnect from robot 
     when Mvria::exit() is called. If false, do not disconnect on Mvria::exit()
 
@@ -53,7 +79,7 @@
 
 MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete, 
 			  bool doSigHandle, bool normalInit,
-			  bool addMvriaExitCallback) :
+			  bool addMvrExitCallback) :
   myMotorPacketCB(this, &MvrRobot::processMotorPacket),
   myEncoderPacketCB(this, &MvrRobot::processEncoderPacket),
   myIOPacketCB(this, &MvrRobot::processIOPacket),
@@ -67,7 +93,7 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete,
   myGetNoTimeWarningThisCycleCB(this, &MvrRobot::getNoTimeWarningThisCycle),
   myBatteryAverager(20),
   myRealBatteryAverager(20),
-  myMvriaExitCB(this, &MvrRobot::ariaExitCallback),
+  myMvrExitCB(this, &MvrRobot::mvriaExitCallback),
   myPoseInterpPositionCB(this, &MvrRobot::getPoseInterpPosition),
   myEncoderPoseInterpPositionCB(this, &MvrRobot::getEncoderPoseInterpPosition)
 {
@@ -76,7 +102,7 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete,
   myConnectionTimeoutMutex.setLogName("MvrRobot::myConnectionTimeoutMutex");
 
   setName(name);
-  myMvriaExitCB.setName("MvrRobotExit");
+  myMvrExitCB.setName("MvrRobotExit");
   myNoTimeWarningThisCycle = false;
   myGlobalPose.setPose(0, 0, 0);
   mySetEncoderTransformCBList.setName("SetEncoderTransformCBList");
@@ -84,6 +110,9 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete,
   myParams = new MvrRobotGeneric("");
   processParamFile();
 
+  /// MPL 20130509 making this default to true, so that things that
+  /// use loopOnce and not one of the run calls can work (the run
+  /// calls set this to whatever it should be anyway)
   myRunningNonThreaded = true;
 
   myMotorPacketCB.setName("MvrRobot::motorPacket");
@@ -159,14 +188,14 @@ MVREXPORT MvrRobot::MvrRobot(const char *name, bool obsolete,
 
   if (doSigHandle)
     Mvria::addRobot(this);
-  if (addMvriaExitCallback)
+  if (addMvrExitCallback)
   {
-    Mvria::addExitCallback(&myMvriaExitCB, 0);
-    myAddedMvriaExitCB = true;
+    Mvria::addExitCallback(&myMvrExitCB, 0);
+    myAddedMvrExitCB = true;
   }
   else
   {
-    myAddedMvriaExitCB = false;
+    myAddedMvrExitCB = false;
   }
 
   myConnectWithNoParams = false;
@@ -623,6 +652,7 @@ MVREXPORT void MvrRobot::setRotDecel(double decel)
   myRotDecel = MvrMath::fabs(decel);
 }
 
+/** @since 2.6.0 */
 MVREXPORT void MvrRobot::setLatVelMax(double vel)
 {
   if (vel <= 0)
@@ -639,6 +669,7 @@ MVREXPORT void MvrRobot::setLatVelMax(double vel)
   myLatVelMax = vel;
 }
 
+/** @since 2.6.0 */
 MVREXPORT void MvrRobot::setLatAccel(double acc)
 {
   if (acc <= 0)
@@ -655,6 +686,7 @@ MVREXPORT void MvrRobot::setLatAccel(double acc)
   myLatAccel = acc;
 }
 
+/** @since 2.6.0 */
 MVREXPORT void MvrRobot::setLatDecel(double decel)
 {
   if (decel <= 0)
@@ -707,16 +739,19 @@ MVREXPORT double MvrRobot::getRotDecel(void) const
   return myRotDecel;
 }
 
+/** @since 2.6.0 */
 MVREXPORT double MvrRobot::getLatVelMax(void) const
 {
   return myLatVelMax;
 }
 
+/** @since 2.6.0 */
 MVREXPORT double MvrRobot::getLatAccel(void) const
 {
   return myLatAccel;
 }
 
+/** @since 2.6.0 */
 MVREXPORT double MvrRobot::getLatDecel(void) const
 {
   return myLatDecel;
@@ -979,8 +1014,8 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     {
       if (!myConn->openSimple())
       {
-      /*str = myConn->getStatusMessage(myConn->getStatus());
-        MvrLog::log(MvrLog::Terse, "Trying to connect to robot but connection not opened, it is %s", str.c_str());*/
+	/*str = myConn->getStatusMessage(myConn->getStatus());
+	  MvrLog::log(MvrLog::Terse, "Trying to connect to robot but connection not opened, it is %s", str.c_str());*/
         MvrLog::log(MvrLog::Terse, "Could not connect, because open on the device connection failed.");
         failedConnect();
         return 2;
@@ -1015,7 +1050,6 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     myAsyncConnectState = 0;
     return 0;
   }
-  MvrLog::log(MvrLog::Normal,"myAsyncConnectState myAsyncConnectState %d", myAsyncConnectState);
 
   if (myAsyncConnectState >= 3)
   {
@@ -1045,7 +1079,8 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     }
     // if we've gotten our config packet or if we've timed out then
     // set our vel and acc/decel params and skip to the next part
-    if (myOrigRobotConfig->hasPacketArrived() || myAsyncStartedConnection.mSecSince() > 1000)
+    if (myOrigRobotConfig->hasPacketArrived() || 
+      myAsyncStartedConnection.mSecSince() > 1000)
     {
       bool gotConfig;
       // if we have data from the robot use that
@@ -1081,13 +1116,13 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
           setStateOfChargeLow(myOrigRobotConfig->getStateOfChargeLow());
         if (myOrigRobotConfig->getStateOfChargeShutdown() > 0)
           setStateOfChargeShutdown(myOrigRobotConfig->getStateOfChargeShutdown());
-        MvrLog::log(MvrLog::Normal, "Robot Serial Number: %s", myOrigRobotConfig->getSerialNumber());
+            MvrLog::log(MvrLog::Normal, "Robot Serial Number: %s", myOrigRobotConfig->getSerialNumber());
       }
       else if (myRequireConfigPacket)
       {
-          MvrLog::log(MvrLog::Terse, "Could not connect, config packet required and no config packet received.");
-          failedConnect();
-          return 2;
+        MvrLog::log(MvrLog::Terse, "Could not connect, config packet required and no config packet received.");
+        failedConnect();
+        return 2;
       }
       // if our absolute maximums weren't set then set them
       else
@@ -1124,18 +1159,18 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
       if (MvrMath::fabs(myParams->getTransDecel()) > 1)
         setTransDecel(myParams->getTransDecel());
       if (MvrMath::fabs(myParams->getRotAccel()) > 1)
-	      setRotAccel(myParams->getRotAccel());
+        setRotAccel(myParams->getRotAccel());
       if (MvrMath::fabs(myParams->getRotDecel()) > 1)
-	      setRotDecel(myParams->getRotDecel());
+        setRotDecel(myParams->getRotDecel());
 
       if (MvrMath::fabs(myParams->getLatVelMax()) > 1)
-	      setLatVelMax(myParams->getLatVelMax());
+	setLatVelMax(myParams->getLatVelMax());
       else if (!gotConfig)
-	      setLatVelMax(myParams->getAbsoluteMaxLatVelocity());
+	setLatVelMax(myParams->getAbsoluteMaxLatVelocity());
       if (MvrMath::fabs(myParams->getLatAccel()) > 1)
-	      setLatAccel(myParams->getLatAccel());
+	setLatAccel(myParams->getLatAccel());
       if (MvrMath::fabs(myParams->getLatDecel()) > 1)
-	      setLatDecel(myParams->getLatDecel());
+	setLatDecel(myParams->getLatDecel());
       myAsyncConnectState = 4;
     }
     else
@@ -1149,8 +1184,9 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     // we shouldn't change the baud or if we'd change it to a slower
     // baud rate or we aren't using a serial port then don't switch
     // the baud
-    if (!myOrigRobotConfig->hasPacketArrived() || !myOrigRobotConfig->getResetBaud() || serConn == NULL ||myParams->getSwitchToBaudRate() == 0 || 
-	      (serConn != NULL && serConn->getBaud() >= myParams->getSwitchToBaudRate()) ||myDoNotSwitchBaud)
+    if (!myOrigRobotConfig->hasPacketArrived() || !myOrigRobotConfig->getResetBaud() || 
+	      serConn == NULL ||myParams->getSwitchToBaudRate() == 0 || 
+        (serConn != NULL && serConn->getBaud() >= myParams->getSwitchToBaudRate()) ||myDoNotSwitchBaud)
     {
       // if we're using a serial connection store our baud rate
       if (serConn != NULL)
@@ -1227,8 +1263,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
   {
     if (!myIsStabilizing)
       startStabilization();
-    if (myStabilizingTime == 0 || 
-	myStartedStabilizing.mSecSince() > myStabilizingTime)
+    if (myStabilizingTime == 0 || myStartedStabilizing.mSecSince() > myStabilizingTime)
     {
       finishedConnection();
       return 1;
@@ -1249,6 +1284,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
   if (packet != NULL) 
   {
     ret = packet->getID();
+    // packet->log(); // Jay
 
     //printf("Got a packet %d\n", ret);
 	
@@ -1275,20 +1311,20 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
       /*
       while (endTime.mSecTo() > 0)
       {
-	timeToWait = endTime.mSecTo();
-	if (timeToWait < 0)
-	  timeToWait = 0;
-	tempPacket = myReceiver.receivePacket(timeToWait);
-	if (tempPacket != NULL)
-	  MvrLog::log(MvrLog::Verbose, "Got in another packet!");
+        timeToWait = endTime.mSecTo();
+        if (timeToWait < 0)
+          timeToWait = 0;
+        tempPacket = myReceiver.receivePacket(timeToWait);
+        if (tempPacket != NULL)
+          MvrLog::log(MvrLog::Verbose, "Got in another packet!");
       }
       */
       while ((tempPacket = myReceiver.receivePacket(0)) != NULL);
 
       if (tempPacket != NULL && tempPacket->getID() == 0)
-	myAsyncConnectState = 1;
+        myAsyncConnectState = 1;
       else
-	myAsyncConnectState = 0;
+        myAsyncConnectState = 0;
       return 0;
     } 
     else if  (ret != myAsyncConnectState++)
@@ -1338,9 +1374,8 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     
     // If we get no response first we dump close commands at the thing
     // in different bauds (if its a serial connection)
-    if (myAsyncConnectNoPacketCount == 2 && 
-	myAsyncConnectNoPacketCount >= myAsyncConnectTimesTried &&
-	(serConn = dynamic_cast<MvrSerialConnection *>(myConn)) != NULL)
+    if (myAsyncConnectNoPacketCount == 2 && myAsyncConnectNoPacketCount >= myAsyncConnectTimesTried &&
+      (serConn = dynamic_cast<MvrSerialConnection *>(myConn)) != NULL)
     {
       int origBaud;
       MvrLog::log(MvrLog::Normal, "Trying to close possible old connection");
@@ -1379,12 +1414,14 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     char nameBuf[512];
     MvrLog::log(MvrLog::Terse, "Connected to robot.");
     packet->bufToStr(nameBuf, 512);
+    // packet->log(); // Jay
     myRobotName = nameBuf;
     MvrLog::log(MvrLog::Normal, "Name: %s", myRobotName.c_str());
     packet->bufToStr(nameBuf, 512);
     myRobotType = nameBuf;
     MvrLog::log(MvrLog::Normal, "Type: %s", myRobotType.c_str());
     packet->bufToStr(nameBuf, 512);
+    // packet->log(); // Jay
     myRobotSubType = nameBuf;
     strcpy(robotSubType, myRobotSubType.c_str());
     len = strlen(robotSubType);
@@ -1484,6 +1521,10 @@ MVREXPORT void MvrRobot::processParamFile(void)
   //myRobotType = myParams->getClassName();
   //myRobotSubType = myParams->getSubClassName();
 
+  // MPL 20130407 made this so that it'd only happen if we are using
+  // the .p file, since otherwise it just sets things back to 0 and
+  // causes problems... and made it use the set function to make it
+  // easier to track down any problems it causes
   if (!MvrRobotParams::internalGetUseDefaultBehavior())
   {
     setAbsoluteMaxTransVel(myParams->getAbsoluteMaxVelocity());
@@ -1666,12 +1707,10 @@ MVREXPORT bool MvrRobot::madeConnection(bool resetConnectionTime)
   nameParamFileName += "params/";
   nameParamFileName += myRobotName;
   nameParamFileName += ".p";
-  if ((loadedNameParam = myParams->parseFile(nameParamFileName.c_str(),
-					     true, true)))
+  if ((loadedNameParam = myParams->parseFile(nameParamFileName.c_str(),true, true)))
   {
     if (loadedSubTypeParam)
-      MvrLog::log(MvrLog::Normal, 
- "Loaded robot parameters from %s on top of %s robot parameters", 
+      MvrLog::log(MvrLog::Normal, "Loaded robot parameters from %s on top of %s robot parameters", 
 		 nameParamFileName.c_str(), subtypeParamFileName.c_str());
     else
       MvrLog::log(MvrLog::Normal, "Loaded robot parameters from %s", 
@@ -1685,7 +1724,7 @@ MVREXPORT bool MvrRobot::madeConnection(bool resetConnectionTime)
 		 myRobotSubType.c_str());
     else
     {
-      MvrLog::log(MvrLog::Terse, "Error: Have no parameters for this robot, bad configuration or out of date Mvria");
+      MvrLog::log(MvrLog::Terse, "Error: Have no parameters for this robot, bad configuration or out of date Mvr");
       // in the default state (not connecting if we don't have params)
       // we will return false... if we can connect without params then
       // we'll keep going (this really shouldn't be used except by
@@ -2963,7 +3002,7 @@ MvrRobot::waitForConnectOrConnFail(unsigned int msecs)
    This will suspend the calling thread until the MvrRobot's run loop has
    exited. There is an optional paramater of milliseconds to wait for the
    MvrRobot run loop to exit . If msecs is set to 0, it will wait until
-   the MvrRobot run loop exits.
+   the MvrRrobot run loop exits.
    @param msecs milliseconds in which to wait for the robot to connect
    @return WAIT_RUN_EXIT for success
 **/
@@ -3064,7 +3103,7 @@ MVREXPORT MvrSyncTask *MvrRobot::getSyncTaskRoot(void)
    @param functor functor created from MvrFunctorC which refers to the 
    function to call.
 
-   @param state Optional pointer to external MvrSyncTask state variable; normally not needed
+   @param state Optional pointer to external MvrSyncTask state vmvriable; normally not needed
    and may be NULL or omitted.
 
    @see remUserTask
@@ -3148,7 +3187,7 @@ MVREXPORT void MvrRobot::remUserTask(MvrFunctor *functor)
    The tasks are called in order of highest number to lowest number.
    @param functor functor created from MvrFunctorC which refers to the 
    function to call.
-   @param state Optional pointer to external MvrSyncTask state variable; normally not needed
+   @param state Optional pointer to external MvrSyncTask state vmvriable; normally not needed
    and may be NULL or omitted.
    @see remSensorInterpTask
 **/
@@ -3798,6 +3837,8 @@ MVREXPORT void MvrRobot::stateReflector(void)
     }
     else
     {
+      // MPL commenting out these lines so that if nothing is set
+      // it'll just stop
 
       //transVal = myLastActionTransVal; 
       transVal = 0;
@@ -4161,6 +4202,8 @@ MVREXPORT void MvrRobot::stateReflector(void)
     }
     else
     {
+      /// MPL commenting out these lines, and making it so that if
+      /// nothing is set it'll just stop
       
       //rotStopped = myLastActionRotStopped;
       //rotVal = myLastActionRotVal;
@@ -4435,6 +4478,8 @@ MVREXPORT void MvrRobot::stateReflector(void)
     }
     else
     {
+      // MPL commenting out these lines so that if nothing is set
+      // it'll just stop
 
       //latVal = myLastActionLatVal; 
       latVal = 0;
@@ -5178,7 +5223,7 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
   if (packet->getID() != 0x32 && packet->getID() != 0x33) 
     return false;
 
-  // upkeep the counting variable
+  // upkeep the counting vmvriable
   if (myTimeLastMotorPacket != time(NULL)) 
   {
     myTimeLastMotorPacket = time(NULL);
@@ -5371,6 +5416,8 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
       lpcUSec = lpcNowUSec - (mSecSince + myOdometryDelay) * 1000;
       
       recvTime = packet->getTimeReceived();
+      /// MPL adding this so that each place the pose interpolation is
+      /// used it doesn't have to account for the odometry delay
       recvTime.addMSec(-myOdometryDelay);
 
       char buf[1024];
@@ -5398,6 +5445,8 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
   else if (myLogMovementReceived)
   {
     MvrTime recvTime = packet->getTimeReceived();
+    /// MPL adding this so that each place the pose interpolation is
+    /// used it doesn't have to account for the odometry delay
     recvTime.addMSec(-myOdometryDelay);
     
     char buf[1024];
@@ -5578,9 +5627,12 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
   //MvrLog::log(MvrLog::Terse, "(%.0f %.0f) (%.0f %.0f)", deltaX, deltaY, myGlobalPose.getX(),	     myGlobalPose.getY());
 
   MvrTime packetTime = packet->getTimeReceived();
+  /// MPL adding this so that each place the pose interpolation is
   /// used it doesn't have to account for the odometry delay
   packetTime.addMSec(-myOdometryDelay);
 
+  // MPL this had come in handy while debugging the intermittent lost
+  // issue that looked like timing
   //MvrLog::log(MvrLog::Normal, "Robot packet %lld mSec old", packetTime.mSecSince());
   
   myConnectionTimeoutMutex.lock();
@@ -5993,7 +6045,7 @@ MVREXPORT bool MvrRobot::hasRangeDevice(MvrRangeDevice *device) const
  *
  *  @copydoc MvrRangeDevice::currentReadingPolar()
  *  @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
- *    that provided the returned reading is placed in this variable.
+ *    that provided the returned reading is placed in this vmvriable.
    @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
  *
 **/
@@ -6060,7 +6112,7 @@ MVREXPORT double MvrRobot::checkRangeDevicesCurrentPolar(
  *
  *  @copydoc MvrRangeDevice::cumulativeReadingPolar()
  *  @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
- *    that provided the returned reading is placed in this variable.
+ *    that provided the returned reading is placed in this vmvriable.
    @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
 **/
 MVREXPORT double MvrRobot::checkRangeDevicesCumulativePolar(
@@ -6126,7 +6178,7 @@ MVREXPORT double MvrRobot::checkRangeDevicesCumulativePolar(
    @param y2 the y coordinate of the other rectangle point
    @param readingPos a pointer to a position in which to store the location of
    @param rangeDevice If not null, then a pointer to the MvrRangeDevice 
-     that provided the returned reading is placed in this variable.
+     that provided the returned reading is placed in this vmvriable.
    the closest position
    @param useLocationDependentDevices If false, ignore sensor devices that are "location dependent". If true, include them in this check.
    @return If >= 0 then this is the distance to the closest
@@ -6304,7 +6356,7 @@ MVREXPORT void MvrRobot::moveTo(MvrPose pose, bool doCumulative)
 /** 
  * The robot-relative positions of the readings of attached range 
  * devices, plus sonar readings stored in this object, will also be updated.
- * This variant allows you to manually specify a pose to use as the robot's 
+ * This vmvriant allows you to manually specify a pose to use as the robot's 
  * old pose when updating range device readings (rather than MvrRobot's 
  * currently stored pose).
  *
@@ -6805,7 +6857,7 @@ MVREXPORT void MvrRobot::setPacketsReceivedTracking(bool packetsReceivedTracking
   myPacketsReceivedTrackingStarted.setToNow(); 
 }
 
-MVREXPORT void MvrRobot::ariaExitCallback(void)
+MVREXPORT void MvrRobot::mvriaExitCallback(void)
 {
   mySyncLoop.stopRunIfNotConnected(false);
   disconnect();
@@ -6901,7 +6953,7 @@ MVREXPORT void MvrRobot::setBatteryInfo(double realBatteryVoltage,
 }
 
 
-/*
+/** @since 2.7.0 
   @note Do not call this method directly 
   if using MvrLaserConnector, it will automatically add laser(s).
   @internal
@@ -6951,7 +7003,7 @@ MVREXPORT bool MvrRobot::addLaser(MvrLaser *laser, int laserNumber,
 
 
 
-/*
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
@@ -6990,7 +7042,7 @@ MVREXPORT bool MvrRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
   return false;
 }
 
-/*
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
@@ -7023,7 +7075,7 @@ MVREXPORT bool MvrRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
   return true;
 }
 
-/*
+/** @since 2.7.0 
   @see MvrLaserConnector
 */
 MVREXPORT const MvrLaser *MvrRobot::findLaser(int laserNumber) const
@@ -7035,7 +7087,7 @@ MVREXPORT const MvrLaser *MvrRobot::findLaser(int laserNumber) const
     return (*it).second;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrLaserConnector
 */
 MVREXPORT MvrLaser *MvrRobot::findLaser(int laserNumber)
@@ -7046,7 +7098,7 @@ MVREXPORT MvrLaser *MvrRobot::findLaser(int laserNumber)
     return myLaserMap[laserNumber];
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrLaserConnector
 */
 MVREXPORT const std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) const
@@ -7055,7 +7107,7 @@ MVREXPORT const std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) const
 }
 
 
-/* 
+/** @since 2.7.0 
     @see MvrLaserConnector
 */
 MVREXPORT std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) 
@@ -7063,7 +7115,7 @@ MVREXPORT std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void)
   return &myLaserMap;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrLaserConnector
 */
 MVREXPORT bool MvrRobot::hasLaser(MvrLaser *device) const
@@ -7077,7 +7129,7 @@ MVREXPORT bool MvrRobot::hasLaser(MvrLaser *device) const
 }
 
 
-/* 
+/** @since 2.7.0 
   @note Do not call this method directly 
   if using MvrBatteryConnector, it will automatically add battery(s).
   @internal
@@ -7114,7 +7166,7 @@ MVREXPORT bool MvrRobot::addBattery(MvrBatteryMTX *battery, int batteryNumber)
 }
 
 
-/* 
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remBattery(MvrBatteryMTX *battery)
@@ -7143,7 +7195,7 @@ MVREXPORT bool MvrRobot::remBattery(MvrBatteryMTX *battery)
   return false;
 }
 
-/* 
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remBattery(int batteryNumber)
@@ -7166,7 +7218,7 @@ MVREXPORT bool MvrRobot::remBattery(int batteryNumber)
   return true;
 }
 
-/* 
+/** @since 2.7.0 
   @see MvrBatteryConnector
 */
 MVREXPORT const MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber) const
@@ -7178,7 +7230,7 @@ MVREXPORT const MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber) const
     return (*it).second;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrBatteryConnector
 */
 MVREXPORT MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber)
@@ -7189,7 +7241,7 @@ MVREXPORT MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber)
     return myBatteryMap[batteryNumber];
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrBatteryConnector
 */
 MVREXPORT const std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) const
@@ -7198,7 +7250,7 @@ MVREXPORT const std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) co
 }
 
 
-/* 
+/** @since 2.7.0 
     @see MvrBatteryConnector
 */
 MVREXPORT std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) 
@@ -7206,7 +7258,7 @@ MVREXPORT std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void)
   return &myBatteryMap;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrBatteryConnector
 */
 MVREXPORT bool MvrRobot::hasBattery(MvrBatteryMTX *device) const
@@ -7220,7 +7272,7 @@ MVREXPORT bool MvrRobot::hasBattery(MvrBatteryMTX *device) const
 }
 
 
-/* 
+/** @since 2.7.0 
   @note Do not call this method directly 
   if using MvrLCDConnector, it will automatically add lcd(s).
   @internal
@@ -7257,7 +7309,7 @@ MVREXPORT bool MvrRobot::addLCD(MvrLCDMTX *lcd, int lcdNumber)
 }
 
 
-/* 
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remLCD(MvrLCDMTX *lcd)
@@ -7286,7 +7338,7 @@ MVREXPORT bool MvrRobot::remLCD(MvrLCDMTX *lcd)
   return false;
 }
 
-/* 
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remLCD(int lcdNumber)
@@ -7309,7 +7361,7 @@ MVREXPORT bool MvrRobot::remLCD(int lcdNumber)
   return true;
 }
 
-/* 
+/** @since 2.7.0 
   @see MvrLCDConnector
 */
 MVREXPORT const MvrLCDMTX *MvrRobot::findLCD(int lcdNumber) const
@@ -7321,7 +7373,7 @@ MVREXPORT const MvrLCDMTX *MvrRobot::findLCD(int lcdNumber) const
     return (*it).second;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrLCDConnector
 */
 MVREXPORT MvrLCDMTX *MvrRobot::findLCD(int lcdNumber)
@@ -7332,7 +7384,7 @@ MVREXPORT MvrLCDMTX *MvrRobot::findLCD(int lcdNumber)
     return myLCDMap[lcdNumber];
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrLCDConnector
 */
 MVREXPORT const std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) const
@@ -7341,7 +7393,7 @@ MVREXPORT const std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) const
 }
 
 
-/* 
+/** @since 2.7.0 
     @see MvrLCDConnector
 */
 MVREXPORT std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) 
@@ -7349,7 +7401,7 @@ MVREXPORT std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void)
   return &myLCDMap;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrLCDConnector
 */
 MVREXPORT bool MvrRobot::hasLCD(MvrLCDMTX *device) const
@@ -7362,7 +7414,7 @@ MVREXPORT bool MvrRobot::hasLCD(MvrLCDMTX *device) const
   return false;
 }
 
-/* 
+/** @since 2.7.0 
   @note Do not call this method directly 
   if using MvrBatteryConnector, it will automatically add battery(s).
   @internal
@@ -7399,7 +7451,7 @@ MVREXPORT bool MvrRobot::addSonar(MvrSonarMTX *sonar, int sonarNumber)
 }
 
 
-/* 
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remSonar(MvrSonarMTX *sonar)
@@ -7428,7 +7480,7 @@ MVREXPORT bool MvrRobot::remSonar(MvrSonarMTX *sonar)
   return false;
 }
 
-/* 
+/** @since 2.7.0 
     @internal
 */
 MVREXPORT bool MvrRobot::remSonar(int sonarNumber)
@@ -7451,7 +7503,7 @@ MVREXPORT bool MvrRobot::remSonar(int sonarNumber)
   return true;
 }
 
-/* 
+/** @since 2.7.0 
   @see MvrSonarConnector
 */
 MVREXPORT const MvrSonarMTX *MvrRobot::findSonar(int sonarNumber) const
@@ -7463,7 +7515,7 @@ MVREXPORT const MvrSonarMTX *MvrRobot::findSonar(int sonarNumber) const
     return (*it).second;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrSonarConnector
 */
 MVREXPORT MvrSonarMTX *MvrRobot::findSonar(int sonarNumber)
@@ -7474,7 +7526,7 @@ MVREXPORT MvrSonarMTX *MvrRobot::findSonar(int sonarNumber)
     return mySonarMap[sonarNumber];
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrSonarConnector
 */
 MVREXPORT const std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) const
@@ -7483,7 +7535,7 @@ MVREXPORT const std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) const
 }
 
 
-/* 
+/** @since 2.7.0 
     @see MvrSonarConnector
 */
 MVREXPORT std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) 
@@ -7491,7 +7543,7 @@ MVREXPORT std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void)
   return &mySonarMap;
 }
 
-/* 
+/** @since 2.7.0 
     @see MvrSonarConnector
 */
 MVREXPORT bool MvrRobot::hasSonar(MvrSonarMTX *device) const

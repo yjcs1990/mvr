@@ -1,5 +1,31 @@
-#ifndef MVRROBOT_H
-#define MVRROBOT_H
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
+#ifndef ARROBOT_H
+#define ARROBOT_H
 
 #include "mvriaTypedefs.h"
 #include "MvrRobotPacketSender.h"
@@ -43,7 +69,7 @@ class MvrLCDMTX;
     see the @ref robot "MvrRobot section" and the
     @ref ClientCommands "Commands and Actions section" of the ARIA overview.
 
-    @note In Windows you cannot make an MvrRobot object a global variable, 
+    @note In Windows you cannot make an MvrRobot object a global vmvriable, 
     it will crash because the compiler initializes the constructors in
     the wrong order. You can, however, make a pointer to an MvrRobot and then
     allocate it with 'new' at program start.
@@ -77,7 +103,7 @@ public:
   /// Constructor
   MVREXPORT MvrRobot(const char * name = NULL, bool ignored = true,
 		   bool doSigHandle=true, 
-		   bool normalInit = true, bool addMvriaExitCallback = true);
+		   bool normalInit = true, bool addMvrExitCallback = true);
 		   
   /// Destructor
   MVREXPORT ~MvrRobot();
@@ -358,9 +384,11 @@ public:
   /// Gets the current lateral velocity of the robot
   /**
      Note that this will only be valid if hasLatVel() returns true
+     @since 2.6.0
    **/
   double getLatVel(void) const { return myLatVel; }
   /** Sees if the robot supports lateral velocities (e.g. Seekur(TM))
+      @since 2.6.0
   */
   bool hasLatVel(void) const { return myParams->hasLatVel(); }
   /// Gets the robot radius (in mm)
@@ -1584,7 +1612,7 @@ public:
   MvrRetFunctorC<bool, MvrRobot> myGetNoTimeWarningThisCycleCB;
   /// internal function called when Mvria::exit is called
   /// @internal
-  MVREXPORT void ariaExitCallback(void);
+  MVREXPORT void mvriaExitCallback(void);
   // internal call that will let the robot connect even if it can't find params
   void setConnectWithNoParams(bool connectWithNoParams) 
     { myConnectWithNoParams = connectWithNoParams; }
@@ -1844,7 +1872,7 @@ protected:
   bool myConnectWithNoParams;
   bool myWarnedAboutExtraSonar;
 
-  // variables for tracking the data stream
+  // vmvriables for tracking the data stream
   time_t myTimeLastMotorPacket;
   int myMotorPacCurrentCount;
   int myMotorPacCount;
@@ -1863,7 +1891,7 @@ protected:
   bool myRequestedIOPackets;
   bool myRequestedEncoderPackets;
 
-  // all the state reflecing variables
+  // all the state reflecing vmvriables
   MvrPoseWithTime myEncoderPose;
   MvrTime myEncoderPoseTaken;
   MvrPose myGlobalPose;
@@ -1928,8 +1956,8 @@ protected:
 
   bool myDoNotSwitchBaud;
   
-  bool myAddedMvriaExitCB;
-  MvrFunctorC<MvrRobot> myMvriaExitCB;
+  bool myAddedMvrExitCB;
+  MvrFunctorC<MvrRobot> myMvrExitCB;
 
   MvrRetFunctor3C<int, MvrRobot, MvrTime, MvrPose *, 
 		 MvrPoseWithTime *> myPoseInterpPositionCB;
@@ -1938,4 +1966,4 @@ protected:
 };
 
 
-#endif // MVRROBOT_H
+#endif // ARROBOT_H

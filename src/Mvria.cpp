@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "Mvria.h"
 #include "MvrSocket.h"
@@ -71,11 +97,11 @@ size_t Mvria::ourMaxNumPTZs = 8;
 std::string Mvria::ourIdentifier = "generic";
 
 /**
-   This must be called first before any other Mvria functions.
+   This must be called first before any other Mvr functions.
    It initializes the thread layer and the signal handling method. For
    Windows it iniatializes the socket layer as well. This also sets the
-   directory Mvria is located in using MVRIA environmental variable (or Mvria registry key on Windows).
-   For more about Mvria's directory see getDirectory() and setDirectory().
+   directory Mvr is located in using ARIA environmental vmvriable (or Mvr registry key on Windows).
+   For more about Mvr's directory see getDirectory() and setDirectory().
 
    For Linux the default signal handling method is to intercept OS signals
    in a dedicated "signal handling thread", which cleanly closes down the
@@ -85,22 +111,23 @@ std::string Mvria::ourIdentifier = "generic";
 
    For Windows, there is no signal handling.
 
-   This method also adds the file /etc/Mvria.args and the environment variable
-   MVRIAARGS as locations for MvrArgumentParser to obtain default argument values
+   This method also adds the file /etc/Mvr.args and the environment vmvriable
+   ARIAARGS as locations for MvrArgumentParser to obtain default argument values
    from. 
 
-   @param method the method in which to handle signals. Defaulted to SIGHANDLE_SINGLE, or the method indicated by the MVRIA_SIGHANDLE_METHOD environment variable (NONE, SINGLE or THREAD), if it exists. 
+   @param method the method in which to handle signals. Defaulted to SIGHANDLE_SINGLE, or the method indicated by the ARIA_SIGHANDLE_METHOD environment vmvriable (NONE, SINGLE or THREAD), if it exists. 
    @param initSockets specify whether or not to initialize the socket layer. This is only meaningfull for Windows. Defaulted to true.
 
    @param sigHandleExitNotShutdown if this is true and a signal
-   happens Mvria will use exit() to quit instead of shutdown(), false will
+   happens Mvr will use exit() to quit instead of shutdown(), false will
    still use shutdown which is the old behavior.
 
    @see MvrSignalHandler
    @see MvrSocket
 
  */
-MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHandleExitNotShutdown)
+MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, 
+			 bool sigHandleExitNotShutdown)
 {
 #ifndef MVRINTERFACE
   // get this here so that the program update can be accurate
@@ -128,10 +155,10 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHan
 
   MvrThread::init();
 
-  char* overrideSigMethod = getenv("MVRIA_SIGHANDLE_METHOD");
+  char* overrideSigMethod = getenv("ARIA_SIGHANDLE_METHOD");
   if(overrideSigMethod)
   {
-    MvrLog::log(MvrLog::Terse, "Overriding signal handler method with %s from MVRIA_SIGHANDLE_METHOD environment variable.", overrideSigMethod);
+    MvrLog::log(MvrLog::Terse, "Overriding signal handler method with %s from ARIA_SIGHANDLE_METHOD environment vmvriable.", overrideSigMethod);
     if(!strcmp(overrideSigMethod, "NONE"))
       method = SIGHANDLE_NONE;
     else if(!strcmp(overrideSigMethod, "SINGLE"))
@@ -163,37 +190,39 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHan
 
   if (ourDirectory.length() == 0)
   {
-    if (getenv("MVRIA") != NULL)
+    if (getenv("ARIA") != NULL)
     {
-      setDirectory(getenv("MVRIA"));
+      setDirectory(getenv("ARIA"));
     }
     else
     {
 #ifndef WIN32
-      MvrUtil::getStringFromFile("/etc/Mvria", buf, sizeof(buf));
+      MvrUtil::getStringFromFile("/etc/Mvr", buf, sizeof(buf));
       str = buf;
 #else // WIN32
-      if (MvrUtil::findFirstStringInRegistry("SOFTWARE\\MobileRobots\\Mvria", "Install Directory", buf, 1024))
+      if (MvrUtil::findFirstStringInRegistry(
+          "SOFTWARE\\MobileRobots\\Mvr",
+          "Install Directory", buf, 1024))
         str = buf;
       else
         if (MvrUtil::findFirstStringInRegistry(
-            "SOFTWARE\\ActivMedia Robotics\\Mvria",
+            "SOFTWARE\\ActivMedia Robotics\\Mvr",
             "Install Directory", buf, 1024))
           str = buf;
         else
           str = "";
         
-#endif // WIN32
+  #endif // WIN32
         if (str.length() > 0)
         {
-          setDirectory(str.c_str());
+    setDirectory(str.c_str());
         }
         else
         {
   #ifndef MVRINTERFACE
-    MvrLog::log(MvrLog::Terse, "NonCritical Error: MVRIA could not find where it is located.");
+    MvrLog::log(MvrLog::Terse, "NonCritical Error: ARIA could not find where it is located.");
   #else
-    MvrLog::log(MvrLog::Verbose, "NonCritical Error: MVRIA could not find where it is located.");
+    MvrLog::log(MvrLog::Verbose, "NonCritical Error: ARIA could not find where it is located.");
   #endif
         }
       }
@@ -233,8 +262,8 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHan
   for (iter=ourInitCBs.begin(); iter !=  ourInitCBs.end(); ++iter)
     (*iter)->invoke();
 
-  MvrArgumentParser::addDefaultArgumentFile("/etc/Mvria.args");
-  MvrArgumentParser::addDefaultArgumentEnv("MVRIAARGS");
+  MvrArgumentParser::addDefaultArgumentFile("/etc/Mvr.args");
+  MvrArgumentParser::addDefaultArgumentEnv("ARIAARGS");
   
   MvrVCC4::registerPTZType();
   MvrRVisionPTZ::registerPTZType();
@@ -244,7 +273,7 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHan
 
 
 /**
-   This must be called last, after all other Mvria functions.
+   This must be called last, after all other Mvr functions.
    For both Linux and Windows, it closes all the open MvrModules. For Windows
    it deinitializes the socket layer as well.
 */
@@ -263,7 +292,7 @@ MVREXPORT void Mvria::uninit()
 }
 
 /**
-   This will add a callback to the list of callbacks to call when Mvria
+   This will add a callback to the list of callbacks to call when Mvr
    has been initialized. It can be called before anything else.
 */
 MVREXPORT void Mvria::addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
@@ -275,10 +304,10 @@ MVREXPORT void Mvria::addInitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
 }
 
 /**
-   This will add a callback to the list of callbacks to call right before Mvria
+   This will add a callback to the list of callbacks to call right before Mvr
    is un-initialized. It can be called before anything else. This facilitates
    code that in operating system signal handlers simply calls Mvria::uninit()
-   and packages that are based on Mvria are unitited as well. It simplifies
+   and packages that are based on Mvr are unitited as well. It simplifies
    the entire uninit process.
 */
 MVREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position)
@@ -290,17 +319,17 @@ MVREXPORT void Mvria::addUninitCallBack(MvrFunctor *cb, MvrListPos::Pos position
 }
 
 /**
-   Use this function to clean up or uninitialize Mvria, in particular,
+   Use this function to clean up or uninitialize Mvr, in particular,
    to stop background threads.
-   (Note: If you want to shutdown MVRIA cleanly at the
+   (Note: If you want to shutdown ARIA cleanly at the
    end of your program or when exiting the program due to error, use 
    Mvria::exit() instead.)
    This calls stop() on all MvrThread's and MvrASyncTask's. It will
    block until all MvrThread's and MvrASyncTask's exit. It is expected
-   that all the tasks will obey the MvrThread::myRunning variable and
-   exit when it is false. Note, this only stop Mvria's background threads,
+   that all the tasks will obey the MvrThread::myRunning vmvriable and
+   exit when it is false. Note, this only stop Mvr's background threads,
    it does not exit the program. 
-   If you want to shutdown MVRIA cleanly at the
+   If you want to shutdown ARIA cleanly at the
    end of your program or when exiting the program due to error, use 
    Mvria::exit() instead. 
    @sa Mvria::exit()
@@ -326,11 +355,11 @@ MVREXPORT void Mvria::shutdown()
 }
 
 /**
-   This will call the list of Mvria exit callbacks (added by addExitCallback())
+   This will call the list of Mvr exit callbacks (added by addExitCallback())
    and then exit the program with
    the given exit code.   This method may be used as a replacement for the
    standard system ::exit() call (which is  used by this method
-   to finally exit the program with the given @a exitCode after finishing Mvria
+   to finally exit the program with the given @a exitCode after finishing Mvr
    shutdown steps.)
 
    Note that this could be called from anywhere,
@@ -414,8 +443,9 @@ MVREXPORT void Mvria::addExitCallback(MvrFunctor *functor, int position)
  block or wait on any locked mutexes or similar.
  
  Also note that this will not actually happen if it is called while
- aria is exiting (ie it is walking through the list).
+ mvria is exiting (ie it is walking through the list).
 
+ @since 2.7.0
  */
 MVREXPORT void Mvria::remExitCallback(MvrFunctor *functor)
 {
@@ -511,7 +541,7 @@ MVREXPORT void Mvria::signalHandlerCB(int sig)
   // if we want to exit instead of shutdown then do that ( call never returns)
   if (ourSigHandleExitNotShutdown)
   {
-    MvrLog::log(MvrLog::Normal, "Mvria: Received signal '%s'. Exiting.",
+    MvrLog::log(MvrLog::Normal, "Mvr: Received signal '%s'. Exiting.",
 	       MvrSignalHandler::nameSignal(sig));
     Mvria::exit(0);
     // we shouldn't need this here, since the program should already
@@ -529,7 +559,7 @@ MVREXPORT void Mvria::signalHandlerCB(int sig)
   ourShuttingDownMutex.unlock();
 
 
-  MvrLog::log(MvrLog::Normal, "Mvria: Received signal '%s'. Shutting down.",
+  MvrLog::log(MvrLog::Normal, "Mvr: Received signal '%s'. Shutting down.",
 	     MvrSignalHandler::nameSignal(sig));
 
 #ifndef MVRINTERFACE
@@ -540,25 +570,25 @@ MVREXPORT void Mvria::signalHandlerCB(int sig)
     for (iter=ourRobots.begin(); iter != ourRobots.end(); ++iter)
       (*iter)->stopRunning();
   }
-#endif //MvrINTERFACE
+#endif //MVRINTERFACE
 
   // I'm disregarding this advice below since I can't seem to get
   // anything else to work well and haven't seen problems from it
 
   // dont do an Mvria::shutdown() here because we want the main()
-  // function to do the MvrThread::joinAll(). Otherwise variables on
+  // function to do the MvrThread::joinAll(). Otherwise vmvriables on
   // the stack frame of main() may get destructed if main() happens to
-  // exit before other threads.  And some of those variables may be
+  // exit before other threads.  And some of those vmvriables may be
   // used by those threads.
   shutdown();
 }
 
 /**
-   This sets the directory that MVRIA is located in, so MVRIA can find param
-   files and the like.  This can also be controlled by the environment variable
-   MVRIA, which this is set to (if it exists) when Mvria::init is done.  So 
+   This sets the directory that ARIA is located in, so ARIA can find param
+   files and the like.  This can also be controlled by the environment vmvriable
+   ARIA, which this is set to (if it exists) when Mvria::init is done.  So 
    for setDirectory to be effective, it must be done after the Mvria::init.
-   @param directory the directory Mvria is located in
+   @param directory the directory Mvr is located in
    @see getDirectory
 */
 MVREXPORT void Mvria::setDirectory(const char *directory)
@@ -585,9 +615,9 @@ MVREXPORT void Mvria::setDirectory(const char *directory)
 }
 
 /**
-   This gets the directory that MVRIA is located in, this is so MVRIA can find 
+   This gets the directory that ARIA is located in, this is so ARIA can find 
    param files and the like.  
-   @return the directory MVRIA is located in
+   @return the directory ARIA is located in
    @see setDirectory
 */
 MVREXPORT const char *Mvria::getDirectory(void)
@@ -633,7 +663,7 @@ MVREXPORT MvrRobotJoyHandler *Mvria::getRobotJoyHandler(void)
 }
 
 /**
-   This gets the global config aria uses.
+   This gets the global config mvria uses.
  **/
 MVREXPORT MvrConfig *Mvria::getConfig(void)
 {
@@ -641,7 +671,7 @@ MVREXPORT MvrConfig *Mvria::getConfig(void)
 }
 
 /**
-   This gets the global string group aria uses.
+   This gets the global string group mvria uses.
  **/
 MVREXPORT MvrStringInfoGroup *Mvria::getInfoGroup(void)
 {
@@ -721,7 +751,7 @@ MVREXPORT void Mvria::setMaxNumLCDs(int maxNumLCDs)
 #endif // MVRINTERFACE
 
 /**
-   returns true if MVRIA is initialized (Mvria::init() has been called) and has not been shut down by
+   returns true if ARIA is initialized (Mvria::init() has been called) and has not been shut down by
    a call to Mvria::shutdown() or Mvria::exit() and an operating system signal has not occured (e.g. 
    external KILL signal)
 **/
@@ -736,17 +766,17 @@ MVREXPORT bool Mvria::parseArgs(void)
   std::multimap<int, MvrRetFunctor<bool> *>::reverse_iterator it;
   MvrRetFunctor<bool> *callback;
 
-  MvrLog::log(ourParseArgsLogLevel, "Mvria: Parsing arguments");
+  MvrLog::log(ourParseArgsLogLevel, "Mvr: Parsing arguments");
   for (it = ourParseArgCBs.rbegin(); it != ourParseArgCBs.rend(); it++)
   {
     callback = (*it).second;
     if (callback->getName() != NULL && callback->getName()[0] != '\0')
       MvrLog::log(ourParseArgsLogLevel, 
-		 "Mvria: Calling parse arg functor '%s' (%d)", 
+		 "Mvr: Calling parse arg functor '%s' (%d)", 
 		 callback->getName(), (*it).first);
     else
       MvrLog::log(ourParseArgsLogLevel, 
-		 "Mvria: Calling unnamed parse arg functor (%d)", 
+		 "Mvr: Calling unnamed parse arg functor (%d)", 
 		 (*it).first);
 
     if (!callback->invokeR())
@@ -828,7 +858,7 @@ MVREXPORT bool Mvria::laserAddCreator(
   else
   {
     // if we haven't added any types add to the choices (there's an
-    // intro string in choices, so it's checking the other variable)
+    // intro string in choices, so it's checking the other vmvriable)
     if (!ourLaserTypes.empty())
       ourLaserChoices += ";;";
     ourLaserChoices += laserType;
@@ -909,7 +939,7 @@ MVREXPORT bool Mvria::batteryAddCreator(
   else
   {
     // if we haven't added any types add to the choices (there's an
-    // intro string in choices, so it's checking the other variable)
+    // intro string in choices, so it's checking the other vmvriable)
     if (!ourBatteryTypes.empty())
       ourBatteryChoices += ";;";
     ourBatteryChoices += batteryType;
@@ -990,7 +1020,7 @@ MVREXPORT bool Mvria::lcdAddCreator(
   else
   {
     // if we haven't added any types add to the choices (there's an
-    // intro string in choices, so it's checking the other variable)
+    // intro string in choices, so it's checking the other vmvriable)
 
     if (!ourLCDTypes.empty())
       ourLCDChoices += ";;";
@@ -1073,7 +1103,7 @@ MVREXPORT bool Mvria::sonarAddCreator(
   else
   {
     // if we haven't added any types add to the choices (there's an
-    // intro string in choices, so it's checking the other variable)
+    // intro string in choices, so it's checking the other vmvriable)
     if (!ourSonarTypes.empty())
       ourSonarChoices += ";;";
     ourSonarChoices += sonarType;
@@ -1159,7 +1189,7 @@ MVREXPORT bool Mvria::deviceConnectionAddCreator(
   else
   {
     // if we haven't added any types add to the choices (there's an
-    // intro string in choices, so it's checking the other variable)
+    // intro string in choices, so it's checking the other vmvriable)
     if (!ourDeviceConnectionTypes.empty())
       ourDeviceConnectionChoices += ";;";
     ourDeviceConnectionChoices += deviceConnectionType;
@@ -1237,5 +1267,7 @@ MVREXPORT void Mvria::setIdentifier(const char *identifier)
 {
   ourIdentifier = identifier;
 
+  // MPL fixing the problem caused by whitespace or bad chars in the
+  // identifier (bug 14486).
   MvrUtil::fixBadCharacters(&ourIdentifier, true);
 }

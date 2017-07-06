@@ -19,13 +19,13 @@ Copyright (C) 2016 Omron Adept Technologies, Inc.
      along with this program; if not, write to the Free Software
      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-If you wish to redistribute MVRIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of MVRIA at 
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
 robots@mobilerobots.com or 
 Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 */
-#ifndef MVRACTIONGROUPS_H
-#define MVRACTIONGROUPS_H
+#ifndef ARACTIONGROUPS_H
+#define ARACTIONGROUPS_H
 
 #include "mvriaTypedefs.h"
 #include "MvrActionGroup.h"
@@ -46,7 +46,7 @@ class MvrRatioInputRobotJoydrive;
 /** 
    This class is just useful for teleoping the robot under your own
    joystick and keyboard control... Note that you the predefined
-   MvrActionGroups in MVRIA are made only to be used exclusively... only
+   MvrActionGroups in ARIA are made only to be used exclusively... only
    one can be active at once.
 
    This class is largely now obsolete (it is used by MvrServerModeDrive
@@ -73,7 +73,7 @@ protected:
 /// Action group to stop the robot
 /** 
    This class is just useful for having the robot stopped... Note that
-   you the predefined MvrActionGroups in MVRIA are made only to be used
+   you the predefined MvrActionGroups in ARIA are made only to be used
    exclusively... they won't combine.
 **/
 class MvrActionGroupStop : public MvrActionGroup
@@ -90,7 +90,7 @@ public:
 /** 
    This class is just useful for teleoping the robot and having these
    actions read the joystick and keyboard... Note that you the
-   predefined MvrActionGroups in MVRIA are made only to be used
+   predefined MvrActionGroups in ARIA are made only to be used
    exclusively... only one can be active at once.
 **/
 class MvrActionGroupTeleop : public MvrActionGroup
@@ -104,12 +104,12 @@ protected:
 };
 
 /// Action group to teleoperate the robot using MvrActionJoydrive, but without any Limiter actions to avoid collisions.
-/*
+/** 
    This class is just useful for teleoping the robot in an unguarded
    and unsafe manner and having these actions read the joystick and
-   keyboard... Note that you the predefined MvrActionGroups in MVRIA are
+   keyboard... Note that you the predefined MvrActionGroups in ARIA are
    made only to be used exclusively... only one can be active at once.
- */
+**/
 class MvrActionGroupUnguardedTeleop : public MvrActionGroup
 {
 public:
@@ -123,7 +123,7 @@ protected:
 /// Action group to make the robot wander, avoiding obstacles.
 /** 
    This class is useful for having the robot wander... Note that
-   you the predefined MvrActionGroups in MVRIA are made only to be used
+   you the predefined MvrActionGroups in ARIA are made only to be used
    exclusively... only one can be active at once.
 **/
 class MvrActionGroupWander : public MvrActionGroup
@@ -136,7 +136,7 @@ public:
 /// Follows a blob of color
 /** 
    This class has the robot follow a blob of color... Note that you the
-   predefined MvrActionGroups in MVRIA are made only to be used
+   predefined MvrActionGroups in ARIA are made only to be used
    exclusively... only one can be active at once.
 **/
 
@@ -162,7 +162,7 @@ protected:
 /** 
    This class is just useful for teleoping the robot under your own
    joystick and keyboard control... Note that you the predefined
-   MvrActionGroups in MVRIA are made only to be used exclusively (one at
+   MvrActionGroups in ARIA are made only to be used exclusively (one at
    a time)... only one can be active at once.
 **/
 class MvrActionGroupRatioDrive : public MvrActionGroup
@@ -189,7 +189,7 @@ protected:
 /** 
    This class is just useful for teleoping the robot under your own
    joystick and keyboard control... Note that you the predefined
-   MvrActionGroups in MVRIA are made only to be used exclusively (one at
+   MvrActionGroups in ARIA are made only to be used exclusively (one at
    a time)... only one can be active at once.
 **/
 class MvrActionGroupRatioDriveUnsafe : public MvrActionGroup
@@ -207,4 +207,4 @@ protected:
 
 };
 
-#endif // MVRACTIONGROUPS_H
+#endif // ARACTIONGROUPS_H

@@ -1,3 +1,29 @@
+/*
+Adept MobileRobots Robotics Interface for Applications (ARIA)
+Copyright (C) 2004-2005 ActivMedia Robotics LLC
+Copyright (C) 2006-2010 MobileRobots Inc.
+Copyright (C) 2011-2015 Adept Technology, Inc.
+Copyright (C) 2016 Omron Adept Technologies, Inc.
+
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+If you wish to redistribute ARIA under different terms, contact 
+Adept MobileRobots for information about a commercial version of ARIA at 
+robots@mobilerobots.com or 
+Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
+*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "mvriaInternal.h"
@@ -10,7 +36,7 @@
 /**
 @page MapFileFormat Map File Format
 
-MVRIA's map file format is used to store data that defines a map of a space 
+ARIA's map file format is used to store data that defines a map of a space 
 in which the robot can operate.  A map file can be loaded, accessed, and 
 saved using an MvrMap object.
 
@@ -39,7 +65,7 @@ A map is an introductory line (e.g. "2D-Map") followed by the metadata
 section, followed by some number of data sections:
 </p>
 <pre>
-MVRMAP                = (MapIntro NEWLINE) (MetadataSection) (*DataSection)
+ARMAP                = (MapIntro NEWLINE) (MetadataSection) (*DataSection)
 MapIntro             = "2D-Map" / "2D-Map-Ex" / "2D-Map-Ex2"
 </pre>
 <p>
@@ -392,7 +418,7 @@ For more information about the use of <code>MapInfo</code> metadata, see the dis
  * <ul>
  *  <li> <code>NameRequired=</code><i>0|1</i> : Whether the item must be named
  *  <li> <code>Shape=[Plain|
- *                 Mvrrow|FillArrow|GradArrow|
+ *                 Arrow|FillArrow|GradArrow|
  *                 Door|
  *                 Elevator|
  *                 Stairs|
@@ -428,13 +454,13 @@ For more information about the use of <code>MapInfo</code> metadata, see the dis
  * default "Goal", "GoalWithHeading", and "Dock" types if you want those
  * types to remain available.
  *
- * The MapInfo MvrgDesc lines may be used to define one or more configurable
+ * The MapInfo ArgDesc lines may be used to define one or more configurable
  * parameters for a custom map object type.  (2D-Map-Ex2 feature.)  
- * The MvrgDesc must appear after its parent type definition and can contain 
+ * The ArgDesc must appear after its parent type definition and can contain 
  * the following parameters:
  * <ul>
  *   <li> <code>Name=</code><i>String</i> : The text name of the parameter being defined.  This 
- *     must be the first item in the line (after MvrgDesc) and must be unique 
+ *     must be the first item in the line (after ArgDesc) and must be unique 
  *     for the given parent. (Required)
  *   <li> <code>Parent=</code><i>String</i> : The text name of the parent map object type (e.g.
  *     <code>SpecialGoal</code>, <code>RobotHome</code>, ...).  This must be the second item in the line,
@@ -516,7 +542,7 @@ MVREXPORT MvrMap::MvrMap(const char *baseDirectory,
     Mvria::getConfig()->addProcessFileWithErrorCB(&myProcessFileCB, 
 						 configProcessFilePriority);
   }
-#endif //MvrINTERFACE
+#endif //MVRINTERFACE
 
 } // end ctor
    
