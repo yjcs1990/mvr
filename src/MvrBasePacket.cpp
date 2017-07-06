@@ -478,8 +478,7 @@ MVREXPORT void MvrBasePacket::strToBufPadded(const char *str, int length)
 MVREXPORT void MvrBasePacket::dataToBuf(const char *data, int length)
 {
   if (data == NULL) {
-    MvrLog::log(MvrLog::Normal, "MvrBasePacket::dataToBuf(NULL, %d) cannot add from null address",
-               length);
+    MvrLog::log(MvrLog::Normal, "MvrBasePacket::dataToBuf(NULL, %d) cannot add from null address", length);
     return;
   }
 

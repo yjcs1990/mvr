@@ -14,11 +14,14 @@ INCLUDE(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
 if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -lpthread -lrt -ldl")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pthread")
     add_definitions(-DCOMPILEDWITHC11)
     message(STATUS "Using flag -std=c++11.")
 elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -lpthread -lrt -ldl")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pthread")
+    
     add_definitions(-DCOMPILEDWITHC0X)
     message(STATUS "Using flag -std=c++0x.")
 else()
@@ -27,7 +30,7 @@ endif()
 
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 SET(RUNTIME_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-
+SET(CMAKE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
@@ -189,5 +192,5 @@ INCLUDE_DIRECTORIES(
 #     )
 
 
-ADD_EXECUTABLE(testFunctor tests/testFunctor.cpp)
-target_link_libraries(testFunctor ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(simpleConnect examples/simpleConnect.cpp)
+target_link_libraries(simpleConnect ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)

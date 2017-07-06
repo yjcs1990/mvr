@@ -13,13 +13,13 @@ class MvrRobotPacketReceiver
 public:
   /// Constructor without an already assigned device connection
   MVREXPORT MvrRobotPacketReceiver(bool allocatePackets = false,
-				 unsigned char sync1 = 0xfa, 
-				 unsigned char sync2 = 0xfb);
+				 unsigned char sync1 = 0xA5, 
+				 unsigned char sync2 = 0x00);
   /// Constructor with assignment of a device connection
   MVREXPORT MvrRobotPacketReceiver(MvrDeviceConnection *deviceConnection, 
 				 bool allocatePackets = false,
-				 unsigned char sync1 = 0xfa, 
-				 unsigned char sync2 = 0xfb);
+				 unsigned char sync1 = 0xA5, 
+				 unsigned char sync2 = 0x00);
   /// Constructor with assignment of a device connection and tracking
   MVREXPORT MvrRobotPacketReceiver(MvrDeviceConnection *deviceConnection, 
 				 bool allocatePackets,

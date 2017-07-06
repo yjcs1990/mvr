@@ -738,28 +738,22 @@ MVREXPORT void MvrArgumentParser::loadDefaultArguments(int position)
       compressed.compressQuoted(true);
       myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(), 
                               position);
-      MvrLog::log(MvrLog::Normal, 
-		 "Added arguments from environmental variable '%s'", str);
+      MvrLog::log(MvrLog::Normal, "Added arguments from environmental variable '%s'", str);
     }
     // see if we have a file
-    else if ((*bIt) && 
-	     MvrUtil::getStringFromFile(str, arguments, sizeof(arguments)))
+    else if ((*bIt) && MvrUtil::getStringFromFile(str, arguments, sizeof(arguments)))
     {
       MvrArgumentBuilder compressed;
       compressed.addPlain(arguments);
       compressed.compressQuoted(true);
-      myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(), 
-                              position);
-      MvrLog::log(MvrLog::Normal, "Added arguments from file '%s'", 
-		 str);
+      myBuilder->addStringsAsIs(compressed.getArgc(), compressed.getArgv(), position);
+      MvrLog::log(MvrLog::Normal, "Added arguments from file '%s'", str);
     }
     // the file or env didn't exit
     // this'll return true otherwise it'll return false)
     else
     {
-      MvrLog::log(MvrLog::Verbose, 
-		 "Could not load from environmental variable or file '%s'", 
-		 str);
+      MvrLog::log(MvrLog::Verbose, "Could not load from environmental variable or file '%s'", str);
     }
   }
 }

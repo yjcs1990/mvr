@@ -12,12 +12,12 @@ class MvrRobotPacketSender
 {
 public:
   /// Constructor without an already assigned device connection
-  MVREXPORT MvrRobotPacketSender(unsigned char sync1 = 0xfa,
-			       unsigned char sync2 = 0xfb);
+  MVREXPORT MvrRobotPacketSender(unsigned char sync1 = 0xA5,
+			       unsigned char sync2 = 0x00);
   /// Constructor with assignment of a device connection
   MVREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
-			       unsigned char sync1 = 0xfa,
-			       unsigned char sync2 = 0xfb);
+			       unsigned char sync1 = 0xA5,
+			       unsigned char sync2 = 0x00);
   /// Constructor with assignment of a device connection and tracking
   MVREXPORT MvrRobotPacketSender(MvrDeviceConnection *deviceConnection,
 			       unsigned char sync1,

@@ -77,8 +77,7 @@ MVREXPORT MvrRobotPacketSender::~MvrRobotPacketSender()
 
 }
 
-MVREXPORT void MvrRobotPacketSender::setDeviceConnection(
-	MvrDeviceConnection *deviceConnection)
+MVREXPORT void MvrRobotPacketSender::setDeviceConnection(MvrDeviceConnection *deviceConnection)
 {
   myDeviceConn = deviceConnection;
 }

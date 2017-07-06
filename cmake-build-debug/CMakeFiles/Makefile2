@@ -54,45 +54,45 @@ RM = /usr/local/clion/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/robot/project/mvr
+CMAKE_SOURCE_DIR = /backup/project/mvr
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/robot/project/mvr/cmake-build-debug
+CMAKE_BINARY_DIR = /backup/project/mvr/cmake-build-debug
 
 #=============================================================================
-# Target rules for target CMakeFiles/MVRTest.dir
+# Target rules for target CMakeFiles/simpleConnect.dir
 
 # All Build rule for target.
-CMakeFiles/MVRTest.dir/all:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/depend
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/robot/project/mvr/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target MVRTest"
-.PHONY : CMakeFiles/MVRTest.dir/all
+CMakeFiles/simpleConnect.dir/all:
+	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/depend
+	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/backup/project/mvr/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target simpleConnect"
+.PHONY : CMakeFiles/simpleConnect.dir/all
 
 # Include target in all.
-all: CMakeFiles/MVRTest.dir/all
+all: CMakeFiles/simpleConnect.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/MVRTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/robot/project/mvr/cmake-build-debug/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/MVRTest.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/robot/project/mvr/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/MVRTest.dir/rule
+CMakeFiles/simpleConnect.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/cmake-build-debug/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/simpleConnect.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/simpleConnect.dir/rule
 
 # Convenience name for target.
-MVRTest: CMakeFiles/MVRTest.dir/rule
+simpleConnect: CMakeFiles/simpleConnect.dir/rule
 
-.PHONY : MVRTest
-
-# clean rule for target.
-CMakeFiles/MVRTest.dir/clean:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/clean
-.PHONY : CMakeFiles/MVRTest.dir/clean
+.PHONY : simpleConnect
 
 # clean rule for target.
-clean: CMakeFiles/MVRTest.dir/clean
+CMakeFiles/simpleConnect.dir/clean:
+	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/clean
+.PHONY : CMakeFiles/simpleConnect.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/simpleConnect.dir/clean
 
 .PHONY : clean
 

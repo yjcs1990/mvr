@@ -43,14 +43,6 @@ class MvrBatteryConnector;
    After it's connected, you must then begin the robot processing cycle by calling
    MvrRobot::runAsync() or MvrRobot::run().
 
-   @sa MvrLaserConnector
-   @sa MvrRobot
-
-   @since 2.7.0
-
-   @ingroup ImportantClasses
-   @ingroup DeviceClasses
-
 **/
 class MvrRobotConnector
 {

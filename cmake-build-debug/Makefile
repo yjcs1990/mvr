@@ -48,10 +48,10 @@ RM = /usr/local/clion/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/robot/project/mvr
+CMAKE_SOURCE_DIR = /backup/project/mvr
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/robot/project/mvr/cmake-build-debug
+CMAKE_BINARY_DIR = /backup/project/mvr/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/robot/project/mvr/cmake-build-debug/CMakeFiles /home/robot/project/mvr/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/cmake-build-debug/CMakeFiles /backup/project/mvr/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/robot/project/mvr/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,44 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named MVRTest
+# Target rules for targets named simpleConnect
 
 # Build rule for target.
-MVRTest: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 MVRTest
-.PHONY : MVRTest
+simpleConnect: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 simpleConnect
+.PHONY : simpleConnect
 
 # fast build rule for target.
-MVRTest/fast:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/build
-.PHONY : MVRTest/fast
+simpleConnect/fast:
+	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/build
+.PHONY : simpleConnect/fast
 
-test/test.o: test/test.cpp.o
+examples/simpleConnect.o: examples/simpleConnect.cpp.o
 
-.PHONY : test/test.o
+.PHONY : examples/simpleConnect.o
 
 # target to build an object file
-test/test.cpp.o:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/test/test.cpp.o
-.PHONY : test/test.cpp.o
+examples/simpleConnect.cpp.o:
+	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/examples/simpleConnect.cpp.o
+.PHONY : examples/simpleConnect.cpp.o
 
-test/test.i: test/test.cpp.i
+examples/simpleConnect.i: examples/simpleConnect.cpp.i
 
-.PHONY : test/test.i
+.PHONY : examples/simpleConnect.i
 
 # target to preprocess a source file
-test/test.cpp.i:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/test/test.cpp.i
-.PHONY : test/test.cpp.i
+examples/simpleConnect.cpp.i:
+	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/examples/simpleConnect.cpp.i
+.PHONY : examples/simpleConnect.cpp.i
 
-test/test.s: test/test.cpp.s
+examples/simpleConnect.s: examples/simpleConnect.cpp.s
 
-.PHONY : test/test.s
+.PHONY : examples/simpleConnect.s
 
 # target to generate assembly for a file
-test/test.cpp.s:
-	$(MAKE) -f CMakeFiles/MVRTest.dir/build.make CMakeFiles/MVRTest.dir/test/test.cpp.s
-.PHONY : test/test.cpp.s
+examples/simpleConnect.cpp.s:
+	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/examples/simpleConnect.cpp.s
+.PHONY : examples/simpleConnect.cpp.s
 
 # Help Target
 help:
@@ -158,10 +158,10 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... MVRTest"
-	@echo "... test/test.o"
-	@echo "... test/test.i"
-	@echo "... test/test.s"
+	@echo "... simpleConnect"
+	@echo "... examples/simpleConnect.o"
+	@echo "... examples/simpleConnect.i"
+	@echo "... examples/simpleConnect.s"
 .PHONY : help
 
 

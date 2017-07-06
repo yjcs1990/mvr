@@ -224,7 +224,7 @@ MVREXPORT bool MvrSerialConnection::openSimple(void)
 MVREXPORT void MvrSerialConnection::setPort(const char *port)
 {
   if (port == NULL)
-    myPortName = "/dev/ttyS0";
+    myPortName = "/dev/ttyUSB0";
   else
     myPortName = port;
   setPortName(myPortName.c_str());

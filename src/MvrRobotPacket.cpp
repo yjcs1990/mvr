@@ -9,8 +9,7 @@
    @param sync2 second byte of the header of this packet, this should be left
    as the default in nearly all cases, ie don't mess with it
  */
-MVREXPORT MvrRobotPacket::MvrRobotPacket(unsigned char sync1,
-				      unsigned char sync2) :
+MVREXPORT MvrRobotPacket::MvrRobotPacket(unsigned char sync1, unsigned char sync2) :
     MvrBasePacket(265, 4, NULL, 2)
 {
   mySync1 = sync1;
@@ -33,9 +32,10 @@ MVREXPORT MvrRobotPacket &MvrRobotPacket::operator=(const MvrRobotPacket &other)
     mySync2 = other.mySync2;
     myTimeReceived = other.myTimeReceived;
 
-    if (myMaxLength != other.myMaxLength) {
+    if (myMaxLength != other.myMaxLength) 
+    {
       if (myOwnMyBuf && myBuf != NULL)
-	delete [] myBuf;
+	      delete [] myBuf;
       myOwnMyBuf = true;
       myBuf = NULL;
       if (other.myMaxLength > 0) {
@@ -95,30 +95,33 @@ MVREXPORT MvrTypes::Byte2 MvrRobotPacket::calcCheckSum(void)
   int c = 0;
 
   i = 3;
-  n = myBuf[2] - 2;
-  while (n > 1) {
-    c += ((unsigned char)myBuf[i]<<8) | (unsigned char)myBuf[i+1];
-    c = c & 0xffff;
-    n -= 2;
-    i += 2;
-  }
-  if (n > 0) 
-    c = c ^ (int)((unsigned char) myBuf[i]);
+  n = myBuf[2];
+  // while (n > 1) {
+  //   c += ((unsigned char)myBuf[i]<<8) | (unsigned char)myBuf[i+1];
+  //   c = c & 0xffff;
+  //   n -= 2;
+  //   i += 2;
+  // }
+  // if (n > 0) 
+  //   c = c ^ (int)((unsigned char) myBuf[i]);
+  for (i = n; i > 0; i--)
+    c ^= myBuf[i];
   return c;
 }
 
 MVREXPORT bool MvrRobotPacket::verifyCheckSum(void) 
 {
   MvrTypes::Byte2 chksum;
-  unsigned char c1, c2;
+  // unsigned char c1, c2;
 
   if (myLength - 2 < myHeaderLength)
     return false;
-
-  c2 = myBuf[myLength - 2];
-  c1 = myBuf[myLength - 1];
-  chksum = (c1 & 0xff) | (c2 << 8);
-
+  // printf("myLength %d\n",myLength);
+  // c2 = myBuf[myLength - 2];
+  // c1 = myBuf[myLength - 1];
+  chksum = myBuf[myLength - 2];
+  // printf("chksum %x\n", chksum);
+  // printf("calcCheckSum() %x\n", calcCheckSum());
   if (chksum == calcCheckSum()) {
     return true;
   } else {
@@ -142,7 +145,7 @@ MVREXPORT void MvrRobotPacket::log()
   int i;
   MvrLog::log(MvrLog::Normal, "Robot Packet: (length = %i)", myLength);
   for (i = 0; i < myLength; i++)
-    MvrLog::log(MvrLog::Terse, "  [%03i] % 5d\t0x%x\t%c\t%s", i,
+    MvrLog::log(MvrLog::Terse, "  [%03i] % 5d\t0d%x\t%c\t%s", i,
         (unsigned char) myBuf[i],
         (unsigned char) myBuf[i],
         (myBuf[i] >= ' ' && myBuf[i] <= '~') ? (unsigned char) myBuf[i] : ' ',

@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   
   if (argc < 2)
     {
-      printf("Usage: %s <port>", argv[0]);
+      printf("Usage: %s <port>\n", argv[0]);
       exit(0);
     }
 
@@ -61,7 +61,8 @@ int main(int argc, char **argv)
       {
         printf("%3d:\t", ret);
         for (i = 0; i < ret; i++)
-          printf("%x(%x) ", bufRead[i], (unsigned char)bufRead[i]);
+          // printf("%x(%x) ", bufRead[i], (unsigned char)bufRead[i]);
+          printf("%x ", bufRead[i]);
         printf("\n");
       }
       else

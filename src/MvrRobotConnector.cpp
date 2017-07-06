@@ -52,7 +52,7 @@ MVREXPORT MvrRobotConnector::MvrRobotConnector(
   myRemoteHost = NULL;
   myRobotPort = NULL;
   myRemoteRobotTcpPort = 8101;
-  myRobotBaud = 9600;
+  myRobotBaud = 115200;
   myRemoteIsSim = false;
   myRemoteIsNotSim = false;
   myRobotLogPacketsReceived = false;
@@ -345,12 +345,11 @@ MVREXPORT bool MvrRobotConnector::setupRobot(MvrRobot *robot)
     // we could get to the sim, so set the robots device connection to the sim
     if (myRemoteHost != NULL)
     {
-      MvrLog::log(MvrLog::Normal, "Connected to remote host %s through tcp.\n", 
-		 myRemoteHost);
+      MvrLog::log(MvrLog::Normal, "Connected to remote host %s through tcp.\n", myRemoteHost);
       if (myRemoteIsSim)
-	myUsingSim = true;
+	      myUsingSim = true;
       else
-	myUsingSim = false;
+	      myUsingSim = false;
     }
     else
     {
@@ -372,9 +371,7 @@ MVREXPORT bool MvrRobotConnector::setupRobot(MvrRobot *robot)
 
     myRobotSerConn.setPort(myRobotPort);
     myRobotSerConn.setBaud(myRobotBaud);
-    MvrLog::log(MvrLog::Normal,
-	       "Could not connect to simulator, connecting to robot through serial port %s.", 
-	       myRobotSerConn.getPort());
+    MvrLog::log(MvrLog::Normal, "Could not connect to simulator, connecting to robot through serial port %s.", myRobotSerConn.getPort());
     robot->setDeviceConnection(&myRobotSerConn);
     myUsingSim = false;
   }

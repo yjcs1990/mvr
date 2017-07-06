@@ -985,10 +985,9 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     {
       if (!myConn->openSimple())
       {
-	/*str = myConn->getStatusMessage(myConn->getStatus());
-	  MvrLog::log(MvrLog::Terse, "Trying to connect to robot but connection not opened, it is %s", str.c_str());*/
-        MvrLog::log(MvrLog::Terse, 
-                   "Could not connect, because open on the device connection failed.");
+      /*str = myConn->getStatusMessage(myConn->getStatus());
+        MvrLog::log(MvrLog::Terse, "Trying to connect to robot but connection not opened, it is %s", str.c_str());*/
+        MvrLog::log(MvrLog::Terse, "Could not connect, because open on the device connection failed.");
         failedConnect();
         return 2;
       }
@@ -1051,99 +1050,97 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     }
     // if we've gotten our config packet or if we've timed out then
     // set our vel and acc/decel params and skip to the next part
-    if (myOrigRobotConfig->hasPacketArrived() || 
-	myAsyncStartedConnection.mSecSince() > 1000)
+    if (myOrigRobotConfig->hasPacketArrived() || myAsyncStartedConnection.mSecSince() > 1000)
     {
       bool gotConfig;
       // if we have data from the robot use that
       if (myOrigRobotConfig->hasPacketArrived())
       {
-	gotConfig = true;
-	setAbsoluteMaxTransVel(myOrigRobotConfig->getTransVelTop());
-	setAbsoluteMaxTransNegVel(-myOrigRobotConfig->getTransVelTop());
-	setAbsoluteMaxTransAccel(myOrigRobotConfig->getTransAccelTop());
-	setAbsoluteMaxTransDecel(myOrigRobotConfig->getTransAccelTop());
-	setAbsoluteMaxRotVel(myOrigRobotConfig->getRotVelTop());
-	setAbsoluteMaxRotAccel(myOrigRobotConfig->getRotAccelTop());
-	setAbsoluteMaxRotDecel(myOrigRobotConfig->getRotAccelTop());
-	setTransVelMax(myOrigRobotConfig->getTransVelMax());
-	setTransNegVelMax(-myOrigRobotConfig->getTransVelMax());
-	setTransAccel(myOrigRobotConfig->getTransAccel());
-	setTransDecel(myOrigRobotConfig->getTransDecel());
-	setRotVelMax(myOrigRobotConfig->getRotVelMax());
-	setRotAccel(myOrigRobotConfig->getRotAccel());
-	setRotDecel(myOrigRobotConfig->getRotDecel());
-	if (hasLatVel())
-	{
-	  setAbsoluteMaxLatVel(myOrigRobotConfig->getLatVelTop());
-	  setAbsoluteMaxLatAccel(myOrigRobotConfig->getLatAccelTop());
-	  setAbsoluteMaxLatDecel(myOrigRobotConfig->getLatAccelTop());
-	  setLatVelMax(myOrigRobotConfig->getLatVelMax());
-	  setLatAccel(myOrigRobotConfig->getLatAccel());
-	  setLatDecel(myOrigRobotConfig->getLatDecel());
-	}
-	if (myOrigRobotConfig->getKinematicsDelay() != 0)
-	  setOdometryDelay(myOrigRobotConfig->getKinematicsDelay());
-	if (myOrigRobotConfig->getStateOfChargeLow() > 0)
-	  setStateOfChargeLow(myOrigRobotConfig->getStateOfChargeLow());
-	if (myOrigRobotConfig->getStateOfChargeShutdown() > 0)
-	  setStateOfChargeShutdown(
-		  myOrigRobotConfig->getStateOfChargeShutdown());
-      MvrLog::log(MvrLog::Normal, "Robot Serial Number: %s", myOrigRobotConfig->getSerialNumber());
+        gotConfig = true;
+        setAbsoluteMaxTransVel(myOrigRobotConfig->getTransVelTop());
+        setAbsoluteMaxTransNegVel(-myOrigRobotConfig->getTransVelTop());
+        setAbsoluteMaxTransAccel(myOrigRobotConfig->getTransAccelTop());
+        setAbsoluteMaxTransDecel(myOrigRobotConfig->getTransAccelTop());
+        setAbsoluteMaxRotVel(myOrigRobotConfig->getRotVelTop());
+        setAbsoluteMaxRotAccel(myOrigRobotConfig->getRotAccelTop());
+        setAbsoluteMaxRotDecel(myOrigRobotConfig->getRotAccelTop());
+        setTransVelMax(myOrigRobotConfig->getTransVelMax());
+        setTransNegVelMax(-myOrigRobotConfig->getTransVelMax());
+        setTransAccel(myOrigRobotConfig->getTransAccel());
+        setTransDecel(myOrigRobotConfig->getTransDecel());
+        setRotVelMax(myOrigRobotConfig->getRotVelMax());
+        setRotAccel(myOrigRobotConfig->getRotAccel());
+        setRotDecel(myOrigRobotConfig->getRotDecel());
+        if (hasLatVel())
+        {
+          setAbsoluteMaxLatVel(myOrigRobotConfig->getLatVelTop());
+          setAbsoluteMaxLatAccel(myOrigRobotConfig->getLatAccelTop());
+          setAbsoluteMaxLatDecel(myOrigRobotConfig->getLatAccelTop());
+          setLatVelMax(myOrigRobotConfig->getLatVelMax());
+          setLatAccel(myOrigRobotConfig->getLatAccel());
+          setLatDecel(myOrigRobotConfig->getLatDecel());
+        }
+        if (myOrigRobotConfig->getKinematicsDelay() != 0)
+          setOdometryDelay(myOrigRobotConfig->getKinematicsDelay());
+        if (myOrigRobotConfig->getStateOfChargeLow() > 0)
+          setStateOfChargeLow(myOrigRobotConfig->getStateOfChargeLow());
+        if (myOrigRobotConfig->getStateOfChargeShutdown() > 0)
+          setStateOfChargeShutdown(myOrigRobotConfig->getStateOfChargeShutdown());
+        MvrLog::log(MvrLog::Normal, "Robot Serial Number: %s", myOrigRobotConfig->getSerialNumber());
       }
       else if (myRequireConfigPacket)
       {
-	MvrLog::log(MvrLog::Terse, "Could not connect, config packet required and no config packet received.");
-	failedConnect();
-	return 2;
+          MvrLog::log(MvrLog::Terse, "Could not connect, config packet required and no config packet received.");
+          failedConnect();
+          return 2;
       }
       // if our absolute maximums weren't set then set them
       else
       {
-	gotConfig = false;
-	setAbsoluteMaxTransVel(myParams->getAbsoluteMaxVelocity());
-	setAbsoluteMaxTransAccel(1000);
-	setAbsoluteMaxTransDecel(1000);
-	setAbsoluteMaxRotVel(myParams->getAbsoluteMaxRotVelocity());
-	setAbsoluteMaxRotAccel(100);
-	setAbsoluteMaxRotDecel(100);
-	setAbsoluteMaxLatVel(myParams->getAbsoluteMaxLatVelocity());
-	setAbsoluteMaxLatAccel(1000);
-	setAbsoluteMaxLatDecel(1000);
+        gotConfig = false;
+        setAbsoluteMaxTransVel(myParams->getAbsoluteMaxVelocity());
+        setAbsoluteMaxTransAccel(1000);
+        setAbsoluteMaxTransDecel(1000);
+        setAbsoluteMaxRotVel(myParams->getAbsoluteMaxRotVelocity());
+        setAbsoluteMaxRotAccel(100);
+        setAbsoluteMaxRotDecel(100);
+        setAbsoluteMaxLatVel(myParams->getAbsoluteMaxLatVelocity());
+        setAbsoluteMaxLatAccel(1000);
+        setAbsoluteMaxLatDecel(1000);
       }
       // okay we got in that data, now put over it any of the things
       // that we got from the robot parameter file... if we don't have
       // max vels from above or the parameters then use the absolutes
       // which we do have for everything
       if (MvrMath::fabs(myParams->getTransVelMax()) > 1)
-	setTransVelMax(myParams->getTransVelMax());
+        setTransVelMax(myParams->getTransVelMax());
       else if (!gotConfig)
-	setTransVelMax(myParams->getAbsoluteMaxVelocity());
+        setTransVelMax(myParams->getAbsoluteMaxVelocity());
       if (MvrMath::fabs(myParams->getTransVelMax()) > 1)
-	setTransNegVelMax(-myParams->getTransVelMax());
+        setTransNegVelMax(-myParams->getTransVelMax());
       else if (!gotConfig)
-	setTransNegVelMax(-myParams->getAbsoluteMaxVelocity());
+        setTransNegVelMax(-myParams->getAbsoluteMaxVelocity());
       if (MvrMath::fabs(myParams->getRotVelMax()) > 1)
-	setRotVelMax(myParams->getRotVelMax());
+        setRotVelMax(myParams->getRotVelMax());
       else if (!gotConfig)
-	setRotVelMax(myParams->getAbsoluteMaxRotVelocity());
+        setRotVelMax(myParams->getAbsoluteMaxRotVelocity());
       if (MvrMath::fabs(myParams->getTransAccel()) > 1)
-	setTransAccel(myParams->getTransAccel());
+        setTransAccel(myParams->getTransAccel());
       if (MvrMath::fabs(myParams->getTransDecel()) > 1)
-	setTransDecel(myParams->getTransDecel());
+        setTransDecel(myParams->getTransDecel());
       if (MvrMath::fabs(myParams->getRotAccel()) > 1)
-	setRotAccel(myParams->getRotAccel());
+	      setRotAccel(myParams->getRotAccel());
       if (MvrMath::fabs(myParams->getRotDecel()) > 1)
-	setRotDecel(myParams->getRotDecel());
+	      setRotDecel(myParams->getRotDecel());
 
       if (MvrMath::fabs(myParams->getLatVelMax()) > 1)
-	setLatVelMax(myParams->getLatVelMax());
+	      setLatVelMax(myParams->getLatVelMax());
       else if (!gotConfig)
-	setLatVelMax(myParams->getAbsoluteMaxLatVelocity());
+	      setLatVelMax(myParams->getAbsoluteMaxLatVelocity());
       if (MvrMath::fabs(myParams->getLatAccel()) > 1)
-	setLatAccel(myParams->getLatAccel());
+	      setLatAccel(myParams->getLatAccel());
       if (MvrMath::fabs(myParams->getLatDecel()) > 1)
-	setLatDecel(myParams->getLatDecel());
+	      setLatDecel(myParams->getLatDecel());
       myAsyncConnectState = 4;
     }
     else
@@ -1157,17 +1154,12 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     // we shouldn't change the baud or if we'd change it to a slower
     // baud rate or we aren't using a serial port then don't switch
     // the baud
-    if (!myOrigRobotConfig->hasPacketArrived() || 
-	!myOrigRobotConfig->getResetBaud() || 
-	serConn == NULL ||
-	myParams->getSwitchToBaudRate() == 0 || 
-	(serConn != NULL && 
-	 serConn->getBaud() >= myParams->getSwitchToBaudRate()) ||
-	myDoNotSwitchBaud)
+    if (!myOrigRobotConfig->hasPacketArrived() || !myOrigRobotConfig->getResetBaud() || serConn == NULL ||myParams->getSwitchToBaudRate() == 0 || 
+	      (serConn != NULL && serConn->getBaud() >= myParams->getSwitchToBaudRate()) ||myDoNotSwitchBaud)
     {
       // if we're using a serial connection store our baud rate
       if (serConn != NULL)
-	myAsyncConnectStartBaud = serConn->getBaud();
+        myAsyncConnectStartBaud = serConn->getBaud();
       myAsyncConnectState = 5;
     }
     // if we did get a packet and can change baud send the command
@@ -1175,43 +1167,43 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     {
       // if we're using a serial connection store our baud rate
       if (serConn != NULL)
-	myAsyncConnectStartBaud = serConn->getBaud();
+        myAsyncConnectStartBaud = serConn->getBaud();
 
       int baudNum = -1;
       
       // first suck up all the packets we have now
       while ((packet = myReceiver.receivePacket(0)) != NULL);
       if (myParams->getSwitchToBaudRate() == 9600)
-	baudNum = 0;
+        baudNum = 0;
       else if (myParams->getSwitchToBaudRate() == 19200)
-	baudNum = 1;
+        baudNum = 1;
       else if (myParams->getSwitchToBaudRate() == 38400)
-	baudNum = 2;
+        baudNum = 2;
       else if (myParams->getSwitchToBaudRate() == 57600)
-	baudNum = 3;
+        baudNum = 3;
       else if (myParams->getSwitchToBaudRate() == 115200)
-	baudNum = 4;
+        baudNum = 4;
       else
       {
-	MvrLog::log(MvrLog::Normal, "Warning: SwitchToBaud is set to %d baud, ignoring.",
-		   myParams->getSwitchToBaudRate());
-	MvrLog::log(MvrLog::Normal, "\tGood bauds are 9600 19200 38400 56800 115200.");
-	myAsyncConnectState = 5;
-	baudNum = -1;
-	return 0;
+        MvrLog::log(MvrLog::Normal, "Warning: SwitchToBaud is set to %d baud, ignoring.",
+            myParams->getSwitchToBaudRate());
+        MvrLog::log(MvrLog::Normal, "\tGood bauds are 9600 19200 38400 56800 115200.");
+        myAsyncConnectState = 5;
+        baudNum = -1;
+        return 0;
       }
       if (baudNum != -1)
       {
-	// now switch it over
-	comInt(MvrCommands::HOSTBAUD, baudNum);
-	MvrUtil::sleep(10);
-	myAsyncConnectSentChangeBaud = true;
-	myAsyncConnectStartedChangeBaud.setToNow();
-	serConn->setBaud(myParams->getSwitchToBaudRate());
-	//serConn->setBaud(19200);
-	MvrUtil::sleep(10);
-	com(0);
-	return 0;
+        // now switch it over
+        comInt(MvrCommands::HOSTBAUD, baudNum);
+        MvrUtil::sleep(10);
+        myAsyncConnectSentChangeBaud = true;
+        myAsyncConnectStartedChangeBaud.setToNow();
+        serConn->setBaud(myParams->getSwitchToBaudRate());
+        //serConn->setBaud(19200);
+        MvrUtil::sleep(10);
+        com(0);
+        return 0;
       }
     }
     // if we did send the command then wait and see if we get any packets back
@@ -1222,14 +1214,14 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
       // if we got any packet we're good
       if (packet != NULL)
       {
-	myAsyncConnectState = 5;
+        myAsyncConnectState = 5;
       }
       // if we didn't get it and its been 500 ms then fail
       else if (myAsyncConnectStartedChangeBaud.mSecSince() > 900)
       {
-	MvrLog::log(MvrLog::Normal, "Controller did not switch to baud, reset to %d baud.", myAsyncConnectStartBaud);
-	serConn->setBaud(myAsyncConnectStartBaud);
-	myAsyncConnectState = 5;
+        MvrLog::log(MvrLog::Normal, "Controller did not switch to baud, reset to %d baud.", myAsyncConnectStartBaud);
+        serConn->setBaud(myAsyncConnectStartBaud);
+        myAsyncConnectState = 5;
       }
       else
 	return 0;
@@ -1271,14 +1263,14 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
       comInt(MvrCommands::CLOSE,1);
       while (endTime.mSecTo() > 0)
       {
-	timeToWait = endTime.mSecTo();
-	if (timeToWait < 0)
-	  timeToWait = 0;
-	tempPacket = myReceiver.receivePacket(timeToWait);
-	if (tempPacket != NULL)
-	  MvrLog::log(MvrLog::Verbose, "Got in another packet!");
-	if (tempPacket != NULL && tempPacket->getID() == 50)
-	  comInt(MvrCommands::CLOSE,1);
+        timeToWait = endTime.mSecTo();
+        if (timeToWait < 0)
+          timeToWait = 0;
+        tempPacket = myReceiver.receivePacket(timeToWait);
+        if (tempPacket != NULL)
+          MvrLog::log(MvrLog::Verbose, "Got in another packet!");
+        if (tempPacket != NULL && tempPacket->getID() == 50)
+          comInt(MvrCommands::CLOSE,1);
       }
       myAsyncConnectState = 0;
     } 
