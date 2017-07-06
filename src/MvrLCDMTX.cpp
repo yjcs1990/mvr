@@ -567,7 +567,7 @@ MVREXPORT void * MvrLCDMTX::runThread(void *arg)
 	}
 	// if we have a robot but it isn't running yet then don't have a
 	// connection failure
-	/* MPL PS TODO This should lose connection if we
+	/* PS TODO This should lose connection if we
 	haven't heard from it in long enough... but this is
 	loosing connection anytime we lose one packet
 	(which'll always happen sometimes on serial).
@@ -874,7 +874,7 @@ MVREXPORT void * MvrLCDMTX::runThread(void *arg)
 	}
 	// if we have a robot but it isn't running yet then don't have a
 	// connection failure
-	/* MPL PS TODO This should lose connection if we
+	/* PS TODO This should lose connection if we
 	haven't heard from it in long enough... but this is
 	loosing connection anytime we lose one packet
 	(which'll always happen sometimes on serial).

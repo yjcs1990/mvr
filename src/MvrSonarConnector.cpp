@@ -745,7 +745,6 @@ MVREXPORT bool MvrSonarConnector::connectSonars (
 MVREXPORT bool MvrSonarConnector::turnOnPower(SonarData *sonarData)
 
 {
-  /// MPL the new way
   if (myTurnOnPowerOutputCB != NULL)
   {
     if (myRobot->getRobotParams()->getSonarMTXBoardPowerOutput(

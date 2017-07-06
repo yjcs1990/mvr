@@ -24,7 +24,6 @@ class MvrRobotPacket;
    associated with one of those it tells you to see the associated
    function).
 
-   @since 2.7.0
 **/
 
 class MvrSimulatedLaser : public MvrLaser

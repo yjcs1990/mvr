@@ -62,8 +62,6 @@ MvrNetServer::MvrNetServer(bool addMvriaExitCB, bool doNotAddShutdownServer,
   addCommand("help", &myHelpCB, "gives the listing of available commands");
   addCommand("echo", &myEchoCB, "with no args gets echo, with args sets echo");
   addCommand("quit", &myQuitCB, "closes this connection to the server");
-  // MPL 2013_06_10 letting folks take out shutdownServer since it
-  // can do no good and much ill
   if (!doNotAddShutdownServer)
     addCommand("shutdownServer", &myShutdownServerCB, "shuts down the server");
 

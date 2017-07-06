@@ -497,7 +497,6 @@ bool MvrUrg::internalConnect(void)
 
   while (readLine(buf, sizeof(buf), 10000))
   {
-    /// MPL put this in instead of the following because of the
     /// behavior change of readline
     if (strlen(buf) == 0)
       break;

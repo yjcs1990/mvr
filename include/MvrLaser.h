@@ -79,7 +79,6 @@ other similar functions are used by MvrLaserConnector to test if a parameter
    (MvrDeviceConnectionCreatorHelper in ariaUtil.h/cpp file is the
    example for that one).
 
-   @since 2.7.0
    @ingroup ImportantClasses
    @ingroup DeviceClasses
 **/

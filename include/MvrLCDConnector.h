@@ -47,9 +47,6 @@ class MvrRobot;
    connectLCDs() will return true and add an entry for each lcd connected
    in the MvrRobot object's list of lcds.  These MvrLCDMTX objects can be
    accessed from your MvrRobot object via MvrRobot::findLCD() or MvrRobot::getLCDMap(). 
-   
-
-   @since 2.8.0
 
  **/
 class MvrLCDConnector

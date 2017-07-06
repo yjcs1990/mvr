@@ -1587,7 +1587,6 @@ MVREXPORT void MvrLMS2xx::sensorInterpCallback(void)
 		    deinterlace, deinterlaceDelta);
       processed.push_back(packet);
     }
-    /// MPL changing this since it seems -1 is left out of everything
     //else if (ret < -1 || retEncoder < -1)
     else if (ret < 0 || retEncoder < 0)
     {

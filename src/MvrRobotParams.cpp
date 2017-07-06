@@ -62,7 +62,7 @@ MVREXPORT MvrRobotParams::MvrRobotParams() :
   myRearBumpers = false;
   myNumRearBumpers = 5;
   myNumSonarUnits = 0;
-  // MPL TODO why do we need these counts?
+  // TODO why do we need these counts?
   mySonarBoardCount = 0;
   myBatteryMTXBoardCount = 0;
   myLCDMTXBoardCount = 0;
@@ -601,7 +601,7 @@ MVREXPORT void MvrRobotParams::addBatteryToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  // MPL TODO remove this since it's redundant (it's set in the constructor)
+  // TODO remove this since it's redundant (it's set in the constructor)
   //batteryMTXBoardData->myBatteryMTXBoardAutoConn = false;
 
 }
@@ -630,7 +630,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(
   LCDMTXBoardData *lcdMTXBoardData = new LCDMTXBoardData;
   myLCDMTXBoards[lcdNumber] = lcdMTXBoardData;
 
-  /// MPL TODO what's this for?
+  /// TODO what's this for?
   myLCDMTXBoardCount++;
 
   std::string displayHintPlain = "Visible:LCDAutoConnect=true";
@@ -638,7 +638,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(
 
   std::string displayHintCustom;
 
-  /// MPL TODO remove, this is already set in the constructor
+  /// TODO remove, this is already set in the constructor
   //lcdMTXBoardData->myLCDMTXBoardAutoConn = false;
   displayHintCustom = "Checkbox&&Visible:Generation!=Legacy";
 
@@ -653,7 +653,7 @@ MVREXPORT void MvrRobotParams::addLCDToConfig(
                 tempDescBuf),
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintCustom.c_str(), restartLevel);
-  /// MPL TODO remove, this is already set in the constructor
+  /// TODO remove, this is already set in the constructor
   //lcdMTXBoardData->myLCDMTXBoardConnFailOption = false
 
   config->addParam(
@@ -741,10 +741,10 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
   SonarMTXBoardData *sonarMTXBoardData = new SonarMTXBoardData;
   mySonarMTXBoards[sonarBoardNumber] = sonarMTXBoardData;
 
-  /// MPL TODO what's this do?
+  ///   TODO what's this do?
   mySonarMTXBoardCount++;
 
-  /// MPL TODO remove this next line (it's in the constructor
+  ///   TODO remove this next line (it's in the constructor
   //sonarMTXBoardData->mySonarMTXBoardAutoConn = false;
   displayHintCustom = "Checkbox&&Visible:Generation!=Legacy";
 
@@ -809,7 +809,7 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  /// MPL Remove this, it's in the constructor
+  ///   Remove this, it's in the constructor
   //  sonarMTXBoardData->mySonarDelay = 1;
   config->addParam(
 	  MvrConfigArg("SonarDelay", 
@@ -818,7 +818,7 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  /// MPL Remove this sonar gain, it's in the constructor
+  ///   Remove this sonar gain, it's in the constructor
   //sonarMTXBoardData->mySonarGain = 5;
   config->addParam(
 	  MvrConfigArg("SonarGain", 
@@ -827,7 +827,7 @@ MVREXPORT void MvrRobotParams::addSonarBoardToConfig(
 	  section.c_str(), MvrPriority::FACTORY,
 	  displayHintPlain.c_str(), restartLevel);
 
-  // MPL TODO remove (moved this to constructor)
+  //   TODO remove (moved this to constructor)
   //strcpy(&sonarMTXBoardData->mySonarThreshold[0],"3000|1500|2000");
   config->addParam(
 	  MvrConfigArg("SonarDetectionThreshold", 
@@ -1363,7 +1363,7 @@ MVREXPORT bool MvrRobotParams::commercialProcessFile(void)
 {
   myRobotLength = myRobotLengthFront + myRobotLengthRear;
 
-  // MPL CONFIG TODO process the sonar
+  //   CONFIG TODO process the sonar
 
   if (myCommercialAddedConnectables && !myCommercialProcessedSonar)
   {

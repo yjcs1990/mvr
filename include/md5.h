@@ -46,7 +46,6 @@ typedef struct md5_state_s {
     md5_byte_t buf[64];		/* accumulate block */
 } md5_state_t;
 
-// MPL (ActivMedia) taking out the extern since its only being used in c++
 /*
 #ifdef __cplusplus
 extern "C" 
@@ -66,7 +65,6 @@ MVREXPORT void md5_append(md5_state_t *pms, const md5_byte_t *data, int nbytes);
 /* Finish the message and return the digest. */
 MVREXPORT void md5_finish(md5_state_t *pms, md5_byte_t digest[16]);
 
-/// MPL (ActivMedia) taking out the extern since its only being used in c++
 /*
 #ifdef __cplusplus
 }  // end extern "C"

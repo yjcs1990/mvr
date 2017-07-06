@@ -52,8 +52,6 @@ MVREXPORT int MvrInterpolation::getPose(MvrTime timeStamp, MvrPose *position, Mv
   MvrPose lastPose;
   MvrTime lastTime;
 
-  // MPL don't use nowtime, use the time stamp that was passed in...
-  // that was bad
   //MvrTime nowTime;
   long total;
   long toStamp;
@@ -116,12 +114,10 @@ MVREXPORT int MvrInterpolation::getPose(MvrTime timeStamp, MvrPose *position, Mv
     lastTime = (*tit);
     lastPose = (*pit);
 
-    // MPL don't use nowtime, use the time stamp that was passed in...
     //nowTime.setToNow();
     total = thisTime.mSecSince(lastTime);
     if (total == 0)
       total = 100;
-    // MPL don't use nowtime, use the time stamp that was passed in...
     //toStamp = nowTime.mSecSince(thisTime);
     toStamp = timeStamp.mSecSince(thisTime);
     percentage = (double)toStamp/(double)total;

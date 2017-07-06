@@ -100,8 +100,7 @@ std::string Mvria::ourIdentifier = "generic";
    @see MvrSocket
 
  */
-MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, 
-			 bool sigHandleExitNotShutdown)
+MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets, bool sigHandleExitNotShutdown)
 {
 #ifndef MVRINTERFACE
   // get this here so that the program update can be accurate
@@ -417,7 +416,6 @@ MVREXPORT void Mvria::addExitCallback(MvrFunctor *functor, int position)
  Also note that this will not actually happen if it is called while
  aria is exiting (ie it is walking through the list).
 
- @since 2.7.0
  */
 MVREXPORT void Mvria::remExitCallback(MvrFunctor *functor)
 {
@@ -1239,7 +1237,5 @@ MVREXPORT void Mvria::setIdentifier(const char *identifier)
 {
   ourIdentifier = identifier;
 
-  // MPL fixing the problem caused by whitespace or bad chars in the
-  // identifier (bug 14486).
   MvrUtil::fixBadCharacters(&ourIdentifier, true);
 }

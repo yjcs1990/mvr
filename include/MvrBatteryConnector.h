@@ -49,7 +49,6 @@ class MvrRobot;
    accessed from your MvrRobot object via MvrRobot::findBattery() or MvrRobot::getBatteryMap(). 
    
 
-   @since 2.8.0
 
  **/
 class MvrBatteryConnector

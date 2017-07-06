@@ -14,6 +14,8 @@
 int main(int argc, char **argv)
 {
   Mvria::init();
+  MvrLog::log(MvrLog::Terse, "Mvria::getDirectory(): %s",Mvria::getDirectory());
+  
   MvrArgumentParser parser(&argc, argv);
   parser.loadDefaultArguments();
   MvrRobot robot;

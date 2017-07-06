@@ -1054,11 +1054,9 @@ MVREXPORT void * MvrSZSeries::runThread(void *arg) {
 		//MvrUtil::sleep(2000);
 		//MvrUtil::sleep(500);
 
-#if 0  // PS 10/20/11 - using code above to fix disconnect issues
+#if 0
 
-		// PS 7/5/11 - change msWait from 50 to 5000
 
-		// MPL 7/12/11 Changed mswait to 500 (which is bad enough,
 		// especially since receive packet doesn't use it quite right at
 		// this time)
 		while (getRunning() && myIsConnected && (packet
@@ -1074,7 +1072,6 @@ MVREXPORT void * MvrSZSeries::runThread(void *arg) {
 			//if (myRobot == NULL)
 			//sensorInterp();
 
-			/// MPL TODO see if this gets called if the laser goes
 			/// away... it looks like it may not (since the receivePacket may just return nothing)
 
 			// if we have a robot but it isn't running yet then don't have a

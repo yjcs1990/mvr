@@ -39,9 +39,6 @@ MvrMutex::MvrMutex(bool recursive) :
     myFailedInit=true;
     MvrLog::logNoLock(MvrLog::Terse, "MvrMutex::MvrMutex: Failed to initialize mutex");
   }
-  // MPL took this out when I made it recursive since otherwise we'd
-  //get warnings on the unlock
-  //else 
   //unlock();
 
   pthread_mutexattr_destroy(&attr);

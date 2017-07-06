@@ -36,9 +36,6 @@ class MvrRobot;
    connectSonars() will return true and add an entry for each sonar connected
    in the MvrRobot object's list of sonars.  These MvrSonarMTX objects can be
    accessed from your MvrRobot object via MvrRobot::findSonar() or MvrRobot::getSonarMap(). 
-   
-
-   @since 2.8.0
 
  **/
 class MvrSonarConnector

@@ -291,7 +291,6 @@ MVREXPORT void MvrThread::threadStarted(void)
 {
   myStarted = true;
   myPID = getpid();
-  // MPL 12/3/2012 gettid isn't implemented, but there's a hack with syscall
   //myTID = gettid();
 #ifdef MINGW
   myTID = -1;
@@ -309,7 +308,6 @@ MVREXPORT void MvrThread::threadStarted(void)
 MVREXPORT void MvrThread::threadFinished(void)
 {
   myFinished = true;
-  /// 12/3/2012 MPL Taking this out since it should be set already
   //myPID = getpid();
   if (myName.size() == 0)
     MvrLog::log(ourLogLevel, "Anonymous thread (%d) with pid %d tid %d has finished",
@@ -354,14 +352,6 @@ MVREXPORT void MvrThread::joinAll()
   }
   ourThreads.clear();
 
-  // KMC I think that the insert was there because "thread" still exists
-  // but the entire map was cleared.
-
-  // MPL BUG I'm not to sure why this insert was here, as far as I can
-  // tell all it would do is make it so you could join the threads
-  // then start them all up again, but I don't see much utility in
-  // that so I'm not going to worry about it now
- 
   if (thread != NULL) {
 	addThreadToMap(thread->myThread, thread); // Note: Recursive lock of ourThreadsMutex!
     //ourThreads.insert(MapType::value_type(thread->myThread, thread));

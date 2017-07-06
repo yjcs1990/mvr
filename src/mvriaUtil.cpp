@@ -1760,7 +1760,6 @@ MVREXPORT bool MvrUtil::matchCase(const char *baseDir,
                  fileName);
       closedir(dir);
 
-      // KMC NEED TO DETERMINE WHICH IS CORRECT.
       // The following change appears to be necessary for maps, but is still
       // undergoing testing....
       //   Just return the given ".". (This is necessary to find maps in the local 
@@ -2689,7 +2688,6 @@ MVREXPORT std::list<MvrPose> MvrPoseUtil::findCornersFromRobotBounds(
 
   return ret;
 
-  /// MPL this code worked, but didn't give us good corners when the width/length got nuts
 #if 0
   if (fastButUnsafe)
   {

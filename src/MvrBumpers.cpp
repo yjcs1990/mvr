@@ -16,7 +16,7 @@ MVREXPORT MvrBumpers::MvrBumpers(size_t currentBufferSize, size_t cumulativeBuff
   MvrRangeDevice(currentBufferSize, cumulativeBufferSize, name, 5000, maxSecondsToKeepCurrent), 
   myProcessCB(this, &MvrBumpers::processReadings)
 {
-  // MPL I wrote this code, but checking for BIT8 makes no sense, BIT0 is  the stall, BIT8 would be beyond this data
+  // checking for BIT8 makes no sense, BIT0 is  the stall, BIT8 would be beyond this data
   myBumpMask = (MvrUtil::BIT1 | MvrUtil::BIT2 | MvrUtil::BIT3 | MvrUtil::BIT4 | 
 		MvrUtil::BIT5 | MvrUtil::BIT6 | MvrUtil::BIT7 | MvrUtil::BIT8); 
 
@@ -103,7 +103,7 @@ MVREXPORT void MvrBumpers::addBumpToBuffer(int bumpValue, int whichBumper)
 
   for (int i = 0; i < numBumpers; i++)
     {
-      // MPL I wrote this code, but checking for BIT8 makes no sense, BIT0 is  the stall, BIT8 would be beyond this data
+      //  checking for BIT8 makes no sense, BIT0 is  the stall, BIT8 would be beyond this data
       if((i == 0 && (bumpValue & MvrUtil::BIT1)) || 
 	 (i == 1 && (bumpValue & MvrUtil::BIT2)) ||
 	 (i == 2 && (bumpValue & MvrUtil::BIT3)) || 

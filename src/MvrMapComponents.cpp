@@ -4463,7 +4463,6 @@ MVREXPORT bool MvrMapSimple::writeFile(const char *fileName,
 
   }
 
-// KMC TODO Wouldn't it make sense to change the myFileName member?
   myFileName = fileName;
 
 

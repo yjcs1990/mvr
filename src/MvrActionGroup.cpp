@@ -123,7 +123,7 @@ MVREXPORT void MvrActionGroup::removeActions(void)
 
 MVREXPORT void MvrActionGroup::deleteActions(void)
 {
-  /* MPL removed this since it doesn't differentiate between actions it added and actions added to it, double deletes are no fun
+  /* removed this since it doesn't differentiate between actions it added and actions added to it, double deletes are no fun
    */
   /*
   std::list<MvrAction *>::iterator it;

@@ -127,7 +127,6 @@ protected:
 };
 
 /**
-  @since Mvria 2.7.2
   @see MvrLaserConnector
   Use MvrLaserConnector to connect to a laser, determining type based on robot and program configuration  parameters.
 

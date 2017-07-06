@@ -12,7 +12,6 @@
     @sa MvrUrg_2_0
     @sa MvrLaserConnector
     @sa MvrLaser
- *  @since 2.7.0
  */
 class MvrUrg : public MvrLaser
 {

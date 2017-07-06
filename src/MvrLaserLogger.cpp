@@ -711,7 +711,6 @@ void MvrLaserLogger::internalTakeLaserReading(MvrLaser *laser, int laserNumber)
   {
     fprintf(myFile, "sick1: ");
     
-    // 8/21/11 MPL it was this
     //if (!myFlipped) //myLaser->isLaserFlipped())
     // but I don't know why, and this should work or the underlying
     // reason should be fix

@@ -9,7 +9,6 @@
 /** There are only two functioning ways to put things into this packet,
  * uByteToBuf() and byte2ToBuf;  You
  *  MUST use thse, if you use anything else your commands won't work.  
- *  @since 2.7.0
 */
 class MvrRVisionPacket: public MvrBasePacket
 {
@@ -32,7 +31,6 @@ public:
    (the RVision is normally on COM3 on Seekur and Seekur Jr. robots) and
    use the setDeviceConnection() method to associate the serial connection
    with the MvrRVisionPTZ object.
-	@since 2.7.0
 */
 
 class MvrRVisionPTZ : public MvrPTZ
@@ -44,7 +42,6 @@ public:
   MVREXPORT virtual bool init(void);
   MVREXPORT virtual const char *getTypeName() { return "rvision"; }
   /// Set serial port
-  /// @since 2.7.6
   void setPort(const char *port)
   {
 	  mySerialPort = port;
@@ -97,7 +94,6 @@ public:
   };
   
   /// called automatically by Mvria::init()
-  ///@since 2.7.6
   ///@internal
 #ifndef SWIG
   static void registerPTZType();
@@ -117,9 +113,7 @@ protected:
   MvrRVisionPacket myInquiryPacket;
   const char *mySerialPort;
 
-  ///@since 2.7.6
   static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
-  ///@since 2.7.6
   static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 
 };

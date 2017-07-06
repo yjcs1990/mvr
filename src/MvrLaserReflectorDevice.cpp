@@ -11,7 +11,6 @@ MVREXPORT MvrLaserReflectorDevice::MvrLaserReflectorDevice(MvrRangeDevice *laser
   MvrRangeDevice(laser->getCurrentRangeBuffer()->getSize(), 
 		laser->getCumulativeRangeBuffer()->getSize(), name,
 		laser->getMaxRange()), */
-  // MPL 12/11/12 this is how it was... but the part I'm putting in was above commented out, so this may go wrong
   //MvrRangeDevice(361, 361, name, 32000),
   MvrRangeDevice(laser->getCurrentRangeBuffer()->getSize(), 
 		laser->getCumulativeRangeBuffer()->getSize(), name,

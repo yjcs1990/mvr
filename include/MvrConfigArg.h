@@ -404,10 +404,6 @@ public:
   /// Returns the total number of descendent args (children, grandchildren, etc). Valid only for LIST type; otherwise returns 0.
   MVREXPORT size_t getDescendantArgCount() const;
 
-  // KMC 7/9/12 Right now, the returned args will not have the parent set to this arg.
-  // I suspect that this may present an implementation issue later but am not sure.
-  // Perhaps the addition of an iterator would suffice.
-  //
   /// Returns a list of all child args in this arg.  Valid only for LIST type; otherwise returns an empty list.
   MVREXPORT std::list<MvrConfigArg> getArgs(bool *ok = NULL) const;
 
@@ -706,8 +702,6 @@ private:
   void setParent(MvrConfigArg *parentArg);
 
 
-// KMC 7/11/12 Changed from protected to private so future changes are less
-// of a concern
 // protected:
 private:
 
@@ -764,7 +758,6 @@ private:
     // string data
     char *myStringPointer;
     size_t myMaxStrLen;
-    // KMC own string change
     // Not seeing the functional difference between this and myOwnPointedTo 
     // (which was previously applied to all but strings)
     // bool myUsingOwnedString;

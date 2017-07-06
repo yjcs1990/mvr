@@ -1261,7 +1261,6 @@ void MvrLMS1XX::sensorInterp (void)
 		// PS 9/1/11 - put this down below and use received scan freq to caculate
 		// this value should be found more empirically... but we used 1/75
 		//hz for the lms2xx and it was fine, so here we'll use 1/50 hz for now
-		// MPL 9/26/11 moved the rest of it below since we must correct the time before finding the pose
 		if (!time.addMSec(-20)) {
 		MvrLog::log(MvrLog::Normal,
 		"%s::sensorInterp() error adding msecs (-20)",getName());
@@ -1527,7 +1526,6 @@ void MvrLMS1XX::sensorInterp (void)
 			     it = myRawReadings->begin(),
 			     onReading = 0;
 			     onReading < eachNumberData;
-			     // MPL trying to fix bug with negative readings
 			     //atDeg += increment,
 			     atDeg = MvrMath::addAngle(atDeg, increment),
            atDegLocal = MvrMath::addAngle(atDegLocal, eachAngularStepWidth),
@@ -1567,7 +1565,6 @@ void MvrLMS1XX::sensorInterp (void)
 					// slopes in, so this check should be those readings well
 					// within the sensor).  Further note that shiny/black things
 					// within the minimum range will sometimes report closer than
-					// they are... 9/21/2010 MPL
 					//if (dist == 0)
 					// try not doing this for 500?????
 					int mindist;
@@ -2957,10 +2954,7 @@ MVREXPORT void * MvrLMS1XX::runThread(void *arg)
       continue;
       }
     */
-    
-    /// MPL made this 500 since otherwise it will not get a packet
-    /// sometimes, then go out and have to sleep and come back in and
-    /// wind up with a remainder that caused the timing problems
+
     while (getRunning() && myIsConnected &&
 	   (packet = myReceiver.receivePacket(500, true, true)) != NULL)
     {
@@ -2985,7 +2979,6 @@ MVREXPORT void * MvrLMS1XX::runThread(void *arg)
       continue;
     }
     
-    /// MPL no sleep here so it'll get back into that while as soon as it can
 
     //MvrUtil::sleep(1);
     //MvrUtil::sleep(2000);

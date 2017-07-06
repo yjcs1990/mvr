@@ -623,7 +623,6 @@ MVREXPORT void MvrRobot::setRotDecel(double decel)
   myRotDecel = MvrMath::fabs(decel);
 }
 
-/** @since 2.6.0 */
 MVREXPORT void MvrRobot::setLatVelMax(double vel)
 {
   if (vel <= 0)
@@ -640,7 +639,6 @@ MVREXPORT void MvrRobot::setLatVelMax(double vel)
   myLatVelMax = vel;
 }
 
-/** @since 2.6.0 */
 MVREXPORT void MvrRobot::setLatAccel(double acc)
 {
   if (acc <= 0)
@@ -657,7 +655,6 @@ MVREXPORT void MvrRobot::setLatAccel(double acc)
   myLatAccel = acc;
 }
 
-/** @since 2.6.0 */
 MVREXPORT void MvrRobot::setLatDecel(double decel)
 {
   if (decel <= 0)
@@ -710,19 +707,16 @@ MVREXPORT double MvrRobot::getRotDecel(void) const
   return myRotDecel;
 }
 
-/** @since 2.6.0 */
 MVREXPORT double MvrRobot::getLatVelMax(void) const
 {
   return myLatVelMax;
 }
 
-/** @since 2.6.0 */
 MVREXPORT double MvrRobot::getLatAccel(void) const
 {
   return myLatAccel;
 }
 
-/** @since 2.6.0 */
 MVREXPORT double MvrRobot::getLatDecel(void) const
 {
   return myLatDecel;
@@ -1021,6 +1015,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
     myAsyncConnectState = 0;
     return 0;
   }
+  MvrLog::log(MvrLog::Normal,"myAsyncConnectState myAsyncConnectState %d", myAsyncConnectState);
 
   if (myAsyncConnectState >= 3)
   {
@@ -1489,10 +1484,6 @@ MVREXPORT void MvrRobot::processParamFile(void)
   //myRobotType = myParams->getClassName();
   //myRobotSubType = myParams->getSubClassName();
 
-  // MPL 20130407 made this so that it'd only happen if we are using
-  // the .p file, since otherwise it just sets things back to 0 and
-  // causes problems... and made it use the set function to make it
-  // easier to track down any problems it causes
   if (!MvrRobotParams::internalGetUseDefaultBehavior())
   {
     setAbsoluteMaxTransVel(myParams->getAbsoluteMaxVelocity());
@@ -3807,8 +3798,6 @@ MVREXPORT void MvrRobot::stateReflector(void)
     }
     else
     {
-      // MPL commenting out these lines so that if nothing is set
-      // it'll just stop
 
       //transVal = myLastActionTransVal; 
       transVal = 0;
@@ -4172,8 +4161,6 @@ MVREXPORT void MvrRobot::stateReflector(void)
     }
     else
     {
-      /// MPL commenting out these lines, and making it so that if
-      /// nothing is set it'll just stop
       
       //rotStopped = myLastActionRotStopped;
       //rotVal = myLastActionRotVal;
@@ -4448,8 +4435,6 @@ MVREXPORT void MvrRobot::stateReflector(void)
     }
     else
     {
-      // MPL commenting out these lines so that if nothing is set
-      // it'll just stop
 
       //latVal = myLastActionLatVal; 
       latVal = 0;
@@ -5386,8 +5371,6 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
       lpcUSec = lpcNowUSec - (mSecSince + myOdometryDelay) * 1000;
       
       recvTime = packet->getTimeReceived();
-      /// MPL adding this so that each place the pose interpolation is
-      /// used it doesn't have to account for the odometry delay
       recvTime.addMSec(-myOdometryDelay);
 
       char buf[1024];
@@ -5415,8 +5398,6 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
   else if (myLogMovementReceived)
   {
     MvrTime recvTime = packet->getTimeReceived();
-    /// MPL adding this so that each place the pose interpolation is
-    /// used it doesn't have to account for the odometry delay
     recvTime.addMSec(-myOdometryDelay);
     
     char buf[1024];
@@ -5597,12 +5578,9 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
   //MvrLog::log(MvrLog::Terse, "(%.0f %.0f) (%.0f %.0f)", deltaX, deltaY, myGlobalPose.getX(),	     myGlobalPose.getY());
 
   MvrTime packetTime = packet->getTimeReceived();
-  /// MPL adding this so that each place the pose interpolation is
   /// used it doesn't have to account for the odometry delay
   packetTime.addMSec(-myOdometryDelay);
 
-  // MPL this had come in handy while debugging the intermittent lost
-  // issue that looked like timing
   //MvrLog::log(MvrLog::Normal, "Robot packet %lld mSec old", packetTime.mSecSince());
   
   myConnectionTimeoutMutex.lock();
@@ -6923,7 +6901,7 @@ MVREXPORT void MvrRobot::setBatteryInfo(double realBatteryVoltage,
 }
 
 
-/** @since 2.7.0 
+/*
   @note Do not call this method directly 
   if using MvrLaserConnector, it will automatically add laser(s).
   @internal
@@ -6973,7 +6951,7 @@ MVREXPORT bool MvrRobot::addLaser(MvrLaser *laser, int laserNumber,
 
 
 
-/** @since 2.7.0 
+/*
     @internal
 */
 MVREXPORT bool MvrRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
@@ -7012,7 +6990,7 @@ MVREXPORT bool MvrRobot::remLaser(MvrLaser *laser, bool removeAsRangeDevice)
   return false;
 }
 
-/** @since 2.7.0 
+/*
     @internal
 */
 MVREXPORT bool MvrRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
@@ -7045,7 +7023,7 @@ MVREXPORT bool MvrRobot::remLaser(int laserNumber, bool removeAsRangeDevice)
   return true;
 }
 
-/** @since 2.7.0 
+/*
   @see MvrLaserConnector
 */
 MVREXPORT const MvrLaser *MvrRobot::findLaser(int laserNumber) const
@@ -7057,7 +7035,7 @@ MVREXPORT const MvrLaser *MvrRobot::findLaser(int laserNumber) const
     return (*it).second;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrLaserConnector
 */
 MVREXPORT MvrLaser *MvrRobot::findLaser(int laserNumber)
@@ -7068,7 +7046,7 @@ MVREXPORT MvrLaser *MvrRobot::findLaser(int laserNumber)
     return myLaserMap[laserNumber];
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrLaserConnector
 */
 MVREXPORT const std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) const
@@ -7077,7 +7055,7 @@ MVREXPORT const std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) const
 }
 
 
-/** @since 2.7.0 
+/* 
     @see MvrLaserConnector
 */
 MVREXPORT std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void) 
@@ -7085,7 +7063,7 @@ MVREXPORT std::map<int, MvrLaser *> *MvrRobot::getLaserMap(void)
   return &myLaserMap;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrLaserConnector
 */
 MVREXPORT bool MvrRobot::hasLaser(MvrLaser *device) const
@@ -7099,7 +7077,7 @@ MVREXPORT bool MvrRobot::hasLaser(MvrLaser *device) const
 }
 
 
-/** @since 2.7.0 
+/* 
   @note Do not call this method directly 
   if using MvrBatteryConnector, it will automatically add battery(s).
   @internal
@@ -7136,7 +7114,7 @@ MVREXPORT bool MvrRobot::addBattery(MvrBatteryMTX *battery, int batteryNumber)
 }
 
 
-/** @since 2.7.0 
+/* 
     @internal
 */
 MVREXPORT bool MvrRobot::remBattery(MvrBatteryMTX *battery)
@@ -7165,7 +7143,7 @@ MVREXPORT bool MvrRobot::remBattery(MvrBatteryMTX *battery)
   return false;
 }
 
-/** @since 2.7.0 
+/* 
     @internal
 */
 MVREXPORT bool MvrRobot::remBattery(int batteryNumber)
@@ -7188,7 +7166,7 @@ MVREXPORT bool MvrRobot::remBattery(int batteryNumber)
   return true;
 }
 
-/** @since 2.7.0 
+/* 
   @see MvrBatteryConnector
 */
 MVREXPORT const MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber) const
@@ -7200,7 +7178,7 @@ MVREXPORT const MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber) const
     return (*it).second;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrBatteryConnector
 */
 MVREXPORT MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber)
@@ -7211,7 +7189,7 @@ MVREXPORT MvrBatteryMTX *MvrRobot::findBattery(int batteryNumber)
     return myBatteryMap[batteryNumber];
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrBatteryConnector
 */
 MVREXPORT const std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) const
@@ -7220,7 +7198,7 @@ MVREXPORT const std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) co
 }
 
 
-/** @since 2.7.0 
+/* 
     @see MvrBatteryConnector
 */
 MVREXPORT std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void) 
@@ -7228,7 +7206,7 @@ MVREXPORT std::map<int, MvrBatteryMTX *> *MvrRobot::getBatteryMap(void)
   return &myBatteryMap;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrBatteryConnector
 */
 MVREXPORT bool MvrRobot::hasBattery(MvrBatteryMTX *device) const
@@ -7242,7 +7220,7 @@ MVREXPORT bool MvrRobot::hasBattery(MvrBatteryMTX *device) const
 }
 
 
-/** @since 2.7.0 
+/* 
   @note Do not call this method directly 
   if using MvrLCDConnector, it will automatically add lcd(s).
   @internal
@@ -7279,7 +7257,7 @@ MVREXPORT bool MvrRobot::addLCD(MvrLCDMTX *lcd, int lcdNumber)
 }
 
 
-/** @since 2.7.0 
+/* 
     @internal
 */
 MVREXPORT bool MvrRobot::remLCD(MvrLCDMTX *lcd)
@@ -7308,7 +7286,7 @@ MVREXPORT bool MvrRobot::remLCD(MvrLCDMTX *lcd)
   return false;
 }
 
-/** @since 2.7.0 
+/* 
     @internal
 */
 MVREXPORT bool MvrRobot::remLCD(int lcdNumber)
@@ -7331,7 +7309,7 @@ MVREXPORT bool MvrRobot::remLCD(int lcdNumber)
   return true;
 }
 
-/** @since 2.7.0 
+/* 
   @see MvrLCDConnector
 */
 MVREXPORT const MvrLCDMTX *MvrRobot::findLCD(int lcdNumber) const
@@ -7343,7 +7321,7 @@ MVREXPORT const MvrLCDMTX *MvrRobot::findLCD(int lcdNumber) const
     return (*it).second;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrLCDConnector
 */
 MVREXPORT MvrLCDMTX *MvrRobot::findLCD(int lcdNumber)
@@ -7354,7 +7332,7 @@ MVREXPORT MvrLCDMTX *MvrRobot::findLCD(int lcdNumber)
     return myLCDMap[lcdNumber];
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrLCDConnector
 */
 MVREXPORT const std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) const
@@ -7363,7 +7341,7 @@ MVREXPORT const std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) const
 }
 
 
-/** @since 2.7.0 
+/* 
     @see MvrLCDConnector
 */
 MVREXPORT std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void) 
@@ -7371,7 +7349,7 @@ MVREXPORT std::map<int, MvrLCDMTX *> *MvrRobot::getLCDMap(void)
   return &myLCDMap;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrLCDConnector
 */
 MVREXPORT bool MvrRobot::hasLCD(MvrLCDMTX *device) const
@@ -7384,7 +7362,7 @@ MVREXPORT bool MvrRobot::hasLCD(MvrLCDMTX *device) const
   return false;
 }
 
-/** @since 2.7.0 
+/* 
   @note Do not call this method directly 
   if using MvrBatteryConnector, it will automatically add battery(s).
   @internal
@@ -7421,7 +7399,7 @@ MVREXPORT bool MvrRobot::addSonar(MvrSonarMTX *sonar, int sonarNumber)
 }
 
 
-/** @since 2.7.0 
+/* 
     @internal
 */
 MVREXPORT bool MvrRobot::remSonar(MvrSonarMTX *sonar)
@@ -7450,7 +7428,7 @@ MVREXPORT bool MvrRobot::remSonar(MvrSonarMTX *sonar)
   return false;
 }
 
-/** @since 2.7.0 
+/* 
     @internal
 */
 MVREXPORT bool MvrRobot::remSonar(int sonarNumber)
@@ -7473,7 +7451,7 @@ MVREXPORT bool MvrRobot::remSonar(int sonarNumber)
   return true;
 }
 
-/** @since 2.7.0 
+/* 
   @see MvrSonarConnector
 */
 MVREXPORT const MvrSonarMTX *MvrRobot::findSonar(int sonarNumber) const
@@ -7485,7 +7463,7 @@ MVREXPORT const MvrSonarMTX *MvrRobot::findSonar(int sonarNumber) const
     return (*it).second;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrSonarConnector
 */
 MVREXPORT MvrSonarMTX *MvrRobot::findSonar(int sonarNumber)
@@ -7496,7 +7474,7 @@ MVREXPORT MvrSonarMTX *MvrRobot::findSonar(int sonarNumber)
     return mySonarMap[sonarNumber];
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrSonarConnector
 */
 MVREXPORT const std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) const
@@ -7505,7 +7483,7 @@ MVREXPORT const std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) const
 }
 
 
-/** @since 2.7.0 
+/* 
     @see MvrSonarConnector
 */
 MVREXPORT std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void) 
@@ -7513,7 +7491,7 @@ MVREXPORT std::map<int, MvrSonarMTX *> *MvrRobot::getSonarMap(void)
   return &mySonarMap;
 }
 
-/** @since 2.7.0 
+/* 
     @see MvrSonarConnector
 */
 MVREXPORT bool MvrRobot::hasSonar(MvrSonarMTX *device) const

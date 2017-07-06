@@ -47,8 +47,6 @@ protected:
     It replaces the normal GPRMC handler from MvrGPS, and instead saves the uncorrected
     GPS data separately. (use dynamic_cast to cast an MvrGPS object to an
     MvrNovatelSPAN object to access this data).
-
-    @since ARIA 2.7.2
 */
 class MvrNovatelSPAN : public virtual MvrNovatelGPS {
 protected:

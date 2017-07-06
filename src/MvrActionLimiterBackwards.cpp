@@ -57,7 +57,7 @@ MvrActionLimiterBackwards::fire(MvrActionDesired currentDesired)
 
   myDesired.reset();
   dist = myRobot->checkRangeDevicesCurrentBox(
-	  // MPL changing this to 0 since right now it won't stop on
+	  // changing this to 0 since right now it won't stop on
 	  //bumper hits since they are inside the robot...
 	  //-myRobot->getRobotLength()/2,
 	  0,

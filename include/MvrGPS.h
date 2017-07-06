@@ -532,7 +532,6 @@ protected:
     /** Parse a GPRMC message (in @a msg) and place results in provided
      * variables. (Can be used by subclasses to store results of GPRMC differently
      * than normal.)
-     * @since Mvria 2.7.2
      */
     void parseGPRMC(const MvrNMEAParser::Message &msg, double &latitudeResult, double &longitudeResult, bool &qualityFlagResult, bool &gotPosition, MvrTime &timeGotPositionResult, MvrTime &gpsTimestampResult, bool &gotSpeedResult, double &speedResult);
 
@@ -542,7 +541,6 @@ protected:
 class MvrRobotPacket;
 class MvrRobot;
 
-/// @since Mvria 2.7.4
 class MvrSimulatedGPS : public virtual MvrGPS
 {
   bool myHaveDummyPosition;

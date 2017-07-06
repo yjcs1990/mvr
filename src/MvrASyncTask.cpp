@@ -53,8 +53,6 @@ MVREXPORT void * MvrASyncTask::runInThisThread(void *arg)
   addThreadToMap(myThread, this);
   /*
   ourThreadsMutex.lock();
-  // MPL BUGFIX, this wasn't workign for some reason (was printing
-  // 0)...  so I got rid of it and did it the easier way anyhow
   //printf("!!!! %d\n", ourThreads.insert(MapType::value_type(myThread, this)).second);
   ourThreads[myThread] = this;
   ourThreadsMutex.unlock();

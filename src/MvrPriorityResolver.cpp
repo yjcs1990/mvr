@@ -37,7 +37,6 @@ MVREXPORT MvrActionDesired *MvrPriorityResolver::resolve(
     action = (*it).second;
     if (action != NULL && action->isActive())
     {
-      /// MPL jan 7 '12 moved this next code block up 'from here'
       if (first || (*it).first != lastPriority)
       {
 	averaging.endAverage();

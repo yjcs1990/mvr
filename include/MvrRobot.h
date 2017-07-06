@@ -358,11 +358,9 @@ public:
   /// Gets the current lateral velocity of the robot
   /**
      Note that this will only be valid if hasLatVel() returns true
-     @since 2.6.0
    **/
   double getLatVel(void) const { return myLatVel; }
   /** Sees if the robot supports lateral velocities (e.g. Seekur(TM))
-      @since 2.6.0
   */
   bool hasLatVel(void) const { return myParams->hasLatVel(); }
   /// Gets the robot radius (in mm)

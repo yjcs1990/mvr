@@ -119,8 +119,8 @@ class MvrDPPTU : public MvrPTZ
 public:
   enum DeviceType {
     PANTILT_DEFAULT, ///< Automatically detect correct settings
-    PANTILT_PTUD47, ///< Force settings for PTU-D47 @since 2.7.0
-    PANTILT_PTUD46 ///< Force settings for PTU-D46  @since 2.7.5
+    PANTILT_PTUD47, ///< Force settings for PTU-D47  
+    PANTILT_PTUD46 ///< Force settings for PTU-D46  
   };
 
   enum Axis {
@@ -322,7 +322,6 @@ public:
   MVREXPORT bool tiltSlewRel(double deg) { return tiltSlew(myTiltSlew+deg); }
 
   /// called automatically by Mvria::init()
-  ///@since 2.7.6
   ///@internal
 #ifndef SWIG
   static void registerPTZType();
@@ -424,9 +423,7 @@ protected:
   bool myGotPanRes;
   bool myGotTiltRes;
 
-  ///@since 2.7.6
   static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
-  ///@since 2.7.6
   static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 };
 

@@ -271,15 +271,12 @@ class MvrRobotSeekur : public MvrRobotParams
   MVREXPORT virtual ~MvrRobotSeekur() {}
 };
 
-/// @since Mvria 2.7.2
 class MvrRobotMT400 : public MvrRobotParams
 {
  public:
   MVREXPORT MvrRobotMT400(const char *dir="");
   MVREXPORT virtual ~MvrRobotMT400() {}
 };
-
-/// @since Mvria 2.7.2
 class MvrRobotResearchPB : public MvrRobotParams
 {
  public:
@@ -287,7 +284,6 @@ class MvrRobotResearchPB : public MvrRobotParams
   MVREXPORT virtual ~MvrRobotResearchPB() {}
 };
 
-/// @since Mvria 2.7.2
 class MvrRobotSeekurJr : public MvrRobotParams
 {
  public:
@@ -295,63 +291,54 @@ class MvrRobotSeekurJr : public MvrRobotParams
   MVREXPORT virtual ~MvrRobotSeekurJr() {}
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotP3DXSH_lms1xx : public MvrRobotP3DXSH
 {
 public: 
   MVREXPORT MvrRobotP3DXSH_lms1xx(const char *dir="");
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotP3ATSH_lms1xx : public MvrRobotP3ATSH
 {
 public: 
   MVREXPORT MvrRobotP3ATSH_lms1xx(const char *dir="");
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotPeopleBotSH_lms1xx : public MvrRobotPeopleBotSH
 {
 public: 
   MVREXPORT MvrRobotPeopleBotSH_lms1xx(const char *dir="");
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotP3DXSH_lms500 : public MvrRobotP3DXSH
 {
 public: 
   MVREXPORT MvrRobotP3DXSH_lms500(const char *dir="");
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotP3ATSH_lms500 : public MvrRobotP3ATSH
 {
 public: 
   MVREXPORT MvrRobotP3ATSH_lms500(const char *dir="");
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotPeopleBotSH_lms500 : public MvrRobotPeopleBotSH
 {
 public: 
   MVREXPORT MvrRobotPeopleBotSH_lms500(const char *dir="");
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotPowerBotSH_lms500 : public MvrRobotPowerBotSH
 {
 public: 
   MVREXPORT MvrRobotPowerBotSH_lms500(const char *dir="");
 };
 
-/// @since Mvria 2.7.4
 class MvrRobotResearchPB_lms500 : public MvrRobotResearchPB
 {
 public: 
   MVREXPORT MvrRobotResearchPB_lms500(const char *dir="");
 };
 
-/// @since Mvria 2.8
 class MvrRobotPioneerLX : public MvrRobotParams
 {
 public:

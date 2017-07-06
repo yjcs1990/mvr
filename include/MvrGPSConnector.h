@@ -84,10 +84,8 @@ public:
       /// Not set or invalid
       Invalid,
       /// Novatel SPAN
-      /// @since Mvria 2.7.2
       NovatelSPAN,
       /// Simulated (program must set dummy positions)
-      /// @since Mvria 2.7.6
       Simulator
   } GPSType;
 

@@ -153,8 +153,6 @@ MVREXPORT void MvrBasePacket::resetRead(void)
 
 MvrTypes::UByte2 MvrBasePacket::getDataLength(void) const { 
  
-  // KMC 12/20/13 Do not allow negative values to be returned.  (They are basically 
-  // converted to an erroneous positive value by the UByte2.)
   int len = myLength - myHeaderLength - myFooterLength; 
   if (len >= 0) {
     return len;
@@ -350,7 +348,7 @@ MVREXPORT void MvrBasePacket::uByte4ToBuf(MvrTypes::UByte4 val)
   }
   
   /*
-  MPL 2013_10_23 this doesn't match anything else with regards to how
+  this doesn't match anything else with regards to how
   it's happening, and while it didn't matter when we're just going
   from x86 to x86 it may matter for others... if it causes problems
   just put back the old code
@@ -377,7 +375,7 @@ MVREXPORT void MvrBasePacket::uByte8ToBuf(MvrTypes::UByte8 val)
     return;
   }
   /*
-    MPL 2013_10_23 this was how would have matched the old uByte4ToBuf
+    this was how would have matched the old uByte4ToBuf
     but since that didn't match anything else I changed it
 
     memcpy(myBuf+myLength, &val, 8);
@@ -614,7 +612,6 @@ MVREXPORT MvrTypes::UByte2 MvrBasePacket::bufToUByte2(void)
 
 MVREXPORT MvrTypes::UByte4 MvrBasePacket::bufToUByte4(void)
 {
-  /// MPL 2013_10_23 this was Byte4 not UByte4
   //MvrTypes::Byte4 ret=0;
   MvrTypes::UByte4 ret=0;
   unsigned char c1, c2, c3, c4;
@@ -779,9 +776,6 @@ MVREXPORT void MvrBasePacket::duplicatePacket(MvrBasePacket *packet)
   myLength = packet->getLength();
   myReadLength = packet->getReadLength();
 
-  // KMC Added this because otherwise... If myMaxLength < packet->getMaxLength(),
-  // then this will overwrite memory.
-  //
   if (myMaxLength < myLength) {
     setMaxLength(myLength);
   }

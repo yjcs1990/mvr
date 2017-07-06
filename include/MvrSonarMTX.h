@@ -95,7 +95,6 @@
 
 /// Receives sonar data from an MTX robot
 /// Use MvrSonarConnector to establish the connection and create and initiate the MvrSonarMTX thread.
-/// @since 2.8.0
 class MvrSonarMTX : public MvrASyncTask
 {
 public:

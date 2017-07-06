@@ -19,9 +19,6 @@
 //
 
 
-/** 
-    @since 2.8.0
-*/
 class MvrBatteryMTX : public MvrASyncTask
 {
 public:
@@ -303,7 +300,7 @@ public:
     STATUS_BALANCING_ENGAGED=0x0004,
     STATUS_CHARGER_ON=0x0008,
     STATUS_BATTERY_POWERING_OFF=0x0010,
-    /// MPL adding the rest of these since I need one of 'em
+    /// adding the rest of these since I need one of 'em
     STATUS_MASTER_SWITCH_ON=0x0020,
     STATUS_CHARGE_SWITCH_ON=0x0040,
     STATUS_COMMANDED_SHUTDOWN=0x0080,

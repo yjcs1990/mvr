@@ -48,7 +48,6 @@ neccesary for almost all cases.)
    The following command-line arguments are checked:
    @verbinclude MvrLaserConnector_options
 
-   @since 2.7.0
    @ingroup ImportantClasses
    @ingroup DeviceClasses
  **/

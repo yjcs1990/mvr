@@ -59,8 +59,6 @@ MVREXPORT void MvrSonarAutoDisabler::userTask(void)
   }
   */
 
-  // see if we moved
-  /// MPL 2014_04_17 centralizing all the places stopped is calculated
   //if (myRobot->isTryingToMove() || fabs(myRobot->getVel()) > 10 || 
   //fabs(myRobot->getRotVel()) > 5 || 
   //(myRobot->hasLatVel() && fabs(myRobot->getLatVel()) > 10))

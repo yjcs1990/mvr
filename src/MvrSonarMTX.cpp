@@ -140,7 +140,6 @@ MVREXPORT void MvrSonarMTX::setRobot (MvrRobot *robot)
 		myAutonomousDrivingTransducerMaskMSB = 0;
 		myTransducersAreOn = false;
 
-//* MPL for PS TODO 
 
     int n = robot->getRobotParams()->getNumSonarUnits();
 
@@ -524,7 +523,6 @@ MVREXPORT bool MvrSonarMTX::blockingConnect (bool sendTracking, bool recvTrackin
 
 	//myReceiver->setMyInfoLogLevel (myInfoLogLevel);
 	//myReceiver->setMyName (getNameWithBoard());
-	/// MPL added these lines to help someone debug sonar ESD stuff
   if (myRecvTracking)
 	  myReceiver->setTracking(true);
 	myReceiver->setTrackingLogName(getName());

@@ -569,16 +569,14 @@ protected:
   std::list<MvrFunctor *> myErrorCBList;
 
   /// Used by MvrPTZConnector to create an MvrVCC4 object based on robot parameters and program options.
-  /// @since 2.7.6
   /// @internal
   static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
   /// Used by MvrPTZConnector to create an MvrVCC4 object based on robot parameters and program options.
-  /// @since 2.7.6
   /// @internal
   static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 public:
 #ifndef SWIG
-  static void registerPTZType(); ///<@internal Called by Mvria::init() toregister this class with MvrPTZConnector for vcc4 and vcc50i PTZ types. @since 2.7.6
+  static void registerPTZType(); ///<@internal Called by Mvria::init() toregister this class with MvrPTZConnector for vcc4 and vcc50i PTZ types. 
 #endif
 };
 

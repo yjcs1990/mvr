@@ -42,7 +42,6 @@ class MvrRobot;
 
   @ingroup OptionalClasses
   @ingroup DeviceClasses
-  @since 2.7.6
 */
 
 class MvrPTZConnector {

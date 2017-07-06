@@ -459,9 +459,13 @@ assert(mySonarConnector);
 MVREXPORT bool MvrRobotConnector::connectRobot(MvrRobot *robot)
 {
   if (!setupRobot(robot))
+  {
     return false;
+  }
   else
+  {
     return robot->blockingConnect();
+  }
 }
 
 MVREXPORT const char *MvrRobotConnector::getRemoteHost(void) const

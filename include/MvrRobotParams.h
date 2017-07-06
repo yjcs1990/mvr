@@ -664,7 +664,7 @@ public:
       return myNumSonarUnits;
     }
 
-  /// MPL TODO discuss boardNum here?
+  /// TODO discuss boardNum here?
   /// Returns if the sonar of the given number is valid
   bool haveSonar(int boardNum) const
     {

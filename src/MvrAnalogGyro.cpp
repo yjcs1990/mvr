@@ -206,7 +206,7 @@ MVREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
     return deltaPose.getTh();
   }
 
-  // 6/20/05 MPL added this fix
+  //added this fix
   robotDeltaTh = MvrMath::fixAngle(myAccumulatedDelta + deltaPose.getTh());
   //printf("using %f %f %f\n", robotDeltaTh, myAccumulatedDelta, deltaPose.getTh());
 
@@ -244,7 +244,7 @@ MVREXPORT double MvrAnalogGyro::encoderCorrect(MvrPoseWithTime deltaPose)
   if (fabs(inertialVariance + encoderVariance) < .00000001)
     deltaTh = 0;
   // if we get no encoder readings, but we get gyro readings, just
-  // believe the gyro (this case is new 6/20/05 MPL)
+  // believe the gyro
   else if (fabs(robotDeltaTh) < 1 && fabs(inertialDeltaTh) > 2)
     deltaTh = MvrMath::fixAngle(inertialDeltaTh);
   else

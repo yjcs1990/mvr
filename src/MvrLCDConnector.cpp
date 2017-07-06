@@ -737,7 +737,6 @@ MVREXPORT bool MvrLCDConnector::connectLCDs (
 
 MVREXPORT bool MvrLCDConnector::turnOnPower (LCDData *LCDData)
 {
-	/// MPL the new way
 	if (myTurnOnPowerOutputCB != NULL) {
 		if (myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 		      LCDData->myNumber) == NULL ||
@@ -772,7 +771,6 @@ MVREXPORT bool MvrLCDConnector::turnOnPower (LCDData *LCDData)
 
 MVREXPORT bool MvrLCDConnector::turnOffPower (LCDData *LCDData)
 {
-	/// MPL the new way
 	if (myTurnOffPowerOutputCB != NULL) {
 		if (myRobot->getRobotParams()->getLCDMTXBoardPowerOutput (
 		      LCDData->myNumber) == NULL ||

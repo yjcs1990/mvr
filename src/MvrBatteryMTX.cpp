@@ -366,18 +366,6 @@ void MvrBatteryMTX::interpBasicInfo(void)
     myRobot->setIsChargerPowerGood((myStatusFlags & STATUS_CHARGER_ON));
   }
 
-  /* MPL This isn't working correctly right now since there's an issue
-   * with firmware (or hardware).  Taking it out for now before the
-   * clicking it can cause when stuck drives anyone crazy.
-
-  if (myStatusFlags & STATUS_ON_BUTTON_PRESSED)
-  {
-    MvrLog::log(MvrLog::Normal, 
-	       "BatteryMTX(%d) enabling motors because on button pressed",
-	       myBoardNum);
-    myRobot->enableMotors();
-  }
-  */
 
   // process the status info
   if ((myStatusFlags & STATUS_BATTERY_POWERING_OFF) && 
@@ -657,23 +645,7 @@ while (getRunning() )
 }
 		// if we have a robot but it isn't running yet then don't have a
 		// connection failure
-		/* MPL PS TODO This should lose connection if we
-		   haven't heard from it in long enough... but this is
-		   loosing connection anytime we lose one packet
-		   (which'll always happen sometimes on serial).
-		if (getRunning() && myIsConnected) {
-			//MvrLog::log (MvrLog::Normal,
-			//            "%s::runThread()  Lost connection to the battery because of error.  Nothing received for %g seconds (greater than the timeout of %g).", getName(),
-			//            myLastReading.mSecSince() / 1000.0,
-			//            getConnectionTimeoutSeconds() );
-			MvrLog::log (MvrLog::Normal,
-			            "%s::runThread()  Lost connection to the battery because of error %d %d", getName(), getRunning(), myIsConnected);
-			myIsConnected = false;
-			//laserDisconnectOnError();
-			continue;
-		}
-		*/
-		//MvrUtil::sleep(1);
+				//MvrUtil::sleep(1);
 		//MvrUtil::sleep(2000);
 		//MvrUtil::sleep(500);
 	

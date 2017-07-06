@@ -152,9 +152,6 @@ bool MvrSocket::connect(const char *host, int port, Type type,
   }
 
   bzero(&mySin, sizeof(mySin));
-  // MPL taking out this next code line from the if since it makes
-  // everything we can't resolve try to connect to localhost
-  // &&  !hostAddr("localhost", mySin.sin_addr))
 
   char useHost[1024];
   int usePort;
@@ -260,21 +257,7 @@ bool MvrSocket::open(int port, Type type, const char *openOnIP)
 
   myType=type;
 
-  /* MPL removed this since with what I Took out down below months ago 
-  if (gethostname(localhost, sizeof(localhost)) == 1)
-  {
-    myErrorStr="Failure to locate localhost";
-    MvrLog::logErrorFromOS(MvrLog::Normal, "MvrSocket::open: gethostname failed");
-    return(false);
-  }
-  */
-  bzero(&mySin, sizeof(mySin));
-  /* MPL took this out since it was just overriding it with the
-     INADDR_ANY anyways and it could cause slowdowns if a machine wasn't
-     configured so lookups are quick
-  if (!hostAddr(localhost, mySin.sin_addr) && 
-      !hostAddr("localhost", mySin.sin_addr))
-    return(false); */
+   bzero(&mySin, sizeof(mySin));
 
   if (openOnIP != NULL)
   {

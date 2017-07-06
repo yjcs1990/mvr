@@ -34,8 +34,6 @@ MVREXPORT const char *MvrConfig::toCategoryName(const char *categoryName)
   if (categoryName == NULL) {
     return NULL;
   }
-  // KMC 8/15/13 Obviously this should be improved to be less cut-and-paste
-  // error prone
   if (MvrUtil::strcasecmp(categoryName, CATEGORY_ROBOT_INTERFACE) == 0) {
     return CATEGORY_ROBOT_INTERFACE;
   }
@@ -273,8 +271,6 @@ MVREXPORT MvrConfig &MvrConfig::operator=(const MvrConfig &config)
     myUsingSections = config.myUsingSections;
     myDuplicateParams = config.myDuplicateParams;
 
-    // KMC 7/13/12 Not copying the myParsingListNames because they are 
-    // transient internal pointers only used while parsing.
     myIsParsingListBroken = config.myIsParsingListBroken;
 
     myPermissionAllowFactory = config.myPermissionAllowFactory;
@@ -346,8 +342,6 @@ MVREXPORT void MvrConfig::copyAndDetach(const MvrConfig &config)
     myUsingSections = config.myUsingSections;
     myDuplicateParams = config.myDuplicateParams;
 
-   // KMC 7/13/12 Not copying the myParsingListNames because they are 
-    // transient internal pointers only used while parsing.
      myIsParsingListBroken = config.myIsParsingListBroken;
 
     myPermissionAllowFactory = config.myPermissionAllowFactory;
@@ -648,7 +642,6 @@ MVREXPORT bool  MvrConfig::addSection(const char *categoryName,
                                     const char *sectionName,
                                     const char *sectionDescription)
 {
-  // KMC 8/10/12 Allowing empty category names for unclassified sections
   if ((categoryName == NULL) || MvrUtil::isStrEmpty(sectionName)) {
 //  if (MvrUtil::isStrEmpty(categoryName) || MvrUtil::isStrEmpty(sectionName)) {
     MvrLog::log(MvrLog::Normal,
@@ -969,9 +962,7 @@ MVREXPORT bool MvrConfig::addParam(const MvrConfigArg &arg,
   // remove any string and list holders for this param
   section->remStringHolder(arg.getName());
   
-  // KMC 12/8/13 This comment is incorrect.  I believe that we intentionally allow duplicate
-  // names so that multiple objects can reference the same param value. (True?) 
-  // we didn't have a parameter with this name so add it
+
   params->push_back(arg);
 
   if (xltrArg != NULL) {
@@ -1186,10 +1177,7 @@ MVREXPORT bool MvrConfig::parseListBegin(MvrArgumentBuilder *arg,
 
 
   if (myIsParsingListBroken) {
-    // KMC 10/25/12 Changing this under the theory that when the containing 
-    // list is not found, true is still returned.  I believe that indicates
-    // it's a recoverable error ... i.e. the corresponding list parameter has
-    // not been added to the config.
+
     return true; // false;
   }
 
@@ -1291,7 +1279,6 @@ MVREXPORT bool MvrConfig::parseListEnd(MvrArgumentBuilder *arg,
   } // end if list is fine
 
   myIsParsingListBroken = false;
-  // KMC 11/7/12 Note test for empty() above.
   myParsingListNames.pop_back();
 
   return true;
@@ -1387,14 +1374,6 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
 
     std::list<MvrConfigArg*> parseParamList;
 
-    // MPL took out the part where if the param wasn't in a section at
-    // all it checked all the sections, I took this out since
-    // everything is generally in sections these days
-
-    // KMC Note that duplicate parameter names can and do exist within 
-    // a section.  Therefore it is necessary to iterate through all of 
-    // the section contents and check each parameter against the extra
-    // string value.
     std::list<MvrConfigArg> *paramList = section->getParams();
     if (paramList != NULL) {
 
@@ -1499,7 +1478,6 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
             return true;
           }
 
-          // KMC 7/11/12 Changed this from an equality check to accomodate the new 
           // calibration priority
           if ((myPermissionAllowFactory) ||
               (parseParam->getConfigPriority() < MvrPriority::FACTORY)) {
@@ -1537,7 +1515,6 @@ MVREXPORT bool MvrConfig::parseArgument(MvrArgumentBuilder *arg,
           }
           else { // factory parameter and no permission to change
           
-            /// MPL we'll want to do something here, but kathleen and i still have to work out what...
             /*
             if (errorBuffer != NULL)
             snprintf(errorBuffer, errorBufferLen, 
@@ -1982,9 +1959,6 @@ MVREXPORT bool MvrConfig::parseText(const std::list<std::string> &configLines,
   else
     myCheckingForRestartLevel = false;
 
-  // KMC 8/9/13 I think that the original MVRCL command handler acted 
-  // differently. Maybe stopped on first parse error, but allowed 
-  // the callbacks to continue on errors.  TODO Why??!
 
   char lineBuf[10000];
   size_t lineBufLen = sizeof(lineBuf);
@@ -2119,12 +2093,8 @@ MVREXPORT bool MvrConfig::parseResourceFile(const char *fileName,
     localErrorBuffer[0] = '\0';
   }
 
-  // KMC TODO Parse and use the version info someday.
-  // Parse resource version. 
   fgets(line, sizeof(line), file);
 
-  // KMC TODO This needs to be improved... made more generic... possibly test
-  // that this is really header information.
   //
   // Skipping two lines for the header.  The third one is blank.
   for (int h = 0; h < 2; h++) {
@@ -2153,7 +2123,6 @@ MVREXPORT bool MvrConfig::parseResourceFile(const char *fileName,
         continue; // More whitespace possibilities
       }
       if (builder.getArgc() < MvrConfigArg::RESOURCE_INDEX_OF_DESCRIPTION) {
-        // KMC Commented this out because Ctrl-M frequently shows in log
         IFDEBUG(MvrLog::log(MvrLog::Normal,
                   "MvrConfig::parseResourceFile() no section for %s",
                   builder.getFullString()));
@@ -2514,7 +2483,7 @@ MVREXPORT void MvrConfig::writeSectionResource(MvrConfigSection *section,
   }
 
   // holds each line
-  char line[10000]; // KMC TODO Reasonable max?
+  char line[10000]; 
   const size_t lineSize = sizeof(line);
  
   /// clear out our written ones between sections
@@ -3045,10 +3014,7 @@ MVREXPORT bool MvrConfig::parseArgumentParser(MvrArgumentParser *parser,
 
 MVREXPORT MvrConfigSection *MvrConfig::findSection(const char *sectionName) const
 {
-  // KMC 6/26/13 Added this to prevent exception in call to strcasecmp (at 
-  // least in its current implementation). Still allowing a search for an 
-  // empty string because that would have previously worked, and do not want
-  // to break any existing functionality.
+
   if (sectionName == NULL) {
     MvrLog::log(MvrLog::Normal,
                "MvrConfig::findSection() cannot find NULL section name");
@@ -3074,8 +3040,6 @@ MVREXPORT MvrConfigSection *MvrConfig::findSection(const char *sectionName) cons
     if (MvrUtil::strcasecmp(tempSection->getName(), sectionName) == 0)
     {
       section = tempSection;
-      // KMC 7/11/12 Added the break here (hoping there's not a compelling
-      // reason to always search the config for null sections.
       break;
     }
   }
@@ -3086,7 +3050,6 @@ MVREXPORT MvrConfigSection *MvrConfig::findSection(const char *sectionName) cons
 
 void MvrConfig::copySectionsToParse(std::list<std::string> *from)
 {
-  // MPL inserted these two lines trying to track down a memory leak
   if (mySectionsToParse != NULL)
     delete mySectionsToParse;
   std::string sections;
@@ -3582,10 +3545,6 @@ MVREXPORT bool MvrConfigSection::addFlags(const char *flags, bool isQuiet)
     return false;
   }
   myFlags->setQuiet(isQuiet);
-
-  // MPL replacing this line with the stuff from after it until the
-  // return, this is so that if the section already has a flag we
-  // don't add it again
 
   //myFlags->addPlain(flags); 
 

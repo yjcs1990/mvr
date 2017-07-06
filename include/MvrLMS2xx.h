@@ -59,8 +59,6 @@
  *  <dt>MaxINsertDistCumulative <dd>3000 mm
  * </dl>
  * The current buffer is replaced for each new set of readings.
- *
- * @since 2.7.0
 **/
 class MvrLMS2xx : public MvrLaser
 {

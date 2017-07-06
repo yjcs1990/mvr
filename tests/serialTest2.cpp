@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         printf("%3d:\t", ret);
         for (i = 0; i < ret; i++)
           // printf("%x(%x) ", bufRead[i], (unsigned char)bufRead[i]);
-          printf("%x ", bufRead[i]);
+          printf("%x ", (unsigned char)bufRead[i]);
         printf("\n");
       }
       else

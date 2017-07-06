@@ -28,8 +28,6 @@ connection to the LCD panel was also made. A pointer
 to the first MvrLCDMTX object can be obtained via MvrRobot::findLCD(),
 passing an index of 1.
 
-@since 2.8.0
-@ingroup MTX
 */
 class MvrLCDMTX : public MvrASyncTask
 {

@@ -191,12 +191,6 @@ MVREXPORT bool MvrMapId::isSameFile(const MvrMapId &other) const
     return false;
   }
 
-  // If both timestamps are specified, then they must be identical...
-  // KMC 8/29/13 Is this true?  Running CS and sim, had a scenario
-  // where everything was the same except the timestamps. Presumably
-  // sim wrote file even though nothing had changed. I think that 
-  // the file name, size and checksum comparison is probably sufficient 
-  // for this purpose.
   /***
   if ((myTimestamp != other.myTimestamp) &&
       (isValidTimestamp()) &&

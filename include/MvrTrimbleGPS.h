@@ -35,7 +35,6 @@ class MvrTrimbleAuxDeviceConnection;
  *  changing any other settings (Note that AgRemote resets the port settings each time
  *  it connects, so you must reset them each time before exiting AgRemote!)
  *
- *  @since 2.6.0
  */
 class MvrTrimbleGPS : public virtual MvrGPS {
 private:

@@ -72,7 +72,6 @@ public:
   */
   
   /// called automatically by Mvria::init()
-  ///@since 2.7.6
   ///@internal
 #ifndef SWIG
   static void registerPTZType();
@@ -90,9 +89,7 @@ protected:
   MvrSonyPacket myZoomPacket; 
   MvrSonyPacket myPanTiltPacket;
 
-  ///@since 2.7.6
   static MvrPTZ* create(size_t index, MvrPTZParams params, MvrArgumentParser *parser, MvrRobot *robot);
-  ///@since 2.7.6
   static MvrPTZConnector::GlobalPTZCreateFunc ourCreateFunc;
 };
 

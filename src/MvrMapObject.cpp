@@ -548,10 +548,6 @@ MVREXPORT bool MvrMapObject::operator<(const MvrMapObject& other) const
     return (myDescription.compare(other.myDescription) < 0);
   }
  
-  // KMC It might be slightly more efficient to call this at the beginning of the 
-  // method, but I'm trying to minimize the impact of any change.
-  // If they are the same physical pointers, then they are equal. Neither is 
-  // "less than" the other. 
   if ((void *) this == (void *) &other) {
     return false;
   }

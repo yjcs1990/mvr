@@ -79,7 +79,6 @@ MVREXPORT bool MvrArgumentParser::checkArgument(const char *argument)
 	strcasecmp(extraHyphen.c_str(), getArgv()[i]) == 0)
     {
       removeArg(i);
-      // MPL took this out so you could add the same arg multiple times
       //checkArgument(argument);
       return true;
     }
