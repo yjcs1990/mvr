@@ -1,0 +1,75 @@
+Mvria::getDirectory(): /usr/local/Mvr/
+Connnecting to robot using TCP connection to localhost:8101...
+Connecting to simulator through tcp.
+
+Syncing 0
+Robot Packet: (length = 6)
+  [000]   250	0xfa	 	[header0]
+  [001]   251	0xfb	 	[header1]
+  [002]     3	0x3	 	[packet data length]
+  [003]     0	0x0	 	[packet id]
+  [004]     0	0x0	 	[first checksum byte]
+  [005]     0	0x0	 	[second checksum byte]
+
+
+Syncing 1
+Robot Packet: (length = 6)
+  [000]   250	0xfa	 	[header0]
+  [001]   251	0xfb	 	[header1]
+  [002]     3	0x3	 	[packet data length]
+  [003]     1	0x1	 	[packet id]
+  [004]     0	0x0	 	[first checksum byte]
+  [005]     1	0x1	 	[second checksum byte]
+
+
+Syncing 2
+Robot Packet: (length = 33)
+  [000]   250	0xfa	 	[header0]
+  [001]   251	0xfb	 	[header1]
+  [002]    30	0x1e	 	[packet data length]
+  [003]     2	0x2	 	[packet id]
+  [004]    77	0x4d	M	
+  [005]   111	0x6f	o	
+  [006]    98	0x62	b	
+  [007]   105	0x69	i	
+  [008]   108	0x6c	l	
+  [009]   101	0x65	e	
+  [010]    83	0x53	S	
+  [011]   105	0x69	i	
+  [012]   109	0x6d	m	
+  [013]     0	0x0	 	
+  [014]    80	0x50	P	
+  [015]   105	0x69	i	
+  [016]   111	0x6f	o	
+  [017]   110	0x6e	n	
+  [018]   101	0x65	e	
+  [019]   101	0x65	e	
+  [020]   114	0x72	r	
+  [021]     0	0x0	 	
+  [022]    97	0x61	a	
+  [023]   109	0x6d	m	
+  [024]   105	0x69	i	
+  [025]   103	0x67	g	
+  [026]   111	0x6f	o	
+  [027]    45	0x2d	-	
+  [028]   115	0x73	s	
+  [029]   104	0x68	h	
+  [030]     0	0x0	 	
+  [031]    82	0x52	R	[first checksum byte]
+  [032]    29	0x1d	 	[second checksum byte]
+
+
+Connected to robot.
+Name: MobileSim
+Type: Pioneer
+Subtype: amigo-sh
+Using default parameters for a amigo-sh robot
+Robot Serial Number: SIM
+MvrRobotConnector: Connected to simulator, not connecting to additional hardware components.
+simpleConnect: Connected to robot.
+simpleConnect: Pose=(0.00,0.00,0.00), Trans.  Vel=0.00, Battery=13.00V
+simpleConnect: Sleeping for 3 seconds...
+Robot gave back extra sonar reading!  Either the parameter file for the robot or the firmware needs updating.
+simpleConnect: Ending robot thread...
+Disconnecting from robot.
+simpleConnect: Exiting.

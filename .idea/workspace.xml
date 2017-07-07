@@ -12,334 +12,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="14e537d0-88b1-4c26-ba77-bcaef6727e49" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/MvrThread_WIN.cpp" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/libMvria.so" afterPath="$PROJECT_DIR$/lib/libMvria.so" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrACTS.h" afterPath="$PROJECT_DIR$/include/MvrACTS.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrAMPTU.h" afterPath="$PROJECT_DIR$/include/MvrAMPTU.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrASyncTask.h" afterPath="$PROJECT_DIR$/include/MvrASyncTask.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrAction.h" afterPath="$PROJECT_DIR$/include/MvrAction.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionAvoidFront.h" afterPath="$PROJECT_DIR$/include/MvrActionAvoidFront.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionAvoidSide.h" afterPath="$PROJECT_DIR$/include/MvrActionAvoidSide.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionBumpers.h" afterPath="$PROJECT_DIR$/include/MvrActionBumpers.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionColorFollow.h" afterPath="$PROJECT_DIR$/include/MvrActionColorFollow.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionConstantVelocity.h" afterPath="$PROJECT_DIR$/include/MvrActionConstantVelocity.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionDeceleratingLimiter.h" afterPath="$PROJECT_DIR$/include/MvrActionDeceleratingLimiter.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionDesired.h" afterPath="$PROJECT_DIR$/include/MvrActionDesired.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionDriveDistance.h" afterPath="$PROJECT_DIR$/include/MvrActionDriveDistance.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionGoto.h" afterPath="$PROJECT_DIR$/include/MvrActionGoto.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionGotoStraight.h" afterPath="$PROJECT_DIR$/include/MvrActionGotoStraight.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionGroup.h" afterPath="$PROJECT_DIR$/include/MvrActionGroup.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionGroups.h" afterPath="$PROJECT_DIR$/include/MvrActionGroups.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionIRs.h" afterPath="$PROJECT_DIR$/include/MvrActionIRs.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionInput.h" afterPath="$PROJECT_DIR$/include/MvrActionInput.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionJoydrive.h" afterPath="$PROJECT_DIR$/include/MvrActionJoydrive.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionKeydrive.h" afterPath="$PROJECT_DIR$/include/MvrActionKeydrive.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionLimiterBackwards.h" afterPath="$PROJECT_DIR$/include/MvrActionLimiterBackwards.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionLimiterForwards.h" afterPath="$PROJECT_DIR$/include/MvrActionLimiterForwards.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionLimiterRot.h" afterPath="$PROJECT_DIR$/include/MvrActionLimiterRot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionLimiterTableSensor.h" afterPath="$PROJECT_DIR$/include/MvrActionLimiterTableSensor.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionMovementParameters.h" afterPath="$PROJECT_DIR$/include/MvrActionMovementParameters.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionMovementParametersDebugging.h" afterPath="$PROJECT_DIR$/include/MvrActionMovementParametersDebugging.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionRatioInput.h" afterPath="$PROJECT_DIR$/include/MvrActionRatioInput.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionRobotJoydrive.h" afterPath="$PROJECT_DIR$/include/MvrActionRobotJoydrive.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionStallRecover.h" afterPath="$PROJECT_DIR$/include/MvrActionStallRecover.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionStop.h" afterPath="$PROJECT_DIR$/include/MvrActionStop.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionTriangleDriveTo.h" afterPath="$PROJECT_DIR$/include/MvrActionTriangleDriveTo.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrActionTurn.h" afterPath="$PROJECT_DIR$/include/MvrActionTurn.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrAnalogGyro.h" afterPath="$PROJECT_DIR$/include/MvrAnalogGyro.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrArg.h" afterPath="$PROJECT_DIR$/include/MvrArg.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrArgumentBuilder.h" afterPath="$PROJECT_DIR$/include/MvrArgumentBuilder.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrArgumentParser.h" afterPath="$PROJECT_DIR$/include/MvrArgumentParser.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBasePacket.h" afterPath="$PROJECT_DIR$/include/MvrBasePacket.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBatteryConnector.h" afterPath="$PROJECT_DIR$/include/MvrBatteryConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBatteryMTX.h" afterPath="$PROJECT_DIR$/include/MvrBatteryMTX.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrBumpers.h" afterPath="$PROJECT_DIR$/include/MvrBumpers.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrCameraCollection.h" afterPath="$PROJECT_DIR$/include/MvrCameraCollection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrCameraCommands.h" afterPath="$PROJECT_DIR$/include/MvrCameraCommands.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrCommands.h" afterPath="$PROJECT_DIR$/include/MvrCommands.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrCondition.h" afterPath="$PROJECT_DIR$/include/MvrCondition.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrConfig.h" afterPath="$PROJECT_DIR$/include/MvrConfig.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrConfigArg.h" afterPath="$PROJECT_DIR$/include/MvrConfigArg.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrConfigGroup.h" afterPath="$PROJECT_DIR$/include/MvrConfigGroup.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrDPPTU.h" afterPath="$PROJECT_DIR$/include/MvrDPPTU.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrDataLogger.h" afterPath="$PROJECT_DIR$/include/MvrDataLogger.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrDeviceConnection.h" afterPath="$PROJECT_DIR$/include/MvrDeviceConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrDrawingData.h" afterPath="$PROJECT_DIR$/include/MvrDrawingData.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrExitErrorSource.h" afterPath="$PROJECT_DIR$/include/MvrExitErrorSource.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrExport.h" afterPath="$PROJECT_DIR$/include/MvrExport.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrFileDeviceConnection.h" afterPath="$PROJECT_DIR$/include/MvrFileDeviceConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrFileParser.h" afterPath="$PROJECT_DIR$/include/MvrFileParser.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrForbiddenRangeDevice.h" afterPath="$PROJECT_DIR$/include/MvrForbiddenRangeDevice.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrFunctor.h" afterPath="$PROJECT_DIR$/include/MvrFunctor.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrFunctorASyncTask.h" afterPath="$PROJECT_DIR$/include/MvrFunctorASyncTask.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrGPS.h" afterPath="$PROJECT_DIR$/include/MvrGPS.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrGPSConnector.h" afterPath="$PROJECT_DIR$/include/MvrGPSConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrGPSCoords.h" afterPath="$PROJECT_DIR$/include/MvrGPSCoords.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrGripper.h" afterPath="$PROJECT_DIR$/include/MvrGripper.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrHasFileName.h" afterPath="$PROJECT_DIR$/include/MvrHasFileName.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrIRs.h" afterPath="$PROJECT_DIR$/include/MvrIRs.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrInterpolation.h" afterPath="$PROJECT_DIR$/include/MvrInterpolation.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrIrrfDevice.h" afterPath="$PROJECT_DIR$/include/MvrIrrfDevice.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrJoyHandler.h" afterPath="$PROJECT_DIR$/include/MvrJoyHandler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrKeyHandler.h" afterPath="$PROJECT_DIR$/include/MvrKeyHandler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLCDConnector.h" afterPath="$PROJECT_DIR$/include/MvrLCDConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLCDMTX.h" afterPath="$PROJECT_DIR$/include/MvrLCDMTX.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLMS1XX.h" afterPath="$PROJECT_DIR$/include/MvrLMS1XX.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLMS2xx.h" afterPath="$PROJECT_DIR$/include/MvrLMS2xx.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLMS2xxPacket.h" afterPath="$PROJECT_DIR$/include/MvrLMS2xxPacket.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLMS2xxPacketReceiver.h" afterPath="$PROJECT_DIR$/include/MvrLMS2xxPacketReceiver.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLaser.h" afterPath="$PROJECT_DIR$/include/MvrLaser.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLaserConnector.h" afterPath="$PROJECT_DIR$/include/MvrLaserConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLaserFilter.h" afterPath="$PROJECT_DIR$/include/MvrLaserFilter.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLaserLogger.h" afterPath="$PROJECT_DIR$/include/MvrLaserLogger.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLaserReflectorDevice.h" afterPath="$PROJECT_DIR$/include/MvrLaserReflectorDevice.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLineFinder.h" afterPath="$PROJECT_DIR$/include/MvrLineFinder.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLog.h" afterPath="$PROJECT_DIR$/include/MvrLog.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrLogFileConnection.h" afterPath="$PROJECT_DIR$/include/MvrLogFileConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMD5Calculator.h" afterPath="$PROJECT_DIR$/include/MvrMD5Calculator.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMTXIO.h" afterPath="$PROJECT_DIR$/include/MvrMTXIO.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMap.h" afterPath="$PROJECT_DIR$/include/MvrMap.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMapComponents.h" afterPath="$PROJECT_DIR$/include/MvrMapComponents.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMapInterface.h" afterPath="$PROJECT_DIR$/include/MvrMapInterface.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMapObject.h" afterPath="$PROJECT_DIR$/include/MvrMapObject.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMapUtils.h" afterPath="$PROJECT_DIR$/include/MvrMapUtils.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMode.h" afterPath="$PROJECT_DIR$/include/MvrMode.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrModes.h" afterPath="$PROJECT_DIR$/include/MvrModes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrModule.h" afterPath="$PROJECT_DIR$/include/MvrModule.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrModuleLoader.h" afterPath="$PROJECT_DIR$/include/MvrModuleLoader.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrMutex.h" afterPath="$PROJECT_DIR$/include/MvrMutex.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrNMEAParser.h" afterPath="$PROJECT_DIR$/include/MvrNMEAParser.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrNetServer.h" afterPath="$PROJECT_DIR$/include/MvrNetServer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrNovatelGPS.h" afterPath="$PROJECT_DIR$/include/MvrNovatelGPS.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrP2Arm.h" afterPath="$PROJECT_DIR$/include/MvrP2Arm.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrPTZ.h" afterPath="$PROJECT_DIR$/include/MvrPTZ.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrPTZConnector.h" afterPath="$PROJECT_DIR$/include/MvrPTZConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrPixelDevice.h" afterPath="$PROJECT_DIR$/include/MvrPixelDevice.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrPriorityResolver.h" afterPath="$PROJECT_DIR$/include/MvrPriorityResolver.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRVisionPTZ.h" afterPath="$PROJECT_DIR$/include/MvrRVisionPTZ.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRangeBuffer.h" afterPath="$PROJECT_DIR$/include/MvrRangeBuffer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRangeDevice.h" afterPath="$PROJECT_DIR$/include/MvrRangeDevice.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRangeDeviceThreaded.h" afterPath="$PROJECT_DIR$/include/MvrRangeDeviceThreaded.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRatioInputJoydrive.h" afterPath="$PROJECT_DIR$/include/MvrRatioInputJoydrive.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRatioInputKeydrive.h" afterPath="$PROJECT_DIR$/include/MvrRatioInputKeydrive.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRatioInputRobotJoydrive.h" afterPath="$PROJECT_DIR$/include/MvrRatioInputRobotJoydrive.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRecurrentTask.h" afterPath="$PROJECT_DIR$/include/MvrRecurrentTask.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrResolver.h" afterPath="$PROJECT_DIR$/include/MvrResolver.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRingQueue.h" afterPath="$PROJECT_DIR$/include/MvrRingQueue.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobot.h" afterPath="$PROJECT_DIR$/include/MvrRobot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotBatteryPacketReader.h" afterPath="$PROJECT_DIR$/include/MvrRobotBatteryPacketReader.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotConfig.h" afterPath="$PROJECT_DIR$/include/MvrRobotConfig.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotConfigPacketReader.h" afterPath="$PROJECT_DIR$/include/MvrRobotConfigPacketReader.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotConnector.h" afterPath="$PROJECT_DIR$/include/MvrRobotConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotJoyHandler.h" afterPath="$PROJECT_DIR$/include/MvrRobotJoyHandler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotPacket.h" afterPath="$PROJECT_DIR$/include/MvrRobotPacket.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotPacketReaderThread.h" afterPath="$PROJECT_DIR$/include/MvrRobotPacketReaderThread.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotPacketReceiver.h" afterPath="$PROJECT_DIR$/include/MvrRobotPacketReceiver.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotPacketSender.h" afterPath="$PROJECT_DIR$/include/MvrRobotPacketSender.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotParams.h" afterPath="$PROJECT_DIR$/include/MvrRobotParams.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrRobotTypes.h" afterPath="$PROJECT_DIR$/include/MvrRobotTypes.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrS3Series.h" afterPath="$PROJECT_DIR$/include/MvrS3Series.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSZSeries.h" afterPath="$PROJECT_DIR$/include/MvrSZSeries.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSensorReading.h" afterPath="$PROJECT_DIR$/include/MvrSensorReading.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSerialConnection.h" afterPath="$PROJECT_DIR$/include/MvrSerialConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSick.h" afterPath="$PROJECT_DIR$/include/MvrSick.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSignalHandler.h" afterPath="$PROJECT_DIR$/include/MvrSignalHandler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSimpleConnector.h" afterPath="$PROJECT_DIR$/include/MvrSimpleConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSimulatedLaser.h" afterPath="$PROJECT_DIR$/include/MvrSimulatedLaser.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSocket.h" afterPath="$PROJECT_DIR$/include/MvrSocket.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSonarAutoDisabler.h" afterPath="$PROJECT_DIR$/include/MvrSonarAutoDisabler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSonarConnector.h" afterPath="$PROJECT_DIR$/include/MvrSonarConnector.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSonarDevice.h" afterPath="$PROJECT_DIR$/include/MvrSonarDevice.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSonarMTX.h" afterPath="$PROJECT_DIR$/include/MvrSonarMTX.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSonyPTZ.h" afterPath="$PROJECT_DIR$/include/MvrSonyPTZ.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSoundPlayer.h" afterPath="$PROJECT_DIR$/include/MvrSoundPlayer.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSoundsQueue.h" afterPath="$PROJECT_DIR$/include/MvrSoundsQueue.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSpeech.h" afterPath="$PROJECT_DIR$/include/MvrSpeech.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrStringInfoGroup.h" afterPath="$PROJECT_DIR$/include/MvrStringInfoGroup.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSyncLoop.h" afterPath="$PROJECT_DIR$/include/MvrSyncLoop.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSyncTask.h" afterPath="$PROJECT_DIR$/include/MvrSyncTask.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrSystemStatus.h" afterPath="$PROJECT_DIR$/include/MvrSystemStatus.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTCM2.h" afterPath="$PROJECT_DIR$/include/MvrTCM2.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTCMCompassDirect.h" afterPath="$PROJECT_DIR$/include/MvrTCMCompassDirect.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTCMCompassRobot.h" afterPath="$PROJECT_DIR$/include/MvrTCMCompassRobot.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTaskState.h" afterPath="$PROJECT_DIR$/include/MvrTaskState.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTcpConnection.h" afterPath="$PROJECT_DIR$/include/MvrTcpConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrThread.h" afterPath="$PROJECT_DIR$/include/MvrThread.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTransform.h" afterPath="$PROJECT_DIR$/include/MvrTransform.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrTrimbleGPS.h" afterPath="$PROJECT_DIR$/include/MvrTrimbleGPS.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrUrg.h" afterPath="$PROJECT_DIR$/include/MvrUrg.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrUrg_2_0.h" afterPath="$PROJECT_DIR$/include/MvrUrg_2_0.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrVCC4.h" afterPath="$PROJECT_DIR$/include/MvrVCC4.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrVersalogicIO.h" afterPath="$PROJECT_DIR$/include/MvrVersalogicIO.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/MvrZippable.h" afterPath="$PROJECT_DIR$/include/MvrZippable.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Mvria.h" afterPath="$PROJECT_DIR$/include/Mvria.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/md5.h" afterPath="$PROJECT_DIR$/include/md5.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/mvriaInternal.h" afterPath="$PROJECT_DIR$/include/mvriaInternal.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/mvriaOSDef.h" afterPath="$PROJECT_DIR$/include/mvriaOSDef.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/mvriaTypedefs.h" afterPath="$PROJECT_DIR$/include/mvriaTypedefs.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/mvriaUtil.h" afterPath="$PROJECT_DIR$/include/mvriaUtil.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/wrapper_ExtraClasses.h" afterPath="$PROJECT_DIR$/include/wrapper_ExtraClasses.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/wrapper_Functors.h" afterPath="$PROJECT_DIR$/include/wrapper_Functors.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrACTS.cpp" afterPath="$PROJECT_DIR$/src/MvrACTS.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrAMPTU.cpp" afterPath="$PROJECT_DIR$/src/MvrAMPTU.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrASyncTask.cpp" afterPath="$PROJECT_DIR$/src/MvrASyncTask.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrAction.cpp" afterPath="$PROJECT_DIR$/src/MvrAction.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionAvoidFront.cpp" afterPath="$PROJECT_DIR$/src/MvrActionAvoidFront.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionAvoidSide.cpp" afterPath="$PROJECT_DIR$/src/MvrActionAvoidSide.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionBumpers.cpp" afterPath="$PROJECT_DIR$/src/MvrActionBumpers.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionColorFollow.cpp" afterPath="$PROJECT_DIR$/src/MvrActionColorFollow.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionConstantVelocity.cpp" afterPath="$PROJECT_DIR$/src/MvrActionConstantVelocity.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionDeceleratingLimiter.cpp" afterPath="$PROJECT_DIR$/src/MvrActionDeceleratingLimiter.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionDesired.cpp" afterPath="$PROJECT_DIR$/src/MvrActionDesired.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionDriveDistance.cpp" afterPath="$PROJECT_DIR$/src/MvrActionDriveDistance.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionGoto.cpp" afterPath="$PROJECT_DIR$/src/MvrActionGoto.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionGotoStraight.cpp" afterPath="$PROJECT_DIR$/src/MvrActionGotoStraight.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionGroup.cpp" afterPath="$PROJECT_DIR$/src/MvrActionGroup.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionGroups.cpp" afterPath="$PROJECT_DIR$/src/MvrActionGroups.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionIRs.cpp" afterPath="$PROJECT_DIR$/src/MvrActionIRs.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionInput.cpp" afterPath="$PROJECT_DIR$/src/MvrActionInput.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionJoydrive.cpp" afterPath="$PROJECT_DIR$/src/MvrActionJoydrive.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionKeydrive.cpp" afterPath="$PROJECT_DIR$/src/MvrActionKeydrive.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionLimiterBackwards.cpp" afterPath="$PROJECT_DIR$/src/MvrActionLimiterBackwards.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionLimiterForwards.cpp" afterPath="$PROJECT_DIR$/src/MvrActionLimiterForwards.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionLimiterRot.cpp" afterPath="$PROJECT_DIR$/src/MvrActionLimiterRot.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionLimiterTableSensor.cpp" afterPath="$PROJECT_DIR$/src/MvrActionLimiterTableSensor.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionMovementParameters.cpp" afterPath="$PROJECT_DIR$/src/MvrActionMovementParameters.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionMovementParametersDebugging.cpp" afterPath="$PROJECT_DIR$/src/MvrActionMovementParametersDebugging.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionRatioInput.cpp" afterPath="$PROJECT_DIR$/src/MvrActionRatioInput.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionRobotJoydrive.cpp" afterPath="$PROJECT_DIR$/src/MvrActionRobotJoydrive.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionStallRecover.cpp" afterPath="$PROJECT_DIR$/src/MvrActionStallRecover.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionStop.cpp" afterPath="$PROJECT_DIR$/src/MvrActionStop.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionTriangleDriveTo.cpp" afterPath="$PROJECT_DIR$/src/MvrActionTriangleDriveTo.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrActionTurn.cpp" afterPath="$PROJECT_DIR$/src/MvrActionTurn.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrAnalogGyro.cpp" afterPath="$PROJECT_DIR$/src/MvrAnalogGyro.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrArg.cpp" afterPath="$PROJECT_DIR$/src/MvrArg.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrArgumentBuilder.cpp" afterPath="$PROJECT_DIR$/src/MvrArgumentBuilder.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrArgumentParser.cpp" afterPath="$PROJECT_DIR$/src/MvrArgumentParser.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrBasePacket.cpp" afterPath="$PROJECT_DIR$/src/MvrBasePacket.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrBatteryConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrBatteryConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrBatteryMTX.cpp" afterPath="$PROJECT_DIR$/src/MvrBatteryMTX.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrBumpers.cpp" afterPath="$PROJECT_DIR$/src/MvrBumpers.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrCameraCollection.cpp" afterPath="$PROJECT_DIR$/src/MvrCameraCollection.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrCameraCommands.cpp" afterPath="$PROJECT_DIR$/src/MvrCameraCommands.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrCondition.cpp" afterPath="$PROJECT_DIR$/src/MvrCondition.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrConfig.cpp" afterPath="$PROJECT_DIR$/src/MvrConfig.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrConfigArg.cpp" afterPath="$PROJECT_DIR$/src/MvrConfigArg.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrConfigGroup.cpp" afterPath="$PROJECT_DIR$/src/MvrConfigGroup.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrDPPTU.cpp" afterPath="$PROJECT_DIR$/src/MvrDPPTU.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrDataLogger.cpp" afterPath="$PROJECT_DIR$/src/MvrDataLogger.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrDeviceConnection.cpp" afterPath="$PROJECT_DIR$/src/MvrDeviceConnection.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrFileDeviceConnection.cpp" afterPath="$PROJECT_DIR$/src/MvrFileDeviceConnection.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrFileParser.cpp" afterPath="$PROJECT_DIR$/src/MvrFileParser.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrForbiddenRangeDevice.cpp" afterPath="$PROJECT_DIR$/src/MvrForbiddenRangeDevice.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrFunctorASyncTask.cpp" afterPath="$PROJECT_DIR$/src/MvrFunctorASyncTask.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrGPS.cpp" afterPath="$PROJECT_DIR$/src/MvrGPS.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrGPSConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrGPSConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrGPSCoords.cpp" afterPath="$PROJECT_DIR$/src/MvrGPSCoords.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrGripper.cpp" afterPath="$PROJECT_DIR$/src/MvrGripper.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrIRs.cpp" afterPath="$PROJECT_DIR$/src/MvrIRs.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrInterpolation.cpp" afterPath="$PROJECT_DIR$/src/MvrInterpolation.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrIrrfDevice.cpp" afterPath="$PROJECT_DIR$/src/MvrIrrfDevice.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrJoyHandler.cpp" afterPath="$PROJECT_DIR$/src/MvrJoyHandler.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrJoyHandler_WIN.cpp" afterPath="$PROJECT_DIR$/src/MvrJoyHandler_WIN.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrKeyHandler.cpp" afterPath="$PROJECT_DIR$/src/MvrKeyHandler.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLCDConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrLCDConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLCDMTX.cpp" afterPath="$PROJECT_DIR$/src/MvrLCDMTX.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLMS1XX.cpp" afterPath="$PROJECT_DIR$/src/MvrLMS1XX.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLMS2xx.cpp" afterPath="$PROJECT_DIR$/src/MvrLMS2xx.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLMS2xxPacket.cpp" afterPath="$PROJECT_DIR$/src/MvrLMS2xxPacket.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLMS2xxPacketReceiver.cpp" afterPath="$PROJECT_DIR$/src/MvrLMS2xxPacketReceiver.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLaser.cpp" afterPath="$PROJECT_DIR$/src/MvrLaser.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLaserConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrLaserConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLaserFilter.cpp" afterPath="$PROJECT_DIR$/src/MvrLaserFilter.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLaserLogger.cpp" afterPath="$PROJECT_DIR$/src/MvrLaserLogger.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLaserReflectorDevice.cpp" afterPath="$PROJECT_DIR$/src/MvrLaserReflectorDevice.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLineFinder.cpp" afterPath="$PROJECT_DIR$/src/MvrLineFinder.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLog.cpp" afterPath="$PROJECT_DIR$/src/MvrLog.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrLogFileConnection.cpp" afterPath="$PROJECT_DIR$/src/MvrLogFileConnection.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMD5Calculator.cpp" afterPath="$PROJECT_DIR$/src/MvrMD5Calculator.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMTXIO.cpp" afterPath="$PROJECT_DIR$/src/MvrMTXIO.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMap.cpp" afterPath="$PROJECT_DIR$/src/MvrMap.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMapComponents.cpp" afterPath="$PROJECT_DIR$/src/MvrMapComponents.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMapInterface.cpp" afterPath="$PROJECT_DIR$/src/MvrMapInterface.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMapObject.cpp" afterPath="$PROJECT_DIR$/src/MvrMapObject.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMapUtils.cpp" afterPath="$PROJECT_DIR$/src/MvrMapUtils.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMode.cpp" afterPath="$PROJECT_DIR$/src/MvrMode.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrModes.cpp" afterPath="$PROJECT_DIR$/src/MvrModes.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrModule.cpp" afterPath="$PROJECT_DIR$/src/MvrModule.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrModuleLoader.cpp" afterPath="$PROJECT_DIR$/src/MvrModuleLoader.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMutex.cpp" afterPath="$PROJECT_DIR$/src/MvrMutex.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrMutex_WIN.cpp" afterPath="$PROJECT_DIR$/src/MvrMutex_WIN.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrNMEAParser.cpp" afterPath="$PROJECT_DIR$/src/MvrNMEAParser.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrNetServer.cpp" afterPath="$PROJECT_DIR$/src/MvrNetServer.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrNovatelGPS.cpp" afterPath="$PROJECT_DIR$/src/MvrNovatelGPS.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrP2Arm.cpp" afterPath="$PROJECT_DIR$/src/MvrP2Arm.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrPTZ.cpp" afterPath="$PROJECT_DIR$/src/MvrPTZ.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrPTZConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrPTZConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrPriorityResolver.cpp" afterPath="$PROJECT_DIR$/src/MvrPriorityResolver.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRVisionPTZ.cpp" afterPath="$PROJECT_DIR$/src/MvrRVisionPTZ.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRangeBuffer.cpp" afterPath="$PROJECT_DIR$/src/MvrRangeBuffer.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRangeDevice.cpp" afterPath="$PROJECT_DIR$/src/MvrRangeDevice.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRangeDeviceThreaded.cpp" afterPath="$PROJECT_DIR$/src/MvrRangeDeviceThreaded.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRatioInputJoydrive.cpp" afterPath="$PROJECT_DIR$/src/MvrRatioInputJoydrive.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRatioInputKeydrive.cpp" afterPath="$PROJECT_DIR$/src/MvrRatioInputKeydrive.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRatioInputRobotJoydrive.cpp" afterPath="$PROJECT_DIR$/src/MvrRatioInputRobotJoydrive.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRecurrentTask.cpp" afterPath="$PROJECT_DIR$/src/MvrRecurrentTask.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobot.cpp" afterPath="$PROJECT_DIR$/src/MvrRobot.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotBatteryPacketReader.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotBatteryPacketReader.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotConfig.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotConfig.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotConfigPacketReader.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotConfigPacketReader.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotJoyHandler.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotJoyHandler.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotPacket.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotPacket.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotPacketReaderThread.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotPacketReaderThread.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotPacketReceiver.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotPacketReceiver.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotPacketSender.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotPacketSender.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotParams.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotParams.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrRobotTypes.cpp" afterPath="$PROJECT_DIR$/src/MvrRobotTypes.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrS3Series.cpp" afterPath="$PROJECT_DIR$/src/MvrS3Series.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSZSeries.cpp" afterPath="$PROJECT_DIR$/src/MvrSZSeries.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSensorReading.cpp" afterPath="$PROJECT_DIR$/src/MvrSensorReading.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSerialConnection.cpp" afterPath="$PROJECT_DIR$/src/MvrSerialConnection.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSick.cpp" afterPath="$PROJECT_DIR$/src/MvrSick.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSignalHandler.cpp" afterPath="$PROJECT_DIR$/src/MvrSignalHandler.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSimpleConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrSimpleConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSimulatedLaser.cpp" afterPath="$PROJECT_DIR$/src/MvrSimulatedLaser.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSocket.cpp" afterPath="$PROJECT_DIR$/src/MvrSocket.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSonarAutoDisabler.cpp" afterPath="$PROJECT_DIR$/src/MvrSonarAutoDisabler.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSonarConnector.cpp" afterPath="$PROJECT_DIR$/src/MvrSonarConnector.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSonarDevice.cpp" afterPath="$PROJECT_DIR$/src/MvrSonarDevice.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSonarMTX.cpp" afterPath="$PROJECT_DIR$/src/MvrSonarMTX.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSonyPTZ.cpp" afterPath="$PROJECT_DIR$/src/MvrSonyPTZ.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSoundPlayer.cpp" afterPath="$PROJECT_DIR$/src/MvrSoundPlayer.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSoundsQueue.cpp" afterPath="$PROJECT_DIR$/src/MvrSoundsQueue.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSpeech.cpp" afterPath="$PROJECT_DIR$/src/MvrSpeech.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrStringInfoGroup.cpp" afterPath="$PROJECT_DIR$/src/MvrStringInfoGroup.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSyncLoop.cpp" afterPath="$PROJECT_DIR$/src/MvrSyncLoop.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSyncTask.cpp" afterPath="$PROJECT_DIR$/src/MvrSyncTask.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrSystemStatus.cpp" afterPath="$PROJECT_DIR$/src/MvrSystemStatus.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrTCM2.cpp" afterPath="$PROJECT_DIR$/src/MvrTCM2.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrTCMCompassDirect.cpp" afterPath="$PROJECT_DIR$/src/MvrTCMCompassDirect.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrTCMCompassRobot.cpp" afterPath="$PROJECT_DIR$/src/MvrTCMCompassRobot.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrTcpConnection.cpp" afterPath="$PROJECT_DIR$/src/MvrTcpConnection.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrThread.cpp" afterPath="$PROJECT_DIR$/src/MvrThread.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrTransform.cpp" afterPath="$PROJECT_DIR$/src/MvrTransform.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrTrimbleGPS.cpp" afterPath="$PROJECT_DIR$/src/MvrTrimbleGPS.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrUrg.cpp" afterPath="$PROJECT_DIR$/src/MvrUrg.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrUrg_2_0.cpp" afterPath="$PROJECT_DIR$/src/MvrUrg_2_0.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrVCC4.cpp" afterPath="$PROJECT_DIR$/src/MvrVCC4.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MvrVersalogicIO.cpp" afterPath="$PROJECT_DIR$/src/MvrVersalogicIO.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Mvria.cpp" afterPath="$PROJECT_DIR$/src/Mvria.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/md5.cpp" afterPath="$PROJECT_DIR$/src/md5.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mvriaUtil.cpp" afterPath="$PROJECT_DIR$/src/mvriaUtil.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/encoderTest.cpp" afterPath="$PROJECT_DIR$/tests/encoderTest.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/serialTest2.cpp" afterPath="$PROJECT_DIR$/tests/serialTest2.cpp" />
-    </list>
+    <list default="true" id="14e537d0-88b1-4c26-ba77-bcaef6727e49" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -397,8 +70,18 @@
       <file leaf-file-name="simpleConnect.log" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/build/simpleConnect.log">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="26" column="37" lean-forward="false" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
+            <state relative-caret-position="126">
+              <caret line="31" column="20" lean-forward="true" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="7" column="6" lean-forward="true" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -584,6 +267,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="mvr" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MVR" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mvr" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="build" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -838,12 +535,12 @@
       <workItem from="1499335791825" duration="1341000" />
       <workItem from="1499350899621" duration="804000" />
       <workItem from="1499389424926" duration="55000" />
-      <workItem from="1499389793356" duration="5297000" />
+      <workItem from="1499389793356" duration="6008000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28872000" />
+    <option name="totallyTimeSpent" value="29583000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -856,14 +553,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1345" y="-4" width="1855" height="1084" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3168421" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3168421" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26537398" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32947367" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -919,13 +617,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/include/MvrArgumentBuilder.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="44" column="29" lean-forward="false" selection-start-line="44" selection-start-column="29" selection-end-line="44" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/MvrArgumentParser.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="146">
@@ -1290,10 +981,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="6" lean-forward="true" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/build/simpleConnect.log">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="26" column="37" lean-forward="false" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
+        <state relative-caret-position="126">
+          <caret line="31" column="20" lean-forward="true" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
           <folding />
         </state>
       </provider>
