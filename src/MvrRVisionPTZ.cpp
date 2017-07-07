@@ -1,29 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrRVisionPTZ.h"
@@ -279,17 +253,17 @@ MVREXPORT bool MvrRVisionPTZ::packetHandler(MvrRobotPacket *packet)
 }
 */
 
-#define ARRVISION_MAX_RESPONSE_BYTES 16
+#define MVRRVISION_MAX_RESPONSE_BYTES 16
 //MVREXPORT bool MvrRVisionPTZ::packetHandler(MvrBasePacket *packet)
 MvrBasePacket * MvrRVisionPTZ::readPacket(void)
 {
-  unsigned char data[ARRVISION_MAX_RESPONSE_BYTES];
+  unsigned char data[MVRRVISION_MAX_RESPONSE_BYTES];
   unsigned char byte;
   int num;
-  memset(data, 0, ARRVISION_MAX_RESPONSE_BYTES);
-  for (num=0; num <= ARRVISION_MAX_RESPONSE_BYTES+1; num++) {
+  memset(data, 0, MVRRVISION_MAX_RESPONSE_BYTES);
+  for (num=0; num <= MVRRVISION_MAX_RESPONSE_BYTES+1; num++) {
     if (myConn->read((char *) &byte, 1,1) <= 0 ||
-	num == ARRVISION_MAX_RESPONSE_BYTES+1) {
+	num == MVRRVISION_MAX_RESPONSE_BYTES+1) {
       return NULL;
     }
     else if (byte == 0x90) {
@@ -302,7 +276,7 @@ MvrBasePacket * MvrRVisionPTZ::readPacket(void)
     }
   }
   // we got the header
-  for (num=1; num <= ARRVISION_MAX_RESPONSE_BYTES; num++) {
+  for (num=1; num <= MVRRVISION_MAX_RESPONSE_BYTES; num++) {
     if (myConn->read((char *) &byte, 1, 1) <= 0) {
       // there are no more bytes, so check the last byte for the footer
       if (data[num-1] != 0xFF) {

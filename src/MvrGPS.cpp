@@ -1,30 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
-
 #include "MvrExport.h"
 #include "mvriaOSDef.h"
 #include "MvrGPS.h"
@@ -37,10 +10,10 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include <iostream>
 
 
-//#define DEBUG_ARGPS 1
-//#define DEBUG_ARGPS_GPRMC
+//#define DEBUG_MVRGPS 1
+//#define DEBUG_MVRGPS_GPRMC
 
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
 void MvrGPS_printBuf(FILE *fp, const char *data, int size){  for(int i = 0; i < size; ++i)  {    if(data[i] < ' ' || data[i] > '~')    {      fprintf(fp, "[0x%X]", data[i] & 0xff);    }    else    {      fputc(data[i], fp);    }  }}
 #endif
 
@@ -230,13 +203,13 @@ MVREXPORT int MvrGPS::read(unsigned long maxTime)
     result |= myNMEAParser.parse(myDevice);
     if(result & ReadError || result & ReadFinished)
     {
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
       std::cerr << "MvrGPS: finished reading all available data (or error reading).\n";
 #endif
       return result;
     }
   }
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
   if(maxTime != 0)
     fprintf(stderr, "MvrGPS::read() reached maxTime %lu (time=%lu), returning.\n", maxTime, startTime.mSecSince());
 #endif
@@ -254,7 +227,7 @@ void MvrGPS::parseGPRMC(const MvrNMEAParser::Message &msg, double &latitudeResul
 {
 
   MvrNMEAParser::MessageVector *message = msg.message;
-#if defined(DEBUG_ARGPS) || defined(DEBUG_ARGPS_GPRMC)
+#if defined(DEBUG_MVRGPS) || defined(DEBUG_MVRGPS_GPRMC)
   fprintf(stderr, "MvrGPS: XXX GPRMC size=%d, stat=%s latDegMin=%s, latNS=%s, lonDegMin=%s, lonEW=%s\n", message->size(), 
     (message->size() > 2) ? (*message)[2].c_str() : "(missing)", 
     (message->size() > 3) ? (*message)[3].c_str() : "(missing)", 
@@ -305,7 +278,7 @@ void MvrGPS::parseGPRMC(const MvrNMEAParser::Message &msg, double &latitudeResul
 // Fix type, number of satellites tracked, DOP and also maybe altitude
 void MvrGPS::handleGPGGA(MvrNMEAParser::Message msg)
 {
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
 fprintf(stderr, "MvrGPS: Got GPGGA\n");
 #endif
 
@@ -394,7 +367,7 @@ void MvrGPS::handleHCHDx(MvrNMEAParser::Message msg)
 // GPS DOP and satellite IDs
 void MvrGPS::handleGPGSA(MvrNMEAParser::Message msg)
 {
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
 fprintf(stderr, "MvrGPS: XXX GPGSA received\n");
 #endif
 
@@ -702,13 +675,13 @@ void MvrGPS::handleGPGST(MvrNMEAParser::Message msg)
   // vector is:
   // 0,       1,    2,         3,             4,             5,              6,       7,       8
   // "GPGST", time, inputsRMS, ellipse major, ellipse minor, ellipse orient, lat err, lon err, alt err
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
   printf("MvrGPS: XXX GPGST size=%d\n", message->size());
 #endif
   if(message->size() < 3) return;
   myData.haveInputsRMS = readFloatFromStringVec(message, 2, &(myData.inputsRMS));
   if(message->size() < 6) return;
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
   printf("MvrGPS: XXX GPGST inputsRMS=%s, ellipseMajor=%s, ellipseMinor=%s, ellipseOrient=%s\n", 
       (*message)[2].c_str(), (*message)[3].c_str(), (*message)[4].c_str(), (*message)[5].c_str());
 #endif
@@ -723,7 +696,7 @@ void MvrGPS::handleGPGST(MvrNMEAParser::Message msg)
   if(myData.haveErrorEllipse) myData.errorEllipse.setPose(minor, major, orient);
   else myData.errorEllipse.setPose(0,0,0);
   if(message->size() < 7) return;
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
   printf("MvrGPS: XXX GPGST latErr=%s, lonErr=%s\n",
       (*message)[6].c_str(), (*message)[7].c_str());
 #endif
@@ -738,7 +711,7 @@ void MvrGPS::handleGPGST(MvrNMEAParser::Message msg)
   else myData.latLonError.setPose(0,0,0);
 //printf("MvrGPS: XXX GPGST lle.getX=%f, lle.getY=%f\n", myData.latLonError.getX(), myData.latLonError.getY());
   if(message->size() < 9) return;
-#ifdef DEBUG_ARGPS
+#ifdef DEBUG_MVRGPS
   printf("MvrGPS: XXX GPGST altErr=%s", (*message)[8].c_str());
 #endif
   myData.haveAltitudeError = readFloatFromStringVec(message, 8, &(myData.altitudeError));

@@ -1,29 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 #include "Mvria.h"
 #include "MvrSocket.h"
@@ -190,9 +164,9 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
 
   if (ourDirectory.length() == 0)
   {
-    if (getenv("ARIA") != NULL)
+    if (getenv("MVR") != NULL)
     {
-      setDirectory(getenv("ARIA"));
+      setDirectory(getenv("Mvr"));
     }
     else
     {
@@ -220,9 +194,9 @@ MVREXPORT void Mvria::init(SigHandleMethod method, bool initSockets,
         else
         {
   #ifndef MVRINTERFACE
-    MvrLog::log(MvrLog::Terse, "NonCritical Error: ARIA could not find where it is located.");
+    MvrLog::log(MvrLog::Terse, "NonCritical Error: MVR could not find where it is located.");
   #else
-    MvrLog::log(MvrLog::Verbose, "NonCritical Error: ARIA could not find where it is located.");
+    MvrLog::log(MvrLog::Verbose, "NonCritical Error: MVR could not find where it is located.");
   #endif
         }
       }

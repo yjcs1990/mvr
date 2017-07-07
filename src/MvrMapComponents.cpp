@@ -1,29 +1,3 @@
-/*
-Adept MobileRobots Robotics Interface for Applications (ARIA)
-Copyright (C) 2004-2005 ActivMedia Robotics LLC
-Copyright (C) 2006-2010 MobileRobots Inc.
-Copyright (C) 2011-2015 Adept Technology, Inc.
-Copyright (C) 2016 Omron Adept Technologies, Inc.
-
-     This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
-
-     This program is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with this program; if not, write to the Free Software
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-If you wish to redistribute ARIA under different terms, contact 
-Adept MobileRobots for information about a commercial version of ARIA at 
-robots@mobilerobots.com or 
-Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
-*/
 #include "MvrExport.h"
 #include "MvrMapComponents.h"
 
@@ -38,7 +12,7 @@ Adept MobileRobots, 10 Columbia Drive, Amherst, NH 03031; +1-603-881-7960
 #include "MvrMapUtils.h"
 #include "MvrMD5Calculator.h"
 
-//#define ARDEBUG_MAP_COMPONENTS
+//#define MVRDEBUG_MAP_COMPONENTS
 #ifdef ARDEBUG_MAP_COMPONENTS
 #define IFDEBUG(code) {code;}
 #else
@@ -3173,10 +3147,10 @@ MVREXPORT MvrMapSimple::MvrMapSimple(const char *baseDirectory,
   myMapCategory = MAP_CATEGORY_2D;
 
   // Create the default scan for the sick laser.  
-  MvrMapScan *mapScan = new MvrMapScan(ARMAP_DEFAULT_SCAN_TYPE);
+  MvrMapScan *mapScan = new MvrMapScan(MVRMAP_DEFAULT_SCAN_TYPE);
   // TODO This needs to be a constant!!
-  myScanTypeList.push_back(ARMAP_DEFAULT_SCAN_TYPE);
-  myTypeToScanMap[ARMAP_DEFAULT_SCAN_TYPE] = mapScan;
+  myScanTypeList.push_back(MVRMAP_DEFAULT_SCAN_TYPE);
+  myTypeToScanMap[MVRMAP_DEFAULT_SCAN_TYPE] = mapScan;
 
   /***
   std::list<std::string> inactiveInfoNames = createInactiveInfoNames
@@ -4210,7 +4184,7 @@ MVREXPORT bool MvrMapSimple::readFile(const char *fileName,
              "MvrMapSimple::readFile() %s took %i msecs to read map of %i points",
              realFileName.c_str(),
              elapsed,
-             getNumPoints(ARMAP_SUMMARY_SCAN_TYPE));	
+             getNumPoints(MVRMAP_SUMMARY_SCAN_TYPE));	
 
   fclose(file);
 
@@ -5271,11 +5245,11 @@ MVREXPORT void MvrMapSimple::writeObjectsToFunctor(MvrFunctor1<const char *> *fu
   }
   else { // else send single scan
 
-    MvrMapScanInterface *mapScan = getScan(ARMAP_SUMMARY_SCAN_TYPE);
+    MvrMapScanInterface *mapScan = getScan(MVRMAP_SUMMARY_SCAN_TYPE);
     if (mapScan != NULL) {
       mapScan->writeScanToFunctor(functor, 
                                   endOfLineChars, 
-                                  ARMAP_SUMMARY_SCAN_TYPE);
+                                  MVRMAP_SUMMARY_SCAN_TYPE);
     }
   } // end else just send single scan 
 
@@ -5967,7 +5941,7 @@ bool MvrMapSimple::createScans(const std::list<std::string> &scanTypeList)
   } // end for each scan type
 
   if (myScanTypeList.size() > 1) {
-    mySummaryScan = new MvrMapScan(ARMAP_SUMMARY_SCAN_TYPE);
+    mySummaryScan = new MvrMapScan(MVRMAP_SUMMARY_SCAN_TYPE);
   }
   return true;
 
@@ -6189,14 +6163,14 @@ MVREXPORT MvrMapScan *MvrMapSimple::getScan(const char *scanType) const
       return mySummaryScan;
     }
     else {
-      scanType = ARMAP_DEFAULT_SCAN_TYPE;
+      scanType = MVRMAP_DEFAULT_SCAN_TYPE;
     }
   } // end if summary scan type
 
   MvrTypeToScanMap::const_iterator iter = myTypeToScanMap.find(scanType);
   
   // If the specified scan type was not found, then see if the special 
-  // ARMAP_DEFAULT_SCAN_TYPE was specified.  If so, this is equivalent to the
+  // MVRMAP_DEFAULT_SCAN_TYPE was specified.  If so, this is equivalent to the
   // first scan in the scan list.
   if ((iter == myTypeToScanMap.end()) &&
       (isDefaultScanType(scanType)) &&
