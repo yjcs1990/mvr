@@ -8,7 +8,7 @@ bool encoderPrinter(MvrRobotPacket *packet)
   long int left;
   long int right;
 
-  packet->log();
+  // packet->log();
 
   printf("encodeTest received packet 0x%X %s\n", packet->getID(),
           (packet->getID() == 0x90 ? "[ENCODERpac]" : 

@@ -1259,7 +1259,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
   if (packet != NULL) 
   {
     ret = packet->getID();
-     packet->log(); // Jay
+//   packet->log(); // Jay
 
     //printf("Got a packet %d\n", ret);
 	
@@ -5207,6 +5207,7 @@ MVREXPORT bool MvrRobot::processMotorPacket(MvrRobotPacket *packet)
   }
   myMotorPacCurrentCount++;
 
+  // Jay for encoder convertion
   x = (packet->bufToUByte2() & 0x7fff);
   y = (packet->bufToUByte2() & 0x7fff);
   th = packet->bufToByte2();

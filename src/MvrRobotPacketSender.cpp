@@ -133,8 +133,7 @@ MVREXPORT bool MvrRobotPacketSender::com(unsigned char command)
    @param argument the integer argument to send with the command
    @return whether the command could be sent or not
 */
-MVREXPORT bool MvrRobotPacketSender::comInt(unsigned char command, 
-					  short int argument)
+MVREXPORT bool MvrRobotPacketSender::comInt(unsigned char command, short int argument)
 {
 
   if (!connValid())

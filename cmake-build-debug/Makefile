@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named simpleConnect
+# Target rules for targets named hardDriveWander
 
 # Build rule for target.
-simpleConnect: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 simpleConnect
-.PHONY : simpleConnect
+hardDriveWander: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 hardDriveWander
+.PHONY : hardDriveWander
 
 # fast build rule for target.
-simpleConnect/fast:
-	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/build
-.PHONY : simpleConnect/fast
+hardDriveWander/fast:
+	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/build
+.PHONY : hardDriveWander/fast
 
 #=============================================================================
 # Target rules for targets named Mvria
@@ -135,33 +135,6 @@ Mvria: cmake_check_build_system
 Mvria/fast:
 	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/build
 .PHONY : Mvria/fast
-
-examples/simpleConnect.o: examples/simpleConnect.cpp.o
-
-.PHONY : examples/simpleConnect.o
-
-# target to build an object file
-examples/simpleConnect.cpp.o:
-	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/examples/simpleConnect.cpp.o
-.PHONY : examples/simpleConnect.cpp.o
-
-examples/simpleConnect.i: examples/simpleConnect.cpp.i
-
-.PHONY : examples/simpleConnect.i
-
-# target to preprocess a source file
-examples/simpleConnect.cpp.i:
-	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/examples/simpleConnect.cpp.i
-.PHONY : examples/simpleConnect.cpp.i
-
-examples/simpleConnect.s: examples/simpleConnect.cpp.s
-
-.PHONY : examples/simpleConnect.s
-
-# target to generate assembly for a file
-examples/simpleConnect.cpp.s:
-	$(MAKE) -f CMakeFiles/simpleConnect.dir/build.make CMakeFiles/simpleConnect.dir/examples/simpleConnect.cpp.s
-.PHONY : examples/simpleConnect.cpp.s
 
 src/MvrACTS.o: src/MvrACTS.cpp.o
 
@@ -4159,6 +4132,33 @@ src/mvriaUtil.cpp.s:
 	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/mvriaUtil.cpp.s
 .PHONY : src/mvriaUtil.cpp.s
 
+tests/hardDriveWander.o: tests/hardDriveWander.cpp.o
+
+.PHONY : tests/hardDriveWander.o
+
+# target to build an object file
+tests/hardDriveWander.cpp.o:
+	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/tests/hardDriveWander.cpp.o
+.PHONY : tests/hardDriveWander.cpp.o
+
+tests/hardDriveWander.i: tests/hardDriveWander.cpp.i
+
+.PHONY : tests/hardDriveWander.i
+
+# target to preprocess a source file
+tests/hardDriveWander.cpp.i:
+	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/tests/hardDriveWander.cpp.i
+.PHONY : tests/hardDriveWander.cpp.i
+
+tests/hardDriveWander.s: tests/hardDriveWander.cpp.s
+
+.PHONY : tests/hardDriveWander.s
+
+# target to generate assembly for a file
+tests/hardDriveWander.cpp.s:
+	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/tests/hardDriveWander.cpp.s
+.PHONY : tests/hardDriveWander.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -4167,11 +4167,8 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... simpleConnect"
+	@echo "... hardDriveWander"
 	@echo "... Mvria"
-	@echo "... examples/simpleConnect.o"
-	@echo "... examples/simpleConnect.i"
-	@echo "... examples/simpleConnect.s"
 	@echo "... src/MvrACTS.o"
 	@echo "... src/MvrACTS.i"
 	@echo "... src/MvrACTS.s"
@@ -4616,6 +4613,9 @@ help:
 	@echo "... src/mvriaUtil.o"
 	@echo "... src/mvriaUtil.i"
 	@echo "... src/mvriaUtil.s"
+	@echo "... tests/hardDriveWander.o"
+	@echo "... tests/hardDriveWander.i"
+	@echo "... tests/hardDriveWander.s"
 .PHONY : help
 
 

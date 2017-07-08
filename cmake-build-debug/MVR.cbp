@@ -37,8 +37,8 @@
 					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="simpleConnect">
-				<Option output="/backup/project/mvr/cmake-build-debug/simpleConnect" prefix_auto="0" extension_auto="0"/>
+			<Target title="hardDriveWander">
+				<Option output="/backup/project/mvr/cmake-build-debug/hardDriveWander" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -57,14 +57,14 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 simpleConnect"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 hardDriveWander"/>
 					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="simpleConnect/fast">
-				<Option output="/backup/project/mvr/cmake-build-debug/simpleConnect" prefix_auto="0" extension_auto="0"/>
+			<Target title="hardDriveWander/fast">
+				<Option output="/backup/project/mvr/cmake-build-debug/hardDriveWander" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -83,7 +83,7 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 simpleConnect/fast"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 hardDriveWander/fast"/>
 					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -142,9 +142,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/backup/project/mvr/examples/simpleConnect.cpp">
-			<Option target="simpleConnect"/>
-		</Unit>
 		<Unit filename="/backup/project/mvr/src/MvrACTS.cpp">
 			<Option target="Mvria"/>
 		</Unit>
@@ -588,6 +585,9 @@
 		</Unit>
 		<Unit filename="/backup/project/mvr/src/mvriaUtil.cpp">
 			<Option target="Mvria"/>
+		</Unit>
+		<Unit filename="/backup/project/mvr/tests/hardDriveWander.cpp">
+			<Option target="hardDriveWander"/>
 		</Unit>
 		<Unit filename="/backup/project/mvr/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
