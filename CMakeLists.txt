@@ -192,5 +192,5 @@ ADD_LIBRARY(Mvria SHARED
     )
 
 
-ADD_EXECUTABLE(hardDriveWander tests/hardDriveWander.cpp)
-target_link_libraries(hardDriveWander ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(encoderConvertSelf tests/encoderConvertSelf.cpp)
+target_link_libraries(encoderConvertSelf ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)

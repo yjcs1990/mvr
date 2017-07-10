@@ -32,7 +32,7 @@ MVREXPORT MvrBasePacket::MvrBasePacket(MvrTypes::UByte2 bufferSize,
   myFooterLength = footerLength;
   myReadLength = myHeaderLength;
   myMaxLength = bufferSize;
-  myLength = myHeaderLength;
+  myLength = bufferSize;  // Jay 08/07/17 Fix BUG
   myIsValid = true;
 }
 

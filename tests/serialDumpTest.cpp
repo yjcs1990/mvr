@@ -8,7 +8,7 @@ int main(int argc, char **argv)
   bool verbose = true;
   int i, n;
 
-  const char *port = MvrUtil::COM1;
+  const char *port = "/dev/ttyUSB0";
   if (argc > 0)
     port = argv[1];
   
