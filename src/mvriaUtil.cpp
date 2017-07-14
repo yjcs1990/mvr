@@ -2152,7 +2152,7 @@ MVREXPORT bool MvrUtil::floatIsNormal(double f)
 #ifdef WIN32
 	  return (!::_isnan(f) && ::_finite(f));
 #else
-	  return isnormal(f);
+	  return std::isnormal(f);
 #endif
 }
 
