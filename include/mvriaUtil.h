@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include <math.h>
+#include <cmath>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -724,7 +725,7 @@ public:
 #ifdef WIN32
     return _isnan(d);
 #else 
-    return isnan(d);
+    return std::isnan(d);
 #endif
   }
 
@@ -732,7 +733,7 @@ public:
 #ifdef WIN32
 	  return _isnan(f);
 #else
-	  return isnan(f);
+	  return std::isnan(f);
 #endif
   }
 
