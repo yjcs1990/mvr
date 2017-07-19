@@ -8,588 +8,588 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
+				<Option working_dir="/home/mvr/project/mvr/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="rebuild_cache">
-				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
+				<Option working_dir="/home/mvr/project/mvr/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="hardDriveWander">
-				<Option output="/backup/project/mvr/cmake-build-debug/hardDriveWander" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/mvr/project/mvr/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="encoderConvertSelf">
+				<Option output="/home/mvr/project/mvr/cmake-build-debug/encoderConvertSelf" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/mvr/project/mvr/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DCOMPILEDWITHC11"/>
-					<Add directory="/backup/project/mvr"/>
-					<Add directory="/backup/project/mvr/include"/>
-					<Add directory="/usr/include/c++/4.8"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
-					<Add directory="/usr/include/c++/4.8/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/home/mvr/project/mvr"/>
+					<Add directory="/home/mvr/project/mvr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 hardDriveWander"/>
-					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 encoderConvertSelf"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="hardDriveWander/fast">
-				<Option output="/backup/project/mvr/cmake-build-debug/hardDriveWander" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
+			<Target title="encoderConvertSelf/fast">
+				<Option output="/home/mvr/project/mvr/cmake-build-debug/encoderConvertSelf" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/mvr/project/mvr/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DCOMPILEDWITHC11"/>
-					<Add directory="/backup/project/mvr"/>
-					<Add directory="/backup/project/mvr/include"/>
-					<Add directory="/usr/include/c++/4.8"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
-					<Add directory="/usr/include/c++/4.8/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/home/mvr/project/mvr"/>
+					<Add directory="/home/mvr/project/mvr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 hardDriveWander/fast"/>
-					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 encoderConvertSelf/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Mvria">
-				<Option output="/backup/project/mvr/lib/libMvria.so" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
+				<Option output="/home/mvr/project/mvr/lib/libMvria.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/mvr/project/mvr/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="3"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DCOMPILEDWITHC11"/>
-					<Add directory="/backup/project/mvr"/>
-					<Add directory="/backup/project/mvr/include"/>
-					<Add directory="/usr/include/c++/4.8"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
-					<Add directory="/usr/include/c++/4.8/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/home/mvr/project/mvr"/>
+					<Add directory="/home/mvr/project/mvr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 Mvria"/>
-					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 Mvria"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Mvria/fast">
-				<Option output="/backup/project/mvr/lib/libMvria.so" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/backup/project/mvr/cmake-build-debug"/>
+				<Option output="/home/mvr/project/mvr/lib/libMvria.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/mvr/project/mvr/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="3"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add option="-DCOMPILEDWITHC11"/>
-					<Add directory="/backup/project/mvr"/>
-					<Add directory="/backup/project/mvr/include"/>
-					<Add directory="/usr/include/c++/4.8"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/4.8"/>
-					<Add directory="/usr/include/c++/4.8/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include"/>
+					<Add directory="/home/mvr/project/mvr"/>
+					<Add directory="/home/mvr/project/mvr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
 					<Add directory="/usr/include/x86_64-linux-gnu"/>
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 Mvria/fast"/>
-					<CompileFile command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j12 -f &quot;/backup/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 Mvria/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/mvr/project/mvr/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/backup/project/mvr/src/MvrACTS.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrACTS.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrAMPTU.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrAMPTU.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrASyncTask.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrASyncTask.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrAction.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrAction.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionAvoidFront.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionAvoidFront.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionAvoidSide.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionAvoidSide.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionBumpers.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionBumpers.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionColorFollow.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionColorFollow.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionConstantVelocity.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionConstantVelocity.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionDeceleratingLimiter.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionDeceleratingLimiter.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionDesired.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionDesired.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionDriveDistance.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionDriveDistance.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionGoto.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionGoto.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionGotoStraight.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionGotoStraight.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionGroup.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionGroup.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionGroups.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionGroups.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionIRs.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionIRs.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionInput.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionInput.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionJoydrive.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionJoydrive.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionKeydrive.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionKeydrive.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionLimiterBackwards.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionLimiterBackwards.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionLimiterForwards.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionLimiterForwards.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionLimiterRot.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionLimiterRot.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionLimiterTableSensor.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionLimiterTableSensor.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionMovementParameters.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionMovementParameters.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionMovementParametersDebugging.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionMovementParametersDebugging.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionRatioInput.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionRatioInput.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionRobotJoydrive.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionRobotJoydrive.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionStallRecover.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionStallRecover.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionStop.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionStop.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionTriangleDriveTo.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionTriangleDriveTo.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrActionTurn.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrActionTurn.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrAnalogGyro.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrAnalogGyro.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrArg.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrArg.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrArgumentBuilder.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrArgumentBuilder.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrArgumentParser.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrArgumentParser.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrBasePacket.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrBasePacket.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrBatteryConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrBatteryConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrBatteryMTX.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrBatteryMTX.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrBumpers.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrBumpers.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrCameraCollection.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrCameraCollection.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrCameraCommands.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrCameraCommands.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrCondition.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrCondition.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrConfig.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrConfig.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrConfigArg.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrConfigArg.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrConfigGroup.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrConfigGroup.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrDPPTU.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrDPPTU.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrDataLogger.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrDataLogger.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrDeviceConnection.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrDeviceConnection.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrFileDeviceConnection.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrFileDeviceConnection.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrFileParser.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrFileParser.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrForbiddenRangeDevice.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrForbiddenRangeDevice.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrFunctorASyncTask.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrFunctorASyncTask.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrGPS.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrGPS.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrGPSConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrGPSConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrGPSCoords.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrGPSCoords.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrGripper.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrGripper.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrIRs.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrIRs.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrInterpolation.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrInterpolation.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrIrrfDevice.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrIrrfDevice.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrJoyHandler.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrJoyHandler.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrKeyHandler.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrKeyHandler.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLCDConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLCDConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLCDMTX.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLCDMTX.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLMS1XX.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLMS1XX.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLMS2xx.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLMS2xx.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLMS2xxPacket.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLMS2xxPacket.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLMS2xxPacketReceiver.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLMS2xxPacketReceiver.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLaser.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLaser.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLaserConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLaserConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLaserFilter.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLaserFilter.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLaserLogger.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLaserLogger.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLaserReflectorDevice.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLaserReflectorDevice.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLineFinder.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLineFinder.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLog.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLog.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrLogFileConnection.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrLogFileConnection.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMD5Calculator.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMD5Calculator.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMap.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMap.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMapComponents.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMapComponents.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMapInterface.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMapInterface.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMapObject.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMapObject.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMapUtils.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMapUtils.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMode.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMode.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrModes.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrModes.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrModule.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrModule.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrModuleLoader.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrModuleLoader.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrMutex.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrMutex.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrNMEAParser.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrNMEAParser.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrNetServer.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrNetServer.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrNovatelGPS.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrNovatelGPS.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrP2Arm.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrP2Arm.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrPTZ.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrPTZ.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrPTZConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrPTZConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrPriorityResolver.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrPriorityResolver.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRVisionPTZ.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRVisionPTZ.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRangeBuffer.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRangeBuffer.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRangeDevice.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRangeDevice.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRangeDeviceThreaded.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRangeDeviceThreaded.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRatioInputJoydrive.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRatioInputJoydrive.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRatioInputKeydrive.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRatioInputKeydrive.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRatioInputRobotJoydrive.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRatioInputRobotJoydrive.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRecurrentTask.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRecurrentTask.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobot.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobot.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotBatteryPacketReader.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotBatteryPacketReader.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotConfig.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotConfig.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotConfigPacketReader.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotConfigPacketReader.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotJoyHandler.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotJoyHandler.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotPacket.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotPacket.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotPacketReaderThread.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotPacketReaderThread.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotPacketReceiver.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotPacketReceiver.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotPacketSender.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotPacketSender.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotParams.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotParams.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrRobotTypes.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrRobotTypes.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrS3Series.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrS3Series.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSZSeries.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSZSeries.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSensorReading.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSensorReading.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSerialConnection.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSerialConnection.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSick.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSick.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSignalHandler.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSignalHandler.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSimpleConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSimpleConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSimulatedLaser.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSimulatedLaser.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSocket.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSocket.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSonarAutoDisabler.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSonarAutoDisabler.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSonarConnector.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSonarConnector.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSonarDevice.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSonarDevice.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSonarMTX.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSonarMTX.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSonyPTZ.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSonyPTZ.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSoundPlayer.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSoundPlayer.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSoundsQueue.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSoundsQueue.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSpeech.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSpeech.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrStringInfoGroup.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrStringInfoGroup.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSyncLoop.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSyncLoop.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSyncTask.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSyncTask.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrSystemStatus.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrSystemStatus.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrTCM2.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrTCM2.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrTCMCompassDirect.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrTCMCompassDirect.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrTCMCompassRobot.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrTCMCompassRobot.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrTcpConnection.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrTcpConnection.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrThread.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrThread.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrTransform.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrTransform.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrTrimbleGPS.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrTrimbleGPS.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrUrg.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrUrg.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrUrg_2_0.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrUrg_2_0.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/MvrVCC4.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/MvrVCC4.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/Mvria.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/Mvria.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/md5.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/md5.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/src/mvriaUtil.cpp">
+		<Unit filename="/home/mvr/project/mvr/src/mvriaUtil.cpp">
 			<Option target="Mvria"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/tests/hardDriveWander.cpp">
-			<Option target="hardDriveWander"/>
+		<Unit filename="/home/mvr/project/mvr/tests/encoderConvertSelf.cpp">
+			<Option target="encoderConvertSelf"/>
 		</Unit>
-		<Unit filename="/backup/project/mvr/CMakeLists.txt">
+		<Unit filename="/home/mvr/project/mvr/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

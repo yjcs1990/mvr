@@ -192,5 +192,5 @@ ADD_LIBRARY(Mvria SHARED
     )
 
 
-ADD_EXECUTABLE(encoderConvertSelf tests/encoderConvertSelf.cpp)
-target_link_libraries(encoderConvertSelf ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)
+ADD_EXECUTABLE(simpleConnect examples/simpleConnect.cpp)
+target_link_libraries(simpleConnect ${LIBRARY_OUTPUT_PATH}/libMvria.so -ldl)

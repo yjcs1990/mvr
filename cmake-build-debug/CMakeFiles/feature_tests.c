@@ -27,7 +27,7 @@
 #else
 "0"
 #endif
-"c_vmvriadic_macros\n"
+"c_variadic_macros\n"
 
 };
 

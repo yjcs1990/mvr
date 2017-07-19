@@ -48,24 +48,13 @@ RM = /usr/local/clion/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /backup/project/mvr
+CMAKE_SOURCE_DIR = /home/mvr/project/mvr
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /backup/project/mvr/cmake-build-debug
+CMAKE_BINARY_DIR = /home/mvr/project/mvr/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/clion/bin/cmake/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -78,11 +67,22 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/clion/bin/cmake/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/cmake-build-debug/CMakeFiles /backup/project/mvr/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mvr/project/mvr/cmake-build-debug/CMakeFiles /home/mvr/project/mvr/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /backup/project/mvr/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mvr/project/mvr/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named hardDriveWander
+# Target rules for targets named encoderConvertSelf
 
 # Build rule for target.
-hardDriveWander: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 hardDriveWander
-.PHONY : hardDriveWander
+encoderConvertSelf: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 encoderConvertSelf
+.PHONY : encoderConvertSelf
 
 # fast build rule for target.
-hardDriveWander/fast:
-	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/build
-.PHONY : hardDriveWander/fast
+encoderConvertSelf/fast:
+	$(MAKE) -f CMakeFiles/encoderConvertSelf.dir/build.make CMakeFiles/encoderConvertSelf.dir/build
+.PHONY : encoderConvertSelf/fast
 
 #=============================================================================
 # Target rules for targets named Mvria
@@ -4132,32 +4132,32 @@ src/mvriaUtil.cpp.s:
 	$(MAKE) -f CMakeFiles/Mvria.dir/build.make CMakeFiles/Mvria.dir/src/mvriaUtil.cpp.s
 .PHONY : src/mvriaUtil.cpp.s
 
-tests/hardDriveWander.o: tests/hardDriveWander.cpp.o
+tests/encoderConvertSelf.o: tests/encoderConvertSelf.cpp.o
 
-.PHONY : tests/hardDriveWander.o
+.PHONY : tests/encoderConvertSelf.o
 
 # target to build an object file
-tests/hardDriveWander.cpp.o:
-	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/tests/hardDriveWander.cpp.o
-.PHONY : tests/hardDriveWander.cpp.o
+tests/encoderConvertSelf.cpp.o:
+	$(MAKE) -f CMakeFiles/encoderConvertSelf.dir/build.make CMakeFiles/encoderConvertSelf.dir/tests/encoderConvertSelf.cpp.o
+.PHONY : tests/encoderConvertSelf.cpp.o
 
-tests/hardDriveWander.i: tests/hardDriveWander.cpp.i
+tests/encoderConvertSelf.i: tests/encoderConvertSelf.cpp.i
 
-.PHONY : tests/hardDriveWander.i
+.PHONY : tests/encoderConvertSelf.i
 
 # target to preprocess a source file
-tests/hardDriveWander.cpp.i:
-	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/tests/hardDriveWander.cpp.i
-.PHONY : tests/hardDriveWander.cpp.i
+tests/encoderConvertSelf.cpp.i:
+	$(MAKE) -f CMakeFiles/encoderConvertSelf.dir/build.make CMakeFiles/encoderConvertSelf.dir/tests/encoderConvertSelf.cpp.i
+.PHONY : tests/encoderConvertSelf.cpp.i
 
-tests/hardDriveWander.s: tests/hardDriveWander.cpp.s
+tests/encoderConvertSelf.s: tests/encoderConvertSelf.cpp.s
 
-.PHONY : tests/hardDriveWander.s
+.PHONY : tests/encoderConvertSelf.s
 
 # target to generate assembly for a file
-tests/hardDriveWander.cpp.s:
-	$(MAKE) -f CMakeFiles/hardDriveWander.dir/build.make CMakeFiles/hardDriveWander.dir/tests/hardDriveWander.cpp.s
-.PHONY : tests/hardDriveWander.cpp.s
+tests/encoderConvertSelf.cpp.s:
+	$(MAKE) -f CMakeFiles/encoderConvertSelf.dir/build.make CMakeFiles/encoderConvertSelf.dir/tests/encoderConvertSelf.cpp.s
+.PHONY : tests/encoderConvertSelf.cpp.s
 
 # Help Target
 help:
@@ -4165,9 +4165,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... hardDriveWander"
+	@echo "... rebuild_cache"
+	@echo "... encoderConvertSelf"
 	@echo "... Mvria"
 	@echo "... src/MvrACTS.o"
 	@echo "... src/MvrACTS.i"
@@ -4613,9 +4613,9 @@ help:
 	@echo "... src/mvriaUtil.o"
 	@echo "... src/mvriaUtil.i"
 	@echo "... src/mvriaUtil.s"
-	@echo "... tests/hardDriveWander.o"
-	@echo "... tests/hardDriveWander.i"
-	@echo "... tests/hardDriveWander.s"
+	@echo "... tests/encoderConvertSelf.o"
+	@echo "... tests/encoderConvertSelf.i"
+	@echo "... tests/encoderConvertSelf.s"
 .PHONY : help
 
 

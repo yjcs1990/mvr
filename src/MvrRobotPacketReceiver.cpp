@@ -139,7 +139,8 @@ MVREXPORT MvrRobotPacket* MvrRobotPacketReceiver::receivePacket(unsigned int msW
   }
   
   timeDone.setToNow();
-  if (!timeDone.addMSec(msWait)) {
+  if (!timeDone.addMSec(msWait)) 
+  {
     MvrLog::log(MvrLog::Normal,
                "MvrRobotPacketReceiver::receivePacket() error adding msecs (%i)",
                msWait);
@@ -164,7 +165,8 @@ MVREXPORT MvrRobotPacket* MvrRobotPacketReceiver::receivePacket(unsigned int msW
 			// if tracking is on - log packet - also make sure
 			// buffer length is in range
 			
-			if ((myTracking) && (packet->getLength() < 10000)) {
+			if ((myTracking) && (packet->getLength() < 10000)) 
+      {
   
 				unsigned char *buf = (unsigned char *) packet->getBuf();
 
@@ -203,14 +205,14 @@ MVREXPORT MvrRobotPacket* MvrRobotPacketReceiver::receivePacket(unsigned int msW
         timeToRunFor = 0;
 
       if (state == STATE_SYNC1)
-	myDeviceConn->debugStartPacket();
+	      myDeviceConn->debugStartPacket();
 
       if (myDeviceConn->read((char *)&c, 1, timeToRunFor) == 0) 
-        {
-	  myDeviceConn->debugBytesRead(0);
+      {
+        myDeviceConn->debugBytesRead(0);
           if (state == STATE_SYNC1)
             {
-	      myDeviceConn->debugEndPacket(false, -30);
+              myDeviceConn->debugEndPacket(false, -30);
               if (myAllocatePackets)
                 delete packet; 
               if (myTracking)
@@ -285,29 +287,29 @@ MVREXPORT MvrRobotPacket* MvrRobotPacketReceiver::receivePacket(unsigned int msW
           {
             numRead = myDeviceConn->read(buf + count, c - count, 1);
             if (numRead > 0)
-	    {
-	      myDeviceConn->debugBytesRead(numRead);
-              lastDataRead.setToNow();
-	    }
-	    else
-	    {
-	      myDeviceConn->debugBytesRead(0);
-	    }
+            {
+              myDeviceConn->debugBytesRead(numRead);
+                    lastDataRead.setToNow();
+            }
+            else
+            {
+              myDeviceConn->debugBytesRead(0);
+            }
             if (lastDataRead.mSecTo() < -100)
-              {
-		myDeviceConn->debugEndPacket(false, -40);
-                if (myAllocatePackets)
-                  delete packet;
-		            //printf("Bad time taken reading\n");
-                return NULL;
-              }
+            {
+              myDeviceConn->debugEndPacket(false, -40);
+              if (myAllocatePackets)
+                delete packet;
+              //printf("Bad time taken reading\n");
+              return NULL;
+            }
             count += numRead;
           }
         packet->dataToBuf(buf, c);
         if (packet->verifyCheckSum()) 
-          {
+        {
 	
-            packet->resetRead();
+          packet->resetRead();
 	    /* put this in if you want to see the packets received
 	       printf("Input ");
                packet->printHex();

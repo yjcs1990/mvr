@@ -1139,13 +1139,13 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
         setRotDecel(myParams->getRotDecel());
 
       if (MvrMath::fabs(myParams->getLatVelMax()) > 1)
-	setLatVelMax(myParams->getLatVelMax());
+        setLatVelMax(myParams->getLatVelMax());
       else if (!gotConfig)
-	setLatVelMax(myParams->getAbsoluteMaxLatVelocity());
+        setLatVelMax(myParams->getAbsoluteMaxLatVelocity());
       if (MvrMath::fabs(myParams->getLatAccel()) > 1)
-	setLatAccel(myParams->getLatAccel());
+        setLatAccel(myParams->getLatAccel());
       if (MvrMath::fabs(myParams->getLatDecel()) > 1)
-	setLatDecel(myParams->getLatDecel());
+        setLatDecel(myParams->getLatDecel());
       myAsyncConnectState = 4;
     }
     else
@@ -1259,7 +1259,7 @@ MVREXPORT int MvrRobot::asyncConnectHandler(bool tryHarderToConnect)
   if (packet != NULL) 
   {
     ret = packet->getID();
-//   packet->log(); // Jay
+    //   packet->log(); // Jay
 
     //printf("Got a packet %d\n", ret);
 	

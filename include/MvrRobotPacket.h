@@ -17,8 +17,7 @@ class MvrRobotPacket: public MvrBasePacket
 {
 public:
   /// Constructor
-  MVREXPORT MvrRobotPacket(unsigned char sync1 = 0xfa, 
-			 unsigned char sync2 = 0xfb);
+  MVREXPORT MvrRobotPacket(unsigned char sync1 = 0xAA, unsigned char sync2 = 0xAA);
   /// Destructor
   MVREXPORT virtual ~MvrRobotPacket();
 

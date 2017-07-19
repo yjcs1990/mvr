@@ -1,4 +1,4 @@
-/backup/project/mvr/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/backup/project/mvr/cmake-build-debug/CMakeFiles/edit_cache.dir
-/backup/project/mvr/cmake-build-debug/CMakeFiles/hardDriveWander.dir
-/backup/project/mvr/cmake-build-debug/CMakeFiles/Mvria.dir
+/home/mvr/project/mvr/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/mvr/project/mvr/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/mvr/project/mvr/cmake-build-debug/CMakeFiles/encoderConvertSelf.dir
+/home/mvr/project/mvr/cmake-build-debug/CMakeFiles/Mvria.dir
